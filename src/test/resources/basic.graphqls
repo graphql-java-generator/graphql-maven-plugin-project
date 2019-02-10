@@ -1,0 +1,14 @@
+schema {
+    query: QueryType
+}
+
+type QueryType {
+    human(id : String) : Human
+}
+
+
+type Human {
+    id: ID!
+    name: String!
+}
+
