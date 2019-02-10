@@ -10,5 +10,9 @@ type QueryType {
 type Human {
     id: ID!
     name: String!
+    forname: String
+    comments: [String]
+    surname: [String]!
+    planets: [String!]!
 }
 

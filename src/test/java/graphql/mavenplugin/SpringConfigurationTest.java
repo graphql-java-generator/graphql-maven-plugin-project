@@ -68,6 +68,7 @@ public class SpringConfigurationTest {
 		// Verification
 		assertNotNull(documents, "documents should be returned");
 		assertEquals(1, documents.size(), "documents should contain one doc");
+
 		Document doc = documents.get(0);
 		assertEquals(1, doc.getDefinitions().size(), "One definition");
 

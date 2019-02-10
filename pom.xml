@@ -118,6 +118,15 @@
 		</dependency>
 		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java</artifactId> <version>11.0</version> </dependency> 
 			<dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java-tools</artifactId> <version>5.2.4</version> </dependency -->
+			
+			<!-- Other dependencies -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.4</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 </project>
