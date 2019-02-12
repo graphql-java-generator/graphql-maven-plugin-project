@@ -16,7 +16,7 @@ public class FieldType {
 	/** The name of the type */
 	private String name;
 
-	/** The java class for this type */
-	private Class<?> javaClass;
+	/** The java class full name for this type (e.g.: com.mycompany.graphql.Class) */
+	private String javaClassName;
 
 }

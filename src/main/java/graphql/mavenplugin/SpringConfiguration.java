@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,12 @@ import graphql.parser.Parser;
 @Configuration
 @Import({ JacksonAutoConfiguration.class, GraphQLJavaToolsAutoConfiguration.class })
 public class SpringConfiguration {
+
+	@Parameter(property = "graphql.basePackage", defaultValue = "com.generated.graphql")
+	private String basePackage;
+
+	@Parameter(property = "graphql.encoding", defaultValue = "UTF-8")
+	private String encoding;
 
 	/**
 	 * Loads the schema from the graphqls files. This method uses the {@link GraphQLJavaToolsAutoConfiguration} from the

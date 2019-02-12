@@ -22,7 +22,7 @@ interface Character {
     appearsIn: [Episode]!
 }
 
-type DirectHuman {
+type allFieldCases {
     id: ID!
     name: String!
     forname: String
@@ -32,6 +32,7 @@ type DirectHuman {
     booleans: [boolean!]
     aliases: [String]!
     planets: [String!]!
+    friends: [Human!]
 }
 
 type Human implements Character {

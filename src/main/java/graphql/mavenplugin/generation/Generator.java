@@ -3,6 +3,7 @@
  */
 package graphql.mavenplugin.generation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,20 @@ import graphql.parser.Parser;
 @Component
 public class Generator {
 
+	// All the maven parameters are exposed as Spring Beans
+
+	/** @See GraphqlMavenPlugin#outputDirectory */
+	@Resource
+	File outputDirectory;
+
+	/** @See GraphqlMavenPlugin#basePackage */
+	@Resource
+	String basePackage;
+
+	/** @See GraphqlMavenPlugin#encoding */
+	@Resource
+	String encoding;
+
 	@Resource
 	List<Document> documents;
 
@@ -44,13 +59,13 @@ public class Generator {
 	 * maps for all scalers, when it is NOT mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, Class<?>> nonMandatoryScalars = new HashMap<>();
+	Map<String, String> nonMandatoryScalars = new HashMap<>();
 
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, Class<?>> mandatoryScalars = new HashMap<>();
+	Map<String, String> mandatoryScalars = new HashMap<>();
 
 	/**
 	 * The main method of the class: it executes the generation of the given documents
@@ -65,18 +80,18 @@ public class Generator {
 
 	public Generator() {
 		// Add of all scalars, when non mandatory
-		nonMandatoryScalars.put("ID", String.class);
-		nonMandatoryScalars.put("String", String.class);
-		nonMandatoryScalars.put("boolean", Boolean.class);
-		nonMandatoryScalars.put("int", Integer.class);
-		nonMandatoryScalars.put("float", Float.class);
+		nonMandatoryScalars.put("ID", String.class.getName());
+		nonMandatoryScalars.put("String", String.class.getName());
+		nonMandatoryScalars.put("boolean", Boolean.class.getName());
+		nonMandatoryScalars.put("int", Integer.class.getName());
+		nonMandatoryScalars.put("float", Float.class.getName());
 
 		// Add of all scalars, when mandatory
-		mandatoryScalars.put("ID", String.class);
-		mandatoryScalars.put("String", String.class);
-		mandatoryScalars.put("boolean", boolean.class);
-		mandatoryScalars.put("int", int.class);
-		mandatoryScalars.put("float", float.class);
+		mandatoryScalars.put("ID", String.class.getName());
+		mandatoryScalars.put("String", String.class.getName());
+		mandatoryScalars.put("boolean", boolean.class.getName());
+		mandatoryScalars.put("int", int.class.getName());
+		mandatoryScalars.put("float", float.class.getName());
 	}
 
 	/**
@@ -172,33 +187,36 @@ public class Generator {
 
 		type.setName(typeName.getName());
 		if (field.isList())
-			type.setJavaClass(getFieldTypeClassFrom(typeName, field.isItemMandatory()));
+			type.setJavaClassName(getFieldTypeClassFrom(typeName, field.isItemMandatory()));
 		else
-			type.setJavaClass(getFieldTypeClassFrom(typeName, field.isMandatory()));
+			type.setJavaClassName(getFieldTypeClassFrom(typeName, field.isMandatory()));
 
 		return field;
 	}
 
 	/**
-	 * Returns the Java class from a given type name
+	 * Returns the Java class name from a given type name
 	 * 
 	 * @param type
 	 * @param mandatory
 	 * @return
 	 */
-	Class<?> getFieldTypeClassFrom(TypeName type, boolean mandatory) {
-		Class<?> clazz = null;
+	String getFieldTypeClassFrom(TypeName type, boolean mandatory) {
+		String classname = null;
 		if (mandatory) {
-			clazz = mandatoryScalars.get(type.getName());
+			classname = mandatoryScalars.get(type.getName());
 		} else {
-			clazz = nonMandatoryScalars.get(type.getName());
+			classname = nonMandatoryScalars.get(type.getName());
 		}
 
-		if (clazz == null) {
-			throw new RuntimeException("Unexpected graphql type: " + type.getName());
+		if (classname == null) {
+			// It's not a scaler. So either the schema is invalid (but it has been correctly parsed by graphql) or it is
+			// an Object Type defined in the schema.
+			// So, we're in the second case, and this will be confirmed during the projet compilation.
+			classname = getGeneratedFieldFullClassName(type.getName());
 		}
 
-		return clazz;
+		return classname;
 	}
 
 	/**
@@ -209,6 +227,17 @@ public class Generator {
 	 */
 	FieldType getType(FieldDefinition fieldDef) {
 		return null;
+	}
+
+	/**
+	 * A utility method, which maps an object type to the class full name of the Java class which will be generated for
+	 * this object type. This utility method is based on the {@link #basePackage} maven attribute, available in this
+	 * class
+	 * 
+	 * @param name
+	 */
+	String getGeneratedFieldFullClassName(String name) {
+		return basePackage + "." + name;
 	}
 
 }

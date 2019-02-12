@@ -11,6 +11,9 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.AbstractApplicationContext;
 
 import graphql.mavenplugin.generation.Generator;
@@ -19,6 +22,8 @@ import graphql.mavenplugin.generation.Generator;
  * @author EtienneSF
  */
 @Mojo(name = "graphql")
+@Configuration
+@Import(SpringConfiguration.class)
 public class GraphqlMavenPlugin extends AbstractMojo {
 
 	@Parameter(property = "graphql.outputDirectory", defaultValue = "target/generated-sources/graphql-client")
@@ -39,7 +44,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			getLog().info("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
-			ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+			ctx = new AnnotationConfigApplicationContext(getClass());
 			Generator generator = ctx.getBean(Generator.class);
 			int nbClasses = generator.generateTargetFiles();
 			ctx.close();
@@ -51,4 +56,20 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 		}
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Let's give access to all the maven parameters as spring bean
+	@Bean
+	public File outputDirectory() {
+		return outputDirectory;
+	}
+
+	@Bean
+	public String basePackage() {
+		return basePackage;
+	}
+
+	@Bean
+	public String encoding() {
+		return encoding;
+	}
 }
