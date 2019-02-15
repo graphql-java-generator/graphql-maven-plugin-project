@@ -3,6 +3,8 @@
  */
 package graphql.mavenplugin.generation;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -34,6 +36,9 @@ public class Field {
 	 */
 	private FieldType type;
 
+	/** All fields in an object may have parameters. A parameter is actually a field. */
+	private List<Field> inputParameters = null;
+
 	/** Is this field a list? */
 	private boolean list = false;
 
@@ -45,5 +50,8 @@ public class Field {
 
 	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
 	private boolean itemMandatory = false;
+
+	/** Contains the default value.. Only used if this field is a list. */
+	private String defaultValue = null;
 
 }

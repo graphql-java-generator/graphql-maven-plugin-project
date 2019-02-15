@@ -18,32 +18,35 @@
 	</properties>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.0</version>
-					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.21.0</version>
-					<dependencies>
-						<dependency>
-							<!-- Necessary due to a bug in the previous version. This conf will probably be obsolete in a next version of spring 
-								boot -->
-							<groupId>org.junit.platform</groupId>
-							<artifactId>junit-platform-surefire-provider</artifactId>
-							<version>1.2.0</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+				<version>3.6.0</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.21.0</version>
+				<dependencies>
+					<dependency>
+						<!-- Necessary due to a bug in the previous version. This conf will probably be obsolete in a next version of spring 
+							boot -->
+						<groupId>org.junit.platform</groupId>
+						<artifactId>junit-platform-surefire-provider</artifactId>
+						<version>1.2.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencyManagement>
@@ -58,7 +61,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-	<!-- Dependencies for tests -->
+		<!-- Dependencies for tests -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -103,7 +106,7 @@
 			<version>3.6.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- We use spring to reuse the graphql-spring-boot-starter classes -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -118,8 +121,8 @@
 		</dependency>
 		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java</artifactId> <version>11.0</version> </dependency> 
 			<dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java-tools</artifactId> <version>5.2.4</version> </dependency -->
-			
-			<!-- Other dependencies -->
+
+		<!-- Other dependencies -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

@@ -1,11 +1,17 @@
 schema {
-    query: QueryType
+	#A comment on the query
+    query: MyQueryType
+    mutation: AnotherMutationType
+    subscription: TheSubscriptionType
 }
 
-type QueryType {
-    hero(episode: Episode): Character
-    human(id : String) : Human
-    droid(id: ID!): Droid
+type MyQueryType {
+	withoutParameters: [Character]!
+    withOneOptionalParam(character: Character): Character
+    withOneMandatoryParam(character: Character!): Character
+    withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
+    withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
+    #withEnum(episode: Episode!): Character
 }
 
 

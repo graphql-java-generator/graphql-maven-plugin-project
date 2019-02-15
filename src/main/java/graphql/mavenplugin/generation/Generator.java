@@ -4,6 +4,8 @@
 package graphql.mavenplugin.generation;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,15 +15,23 @@ import java.util.stream.Collectors;
 import javax.annotation.Resource;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.springframework.stereotype.Component;
 
+import graphql.language.AbstractNode;
 import graphql.language.Definition;
 import graphql.language.Document;
+import graphql.language.EnumTypeDefinition;
 import graphql.language.FieldDefinition;
+import graphql.language.InputValueDefinition;
+import graphql.language.InterfaceTypeDefinition;
 import graphql.language.ListType;
 import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.OperationTypeDefinition;
+import graphql.language.SchemaDefinition;
+import graphql.language.StringValue;
 import graphql.language.TypeName;
 import graphql.parser.Parser;
 
@@ -29,17 +39,22 @@ import graphql.parser.Parser;
  * This class generates the Java classes, from the documents. These documents are read from the
  * graphql-spring-boot-starter code, in injected here thanks to spring's magik.<BR/>
  * There is no validity check: we trust the information in the Document, as it is read by the graphql {@link Parser}.
+ * <BR/>
+ * The graphQL-java library maps both FieldDefinition and InputValueDefinition in very similar structures, which are
+ * actually trees. These structures are too hard too read in a Velocity template, and we need to parse down to a
+ * properly structures way for that.
  * 
  * @author EtienneSF
  */
 @Component
 public class Generator {
 
-	// All the maven parameters are exposed as Spring Beans
+	final String DEFAULT_QUERY_NAME = "Query";
+	final String DEFAULT_MUTATION_NAME = "Mutation";
+	final String DEFAULT_SUBSCRIPTION_NAME = "Subscription";
 
-	/** @See GraphqlMavenPlugin#outputDirectory */
-	@Resource
-	File outputDirectory;
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	// All the maven parameters are exposed as Spring Beans
 
 	/** @See GraphqlMavenPlugin#basePackage */
 	@Resource
@@ -49,8 +64,35 @@ public class Generator {
 	@Resource
 	String encoding;
 
+	/** The maven logging system */
+	@Resource
+	Log log;
+
+	/** @See GraphqlMavenPlugin#outputDirectory */
+	@Resource
+	File outputDirectory;
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	// Internal attributes for this class
+
 	@Resource
 	List<Document> documents;
+
+	/**
+	 * All the Query Types for this Document. There may be several ones, if more than one graphqls files have been
+	 * merged
+	 */
+	List<ObjectType> queryTypes = new ArrayList<>();
+	/**
+	 * All the Subscription Types for this Document. There may be several ones, if more than one graphqls files have
+	 * been merged
+	 */
+	List<ObjectType> subscriptionTypes = new ArrayList<>();
+	/**
+	 * All the Mutation Types for this Document. There may be several ones, if more than one graphqls files have been
+	 * merged
+	 */
+	List<ObjectType> mutationTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	List<ObjectType> objectTypes = new ArrayList<ObjectType>();
@@ -100,13 +142,78 @@ public class Generator {
 	 * @param document
 	 */
 	int generateForOneDocument(Document document) {
-		int i = 0;
+		// List of all the names of the query types. There should be only one. But we're ready for more (for instance if
+		// several schema files have been merged)
+		List<String> queryObjectNames = new ArrayList<>();
+		// List of all the names of the mutation types. There should be only one. But we're ready for more (for instance
+		// if several schema files have been merged)
+		List<String> mutationObjectNames = new ArrayList<>();
+		// List of all the names of the subscription types. There should be only one. But we're ready for more (for
+		// instance if several schema files have been merged)
+		List<String> subscriptionObjectNames = new ArrayList<>();
+
+		// Looks for a schema definitions, to list the defined queries, mutations and subscriptions (should be only one
+		// of each), but we're ready for more. (for instance if several schema files have been merged)
+		for (Definition<?> node : document.getDefinitions()) {
+			if (node instanceof SchemaDefinition) {
+				readSchemaDefinition((SchemaDefinition) node, queryObjectNames, mutationObjectNames,
+						subscriptionObjectNames);
+			} // if
+		} // for
+
 		for (Definition<?> node : document.getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition) {
-				i += addObjectType((ObjectTypeDefinition) node);
+				// Let's check what kind of ObjectDefinition we have
+				String name = ((ObjectTypeDefinition) node).getName();
+				if (queryObjectNames.contains(name) || DEFAULT_QUERY_NAME.equals(name)) {
+					queryTypes.add(readObjectType((ObjectTypeDefinition) node));
+				} else if (queryObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
+					mutationTypes.add(readObjectType((ObjectTypeDefinition) node));
+				} else if (queryObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
+					subscriptionTypes.add(readObjectType((ObjectTypeDefinition) node));
+				} else {
+					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
+				}
+			} else if (node instanceof EnumTypeDefinition) {
+				log.warn("EnumTypeDefinition not managed");
+			} else if (node instanceof InterfaceTypeDefinition) {
+				log.warn("InterfaceTypeDefinition not managed");
+			} else if (node instanceof SchemaDefinition) {
+				// No action, we already parsed it
+			} else {
+				throw new RuntimeException("Unknown node type: " + node.getClass().getName());
 			}
 		} // for
-		return i;
+
+		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size();
+	}
+
+	/**
+	 * @param schemaDef
+	 * @param queryObjectNames
+	 * @param mutationObjectNames
+	 * @param subscriptionObjectNames
+	 * 
+	 */
+	void readSchemaDefinition(SchemaDefinition schemaDef, List<String> queryObjectNames,
+			List<String> mutationObjectNames, List<String> subscriptionObjectNames) {
+		for (OperationTypeDefinition opDef : schemaDef.getOperationTypeDefinitions()) {
+			TypeName type = (TypeName) opDef.getType();
+			switch (opDef.getName()) {
+			case "query":
+				queryObjectNames.add(type.getName());
+				break;
+			case "mutation":
+				mutationObjectNames.add(type.getName());
+				break;
+			case "subscription":
+				subscriptionObjectNames.add(type.getName());
+				break;
+			default:
+				throw new RuntimeException(
+						"Unexpected OperationTypeDefinition while reading schema: " + opDef.getName());
+			}// switch
+		} // for
 	}
 
 	/**
@@ -115,7 +222,9 @@ public class Generator {
 	 * @param node
 	 * @return
 	 */
-	int addObjectType(ObjectTypeDefinition node) {
+	ObjectType readObjectType(ObjectTypeDefinition node) {
+		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
+
 		ObjectType objectType = new ObjectType();
 
 		objectType.setName(node.getName());
@@ -123,36 +232,66 @@ public class Generator {
 		// Let's read all its fields
 		objectType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
 
-		objectTypes.add(objectType);
-		return 1;
+		return objectType;
 	}
 
 	/**
-	 * Reads one graphql {@link FieldDefinition}, and maps it into a {@link Field}
+	 * Reads one graphql {@link FieldDefinition}, and maps it into a {@link Field}.
 	 * 
 	 * @param fieldDef
 	 * @return
 	 * @throws MojoExecutionException
 	 */
 	Field getField(FieldDefinition fieldDef) {
+
+		Field field = readFieldTypeDefinition(fieldDef);
+
+		// Let's read all its input parameters
+		field.setInputParameters(fieldDef.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
+				.collect(Collectors.toList()));
+
+		return field;
+	}
+
+	/**
+	 * Reads an {@link InputValueDefinition}, and returns the {@link Field} field created from this definition
+	 * 
+	 * @param inputValueDef
+	 * @return
+	 */
+	Field readInputValueDefinition(InputValueDefinition inputValueDef) {
+		throw new RuntimeException("not yet implemented");
+	}
+
+	/**
+	 * Reads a field, which can be either agraphql {@link FieldDefinition} or an {@link InputValueDefinition}, and maps
+	 * it into a {@link Field}. The graphQL-java library maps both FieldDefinition and InputValueDefinition in very
+	 * similar structures, which are actually trees. These structures are too hard too read in a Velocity template, and
+	 * we need to parse down to a properly structures way for that.
+	 * 
+	 * @param fieldDef
+	 * @param field
+	 * @return
+	 */
+	Field readFieldTypeDefinition(AbstractNode<?> fieldDef) {
 		Field field = new Field();
 		FieldType type = new FieldType();
 		field.setType(type);
 
-		field.setName(fieldDef.getName());
+		field.setName((String) exec("getName", fieldDef));
 
 		// Let's default value to false
 		field.setMandatory(false);
 		field.setList(false);
 		field.setItemMandatory(false);
 
-		// Let's get the relevant TypeName which may several step down in the hierarchy
+		String nameOfTheType = null;
 		TypeName typeName = null;
-		if (fieldDef.getType() instanceof TypeName) {
-			typeName = (TypeName) fieldDef.getType();
-		} else if (fieldDef.getType() instanceof NonNullType) {
+		if (exec("getType", fieldDef) instanceof TypeName) {
+			typeName = (TypeName) exec("getType", fieldDef);
+		} else if (exec("getType", fieldDef) instanceof NonNullType) {
 			field.setMandatory(true);
-			Node<?> node = ((NonNullType) fieldDef.getType()).getType();
+			Node<?> node = ((NonNullType) exec("getType", fieldDef)).getType();
 			if (node instanceof TypeName) {
 				typeName = (TypeName) node;
 			} else if (node instanceof ListType) {
@@ -165,33 +304,70 @@ public class Generator {
 					field.setItemMandatory(true);
 				} else {
 					throw new RuntimeException("Case not found (subnode of a ListType). The node is of type "
-							+ subNode.getClass().getName());
+							+ subNode.getClass().getName() + " (for field " + field.getName() + ")");
 				}
 			} else {
-				throw new RuntimeException(
-						"Case not found (subnode of a NonNullType). The node is of type " + node.getClass().getName());
+				throw new RuntimeException("Case not found (subnode of a NonNullType). The node is of type "
+						+ node.getClass().getName() + " (for field " + field.getName() + ")");
 			}
-		} else if (fieldDef.getType() instanceof ListType) {
+		} else if (exec("getType", fieldDef) instanceof ListType) {
 			field.setList(true);
-			Node<?> node = ((ListType) fieldDef.getType()).getType();
+			Node<?> node = ((ListType) exec("getType", fieldDef)).getType();
 			if (node instanceof TypeName) {
 				typeName = (TypeName) node;
 			} else if (node instanceof NonNullType) {
 				typeName = (TypeName) ((NonNullType) node).getType();
 				field.setItemMandatory(true);
 			} else {
-				throw new RuntimeException(
-						"Case not found (subnode of a ListType). The node is of type " + node.getClass().getName());
+				throw new RuntimeException("Case not found (subnode of a ListType). The node is of type "
+						+ node.getClass().getName() + " (for field " + field.getName() + ")");
+			}
+		}
+		nameOfTheType = typeName.getName();
+
+		type.setName(nameOfTheType);
+
+		// For Scalar types, the actual Java type depends on whether the item is mandatory or not (int is mandatory
+		// whereas Integer can be null)
+		if (field.isList())
+			type.setJavaClassName(getFieldTypeClassFrom(nameOfTheType, field.isItemMandatory()));
+		else
+			type.setJavaClassName(getFieldTypeClassFrom(nameOfTheType, field.isMandatory()));
+
+		// For InputValueDefinition, we may have a defaut value
+		if (fieldDef instanceof InputValueDefinition) {
+			Object defaultValue = ((InputValueDefinition) fieldDef).getDefaultValue();
+			if (defaultValue != null) {
+				if (defaultValue instanceof StringValue) {
+					field.setDefaultValue(((StringValue) defaultValue).getValue());
+				} else {
+					throw new RuntimeException("DefaultValue of type " + defaultValue.getClass().getName()
+							+ " is not managed (for field " + field.getName() + ")");
+				}
 			}
 		}
 
-		type.setName(typeName.getName());
-		if (field.isList())
-			type.setJavaClassName(getFieldTypeClassFrom(typeName, field.isItemMandatory()));
-		else
-			type.setJavaClassName(getFieldTypeClassFrom(typeName, field.isMandatory()));
-
 		return field;
+	}
+
+	/**
+	 * Calls the 'methodName' method on the given object
+	 * 
+	 * @param methodName
+	 *            The name of the method name
+	 * @param node
+	 *            The given node, on which the 'methodName' method is to be called
+	 * @return
+	 */
+	Object exec(String methodName, AbstractNode<?> node) {
+		try {
+			Method getType = node.getClass().getDeclaredMethod(methodName);
+			return getType.invoke(node);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
+					+ node.getClass().getName() + "': " + e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -201,19 +377,19 @@ public class Generator {
 	 * @param mandatory
 	 * @return
 	 */
-	String getFieldTypeClassFrom(TypeName type, boolean mandatory) {
+	String getFieldTypeClassFrom(String type, boolean mandatory) {
 		String classname = null;
 		if (mandatory) {
-			classname = mandatoryScalars.get(type.getName());
+			classname = mandatoryScalars.get(type);
 		} else {
-			classname = nonMandatoryScalars.get(type.getName());
+			classname = nonMandatoryScalars.get(type);
 		}
 
 		if (classname == null) {
 			// It's not a scaler. So either the schema is invalid (but it has been correctly parsed by graphql) or it is
 			// an Object Type defined in the schema.
 			// So, we're in the second case, and this will be confirmed during the projet compilation.
-			classname = getGeneratedFieldFullClassName(type.getName());
+			classname = getGeneratedFieldFullClassName(type);
 		}
 
 		return classname;

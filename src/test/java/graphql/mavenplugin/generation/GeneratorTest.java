@@ -9,9 +9,11 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import graphql.language.Definition;
 import graphql.language.Document;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.SchemaDefinition;
 import graphql.mavenplugin.SpringConfiguration;
 import graphql.parser.Parser;
 
@@ -35,7 +38,7 @@ import graphql.parser.Parser;
 @ContextConfiguration(classes = { SpringConfiguration.class })
 class GeneratorTest {
 
-	final static String BASE_PACKAGE = "org.graphql.maven.generated";
+	final static String BASE_PACKAGE = "org.graphql.mavenplugin.test.generated";
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -49,6 +52,7 @@ class GeneratorTest {
 	void setUp() throws Exception {
 		generator = new Generator();
 		generator.basePackage = BASE_PACKAGE;
+		generator.log = new SystemStreamLog();
 		parser = new Parser();
 
 		// By default, we parse the allGraphQLCases, as it contains all the cases managed by the plugin. It's the most
@@ -83,7 +87,7 @@ class GeneratorTest {
 		int i = generator.generateForOneDocument(doc);
 
 		// Verification
-		assertEquals(1, i, "One class is generated");
+		assertEquals(2, i, "One class is generated");
 	}
 
 	@Test
@@ -96,11 +100,11 @@ class GeneratorTest {
 		int i = generator.generateForOneDocument(doc);
 
 		// Verification
-		assertEquals(2, i, "Two classes are generated");
+		assertEquals(1, i, "Two classes are generated");
 	}
 
 	@Test
-	void test_generateForOneDocument_allGrapQLCases() {
+	void test_generateForOneDocument_allGrahpQLCases() {
 		// Go, go, go
 		int i = generator.generateForOneDocument(doc);
 
@@ -111,25 +115,21 @@ class GeneratorTest {
 	@Test
 	void test_addObjectType_noImplement() {
 		// Preparation
+		String objectName = "allFieldCases";
 		ObjectTypeDefinition def = null;
 		for (Definition<?> node : doc.getDefinitions()) {
-			if (node instanceof ObjectTypeDefinition
-					&& ((ObjectTypeDefinition) node).getName().equals("allFieldCases")) {
+			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
 		} // for
-		assertNotNull(def, "We should have found our test case");
+		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// To be sure to properly find our parsed object type, we empty the generator objects list.
 		generator.objectTypes = new ArrayList<ObjectType>();
 
 		// Go, go, go
-		int i = generator.addObjectType(def);
+		ObjectType type = generator.readObjectType(def);
 
 		// Verification
-		assertEquals(1, i, "Exactly one type is added to the list (response)");
-		assertEquals(1, generator.objectTypes.size(), "Exactly one type is added to the list (list)");
-
-		ObjectType type = generator.objectTypes.get(0);
 		assertEquals("allFieldCases", type.getName(), "The name is allFieldCases");
 		assertEquals(10, type.getFields().size(), "Number of fields");
 
@@ -161,6 +161,100 @@ class GeneratorTest {
 	@Test
 	void test_addObjectType_withImplement() {
 		fail("not yet implemented");
+	}
+
+	@Test
+	void test_readSchemaDefinition() {
+		// Preparation
+		List<String> queries = new ArrayList<>();
+		List<String> mutations = new ArrayList<>();
+		List<String> subscriptions = new ArrayList<>();
+		String objectName = "schema";
+		SchemaDefinition schema = null;
+		for (Definition<?> node : doc.getDefinitions()) {
+			if (node instanceof SchemaDefinition) {
+				schema = (SchemaDefinition) node;
+				break;
+			}
+		} // for
+		assertNotNull(schema, "We should have found our test case (" + objectName + ")");
+		// To be sure to properly find our parsed object type, we empty the generator objects list.
+		generator.objectTypes = new ArrayList<ObjectType>();
+
+		// Go, go, go
+		generator.readSchemaDefinition(schema, queries, mutations, subscriptions);
+
+		// Verification
+		assertEquals(1, queries.size(), "Nb queries");
+		assertEquals("MyQueryType", queries.get(0), "the query");
+
+		assertEquals(1, mutations.size(), "Nb mutations");
+		assertEquals("AnotherMutationType", mutations.get(0), "the mutation");
+
+		assertEquals(1, subscriptions.size(), "Nb subscriptions");
+		assertEquals("TheSubscriptionType", subscriptions.get(0), "the subscription");
+	}
+
+	@Test
+	void test_addObjectType_QueryType() {
+		// Preparation
+		String objectName = "MyQueryType";
+		ObjectTypeDefinition def = null;
+		for (Definition<?> node : doc.getDefinitions()) {
+			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
+				def = (ObjectTypeDefinition) node;
+			}
+		} // for
+		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// To be sure to properly find our parsed object type, we empty the generator objects list.
+		generator.queryTypes = new ArrayList<ObjectType>();
+
+		// Go, go, go
+		ObjectType type = generator.readObjectType(def);
+
+		// Verification
+		assertEquals("MyQueryType", type.getName(), "The name is MyQueryType");
+		assertEquals(5, type.getFields().size(), "Number of queries");
+
+		int j = 0; // The first query is 0, see ++j below
+
+		// Each query is actually a field. So we use :
+		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		//
+		// withoutParameters: [Character]!
+		checkField(type, j, "withoutParameters", true, true, false, "Character", BASE_PACKAGE + ".Character");
+		j += 1;
+		// withOneOptionalParam(character: Character): Character
+		checkField(type, j, "withOneOptionalParam", false, false, null, "Character", BASE_PACKAGE + ".Character");
+		checkInputParameter(type, j, 0, "character", false, false, null, "Character", BASE_PACKAGE + ".Character",
+				null);
+		j += 1;
+		// withOneMandatoryParam(character: Character!): Character
+		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character", BASE_PACKAGE + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character", BASE_PACKAGE + ".Character", null);
+		j += 1;
+		// withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
+		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
+				BASE_PACKAGE + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character", BASE_PACKAGE + ".Character",
+				"no one");
+		j += 1;
+		// withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
+		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid", BASE_PACKAGE + ".Droid");
+		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid", BASE_PACKAGE + ".Droid", "A droid");
+		checkInputParameter(type, j, 1, "index", false, false, null, "int", "java.lang.Integer",
+				"Not a number, but ok !!");
+		j += 1;
+	}
+
+	@Test
+	void test_addObjectType_MutationType() {
+		fail("not tested");
+	}
+
+	@Test
+	void test_addObjectType_SubscriptionType() {
+		fail("not tested");
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,4 +289,28 @@ class GeneratorTest {
 				"Class for field type is " + classname + " (for " + fieldDescForJUnitMessage + ")");
 	}
 
+	private void checkInputParameter(ObjectType type, int j, int numParam, String name, boolean list, boolean mandatory,
+			Boolean itemMandatory, String typeName, String classname, String defaultValue) {
+		Field inputValue = type.getFields().get(j).getInputParameters().get(numParam);
+
+		String intputParamDescForJUnitMessage = "Field n°" + j + " / input param n°" + numParam;
+
+		assertEquals(name, inputValue.getName(), "name is " + name + " (for " + intputParamDescForJUnitMessage + ")");
+		assertEquals(list, inputValue.isList(), "list is " + list + " (for " + intputParamDescForJUnitMessage + ")");
+		assertEquals(mandatory, inputValue.isMandatory(),
+				"mandatory is " + mandatory + " (for " + intputParamDescForJUnitMessage + ")");
+		if (itemMandatory != null) {
+			assertEquals(itemMandatory, inputValue.isItemMandatory(),
+					"itemMandatory is " + itemMandatory + " (for " + intputParamDescForJUnitMessage + ")");
+		}
+
+		FieldType fieldType = inputValue.getType();
+		assertEquals(typeName, fieldType.getName(),
+				"name is " + typeName + " (for " + intputParamDescForJUnitMessage + ")");
+		assertEquals(classname, fieldType.getJavaClassName(),
+				"Class type is " + classname + " (for " + intputParamDescForJUnitMessage + ")");
+
+		assertEquals(defaultValue, inputValue.getDefaultValue(),
+				"Default Value is <" + defaultValue + "> (for " + intputParamDescForJUnitMessage + ")");
+	}
 }

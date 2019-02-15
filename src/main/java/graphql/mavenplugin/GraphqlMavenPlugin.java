@@ -8,6 +8,7 @@ import java.io.File;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -23,7 +24,7 @@ import graphql.mavenplugin.generation.Generator;
  */
 @Mojo(name = "graphql")
 @Configuration
-@Import(SpringConfiguration.class)
+@Import(GraphqlMavenPlugin.class)
 public class GraphqlMavenPlugin extends AbstractMojo {
 
 	@Parameter(property = "graphql.outputDirectory", defaultValue = "target/generated-sources/graphql-client")
@@ -58,18 +59,24 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Let's give access to all the maven parameters as spring bean
-	@Bean
-	public File outputDirectory() {
-		return outputDirectory;
-	}
 
 	@Bean
-	public String basePackage() {
+	String basePackage() {
 		return basePackage;
 	}
 
 	@Bean
-	public String encoding() {
+	String encoding() {
 		return encoding;
+	}
+
+	@Bean
+	Log log() {
+		return getLog();
+	}
+
+	@Bean
+	File outputDirectory() {
+		return outputDirectory;
 	}
 }
