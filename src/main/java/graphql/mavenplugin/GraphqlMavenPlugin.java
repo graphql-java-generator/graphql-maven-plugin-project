@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import graphql.mavenplugin.generation.Generator;
+import graphql.mavenplugin.generation.DocumentParser;
 
 /**
  * @author EtienneSF
@@ -46,8 +46,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 
 			// We'll use Spring IoC
 			ctx = new AnnotationConfigApplicationContext(getClass());
-			Generator generator = ctx.getBean(Generator.class);
-			int nbClasses = generator.generateTargetFiles();
+			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
+			int nbClasses = documentParser.parseDocuments();
 			ctx.close();
 
 			getLog().info(nbClasses + "java classes have been generated from graphqls files");

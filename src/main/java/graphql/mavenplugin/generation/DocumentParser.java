@@ -48,7 +48,7 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @Component
-public class Generator {
+public class DocumentParser {
 
 	final String DEFAULT_QUERY_NAME = "Query";
 	final String DEFAULT_MUTATION_NAME = "Mutation";
@@ -129,8 +129,8 @@ public class Generator {
 	 *            The graphql definition schema, from which the code is to be generated
 	 * @return
 	 */
-	public int generateTargetFiles() {
-		return documents.stream().mapToInt(this::generateForOneDocument).sum();
+	public int parseDocuments() {
+		return documents.stream().mapToInt(this::parseOneDocument).sum();
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class Generator {
 	 * 
 	 * @param document
 	 */
-	int generateForOneDocument(Document document) {
+	int parseOneDocument(Document document) {
 		// List of all the names of the query types. There should be only one. But we're ready for more (for instance if
 		// several schema files have been merged)
 		List<String> queryObjectNames = new ArrayList<>();
