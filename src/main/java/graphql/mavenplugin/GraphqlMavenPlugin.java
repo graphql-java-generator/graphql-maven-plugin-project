@@ -47,7 +47,11 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			// We'll use Spring IoC
 			ctx = new AnnotationConfigApplicationContext(getClass());
 			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
+<<<<<<< HEAD
 			int nbClasses = documentParser.generateTargetFiles();
+=======
+			int nbClasses = documentParser.parseDocuments();
+>>>>>>> refs/heads/Pb_commit
 			ctx.close();
 
 			getLog().info(nbClasses + "java classes have been generated from graphqls files");

@@ -62,6 +62,7 @@ class DocumentParserTest {
 	}
 
 	@Test
+<<<<<<< HEAD
 	void testGenerateTargetFiles() throws MojoExecutionException {
 		// Preparation
 		Document basic = parser.parseDocument(readSchema(ctx.getResource("/helloworld.graphqls")));
@@ -107,6 +108,53 @@ class DocumentParserTest {
 	void test_generateForOneDocument_allGrahpQLCases() {
 		// Go, go, go
 		int i = documentParser.generateForOneDocument(doc);
+=======
+	void test_parseDocuments() throws MojoExecutionException {
+		// Preparation
+		Document basic = parser.parseDocument(readSchema(ctx.getResource("/helloworld.graphqls")));
+		Document helloWorld = parser.parseDocument(readSchema(ctx.getResource("/helloworld.graphqls")));
+		documentParser.documents = new ArrayList<Document>();
+		documentParser.documents.add(basic);
+		documentParser.documents.add(helloWorld);
+
+		// Go, go, go
+		int i = documentParser.parseDocuments();
+
+		// Verification
+		assertEquals(3, i, "3 classes expected");
+	}
+
+	@Test
+	void test_parseOneDocument_basic() {
+		// Preparation
+		Resource resource = ctx.getResource("/basic.graphqls");
+		doc = parser.parseDocument(readSchema(resource));
+
+		// Go, go, go
+		int i = documentParser.parseOneDocument(doc);
+
+		// Verification
+		assertEquals(2, i, "One class is generated");
+	}
+
+	@Test
+	void test_parseOneDocument_helloworld() {
+		// Preparation
+		Resource resource = ctx.getResource("/helloworld.graphqls");
+		doc = parser.parseDocument(readSchema(resource));
+
+		// Go, go, go
+		int i = documentParser.parseOneDocument(doc);
+
+		// Verification
+		assertEquals(1, i, "Two classes are generated");
+	}
+
+	@Test
+	void test_parseOneDocument_allGrahpQLCases() {
+		// Go, go, go
+		int i = documentParser.parseOneDocument(doc);
+>>>>>>> refs/heads/Pb_commit
 
 		// Verification
 		assertEquals(6, i, "Six classes are generated");

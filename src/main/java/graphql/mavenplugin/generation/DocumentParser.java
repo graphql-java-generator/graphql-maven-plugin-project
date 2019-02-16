@@ -129,6 +129,7 @@ public class DocumentParser {
 	 *            The graphql definition schema, from which the code is to be generated
 	 * @return
 	 */
+<<<<<<< HEAD
 	public int generateTargetFiles() {
 		return documents.stream().mapToInt(this::generateForOneDocument).sum();
 	}
@@ -139,6 +140,18 @@ public class DocumentParser {
 	 * @param document
 	 */
 	int generateForOneDocument(Document document) {
+=======
+	public int parseDocuments() {
+		return documents.stream().mapToInt(this::parseOneDocument).sum();
+	}
+
+	/**
+	 * Generates the target classes for the given graphql schema definition
+	 * 
+	 * @param document
+	 */
+	int parseOneDocument(Document document) {
+>>>>>>> refs/heads/Pb_commit
 		// List of all the names of the query types. There should be only one. But we're ready for more (for instance if
 		// several schema files have been merged)
 		List<String> queryObjectNames = new ArrayList<>();
