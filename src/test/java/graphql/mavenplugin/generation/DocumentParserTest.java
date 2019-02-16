@@ -36,23 +36,23 @@ import graphql.parser.Parser;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { SpringConfiguration.class })
-class GeneratorTest {
+class DocumentParserTest {
 
 	final static String BASE_PACKAGE = "org.graphql.mavenplugin.test.generated";
 
 	@Autowired
 	private ApplicationContext ctx;
 
-	private Generator generator;
+	private DocumentParser documentParser;
 	private Parser parser;
 
 	private Document doc;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		generator = new Generator();
-		generator.basePackage = BASE_PACKAGE;
-		generator.log = new SystemStreamLog();
+		documentParser = new DocumentParser();
+		documentParser.basePackage = BASE_PACKAGE;
+		documentParser.log = new SystemStreamLog();
 		parser = new Parser();
 
 		// By default, we parse the allGraphQLCases, as it contains all the cases managed by the plugin. It's the most
@@ -66,12 +66,12 @@ class GeneratorTest {
 		// Preparation
 		Document basic = parser.parseDocument(readSchema(ctx.getResource("/helloworld.graphqls")));
 		Document helloWorld = parser.parseDocument(readSchema(ctx.getResource("/helloworld.graphqls")));
-		generator.documents = new ArrayList<Document>();
-		generator.documents.add(basic);
-		generator.documents.add(helloWorld);
+		documentParser.documents = new ArrayList<Document>();
+		documentParser.documents.add(basic);
+		documentParser.documents.add(helloWorld);
 
 		// Go, go, go
-		int i = generator.generateTargetFiles();
+		int i = documentParser.generateTargetFiles();
 
 		// Verification
 		assertEquals(3, i, "3 classes expected");
@@ -84,7 +84,7 @@ class GeneratorTest {
 		doc = parser.parseDocument(readSchema(resource));
 
 		// Go, go, go
-		int i = generator.generateForOneDocument(doc);
+		int i = documentParser.generateForOneDocument(doc);
 
 		// Verification
 		assertEquals(2, i, "One class is generated");
@@ -97,7 +97,7 @@ class GeneratorTest {
 		doc = parser.parseDocument(readSchema(resource));
 
 		// Go, go, go
-		int i = generator.generateForOneDocument(doc);
+		int i = documentParser.generateForOneDocument(doc);
 
 		// Verification
 		assertEquals(1, i, "Two classes are generated");
@@ -106,7 +106,7 @@ class GeneratorTest {
 	@Test
 	void test_generateForOneDocument_allGrahpQLCases() {
 		// Go, go, go
-		int i = generator.generateForOneDocument(doc);
+		int i = documentParser.generateForOneDocument(doc);
 
 		// Verification
 		assertEquals(6, i, "Six classes are generated");
@@ -123,11 +123,11 @@ class GeneratorTest {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
-		// To be sure to properly find our parsed object type, we empty the generator objects list.
-		generator.objectTypes = new ArrayList<ObjectType>();
+		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
+		documentParser.objectTypes = new ArrayList<ObjectType>();
 
 		// Go, go, go
-		ObjectType type = generator.readObjectType(def);
+		ObjectType type = documentParser.readObjectType(def);
 
 		// Verification
 		assertEquals("allFieldCases", type.getName(), "The name is allFieldCases");
@@ -178,11 +178,11 @@ class GeneratorTest {
 			}
 		} // for
 		assertNotNull(schema, "We should have found our test case (" + objectName + ")");
-		// To be sure to properly find our parsed object type, we empty the generator objects list.
-		generator.objectTypes = new ArrayList<ObjectType>();
+		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
+		documentParser.objectTypes = new ArrayList<ObjectType>();
 
 		// Go, go, go
-		generator.readSchemaDefinition(schema, queries, mutations, subscriptions);
+		documentParser.readSchemaDefinition(schema, queries, mutations, subscriptions);
 
 		// Verification
 		assertEquals(1, queries.size(), "Nb queries");
@@ -206,11 +206,11 @@ class GeneratorTest {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
-		// To be sure to properly find our parsed object type, we empty the generator objects list.
-		generator.queryTypes = new ArrayList<ObjectType>();
+		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
+		documentParser.queryTypes = new ArrayList<ObjectType>();
 
 		// Go, go, go
-		ObjectType type = generator.readObjectType(def);
+		ObjectType type = documentParser.readObjectType(def);
 
 		// Verification
 		assertEquals("MyQueryType", type.getName(), "The name is MyQueryType");

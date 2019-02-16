@@ -48,7 +48,7 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @Component
-public class Generator {
+public class DocumentParser {
 
 	final String DEFAULT_QUERY_NAME = "Query";
 	final String DEFAULT_MUTATION_NAME = "Mutation";
