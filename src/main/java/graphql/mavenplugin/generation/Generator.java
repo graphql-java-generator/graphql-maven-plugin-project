@@ -3,11 +3,12 @@
  */
 package graphql.mavenplugin.generation;
 
+import static java.util.Map.entry;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -101,13 +102,25 @@ public class Generator {
 	 * maps for all scalers, when it is NOT mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, String> nonMandatoryScalars = new HashMap<>();
+	Map<String, String> nonMandatoryScalars = Map.ofEntries(//
+			entry("ID", String.class.getName()), //
+			entry("String", String.class.getName()), //
+			entry("boolean", Boolean.class.getName()), //
+			entry("int", Integer.class.getName()), //
+			entry("float", Float.class.getName()));
 
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, String> mandatoryScalars = new HashMap<>();
+	Map<String, String> mandatoryScalars = Map.ofEntries(//
+			entry("ID", String.class.getName()), //
+			entry("String", String.class.getName()), //
+			entry("boolean", boolean.class.getName()), //
+			entry("int", int.class.getName()), //
+			entry("float", float.class.getName())
+
+	);
 
 	/**
 	 * The main method of the class: it executes the generation of the given documents
@@ -118,22 +131,6 @@ public class Generator {
 	 */
 	public int generateTargetFiles() {
 		return documents.stream().mapToInt(this::generateForOneDocument).sum();
-	}
-
-	public Generator() {
-		// Add of all scalars, when non mandatory
-		nonMandatoryScalars.put("ID", String.class.getName());
-		nonMandatoryScalars.put("String", String.class.getName());
-		nonMandatoryScalars.put("boolean", Boolean.class.getName());
-		nonMandatoryScalars.put("int", Integer.class.getName());
-		nonMandatoryScalars.put("float", Float.class.getName());
-
-		// Add of all scalars, when mandatory
-		mandatoryScalars.put("ID", String.class.getName());
-		mandatoryScalars.put("String", String.class.getName());
-		mandatoryScalars.put("boolean", boolean.class.getName());
-		mandatoryScalars.put("int", int.class.getName());
-		mandatoryScalars.put("float", float.class.getName());
 	}
 
 	/**
