@@ -1,4 +1,4 @@
-package graphql.mavenplugin.generation;
+package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,7 +27,9 @@ import graphql.language.Definition;
 import graphql.language.Document;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.SchemaDefinition;
-import graphql.mavenplugin.SpringConfiguration;
+import graphql.mavenplugin.language.Field;
+import graphql.mavenplugin.language.FieldType;
+import graphql.mavenplugin.language.ObjectType;
 import graphql.parser.Parser;
 
 /**

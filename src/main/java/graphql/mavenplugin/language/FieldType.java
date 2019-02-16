@@ -1,7 +1,7 @@
 /**
  * 
  */
-package graphql.mavenplugin.generation;
+package graphql.mavenplugin.language;
 
 import lombok.Data;
 

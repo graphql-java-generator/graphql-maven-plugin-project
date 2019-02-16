@@ -1,7 +1,7 @@
 /**
  * 
  */
-package graphql.mavenplugin.generation;
+package graphql.mavenplugin;
 
 import static java.util.Map.entry;
 
@@ -34,6 +34,9 @@ import graphql.language.OperationTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
+import graphql.mavenplugin.language.Field;
+import graphql.mavenplugin.language.FieldType;
+import graphql.mavenplugin.language.ObjectType;
 import graphql.parser.Parser;
 
 /**
