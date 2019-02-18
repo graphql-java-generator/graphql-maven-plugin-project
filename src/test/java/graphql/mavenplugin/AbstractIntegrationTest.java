@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import graphql.mavenplugin.test.compiler.CompilationTestHelper;
 import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
+import graphql.mavenplugin.test.helper.MavenTestHelper;
 import graphql.parser.Parser;
 
 @ExtendWith(SpringExtension.class)
@@ -43,6 +44,8 @@ class AbstractIntegrationTest {
 	protected CompilationTestHelper compilationTestHelper;
 	@Autowired
 	protected GraphqlTestHelper graphqlTestHelper;
+	@Autowired
+	protected MavenTestHelper mavenTestHelper;
 
 	@Autowired
 	protected Log log;
@@ -96,6 +99,8 @@ class AbstractIntegrationTest {
 	void testGenerateCode() throws MojoExecutionException, IOException {
 		// Preparation
 		codeGenerator = spy(codeGenerator);
+		mavenTestHelper.deleteDirectoryAndContentIfExists(targetSourceFolder);
+		mavenTestHelper.deleteDirectoryAndContentIfExists(targetClassFolder);
 
 		// Go, go, go
 		codeGenerator.generateCode();

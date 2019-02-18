@@ -2,6 +2,9 @@ package graphql.mavenplugin.test.helper;
 
 import java.io.File;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class MavenTestHelper {
 
 	final static String MODULE_NAME = "graphql-maven-plugin";
