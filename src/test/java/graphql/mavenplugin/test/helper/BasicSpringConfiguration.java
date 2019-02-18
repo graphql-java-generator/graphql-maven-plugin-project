@@ -24,11 +24,11 @@ import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
 @Configuration
 @Import({ JacksonAutoConfiguration.class, GraphQLJavaToolsAutoConfiguration.class })
 @ComponentScan(basePackages = "graphql.mavenplugin.test")
-public class SpringTestConfiguration {
+public class BasicSpringConfiguration {
 
 	public final static String BASE_PACKAGE = "org.graphql.mavenplugin.junittest";
 	public final static String ENCODING = "UTF-8";
-	public final static String TARGET_SOURCE_FOLDER = "target/junittest/generated-src";
+	public final static String TARGET_SOURCE_FOLDER = "target/junittest/basic/generated-src";
 
 	/** Logger pour cette classe */
 	protected Logger logger = LogManager.getLogger();

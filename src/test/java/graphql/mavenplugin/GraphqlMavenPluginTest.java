@@ -28,13 +28,13 @@ import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.TypeName;
-import graphql.mavenplugin.test.helper.SpringTestConfiguration;
+import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
 
 /**
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfiguration.class })
+@ContextConfiguration(classes = { AllGraphQLCasesSpringConfiguration.class })
 class GraphqlMavenPluginTest {
 
 	@Autowired

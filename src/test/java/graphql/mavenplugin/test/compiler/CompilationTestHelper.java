@@ -11,7 +11,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.springframework.stereotype.Component;
 
 import graphql.mavenplugin.GraphqlMavenPlugin;
-import graphql.mavenplugin.test.helper.SpringTestConfiguration;
+import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
 
 @Component
 public class CompilationTestHelper {
@@ -24,7 +24,7 @@ public class CompilationTestHelper {
 	@Resource
 	File targetSourceFolder;
 
-	/** @see SpringTestConfiguration#targetClassFolder(File) */
+	/** @see AllGraphQLCasesSpringConfiguration#targetClassFolder(File) */
 	@Resource
 	File targetClassFolder;
 

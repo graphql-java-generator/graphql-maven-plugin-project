@@ -26,7 +26,7 @@ import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.FieldType;
 import graphql.mavenplugin.language.ObjectType;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
-import graphql.mavenplugin.test.helper.SpringTestConfiguration;
+import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
 import graphql.parser.Parser;
 
 /**
@@ -34,13 +34,15 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfiguration.class })
+@ContextConfiguration(classes = { AllGraphQLCasesSpringConfiguration.class })
 class DocumentParserTest {
 
 	@Autowired
 	private ApplicationContext ctx;
 	@Autowired
 	private GraphqlTestHelper graphqlTestHelper;
+	@Autowired
+	String basePackage;
 
 	private DocumentParser documentParser;
 	private Parser parser;
@@ -50,7 +52,7 @@ class DocumentParserTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		documentParser = new DocumentParser();
-		documentParser.basePackage = SpringTestConfiguration.BASE_PACKAGE;
+		documentParser.basePackage = basePackage;
 		documentParser.log = new SystemStreamLog();
 		parser = new Parser();
 
@@ -155,7 +157,7 @@ class DocumentParserTest {
 		// planets: [String!]!
 		checkField(type, j++, "planets", true, true, true, "String", String.class.getName());
 		// friends: [Human!]
-		checkField(type, j++, "friends", true, false, true, "Human", SpringTestConfiguration.BASE_PACKAGE + ".Human");
+		checkField(type, j++, "friends", true, false, true, "Human", basePackage + ".Human");
 	}
 
 	@Test
@@ -222,32 +224,25 @@ class DocumentParserTest {
 		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
 		//
 		// withoutParameters: [Character]!
-		checkField(type, j, "withoutParameters", true, true, false, "Character",
-				SpringTestConfiguration.BASE_PACKAGE + ".Character");
+		checkField(type, j, "withoutParameters", true, true, false, "Character", basePackage + ".Character");
 		j += 1;
 		// withOneOptionalParam(character: Character): Character
-		checkField(type, j, "withOneOptionalParam", false, false, null, "Character",
-				SpringTestConfiguration.BASE_PACKAGE + ".Character");
-		checkInputParameter(type, j, 0, "character", false, false, null, "Character",
-				SpringTestConfiguration.BASE_PACKAGE + ".Character", null);
+		checkField(type, j, "withOneOptionalParam", false, false, null, "Character", basePackage + ".Character");
+		checkInputParameter(type, j, 0, "character", false, false, null, "Character", basePackage + ".Character", null);
 		j += 1;
 		// withOneMandatoryParam(character: Character!): Character
-		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character",
-				SpringTestConfiguration.BASE_PACKAGE + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character",
-				SpringTestConfiguration.BASE_PACKAGE + ".Character", null);
+		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character", basePackage + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character", basePackage + ".Character", null);
 		j += 1;
 		// withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
 		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
-				SpringTestConfiguration.BASE_PACKAGE + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character",
-				SpringTestConfiguration.BASE_PACKAGE + ".Character", "no one");
+				basePackage + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character", basePackage + ".Character",
+				"no one");
 		j += 1;
 		// withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
-		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid",
-				SpringTestConfiguration.BASE_PACKAGE + ".Droid");
-		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid",
-				SpringTestConfiguration.BASE_PACKAGE + ".Droid", "A droid");
+		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid", basePackage + ".Droid");
+		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid", basePackage + ".Droid", "A droid");
 		checkInputParameter(type, j, 1, "index", false, false, null, "int", "java.lang.Integer",
 				"Not a number, but ok !!");
 		j += 1;
