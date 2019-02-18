@@ -22,10 +22,10 @@ public abstract class ${query.name} {
 #end
 	) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("Executing of query {} with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end", 
-					${field.name}, #foreach ($inputParameter in $field.inputParameters)${field.type.javaClassName} ${field.name}#if($foreach.hasNext), #end#end);
+			logger.trace("Executing of query '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end" 
+					#foreach ($inputParameter in $field.inputParameters), ${field.type.javaClassName} ${field.name}#end);
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing of query {}", ${field.name});
+			logger.debug("Executing of query '${field.name}'");
 		}
 		
 		return do${field.pascalCaseName}(#foreach ($inputParameter in $field.inputParameters)${field.type.javaClassName} ${field.name}#if($foreach.hasNext), #end#end);

@@ -282,7 +282,7 @@ class DocumentParserTest {
 		FieldType fieldType = field.getType();
 		assertEquals(typeName, fieldType.getName(),
 				"type name is " + typeName + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(classname, fieldType.getJavaClassName(),
+		assertEquals(classname, fieldType.getJavaClassFullname(),
 				"Class for field type is " + classname + " (for " + fieldDescForJUnitMessage + ")");
 	}
 
@@ -304,7 +304,7 @@ class DocumentParserTest {
 		FieldType fieldType = inputValue.getType();
 		assertEquals(typeName, fieldType.getName(),
 				"name is " + typeName + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(classname, fieldType.getJavaClassName(),
+		assertEquals(classname, fieldType.getJavaClassFullname(),
 				"Class type is " + classname + " (for " + intputParamDescForJUnitMessage + ")");
 
 		assertEquals(defaultValue, inputValue.getDefaultValue(),
