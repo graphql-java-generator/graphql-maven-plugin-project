@@ -4,14 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +25,8 @@ import graphql.language.SchemaDefinition;
 import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.FieldType;
 import graphql.mavenplugin.language.ObjectType;
+import graphql.mavenplugin.test.helper.GraphqlTestHelper;
+import graphql.mavenplugin.test.helper.SpringTestConfiguration;
 import graphql.parser.Parser;
 
 /**
@@ -37,13 +34,13 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringConfiguration.class })
+@ContextConfiguration(classes = { SpringTestConfiguration.class })
 class DocumentParserTest {
-
-	final static String BASE_PACKAGE = "org.graphql.mavenplugin.test.generated";
 
 	@Autowired
 	private ApplicationContext ctx;
+	@Autowired
+	private GraphqlTestHelper graphqlTestHelper;
 
 	private DocumentParser documentParser;
 	private Parser parser;
@@ -53,21 +50,22 @@ class DocumentParserTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		documentParser = new DocumentParser();
-		documentParser.basePackage = BASE_PACKAGE;
+		documentParser.basePackage = SpringTestConfiguration.BASE_PACKAGE;
 		documentParser.log = new SystemStreamLog();
 		parser = new Parser();
 
 		// By default, we parse the allGraphQLCases, as it contains all the cases managed by the plugin. It's the most
 		// used in the latter unit tests.
 		Resource resource = ctx.getResource("/allGraphQLCases.graphqls");
-		doc = parser.parseDocument(readSchema(resource));
+		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
 	}
 
 	@Test
 	void test_parseDocuments() throws MojoExecutionException {
 		// Preparation
-		Document basic = parser.parseDocument(readSchema(ctx.getResource("/helloworld.graphqls")));
-		Document helloWorld = parser.parseDocument(readSchema(ctx.getResource("/helloworld.graphqls")));
+		Document basic = parser.parseDocument(graphqlTestHelper.readSchema(ctx.getResource("/helloworld.graphqls")));
+		Document helloWorld = parser
+				.parseDocument(graphqlTestHelper.readSchema(ctx.getResource("/helloworld.graphqls")));
 		documentParser.documents = new ArrayList<Document>();
 		documentParser.documents.add(basic);
 		documentParser.documents.add(helloWorld);
@@ -83,7 +81,7 @@ class DocumentParserTest {
 	void test_parseOneDocument_basic() {
 		// Preparation
 		Resource resource = ctx.getResource("/basic.graphqls");
-		doc = parser.parseDocument(readSchema(resource));
+		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
 
 		// Go, go, go
 		int i = documentParser.parseOneDocument(doc);
@@ -96,7 +94,7 @@ class DocumentParserTest {
 	void test_parseOneDocument_helloworld() {
 		// Preparation
 		Resource resource = ctx.getResource("/helloworld.graphqls");
-		doc = parser.parseDocument(readSchema(resource));
+		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
 
 		// Go, go, go
 		int i = documentParser.parseOneDocument(doc);
@@ -157,7 +155,7 @@ class DocumentParserTest {
 		// planets: [String!]!
 		checkField(type, j++, "planets", true, true, true, "String", String.class.getName());
 		// friends: [Human!]
-		checkField(type, j++, "friends", true, false, true, "Human", BASE_PACKAGE + ".Human");
+		checkField(type, j++, "friends", true, false, true, "Human", SpringTestConfiguration.BASE_PACKAGE + ".Human");
 	}
 
 	@Test
@@ -224,26 +222,32 @@ class DocumentParserTest {
 		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
 		//
 		// withoutParameters: [Character]!
-		checkField(type, j, "withoutParameters", true, true, false, "Character", BASE_PACKAGE + ".Character");
+		checkField(type, j, "withoutParameters", true, true, false, "Character",
+				SpringTestConfiguration.BASE_PACKAGE + ".Character");
 		j += 1;
 		// withOneOptionalParam(character: Character): Character
-		checkField(type, j, "withOneOptionalParam", false, false, null, "Character", BASE_PACKAGE + ".Character");
-		checkInputParameter(type, j, 0, "character", false, false, null, "Character", BASE_PACKAGE + ".Character",
-				null);
+		checkField(type, j, "withOneOptionalParam", false, false, null, "Character",
+				SpringTestConfiguration.BASE_PACKAGE + ".Character");
+		checkInputParameter(type, j, 0, "character", false, false, null, "Character",
+				SpringTestConfiguration.BASE_PACKAGE + ".Character", null);
 		j += 1;
 		// withOneMandatoryParam(character: Character!): Character
-		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character", BASE_PACKAGE + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character", BASE_PACKAGE + ".Character", null);
+		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character",
+				SpringTestConfiguration.BASE_PACKAGE + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character",
+				SpringTestConfiguration.BASE_PACKAGE + ".Character", null);
 		j += 1;
 		// withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
 		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
-				BASE_PACKAGE + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character", BASE_PACKAGE + ".Character",
-				"no one");
+				SpringTestConfiguration.BASE_PACKAGE + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character",
+				SpringTestConfiguration.BASE_PACKAGE + ".Character", "no one");
 		j += 1;
 		// withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
-		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid", BASE_PACKAGE + ".Droid");
-		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid", BASE_PACKAGE + ".Droid", "A droid");
+		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid",
+				SpringTestConfiguration.BASE_PACKAGE + ".Droid");
+		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid",
+				SpringTestConfiguration.BASE_PACKAGE + ".Droid", "A droid");
 		checkInputParameter(type, j, 1, "index", false, false, null, "int", "java.lang.Integer",
 				"Not a number, but ok !!");
 		j += 1;
@@ -260,15 +264,6 @@ class DocumentParserTest {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private String readSchema(Resource resource) {
-		StringWriter writer = new StringWriter();
-		try (InputStream inputStream = resource.getInputStream()) {
-			IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw new IllegalStateException("Cannot read graphql schema from resource " + resource, e);
-		}
-		return writer.toString();
-	}
 
 	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
 			String typeName, String classname) {

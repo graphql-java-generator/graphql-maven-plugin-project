@@ -3,12 +3,10 @@
  */
 package graphql.mavenplugin;
 
-import static java.util.Map.entry;
-
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,6 +36,7 @@ import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.FieldType;
 import graphql.mavenplugin.language.ObjectType;
 import graphql.parser.Parser;
+import lombok.Getter;
 
 /**
  * This class generates the Java classes, from the documents. These documents are read from the
@@ -64,17 +63,9 @@ public class DocumentParser {
 	@Resource
 	String basePackage;
 
-	/** @See GraphqlMavenPlugin#encoding */
-	@Resource
-	String encoding;
-
 	/** The maven logging system */
 	@Resource
 	Log log;
-
-	/** @See GraphqlMavenPlugin#outputDirectory */
-	@Resource
-	File outputDirectory;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
@@ -86,44 +77,52 @@ public class DocumentParser {
 	 * All the Query Types for this Document. There may be several ones, if more than one graphqls files have been
 	 * merged
 	 */
+	@Getter
 	List<ObjectType> queryTypes = new ArrayList<>();
 	/**
 	 * All the Subscription Types for this Document. There may be several ones, if more than one graphqls files have
 	 * been merged
 	 */
+	@Getter
 	List<ObjectType> subscriptionTypes = new ArrayList<>();
 	/**
 	 * All the Mutation Types for this Document. There may be several ones, if more than one graphqls files have been
 	 * merged
 	 */
+	@Getter
 	List<ObjectType> mutationTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
+	@Getter
 	List<ObjectType> objectTypes = new ArrayList<ObjectType>();
 
 	/**
 	 * maps for all scalers, when it is NOT mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, String> nonMandatoryScalars = Map.ofEntries(//
-			entry("ID", String.class.getName()), //
-			entry("String", String.class.getName()), //
-			entry("boolean", Boolean.class.getName()), //
-			entry("int", Integer.class.getName()), //
-			entry("float", Float.class.getName()));
+	Map<String, String> nonMandatoryScalars = new HashMap<>();
 
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, String> mandatoryScalars = Map.ofEntries(//
-			entry("ID", String.class.getName()), //
-			entry("String", String.class.getName()), //
-			entry("boolean", boolean.class.getName()), //
-			entry("int", int.class.getName()), //
-			entry("float", float.class.getName())
+	Map<String, String> mandatoryScalars = new HashMap<>();
 
-	);
+	public DocumentParser() {
+		// Add of all scalars, when non mandatory
+		nonMandatoryScalars.put("ID", String.class.getName());
+		nonMandatoryScalars.put("String", String.class.getName());
+		nonMandatoryScalars.put("boolean", Boolean.class.getName());
+		nonMandatoryScalars.put("int", Integer.class.getName());
+		nonMandatoryScalars.put("float", Float.class.getName());
+
+		// Add of all scalars, when mandatory
+		mandatoryScalars.put("ID", String.class.getName());
+		mandatoryScalars.put("String", String.class.getName());
+		mandatoryScalars.put("boolean", boolean.class.getName());
+		mandatoryScalars.put("int", int.class.getName());
+		mandatoryScalars.put("float", float.class.getName());
+	}
 
 	/**
 	 * The main method of the class: it executes the generation of the given documents

@@ -54,4 +54,14 @@ public class Field {
 	/** Contains the default value.. Only used if this field is a list. */
 	private String defaultValue = null;
 
+	/**
+	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case
+	 * string (for instance: ThisIsCamelCase).
+	 * 
+	 * @return
+	 */
+	public String getPascalCaseName() {
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+
 }

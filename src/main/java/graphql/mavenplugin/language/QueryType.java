@@ -11,6 +11,7 @@ import lombok.Data;
  * This class contains all the information about each query defined in the Query graphql type. It is then sent to the
  * Velocity template to generate the Query class.
  * 
+ * @deprecated The correct type to use is the ObjectType
  * @author EtienneSF
  */
 @Data
