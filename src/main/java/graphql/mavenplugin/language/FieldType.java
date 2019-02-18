@@ -17,6 +17,16 @@ public class FieldType {
 	private String name;
 
 	/** The java class full name for this type (e.g.: com.mycompany.graphql.Class) */
-	private String javaClassFullname;
+	private String javaClassFullName;
+
+	/**
+	 * Returns the simple java name for this class (for instance String for java.lang.String)
+	 * 
+	 * @return
+	 */
+	public String getJavaClassSimpleName() {
+		int i = javaClassFullName.lastIndexOf('.');
+		return javaClassFullName.substring(i + 1);
+	}
 
 }

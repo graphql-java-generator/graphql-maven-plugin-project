@@ -16,27 +16,21 @@ public abstract class ${query.name} {
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a logging of the call (if in debug mode), 
 	 * or of the call and its parameters (if in trace mode).
 	 */
-	public ${field.type.javaClassName} ${field.name}(
-#foreach ($inputParameter in $field.inputParameters)
-			${field.type.javaClassName} ${field.name}#if($foreach.hasNext), #end
-#end
-	) {
+	public ${field.type.javaClassSimpleName} ${field.name}(#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.javaClassSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("Executing of query '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end" 
-					#foreach ($inputParameter in $field.inputParameters), ${field.type.javaClassName} ${field.name}#end);
+			logger.trace("Executing of query '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.name}#end);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of query '${field.name}'");
 		}
 		
-		return do${field.pascalCaseName}(#foreach ($inputParameter in $field.inputParameters)${field.type.javaClassName} ${field.name}#if($foreach.hasNext), #end#end);
+		return do${field.pascalCaseName}(#foreach ($inputParameter in $field.inputParameters)${inputParameter.name}#if($foreach.hasNext), #end#end);
 	}
 
 	/**
 	 * This method is called when this query is called. The implementation code of the server part should create a class extending this query
 	 * {@link ${query.name}), and implement the actual query.
 	 */
-	abstract protected ${field.type.javaClassName} do${field.pascalCaseName}
-		(#foreach ($inputParameter in $field.inputParameters)${field.type.javaClassName} ${field.name}#if($foreach.hasNext), #end#end);
+	abstract protected ${field.type.javaClassSimpleName} do${field.pascalCaseName}(#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.javaClassSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end);
 	
 #end
 }

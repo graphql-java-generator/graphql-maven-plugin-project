@@ -10,15 +10,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class ${object.name} {
 
 #foreach ($field in $object.fields)
-	${field.type.javaClassName} ${field.name};
+	${field.type.javaClassSimpleName} ${field.name};
 #end
 
 #foreach ($field in $object.fields)
-	public void set${field.pascalCaseName}(${field.type.javaClassName} ${field.name}) {
+	public void set${field.pascalCaseName}(${field.type.javaClassSimpleName} ${field.name}) {
 		this.${field.name} = ${field.name};
 	}
 
-	public ${field.type.javaClassName} get${field.pascalCaseName}() {
+	public ${field.type.javaClassSimpleName} get${field.pascalCaseName}() {
 		return ${field.name};
 	}
 	

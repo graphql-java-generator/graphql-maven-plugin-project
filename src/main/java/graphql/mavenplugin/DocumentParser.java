@@ -329,9 +329,9 @@ public class DocumentParser {
 		// For Scalar types, the actual Java type depends on whether the item is mandatory or not (int is mandatory
 		// whereas Integer can be null)
 		if (field.isList())
-			type.setJavaClassFullname(getFieldTypeClassFrom(nameOfTheType, field.isItemMandatory()));
+			type.setJavaClassFullName(getFieldTypeClassFrom(nameOfTheType, field.isItemMandatory()));
 		else
-			type.setJavaClassFullname(getFieldTypeClassFrom(nameOfTheType, field.isMandatory()));
+			type.setJavaClassFullName(getFieldTypeClassFrom(nameOfTheType, field.isMandatory()));
 
 		// For InputValueDefinition, we may have a defaut value
 		if (fieldDef instanceof InputValueDefinition) {
