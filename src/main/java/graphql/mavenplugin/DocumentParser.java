@@ -21,6 +21,7 @@ import graphql.language.AbstractNode;
 import graphql.language.Definition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
+import graphql.language.EnumValue;
 import graphql.language.EnumValueDefinition;
 import graphql.language.FieldDefinition;
 import graphql.language.InputValueDefinition;
@@ -177,9 +178,9 @@ public class DocumentParser {
 				String name = ((ObjectTypeDefinition) node).getName();
 				if (queryObjectNames.contains(name) || DEFAULT_QUERY_NAME.equals(name)) {
 					queryTypes.add(readObjectType((ObjectTypeDefinition) node));
-				} else if (queryObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
+				} else if (mutationObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
 					mutationTypes.add(readObjectType((ObjectTypeDefinition) node));
-				} else if (queryObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
+				} else if (subscriptionObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
 					subscriptionTypes.add(readObjectType((ObjectTypeDefinition) node));
 				} else {
 					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
@@ -247,6 +248,8 @@ public class DocumentParser {
 		for (Type<?> type : node.getImplements()) {
 			if (type instanceof TypeName) {
 				objectType.getImplementz().add(((TypeName) type).getName());
+			} else if (type instanceof EnumValue) {
+				objectType.getImplementz().add(((EnumValue) type).getName());
 			} else {
 				throw new RuntimeException("Non managed object type '" + type.getClass().getName()
 						+ "' when listing implementations for the object '" + node.getName() + "'");
@@ -396,6 +399,8 @@ public class DocumentParser {
 			if (defaultValue != null) {
 				if (defaultValue instanceof StringValue) {
 					field.setDefaultValue(((StringValue) defaultValue).getValue());
+				} else if (defaultValue instanceof EnumValue) {
+					field.setDefaultValue(((EnumValue) defaultValue).getName());
 				} else {
 					throw new RuntimeException("DefaultValue of type " + defaultValue.getClass().getName()
 							+ " is not managed (for field " + field.getName() + ")");

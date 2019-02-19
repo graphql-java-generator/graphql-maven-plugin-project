@@ -14,6 +14,15 @@ type MyQueryType {
     #withEnum(episode: Episode!): Character
 }
 
+type AnotherMutationType {
+	createHuman(human: Human!): Human!
+}
+
+type TheSubscriptionType {
+	# Will be notified for each Human added to this Episode
+	subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
+}
+
 
 enum Episode {
     NEWHOPE

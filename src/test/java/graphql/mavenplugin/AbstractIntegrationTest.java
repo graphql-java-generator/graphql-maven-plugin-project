@@ -1,8 +1,7 @@
 package graphql.mavenplugin;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,24 +69,6 @@ class AbstractIntegrationTest {
 		this.graphqlsResourceLocation = graphqlsResourceLocation;
 	}
 
-	@BeforeEach
-	void setUp() throws Exception {
-		documentParser = new DocumentParser();
-		documentParser.basePackage = basePackage;
-		documentParser.log = new SystemStreamLog();
-		Resource resource = ctx.getResource(graphqlsResourceLocation);
-		documentParser.documents = new ArrayList<>();
-		documentParser.documents.add(new Parser().parseDocument(graphqlTestHelper.readSchema(resource)));
-		documentParser.parseDocuments();
-
-		codeGenerator = new CodeGenerator();
-		codeGenerator.documentParser = documentParser;
-		codeGenerator.basePackage = basePackage;
-		codeGenerator.log = documentParser.log;
-		codeGenerator.encoding = encoding;
-		codeGenerator.targetSourceFolder = targetSourceFolder;
-	}
-
 	/**
 	 * This test will be executed for each concrete subclass of this class
 	 * 
@@ -98,18 +78,30 @@ class AbstractIntegrationTest {
 	@Test
 	void testGenerateCode() throws MojoExecutionException, IOException {
 		// Preparation
+		documentParser = new DocumentParser();
+		documentParser.basePackage = basePackage;
+		documentParser.log = new SystemStreamLog();
+		Resource resource = ctx.getResource(graphqlsResourceLocation);
+		documentParser.documents = new ArrayList<>();
+		documentParser.documents.add(new Parser().parseDocument(graphqlTestHelper.readSchema(resource)));
+		int i = documentParser.parseDocuments();
+
+		codeGenerator = new CodeGenerator();
+		codeGenerator.documentParser = documentParser;
+		codeGenerator.basePackage = basePackage;
+		codeGenerator.log = documentParser.log;
+		codeGenerator.encoding = encoding;
+		codeGenerator.targetSourceFolder = targetSourceFolder;
+
 		codeGenerator = spy(codeGenerator);
 		mavenTestHelper.deleteDirectoryAndContentIfExists(targetSourceFolder);
 		mavenTestHelper.deleteDirectoryAndContentIfExists(targetClassFolder);
 
 		// Go, go, go
-		codeGenerator.generateCode();
+		int verif = codeGenerator.generateCode();
 
 		// Verification
-		verify(codeGenerator, times(1)).generateEnumTypes();
-		verify(codeGenerator, times(1)).generateObjectTypes();
-		verify(codeGenerator, times(1)).generateInterfaceTypes();
-		verify(codeGenerator, times(1)).generateQueryTypes();
+		assertEquals(i, verif, "Nb generated classes");
 
 		compilationTestHelper.checkCompleteCompilationStatus(null);
 	}

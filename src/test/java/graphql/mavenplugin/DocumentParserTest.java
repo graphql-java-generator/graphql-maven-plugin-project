@@ -2,7 +2,6 @@ package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +112,13 @@ class DocumentParserTest {
 		int i = documentParser.parseOneDocument(doc);
 
 		// Verification
-		assertEquals(8, i, "Six classes are generated");
+		assertEquals(10, i, "Nb classes are generated");
+		assertEquals(3, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(3, documentParser.interfaceTypes.size(), "Nb interfaces");
+		assertEquals(1, documentParser.enumTypes.size(), "Nb enums");
+		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
+		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
+		assertEquals(1, documentParser.subscriptionTypes.size(), "Nb subscriptions");
 	}
 
 	@Test
@@ -323,12 +328,68 @@ class DocumentParserTest {
 
 	@Test
 	void test_addObjectType_MutationType() {
-		fail("not tested");
+		// Preparation
+		String objectName = "AnotherMutationType";
+		ObjectTypeDefinition def = null;
+		for (Definition<?> node : doc.getDefinitions()) {
+			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
+				def = (ObjectTypeDefinition) node;
+			}
+		} // for
+		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
+		documentParser.mutationTypes = new ArrayList<ObjectType>();
+
+		// Go, go, go
+		ObjectType type = documentParser.readObjectType(def);
+
+		// Verification
+		assertEquals(objectName, type.getName(), "The name is " + objectName);
+		assertEquals(1, type.getFields().size(), "Number of fields");
+
+		int j = 0;
+		// Each mutation is actually a field. So we use :
+		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// checkInputParameter(type, j, numParam, name, list, mandatory, itemMandatory, typeName, classname,
+		// defaultValue)
+		//
+		// createHuman(human: Human!): Human!
+		checkField(type, j, "createHuman", false, true, null, "Human", basePackage + ".Human");
+		checkInputParameter(type, j, 0, "human", false, true, null, "Human", basePackage + ".Human", null);
+		j += 1;
 	}
 
 	@Test
 	void test_addObjectType_SubscriptionType() {
-		fail("not tested");
+		// Preparation
+		String objectName = "TheSubscriptionType";
+		ObjectTypeDefinition def = null;
+		for (Definition<?> node : doc.getDefinitions()) {
+			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
+				def = (ObjectTypeDefinition) node;
+			}
+		} // for
+		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
+		documentParser.subscriptionTypes = new ArrayList<ObjectType>();
+
+		// Go, go, go
+		ObjectType type = documentParser.readObjectType(def);
+
+		// Verification
+		assertEquals(objectName, type.getName(), "The name is " + objectName);
+		assertEquals(1, type.getFields().size(), "Number of fields");
+
+		int j = 0;
+		// Each mutation is actually a field. So we use :
+		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// checkInputParameter(type, j, numParam, name, list, mandatory, itemMandatory, typeName, classname,
+		// defaultValue)
+		//
+		// subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
+		checkField(type, j, "subscribeNewHumanForEpisode", false, true, null, "Human", basePackage + ".Human");
+		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", basePackage + ".Episode", "NEWHOPE");
+		j += 1;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
