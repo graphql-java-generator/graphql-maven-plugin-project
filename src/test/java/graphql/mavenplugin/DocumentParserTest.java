@@ -190,7 +190,7 @@ class DocumentParserTest {
 		assertEquals("Commented", type.getImplementz().get(1), "Second implementation");
 
 		// Field
-		assertEquals(6, type.getFields().size(), "Number of fields");
+		assertEquals(7, type.getFields().size(), "Number of fields");
 
 		int j = 0; // The first field is 0, see ++j below
 
@@ -201,6 +201,8 @@ class DocumentParserTest {
 		checkField(type, j++, "name", false, true, null, "String", String.class.getName());
 		// friends: [Character]
 		checkField(type, j++, "friends", true, false, false, "Character", basePackage + ".Character");
+		// nbComments: int
+		checkField(type, j++, "nbComments", false, false, null, "int", Integer.class.getName());
 		// comments: [String]
 		checkField(type, j++, "comments", true, false, false, "String", String.class.getName());
 		// appearsIn: [Episode]!
