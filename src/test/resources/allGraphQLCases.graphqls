@@ -21,11 +21,20 @@ enum Episode {
     JEDI
 }
 
+interface WithID {
+    id: ID!
+}
+
 interface Character {
     id: ID!
     name: String!
     friends: [Character]
     appearsIn: [Episode]!
+}
+
+interface Commented {
+	nbComments: int
+    comments: [String]
 }
 
 type allFieldCases {
@@ -41,10 +50,12 @@ type allFieldCases {
     friends: [Human!]
 }
 
-type Human implements Character {
+type Human implements Character, Commented {
     id: ID!
     name: String!
     friends: [Character]
+	nbComments: int
+    comments: [String]
     appearsIn: [Episode]!
     homePlanet: String
 }

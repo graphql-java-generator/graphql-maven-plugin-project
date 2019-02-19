@@ -33,9 +33,8 @@ import graphql.mavenplugin.language.ObjectType;
 public class CodeGenerator {
 
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY = "templates/query_type.vm.java";
-
 	private static final String PATH_VELOCITY_TEMPLATE_OBJECT = "templates/object_type.vm.java";
-
+	private static final String PATH_VELOCITY_TEMPLATE_INTERFACE = "templates/interface_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";
 
 	@Resource
@@ -76,6 +75,7 @@ public class CodeGenerator {
 	public void generateCode() throws MojoExecutionException {
 		generateQueryTypes();
 		generateObjectTypes();
+		generateInterfaceTypes();
 		generateEnumTypes();
 	}
 
@@ -94,8 +94,23 @@ public class CodeGenerator {
 		for (ObjectType object : documentParser.getObjectTypes()) {
 			context.put("object", object);
 			File file = getJavaFile(object.getName());
-			log.debug("Generating query '" + object + "' into " + file.getAbsolutePath());
+			if (log.isDebugEnabled()) {
+				log.debug("Generating object '" + object.getName() + "' into " + file.getAbsolutePath());
+			}
 			generateTargetFile(PATH_VELOCITY_TEMPLATE_OBJECT, context, file);
+		} // for
+	}
+
+	void generateInterfaceTypes() throws MojoExecutionException {
+		VelocityContext context = new VelocityContext();
+		// Let's go through all objects and interfaces
+		for (ObjectType interfaceType : documentParser.getInterfaceTypes()) {
+			context.put("interface", interfaceType);
+			File file = getJavaFile(interfaceType.getName());
+			if (log.isDebugEnabled()) {
+				log.debug("Generating interface '" + interfaceType.getName() + "' into " + file.getAbsolutePath());
+			}
+			generateTargetFile(PATH_VELOCITY_TEMPLATE_INTERFACE, context, file);
 		} // for
 	}
 
@@ -120,8 +135,7 @@ public class CodeGenerator {
 	 *            The target file
 	 * @throws IOException
 	 */
-	void generateTargetFile(String templateFilename, VelocityContext context, File targetFile)
-			throws MojoExecutionException {
+	void generateTargetFile(String templateFilename, VelocityContext context, File targetFile) throws RuntimeException {
 		String msg = "Writing " + targetFile.getAbsolutePath();
 		try {
 			log.debug(msg);
@@ -141,7 +155,7 @@ public class CodeGenerator {
 			writer.close();
 		} catch (ResourceNotFoundException | ParseErrorException | TemplateInitException | MethodInvocationException
 				| IOException e) {
-			throw new MojoExecutionException("Error when " + msg, e);
+			throw new RuntimeException("Error when " + msg, e);
 		}
 	}
 

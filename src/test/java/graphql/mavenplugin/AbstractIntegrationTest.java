@@ -108,6 +108,7 @@ class AbstractIntegrationTest {
 		// Verification
 		verify(codeGenerator, times(1)).generateEnumTypes();
 		verify(codeGenerator, times(1)).generateObjectTypes();
+		verify(codeGenerator, times(1)).generateInterfaceTypes();
 		verify(codeGenerator, times(1)).generateQueryTypes();
 
 		compilationTestHelper.checkCompleteCompilationStatus(null);

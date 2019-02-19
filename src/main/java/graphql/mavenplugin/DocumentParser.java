@@ -32,6 +32,7 @@ import graphql.language.ObjectTypeDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
+import graphql.language.Type;
 import graphql.language.TypeName;
 import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
@@ -97,6 +98,10 @@ public class DocumentParser {
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
 	List<ObjectType> objectTypes = new ArrayList<>();
+
+	/** All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents */
+	@Getter
+	List<ObjectType> interfaceTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
@@ -182,7 +187,7 @@ public class DocumentParser {
 			} else if (node instanceof EnumTypeDefinition) {
 				enumTypes.add(readEnumType((EnumTypeDefinition) node));
 			} else if (node instanceof InterfaceTypeDefinition) {
-				log.warn("InterfaceTypeDefinition not managed");
+				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
 			} else if (node instanceof SchemaDefinition) {
 				// No action, we already parsed it
 			} else {
@@ -191,7 +196,7 @@ public class DocumentParser {
 		} // for
 
 		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size()
-				+ enumTypes.size();
+				+ enumTypes.size() + interfaceTypes.size();
 	}
 
 	/**
@@ -223,7 +228,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Add an object type to the object type list
+	 * Read an object type from it graphql definition
 	 * 
 	 * @param node
 	 * @return
@@ -238,7 +243,37 @@ public class DocumentParser {
 		// Let's read all its fields
 		objectType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
 
+		// Let's read all the other object types that this one implements
+		for (Type<?> type : node.getImplements()) {
+			if (type instanceof TypeName) {
+				objectType.getImplementz().add(((TypeName) type).getName());
+			} else {
+				throw new RuntimeException("Non managed object type '" + type.getClass().getName()
+						+ "' when listing implementations for the object '" + node.getName() + "'");
+			}
+		} // for
+
 		return objectType;
+	}
+
+	/**
+	 * Read an object type from it graphql definition
+	 * 
+	 * @param node
+	 * @return
+	 */
+	ObjectType readInterfaceType(InterfaceTypeDefinition node) {
+		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
+
+		ObjectType interfaceType = new ObjectType();
+
+		interfaceType.setName(node.getName());
+		interfaceType.setInterfaceType(true);
+
+		// Let's read all its fields
+		interfaceType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
+
+		return interfaceType;
 	}
 
 	/**

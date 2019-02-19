@@ -113,7 +113,7 @@ class DocumentParserTest {
 		int i = documentParser.parseOneDocument(doc);
 
 		// Verification
-		assertEquals(6, i, "Six classes are generated");
+		assertEquals(8, i, "Six classes are generated");
 	}
 
 	@Test
@@ -134,7 +134,8 @@ class DocumentParserTest {
 		ObjectType type = documentParser.readObjectType(def);
 
 		// Verification
-		assertEquals("allFieldCases", type.getName(), "The name is allFieldCases");
+		assertEquals(objectName, type.getName(), "Checks the name");
+		assertEquals(0, type.getImplementz().size(), "No implementation");
 		assertEquals(10, type.getFields().size(), "Number of fields");
 
 		int j = 0; // The first field is 0, see ++j below
@@ -164,7 +165,48 @@ class DocumentParserTest {
 
 	@Test
 	void test_addObjectType_withImplement() {
-		fail("not yet implemented");
+		// Preparation
+		String objectName = "Human";
+		ObjectTypeDefinition def = null;
+		for (Definition<?> node : doc.getDefinitions()) {
+			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
+				def = (ObjectTypeDefinition) node;
+			}
+		} // for
+		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
+		documentParser.objectTypes = new ArrayList<ObjectType>();
+
+		// Go, go, go
+		ObjectType type = documentParser.readObjectType(def);
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Verification
+		assertEquals(objectName, type.getName(), "Checks the name");
+
+		// Implementation
+		assertEquals(2, type.getImplementz().size(), "Two implementations");
+		assertEquals("Character", type.getImplementz().get(0), "First implementation");
+		assertEquals("Commented", type.getImplementz().get(1), "Second implementation");
+
+		// Field
+		assertEquals(6, type.getFields().size(), "Number of fields");
+
+		int j = 0; // The first field is 0, see ++j below
+
+		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// id: ID!
+		checkField(type, j++, "id", false, true, null, "ID", String.class.getName());
+		// name: String!
+		checkField(type, j++, "name", false, true, null, "String", String.class.getName());
+		// friends: [Character]
+		checkField(type, j++, "friends", true, false, false, "Character", basePackage + ".Character");
+		// comments: [String]
+		checkField(type, j++, "comments", true, false, false, "String", String.class.getName());
+		// appearsIn: [Episode]!
+		checkField(type, j++, "appearsIn", true, true, false, "Episode", basePackage + ".Episode");
+		// homePlanet: String
+		checkField(type, j++, "homePlanet", false, false, null, "String", String.class.getName());
 	}
 
 	@Test
@@ -292,7 +334,7 @@ class DocumentParserTest {
 	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
 			String typeName, String classname) {
 		Field field = type.getFields().get(j);
-		String fieldDescForJUnitMessage = "Field n°" + j;
+		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
 
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(list, field.isList(), "field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
