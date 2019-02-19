@@ -3,11 +3,11 @@ schema {
 }
 
 type QueryType {
-    human(id : String) : Human
+    hero(id : String) : Hero
 }
 
 
-type Human {
+type Hero {
     id: ID!
     name: String!
     forname: String

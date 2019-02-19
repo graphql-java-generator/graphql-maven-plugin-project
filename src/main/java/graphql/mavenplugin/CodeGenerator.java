@@ -21,6 +21,7 @@ import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.ObjectType;
 
 /**
@@ -34,6 +35,8 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY = "templates/query_type.vm.java";
 
 	private static final String PATH_VELOCITY_TEMPLATE_OBJECT = "templates/object_type.vm.java";
+
+	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";
 
 	@Resource
 	DocumentParser documentParser;
@@ -96,9 +99,14 @@ public class CodeGenerator {
 		} // for
 	}
 
-	void generateEnumTypes() {
-		// TODO Auto-generated method stub
-
+	void generateEnumTypes() throws MojoExecutionException {
+		VelocityContext context = new VelocityContext();
+		for (EnumType enumType : documentParser.getEnumTypes()) {
+			context.put("enum", enumType);
+			File file = getJavaFile(enumType.getName());
+			log.debug("Generating enum '" + enumType + "' into " + file.getAbsolutePath());
+			generateTargetFile(PATH_VELOCITY_TEMPLATE_ENUM, context, file);
+		} // for
 	}
 
 	/**

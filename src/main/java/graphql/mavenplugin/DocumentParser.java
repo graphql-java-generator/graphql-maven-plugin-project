@@ -21,6 +21,7 @@ import graphql.language.AbstractNode;
 import graphql.language.Definition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
+import graphql.language.EnumValueDefinition;
 import graphql.language.FieldDefinition;
 import graphql.language.InputValueDefinition;
 import graphql.language.InterfaceTypeDefinition;
@@ -32,6 +33,7 @@ import graphql.language.OperationTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
+import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.FieldType;
 import graphql.mavenplugin.language.ObjectType;
@@ -94,7 +96,11 @@ public class DocumentParser {
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
-	List<ObjectType> objectTypes = new ArrayList<ObjectType>();
+	List<ObjectType> objectTypes = new ArrayList<>();
+
+	/** All the {@link ObjectType} which have been read during the reading of the documents */
+	@Getter
+	List<EnumType> enumTypes = new ArrayList<>();
 
 	/**
 	 * maps for all scalers, when it is NOT mandatory. The key is the type name. The value is the class to use in the
@@ -174,7 +180,7 @@ public class DocumentParser {
 					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
 				}
 			} else if (node instanceof EnumTypeDefinition) {
-				log.warn("EnumTypeDefinition not managed");
+				enumTypes.add(readEnumType((EnumTypeDefinition) node));
 			} else if (node instanceof InterfaceTypeDefinition) {
 				log.warn("InterfaceTypeDefinition not managed");
 			} else if (node instanceof SchemaDefinition) {
@@ -184,7 +190,8 @@ public class DocumentParser {
 			}
 		} // for
 
-		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size();
+		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size()
+				+ enumTypes.size();
 	}
 
 	/**
@@ -232,6 +239,21 @@ public class DocumentParser {
 		objectType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
 
 		return objectType;
+	}
+
+	/**
+	 * Reads an enum definition, and create the relevant {@link EnumType}
+	 * 
+	 * @param node
+	 * @return
+	 */
+	EnumType readEnumType(EnumTypeDefinition node) {
+		EnumType enumType = new EnumType();
+		enumType.setName(node.getName());
+		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
+			enumType.getValues().add(enumValDef.getName());
+		} // for
+		return enumType;
 	}
 
 	/**

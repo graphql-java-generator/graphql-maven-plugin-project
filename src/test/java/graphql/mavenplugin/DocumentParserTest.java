@@ -20,13 +20,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import graphql.language.Definition;
 import graphql.language.Document;
+import graphql.language.EnumTypeDefinition;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.SchemaDefinition;
+import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.FieldType;
 import graphql.mavenplugin.language.ObjectType;
-import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
+import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.parser.Parser;
 
 /**
@@ -198,7 +200,7 @@ class DocumentParserTest {
 	}
 
 	@Test
-	void test_addObjectType_QueryType() {
+	void test_readObjectType_QueryType() {
 		// Preparation
 		String objectName = "MyQueryType";
 		ObjectTypeDefinition def = null;
@@ -246,6 +248,33 @@ class DocumentParserTest {
 		checkInputParameter(type, j, 1, "index", false, false, null, "int", "java.lang.Integer",
 				"Not a number, but ok !!");
 		j += 1;
+	}
+
+	@Test
+	void test_readEnumType() {
+		// Preparation
+		String objectName = "Episode";
+		EnumTypeDefinition def = null;
+		for (Definition<?> node : doc.getDefinitions()) {
+			if (node instanceof EnumTypeDefinition && ((EnumTypeDefinition) node).getName().equals(objectName)) {
+				def = (EnumTypeDefinition) node;
+			}
+		} // for
+		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
+		documentParser.queryTypes = new ArrayList<ObjectType>();
+
+		// Go, go, go
+		EnumType type = documentParser.readEnumType(def);
+
+		// Verification
+		assertEquals(objectName, type.getName(), "The name is " + objectName);
+		assertEquals(3, type.getValues().size(), "Number of values");
+
+		int i = 0;
+		assertEquals("NEWHOPE", type.getValues().get(i++));
+		assertEquals("EMPIRE", type.getValues().get(i++));
+		assertEquals("JEDI", type.getValues().get(i++));
 	}
 
 	@Test

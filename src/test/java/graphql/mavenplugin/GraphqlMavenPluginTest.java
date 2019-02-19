@@ -1,10 +1,8 @@
 package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.List;
@@ -116,14 +114,7 @@ class GraphqlMavenPluginTest {
 
 		// Verification
 		assertNotNull(documents, "documents should be returned");
-		assertNotEquals(documents.size(), 0, "documents should not be empty");
-
-		fail("Not finished");
-	}
-
-	@Test
-	void testDocuments_starWarsSchema() {
-		fail("Not yet implemented");
+		assertEquals(1, documents.size(), "There should be one document");
 	}
 
 }
