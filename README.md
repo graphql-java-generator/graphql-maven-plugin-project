@@ -2,6 +2,8 @@
 
 This projext is a maven plugin, which makes it possible to work with graphQL in a schema first approach.
 
+It's a work in progress. But the generated code is already ready to use.
+
 ### Note for contributors
 
 This projet is a standard maven plugin project. 
