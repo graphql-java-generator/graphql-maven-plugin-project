@@ -93,13 +93,16 @@ class CodeGeneratorTest {
 		verify(codeGenerator.velocityEngine, times(2)).getTemplate(argument.capture());
 		assertEquals(templateFilename, argument.getValue(), "checks the parameter for getTemplate");
 
-		// Let's check the velocity context sent to the template ... THIS IS IMPORTANT !
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Let's check the velocity context sent to the template ... THIS IS IMPORTANT! DO NOT BREAK IT!
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
 		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
 		assertEquals(basePackage, argumentContext.getValue().get("package"), "Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 
 	@Test
