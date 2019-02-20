@@ -5,6 +5,8 @@ package graphql.mavenplugin.test.helper;
 
 import java.io.File;
 
+import javax.annotation.Resource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.plugin.logging.Log;
@@ -28,10 +30,12 @@ public class AllGraphQLCasesSpringConfiguration {
 
 	private final static String BASE_PACKAGE = "org.graphql.mavenplugin.junittest";
 	private final static String ENCODING = "UTF-8";
-	private final static String TARGET_SOURCE_FOLDER = "target/junittest/allGraphQLCases/generated-src";
 
 	/** Logger pour cette classe */
 	protected Logger logger = LogManager.getLogger();
+
+	@Resource
+	MavenTestHelper mavenTestHelper;
 
 	@Bean
 	String basePackage() {
@@ -50,7 +54,7 @@ public class AllGraphQLCasesSpringConfiguration {
 
 	@Bean
 	File targetSourceFolder() {
-		return new File(MavenTestHelper.getModulePathFile(), TARGET_SOURCE_FOLDER);
+		return mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
 	}
 
 	/**

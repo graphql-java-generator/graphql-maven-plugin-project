@@ -102,16 +102,16 @@ public class CodeGenerator {
 		int i = 0;
 		for (Object object : objects) {
 			i += 1;
-			VelocityContext context = new VelocityContext();
 			File targetFile = getJavaFile((String) exec("getName", object));
 			String msg = "Generating " + type + " '" + object + "' into " + targetFile.getAbsolutePath();
-			context.put("package", basePackage);
-			context.put("object", object);
-			context.put("type", type);
-			log.debug(msg);
-			Template template = velocityEngine.getTemplate(templateFilename);
-
 			try {
+				VelocityContext context = new VelocityContext();
+				context.put("package", basePackage);
+				context.put("object", object);
+				context.put("type", type);
+				log.debug(msg);
+				Template template = velocityEngine.getTemplate(templateFilename);
+
 				targetFile.getParentFile().mkdirs();
 				FileWriter writer = new FileWriter(targetFile);
 				template.merge(context, writer);

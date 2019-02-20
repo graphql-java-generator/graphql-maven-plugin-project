@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class MavenTestHelper {
 
 	final static String MODULE_NAME = "graphql-maven-plugin";
+	final static String TARGET_SOURCE_FOLDER = "/target/junittest/UNIT_TEST_NAME/generated-src";
 
 	/**
 	 * Returns the root path for this module. The issue here, is that the current path is the root path for this module,
@@ -16,7 +17,7 @@ public class MavenTestHelper {
 	 * 
 	 * @return
 	 */
-	public static File getModulePathFile() {
+	public File getModulePathFile() {
 		String path = new File(".").getAbsolutePath();
 		File f = null;
 		if (path.contains(MODULE_NAME)) {
@@ -25,6 +26,18 @@ public class MavenTestHelper {
 			f = new File(path, MODULE_NAME);
 		}
 		return f;
+	}
+
+	/**
+	 * Get the folder where the source should be generated, calculated from the given test name. <BR/>
+	 * For instance, for test 'Basic', the folder would be something like
+	 * File("${project_folder}/target/junittest/basic/generated-src")
+	 * 
+	 * @param unitTestName
+	 * @return
+	 */
+	public File getTargetSourceFolder(String unitTestName) {
+		return new File(getModulePathFile(), TARGET_SOURCE_FOLDER.replace("UNIT_TEST_NAME", unitTestName));
 	}
 
 	/**
