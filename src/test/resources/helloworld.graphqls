@@ -1,0 +1,5 @@
+type Query {
+    helloWorld: String
+    echoWithName(string: String!): String
+    echoWithOptionalName(string: String): String
+}
