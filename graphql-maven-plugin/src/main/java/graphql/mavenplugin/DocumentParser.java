@@ -245,7 +245,7 @@ public class DocumentParser {
 		objectType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
 
 		// Let's read all the other object types that this one implements
-		for (Type<?> type : node.getImplements()) {
+		for (Type type : node.getImplements()) {
 			if (type instanceof TypeName) {
 				objectType.getImplementz().add(((TypeName) type).getName());
 			} else if (type instanceof EnumValue) {
