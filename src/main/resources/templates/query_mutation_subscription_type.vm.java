@@ -1,5 +1,5 @@
 package ${package};
-
+#macro(inputParams)#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.javaClassSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end#end
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +16,7 @@ public abstract class ${object.name} {
 	 * This method is expected by the graphql-java framework. It will be called when this ${type} is called. It offers a logging of the call (if in debug mode), 
 	 * or of the call and its parameters (if in trace mode).
 	 */
-	public ${field.type.javaClassSimpleName} ${field.name}(#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.javaClassSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end) {
+	public ${field.type.javaClassSimpleName} ${field.name}(#inputParams()) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of $type '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.name}#end);
 		} else if (logger.isDebugEnabled()) {
