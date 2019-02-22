@@ -13,8 +13,22 @@
 		This maven pom project embeds the various samples for the graphql-maven-plugin. 
 		These samples act both as samples, and integration tests, to validate the behavior of the plugin in different configurations.
 	</description>
+
 	<modules>
 		<module>graphql-maven-plugin-samples-StarWars-client</module>
 		<module>graphql-maven-plugin-samples-StarWars-server</module>
 	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.graphql-java</groupId>
+					<artifactId>graphql-maven-plugin-samples</artifactId>
+					<version>${project.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
 </project>
