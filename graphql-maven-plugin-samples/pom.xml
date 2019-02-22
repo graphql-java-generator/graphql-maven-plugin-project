@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.graphql-java</groupId>
+		<artifactId>graphql-maven-plugin-project</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>graphql-maven-plugin-samples</artifactId>
+	<packaging>pom</packaging>
+	<description>
+		This maven pom project embeds the various samples for the graphql-maven-plugin. 
+		These samples act both as samples, and integration tests, to validate the behavior of the plugin in different configurations.
+	</description>
+	<modules>
+		<module>graphql-maven-plugin-samples-StarWars-client</module>
+		<module>graphql-maven-plugin-samples-StarWars-server</module>
+	</modules>
+</project>

@@ -12,6 +12,7 @@
 
 	<modules>
 		<module>graphql-maven-plugin</module>
+		<module>graphql-maven-plugin-samples</module>
 	</modules>
 
 	<properties>
