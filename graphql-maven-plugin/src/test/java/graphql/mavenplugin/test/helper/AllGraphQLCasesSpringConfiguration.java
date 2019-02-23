@@ -54,7 +54,14 @@ public class AllGraphQLCasesSpringConfiguration {
 
 	@Bean
 	File targetSourceFolder() {
-		return mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
+		// Get the folder for this class. If the class name contains a $, like
+		// AllGraphQLCasesSpringConfiguration$$EnhancerBySpringCGLIB$$d8ce51ed, then it's a Spring proxy. We keep only
+		// what's before the '$', which is the significant part.
+		String classname = this.getClass().getSimpleName();
+		if (classname.contains("$")) {
+			classname = classname.substring(0, classname.indexOf('$'));
+		}
+		return mavenTestHelper.getTargetSourceFolder(classname);
 	}
 
 	/**
