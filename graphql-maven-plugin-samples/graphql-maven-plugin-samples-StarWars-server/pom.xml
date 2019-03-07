@@ -23,6 +23,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<targetSourceFolder>target/generated-sources/graphql-server</targetSourceFolder>
+				</configuration>
 			</plugin>
 			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
 				<executions> <execution> <id>add-source</id> <phase>generate-sources</phase> <goals> <goal>add-source</goal> </goals> <configuration> 

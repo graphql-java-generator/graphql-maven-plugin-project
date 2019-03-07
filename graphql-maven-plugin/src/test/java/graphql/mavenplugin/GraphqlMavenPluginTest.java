@@ -32,9 +32,6 @@ import graphql.mavenplugin_notscannedbyspring.HelloWorldSpringConfiguration;
 class GraphqlMavenPluginTest {
 
 	@Autowired
-	GraphqlMavenPlugin graphqlMavenPlugin;
-
-	@Autowired
 	List<Document> documents;
 
 	@Autowired
