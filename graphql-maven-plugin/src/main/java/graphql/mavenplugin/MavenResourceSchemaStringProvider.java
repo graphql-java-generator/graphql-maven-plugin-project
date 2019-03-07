@@ -1,0 +1,70 @@
+package graphql.mavenplugin;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.maven.project.MavenProject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
+
+import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
+import com.oembedler.moon.graphql.boot.SchemaStringProvider;
+
+/**
+ * 
+ */
+
+/**
+ * Overrides the {@link GraphQLJavaToolsAutoConfiguration#schemaStringProvider()} bean, to loads our graphqls files
+ * 
+ * @author EtienneSF
+ */
+@Component
+public class MavenResourceSchemaStringProvider implements SchemaStringProvider {
+
+	@javax.annotation.Resource
+	MavenProject project;
+
+	@javax.annotation.Resource
+	private String schemaFilePattern;
+
+	@Autowired
+	ApplicationContext applicationContext;
+
+	@Override
+	public List<String> schemaStrings() throws IOException {
+		String fullPathPattern = "file:///" + project.getBasedir().getCanonicalPath()
+				+ ((getSchemaFilePattern().startsWith("/") || (getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
+				+ getSchemaFilePattern();
+		Resource[] resources = applicationContext.getResources(fullPathPattern);
+		if (resources.length <= 0) {
+			throw new IllegalStateException(
+					"No graphql schema files found on classpath with location pattern '" + getSchemaFilePattern());
+		}
+
+		return Arrays.stream(resources).map(this::readSchema).collect(Collectors.toList());
+	}
+
+	private String readSchema(Resource resource) {
+		StringWriter writer = new StringWriter();
+		try (InputStream inputStream = resource.getInputStream()) {
+			IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw new IllegalStateException("Cannot read graphql schema from resource " + resource, e);
+		}
+		return writer.toString();
+	}
+
+	public String getSchemaFilePattern() {
+		return schemaFilePattern;
+	}
+
+}

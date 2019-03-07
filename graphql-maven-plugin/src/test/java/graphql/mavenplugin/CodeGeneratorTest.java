@@ -29,8 +29,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import graphql.mavenplugin.language.ObjectType;
-import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
 import graphql.mavenplugin.test.helper.MavenTestHelper;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCasesSpringConfiguration;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCasesSpringConfiguration.class })

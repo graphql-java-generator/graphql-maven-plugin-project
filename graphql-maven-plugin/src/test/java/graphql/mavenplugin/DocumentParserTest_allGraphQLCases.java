@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,8 @@ import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.FieldType;
 import graphql.mavenplugin.language.ObjectType;
-import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCasesSpringConfiguration;
 import graphql.parser.Parser;
 
 /**
@@ -36,7 +35,7 @@ import graphql.parser.Parser;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCasesSpringConfiguration.class })
-class DocumentParserTest {
+class DocumentParserTest_allGraphQLCases {
 
 	@Autowired
 	private ApplicationContext ctx;
@@ -61,49 +60,6 @@ class DocumentParserTest {
 		// used in the latter unit tests.
 		Resource resource = ctx.getResource("/allGraphQLCases.graphqls");
 		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
-	}
-
-	@Test
-	void test_parseDocuments() throws MojoExecutionException {
-		// Preparation
-		Document basic = parser.parseDocument(graphqlTestHelper.readSchema(ctx.getResource("/helloworld.graphqls")));
-		Document helloWorld = parser
-				.parseDocument(graphqlTestHelper.readSchema(ctx.getResource("/helloworld.graphqls")));
-		documentParser.documents = new ArrayList<Document>();
-		documentParser.documents.add(basic);
-		documentParser.documents.add(helloWorld);
-
-		// Go, go, go
-		int i = documentParser.parseDocuments();
-
-		// Verification
-		assertEquals(3, i, "3 classes expected");
-	}
-
-	@Test
-	void test_parseOneDocument_basic() {
-		// Preparation
-		Resource resource = ctx.getResource("/basic.graphqls");
-		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
-
-		// Go, go, go
-		int i = documentParser.parseOneDocument(doc);
-
-		// Verification
-		assertEquals(2, i, "One class is generated");
-	}
-
-	@Test
-	void test_parseOneDocument_helloworld() {
-		// Preparation
-		Resource resource = ctx.getResource("/helloworld.graphqls");
-		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
-
-		// Go, go, go
-		int i = documentParser.parseOneDocument(doc);
-
-		// Verification
-		assertEquals(1, i, "Two classes are generated");
 	}
 
 	@Test

@@ -1,7 +1,13 @@
 package graphql.mavenplugin.test.helper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -70,5 +76,35 @@ public class MavenTestHelper {
 		} // if
 
 		return false;
+	}
+
+	/**
+	 * Read a file, and returns its content as a string
+	 * 
+	 * @param relativePath
+	 *            The relative path from the project's base dir (e.g.: /src/test/resources/test.txt or
+	 *            src/test/resources/test.txt)
+	 * @return The content of the file, which is expected to be a text file
+	 */
+	public String readFile(String relativePath) {
+		String path = ((relativePath.startsWith("/") || (relativePath.startsWith("\\"))) ? "" : "/") + relativePath;
+		return readFile(new File(getModulePathFile(), path));
+	}
+
+	/**
+	 * Read a file, and returns its content as a string
+	 * 
+	 * @param file
+	 *            The file to read
+	 * @return The content of the file, which is expected to be a text file
+	 */
+	public String readFile(File file) {
+		StringWriter writer = new StringWriter();
+		try (InputStream inputStream = new FileInputStream(file)) {
+			IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw new IllegalStateException("Cannot read file " + file.getPath(), e);
+		}
+		return writer.toString();
 	}
 }

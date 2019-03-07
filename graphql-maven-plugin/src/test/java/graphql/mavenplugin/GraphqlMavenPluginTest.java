@@ -3,7 +3,6 @@ package graphql.mavenplugin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.List;
 
@@ -12,12 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import com.oembedler.moon.graphql.boot.ClasspathResourceSchemaStringProvider;
-import com.oembedler.moon.graphql.boot.SchemaStringProvider;
 
 import graphql.language.Document;
 import graphql.language.FieldDefinition;
@@ -26,35 +21,35 @@ import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.TypeName;
-import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
+import graphql.mavenplugin.test.helper.GraphqlTestHelper;
+import graphql.mavenplugin_notscannedbyspring.HelloWorldSpringConfiguration;
 
 /**
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { AllGraphQLCasesSpringConfiguration.class })
+@ContextConfiguration(classes = { HelloWorldSpringConfiguration.class })
 class GraphqlMavenPluginTest {
 
 	@Autowired
-	private ApplicationContext ctx;
-
 	GraphqlMavenPlugin graphqlMavenPlugin;
-	SchemaStringProvider schemaStringProvider;
+
+	@Autowired
+	List<Document> documents;
+
+	@Autowired
+	GraphqlTestHelper graphqlTestHelper;
 
 	@BeforeEach
-	void setUp() throws Exception {
-		graphqlMavenPlugin = new GraphqlMavenPlugin();
-		schemaStringProvider = new ClasspathResourceSchemaStringProvider("**/*.graphqls");
-		setField(schemaStringProvider, null, "applicationContext", ctx, ApplicationContext.class);
+	public void beforeAll() {
+		graphqlTestHelper.checkSchemaStringProvider("helloworld.graphqls");
 	}
 
 	@Test
 	void testDocuments_helloworld() throws MojoExecutionException {
 		// Preparation
-		setField(schemaStringProvider, null, "schemaLocationPattern", "/helloworld.graphqls", java.lang.String.class);
 
 		// Go, go, go
-		List<Document> documents = graphqlMavenPlugin.documents(schemaStringProvider);
 
 		// Verification
 		assertNotNull(documents, "documents should be returned");
@@ -102,19 +97,6 @@ class GraphqlMavenPluginTest {
 		assertTrue(inputValueDef.getType() instanceof TypeName, "The echoWithOptionalName parameter is optional");
 		assertEquals("String", ((TypeName) inputValueDef.getType()).getName(),
 				"echoWithOptionalName is of type String");
-	}
-
-	@Test
-	void testDocuments_basic() throws MojoExecutionException {
-		// Preparation
-		setField(schemaStringProvider, null, "schemaLocationPattern", "/basic.graphqls", java.lang.String.class);
-
-		// Go, go, go
-		List<Document> documents = graphqlMavenPlugin.documents(schemaStringProvider);
-
-		// Verification
-		assertNotNull(documents, "documents should be returned");
-		assertEquals(1, documents.size(), "There should be one document");
 	}
 
 }

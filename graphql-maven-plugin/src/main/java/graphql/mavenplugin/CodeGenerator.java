@@ -23,6 +23,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.springframework.stereotype.Component;
 
 /**
  * This class generates the code, from the classes coming from the graphql.mavenplugin.language package. This classes
@@ -30,6 +31,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
  * 
  * @author EtienneSF
  */
+@Component
 public class CodeGenerator {
 
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/query_mutation_subscription_type.vm.java";

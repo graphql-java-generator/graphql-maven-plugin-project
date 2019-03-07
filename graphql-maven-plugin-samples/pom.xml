@@ -24,7 +24,7 @@
 			<plugins>
 				<plugin>
 					<groupId>com.graphql-java</groupId>
-					<artifactId>graphql-maven-plugin-samples</artifactId>
+					<artifactId>graphql-maven-plugin</artifactId>
 					<version>${project.version}</version>
 				</plugin>
 			</plugins>

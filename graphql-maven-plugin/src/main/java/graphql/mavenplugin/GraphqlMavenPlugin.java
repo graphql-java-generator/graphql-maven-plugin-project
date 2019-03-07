@@ -12,8 +12,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +32,7 @@ import graphql.parser.Parser;
 /**
  * @author EtienneSF
  */
-@Mojo(name = "graphql")
+@Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 @Configuration
 @Import({ JacksonAutoConfiguration.class, GraphQLJavaToolsAutoConfiguration.class })
 public class GraphqlMavenPlugin extends AbstractMojo {
@@ -41,8 +43,14 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(property = "graphql.encoding", defaultValue = "UTF-8")
 	private String encoding;
 
+	@Parameter(property = "graphql.schema.filepattern", defaultValue = "src/main/resources/*.graphqls")
+	private String schemaFilePattern;
+
 	@Parameter(property = "graphql.outputDirectory", defaultValue = "${project.build.directory}/generated-sources/graphql-client")
 	private File targetSourceFolder;
+
+	@Parameter(defaultValue = "${project}", readonly = true, required = true)
+	private MavenProject project;
 
 	/** The Spring IoC container */
 	AbstractApplicationContext ctx;
@@ -54,11 +62,22 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 
 			// We'll use Spring IoC
 			ctx = new AnnotationConfigApplicationContext(getClass());
+
 			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
-			int nbClasses = documentParser.parseDocuments();
+			int nbClassesToGenerate = documentParser.parseDocuments();
+
+			CodeGenerator codeGenerator = ctx.getBean(CodeGenerator.class);
+			int nbGeneratedClasses = codeGenerator.generateCode();
+
 			ctx.close();
 
-			getLog().info(nbClasses + "java classes have been generated from graphqls files");
+			project.addCompileSourceRoot(targetSourceFolder.getAbsolutePath());
+
+			if (nbClassesToGenerate != nbGeneratedClasses) {
+				getLog().warn(nbClassesToGenerate + " classes were parsed, but only " + nbGeneratedClasses
+						+ " were generated");
+			}
+			getLog().info(nbGeneratedClasses + "java classes have been generated from graphqls files");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
@@ -81,6 +100,16 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Bean
 	Log log() {
 		return getLog();
+	}
+
+	@Bean
+	MavenProject project() {
+		return project;
+	}
+
+	@Bean
+	String schemaFilePattern() {
+		return schemaFilePattern;
 	}
 
 	@Bean

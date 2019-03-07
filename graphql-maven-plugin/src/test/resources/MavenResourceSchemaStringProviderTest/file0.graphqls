@@ -1,0 +1,18 @@
+schema {
+    query: QueryType
+}
+
+type QueryType {
+    hero(id : String) : Hero
+}
+
+
+type Hero {
+    id: ID!
+    name: String!
+    forname: String
+    comments: [String]
+    surname: [String]!
+    planets: [String!]!
+}
+

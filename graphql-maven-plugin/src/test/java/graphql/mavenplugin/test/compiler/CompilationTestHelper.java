@@ -11,7 +11,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.springframework.stereotype.Component;
 
 import graphql.mavenplugin.GraphqlMavenPlugin;
-import graphql.mavenplugin.test.helper.AllGraphQLCasesSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCasesSpringConfiguration;
 
 @Component
 public class CompilationTestHelper {

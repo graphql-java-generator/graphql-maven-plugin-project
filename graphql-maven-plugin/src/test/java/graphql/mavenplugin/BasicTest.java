@@ -1,17 +1,20 @@
 package graphql.mavenplugin;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import graphql.mavenplugin.test.helper.BasicSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.BasicSpringConfiguration;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { BasicSpringConfiguration.class })
+@SpringJUnitConfig(classes = { BasicSpringConfiguration.class })
 class BasicTest extends AbstractIntegrationTest {
 
-	public BasicTest() {
-		super("/basic.graphqls");
+	// Everything is in the AbstractIntegrationTest class.
+
+	// The only aim of this class, is ti have its own Spring Configuration (BasicSpringConfiguration)
+
+	@BeforeEach
+	public void setUp() {
+		graphqlTestHelper.checkSchemaStringProvider("basic.graphqls");
 	}
 
 }
