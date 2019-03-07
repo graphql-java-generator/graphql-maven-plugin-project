@@ -1,5 +1,6 @@
 package ${package};
 #macro(inputParams)#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.javaClassSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end#end
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
