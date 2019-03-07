@@ -2,11 +2,13 @@ package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +42,19 @@ class GraphqlMavenPluginTest {
 	@BeforeEach
 	public void beforeAll() {
 		graphqlTestHelper.checkSchemaStringProvider("helloworld.graphqls");
+	}
+
+	@Test
+	public void checkExecute_wrongMode() throws MojoExecutionException, MojoFailureException {
+		// Preparation
+		GraphqlMavenPlugin graphqlMavenPlugin = new GraphqlMavenPlugin();
+		graphqlMavenPlugin.mode = "A wrong value";
+
+		// Go, go, go
+		Exception exception = assertThrows(MojoExecutionException.class, () -> graphqlMavenPlugin.execute());
+
+		// Verification
+		assertTrue(exception.getMessage().contains(graphqlMavenPlugin.mode), "The wrong mode is in the error message");
 	}
 
 	@Test

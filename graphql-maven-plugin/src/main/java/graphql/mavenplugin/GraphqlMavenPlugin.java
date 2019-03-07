@@ -21,23 +21,45 @@ import org.springframework.context.support.AbstractApplicationContext;
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 public class GraphqlMavenPlugin extends AbstractMojo {
 
-	@Parameter(property = "graphql.basePackage", defaultValue = "com.generated.graphql")
+	final static String MODE_CLIENT = "client";
+	final static String MODE_SERVER = "server";
+
+	/** The basePackage in which the generated classes will be created */
+	@Parameter(property = "graphql.mavenplugin.basePackage", defaultValue = "com.generated.graphql")
 	String basePackage;
 
-	@Parameter(property = "graphql.encoding", defaultValue = "UTF-8")
+	/** The encoding for the generated source files */
+	@Parameter(property = "graphql.mavenplugin.encoding", defaultValue = "UTF-8")
 	String encoding;
 
-	@Parameter(property = "graphql.schemaFilePattern", defaultValue = "src/main/resources/*.graphqls")
+	/**
+	 * The generation mode: either client (to generate the code which can query a graphql server) or server (to generate
+	 * a code for the server side)
+	 */
+	@Parameter(property = "graphql.mavenplugin.mode", defaultValue = "client")
+	String mode;
+
+	/** The description where the graphql schema file should be found, within the maven project structure */
+	@Parameter(property = "graphql.mavenplugin.schemaFilePattern", defaultValue = "src/main/resources/*.graphqls")
 	String schemaFilePattern;
 
-	@Parameter(property = "graphql.targetSourceFolder", defaultValue = "${project.build.directory}/generated-sources/graphql-client")
+	/** The folder where the generated classes will be generated */
+	@Parameter(property = "graphql.mavenplugin.targetSourceFolder", defaultValue = "${project.build.directory}/generated-sources/graphql-maven-plugin")
 	File targetSourceFolder;
 
+	/** Not available to the user: the {@link MavenProject} in which the plugin executes */
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	MavenProject project;
 
+	/** {@inheritDoc} */
+	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
+
+			if (!MODE_CLIENT.equals(mode) && !MODE_SERVER.equals(mode)) {
+				throw new MojoExecutionException("mode must be one of these values: " + MODE_CLIENT + ", " + MODE_SERVER
+						+ ". But it is: " + mode);
+			}
 
 			getLog().info("Starting generation of java classes from graphqls files");
 
