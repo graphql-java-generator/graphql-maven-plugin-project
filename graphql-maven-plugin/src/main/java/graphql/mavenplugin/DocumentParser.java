@@ -109,31 +109,18 @@ public class DocumentParser {
 	List<EnumType> enumTypes = new ArrayList<>();
 
 	/**
-	 * maps for all scalers, when it is NOT mandatory. The key is the type name. The value is the class to use in the
-	 * java code
-	 */
-	Map<String, String> nonMandatoryScalars = new HashMap<>();
-
-	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, String> mandatoryScalars = new HashMap<>();
+	Map<String, String> scalars = new HashMap<>();
 
 	public DocumentParser() {
-		// Add of all scalars, when non mandatory
-		nonMandatoryScalars.put("ID", String.class.getName());
-		nonMandatoryScalars.put("String", String.class.getName());
-		nonMandatoryScalars.put("boolean", Boolean.class.getName());
-		nonMandatoryScalars.put("int", Integer.class.getName());
-		nonMandatoryScalars.put("float", Float.class.getName());
-
 		// Add of all scalars, when mandatory
-		mandatoryScalars.put("ID", String.class.getName());
-		mandatoryScalars.put("String", String.class.getName());
-		mandatoryScalars.put("boolean", boolean.class.getName());
-		mandatoryScalars.put("int", int.class.getName());
-		mandatoryScalars.put("float", float.class.getName());
+		scalars.put("ID", String.class.getName());
+		scalars.put("String", String.class.getName());
+		scalars.put("boolean", Boolean.class.getName());
+		scalars.put("int", Integer.class.getName());
+		scalars.put("float", Float.class.getName());
 	}
 
 	/**
@@ -234,6 +221,7 @@ public class DocumentParser {
 	 * @param node
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	ObjectType readObjectType(ObjectTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
 
@@ -439,12 +427,7 @@ public class DocumentParser {
 	 * @return
 	 */
 	String getFieldTypeClassFrom(String type, boolean mandatory) {
-		String classname = null;
-		if (mandatory) {
-			classname = mandatoryScalars.get(type);
-		} else {
-			classname = nonMandatoryScalars.get(type);
-		}
+		String classname = scalars.get(type);
 
 		if (classname == null) {
 			// It's not a scaler. So either the schema is invalid (but it has been correctly parsed by graphql) or it is

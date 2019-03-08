@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CodeGenerator {
 
-	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/query_mutation_subscription_type.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/query_mutation_subscription_type__for_server.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_OBJECT = "templates/object_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_INTERFACE = "templates/interface_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";

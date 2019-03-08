@@ -109,13 +109,13 @@ class DocumentParserTest_allGraphQLCases {
 		// forname: String
 		checkField(type, j++, "forname", false, false, null, "String", String.class.getName());
 		// age: int!
-		checkField(type, j++, "age", false, true, null, "int", int.class.getName());
+		checkField(type, j++, "age", false, true, null, "int", Integer.class.getName());
 		// nbComments: int
 		checkField(type, j++, "nbComments", false, false, null, "int", Integer.class.getName());
 		// comments: [String]
 		checkField(type, j++, "comments", true, false, false, "String", String.class.getName());
 		// booleans: [boolean!]
-		checkField(type, j++, "booleans", true, false, true, "boolean", boolean.class.getName());
+		checkField(type, j++, "booleans", true, false, true, "boolean", Boolean.class.getName());
 		// aliases: [String]!
 		checkField(type, j++, "aliases", true, true, false, "String", String.class.getName());
 		// planets: [String!]!
@@ -223,7 +223,7 @@ class DocumentParserTest_allGraphQLCases {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName(), "The name is MyQueryType");
-		assertEquals(5, type.getFields().size(), "Number of queries");
+		assertEquals(7, type.getFields().size(), "Number of queries");
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -252,6 +252,15 @@ class DocumentParserTest_allGraphQLCases {
 		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid", basePackage + ".Droid", "A droid");
 		checkInputParameter(type, j, 1, "index", false, false, null, "int", "java.lang.Integer",
 				"Not a number, but ok !!");
+		j += 1;
+		// withEnum(episode: Episode!): Character
+		checkField(type, j, "withEnum", false, false, null, "Character", basePackage + ".Character");
+		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", basePackage + ".Episode", null);
+		j += 1;
+		// withList(name: String!, friends: [Character]!): [Characters]
+		checkField(type, j, "withList", true, false, false, "Character", basePackage + ".Character");
+		checkInputParameter(type, j, 0, "name", false, true, null, "String", String.class.getName(), null);
+		checkInputParameter(type, j, 1, "friends", true, true, false, "Character", basePackage + ".Character", null);
 		j += 1;
 	}
 

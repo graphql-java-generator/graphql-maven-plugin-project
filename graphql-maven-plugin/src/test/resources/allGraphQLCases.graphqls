@@ -11,7 +11,8 @@ type MyQueryType {
     withOneMandatoryParam(character: Character!): Character
     withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
     withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
-    #withEnum(episode: Episode!): Character
+    withEnum(episode: Episode!): Character
+    withList(name: String!, friends: [Character]!): [Character]
 }
 
 type AnotherMutationType {
