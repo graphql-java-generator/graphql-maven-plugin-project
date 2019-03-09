@@ -28,6 +28,7 @@ public class Query extends QueryType {
 	protected Character doHero(Episode episode) {
 		List<Episode> episodes = new ArrayList<>();
 		episodes.add(Episode.NEWHOPE);
+		episodes.add(Episode.JEDI);
 
 		Human h = new Human();
 		h.setAppearsIn(episodes);
