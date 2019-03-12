@@ -6,8 +6,9 @@ It's a work in progress. But the generated code is already ready to use.
 
 ### What the plugin can't manage (as of its current state)
 
-- Reading of graphqls is only possible within the classpath of the plugin (not in the src/main/resources, for instance)
+- Fragment in graphql queries
 - Scalars
+- queries (mutations...) that return data not defined as an object (e.g.: two objects). This needs to be wrapped in some kind of container.
 - Comments are not reported in the generated code
 
 ### Dependencies needed for the generated code
