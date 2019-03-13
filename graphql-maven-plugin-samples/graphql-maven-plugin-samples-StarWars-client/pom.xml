@@ -47,14 +47,25 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Other dependencies -->
+		<!-- Dependencies for GraphQL -->
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-tools</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Fournit une IHM pour tester les requêtes graphql -->
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphiql-spring-boot-starter</artifactId>
+		</dependency>
+
+		<!-- Other dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
 	</dependencies>
 </project>
