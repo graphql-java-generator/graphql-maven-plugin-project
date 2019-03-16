@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -20,6 +21,7 @@
 	<modules>
 		<module>graphql-maven-plugin</module>
 		<module>graphql-maven-plugin-samples</module>
+		<module>graphql-java-client</module>
 	</modules>
 
 	<properties>
@@ -122,6 +124,13 @@
 				<version>${spring.version}</version>
 			</dependency>
 
+
+			<!-- dependendencies for graphql client project -->
+			<dependency>
+				<groupId>com.graphql-java</groupId>
+				<artifactId>graphql-java-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<!-- dependendencies for graphql -->
 			<dependency>
 				<groupId>com.graphql-java</groupId>

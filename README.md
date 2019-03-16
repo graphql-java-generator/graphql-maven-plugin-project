@@ -10,6 +10,7 @@ It's a work in progress. But the generated code is already ready to use.
 - Scalars
 - queries (mutations...) that return data not defined as an object (e.g.: two objects). This needs to be wrapped in some kind of container.
 - Comments are not reported in the generated code
+- Date, DateTime, Time
 
 ### Dependencies needed for the generated code
 
