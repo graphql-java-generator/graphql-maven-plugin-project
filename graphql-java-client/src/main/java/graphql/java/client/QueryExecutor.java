@@ -30,11 +30,11 @@ public interface QueryExecutor {
 	 * Execution of the given query
 	 * 
 	 * @param queryName
-	 *            The name of the query, taken from the graphql schema
+	 *            The name of the query, taken from the GraphQL schema
 	 * @param parameters
 	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
 	 * @param reponseDef
-	 *            _The_ specificity of graphql: the definition of the value, that the graphql should return
+	 *            _The_ specificity of GraphQL: the definition of the value, that the GraphQL should return
 	 */
 	public void execute(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef);
 
