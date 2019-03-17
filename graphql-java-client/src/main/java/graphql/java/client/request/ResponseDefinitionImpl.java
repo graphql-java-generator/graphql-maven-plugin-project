@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Marker;
 import graphql.java.client.GraphqlUtils;
 
 /**
- * This class describe the fields that the response must contain, for one graphql type. These fields may be scalars or
+ * This class describe the fields that the response must contain, for one GraphQL type. These fields may be scalars or
  * entity. Adding an entity will create a new {@link ResponseDefinition}, in which it is possible to define the field to
  * return for this entity.
  * 

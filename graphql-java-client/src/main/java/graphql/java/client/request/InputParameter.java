@@ -12,7 +12,7 @@ import graphql.java.client.ID;
  */
 public class InputParameter {
 
-	/** The parameter name, as defined in the graphql schema */
+	/** The parameter name, as defined in the GraphQL schema */
 	final String name;
 
 	/** The value to send, for this input parameter */
@@ -20,7 +20,7 @@ public class InputParameter {
 
 	/**
 	 * @param name
-	 *            The parameter name, as defined in the graphql schema
+	 *            The parameter name, as defined in the GraphQL schema
 	 * @param value
 	 *            The value to send, for this input parameter
 	 */
@@ -38,7 +38,7 @@ public class InputParameter {
 	}
 
 	/**
-	 * Returns the parameter, as it should be written in the graphql query. For instance:
+	 * Returns the parameter, as it should be written in the GraphQL query. For instance:
 	 * <UL>
 	 * <LI>String: a "string" -> "a \"string\""</LI>
 	 * <LI>Enum: EPISODE -> EPISODE (no escape or double quote here)</LI>
