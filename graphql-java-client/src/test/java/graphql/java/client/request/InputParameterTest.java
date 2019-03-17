@@ -1,4 +1,4 @@
-package graphql.java.client;
+package graphql.java.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import graphql.java.client.domain.Episode;
+import graphql.java.client.request.InputParameter;
 
 class InputParameterTest {
 

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import graphql.java.client.ID;
-import graphql.java.client.ResponseDefinition;
+import graphql.java.client.request.ResponseDefinition;
 
 public class QueryType {
 

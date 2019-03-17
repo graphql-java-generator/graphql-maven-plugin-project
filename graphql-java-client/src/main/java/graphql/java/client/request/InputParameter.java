@@ -1,7 +1,9 @@
 /**
  * 
  */
-package graphql.java.client;
+package graphql.java.client.request;
+
+import graphql.java.client.ID;
 
 /**
  * Contains a parameter, to be sent to a query (mutation...).

@@ -5,6 +5,9 @@ package graphql.java.client;
 
 import java.util.List;
 
+import graphql.java.client.request.InputParameter;
+import graphql.java.client.request.ResponseDefinition;
+
 /**
  * This class is the query executor : a generic class, reponsible for calling
  * 

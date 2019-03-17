@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import graphql.java.client.domain.Episode;
+import graphql.java.client.request.InputParameter;
+import graphql.java.client.request.ResponseDefinition;
+import graphql.java.client.request.ResponseDefinitionImpl;
 
 /**
  * 
@@ -26,6 +29,11 @@ class QueryExecutorImplTest {
 
 	@Test
 	void test_execute() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void test_execute_withAlias() {
 		fail("Not yet implemented");
 	}
 

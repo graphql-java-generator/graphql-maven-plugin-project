@@ -1,7 +1,7 @@
 /**
  * 
  */
-package graphql.java.client;
+package graphql.java.client.request;
 
 /**
  * @author EtienneSF

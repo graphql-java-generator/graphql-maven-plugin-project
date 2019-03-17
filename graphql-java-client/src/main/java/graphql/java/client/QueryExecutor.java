@@ -8,6 +8,9 @@ import java.util.List;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
+import graphql.java.client.request.InputParameter;
+import graphql.java.client.request.ResponseDefinition;
+
 /**
  * This class is the query executor : a generic class, reponsible for calling
  * 

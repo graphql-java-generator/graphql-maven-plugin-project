@@ -1,4 +1,4 @@
-package graphql.java.client;
+package graphql.java.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,6 +9,9 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import graphql.java.client.request.ResponseDefinition;
+import graphql.java.client.request.ResponseDefinitionImpl;
 
 class ResponseDefinitionImplTest {
 
