@@ -84,4 +84,28 @@ class QueryExecutorImplTest {
 		assertEquals("{hero(episode: NEWHOPE, id: \"this is an id\") {id name}}", request);
 	}
 
+	/**
+	 * Build a request with one parameter (ID), and a {@link Character} as the response.
+	 */
+	@Test
+	void test_buildRequest_Episode_idNameAppearsInFriendsName() {
+		// Preparation
+		String queryName = "hero";
+		List<InputParameter> parameters = new ArrayList<>();
+		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
+
+		// The response should contain id and name
+		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		responseDef.addResponseField("id");
+		responseDef.addResponseField("name");
+		responseDef.addResponseField("appearsIn");
+		ResponseDefinition subResponseDef = responseDef.addResponseEntity("friends");
+		subResponseDef.addResponseField("name");
+
+		// Go, go, go
+		String request = queryExecutorImpl.buildRequest(queryName, parameters, responseDef);
+
+		// Verification
+		assertEquals("{hero(episode: NEWHOPE) {id name appearsIn friends{name}}}", request);
+	}
 }

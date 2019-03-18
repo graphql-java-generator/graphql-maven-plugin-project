@@ -10,9 +10,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import graphql.java.client.request.ResponseDefinition;
-import graphql.java.client.request.ResponseDefinitionImpl;
-
 class ResponseDefinitionImplTest {
 
 	final Marker GRAPHQL_TEST = MarkerManager.getMarker("junit test for ResponseDefinitionImplTest");

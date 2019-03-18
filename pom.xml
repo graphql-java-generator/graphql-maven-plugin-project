@@ -131,6 +131,7 @@
 				<artifactId>graphql-java-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+
 			<!-- dependendencies for graphql -->
 			<dependency>
 				<groupId>com.graphql-java</groupId>

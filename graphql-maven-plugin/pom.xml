@@ -28,6 +28,12 @@
 	</build>
 
 	<dependencies>
+		<!-- Internal dependencies -->
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-client</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- Dependencies for tests -->
 		<dependency>
 			<groupId>org.springframework</groupId>

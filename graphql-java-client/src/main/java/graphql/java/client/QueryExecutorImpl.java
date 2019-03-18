@@ -5,6 +5,16 @@ package graphql.java.client;
 
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
 
@@ -15,6 +25,19 @@ import graphql.java.client.request.ResponseDefinition;
  */
 public class QueryExecutorImpl implements QueryExecutor {
 
+	/** Logger for this class */
+	private static Logger logger = LogManager.getLogger();
+
+	/** The Jersey {@link Client}, used to execute the request toward the GraphQL server */
+	Client client;
+	/** The Jersey {@link WebTarget}, used to execute the request toward the GraphQL server */
+	WebTarget webTarget;
+
+	public QueryExecutorImpl() {
+		client = ClientBuilder.newClient();
+		webTarget = client.target("http://localhost:8080").path("graphql");
+	}
+
 	/**
 	 * Execution of the given query
 	 * 
@@ -24,13 +47,21 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 */
 	@Override
 	public void execute(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef) {
+		logger.warn(GRAPHQL_MARKER, "[TODO] Check and minimize the jersey dependencies");
 
-		// String request = buildRequest(queryName, parameters, responseDef);
+		// Let's build the GraphQL request, to send to the server
+		String request = buildRequest(queryName, parameters, responseDef);
+		logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
-		// Voir :
-		// https://www.mkyong.com/webservices/jax-rs/restfull-java-client-with-java-net-url/
-		// https://www.mkyong.com/webservices/jax-rs/restful-java-client-with-jersey-client/
-		// https://www.baeldung.com/jersey-jax-rs-client
+		request = "{\"query\":\"" + request + "\",\"variables\":null,\"operationName\":null}";
+		logger.trace(GRAPHQL_MARKER, "Sending JSON request to GraphQL server: {}", request);
+
+		Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN_TYPE);
+		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
+		// Response postResponse = invocationBuilder.post(Entity.entity(request, MediaType.TEXT_PLAIN_TYPE));
+		String response = invocationBuilder.post(Entity.entity(request, MediaType.TEXT_PLAIN_TYPE), String.class);
+		// System.out.println(postResponse.toString());
+		System.out.println(response);
 	}
 
 	String buildRequest(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef) {
