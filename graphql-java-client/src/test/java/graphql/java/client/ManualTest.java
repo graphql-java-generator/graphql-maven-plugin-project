@@ -1,8 +1,10 @@
 package graphql.java.client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import graphql.java.client.domain.Character;
 import graphql.java.client.domain.Episode;
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
@@ -15,7 +17,7 @@ import graphql.java.client.request.ResponseDefinitionImpl;
  */
 public class ManualTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws GraphQLResponseParseException, IOException {
 		QueryExecutor executor = new QueryExecutorImpl();
 
 		// InputParameters
@@ -30,8 +32,8 @@ public class ManualTest {
 		ResponseDefinition friendsResponseDef = responseDef.addResponseEntity("friends");
 		friendsResponseDef.addResponseField("name");
 
-		executor.execute("hero", parameters, responseDef);
-
+		Character character = executor.execute("hero", parameters, responseDef, Character.class);
+		System.out.println(character);
 	}
 
 }

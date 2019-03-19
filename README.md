@@ -4,6 +4,10 @@ This project is a maven plugin, which makes it possible to work with graphQL in 
 
 It's a work in progress. But the generated code is already ready to use.
 
+### Things to change
+
+- GraphQL interfaces may not be an interface in Java, as we have to be able to map JSON to it.
+
 ### What the plugin can't manage (as of its current state)
 
 - Fragment in graphql queries
