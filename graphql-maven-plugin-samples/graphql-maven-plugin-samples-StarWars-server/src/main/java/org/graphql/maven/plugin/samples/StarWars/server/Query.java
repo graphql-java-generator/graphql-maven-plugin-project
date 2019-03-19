@@ -30,9 +30,13 @@ public class Query extends QueryType {
 		episodes.add(Episode.NEWHOPE);
 		episodes.add(Episode.JEDI);
 
+		List<Character> characters = new ArrayList<Character>();
+		characters.add(generateCharacter());
+		characters.add(generateCharacter());
+
 		Human h = new Human();
 		h.setAppearsIn(episodes);
-		h.setFriends(null);
+		h.setFriends(characters);
 		h.setId("An id");
 		h.setName("A hero's name");
 		h.setHomePlanet("His/her planet");
@@ -65,6 +69,14 @@ public class Query extends QueryType {
 		h.setName("Another name");
 		h.setPrimaryFunction("Its function");
 		return h;
+	}
+
+	Character generateCharacter() {
+		Character character = new Human();
+		String var = Long.toString((long) (Math.random() * 1000000));
+		character.setId("id" + var);
+		character.setName("name" + var);
+		return character;
 	}
 
 }
