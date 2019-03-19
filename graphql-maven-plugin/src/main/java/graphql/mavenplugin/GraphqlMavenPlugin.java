@@ -81,7 +81,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 				getLog().warn(nbClassesToGenerate + " classes were parsed, but only " + nbGeneratedClasses
 						+ " were generated");
 			}
-			getLog().info(nbGeneratedClasses + "java classes have been generated from graphqls files");
+			getLog().info(nbGeneratedClasses + " java classes have been generated from graphqls files");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
