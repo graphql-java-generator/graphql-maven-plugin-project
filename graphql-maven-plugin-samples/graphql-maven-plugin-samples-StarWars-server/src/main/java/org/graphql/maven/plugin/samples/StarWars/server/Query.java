@@ -50,6 +50,7 @@ public class Query extends QueryType {
 
 		Human h = new Human();
 		h.setAppearsIn(episodes);
+		h.setBestFriend(generateHuman());
 		h.setFriends(null);
 		h.setId(id);
 		h.setName("Another name");
@@ -79,4 +80,11 @@ public class Query extends QueryType {
 		return character;
 	}
 
+	private Human generateHuman() {
+		Human human = new Human();
+		String var = Long.toString((long) (Math.random() * 1000000));
+		human.setId("id" + var);
+		human.setName("name" + var);
+		return human;
+	}
 }

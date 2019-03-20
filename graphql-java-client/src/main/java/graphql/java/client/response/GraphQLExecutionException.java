@@ -1,7 +1,9 @@
 /**
  * 
  */
-package graphql.java.client;
+package graphql.java.client.response;
+
+import graphql.java.client.QueryExecutorImpl;
 
 /**
  * Thrown when the client could not parse the GraphQL response. This response is sent when the client can't understand
@@ -11,15 +13,15 @@ package graphql.java.client;
  * 
  * @author EtienneSF
  */
-public class GraphQLResponseParseException extends Exception {
+public class GraphQLExecutionException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public GraphQLResponseParseException(String msg) {
+	public GraphQLExecutionException(String msg) {
 		super(msg);
 	}
 
-	public GraphQLResponseParseException(String msg, Throwable cause) {
+	public GraphQLExecutionException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

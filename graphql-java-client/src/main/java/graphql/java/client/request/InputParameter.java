@@ -61,7 +61,7 @@ public class InputParameter {
 	 * @return
 	 */
 	private static String getStringValue(String str) {
-		return "\"" + str.replace("\"", "\\\"") + "\"";
+		return "\\\"" + str.replace("\"", "\\\"") + "\\\"";
 	}
 
 }

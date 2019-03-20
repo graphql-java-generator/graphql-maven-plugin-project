@@ -11,6 +11,7 @@ import org.apache.logging.log4j.MarkerManager;
 
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
+import graphql.java.client.response.GraphQLExecutionException;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, and return its
@@ -41,10 +42,10 @@ public interface QueryExecutor {
 	 * @param reponseDef
 	 *            _The_ specificity of GraphQL: the definition of the value, that the GraphQL should return
 	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
-	 * @throws GraphQLResponseParseException
+	 * @throws GraphQLExecutionException
 	 * @throws IOException
 	 */
 	public <T> T execute(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef,
-			Class<T> valueType) throws GraphQLResponseParseException, IOException;
+			Class<T> valueType) throws GraphQLExecutionException, IOException;
 
 }

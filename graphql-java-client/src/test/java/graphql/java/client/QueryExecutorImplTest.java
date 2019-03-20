@@ -21,6 +21,7 @@ import graphql.java.client.domain.Episode;
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
 import graphql.java.client.request.ResponseDefinitionImpl;
+import graphql.java.client.response.GraphQLResponseParseException;
 
 /**
  * 

@@ -5,6 +5,7 @@ package graphql.java.client;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -21,6 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
+import graphql.java.client.response.GraphQLExecutionException;
+import graphql.java.client.response.GraphQLResponseParseException;
+import graphql.java.client.response.JsonResponseWrapper;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling
@@ -45,7 +49,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	/** {@inheritDoc} */
 	@Override
 	public <T> T execute(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef,
-			Class<T> valueType) throws GraphQLResponseParseException, IOException {
+			Class<T> valueType) throws IOException, GraphQLExecutionException {
 		logger.warn(GRAPHQL_MARKER, "[TODO] Check and minimize the jersey dependencies");
 
 		// Let's build the GraphQL request, to send to the server
@@ -59,8 +63,36 @@ public class QueryExecutorImpl implements QueryExecutor {
 		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
 		String rawResponse = invocationBuilder.post(Entity.entity(request, MediaType.TEXT_PLAIN_TYPE), String.class);
 		logger.trace(GRAPHQL_MARKER, "Received response: {}", rawResponse);
+		// return parseResponse(rawResponse, queryName, responseDef, valueType);
 
-		return parseResponse(rawResponse, queryName, responseDef, valueType);
+		JsonResponseWrapper response = invocationBuilder.post(Entity.entity(request, MediaType.TEXT_PLAIN_TYPE),
+				JsonResponseWrapper.class);
+
+		if (response.errors == null || response.errors.size() == 0) {
+			// No errors. Let's parse the data
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode hero = response.data.get("hero");
+			JsonNode human = response.data.get("human");
+			if (hero != null)
+				return mapper.treeToValue(hero, valueType);
+			if (human != null)
+				return mapper.treeToValue(human, valueType);
+			throw new GraphQLResponseParseException("Could not retrieve the 'hero' nor 'human' node");
+
+		} else {
+			for (graphql.java.client.response.Error error : response.errors) {
+				error.logError(logger, GRAPHQL_MARKER);
+			}
+			String msg;
+			if (response.errors.size() == 1)
+				msg = "An error occurred: " + response.errors.get(0).message;
+			else
+				msg = response.errors.size() + " errors occurred: "
+						+ response.errors.stream().map(e -> e.message).collect(Collectors.joining(" / "));
+
+			throw new GraphQLExecutionException(msg);
+		}
+
 	}
 
 	/**

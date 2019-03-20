@@ -25,6 +25,7 @@ interface Character {
 type Human implements Character {
     id: ID!
     name: String!
+    bestFriend: Character
     friends: [Character]
     appearsIn: [Episode]!
     homePlanet: String
