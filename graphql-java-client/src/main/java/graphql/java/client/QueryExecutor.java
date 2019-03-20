@@ -13,7 +13,8 @@ import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
 
 /**
- * This class is the query executor : a generic class, reponsible for calling
+ * This class is the query executor : a generic class, reponsible for calling the GraphQL server, and return its
+ * response as POJOs.
  * 
  * @author EtienneSF
  */
@@ -28,7 +29,8 @@ public interface QueryExecutor {
 			.setParents(GRAPHQL_MARKER);
 
 	/**
-	 * Execution of the given query
+	 * Execution of the given simple GraphQL query, and return its response mapped in the relevant POJO. This method
+	 * execute a single GraphQL query, not a multi-operational request.
 	 * 
 	 * @param <T>
 	 * 
