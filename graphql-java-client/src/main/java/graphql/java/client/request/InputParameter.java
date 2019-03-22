@@ -3,8 +3,6 @@
  */
 package graphql.java.client.request;
 
-import graphql.java.client.ID;
-
 /**
  * Contains a parameter, to be sent to a query (mutation...).
  * 
@@ -48,8 +46,6 @@ public class InputParameter {
 	 */
 	public String getValueForGraphqlQuery() {
 		switch (value.getClass().getName()) {
-		case "graphql.java.client.ID":
-			return getStringValue(((ID) value).getId());
 		case "java.lang.String":
 			return getStringValue((String) value);
 		default:

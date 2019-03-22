@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import graphql.java.client.domain.Episode;
-import graphql.java.client.request.InputParameter;
 
 class InputParameterTest {
 
@@ -31,7 +30,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals("\"This is a string with two \\\"\\\" to be escaped\"", param.getValueForGraphqlQuery(),
+		assertEquals("\\\"This is a string with two \\\"\\\" to be escaped\\\"", param.getValueForGraphqlQuery(),
 				"escaped value");
 	}
 

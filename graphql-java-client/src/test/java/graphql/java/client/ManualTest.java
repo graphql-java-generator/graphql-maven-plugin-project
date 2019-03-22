@@ -55,7 +55,7 @@ public class ManualTest {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("id", new ID("qd")));
+		parameters.add(new InputParameter("id", "qd"));
 
 		// ResponseDefinition
 		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_QUERY_MARKER);
