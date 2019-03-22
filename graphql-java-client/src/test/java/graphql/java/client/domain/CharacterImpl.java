@@ -42,7 +42,7 @@ public class CharacterImpl implements Character {
 		return friends;
 	}
 
-	@JsonDeserialize(contentAs = Episode.class)
+
 	public void setAppearsIn(List<Episode> appearsIn) {
 		this.appearsIn = appearsIn;
 	}

@@ -47,7 +47,6 @@ public class Human implements Character {
 		return bestFriend;
 	}
 
-	@JsonDeserialize(contentAs = Character.class)
 	public void setFriends(List<Character> friends) {
 		this.friends = friends;
 	}
@@ -56,7 +55,6 @@ public class Human implements Character {
 		return friends;
 	}
 
-	@JsonDeserialize(contentAs = Episode.class)
 	public void setAppearsIn(List<Episode> appearsIn) {
 		this.appearsIn = appearsIn;
 	}

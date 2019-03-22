@@ -36,7 +36,6 @@ public class Droid implements Character {
 		return name;
 	}
 
-	@JsonDeserialize(contentAs = Character.class)
 	public void setFriends(List<Character> friends) {
 		this.friends = friends;
 	}
@@ -45,7 +44,6 @@ public class Droid implements Character {
 		return friends;
 	}
 
-	@JsonDeserialize(contentAs = Episode.class)
 	public void setAppearsIn(List<Episode> appearsIn) {
 		this.appearsIn = appearsIn;
 	}
