@@ -152,7 +152,7 @@ public class CodeGenerator {
 	 */
 	Object exec(String methodName, Object object) {
 		try {
-			Method getType = object.getClass().getDeclaredMethod(methodName);
+			Method getType = object.getClass().getMethod(methodName);
 			return getType.invoke(object);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {

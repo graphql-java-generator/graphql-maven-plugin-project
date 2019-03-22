@@ -37,9 +37,11 @@ import graphql.language.Type;
 import graphql.language.TypeName;
 import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
-import graphql.mavenplugin.language.FieldType;
+import graphql.mavenplugin.language.InterfaceType;
 import graphql.mavenplugin.language.ObjectType;
+import graphql.mavenplugin.language.ScalarType;
 import graphql.parser.Parser;
+import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat.FieldType;
 import lombok.Getter;
 
 /**
@@ -102,25 +104,28 @@ public class DocumentParser {
 
 	/** All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents */
 	@Getter
-	List<ObjectType> interfaceTypes = new ArrayList<>();
+	List<InterfaceType> interfaceTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
 	List<EnumType> enumTypes = new ArrayList<>();
 
+	/** All the {@link Type}s that have been parsed, added by the default scalars */
+	Map<String, graphql.mavenplugin.language.Type> types = new HashMap<>();
+
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	Map<String, String> scalars = new HashMap<>();
+	List<ScalarType> scalars = new ArrayList<>();
 
 	public DocumentParser() {
-		// Add of all scalars, when mandatory
-		scalars.put("ID", String.class.getName());
-		scalars.put("String", String.class.getName());
-		scalars.put("boolean", Boolean.class.getName());
-		scalars.put("int", Integer.class.getName());
-		scalars.put("float", Float.class.getName());
+		// Add of all predefined scalars
+		scalars.add(new ScalarType("ID", "java.lang", "String"));
+		scalars.add(new ScalarType("String", "java.lang", "String"));
+		scalars.add(new ScalarType("boolean", "java.lang", "Boolean"));
+		scalars.add(new ScalarType("int", "java.lang", "Integer"));
+		scalars.add(new ScalarType("float", "java.lang", "Float"));
 	}
 
 	/**
@@ -183,8 +188,24 @@ public class DocumentParser {
 			}
 		} // for
 
+		defineDefaultInterfaceImplementationClassName();
+
+		fillTypesMap();
+
 		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size()
 				+ enumTypes.size() + interfaceTypes.size();
+	}
+
+	/**
+	 * Fill the {@link #types} map, from all the types (object, interface, enum, scalars) that are valid for this
+	 * schema. This allow to get the properties from their type, as only their type's name is known when parsing the
+	 * schema.
+	 */
+	void fillTypesMap() {
+		scalars.stream().forEach(s -> types.put(s.getName(), s));
+		objectTypes.stream().forEach(o -> types.put(o.getName(), o));
+		interfaceTypes.stream().forEach(i -> types.put(i.getName(), i));
+		enumTypes.stream().forEach(e -> types.put(e.getName(), e));
 	}
 
 	/**
@@ -196,6 +217,7 @@ public class DocumentParser {
 	 */
 	void readSchemaDefinition(SchemaDefinition schemaDef, List<String> queryObjectNames,
 			List<String> mutationObjectNames, List<String> subscriptionObjectNames) {
+
 		for (OperationTypeDefinition opDef : schemaDef.getOperationTypeDefinitions()) {
 			TypeName type = (TypeName) opDef.getType();
 			switch (opDef.getName()) {
@@ -225,7 +247,7 @@ public class DocumentParser {
 	ObjectType readObjectType(ObjectTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
 
-		ObjectType objectType = new ObjectType();
+		ObjectType objectType = new ObjectType(basePackage);
 
 		objectType.setName(node.getName());
 
@@ -253,13 +275,12 @@ public class DocumentParser {
 	 * @param node
 	 * @return
 	 */
-	ObjectType readInterfaceType(InterfaceTypeDefinition node) {
+	InterfaceType readInterfaceType(InterfaceTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
 
-		ObjectType interfaceType = new ObjectType();
+		InterfaceType interfaceType = new InterfaceType(basePackage);
 
 		interfaceType.setName(node.getName());
-		interfaceType.setInterfaceType(true);
 
 		// Let's read all its fields
 		interfaceType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
@@ -274,7 +295,7 @@ public class DocumentParser {
 	 * @return
 	 */
 	EnumType readEnumType(EnumTypeDefinition node) {
-		EnumType enumType = new EnumType();
+		EnumType enumType = new EnumType(basePackage);
 		enumType.setName(node.getName());
 		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
 			enumType.getValues().add(enumValDef.getName());
@@ -321,9 +342,7 @@ public class DocumentParser {
 	 * @return
 	 */
 	Field readFieldTypeDefinition(AbstractNode<?> fieldDef) {
-		Field field = new Field();
-		FieldType type = new FieldType();
-		field.setType(type);
+		Field field = new Field(this);
 
 		field.setName((String) exec("getName", fieldDef));
 
@@ -332,7 +351,6 @@ public class DocumentParser {
 		field.setList(false);
 		field.setItemMandatory(false);
 
-		String nameOfTheType = null;
 		TypeName typeName = null;
 		if (exec("getType", fieldDef) instanceof TypeName) {
 			typeName = (TypeName) exec("getType", fieldDef);
@@ -370,16 +388,10 @@ public class DocumentParser {
 						+ node.getClass().getName() + " (for field " + field.getName() + ")");
 			}
 		}
-		nameOfTheType = typeName.getName();
 
-		type.setName(nameOfTheType);
-
-		// For Scalar types, the actual Java type depends on whether the item is mandatory or not (int is mandatory
-		// whereas Integer can be null)
-		if (field.isList())
-			type.setJavaClassFullName(getFieldTypeClassFrom(nameOfTheType, field.isItemMandatory()));
-		else
-			type.setJavaClassFullName(getFieldTypeClassFrom(nameOfTheType, field.isMandatory()));
+		// We have the type. But we may not have parsed it yet. So we just write its name. And will get the
+		// graphql.mavenplugin.language.Type when generating the code.
+		field.setTypeName(typeName.getName());
 
 		// For InputValueDefinition, we may have a defaut value
 		if (fieldDef instanceof InputValueDefinition) {
@@ -420,26 +432,6 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Returns the Java class name from a given type name
-	 * 
-	 * @param type
-	 * @param mandatory
-	 * @return
-	 */
-	String getFieldTypeClassFrom(String type, boolean mandatory) {
-		String classname = scalars.get(type);
-
-		if (classname == null) {
-			// It's not a scaler. So either the schema is invalid (but it has been correctly parsed by graphql) or it is
-			// an Object Type defined in the schema.
-			// So, we're in the second case, and this will be confirmed during the projet compilation.
-			classname = getGeneratedFieldFullClassName(type);
-		}
-
-		return classname;
-	}
-
-	/**
 	 * Reads one graphql {@link FieldDefinition}, and maps it into a {@link FieldType}
 	 * 
 	 * @param fieldDef
@@ -460,4 +452,52 @@ public class DocumentParser {
 		return basePackage + "." + name;
 	}
 
+	/**
+	 * This method add an {@link ObjectType} for each GraphQL interface, to the list of objects to create. The name of
+	 * the objet is typically the name of the interface, suffixed by "Impl". A test is done to insure that there is no
+	 * "name collision", that is: that InterfaceNameImpl doesn't exist. If there is a collision, the method attempts to
+	 * suffix Impl1, then Impl2... until there is no collision.<BR/>
+	 * Note: this is useful only for the client code generation (not for the server one)
+	 */
+	void defineDefaultInterfaceImplementationClassName() {
+		String objectName = "interface name to define";
+		for (InterfaceType i : interfaceTypes) {
+			String defaultName = i.getName() + "Impl";
+			int count = 0;
+			boolean nameFound = true;
+
+			while (nameFound) {
+				objectName = defaultName + (count == 0 ? "" : count);
+				count += 1;
+				nameFound = false;
+				for (ObjectType o : objectTypes) {
+					if (o.getName().equals(objectName)) {
+						nameFound = true;
+					}
+				} // for (ObjectType)
+			} // while
+
+			// We've found a non used name for the interface implementation.
+			ObjectType o = new ObjectType(basePackage);
+			o.setName(objectName);
+			List<String> interfaces = new ArrayList<>();
+			interfaces.add(i.getName());
+			o.setImplementz(interfaces);
+			o.setFields(i.getFields());
+			objectTypes.add(o);
+
+			i.setDefaultImplementation(o);
+
+		} // for
+	}
+
+	/**
+	 * Returns the type for the given name
+	 * 
+	 * @param typeName
+	 * @return
+	 */
+	public graphql.mavenplugin.language.Type getType(String typeName) {
+		return types.get(typeName);
+	}
 }

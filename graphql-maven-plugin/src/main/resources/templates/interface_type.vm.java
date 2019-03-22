@@ -8,8 +8,8 @@ import java.util.List;
 public interface ${object.name} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
 #foreach ($field in $object.fields)
 
-	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.javaClassSimpleName}#if(${field.list})>#end ${field.name});
+	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name});
 
-	public #if(${field.list})List<#end${field.type.javaClassSimpleName}#if(${field.list})>#end get${field.pascalCaseName}();
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end get${field.pascalCaseName}();
 #end
 }

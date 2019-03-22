@@ -1,9 +1,8 @@
 package ${package};
-#macro(inputParams)#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.javaClassSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end#end
+#macro(inputParams)#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.classSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end#end
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 
 /**
@@ -19,7 +18,7 @@ public abstract class ${object.name} implements GraphQLQueryResolver {
 	 * This method is expected by the graphql-java framework. It will be called when this ${type} is called. It offers a logging of the call (if in debug mode), 
 	 * or of the call and its parameters (if in trace mode).
 	 */
-	public ${field.type.javaClassSimpleName} ${field.name}(#inputParams()) {
+	public ${field.type.classSimpleName} ${field.name}(#inputParams()) {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of $type '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.name}#end);
 		} else if (logger.isDebugEnabled()) {
@@ -33,7 +32,7 @@ public abstract class ${object.name} implements GraphQLQueryResolver {
 	 * This method is called when this ${type} is called. The implementation code of the server part should create a class extending this ${type}
 	 * {@link ${object.name}), and implement the actual ${type}.
 	 */
-	abstract protected ${field.type.javaClassSimpleName} do${field.pascalCaseName}(#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.javaClassSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end);
+	abstract protected ${field.type.classSimpleName} do${field.pascalCaseName}(#foreach ($inputParameter in $field.inputParameters)${inputParameter.type.classSimpleName} ${inputParameter.name}#if($foreach.hasNext), #end#end);
 	
 #end
 }

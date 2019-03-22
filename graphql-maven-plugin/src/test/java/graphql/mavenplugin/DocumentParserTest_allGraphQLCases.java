@@ -23,8 +23,8 @@ import graphql.language.ObjectTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
-import graphql.mavenplugin.language.FieldType;
 import graphql.mavenplugin.language.ObjectType;
+import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCasesSpringConfiguration;
 import graphql.parser.Parser;
@@ -68,8 +68,8 @@ class DocumentParserTest_allGraphQLCases {
 		int i = documentParser.parseOneDocument(doc);
 
 		// Verification
-		assertEquals(10, i, "Nb classes are generated");
-		assertEquals(3, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(13, i, "Nb classes are generated");
+		assertEquals(6, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(1, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
@@ -88,6 +88,8 @@ class DocumentParserTest_allGraphQLCases {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// We need to parse the whole document, to get the types map filled.
+		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.objectTypes = new ArrayList<ObjectType>();
 
@@ -135,6 +137,8 @@ class DocumentParserTest_allGraphQLCases {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// We need to parse the whole document, to get the types map filled.
+		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.objectTypes = new ArrayList<ObjectType>();
 
@@ -215,6 +219,8 @@ class DocumentParserTest_allGraphQLCases {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// We need to parse the whole document, to get the types map filled.
+		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.queryTypes = new ArrayList<ObjectType>();
 
@@ -302,6 +308,8 @@ class DocumentParserTest_allGraphQLCases {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// We need to parse the whole document, to get the types map filled.
+		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.mutationTypes = new ArrayList<ObjectType>();
 
@@ -335,6 +343,8 @@ class DocumentParserTest_allGraphQLCases {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// We need to parse the whole document, to get the types map filled.
+		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.subscriptionTypes = new ArrayList<ObjectType>();
 
@@ -373,10 +383,10 @@ class DocumentParserTest_allGraphQLCases {
 					"field itemMandatory is " + itemMandatory + " (for " + fieldDescForJUnitMessage + ")");
 		}
 
-		FieldType fieldType = field.getType();
+		Type fieldType = field.getType();
 		assertEquals(typeName, fieldType.getName(),
 				"type name is " + typeName + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(classname, fieldType.getJavaClassFullName(),
+		assertEquals(classname, fieldType.getClassFullName(),
 				"Class for field type is " + classname + " (for " + fieldDescForJUnitMessage + ")");
 	}
 
@@ -395,10 +405,10 @@ class DocumentParserTest_allGraphQLCases {
 					"itemMandatory is " + itemMandatory + " (for " + intputParamDescForJUnitMessage + ")");
 		}
 
-		FieldType fieldType = inputValue.getType();
+		Type fieldType = inputValue.getType();
 		assertEquals(typeName, fieldType.getName(),
 				"name is " + typeName + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(classname, fieldType.getJavaClassFullName(),
+		assertEquals(classname, fieldType.getClassFullName(),
 				"Class type is " + classname + " (for " + intputParamDescForJUnitMessage + ")");
 
 		assertEquals(defaultValue, inputValue.getDefaultValue(),

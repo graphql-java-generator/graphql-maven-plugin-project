@@ -5,6 +5,7 @@ package graphql.mavenplugin.language;
 
 import java.util.List;
 
+import graphql.mavenplugin.DocumentParser;
 import lombok.Data;
 
 /**
@@ -27,6 +28,12 @@ import lombok.Data;
 @Data
 public class Field {
 
+	/**
+	 * The {@link DocumentParser} instance, which will allow to get the {@link Type} of the field, from its typeName,
+	 * after the whole parsing is finished
+	 */
+	DocumentParser documentParser;
+
 	/** The name of the field */
 	private String name;
 
@@ -34,7 +41,7 @@ public class Field {
 	 * The type of this field. This type is either the type of the field (if it's not a list), or the type of the items
 	 * in the list (if it's a list)
 	 */
-	private FieldType type;
+	private String typeName;
 
 	/** All fields in an object may have parameters. A parameter is actually a field. */
 	private List<Field> inputParameters = null;
@@ -53,6 +60,23 @@ public class Field {
 
 	/** Contains the default value.. Only used if this field is a list. */
 	private String defaultValue = null;
+
+	public Field(DocumentParser documentParser) {
+		this.documentParser = documentParser;
+	}
+
+	/**
+	 * Retrieves the {@link Type} for this field
+	 * 
+	 * @return
+	 */
+	public Type getType() {
+		Type type = documentParser.getType(typeName);
+		if (type == null) {
+			throw new NullPointerException("Could not find any Type of name '" + typeName + "'");
+		}
+		return type;
+	}
 
 	/**
 	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case

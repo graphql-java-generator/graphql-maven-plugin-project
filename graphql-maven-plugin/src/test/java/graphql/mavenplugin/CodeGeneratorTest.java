@@ -73,8 +73,8 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
 
-		ObjectType object1 = new ObjectType();
-		ObjectType object2 = new ObjectType();
+		ObjectType object1 = new ObjectType(basePackage);
+		ObjectType object2 = new ObjectType(basePackage);
 		List<ObjectType> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);

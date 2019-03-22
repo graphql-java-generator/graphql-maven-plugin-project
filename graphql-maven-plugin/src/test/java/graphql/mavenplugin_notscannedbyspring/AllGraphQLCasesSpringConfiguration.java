@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 public class AllGraphQLCasesSpringConfiguration extends AbstractSpringConfiguration {
 
 	public AllGraphQLCasesSpringConfiguration() {
-		// super("allGraphQLCases.graphqls");
 		super("src/test/resources/allGraphQLCases.graphqls");
 	}
 }

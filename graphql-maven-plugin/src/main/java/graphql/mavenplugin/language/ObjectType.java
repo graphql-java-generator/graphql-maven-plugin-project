@@ -23,17 +23,38 @@ import lombok.Data;
  * @author EtienneSF
  */
 @Data
-public class ObjectType {
+public class ObjectType implements Type {
 
 	/** The name of the object type */
 	private String name;
 
-	/** True if this object is a graphql interface. Default value is false, meaning: this objet is a regular object */
-	boolean interfaceType = false;
+	/** The name of the package for this class */
+	private String packageName;
 
 	/** List of the names of the ObjetType, that are implemented by this object */
 	private List<String> implementz = new ArrayList<>();
 
 	/** The fields for this object type */
-	private List<Field> fields = new ArrayList<>();;
+	private List<Field> fields = new ArrayList<>();
+
+	public ObjectType(String packageName) {
+		this.packageName = packageName;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getClassSimpleName() {
+		return name;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getConcreteClassSimpleName() {
+		return getClassSimpleName();
+	}
+
+	@Override
+	public String getClassFullName() {
+		return packageName + "." + getClassSimpleName();
+	}
 }
