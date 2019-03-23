@@ -41,6 +41,10 @@ public class ScalarType implements Type {
 	 */
 	boolean preDefined;
 
+	public GraphQlType getGraphQlType() {
+		return GraphQlType.SCALAR;
+	}
+
 	@Override
 	public String getClassFullName() {
 		return packageName + "." + classSimpleName;

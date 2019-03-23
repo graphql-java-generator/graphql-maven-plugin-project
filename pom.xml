@@ -125,10 +125,15 @@
 			</dependency>
 
 
-			<!-- dependendencies for graphql client project -->
+			<!-- dependendencies within this project -->
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java</groupId>
+				<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

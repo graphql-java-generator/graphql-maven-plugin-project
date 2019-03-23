@@ -46,6 +46,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- dependendencies within this project -->
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-client</artifactId>
+		</dependency>
+
 		<!-- Dependencies for GraphQL -->
 		<dependency>
 			<groupId>com.graphql-java</groupId>

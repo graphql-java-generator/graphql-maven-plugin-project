@@ -63,6 +63,7 @@ type allFieldCases {
 type Human implements Character, Commented {
     id: ID!
     name: String!
+    bestFriend: Character
     friends: [Character]
 	nbComments: int
     comments: [String]

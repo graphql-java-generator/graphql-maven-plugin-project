@@ -41,6 +41,10 @@ public class ObjectType implements Type {
 		this.packageName = packageName;
 	}
 
+	public GraphQlType getGraphQlType() {
+		return GraphQlType.OBJECT;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String getClassSimpleName() {

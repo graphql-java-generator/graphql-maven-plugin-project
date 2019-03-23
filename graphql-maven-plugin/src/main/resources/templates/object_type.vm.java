@@ -9,8 +9,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class ${object.name} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
 
 #foreach ($field in $object.fields)
-	#if(${field.list})@JsonDeserialize(contentAs = ${field.type.concreteClassSimpleName}.class)#end
+#if(!${field.list}  &&  ${field.type.graphQlType.toString()} == "INTERFACE")
+	@JsonDeserialize(as = ${field.type.concreteClassSimpleName}.class)
+#end 
+#if(${field.list})
+	@JsonDeserialize(contentAs = ${field.type.concreteClassSimpleName}.class)
+#end 
 	#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name};
+
+	
 #end
 
 #foreach ($field in $object.fields)

@@ -34,6 +34,10 @@ public class EnumType implements Type {
 		this.packageName = packageName;
 	}
 
+	public GraphQlType getGraphQlType() {
+		return GraphQlType.ENUM;
+	}
+
 	@Override
 	public String getClassSimpleName() {
 		return name;

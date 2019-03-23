@@ -10,8 +10,23 @@ package graphql.mavenplugin.language;
  */
 public interface Type {
 
-	/** The name of the object type */
+	public enum GraphQlType {
+		OBJECT, INTERFACE, SCALAR, ENUM
+	}
+
+	/**
+	 * The name of the object type
+	 * 
+	 * @return
+	 */
 	public String getName();
+
+	/**
+	 * The GraphQlType for this type
+	 * 
+	 * @return
+	 */
+	public GraphQlType getGraphQlType();
 
 	/**
 	 * The java class simple name for this type. It may be and interface or a concrete class. <BR/>

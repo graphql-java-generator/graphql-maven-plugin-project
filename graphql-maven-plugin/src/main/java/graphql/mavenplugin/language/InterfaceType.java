@@ -57,4 +57,13 @@ public class InterfaceType extends ObjectType {
 		super(packageName);
 	}
 
+	public GraphQlType getGraphQlType() {
+		return GraphQlType.INTERFACE;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getConcreteClassSimpleName() {
+		return defaultImplementation.getClassSimpleName();
+	}
 }

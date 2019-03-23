@@ -155,7 +155,7 @@ class DocumentParserTest_allGraphQLCases {
 		assertEquals("Commented", type.getImplementz().get(1), "Second implementation");
 
 		// Field
-		assertEquals(7, type.getFields().size(), "Number of fields");
+		assertEquals(8, type.getFields().size(), "Number of fields");
 
 		int j = 0; // The first field is 0, see ++j below
 
@@ -164,6 +164,8 @@ class DocumentParserTest_allGraphQLCases {
 		checkField(type, j++, "id", false, true, null, "ID", String.class.getName());
 		// name: String!
 		checkField(type, j++, "name", false, true, null, "String", String.class.getName());
+		// bestFriend: Character
+		checkField(type, j++, "bestFriend", false, false, null, "Character", basePackage + ".Character");
 		// friends: [Character]
 		checkField(type, j++, "friends", true, false, false, "Character", basePackage + ".Character");
 		// nbComments: int
