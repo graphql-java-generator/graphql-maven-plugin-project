@@ -36,7 +36,7 @@ public class GraphqlClient implements CommandLineRunner {
 				.query("{hero(episode:NEWHOPE) {id appearsIn friends {name}}}").build();
 		ExecutionResult executionResult = graphQL.execute(executionInput);
 		Object data = executionResult.getData();
-		logger.info(marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
+		logger.info(data);
 		logger.info("Application Finished !!");
 	}
 
