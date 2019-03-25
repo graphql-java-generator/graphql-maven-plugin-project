@@ -219,7 +219,7 @@ public class DocumentParser {
 			List<String> mutationObjectNames, List<String> subscriptionObjectNames) {
 
 		for (OperationTypeDefinition opDef : schemaDef.getOperationTypeDefinitions()) {
-			TypeName type = (TypeName) opDef.getTypeName();
+			TypeName type = (TypeName) opDef.getType();
 			switch (opDef.getName()) {
 			case "query":
 				queryObjectNames.add(type.getName());

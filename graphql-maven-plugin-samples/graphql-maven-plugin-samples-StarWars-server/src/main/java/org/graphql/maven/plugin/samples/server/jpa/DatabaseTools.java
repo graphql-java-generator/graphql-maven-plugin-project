@@ -58,7 +58,9 @@ public class DatabaseTools {
 		// databaseTester.setDataSet(new CsvURLDataSet(url));
 		Path dir = Files.createTempDirectory(FILE_PREFIX);
 		createTempFileForCSV(dir, "droid.csv");
-		createTempFileForCSV(dir, "HUMAN.csv");
+		createTempFileForCSV(dir, "human.csv");
+		createTempFileForCSV(dir, "episode.csv");
+		createTempFileForCSV(dir, "media.csv");
 		createTempFileForCSV(dir, "table-ordering.txt");
 		// IDataSet dataSets[] = { new CsvDataSet(createTempFileForCSV(dir, "data/droid.csv", "droid")),
 		// new CsvDataSet(createTempFileForCSV(dir, "data/human.csv", "human")), };

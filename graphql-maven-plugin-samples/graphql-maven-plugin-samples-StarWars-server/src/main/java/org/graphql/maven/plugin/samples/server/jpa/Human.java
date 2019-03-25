@@ -18,6 +18,8 @@ public class Human {
 
 	String name;
 
+	String friends;
+
 	String homePlanet;
 
 	String episodes;
@@ -60,5 +62,13 @@ public class Human {
 
 	public void setEpisodes(String episodes) {
 		this.episodes = episodes;
+	}
+
+	public String getFriends() {
+		return friends;
+	}
+
+	public void setFriends(String friends) {
+		this.friends = friends;
 	}
 }

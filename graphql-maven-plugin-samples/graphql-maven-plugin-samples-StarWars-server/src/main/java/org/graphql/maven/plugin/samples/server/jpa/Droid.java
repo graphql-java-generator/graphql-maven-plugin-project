@@ -20,7 +20,7 @@ public class Droid {
 
 	String primaryFunction;
 
-	String episodes;
+	String episode;
 
 	public String getId() {
 		return id;
@@ -54,12 +54,12 @@ public class Droid {
 		this.friends = friends;
 	}
 
-	public String getEpisodes() {
-		return episodes;
+	public String getEpisode() {
+		return episode;
 	}
 
-	public void setEpisodes(String episodes) {
-		this.episodes = episodes;
+	public void setEpisode(String episode) {
+		this.episode = episode;
 	}
 
 }
