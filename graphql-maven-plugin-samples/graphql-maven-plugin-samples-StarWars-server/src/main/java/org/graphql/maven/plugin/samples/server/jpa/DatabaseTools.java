@@ -13,7 +13,10 @@ import java.sql.SQLException;
 
 import org.dbunit.IDatabaseTester;
 import org.dbunit.JdbcDatabaseTester;
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.csv.CsvDataSet;
+import org.dbunit.operation.DatabaseOperation;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -41,11 +44,14 @@ public class DatabaseTools {
 	 * @throws Exception
 	 */
 	public void initDatabase() throws Exception {
+		// try {
 		IDatabaseTester databaseTester = new JdbcDatabaseTester(driverClassName, url, username, password);
+		IDatabaseConnection iConn = databaseTester.getConnection();
 
 		// Important: auto-commit is necessary to keep the dbsetup change in the database
 		boolean autoCommitBefore = databaseTester.getConnection().getConnection().getAutoCommit();
-		databaseTester.getConnection().getConnection().setAutoCommit(true);
+		iConn.getConnection().setAutoCommit(true);
+		iConn.getConfig().setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, Boolean.TRUE);
 
 		// Let's load our data
 		// URL url = new ClassPathResource("starwars_data").getURL();
@@ -56,13 +62,25 @@ public class DatabaseTools {
 		createTempFileForCSV(dir, "table-ordering.txt");
 		// IDataSet dataSets[] = { new CsvDataSet(createTempFileForCSV(dir, "data/droid.csv", "droid")),
 		// new CsvDataSet(createTempFileForCSV(dir, "data/human.csv", "human")), };
-		databaseTester.setDataSet(new CsvDataSet(dir.toFile()));
+		// databaseTester.setDataSet(new CsvDataSet(dir.toFile()));
 
 		// will call default setUpOperation
-		databaseTester.onSetup();
+		// databaseTester.onSetup();
+		DatabaseOperation.CLEAN_INSERT.execute(iConn, new CsvDataSet(dir.toFile()));
 
 		// and we restore the autoCommit status before leaving
 		databaseTester.getConnection().getConnection().setAutoCommit(autoCommitBefore);
+		// } catch (Exception e) {
+		// // We rethrow the exception, with the proper error, as Spring only display one cause exception. And dbunit
+		// // puts the important message... in the second level cause exception
+		// StringBuilder sb = new StringBuilder();
+		// Throwable t = e;
+		// while (t != null) {
+		// sb.append(t.getMessage()).append(" / ");
+		// t = t.getCause();
+		// }
+		// throw new RuntimeException(sb.toString());
+		// }
 	}
 
 	/**
