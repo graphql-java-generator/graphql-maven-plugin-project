@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.graphql.maven.plugin.samples.StarWars.server;
+package org.graphql.maven.plugin.samples.server;
 
 import java.util.ArrayList;
 import java.util.List;

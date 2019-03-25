@@ -2,3 +2,7 @@
 target/
 .classpath
 .project
+
+
+# ignore temporary files (especially office's one)
+~$*
