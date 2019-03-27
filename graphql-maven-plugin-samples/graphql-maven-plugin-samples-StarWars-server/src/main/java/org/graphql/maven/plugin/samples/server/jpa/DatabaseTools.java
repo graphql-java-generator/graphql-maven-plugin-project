@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabaseTools {
 
+	/** The logger for this class */
 	Logger logger = LogManager.getLogger();
 
 	final String FILE_PREFIX = "GraphQLServer";

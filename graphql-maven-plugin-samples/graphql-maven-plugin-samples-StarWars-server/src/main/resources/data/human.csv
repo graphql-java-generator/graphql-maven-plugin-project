@@ -1,213 +1,213 @@
 name,id,home_planet,best_friend_id,episode
-Ask Aak,1,Malastare,null,
-Amiral Gial Ackbar,2,,1,
-Stass Allie,3,,2,
-Mas Amedda,4,,3,
-Padm� Amidala,5,,4,
-Nom Anor,6,,5,
-Capitaine Raymus Antilles,7,,6,4
-Wedge Antilles,8,,7,
-Reine Apailana,9,Naboo,8,
-Passel Argente,10,,9,3
-Ello Asty,11,,10,
-Ponda Baba,12,,11,3
-Hermione Bagwa,13,,12,
-Dark Bane,14,,13,
-Kirster Banai,15,,14,
-Barada,16,,15,3
-Sio Bibble,17,,16,
-Depa Billaba,18,,17,
-Jar Jar Binks,19,,18,
-Walex Blissex,20,,19,
-Bobbajo,21,Jakku,20,
-Bossk,22,,21,3
-Major Taslin Brance,23,,22,
-Ezra Bridger,24,,23,
-Lando Calrissian,25,Ando,24,
-Joruus C'Baoth,26,,25,3
-Chewbacca,27,Kashyyyk,26,
-Chef Chirpa,28,,27,
-G�n�ral Airen Cracken,29,Ando,28,
-Salacious Crumb,30,,29,3
-Yarna D'Al'Gargan,31,,30,3
-Figrin D'An,32,Tatooine,31,3
-Poe Dameron,33,,32,
-Vober Dand,34,D'Qar,33,
-Biggs Darklighter,35,,34,
-Lexi Dio,36,,35,
-Lott Dod,37,,36,
-G�n�ral Jan Dodonna,38,,37,
-Daultay Dofine,39,,38,
-Comte Dooku,40,,39,3
-Cin Drallig,41,,40,4
-Kyp Durron,42,,41,
-Hugo EckenerNote 4,43,Naboo,42,
-Major Caluan Ematt,44,,43,
-Docteur Cornelius Evazan,45,,44,3
-Sun Fac,46,,45,
-Soontir Fel,47,,46,
-Boba Fett,48,,47,3
-Jango Fett,49,,48,3
-Borsk Fey'lya,50,,49,
-Finn,51,,50,3
-Kit Fisto,52,,51,
-Fode et Beed,53,Tatooine,52,
-Bib Fortuna,54,,53,3
-Silver Fyre,55,,54,
-Adi Gallia,56,,55,
-Garindan,57,,56,3
-Gragra,58,,57,3
-Greeata,59,Tatooine,58,3
-Greedo,60,,59,3
-G�n�ral Grievous,61,,60,3
-Grummgar,62,,61,
-Nute Gunray,63,,62,3
-Guri,64,,63,
-Rune Haako,65,,64,3
-San Hill,66,,65,3
-Corran Horn,67,,66,
-G�n�ral Armitage Hux,68,,67,
-L'Inquisiteur,69,,68,3
-Ysanne Isard,70,,69,
-Prince Isolder,71,,70,
-Capitaine Sidon Ithano,72,,71,3
-J'Quille,73,,72,3
-Jabba le Hutt,74,Tatooine,73,4
-Mara Jade,75,,74,
-Reine Jamillia,76,Naboo,75,
-Kanan Jarrus,77,,76,
-Moff Tiaan Jerjerrod,78,,77,
-Dexter Jettster,79,,78,
-Jira,80,,79,4
-Zett Jukassa,81,,80,
-Docteur Harter Kalonia,82,,81,
-Maz Kanata,83,,82,3
-Kir Kanos,84,,83,
-Volfe Karkko,85,,84,
-Talon Karrde,86,,85,
-Kyle Katarn,87,,86,4
-Agen Kolar,88,,87,
-Plo Koon,89,,88,
-Eeth Koth,90,,89,
-Labria,91,,90,3
-Tsavong Lah,92,,91,
-Owen et BeruNote 5 Lars,93,,92,2
-Cliegg Lars,94,Tatooine,93,
-Tasu Leech,95,,94,3
-Bevel Lemelisk,96,,95,
-Lobot,97,Ando,96,3
-Logray,98,,97,
-G�n�ral Crix Madine,99,,98,
-Shu Mai,100,,99,3
-Malakili,101,,100,3
-Dark Maul,102,Naboo,101,3
-Droopy McCool,103,,102,3
-Lyn Me,104,Tatooine,103,3
-Tion Medon,105,Utapau,104,
-Lieutenant Dopheld Mitaka,106,,105,3
-Ephant Mon,107,,106,3
-Sly Moore,108,,107,
-Mon Mothma,109,,108,
-Amiral Conan Motti,110,,109,
-Muftak,111,,110,4
-Boss Nass,112,,111,
-Ruwee  Jobal et Sola Naberrie,113,123,112,5
-Capitaine Lorth Needa,114,,113,
-Bazine Netal,115,,114,3
-Jocasta Nu,116,Coruscant,115,
-Ten Numb,117,,116,
-Nien Nunb,118,Ando,117,
-Barriss Offee,119,,118,3
-Ric Oli�,120,,119,3
-Oola,121,,120,3
-Garazeb Orrelios,122,,121,
-Bail Organa,123,Alderaan,122,
-Princesse Leia Organa,124,,123,2
-Amiral Kendal Ozzel,125,,124,
-Sheev Palpatine,126,Naboo,125,3
-Capitaine Quarsh Panaka,127,Naboo,126,
-Baron Notluwiski Papanoida,128,,127,
-Chi Eekway Papanoida,129,,128,
-Jess Pava,130,,129,
-Gilad Pellaeon,131,,130,
-Sate Pestage,132,,131,
-Capitaine Phasma,133,,132,
-Even Piell,134,,133,
-Amiral Firmus Piett,135,Endor,134,
-Sarco Plank,136,Jakku,135,
-Unkar Plutt,137,,136,3
-Poggle le Bref,138,,137,3
-Yarael Poof,139,Naboo,138,
-Oppo Rancisis,140,,139,
-Rappertunie,141,,140,3
-Max Rebo,142,,141,
-Kylo Ren,143,,142,4
-Rey,144,Jakku,143,
-Capitaine Rex,145,,144,3
-Dash Rendar,146,,145,3
-G�n�ral Carlist Rieekan,147,Hoth,146,
-Horox Ryyder,148,Tatooine,147,
-Naga Sadow,149,Yavin,148,
-Ko Sai,150,,149,
-Lor San Tekka,151,,150,3
-Rystall Sant,152,Tatooine,151,3
-Sab�,153,,152,
-Sebulba,154,,153,
-Aayla Secura,155,,154,
-Korr Sella,156,,155,
-Viqi Shesh,157,Kuat,156,
-Lufta Shif,158,Naboo,157,
-Aurra Sing,159,,158,3
-Anakin Skywalker,160,,159,3
-Luke Skywalker,161,,160,2
-Shmi Skywalker,162,Tatooine,161,3
-Elan Sleazebaggano,163,,162,
-Sy Snootles,164,,163,3
-Anakin Solo,165,,164,4
-Han Solo,166,,165,3
-Jacen et Jaina Solo,167,,166,4
-Tionne Solusar,168,Yavin,167,
-Amiral Statura,169,,168,
-Lama Su,170,,169,
-Bultar Swan,171,,170,
-Hera Syndulla,172,,171,
-Wat Tambor,173,,172,3
-Ahsoka Tano,174,,173,
-Tarfful,175,,174,3
-Sei Taria,176,,175,
-Grand Moff Wilhuff Tarkin,177,,176,
-Capitaine Roos Tarpals,178,Naboo,177,
-Teebo,179,,178,
-Rep Teers,180,,179,
-Booster et Mirax Terrik,181,,180,
-Tessek,182,,181,3
-Bria Tharen,183,,182,
-Grand Amiral Thrawn,184,,183,
-Shaak Ti,185,,184,
-Saesee Tiin,186,,185,
-Tikkes,187,,186,3
-Cindel Towani,188,Endor,187,
-Coleman Trebor,189,,188,
-Stono Tuggs,190,,189,
-Capitaine Gregar Typho,191,,190,
-Bogg Tyrell,192,,191,
-Luminara Unduli,193,,192,3
-Dark Vador,194,,193,2
-Finis Valorum,195,,194,
-G�n�ral Maximillian Veers,196,,195,
-Tahiri Veila,197,,196,4
-Asajj Ventress,198,,197,
-Wald,199,,198,
-Wicket Warrick,200,,199,
-Watto,201,,200,3
-Taun We,202,,201,3
-Zam Wesell,203,,202,2
-Snap Wexley,204,,203,
-Mace Windu,205,,204,
-WinterNote 6,206,,205,
-Prince Xizor,207,,206,
-Yaddle,208,,207,3
-Yoda,209,,208,3
-Grand Moff Zsinj,210,,209,3
-Zuckuss,211,,210,4
-Zuvio,212,Jakku,211,
+Ask Aak,1,Malastare,null,JEDI
+Amiral Gial Ackbar,2,,1,NEWHOPE
+Stass Allie,3,,2,EMPIRE
+Mas Amedda,4,,3,JEDI
+Padm� Amidala,5,,4,NEWHOPE
+Nom Anor,6,,5,EMPIRE
+Capitaine Raymus Antilles,7,,6,JEDI
+Wedge Antilles,8,,7,NEWHOPE
+Reine Apailana,9,Naboo,8,EMPIRE
+Passel Argente,10,,9,JEDI
+Ello Asty,11,,10,NEWHOPE
+Ponda Baba,12,,11,EMPIRE
+Hermione Bagwa,13,,12,JEDI
+Dark Bane,14,,13,NEWHOPE
+Kirster Banai,15,,14,EMPIRE
+Barada,16,,15,JEDI
+Sio Bibble,17,,16,NEWHOPE
+Depa Billaba,18,,17,EMPIRE
+Jar Jar Binks,19,,18,JEDI
+Walex Blissex,20,,19,NEWHOPE
+Bobbajo,21,Jakku,20,EMPIRE
+Bossk,22,,21,JEDI
+Major Taslin Brance,23,,22,NEWHOPE
+Ezra Bridger,24,,23,EMPIRE
+Lando Calrissian,25,Ando,24,JEDI
+Joruus C'Baoth,26,,25,NEWHOPE
+Chewbacca,27,Kashyyyk,26,EMPIRE
+Chef Chirpa,28,,27,JEDI
+G�n�ral Airen Cracken,29,Ando,28,NEWHOPE
+Salacious Crumb,30,,29,EMPIRE
+Yarna D'Al'Gargan,31,,30,JEDI
+Figrin D'An,32,Tatooine,31,NEWHOPE
+Poe Dameron,33,,32,EMPIRE
+Vober Dand,34,D'Qar,33,JEDI
+Biggs Darklighter,35,,34,NEWHOPE
+Lexi Dio,36,,35,EMPIRE
+Lott Dod,37,,36,JEDI
+G�n�ral Jan Dodonna,38,,37,NEWHOPE
+Daultay Dofine,39,,38,EMPIRE
+Comte Dooku,40,,39,JEDI
+Cin Drallig,41,,40,NEWHOPE
+Kyp Durron,42,,41,EMPIRE
+Hugo EckenerNote 4,43,Naboo,42,JEDI
+Major Caluan Ematt,44,,43,NEWHOPE
+Docteur Cornelius Evazan,45,,44,EMPIRE
+Sun Fac,46,,45,JEDI
+Soontir Fel,47,,46,NEWHOPE
+Boba Fett,48,,47,EMPIRE
+Jango Fett,49,,48,JEDI
+Borsk Fey'lya,50,,49,NEWHOPE
+Finn,51,,50,EMPIRE
+Kit Fisto,52,,51,JEDI
+Fode et Beed,53,Tatooine,52,NEWHOPE
+Bib Fortuna,54,,53,EMPIRE
+Silver Fyre,55,,54,JEDI
+Adi Gallia,56,,55,NEWHOPE
+Garindan,57,,56,EMPIRE
+Gragra,58,,57,JEDI
+Greeata,59,Tatooine,58,NEWHOPE
+Greedo,60,,59,EMPIRE
+G�n�ral Grievous,61,,60,JEDI
+Grummgar,62,,61,NEWHOPE
+Nute Gunray,63,,62,EMPIRE
+Guri,64,,63,JEDI
+Rune Haako,65,,64,NEWHOPE
+San Hill,66,,65,EMPIRE
+Corran Horn,67,,66,JEDI
+G�n�ral Armitage Hux,68,,67,NEWHOPE
+L'Inquisiteur,69,,68,EMPIRE
+Ysanne Isard,70,,69,JEDI
+Prince Isolder,71,,70,NEWHOPE
+Capitaine Sidon Ithano,72,,71,EMPIRE
+J'Quille,73,,72,JEDI
+Jabba le Hutt,74,Tatooine,73,NEWHOPE
+Mara Jade,75,,74,EMPIRE
+Reine Jamillia,76,Naboo,75,JEDI
+Kanan Jarrus,77,,76,NEWHOPE
+Moff Tiaan Jerjerrod,78,,77,EMPIRE
+Dexter Jettster,79,,78,JEDI
+Jira,80,,79,NEWHOPE
+Zett Jukassa,81,,80,EMPIRE
+Docteur Harter Kalonia,82,,81,JEDI
+Maz Kanata,83,,82,NEWHOPE
+Kir Kanos,84,,83,EMPIRE
+Volfe Karkko,85,,84,JEDI
+Talon Karrde,86,,85,NEWHOPE
+Kyle Katarn,87,,86,EMPIRE
+Agen Kolar,88,,87,JEDI
+Plo Koon,89,,88,NEWHOPE
+Eeth Koth,90,,89,EMPIRE
+Labria,91,,90,JEDI
+Tsavong Lah,92,,91,NEWHOPE
+Owen et BeruNote 5 Lars,93,,92,EMPIRE
+Cliegg Lars,94,Tatooine,93,JEDI
+Tasu Leech,95,,94,NEWHOPE
+Bevel Lemelisk,96,,95,EMPIRE
+Lobot,97,Ando,96,JEDI
+Logray,98,,97,NEWHOPE
+G�n�ral Crix Madine,99,,98,EMPIRE
+Shu Mai,100,,99,JEDI
+Malakili,101,,100,NEWHOPE
+Dark Maul,102,Naboo,101,EMPIRE
+Droopy McCool,103,,102,JEDI
+Lyn Me,104,Tatooine,103,NEWHOPE
+Tion Medon,105,Utapau,104,EMPIRE
+Lieutenant Dopheld Mitaka,106,,105,JEDI
+Ephant Mon,107,,106,NEWHOPE
+Sly Moore,108,,107,EMPIRE
+Mon Mothma,109,,108,JEDI
+Amiral Conan Motti,110,,109,NEWHOPE
+Muftak,111,,110,EMPIRE
+Boss Nass,112,,111,JEDI
+Ruwee  Jobal et Sola Naberrie,113,123,112,NEWHOPE
+Capitaine Lorth Needa,114,,113,EMPIRE
+Bazine Netal,115,,114,JEDI
+Jocasta Nu,116,Coruscant,115,NEWHOPE
+Ten Numb,117,,116,EMPIRE
+Nien Nunb,118,Ando,117,JEDI
+Barriss Offee,119,,118,NEWHOPE
+Ric Oli�,120,,119,EMPIRE
+Oola,121,,120,JEDI
+Garazeb Orrelios,122,,121,NEWHOPE
+Bail Organa,123,Alderaan,122,EMPIRE
+Princesse Leia Organa,124,,123,JEDI
+Amiral Kendal Ozzel,125,,124,NEWHOPE
+Sheev Palpatine,126,Naboo,125,EMPIRE
+Capitaine Quarsh Panaka,127,Naboo,126,JEDI
+Baron Notluwiski Papanoida,128,,127,NEWHOPE
+Chi Eekway Papanoida,129,,128,EMPIRE
+Jess Pava,130,,129,JEDI
+Gilad Pellaeon,131,,130,NEWHOPE
+Sate Pestage,132,,131,EMPIRE
+Capitaine Phasma,133,,132,JEDI
+Even Piell,134,,133,NEWHOPE
+Amiral Firmus Piett,135,Endor,134,EMPIRE
+Sarco Plank,136,Jakku,135,JEDI
+Unkar Plutt,137,,136,NEWHOPE
+Poggle le Bref,138,,137,EMPIRE
+Yarael Poof,139,Naboo,138,JEDI
+Oppo Rancisis,140,,139,NEWHOPE
+Rappertunie,141,,140,EMPIRE
+Max Rebo,142,,141,JEDI
+Kylo Ren,143,,142,NEWHOPE
+Rey,144,Jakku,143,EMPIRE
+Capitaine Rex,145,,144,JEDI
+Dash Rendar,146,,145,NEWHOPE
+G�n�ral Carlist Rieekan,147,Hoth,146,EMPIRE
+Horox Ryyder,148,Tatooine,147,JEDI
+Naga Sadow,149,Yavin,148,NEWHOPE
+Ko Sai,150,,149,EMPIRE
+Lor San Tekka,151,,150,JEDI
+Rystall Sant,152,Tatooine,151,NEWHOPE
+Sab�,153,,152,EMPIRE
+Sebulba,154,,153,JEDI
+Aayla Secura,155,,154,NEWHOPE
+Korr Sella,156,,155,EMPIRE
+Viqi Shesh,157,Kuat,156,JEDI
+Lufta Shif,158,Naboo,157,NEWHOPE
+Aurra Sing,159,,158,EMPIRE
+Anakin Skywalker,160,,159,JEDI
+Luke Skywalker,161,,160,NEWHOPE
+Shmi Skywalker,162,Tatooine,161,EMPIRE
+Elan Sleazebaggano,163,,162,JEDI
+Sy Snootles,164,,163,NEWHOPE
+Anakin Solo,165,,164,EMPIRE
+Han Solo,166,,165,JEDI
+Jacen et Jaina Solo,167,,166,NEWHOPE
+Tionne Solusar,168,Yavin,167,EMPIRE
+Amiral Statura,169,,168,JEDI
+Lama Su,170,,169,NEWHOPE
+Bultar Swan,171,,170,EMPIRE
+Hera Syndulla,172,,171,JEDI
+Wat Tambor,173,,172,NEWHOPE
+Ahsoka Tano,174,,173,EMPIRE
+Tarfful,175,,174,JEDI
+Sei Taria,176,,175,NEWHOPE
+Grand Moff Wilhuff Tarkin,177,,176,EMPIRE
+Capitaine Roos Tarpals,178,Naboo,177,JEDI
+Teebo,179,,178,NEWHOPE
+Rep Teers,180,,179,EMPIRE
+Booster et Mirax Terrik,181,,180,JEDI
+Tessek,182,,181,NEWHOPE
+Bria Tharen,183,,182,EMPIRE
+Grand Amiral Thrawn,184,,183,JEDI
+Shaak Ti,185,,184,NEWHOPE
+Saesee Tiin,186,,185,EMPIRE
+Tikkes,187,,186,JEDI
+Cindel Towani,188,Endor,187,NEWHOPE
+Coleman Trebor,189,,188,EMPIRE
+Stono Tuggs,190,,189,JEDI
+Capitaine Gregar Typho,191,,190,NEWHOPE
+Bogg Tyrell,192,,191,EMPIRE
+Luminara Unduli,193,,192,JEDI
+Dark Vador,194,,193,NEWHOPE
+Finis Valorum,195,,194,EMPIRE
+G�n�ral Maximillian Veers,196,,195,JEDI
+Tahiri Veila,197,,196,NEWHOPE
+Asajj Ventress,198,,197,EMPIRE
+Wald,199,,198,JEDI
+Wicket Warrick,200,,199,NEWHOPE
+Watto,201,,200,EMPIRE
+Taun We,202,,201,JEDI
+Zam Wesell,203,,202,NEWHOPE
+Snap Wexley,204,,203,EMPIRE
+Mace Windu,205,,204,JEDI
+WinterNote 6,206,,205,NEWHOPE
+Prince Xizor,207,,206,EMPIRE
+Yaddle,208,,207,JEDI
+Yoda,209,,208,NEWHOPE
+Grand Moff Zsinj,210,,209,EMPIRE
+Zuckuss,211,,210,JEDI
+Zuvio,212,Jakku,211,NEWHOPE
