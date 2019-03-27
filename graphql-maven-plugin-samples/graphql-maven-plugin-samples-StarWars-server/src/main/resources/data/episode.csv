@@ -1,12 +1,4 @@
 id,Title,enumeration,Year,Type
-1,Star Wars,NEWHOPE,1977,Film 
+1,Star Wars,NEWHOPE,1977,Film
 2,The Empire Strikes Back,EMPIRE,1980,Film 
-3,Return of the Jedi,JEDI,1983,Film 
-4,Star Wars: Episode I � The Phantom Menace,,1999,Film 
-5,Star Wars: Episode II � Attack of the Clones,,2002,Film 
-6,Star Wars: Episode III � Revenge of the Sith,,2005,Film 
-7,The Clone Wars,,2008,Film 
-8,Star Wars: The Force Awakens,,2015,Film 
-9,Rogue One,,2016,Film 
-10,Star Wars: The Last Jedi,,2017,Film 
-11,Solo: A Star Wars Story,,2018,Film 
+3,Return of the Jedi,JEDI,1983,Film

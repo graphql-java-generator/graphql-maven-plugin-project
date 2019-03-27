@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.database.DatabaseConfig;
@@ -28,6 +30,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatabaseTools {
 
+	Logger logger = LogManager.getLogger();
+
 	final String FILE_PREFIX = "GraphQLServer";
 
 	String url = "jdbc:h2:mem:testdb";
@@ -43,46 +47,45 @@ public class DatabaseTools {
 	 * 
 	 * @throws Exception
 	 */
-	public void initDatabase() throws Exception {
-		// try {
-		IDatabaseTester databaseTester = new JdbcDatabaseTester(driverClassName, url, username, password);
-		IDatabaseConnection iConn = databaseTester.getConnection();
+	public void initDatabase() {
+		try {
+			IDatabaseTester databaseTester = new JdbcDatabaseTester(driverClassName, url, username, password);
+			IDatabaseConnection iConn = databaseTester.getConnection();
 
-		// Important: auto-commit is necessary to keep the dbsetup change in the database
-		boolean autoCommitBefore = databaseTester.getConnection().getConnection().getAutoCommit();
-		iConn.getConnection().setAutoCommit(true);
-		iConn.getConfig().setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, Boolean.TRUE);
+			// Important: auto-commit is necessary to keep the dbsetup change in the database
+			boolean autoCommitBefore = databaseTester.getConnection().getConnection().getAutoCommit();
+			iConn.getConnection().setAutoCommit(true);
+			iConn.getConfig().setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, Boolean.TRUE);
 
-		// Let's load our data
-		// URL url = new ClassPathResource("starwars_data").getURL();
-		// databaseTester.setDataSet(new CsvURLDataSet(url));
-		Path dir = Files.createTempDirectory(FILE_PREFIX);
-		createTempFileForCSV(dir, "droid.csv");
-		createTempFileForCSV(dir, "human.csv");
-		createTempFileForCSV(dir, "episode.csv");
-		createTempFileForCSV(dir, "media.csv");
-		createTempFileForCSV(dir, "table-ordering.txt");
-		// IDataSet dataSets[] = { new CsvDataSet(createTempFileForCSV(dir, "data/droid.csv", "droid")),
-		// new CsvDataSet(createTempFileForCSV(dir, "data/human.csv", "human")), };
-		// databaseTester.setDataSet(new CsvDataSet(dir.toFile()));
+			// Let's load our data
+			// URL url = new ClassPathResource("starwars_data").getURL();
+			// databaseTester.setDataSet(new CsvURLDataSet(url));
+			Path dir = Files.createTempDirectory(FILE_PREFIX);
+			createTempFileForCSV(dir, "droid.csv");
+			createTempFileForCSV(dir, "human.csv");
+			createTempFileForCSV(dir, "episode.csv");
+			createTempFileForCSV(dir, "human_friends.csv");
+			createTempFileForCSV(dir, "media.csv");
+			createTempFileForCSV(dir, "table-ordering.txt");
+			// IDataSet dataSets[] = { new CsvDataSet(createTempFileForCSV(dir, "data/droid.csv", "droid")),
+			// new CsvDataSet(createTempFileForCSV(dir, "data/human.csv", "human")), };
+			// databaseTester.setDataSet(new CsvDataSet(dir.toFile()));
 
-		// will call default setUpOperation
-		// databaseTester.onSetup();
-		DatabaseOperation.CLEAN_INSERT.execute(iConn, new CsvDataSet(dir.toFile()));
+			// will call default setUpOperation
+			// databaseTester.onSetup();
+			DatabaseOperation.CLEAN_INSERT.execute(iConn, new CsvDataSet(dir.toFile()));
 
-		// and we restore the autoCommit status before leaving
-		databaseTester.getConnection().getConnection().setAutoCommit(autoCommitBefore);
-		// } catch (Exception e) {
-		// // We rethrow the exception, with the proper error, as Spring only display one cause exception. And dbunit
-		// // puts the important message... in the second level cause exception
-		// StringBuilder sb = new StringBuilder();
-		// Throwable t = e;
-		// while (t != null) {
-		// sb.append(t.getMessage()).append(" / ");
-		// t = t.getCause();
-		// }
-		// throw new RuntimeException(sb.toString());
-		// }
+			// and we restore the autoCommit status before leaving
+			databaseTester.getConnection().getConnection().setAutoCommit(autoCommitBefore);
+		} catch (Exception e) {
+			// An error occured. We logged, but don't block the start of the server : very often, the issue is a gap
+			// with the database model. And we need the in-memory database to be started, to check that.
+			Throwable e2 = e;
+			while (e2 != null) {
+				logger.error(e2.getMessage());
+				e2 = e2.getCause();
+			}
+		}
 	}
 
 	/**

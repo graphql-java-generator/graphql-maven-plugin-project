@@ -1,4 +1,2 @@
-droid
 human
-episode
-media
+human_friends
