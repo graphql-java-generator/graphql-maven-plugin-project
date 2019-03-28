@@ -64,9 +64,9 @@ public class DatabaseTools {
 			Path dir = Files.createTempDirectory(FILE_PREFIX);
 			createTempFileForCSV(dir, "character_appears_in.csv");
 			createTempFileForCSV(dir, "droid.csv");
-			createTempFileForCSV(dir, "human.csv");
+			createTempFileForCSV(dir, "character.csv");
 			createTempFileForCSV(dir, "episode.csv");
-			createTempFileForCSV(dir, "human_friends.csv");
+			createTempFileForCSV(dir, "character_friends.csv");
 			createTempFileForCSV(dir, "media.csv");
 			createTempFileForCSV(dir, "table-ordering.txt");
 			// IDataSet dataSets[] = { new CsvDataSet(createTempFileForCSV(dir, "data/droid.csv", "droid")),

@@ -16,7 +16,7 @@
 		<Logger name="graphql" level="info" />
 		<Logger name="org.dbunit" level="info" />
 		<Logger name="org.graphql" level="trace" />
-		<Logger name="org.hibernate" level="debug" />
+		<Logger name="org.hibernate" level="info" />
 		<Root level="info">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" />

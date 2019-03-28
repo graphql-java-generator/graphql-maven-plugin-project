@@ -3,7 +3,8 @@ schema {
 }
 
 type QueryType {
-    human(id: String!): Human
+    hero(episode: Episode): [Character]
+    human(id: String): Human
 }
 
 
@@ -13,12 +14,21 @@ enum Episode {
     JEDI
 }
 
-type Human {
+interface Character {
     id: ID!
     name: String!
-    bestFriend: Human
-    friends: [Human]
-    firstEpisode: Episode
+    bestFriend: Character
+    friends: [Character]
+    firstEpisode: Episode!
+    appearsIn: [Episode]!
+}
+
+type Human implements Character {
+    id: ID!
+    name: String!
+    bestFriend: Character
+    friends: [Character]
+    firstEpisode: Episode!
     appearsIn: [Episode]!
     homePlanet: String
 }
