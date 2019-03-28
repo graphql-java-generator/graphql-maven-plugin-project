@@ -18,8 +18,8 @@ type Human {
     name: String!
     bestFriend: Human
     friends: [Human]
-    #appearsIn: [Episode]!
-    episode: Episode
+    firstEpisode: Episode
+    appearsIn: [Episode]!
     homePlanet: String
 }
 

@@ -1,2 +1,3 @@
 human
 human_friends
+character_appears_in

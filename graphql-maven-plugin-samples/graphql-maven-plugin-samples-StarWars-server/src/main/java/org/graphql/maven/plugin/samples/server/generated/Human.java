@@ -2,10 +2,14 @@ package org.graphql.maven.plugin.samples.server.generated;
 
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
@@ -31,73 +35,19 @@ public class Human {
 	@ManyToMany(targetEntity = Human.class)
 	List<Human> friends;
 
-	@JsonDeserialize(contentAs = Episode.class)
 	@Enumerated(EnumType.STRING)
-	// @ManyToMany
-	// List<Episode> appearsIn;
-	Episode episode;
+	Episode firstEpisode;
+
+	@JsonDeserialize(contentAs = Episode.class)
+	// @Enumerated(EnumType.STRING)
+	// @ElementCollection(fetch = FetchType.EAGER)
+	// @JoinTable(name = "character_appears_in", joinColumns = @JoinColumn(name = "character_id"), inverseJoinColumns =
+	// @JoinColumn(name = "episode_id"), uniqueConstraints = {})
+	@ElementCollection(targetClass = Episode.class)
+	@CollectionTable(name = "character_appears_in", joinColumns = @JoinColumn(name = "character_id"))
+	@Enumerated(EnumType.STRING)
+	@Column(name = "episode")
+	List<Episode> appearsIn;
 
 	String homePlanet;
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setBestFriend(Human bestFriend) {
-		this.bestFriend = bestFriend;
-	}
-
-	public Human getBestFriend() {
-		return bestFriend;
-	}
-
-	public void setFriends(List<Human> friends) {
-		this.friends = friends;
-	}
-
-	public List<Human> getFriends() {
-		return friends;
-	}
-
-	public void setAppearsIn(List<Episode> appearsIn) {
-		// this.appearsIn = appearsIn;
-	}
-
-	public List<Episode> getAppearsIn() {
-		// return appearsIn;
-		return null;
-	}
-
-	public void setHomePlanet(String homePlanet) {
-		this.homePlanet = homePlanet;
-	}
-
-	public String getHomePlanet() {
-		return homePlanet;
-	}
-
-	public Episode getEpisode() {
-		return episode;
-	}
-
-	public void setEpisode(Episode episode) {
-		this.episode = episode;
-	}
-
-	public String toString() {
-		return "Human {" + "id: " + id + ", " + "name: " + name + ", " + "bestFriend: " + bestFriend + ", "
-				+ "friends: " + friends + ", " + "appearsIn: " + episode + ", " + "homePlanet: " + homePlanet + "}";
-	}
 }

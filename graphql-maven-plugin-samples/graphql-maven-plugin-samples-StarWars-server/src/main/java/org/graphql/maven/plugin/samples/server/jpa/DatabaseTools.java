@@ -62,6 +62,7 @@ public class DatabaseTools {
 			// URL url = new ClassPathResource("starwars_data").getURL();
 			// databaseTester.setDataSet(new CsvURLDataSet(url));
 			Path dir = Files.createTempDirectory(FILE_PREFIX);
+			createTempFileForCSV(dir, "character_appears_in.csv");
 			createTempFileForCSV(dir, "droid.csv");
 			createTempFileForCSV(dir, "human.csv");
 			createTempFileForCSV(dir, "episode.csv");
