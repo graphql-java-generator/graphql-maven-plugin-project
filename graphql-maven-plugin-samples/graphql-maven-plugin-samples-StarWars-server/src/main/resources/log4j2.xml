@@ -17,6 +17,7 @@
 		<Logger name="org.dbunit" level="info" />
 		<Logger name="org.graphql" level="trace" />
 		<Logger name="org.hibernate" level="info" />
+		<Logger name=" com.coxautodev" level="trace" />
 		<Root level="info">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" />

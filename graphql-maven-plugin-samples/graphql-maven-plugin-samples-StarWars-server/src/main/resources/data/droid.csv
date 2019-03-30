@@ -1,20 +1,20 @@
-name,id,friends,primary_function,episode
-Bala-Tik,14,55-162-185,Function of Bala-Tik,
-BB-8,18,36-180,Function of BB-8,
-C-3PO,27,5-179-180,Function of C-3PO,
-EV-9D9,48,27-80-154,Function of EV-9D9,
-Huit-D-Huit ou 8D8,72,80,Function of Huit-D-Huit ou 8D8,
-IG-88,74,52-185-213,Function of IG-88,
-Qui-Gon Jinn,86,43-95-111-179,Function of Qui-Gon Jinn,
-Obi-Wan Kenobi,95,86-179-180-213,Function of Obi-Wan Kenobi,
-Ki-Adi-Mundi,96,,Function of Ki-Adi-Mundi,
-ME-8D9,114,90,Function of ME-8D9,
-OOM-9,132,,Function of OOM-9,
-PZ-4CO,151,,Function of PZ-4CO,
-Razoo Qin-Fee,152,55-162-185,Function of Razoo Qin-Fee,
-Quatre-LOM ou 4-LOM,153,185-213-230,Function of Quatre-LOM ou 4-LOM,
-R2-D2,154,179-180,Function of R2-D2,
-R4-G9 et R4-P17,155,95,Function of R4-G9 et R4-P17,
-R5-D4,156,27-154-180,Function of R5-D4,
-Ree-Yees,160,80-180,Function of Ree-Yees,
-Saelt-Marae,172,80,Function of Saelt-Marae,
+name, id,primaryFunction,episode
+Bala-Tik, droid_14,Function of Bala-Tik,NEWHOPE
+BB-8, droid_18,Function of BB-8,EMPIRE
+C-3PO, droid_27,Function of C-3PO,EMPIRE
+EV-9D9, droid_48,Function of EV-9D9,EMPIRE
+Huit-D-Huit ou 8D8, droid_72,Function of Huit-D-Huit ou 8D8,EMPIRE
+IG-88, droid_74,Function of IG-88,NEWHOPE
+Qui-Gon Jinn, droid_86,Function of Qui-Gon Jinn,NEWHOPE
+Obi-Wan Kenobi, droid_95,Function of Obi-Wan Kenobi,NEWHOPE
+Ki-Adi-Mundi, droid_96,Function of Ki-Adi-Mundi,EMPIRE
+ME-8D9, droid_114,Function of ME-8D9,EMPIRE
+OOM-9, droid_132,Function of OOM-9,EMPIRE
+PZ-4CO, droid_151,Function of PZ-4CO,JEDI
+Razoo Qin-Fee, droid_152,Function of Razoo Qin-Fee,NEWHOPE
+Quatre-LOM ou 4-LOM, droid_153,Function of Quatre-LOM ou 4-LOM,EMPIRE
+R2-D2, droid_154,Function of R2-D2,JEDI
+R4-G9 et R4-P17, droid_155,Function of R4-G9 et R4-P17,NEWHOPE
+R5-D4, droid_156,Function of R5-D4,EMPIRE
+Ree-Yees, droid_160,Function of Ree-Yees,JEDI
+Saelt-Marae, droid_172,Function of Saelt-Marae,JEDI

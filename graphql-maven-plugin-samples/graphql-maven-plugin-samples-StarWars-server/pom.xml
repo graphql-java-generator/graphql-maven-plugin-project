@@ -13,20 +13,8 @@
 
 	<build>
 		<plugins>
-			<!-- plugin>
-				<groupId>com.graphql-java</groupId>
-				<artifactId>graphql-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>graphql</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<mode>server</mode>
-				</configuration>
-			</plugin-->
+			<!-- plugin> <groupId>com.graphql-java</groupId> <artifactId>graphql-maven-plugin</artifactId> <executions> <execution> 
+				<goals> <goal>graphql</goal> </goals> </execution> </executions> <configuration> <mode>server</mode> </configuration> </plugin -->
 			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
 				<executions> <execution> <id>add-source</id> <phase>generate-sources</phase> <goals> <goal>add-source</goal> </goals> <configuration> 
 				<sources> <source>some directory</source> ... </sources> </configuration> </execution> </executions> </plugin -->
@@ -47,24 +35,29 @@
 		</dependency>
 
 		<!-- dependendencies within this project -->
-		<dependency>
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java-client</artifactId>
-		</dependency>
+		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java-client</artifactId> </dependency -->
 
 		<!-- Dependencies for GraphQL -->
 		<dependency>
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphql-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-spring-boot-starter</artifactId>
+		</dependency>
+		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java-tools</artifactId> </dependency -->
+		<dependency>
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphql-java-tools</artifactId>
 		</dependency>
+		<!-- dependency> <!- Fournit une IHM pour tester les requêtes graphql -> <groupId>com.graphql-java</groupId> <artifactId>graphiql-spring-boot-starter</artifactId> 
+			</dependency -->
 		<dependency>
 			<!-- Fournit une IHM pour tester les requêtes graphql -->
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphiql-spring-boot-starter</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Other dependencies -->

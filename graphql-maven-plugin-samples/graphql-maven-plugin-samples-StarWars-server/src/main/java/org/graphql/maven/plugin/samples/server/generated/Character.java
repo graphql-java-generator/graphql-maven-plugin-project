@@ -12,17 +12,9 @@ public interface Character {
 
 	public void setName(String name);
 
-	public CharacterImpl getBestFriend();
+	public List<Character> getFriends();
 
-	public void setBestFriend(CharacterImpl bestFriend);
-
-	public List<CharacterImpl> getFriends();
-
-	public void setFriends(List<CharacterImpl> friends);
-
-	public Episode getFirstEpisode();
-
-	public void setFirstEpisode(Episode firstEpisode);
+	public void setFriends(List<Character> friends);
 
 	public List<Episode> getAppearsIn();
 

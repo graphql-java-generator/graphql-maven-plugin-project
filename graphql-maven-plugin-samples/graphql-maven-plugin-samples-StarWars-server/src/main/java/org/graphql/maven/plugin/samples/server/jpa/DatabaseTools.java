@@ -62,12 +62,11 @@ public class DatabaseTools {
 			// URL url = new ClassPathResource("starwars_data").getURL();
 			// databaseTester.setDataSet(new CsvURLDataSet(url));
 			Path dir = Files.createTempDirectory(FILE_PREFIX);
-			createTempFileForCSV(dir, "character_appears_in.csv");
-			createTempFileForCSV(dir, "droid.csv");
-			createTempFileForCSV(dir, "character.csv");
 			createTempFileForCSV(dir, "episode.csv");
+			createTempFileForCSV(dir, "character.csv");
+			createTempFileForCSV(dir, "character_appears_in.csv");
 			createTempFileForCSV(dir, "character_friends.csv");
-			createTempFileForCSV(dir, "media.csv");
+			createTempFileForCSV(dir, "droid_friends.csv");
 			createTempFileForCSV(dir, "table-ordering.txt");
 			// IDataSet dataSets[] = { new CsvDataSet(createTempFileForCSV(dir, "data/droid.csv", "droid")),
 			// new CsvDataSet(createTempFileForCSV(dir, "data/human.csv", "human")), };

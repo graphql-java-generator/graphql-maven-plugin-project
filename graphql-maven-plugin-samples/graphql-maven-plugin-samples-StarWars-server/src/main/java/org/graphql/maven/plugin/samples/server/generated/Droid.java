@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 @Entity
 @Table(name = "character")
-public class Human implements Character {
+public class Droid implements Character {
 
 	@Id
 	// @GeneratedValue
@@ -28,7 +28,7 @@ public class Human implements Character {
 
 	String name;
 
-	/** The type for a {@link Droid} is always {@link CharacterType#HUMAN} */
+	/** The type for a {@link Droid} is always {@link CharacterType#DROID} */
 	@Enumerated(EnumType.STRING)
 	CharacterType type;
 
@@ -50,7 +50,7 @@ public class Human implements Character {
 	@Column(name = "episode")
 	List<Episode> appearsIn;
 
-	String homePlanet;
+	String primaryFunction;
 
 	public String getId() {
 		return id;
@@ -85,11 +85,11 @@ public class Human implements Character {
 	}
 
 	public String getHomePlanet() {
-		return homePlanet;
+		return primaryFunction;
 	}
 
 	public void setHomePlanet(String homePlanet) {
-		this.homePlanet = homePlanet;
+		this.primaryFunction = homePlanet;
 	}
 
 }
