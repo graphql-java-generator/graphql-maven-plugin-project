@@ -44,11 +44,11 @@
 
 		<!-- dependendencies for graphql -->
 		<dependency>
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphql-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphql-java-tools</artifactId>
 		</dependency>
 
