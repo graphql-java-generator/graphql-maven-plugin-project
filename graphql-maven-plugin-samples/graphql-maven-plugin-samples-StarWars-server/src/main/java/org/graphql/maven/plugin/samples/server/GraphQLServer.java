@@ -15,13 +15,13 @@ import org.springframework.context.event.EventListener;
  */
 @SpringBootApplication
 @EnableConfigurationProperties
-public class GraphqlServer {
+public class GraphQLServer {
 
 	@Resource
 	DatabaseTools databaseTools;
 
 	public static void main(String[] args) {
-		SpringApplication.run(GraphqlServer.class, args);
+		SpringApplication.run(GraphQLServer.class, args);
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
