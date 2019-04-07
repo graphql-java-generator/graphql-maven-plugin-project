@@ -69,6 +69,38 @@ public class GraphQLProvider {
 		TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
 
 		// Add of the CharacterImpl type definition
+		typeRegistry.add(getCharacterImplType(typeRegistry));
+
+		RuntimeWiring runtimeWiring = buildWiring();
+		SchemaGenerator schemaGenerator = new SchemaGenerator();
+		return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
+	}
+
+	private RuntimeWiring buildWiring() {
+		// Thanks to this thread :
+		// https:// stackoverflow.com/questions/54251935/graphql-no-resolver-definied-for-interface-union-java
+		//
+		// Also see sample :
+		// https://github.com/graphql-java/graphql-java-examples/tree/master/http-example
+		return RuntimeWiring.newRuntimeWiring()
+				// The Data Fetchers for queries must be defined. They'll trigger the JPA access to the database
+				.type(newTypeWiring("QueryType").dataFetcher("hero", graphQLDataFetchers.hero()))
+				.type(newTypeWiring("QueryType").dataFetcher("characters", graphQLDataFetchers.characters()))
+				.type(newTypeWiring("QueryType").dataFetcher("human", graphQLDataFetchers.human()))
+				.type(newTypeWiring("QueryType").dataFetcher("droid", graphQLDataFetchers.droid()))
+				//
+				// Defining the Data Fetchers for the fields are useless: these field will be populated by JPA
+				// .type(newTypeWiring("Character").dataFetcher("friends", graphQLDataFetchers.friends()))
+				// .type(newTypeWiring("Droid").dataFetcher("friends", graphQLDataFetchers.friends()))
+				// .type(newTypeWiring("Human").dataFetcher("friends", graphQLDataFetchers.friends()))
+				//
+				// We still need to link the interface types to the concrete types
+				.type("Character", typeWriting -> typeWriting.typeResolver(getCharacterResolver()))
+				//
+				.build();
+	}
+
+	private ObjectTypeDefinition getCharacterImplType(TypeDefinitionRegistry typeRegistry) {
 		ObjectTypeDefinition humanDef = (ObjectTypeDefinition) typeRegistry.getType("Human").get();
 		ObjectTypeDefinition.Builder characterImplDef = ObjectTypeDefinition.newObjectTypeDefinition();
 		characterImplDef.name("CharacterImpl");
@@ -90,30 +122,7 @@ public class GraphQLProvider {
 			}
 
 		}
-		typeRegistry.add(characterImplDef.build());
-
-		RuntimeWiring runtimeWiring = buildWiring();
-		SchemaGenerator schemaGenerator = new SchemaGenerator();
-		return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
-	}
-
-	private RuntimeWiring buildWiring() {
-		// Thanks to this thread :
-		// https:// stackoverflow.com/questions/54251935/graphql-no-resolver-definied-for-interface-union-java
-		//
-		// Also see sample :
-		// https://github.com/graphql-java/graphql-java-examples/tree/master/http-example
-		return RuntimeWiring.newRuntimeWiring()
-				.type(newTypeWiring("QueryType").dataFetcher("hero", graphQLDataFetchers.hero()))
-				.type(newTypeWiring("QueryType").dataFetcher("characters", graphQLDataFetchers.characters()))
-				.type(newTypeWiring("QueryType").dataFetcher("human", graphQLDataFetchers.human()))
-				.type(newTypeWiring("QueryType").dataFetcher("droid", graphQLDataFetchers.droid()))
-				// .type(newTypeWiring("Character").dataFetcher("friends", graphQLDataFetchers.friends()))
-				// .type(newTypeWiring("Droid").dataFetcher("friends", graphQLDataFetchers.friends()))
-				// .type(newTypeWiring("Human").dataFetcher("friends", graphQLDataFetchers.friends()))
-				.type("Character", typeWriting -> typeWriting.typeResolver(getCharacterResolver()))
-				//
-				.build();
+		return characterImplDef.build();
 	}
 
 	private TypeResolver getCharacterResolver() {
@@ -122,7 +131,6 @@ public class GraphQLProvider {
 			public GraphQLObjectType getType(TypeResolutionEnvironment env) {
 				Object javaObject = env.getObject();
 				String ret = null;
-				logger.debug("Resolving javaObject {}", javaObject.getClass().getName());
 
 				if (javaObject instanceof Human) {
 					ret = "Human";
