@@ -11,7 +11,7 @@
 	</parent>
 
 	<groupId>com.graphql-java</groupId>
-	<artifactId>graphql-java-gen-project</artifactId>
+	<artifactId>graphql-java-generator</artifactId>
 	<version>0.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
