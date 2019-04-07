@@ -13,6 +13,17 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- plugin> <groupId>com.graphql-java</groupId> <artifactId>graphql-maven-plugin</artifactId> <executions> <execution> 
 				<goals> <goal>graphql</goal> </goals> </execution> </executions> <configuration> <mode>server</mode> </configuration> </plugin -->
 			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
@@ -39,15 +50,17 @@
 
 		<!-- Dependencies for GraphQL -->
 		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphql-spring-boot-starter</artifactId>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
+			<version>1.0</version>
 		</dependency>
-		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-spring-boot-starter</artifactId> </dependency -->
-		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java-tools</artifactId> </dependency -->
 		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphql-java-tools</artifactId>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>26.0-jre</version>
 		</dependency>
+		<!-- dependency> <groupId>com.graphql-java-kickstart</groupId> <artifactId>graphql-spring-boot-starter</artifactId> </dependency> 
+			<dependency> <groupId>com.graphql-java-kickstart</groupId> <artifactId>graphql-java-tools</artifactId> </dependency -->
 		<!-- dependency> <!- Fournit une IHM pour tester les requêtes graphql -> <groupId>com.graphql-java</groupId> <artifactId>graphiql-spring-boot-starter</artifactId> 
 			</dependency -->
 		<dependency>
@@ -58,6 +71,10 @@
 		</dependency>
 
 		<!-- Other dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>

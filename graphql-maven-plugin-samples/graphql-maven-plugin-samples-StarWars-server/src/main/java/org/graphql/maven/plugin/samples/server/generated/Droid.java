@@ -92,4 +92,8 @@ public class Droid implements Character {
 		this.primaryFunction = homePlanet;
 	}
 
+	@Override
+	public String toString() {
+		return "CharacterImpl {\"id\": \"" + id + "\", \"name\": \"" + name + "\"}";
+	}
 }

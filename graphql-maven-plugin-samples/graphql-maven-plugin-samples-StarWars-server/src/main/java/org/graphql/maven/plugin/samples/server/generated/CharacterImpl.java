@@ -78,4 +78,9 @@ public class CharacterImpl implements Character {
 		this.appearsIn = appearsIn;
 	}
 
+	@Override
+	public String toString() {
+		return "CharacterImpl {\"id\": \"" + id + "\", \"name\": \"" + name + "\"}";
+	}
+
 }

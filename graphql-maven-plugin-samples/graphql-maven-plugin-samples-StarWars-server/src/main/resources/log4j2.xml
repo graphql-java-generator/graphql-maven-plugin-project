@@ -14,6 +14,7 @@
 
 	<Loggers>
 		<Logger name="graphql" level="info" />
+		<Logger name="graphql.execution" level="trace" />
 		<Logger name="org.dbunit" level="info" />
 		<Logger name="org.graphql" level="trace" />
 		<Logger name="org.hibernate" level="info" />

@@ -92,4 +92,8 @@ public class Human implements Character {
 		this.homePlanet = homePlanet;
 	}
 
+	@Override
+	public String toString() {
+		return "CharacterImpl {\"id\": \"" + id + "\", \"name\": \"" + name + "\"}";
+	}
 }
