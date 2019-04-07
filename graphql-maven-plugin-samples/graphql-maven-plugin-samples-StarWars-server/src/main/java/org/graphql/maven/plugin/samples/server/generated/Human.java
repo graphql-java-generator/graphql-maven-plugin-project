@@ -8,6 +8,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -33,7 +34,7 @@ public class Human implements Character {
 	CharacterType type;
 
 	@JsonDeserialize(contentAs = CharacterImpl.class)
-	@ManyToMany(targetEntity = CharacterImpl.class)
+	@ManyToMany(targetEntity = CharacterImpl.class, fetch = FetchType.LAZY)
 	@CollectionTable(name = "character_friends", joinColumns = @JoinColumn(name = "character_id"))
 	@Column(name = "friend_id")
 	List<Character> friends;
@@ -44,7 +45,7 @@ public class Human implements Character {
 	// @JoinTable(name = "CharacterImpl_appears_in", joinColumns = @JoinColumn(name = "CharacterImpl_id"),
 	// inverseJoinColumns =
 	// @JoinColumn(name = "episode_id"), uniqueConstraints = {})
-	@ElementCollection(targetClass = Episode.class)
+	@ElementCollection(targetClass = Episode.class, fetch = FetchType.LAZY)
 	@CollectionTable(name = "character_appears_in", joinColumns = @JoinColumn(name = "character_id"))
 	@Enumerated(EnumType.STRING)
 	@Column(name = "episode")
