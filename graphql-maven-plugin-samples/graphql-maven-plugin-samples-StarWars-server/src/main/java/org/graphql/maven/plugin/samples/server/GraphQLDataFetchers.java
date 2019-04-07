@@ -74,12 +74,12 @@ public class GraphQLDataFetchers {
 		};
 	}
 
-	public DataFetcher<List<CharacterImpl>> friends() {
-		return dataFetchingEnvironment -> {
-			Character character = dataFetchingEnvironment.getSource();
-			List<CharacterImpl> ret = characterRepository.findFriends(character.getId());
-			logger.debug("'friends' subquery: {} rows returned", ret.size());
-			return ret;
-		};
-	}
+	// public DataFetcher<List<CharacterImpl>> friends() {
+	// return dataFetchingEnvironment -> {
+	// Character character = dataFetchingEnvironment.getSource();
+	// List<CharacterImpl> ret = characterRepository.findFriends(character.getId());
+	// logger.debug("'friends' subquery: {} rows returned", ret.size());
+	// return ret;
+	// };
+	// }
 }
