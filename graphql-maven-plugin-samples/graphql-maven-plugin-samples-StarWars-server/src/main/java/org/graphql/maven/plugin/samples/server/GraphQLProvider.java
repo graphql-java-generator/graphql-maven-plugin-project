@@ -13,9 +13,9 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.codec.Charsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.graphql.maven.plugin.samples.server.generated.CharacterImpl;
-import org.graphql.maven.plugin.samples.server.generated.Droid;
-import org.graphql.maven.plugin.samples.server.generated.Human;
+import org.graphql.maven.plugin.samples.server.graphql.CharacterImpl;
+import org.graphql.maven.plugin.samples.server.graphql.Droid;
+import org.graphql.maven.plugin.samples.server.graphql.Human;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -89,10 +89,15 @@ public class GraphQLProvider {
 				.type(newTypeWiring("QueryType").dataFetcher("human", graphQLDataFetchers.human()))
 				.type(newTypeWiring("QueryType").dataFetcher("droid", graphQLDataFetchers.droid()))
 				//
-				// Defining the Data Fetchers for the fields are useless: these field will be populated by JPA
-				// .type(newTypeWiring("Character").dataFetcher("friends", graphQLDataFetchers.friends()))
-				// .type(newTypeWiring("Droid").dataFetcher("friends", graphQLDataFetchers.friends()))
-				// .type(newTypeWiring("Human").dataFetcher("friends", graphQLDataFetchers.friends()))
+				// Data fetchers for the friends field (Character is needed when you query hero, or a list of friends)
+				.type(newTypeWiring("CharacterImpl").dataFetcher("friends", graphQLDataFetchers.friends()))
+				.type(newTypeWiring("Droid").dataFetcher("friends", graphQLDataFetchers.friends()))
+				.type(newTypeWiring("Human").dataFetcher("friends", graphQLDataFetchers.friends()))
+				//
+				// Data fetchers for the appearsIn field (Character is needed when you query hero, or a list of friends)
+				.type(newTypeWiring("CharacterImpl").dataFetcher("appearsIn", graphQLDataFetchers.appearsIn()))
+				.type(newTypeWiring("Droid").dataFetcher("appearsIn", graphQLDataFetchers.appearsIn()))
+				.type(newTypeWiring("Human").dataFetcher("appearsIn", graphQLDataFetchers.appearsIn()))
 				//
 				// We still need to link the interface types to the concrete types
 				.type("Character", typeWriting -> typeWriting.typeResolver(getCharacterResolver()))

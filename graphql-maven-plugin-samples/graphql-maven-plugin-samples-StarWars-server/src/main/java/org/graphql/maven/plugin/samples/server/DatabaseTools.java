@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.graphql.maven.plugin.samples.server.jpa;
+package org.graphql.maven.plugin.samples.server;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +18,8 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.csv.CsvDataSet;
 import org.dbunit.operation.DatabaseOperation;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class DatabaseTools {
 	/** The logger for this class */
 	Logger logger = LogManager.getLogger();
 
-	final String FILE_PREFIX = "GraphQLServer";
+	final String FILE_PREFIX = "StarWars-server-data";
 
 	String url = "jdbc:h2:mem:testdb";
 	String driverClassName = "org.h2.Driver";
@@ -41,14 +42,12 @@ public class DatabaseTools {
 	String password = "";
 
 	/**
-	 * • Initialisation de la base de données : vérification qu’il n’y a pas de build concurrent, vidage de la base,
-	 * recréation des tables et fonctions, remplissages des tables...
-	 * 
-	 * @throws SQLException
+	 * This method waits for the application to be ready. Then it fills the database with sample data
 	 * 
 	 * @throws Exception
 	 */
-	public void initDatabase() {
+	@EventListener(ApplicationReadyEvent.class)
+	public void initDatabase() throws Exception {
 		try {
 			IDatabaseTester databaseTester = new JdbcDatabaseTester(driverClassName, url, username, password);
 			IDatabaseConnection iConn = databaseTester.getConnection();
@@ -62,9 +61,13 @@ public class DatabaseTools {
 			// URL url = new ClassPathResource("starwars_data").getURL();
 			// databaseTester.setDataSet(new CsvURLDataSet(url));
 			Path dir = Files.createTempDirectory(FILE_PREFIX);
+			createTempFileForCSV(dir, "droid.csv");
+			createTempFileForCSV(dir, "human.csv");
 			createTempFileForCSV(dir, "episode.csv");
 			createTempFileForCSV(dir, "character.csv");
 			createTempFileForCSV(dir, "character_appears_in.csv");
+			createTempFileForCSV(dir, "droid_appears_in.csv");
+			createTempFileForCSV(dir, "human_appears_in.csv");
 			createTempFileForCSV(dir, "character_friends.csv");
 			createTempFileForCSV(dir, "droid_friends.csv");
 			createTempFileForCSV(dir, "table-ordering.txt");
