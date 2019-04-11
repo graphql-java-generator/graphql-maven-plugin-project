@@ -1,0 +1,46 @@
+schema {
+    query: QueryType
+}
+
+type QueryType {
+    boards(): [Board]
+    topics(board: Board!): [Topic]!
+}
+
+
+enum MemberType {
+    ADMIN
+    MODERATOR
+    STANDARD
+}
+
+type Member {
+    id: ID!
+    name: String!
+    alias: String
+    email: String!
+    type: MemberType
+}
+
+type Board {
+    id: ID!
+    name: String!
+    public: Boolean
+    topics: [Topic]!
+}
+
+type Topic {
+    id: ID!
+    date: String!
+    title: String!
+    content: String!
+    posts: [Post]!
+}
+
+type Post {
+    id: ID!
+    date: String!
+    title: String!
+    content: String!
+}
+

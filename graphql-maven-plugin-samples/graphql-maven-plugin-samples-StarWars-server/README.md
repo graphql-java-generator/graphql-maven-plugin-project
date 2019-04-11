@@ -1,6 +1,6 @@
 # GraphQL Maven Plugin : StarWars Server example
 
-This project show the use of the plugin to support the Star Wars graphql schema.
+This project shows the use of the plugin to support the Star Wars graphql schema.
 
 ## General principles
 
