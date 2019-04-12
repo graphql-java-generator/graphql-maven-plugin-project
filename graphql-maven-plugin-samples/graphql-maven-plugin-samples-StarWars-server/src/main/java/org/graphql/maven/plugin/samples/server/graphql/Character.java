@@ -1,4 +1,4 @@
-package org.graphql.maven.plugin.samples.server.generated;
+package org.graphql.maven.plugin.samples.server.graphql;
 
 import java.util.List;
 

@@ -3,12 +3,12 @@
  */
 package org.graphql.maven.plugin.samples.server.jpa;
 
-import org.graphql.maven.plugin.samples.server.graphql.Human;
+import org.graphql.maven.plugin.samples.server.graphql.Droid;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  * @author EtienneSF
  */
-public interface HumanRepository extends CrudRepository<Human, String> {
+public interface DroidRepository extends CrudRepository<Droid, String> {
 
 }
