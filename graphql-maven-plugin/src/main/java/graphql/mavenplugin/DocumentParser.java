@@ -123,9 +123,9 @@ public class DocumentParser {
 		// Add of all predefined scalars
 		scalars.add(new ScalarType("ID", "java.lang", "String"));
 		scalars.add(new ScalarType("String", "java.lang", "String"));
-		scalars.add(new ScalarType("boolean", "java.lang", "Boolean"));
-		scalars.add(new ScalarType("int", "java.lang", "Integer"));
-		scalars.add(new ScalarType("float", "java.lang", "Float"));
+		scalars.add(new ScalarType("Boolean", "java.lang", "Boolean"));
+		scalars.add(new ScalarType("Int", "java.lang", "Integer"));
+		scalars.add(new ScalarType("Float", "java.lang", "Float"));
 	}
 
 	/**

@@ -15,6 +15,7 @@ It's a work in progress. But the generated code is already ready to use.
 - queries (mutations...) that return data not defined as an object (e.g.: two objects). This needs to be wrapped in some kind of container.
 - Comments are not reported in the generated code
 - Date, DateTime, Time
+- property name which are java key word, like: public, private, class...
 
 ### Dependencies needed for the generated code
 
