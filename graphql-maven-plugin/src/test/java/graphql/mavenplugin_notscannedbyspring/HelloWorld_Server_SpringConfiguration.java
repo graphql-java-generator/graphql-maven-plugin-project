@@ -18,6 +18,6 @@ import graphql.mavenplugin.PluginMode;
 public class HelloWorld_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public HelloWorld_Server_SpringConfiguration() {
-		super("src/test/resources/helloworld.graphqls", PluginMode.SERVER);
+		super("src/test/resources/helloworld.graphqls", PluginMode.server);
 	}
 }

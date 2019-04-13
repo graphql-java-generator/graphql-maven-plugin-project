@@ -54,7 +54,7 @@ public abstract class AbstractSpringConfiguration {
 
 	@Bean
 	String basePackage() {
-		return BASE_PACKAGE + "." + mode.mode();
+		return BASE_PACKAGE + "." + mode;
 	}
 
 	@Bean

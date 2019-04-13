@@ -18,6 +18,6 @@ import graphql.mavenplugin.PluginMode;
 public class MavenResourceSchemaStringProviderTest_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public MavenResourceSchemaStringProviderTest_Server_SpringConfiguration() {
-		super("src/test/resources/MavenResourceSchemaStringProviderTest/*.graphqls", PluginMode.SERVER);
+		super("src/test/resources/MavenResourceSchemaStringProviderTest/*.graphqls", PluginMode.server);
 	}
 }

@@ -19,10 +19,10 @@ class InterfaceTypeTest {
 	@Test
 	void testGetConcreteClassSimpleName() {
 		// Preparation
-		ObjectType o = new ObjectType(packageName2, PluginMode.SERVER);
+		ObjectType o = new ObjectType(packageName2, PluginMode.server);
 		o.setName("AClassName");
 
-		InterfaceType i = new InterfaceType(packageName, PluginMode.SERVER);
+		InterfaceType i = new InterfaceType(packageName, PluginMode.server);
 		i.setDefaultImplementation(o);
 
 		// Verification

@@ -1,15 +1,9 @@
 package graphql.mavenplugin;
 
+/**
+ * The values for this enumeration are in lower case, which is not conventional. But having uppercase values in a pom is
+ * really ugly...
+ */
 public enum PluginMode {
-	CLIENT("client"), SERVER("server");
-
-	String mode;
-
-	PluginMode(String mode) {
-		this.mode = mode;
-	}
-
-	public String mode() {
-		return mode;
-	}
+	client, server;
 }

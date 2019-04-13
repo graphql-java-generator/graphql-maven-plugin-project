@@ -18,6 +18,6 @@ import graphql.mavenplugin.PluginMode;
 public class AllGraphQLCases_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public AllGraphQLCases_Server_SpringConfiguration() {
-		super("src/test/resources/allGraphQLCases.graphqls", PluginMode.SERVER);
+		super("src/test/resources/allGraphQLCases.graphqls", PluginMode.server);
 	}
 }

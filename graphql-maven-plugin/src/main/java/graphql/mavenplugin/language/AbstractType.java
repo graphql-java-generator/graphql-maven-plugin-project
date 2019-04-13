@@ -47,6 +47,6 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public boolean isJPAEntity() {
-		return mode.equals(PluginMode.SERVER);
+		return mode.equals(PluginMode.server);
 	}
 }

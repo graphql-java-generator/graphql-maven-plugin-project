@@ -21,9 +21,6 @@ import org.springframework.context.support.AbstractApplicationContext;
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 public class GraphqlMavenPlugin extends AbstractMojo {
 
-	final static String MODE_CLIENT = "client";
-	final static String MODE_SERVER = "server";
-
 	/** The basePackage in which the generated classes will be created */
 	@Parameter(property = "graphql.mavenplugin.basePackage", defaultValue = "com.generated.graphql")
 	String basePackage;
@@ -55,11 +52,6 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-
-			if (!MODE_CLIENT.equals(mode) && !MODE_SERVER.equals(mode)) {
-				throw new MojoExecutionException("mode must be one of these values: " + MODE_CLIENT + ", " + MODE_SERVER
-						+ ". But it is: " + mode);
-			}
 
 			getLog().info("Starting generation of java classes from graphqls files");
 

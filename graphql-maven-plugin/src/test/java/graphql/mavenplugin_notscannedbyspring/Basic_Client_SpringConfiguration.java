@@ -18,6 +18,6 @@ import graphql.mavenplugin.PluginMode;
 public class Basic_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public Basic_Client_SpringConfiguration() {
-		super("src/test/resources/basic.graphqls", PluginMode.CLIENT);
+		super("src/test/resources/basic.graphqls", PluginMode.client);
 	}
 }

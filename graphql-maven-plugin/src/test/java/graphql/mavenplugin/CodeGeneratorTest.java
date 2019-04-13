@@ -73,8 +73,8 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
 
-		ObjectType object1 = new ObjectType(basePackage, PluginMode.CLIENT);
-		ObjectType object2 = new ObjectType(basePackage, PluginMode.CLIENT);
+		ObjectType object1 = new ObjectType(basePackage, PluginMode.client);
+		ObjectType object2 = new ObjectType(basePackage, PluginMode.client);
 		List<ObjectType> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
@@ -117,8 +117,8 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
 
-		ObjectType object1 = new ObjectType(basePackage, PluginMode.SERVER);
-		ObjectType object2 = new ObjectType(basePackage, PluginMode.SERVER);
+		ObjectType object1 = new ObjectType(basePackage, PluginMode.server);
+		ObjectType object2 = new ObjectType(basePackage, PluginMode.server);
 		List<ObjectType> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);

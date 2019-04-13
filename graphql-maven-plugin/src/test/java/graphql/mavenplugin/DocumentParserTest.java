@@ -31,15 +31,15 @@ class DocumentParserTest {
 	@Test
 	void test_defineDefaultInterfaceImplementationClassName() {
 		// Preparation
-		ObjectType o = new ObjectType(basePackage, PluginMode.SERVER);
+		ObjectType o = new ObjectType(basePackage, PluginMode.server);
 		o.setName("interfaceImpl");
 		documentParser.objectTypes.add(o);
 
-		InterfaceType i1 = new InterfaceType(basePackage, PluginMode.SERVER);
+		InterfaceType i1 = new InterfaceType(basePackage, PluginMode.server);
 		i1.setName("interface");
 		documentParser.interfaceTypes.add(i1);
 
-		InterfaceType i2 = new InterfaceType(basePackage, PluginMode.SERVER);
+		InterfaceType i2 = new InterfaceType(basePackage, PluginMode.server);
 		i2.setName("anotherInterface");
 		documentParser.interfaceTypes.add(i2);
 
