@@ -12,14 +12,14 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import graphql.language.Document;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
-import graphql.mavenplugin_notscannedbyspring.BasicSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.Basic_Server_SpringConfiguration;
 import graphql.parser.Parser;
 
 /**
  * 
  * @author EtienneSF
  */
-@SpringJUnitConfig(classes = { BasicSpringConfiguration.class })
+@SpringJUnitConfig(classes = { Basic_Server_SpringConfiguration.class })
 class DocumentParserTest_basic {
 
 	@Autowired

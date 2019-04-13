@@ -2,13 +2,11 @@ package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,13 +22,13 @@ import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.TypeName;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
-import graphql.mavenplugin_notscannedbyspring.HelloWorldSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfiguration;
 
 /**
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { HelloWorldSpringConfiguration.class })
+@ContextConfiguration(classes = { HelloWorld_Server_SpringConfiguration.class })
 class GraphqlMavenPluginTest {
 
 	@Autowired
@@ -44,18 +42,19 @@ class GraphqlMavenPluginTest {
 		graphqlTestHelper.checkSchemaStringProvider("helloworld.graphqls");
 	}
 
-	@Test
-	public void checkExecute_wrongMode() throws MojoExecutionException, MojoFailureException {
-		// Preparation
-		GraphqlMavenPlugin graphqlMavenPlugin = new GraphqlMavenPlugin();
-		graphqlMavenPlugin.mode = "A wrong value";
-
-		// Go, go, go
-		Exception exception = assertThrows(MojoExecutionException.class, () -> graphqlMavenPlugin.execute());
-
-		// Verification
-		assertTrue(exception.getMessage().contains(graphqlMavenPlugin.mode), "The wrong mode is in the error message");
-	}
+	// @Test
+	// public void checkExecute_wrongMode() throws MojoExecutionException, MojoFailureException {
+	// // Preparation
+	// GraphqlMavenPlugin graphqlMavenPlugin = new GraphqlMavenPlugin();
+	// graphqlMavenPlugin.mode = "A wrong value";
+	//
+	// // Go, go, go
+	// Exception exception = assertThrows(MojoExecutionException.class, () -> graphqlMavenPlugin.execute());
+	//
+	// // Verification
+	// assertTrue(exception.getMessage().contains(graphqlMavenPlugin.mode.mode()),
+	// "The wrong mode is in the error message");
+	// }
 
 	@Test
 	void testDocuments_helloworld() throws MojoExecutionException {

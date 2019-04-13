@@ -69,6 +69,10 @@ public class DocumentParser {
 	@Resource
 	String basePackage;
 
+	/** The current generation mode */
+	@Resource
+	PluginMode mode;
+
 	/** The maven logging system */
 	@Resource
 	Log log;
@@ -123,9 +127,14 @@ public class DocumentParser {
 		// Add of all predefined scalars
 		scalars.add(new ScalarType("ID", "java.lang", "String"));
 		scalars.add(new ScalarType("String", "java.lang", "String"));
+
+		// It seems that both boolean/Boolean, int/Int, float/Float are accepted.
+		scalars.add(new ScalarType("boolean", "java.lang", "Boolean"));
 		scalars.add(new ScalarType("Boolean", "java.lang", "Boolean"));
+		scalars.add(new ScalarType("int", "java.lang", "Integer"));
 		scalars.add(new ScalarType("Int", "java.lang", "Integer"));
 		scalars.add(new ScalarType("Float", "java.lang", "Float"));
+		scalars.add(new ScalarType("float", "java.lang", "Float"));
 	}
 
 	/**
@@ -247,7 +256,7 @@ public class DocumentParser {
 	ObjectType readObjectType(ObjectTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
 
-		ObjectType objectType = new ObjectType(basePackage);
+		ObjectType objectType = new ObjectType(basePackage, mode);
 
 		objectType.setName(node.getName());
 
@@ -278,7 +287,7 @@ public class DocumentParser {
 	InterfaceType readInterfaceType(InterfaceTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
 
-		InterfaceType interfaceType = new InterfaceType(basePackage);
+		InterfaceType interfaceType = new InterfaceType(basePackage, mode);
 
 		interfaceType.setName(node.getName());
 
@@ -295,7 +304,7 @@ public class DocumentParser {
 	 * @return
 	 */
 	EnumType readEnumType(EnumTypeDefinition node) {
-		EnumType enumType = new EnumType(basePackage);
+		EnumType enumType = new EnumType(basePackage, mode);
 		enumType.setName(node.getName());
 		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
 			enumType.getValues().add(enumValDef.getName());
@@ -392,6 +401,9 @@ public class DocumentParser {
 		// We have the type. But we may not have parsed it yet. So we just write its name. And will get the
 		// graphql.mavenplugin.language.Type when generating the code.
 		field.setTypeName(typeName.getName());
+		if (typeName.equals("ID")) {
+			field.setId(true);
+		}
 
 		// For InputValueDefinition, we may have a defaut value
 		if (fieldDef instanceof InputValueDefinition) {
@@ -478,7 +490,7 @@ public class DocumentParser {
 			} // while
 
 			// We've found a non used name for the interface implementation.
-			ObjectType o = new ObjectType(basePackage);
+			ObjectType o = new ObjectType(basePackage, mode);
 			o.setName(objectName);
 			List<String> interfaces = new ArrayList<>();
 			interfaces.add(i.getName());

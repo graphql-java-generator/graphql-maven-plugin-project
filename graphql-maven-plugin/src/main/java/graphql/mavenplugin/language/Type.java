@@ -22,6 +22,14 @@ public interface Type {
 	public String getName();
 
 	/**
+	 * Returns true if this class is a JPA Entity. If yes, the generated code should contain the @Entity annotation, and
+	 * its field should be annotated accordingly
+	 * 
+	 * @return true if this type is a JPA Entity. False otherwise.
+	 */
+	public boolean isJPAEntity();
+
+	/**
 	 * The GraphQlType for this type
 	 * 
 	 * @return

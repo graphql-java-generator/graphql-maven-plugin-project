@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Import;
 
 import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
 
+import graphql.mavenplugin.PluginMode;
 import graphql.mavenplugin.test.helper.MavenLog;
 import graphql.mavenplugin.test.helper.MavenTestHelper;
 
@@ -41,16 +42,19 @@ public abstract class AbstractSpringConfiguration {
 	protected Logger logger = LogManager.getLogger();
 	private final String schemaFilePattern;
 
+	private PluginMode mode;
+
 	@Resource
 	MavenTestHelper mavenTestHelper;
 
-	protected AbstractSpringConfiguration(String schemaFilePattern) {
+	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode) {
 		this.schemaFilePattern = schemaFilePattern;
+		this.mode = mode;
 	}
 
 	@Bean
 	String basePackage() {
-		return BASE_PACKAGE;
+		return BASE_PACKAGE + "." + mode.mode();
 	}
 
 	@Bean
@@ -61,6 +65,11 @@ public abstract class AbstractSpringConfiguration {
 	@Bean
 	Log log() {
 		return new MavenLog(logger);
+	}
+
+	@Bean
+	PluginMode mode() {
+		return mode;
 	}
 
 	@Bean
@@ -78,7 +87,8 @@ public abstract class AbstractSpringConfiguration {
 	@Bean
 	File targetSourceFolder() {
 		// Get the folder for this class. If the class name contains a $, like
-		// AllGraphQLCasesSpringConfiguration$$EnhancerBySpringCGLIB$$d8ce51ed, then it's a Spring proxy. We keep only
+		// AllGraphQLCases_Server_SpringConfiguration$$EnhancerBySpringCGLIB$$d8ce51ed, then it's a Spring proxy. We
+		// keep only
 		// what's before the '$', which is the significant part.
 		String classname = this.getClass().getSimpleName();
 		if (classname.contains("$")) {

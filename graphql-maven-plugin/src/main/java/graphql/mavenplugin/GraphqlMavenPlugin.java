@@ -33,11 +33,11 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	String encoding;
 
 	/**
-	 * The generation mode: either client (to generate the code which can query a graphql server) or server (to generate
-	 * a code for the server side)
+	 * The generation mode: either client or server. Choose client to generate the code which can query a graphql server
+	 * or server to generate a code for the server side.
 	 */
 	@Parameter(property = "graphql.mavenplugin.mode", defaultValue = "client")
-	String mode;
+	PluginMode mode;
 
 	/** The description where the graphql schema file should be found, within the maven project structure */
 	@Parameter(property = "graphql.mavenplugin.schemaFilePattern", defaultValue = "src/main/resources/*.graphqls")

@@ -33,6 +33,7 @@ type Topic {
     id: ID!
     date: String!
     publiclyAvailable: Boolean
+    nbPosts: Int
     title: String!
     content: String!
     posts: [Post]!

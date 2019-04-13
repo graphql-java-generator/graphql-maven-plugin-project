@@ -53,6 +53,11 @@ public class SpringConfiguration {
 	}
 
 	@Bean
+	PluginMode mode() {
+		return mojo.mode;
+	}
+
+	@Bean
 	MavenProject project() {
 		return mojo.project;
 	}

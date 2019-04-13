@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import graphql.mavenplugin.PluginMode;
+
 class InterfaceTypeTest {
 
 	String packageName = "a.package.name";
@@ -17,10 +19,10 @@ class InterfaceTypeTest {
 	@Test
 	void testGetConcreteClassSimpleName() {
 		// Preparation
-		ObjectType o = new ObjectType(packageName2);
+		ObjectType o = new ObjectType(packageName2, PluginMode.SERVER);
 		o.setName("AClassName");
 
-		InterfaceType i = new InterfaceType(packageName);
+		InterfaceType i = new InterfaceType(packageName, PluginMode.SERVER);
 		i.setDefaultImplementation(o);
 
 		// Verification

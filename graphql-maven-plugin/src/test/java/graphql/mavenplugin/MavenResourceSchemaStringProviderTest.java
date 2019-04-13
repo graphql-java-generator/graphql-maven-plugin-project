@@ -13,9 +13,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin.test.helper.MavenTestHelper;
-import graphql.mavenplugin_notscannedbyspring.MavenResourceSchemaStringProviderTestSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.MavenResourceSchemaStringProviderTest_Server_SpringConfiguration;
 
-@SpringJUnitConfig(classes = { MavenResourceSchemaStringProviderTestSpringConfiguration.class })
+@SpringJUnitConfig(classes = { MavenResourceSchemaStringProviderTest_Server_SpringConfiguration.class })
 class MavenResourceSchemaStringProviderTest {
 
 	@Autowired

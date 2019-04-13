@@ -3,6 +3,7 @@
  */
 package graphql.mavenplugin.language;
 
+import graphql.mavenplugin.PluginMode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -53,12 +54,8 @@ public class InterfaceType extends ObjectType {
 	 */
 	ObjectType defaultImplementation = null;
 
-	public InterfaceType(String packageName) {
-		super(packageName);
-	}
-
-	public GraphQlType getGraphQlType() {
-		return GraphQlType.INTERFACE;
+	public InterfaceType(String packageName, PluginMode mode) {
+		super(packageName, mode, GraphQlType.INTERFACE);
 	}
 
 	/** {@inheritDoc} */

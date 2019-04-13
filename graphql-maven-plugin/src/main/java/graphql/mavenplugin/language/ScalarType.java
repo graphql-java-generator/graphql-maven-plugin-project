@@ -55,4 +55,9 @@ public class ScalarType implements Type {
 		return getClassSimpleName();
 	}
 
+	@Override
+	public boolean isJPAEntity() {
+		return false;
+	}
+
 }

@@ -6,7 +6,9 @@ package graphql.mavenplugin.language;
 import java.util.ArrayList;
 import java.util.List;
 
+import graphql.mavenplugin.PluginMode;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * This class is the image for a graphql Enum
@@ -14,13 +16,8 @@ import lombok.Data;
  * @author EtienneSF
  */
 @Data
-public class EnumType implements Type {
-
-	/** The name for this enum */
-	String name;
-
-	/** The name of the package for this class */
-	private String packageName;
+@EqualsAndHashCode(callSuper = true)
+public class EnumType extends AbstractType {
 
 	/** The list of values */
 	List<String> values = new ArrayList<String>();
@@ -30,27 +27,8 @@ public class EnumType implements Type {
 	 * @param packageName
 	 *            The package name for this enum class
 	 */
-	public EnumType(String packageName) {
-		this.packageName = packageName;
-	}
-
-	public GraphQlType getGraphQlType() {
-		return GraphQlType.ENUM;
-	}
-
-	@Override
-	public String getClassSimpleName() {
-		return name;
-	}
-
-	@Override
-	public String getConcreteClassSimpleName() {
-		return getClassSimpleName();
-	}
-
-	@Override
-	public String getClassFullName() {
-		return packageName + "." + getClassSimpleName();
+	public EnumType(String packageName, PluginMode mode) {
+		super(packageName, mode, GraphQlType.ENUM);
 	}
 
 }

@@ -6,7 +6,9 @@ package graphql.mavenplugin.language;
 import java.util.ArrayList;
 import java.util.List;
 
+import graphql.mavenplugin.PluginMode;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * This class describes one object type, as found in a graphql schema. It aims to be simple enough, so that the Velocity
@@ -23,13 +25,8 @@ import lombok.Data;
  * @author EtienneSF
  */
 @Data
-public class ObjectType implements Type {
-
-	/** The name of the object type */
-	private String name;
-
-	/** The name of the package for this class */
-	private String packageName;
+@EqualsAndHashCode(callSuper = true)
+public class ObjectType extends AbstractType {
 
 	/** List of the names of the ObjetType, that are implemented by this object */
 	private List<String> implementz = new ArrayList<>();
@@ -37,28 +34,19 @@ public class ObjectType implements Type {
 	/** The fields for this object type */
 	private List<Field> fields = new ArrayList<>();
 
-	public ObjectType(String packageName) {
-		this.packageName = packageName;
+	public ObjectType(String packageName, PluginMode mode) {
+		super(packageName, mode, GraphQlType.OBJECT);
 	}
 
-	public GraphQlType getGraphQlType() {
-		return GraphQlType.OBJECT;
+	/**
+	 * This constructor is especially intended for subclasses, like {@link InterfaceType}
+	 * 
+	 * @param packageName
+	 * @param mode
+	 * @param type
+	 */
+	public ObjectType(String packageName, PluginMode mode, GraphQlType type) {
+		super(packageName, mode, type);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String getClassSimpleName() {
-		return name;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getConcreteClassSimpleName() {
-		return getClassSimpleName();
-	}
-
-	@Override
-	public String getClassFullName() {
-		return packageName + "." + getClassSimpleName();
-	}
 }

@@ -6,6 +6,8 @@ package graphql.mavenplugin_notscannedbyspring;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import graphql.mavenplugin.PluginMode;
+
 /**
  * The Spring configuration used for JUnit tests
  * 
@@ -13,9 +15,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan(basePackages = "graphql.mavenplugin")
-public class ForumSpringConfiguration extends AbstractSpringConfiguration {
+public class Forum_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
-	public ForumSpringConfiguration() {
-		super("src/test/resources/forum.graphqls");
+	public Forum_Server_SpringConfiguration() {
+		super("src/test/resources/forum.graphqls", PluginMode.SERVER);
 	}
 }

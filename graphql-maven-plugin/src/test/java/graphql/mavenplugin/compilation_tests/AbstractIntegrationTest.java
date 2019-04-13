@@ -1,4 +1,4 @@
-package graphql.mavenplugin;
+package graphql.mavenplugin.compilation_tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import graphql.mavenplugin.CodeGenerator;
+import graphql.mavenplugin.DocumentParser;
 import graphql.mavenplugin.test.compiler.CompilationTestHelper;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin.test.helper.MavenTestHelper;

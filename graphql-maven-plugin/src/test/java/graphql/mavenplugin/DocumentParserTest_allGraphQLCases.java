@@ -26,7 +26,7 @@ import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.ObjectType;
 import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
-import graphql.mavenplugin_notscannedbyspring.AllGraphQLCasesSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
 import graphql.parser.Parser;
 
 /**
@@ -34,7 +34,7 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { AllGraphQLCasesSpringConfiguration.class })
+@ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
 class DocumentParserTest_allGraphQLCases {
 
 	@Autowired

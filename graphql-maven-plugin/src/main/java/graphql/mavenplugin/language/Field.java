@@ -6,6 +6,7 @@ package graphql.mavenplugin.language;
 import java.util.List;
 
 import graphql.mavenplugin.DocumentParser;
+import graphql.mavenplugin.PluginMode;
 import lombok.Data;
 
 /**
@@ -42,6 +43,13 @@ public class Field {
 	 * in the list (if it's a list)
 	 */
 	private String typeName;
+
+	/**
+	 * Indicates whether this field is an id or not. It's used in {@link PluginMode#SERVER} mode to add the
+	 * javax.persistence annotations for the id fields. Default value is false. This field is set to true for GraphQL
+	 * fields which are of 'ID' type.
+	 */
+	private boolean id = false;
 
 	/** All fields in an object may have parameters. A parameter is actually a field. */
 	private List<Field> inputParameters = null;

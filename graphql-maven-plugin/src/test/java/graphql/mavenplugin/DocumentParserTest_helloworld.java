@@ -17,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import graphql.language.Document;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
-import graphql.mavenplugin_notscannedbyspring.HelloWorldSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfiguration;
 import graphql.parser.Parser;
 
 /**
@@ -25,7 +25,7 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { HelloWorldSpringConfiguration.class })
+@ContextConfiguration(classes = { HelloWorld_Server_SpringConfiguration.class })
 class DocumentParserTest_helloworld {
 
 	@Autowired

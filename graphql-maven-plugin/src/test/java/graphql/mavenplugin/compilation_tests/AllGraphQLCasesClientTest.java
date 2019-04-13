@@ -1,19 +1,19 @@
-package graphql.mavenplugin;
+package graphql.mavenplugin.compilation_tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import graphql.mavenplugin_notscannedbyspring.AllGraphQLCasesSpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { AllGraphQLCasesSpringConfiguration.class })
-class AllGraphQLCasesTest extends AbstractIntegrationTest {
+@ContextConfiguration(classes = { AllGraphQLCases_Client_SpringConfiguration.class })
+class AllGraphQLCasesClientTest extends AbstractIntegrationTest {
 
 	// Everything is in the AbstractIntegrationTest class.
 
-	// The only aim of this class, is to have its own Spring Configuration (AllGraphQLCasesSpringConfiguration)
+	// The only aim of this class, is to have its own Spring Configuration (AllGraphQLCases_Server_SpringConfiguration)
 	@BeforeEach
 	public void setUp() {
 		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases.graphqls");
