@@ -12,11 +12,34 @@
 
 	<build>
 		<plugins>
-			<!-- plugin> <groupId>com.graphql-java</groupId> <artifactId>graphql-maven-plugin</artifactId> <executions> <execution> 
-				<goals> <goal>graphql</goal> </goals> </execution> </executions> <configuration> <mode>server</mode> </configuration> </plugin -->
+			<plugin>
+				<groupId>com.graphql-java</groupId>
+				<artifactId>graphql-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>graphql</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mode>server</mode>
+				</configuration>
+			</plugin>
 			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
 				<executions> <execution> <id>add-source</id> <phase>generate-sources</phase> <goals> <goal>add-source</goal> </goals> <configuration> 
 				<sources> <source>some directory</source> ... </sources> </configuration> </execution> </executions> </plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

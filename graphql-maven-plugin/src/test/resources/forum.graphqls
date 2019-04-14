@@ -32,6 +32,7 @@ type Board {
 type Topic {
     id: ID!
     date: String!
+    author: Member
     publiclyAvailable: Boolean
     nbPosts: Int
     title: String!
@@ -42,6 +43,7 @@ type Topic {
 type Post {
     id: ID!
     date: String!
+    author: Member
     publiclyAvailable: Boolean
     title: String!
     content: String!

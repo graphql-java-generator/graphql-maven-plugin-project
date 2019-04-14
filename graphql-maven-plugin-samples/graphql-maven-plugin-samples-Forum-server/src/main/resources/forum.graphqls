@@ -3,7 +3,7 @@ schema {
 }
 
 type QueryType {
-    boards(): [Board]
+    boards: [Board]
     topics(board: Board!): [Topic]!
 }
 
@@ -25,13 +25,15 @@ type Member {
 type Board {
     id: ID!
     name: String!
-    public: Boolean
+    publiclyAvailable: Boolean
     topics: [Topic]!
 }
 
 type Topic {
     id: ID!
     date: String!
+    publiclyAvailable: Boolean
+    nbPosts: Int
     title: String!
     content: String!
     posts: [Post]!
@@ -40,6 +42,7 @@ type Topic {
 type Post {
     id: ID!
     date: String!
+    publiclyAvailable: Boolean
     title: String!
     content: String!
 }
