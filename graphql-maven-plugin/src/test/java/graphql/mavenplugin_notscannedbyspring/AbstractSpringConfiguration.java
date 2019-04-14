@@ -54,7 +54,14 @@ public abstract class AbstractSpringConfiguration {
 
 	@Bean
 	String basePackage() {
-		return BASE_PACKAGE + "." + mode;
+		// When I load all the generated code in the eclipse project, Java is unhappy that the same class exists several
+		// times. To solve that, every junit test has its own target package, based on the Spring configuration class.
+		//
+		// Let's extract the simple name from the current class name. As it is proxified by Spring, we must remove
+		// everything from the first "$" character
+		String classname = this.getClass().getSimpleName().toLowerCase();
+		int firstDollar = classname.indexOf('$');
+		return BASE_PACKAGE + "." + classname.substring(0, firstDollar);
 	}
 
 	@Bean
