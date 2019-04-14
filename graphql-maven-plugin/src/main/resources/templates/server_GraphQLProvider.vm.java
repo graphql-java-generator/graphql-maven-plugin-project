@@ -7,11 +7,13 @@ package ${package};
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.codec.Charsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.graphql.maven.plugin.samples.server.graphql.CharacterImpl;
@@ -19,9 +21,10 @@ import org.graphql.maven.plugin.samples.server.graphql.Droid;
 import org.graphql.maven.plugin.samples.server.graphql.Human;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-
-import com.google.common.io.Resources;
+import org.springframework.util.FileCopyUtils;
 
 import graphql.GraphQL;
 import graphql.TypeResolutionEnvironment;
@@ -60,10 +63,10 @@ public class GraphQLProvider {
 
 	@PostConstruct
 	public void init() throws IOException {
-		URL url = Resources.getResource("starWarsSchema.graphqls");
-		String sdl = Resources.toString(url, Charsets.UTF_8);
-		GraphQLSchema graphQLSchema = buildSchema(sdl);
-		this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
+		Resource res = new ClassPathResource("/starWarsSchema.graphqls");
+		Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"));
+		String sdl = FileCopyUtils.copyToString(reader);
+		this.graphQL = GraphQL.newGraphQL(buildSchema(sdl)).build();
 	}
 
 	private GraphQLSchema buildSchema(String sdl) {

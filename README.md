@@ -6,7 +6,7 @@ It's a work in progress. But the generated code is already ready to use.
 
 ### Things to change
 
-- GraphQL interfaces may not be an interface in Java, as we have to be able to map JSON to it.
+- The plugin currently manages only one schema. It would be nice to allow several graphqls files, with a pattern like /*.graphqls
 
 ### What the plugin can't manage (as of its current state)
 

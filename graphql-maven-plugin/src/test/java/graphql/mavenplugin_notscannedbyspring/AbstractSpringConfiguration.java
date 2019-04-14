@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Import;
 import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
 
 import graphql.mavenplugin.PluginMode;
+import graphql.mavenplugin.SpringConfiguration;
 import graphql.mavenplugin.test.helper.MavenLog;
 import graphql.mavenplugin.test.helper.MavenTestHelper;
 
@@ -50,6 +51,16 @@ public abstract class AbstractSpringConfiguration {
 	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode) {
 		this.schemaFilePattern = schemaFilePattern;
 		this.mode = mode;
+	}
+
+	/**
+	 * This overrides the {@link SpringConfiguration#resourcesFolder()}, so that we read the test resources
+	 * 
+	 * @return "/src/test/resources"
+	 */
+	@Bean
+	public String resourcesFolder() {
+		return "/src/test/resources";
 	}
 
 	@Bean

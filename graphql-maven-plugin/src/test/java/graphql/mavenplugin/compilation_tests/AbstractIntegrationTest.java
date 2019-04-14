@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 
 import graphql.mavenplugin.CodeGenerator;
 import graphql.mavenplugin.DocumentParser;
+import graphql.mavenplugin.PluginMode;
 import graphql.mavenplugin.test.compiler.CompilationTestHelper;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin.test.helper.MavenTestHelper;
@@ -31,6 +32,8 @@ abstract class AbstractIntegrationTest {
 
 	@Autowired
 	protected Log log;
+	@Autowired
+	protected PluginMode mode;
 	@Autowired
 	protected String basePackage;
 	@Autowired
@@ -77,7 +80,10 @@ abstract class AbstractIntegrationTest {
 		int verif = codeGenerator.generateCode();
 
 		// Verification
-		assertEquals(i, verif, "Nb generated classes");
+		if (mode.equals(PluginMode.client))
+			assertEquals(i, verif, "Nb generated classes");
+		else
+			assertEquals(i + 3, verif, "Nb generated classes (including the 3 server mode classes)");
 
 		compilationTestHelper.checkCompleteCompilationStatus(null);
 	}

@@ -47,4 +47,11 @@ public interface Relation {
 	 */
 	Field getMappedyBy();
 
+	/**
+	 * Returns the name of the DataFetcher to use for this relation.
+	 * 
+	 * @return
+	 */
+	// String getDataFetcherName();
+
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -36,6 +37,18 @@ public class SpringConfiguration {
 	 * solution, let us know !
 	 */
 	static GraphqlMavenPlugin mojo = null;
+
+	/**
+	 * This bean returns the resource folder for the current project. It is override when running tests, by the test
+	 * one, that returns "/src/test/resources".
+	 * 
+	 * @return "/src/main/resources"
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	public String resourcesFolder() {
+		return "/src/main/resources";
+	}
 
 	@Bean
 	String basePackage() {

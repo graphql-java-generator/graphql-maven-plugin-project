@@ -54,11 +54,6 @@
 			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>26.0-jre</version>
-		</dependency>
 		<!-- dependency> <groupId>com.graphql-java-kickstart</groupId> <artifactId>graphql-spring-boot-starter</artifactId> </dependency> 
 			<dependency> <groupId>com.graphql-java-kickstart</groupId> <artifactId>graphql-java-tools</artifactId> </dependency -->
 		<!-- dependency> <!- Fournit une IHM pour tester les requêtes graphql -> <groupId>com.graphql-java</groupId> <artifactId>graphiql-spring-boot-starter</artifactId> 

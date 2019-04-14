@@ -18,6 +18,6 @@ import graphql.mavenplugin.PluginMode;
 public class Forum_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public Forum_Server_SpringConfiguration() {
-		super("src/test/resources/forum.graphqls", PluginMode.server);
+		super("forum.graphqls", PluginMode.server);
 	}
 }

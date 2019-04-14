@@ -8,11 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.project.MavenProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
@@ -23,7 +24,8 @@ import com.oembedler.moon.graphql.boot.SchemaStringProvider;
  */
 
 /**
- * Overrides the {@link GraphQLJavaToolsAutoConfiguration#schemaStringProvider()} bean, to loads our graphqls files
+ * Overrides the {@link GraphQLJavaToolsAutoConfiguration#schemaStringProvider()} bean, to loads our graphqls files,
+ * from the given schemaFilePattern plugin parameter
  * 
  * @author EtienneSF
  */
@@ -39,12 +41,15 @@ public class MavenResourceSchemaStringProvider implements SchemaStringProvider {
 	@Autowired
 	ApplicationContext applicationContext;
 
+	@Resource
+	String resourcesFolder;
+
 	@Override
 	public List<String> schemaStrings() throws IOException {
-		String fullPathPattern = "file:///" + project.getBasedir().getCanonicalPath()
+		String fullPathPattern = "file:///" + project.getBasedir().getCanonicalPath() + resourcesFolder
 				+ ((getSchemaFilePattern().startsWith("/") || (getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
 				+ getSchemaFilePattern();
-		Resource[] resources = applicationContext.getResources(fullPathPattern);
+		org.springframework.core.io.Resource[] resources = applicationContext.getResources(fullPathPattern);
 		if (resources.length <= 0) {
 			throw new IllegalStateException(
 					"No graphql schema files found on classpath with location pattern '" + getSchemaFilePattern());
@@ -53,7 +58,7 @@ public class MavenResourceSchemaStringProvider implements SchemaStringProvider {
 		return Arrays.stream(resources).map(this::readSchema).collect(Collectors.toList());
 	}
 
-	private String readSchema(Resource resource) {
+	private String readSchema(org.springframework.core.io.Resource resource) {
 		StringWriter writer = new StringWriter();
 		try (InputStream inputStream = resource.getInputStream()) {
 			IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8);
