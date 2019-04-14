@@ -5,12 +5,10 @@ package graphql.mavenplugin.language;
 
 import java.util.List;
 
-import graphql.mavenplugin.DocumentParser;
 import graphql.mavenplugin.PluginMode;
-import lombok.Data;
 
 /**
- * This class describers one field of one objet type (or interface...). It aims to be simple enough, so that the
+ * This interface describes one field of one objet type (or interface...). It aims to be simple enough, so that the
  * Velocity template can easily generated ths fields from it.<BR/>
  * For instance:
  * 
@@ -18,73 +16,62 @@ import lombok.Data;
  * name: String!
  * </PRE>
  * 
- * or
+ * is a {@link Field} of name 'name', type 'String', and is mandatory. or
  * 
  * <PRE>
  * appearsIn: [Episode!]!
  * </PRE>
  * 
+ * is a {@link Field} of name 'appearsIn', type 'Episode', is a list, is mandatory and its items are mandatory.
+ * 
  * @author EtienneSF
  */
-@Data
-public class Field {
+public interface Field {
 
 	/**
-	 * The {@link DocumentParser} instance, which will allow to get the {@link Type} of the field, from its typeName,
-	 * after the whole parsing is finished
+	 * The name of the field, as found in the GraphQL schema
+	 * 
+	 * @return The name of the field
 	 */
-	DocumentParser documentParser;
-
-	/** The name of the field */
-	private String name;
-
-	/**
-	 * The type of this field. This type is either the type of the field (if it's not a list), or the type of the items
-	 * in the list (if it's a list)
-	 */
-	private String typeName;
-
-	/**
-	 * Indicates whether this field is an id or not. It's used in {@link PluginMode#SERVER} mode to add the
-	 * javax.persistence annotations for the id fields. Default value is false. This field is set to true for GraphQL
-	 * fields which are of 'ID' type.
-	 */
-	private boolean id = false;
-
-	/** All fields in an object may have parameters. A parameter is actually a field. */
-	private List<Field> inputParameters = null;
-
-	/** Is this field a list? */
-	private boolean list = false;
-
-	/**
-	 * Is this field mandatory? If this field is a list, then mandatory indicates whether the list itself is mandatory,
-	 * or may be nullable
-	 */
-	private boolean mandatory = false;
-
-	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
-	private boolean itemMandatory = false;
-
-	/** Contains the default value.. Only used if this field is a list. */
-	private String defaultValue = null;
-
-	public Field(DocumentParser documentParser) {
-		this.documentParser = documentParser;
-	}
+	public String getName();
 
 	/**
 	 * Retrieves the {@link Type} for this field
 	 * 
 	 * @return
 	 */
-	public Type getType() {
-		Type type = documentParser.getType(typeName);
-		if (type == null) {
-			throw new NullPointerException("Could not find any Type of name '" + typeName + "'");
-		}
-		return type;
-	}
+	public Type getType();
+
+	/**
+	 * The type of this field. This type is either the type of the field (if it's not a list), or the type of the items
+	 * in the list (if it's a list)
+	 */
+	public String getTypeName();
+
+	/**
+	 * Indicates whether this field is an id or not. It's used in {@link PluginMode#SERVER} mode to add the
+	 * javax.persistence annotations for the id fields. Default value is false. This field is set to true for GraphQL
+	 * fields which are of 'ID' type.
+	 */
+	public boolean isId();
+
+	/** All fields in an object may have parameters. A parameter is actually a field. */
+	public List<Field> getInputParameters();
+
+	/** Is this field a list? */
+	public boolean isList();
+
+	/**
+	 * Is this field mandatory? If this field is a list, then mandatory indicates whether the list itself is mandatory,
+	 * or may be nullable
+	 */
+	public boolean isMandatory();
+
+	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
+	public boolean isItemMandatory();
+
+	/** Contains the default value.. Only used if this field is an input parameter. */
+	public String getDefaultValue();
 
 	/**
 	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case
@@ -92,8 +79,7 @@ public class Field {
 	 * 
 	 * @return
 	 */
-	public String getPascalCaseName() {
-		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	public default String getPascalCaseName() {
+		return getName().substring(0, 1).toUpperCase() + getName().substring(1);
 	}
-
 }

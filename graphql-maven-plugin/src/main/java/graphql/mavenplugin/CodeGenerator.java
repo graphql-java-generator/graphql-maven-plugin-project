@@ -27,10 +27,11 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.mavenplugin.language.Field;
-import graphql.mavenplugin.language.ObjectType;
 import graphql.mavenplugin.language.Relation;
-import graphql.mavenplugin.language.RelationImpl;
 import graphql.mavenplugin.language.RelationType;
+import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin.language.impl.ObjectType;
+import graphql.mavenplugin.language.impl.RelationImpl;
 
 /**
  * This class generates the code, from the classes coming from the graphql.mavenplugin.language package. This classes
@@ -122,7 +123,7 @@ public class CodeGenerator {
 	 * These relations are important for the server mode of the plugin, to generate the proper JPA annotations.
 	 */
 	void initRelations() {
-		for (ObjectType type : documentParser.getObjectTypes()) {
+		for (Type type : documentParser.getObjectTypes()) {
 			for (Field field : type.getFields()) {
 				if (field.getType() instanceof ObjectType) {
 					RelationImpl relation = new RelationImpl();

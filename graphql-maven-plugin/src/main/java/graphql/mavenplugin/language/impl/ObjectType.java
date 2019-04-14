@@ -1,12 +1,15 @@
 /**
  * 
  */
-package graphql.mavenplugin.language;
+package graphql.mavenplugin.language.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import graphql.mavenplugin.PluginMode;
+import graphql.mavenplugin.language.Field;
+import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin.language.Type.GraphQlType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

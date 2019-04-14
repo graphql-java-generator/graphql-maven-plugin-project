@@ -21,10 +21,10 @@ import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.SchemaDefinition;
-import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
-import graphql.mavenplugin.language.ObjectType;
 import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin.language.impl.EnumType;
+import graphql.mavenplugin.language.impl.ObjectType;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
 import graphql.parser.Parser;
@@ -91,7 +91,7 @@ class DocumentParserTest_allGraphQLCases {
 		// We need to parse the whole document, to get the types map filled.
 		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.objectTypes = new ArrayList<ObjectType>();
+		documentParser.objectTypes = new ArrayList<>();
 
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);
@@ -140,7 +140,7 @@ class DocumentParserTest_allGraphQLCases {
 		// We need to parse the whole document, to get the types map filled.
 		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.objectTypes = new ArrayList<ObjectType>();
+		documentParser.objectTypes = new ArrayList<>();
 
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);
@@ -194,7 +194,7 @@ class DocumentParserTest_allGraphQLCases {
 		} // for
 		assertNotNull(schema, "We should have found our test case (" + objectName + ")");
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.objectTypes = new ArrayList<ObjectType>();
+		documentParser.objectTypes = new ArrayList<>();
 
 		// Go, go, go
 		documentParser.readSchemaDefinition(schema, queries, mutations, subscriptions);
@@ -313,7 +313,7 @@ class DocumentParserTest_allGraphQLCases {
 		// We need to parse the whole document, to get the types map filled.
 		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.mutationTypes = new ArrayList<ObjectType>();
+		documentParser.mutationTypes = new ArrayList<>();
 
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);
@@ -348,7 +348,7 @@ class DocumentParserTest_allGraphQLCases {
 		// We need to parse the whole document, to get the types map filled.
 		documentParser.parseOneDocument(doc);
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.subscriptionTypes = new ArrayList<ObjectType>();
+		documentParser.subscriptionTypes = new ArrayList<>();
 
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);

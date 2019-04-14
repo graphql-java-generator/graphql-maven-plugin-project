@@ -1,5 +1,9 @@
-package graphql.mavenplugin.language;
+package graphql.mavenplugin.language.impl;
 
+import graphql.mavenplugin.language.Field;
+import graphql.mavenplugin.language.Relation;
+import graphql.mavenplugin.language.RelationType;
+import graphql.mavenplugin.language.Type;
 import lombok.Data;
 
 /**

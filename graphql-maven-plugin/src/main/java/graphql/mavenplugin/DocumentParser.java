@@ -33,13 +33,14 @@ import graphql.language.ObjectTypeDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
-import graphql.language.Type;
 import graphql.language.TypeName;
-import graphql.mavenplugin.language.EnumType;
 import graphql.mavenplugin.language.Field;
-import graphql.mavenplugin.language.InterfaceType;
-import graphql.mavenplugin.language.ObjectType;
-import graphql.mavenplugin.language.ScalarType;
+import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin.language.impl.EnumType;
+import graphql.mavenplugin.language.impl.FieldImpl;
+import graphql.mavenplugin.language.impl.InterfaceType;
+import graphql.mavenplugin.language.impl.ObjectType;
+import graphql.mavenplugin.language.impl.ScalarType;
 import graphql.parser.Parser;
 import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat.FieldType;
 import lombok.Getter;
@@ -94,25 +95,25 @@ public class DocumentParser {
 	 * been merged
 	 */
 	@Getter
-	List<ObjectType> subscriptionTypes = new ArrayList<>();
+	List<Type> subscriptionTypes = new ArrayList<>();
 	/**
 	 * All the Mutation Types for this Document. There may be several ones, if more than one graphqls files have been
 	 * merged
 	 */
 	@Getter
-	List<ObjectType> mutationTypes = new ArrayList<>();
+	List<Type> mutationTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
-	List<ObjectType> objectTypes = new ArrayList<>();
+	List<Type> objectTypes = new ArrayList<>();
 
 	/** All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents */
 	@Getter
-	List<InterfaceType> interfaceTypes = new ArrayList<>();
+	List<Type> interfaceTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
-	List<EnumType> enumTypes = new ArrayList<>();
+	List<Type> enumTypes = new ArrayList<>();
 
 	/** All the {@link Type}s that have been parsed, added by the default scalars */
 	Map<String, graphql.mavenplugin.language.Type> types = new HashMap<>();
@@ -128,7 +129,7 @@ public class DocumentParser {
 		scalars.add(new ScalarType("ID", "java.lang", "String"));
 		scalars.add(new ScalarType("String", "java.lang", "String"));
 
-		// It seems that both boolean/Boolean, int/Int, float/Float are accepted.
+		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
 		scalars.add(new ScalarType("boolean", "java.lang", "Boolean"));
 		scalars.add(new ScalarType("Boolean", "java.lang", "Boolean"));
 		scalars.add(new ScalarType("int", "java.lang", "Integer"));
@@ -264,7 +265,7 @@ public class DocumentParser {
 		objectType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
 
 		// Let's read all the other object types that this one implements
-		for (Type type : node.getImplements()) {
+		for (graphql.language.Type type : node.getImplements()) {
 			if (type instanceof TypeName) {
 				objectType.getImplementz().add(((TypeName) type).getName());
 			} else if (type instanceof EnumValue) {
@@ -321,7 +322,7 @@ public class DocumentParser {
 	 */
 	Field getField(FieldDefinition fieldDef) {
 
-		Field field = readFieldTypeDefinition(fieldDef);
+		FieldImpl field = readFieldTypeDefinition(fieldDef);
 
 		// Let's read all its input parameters
 		field.setInputParameters(fieldDef.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
@@ -350,8 +351,8 @@ public class DocumentParser {
 	 * @param field
 	 * @return
 	 */
-	Field readFieldTypeDefinition(AbstractNode<?> fieldDef) {
-		Field field = new Field(this);
+	FieldImpl readFieldTypeDefinition(AbstractNode<?> fieldDef) {
+		FieldImpl field = new FieldImpl(this);
 
 		field.setName((String) exec("getName", fieldDef));
 
@@ -473,7 +474,7 @@ public class DocumentParser {
 	 */
 	void defineDefaultInterfaceImplementationClassName() {
 		String objectName = "interface name to define";
-		for (InterfaceType i : interfaceTypes) {
+		for (Type i : interfaceTypes) {
 			String defaultName = i.getName() + "Impl";
 			int count = 0;
 			boolean nameFound = true;
@@ -482,7 +483,7 @@ public class DocumentParser {
 				objectName = defaultName + (count == 0 ? "" : count);
 				count += 1;
 				nameFound = false;
-				for (ObjectType o : objectTypes) {
+				for (Type o : objectTypes) {
 					if (o.getName().equals(objectName)) {
 						nameFound = true;
 					}
@@ -498,7 +499,7 @@ public class DocumentParser {
 			o.setFields(i.getFields());
 			objectTypes.add(o);
 
-			i.setDefaultImplementation(o);
+			((InterfaceType) i).setDefaultImplementation(o);
 
 		} // for
 	}

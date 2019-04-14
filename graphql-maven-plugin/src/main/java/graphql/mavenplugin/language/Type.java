@@ -3,6 +3,8 @@
  */
 package graphql.mavenplugin.language;
 
+import java.util.List;
+
 /**
  * All types found in the GraphQL schema(s), and discovered during the GraphQL parsing, are instance of {@link Type}.
  * 
@@ -60,4 +62,12 @@ public interface Type {
 	 * @return
 	 */
 	public String getConcreteClassSimpleName();
+
+	/**
+	 * Returns the list of {@link Field}s for this type. Or null, if this field can't have any field, like a Scalar for
+	 * instance
+	 * 
+	 * @return
+	 */
+	public List<Field> getFields();
 }

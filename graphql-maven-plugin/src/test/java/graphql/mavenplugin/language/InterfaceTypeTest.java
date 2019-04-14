@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import graphql.mavenplugin.PluginMode;
+import graphql.mavenplugin.language.impl.InterfaceType;
+import graphql.mavenplugin.language.impl.ObjectType;
 
 class InterfaceTypeTest {
 

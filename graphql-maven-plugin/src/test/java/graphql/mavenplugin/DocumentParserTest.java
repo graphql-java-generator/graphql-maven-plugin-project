@@ -7,8 +7,8 @@ import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import graphql.mavenplugin.language.InterfaceType;
-import graphql.mavenplugin.language.ObjectType;
+import graphql.mavenplugin.language.impl.InterfaceType;
+import graphql.mavenplugin.language.impl.ObjectType;
 
 /**
  * 

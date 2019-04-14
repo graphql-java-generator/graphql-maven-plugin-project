@@ -1,8 +1,12 @@
 /**
  * 
  */
-package graphql.mavenplugin.language;
+package graphql.mavenplugin.language.impl;
 
+import java.util.List;
+
+import graphql.mavenplugin.language.Field;
+import graphql.mavenplugin.language.Type;
 import lombok.Data;
 
 /**
@@ -58,6 +62,16 @@ public class ScalarType implements Type {
 	@Override
 	public boolean isJPAEntity() {
 		return false;
+	}
+
+	/**
+	 * An enum has no fields.
+	 * 
+	 * @return null
+	 */
+	@Override
+	public List<Field> getFields() {
+		return null;
 	}
 
 }
