@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -25,13 +24,6 @@ import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.stereotype.Component;
-
-import graphql.mavenplugin.language.Field;
-import graphql.mavenplugin.language.Relation;
-import graphql.mavenplugin.language.RelationType;
-import graphql.mavenplugin.language.Type;
-import graphql.mavenplugin.language.impl.ObjectType;
-import graphql.mavenplugin.language.impl.RelationImpl;
 
 /**
  * This class generates the code, from the classes coming from the graphql.mavenplugin.language package. This classes
@@ -77,9 +69,6 @@ public class CodeGenerator {
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
 
-	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
-	List<Relation> relations = new ArrayList<>();
-
 	public CodeGenerator() {
 		// Initialization for Velocity
 		velocityEngine = new VelocityEngine();
@@ -95,8 +84,6 @@ public class CodeGenerator {
 	 * @throws MojoExecutionException
 	 */
 	public int generateCode() throws MojoExecutionException {
-
-		initRelations();
 
 		int i = 0;
 		i += generateTargetFile(documentParser.getQueryTypes(), "query",
@@ -115,26 +102,6 @@ public class CodeGenerator {
 			i += generateServer();
 		}
 		return i;
-	}
-
-	/**
-	 * Reads all the GraphQl objects, interfaces, union... that have been read from the GraphQL schema, and list all the
-	 * relations between objects. The found relations are stored, to be reused during the code generation.<BR/>
-	 * These relations are important for the server mode of the plugin, to generate the proper JPA annotations.
-	 */
-	void initRelations() {
-		for (Type type : documentParser.getObjectTypes()) {
-			for (Field field : type.getFields()) {
-				if (field.getType() instanceof ObjectType) {
-					RelationImpl relation = new RelationImpl();
-					relation.setObjectType(type);
-					relation.setField(field);
-					relation.setRelationType(field.isList() ? RelationType.OneToMany : RelationType.ManyToOne);
-					//
-					relations.add(relation);
-				} // if (instanceof ObjectType)
-			} // for (field)
-		} // for (type)
 	}
 
 	/**

@@ -6,6 +6,7 @@ package graphql.mavenplugin.language;
 import java.util.List;
 
 import graphql.mavenplugin.PluginMode;
+import graphql.mavenplugin.language.impl.TypeUtil;
 
 /**
  * This interface describes one field of one objet type (or interface...). It aims to be simple enough, so that the
@@ -74,12 +75,28 @@ public interface Field {
 	public String getDefaultValue();
 
 	/**
+	 * Returns the {@link Relation} description for this field.
+	 * 
+	 * @return null if this field is not a relation to another Entity
+	 */
+	public Relation getRelation();
+
+	/**
+	 * Retrieves the annotation or annotations to add to this field, when in server mode, to serve the relation that
+	 * this field holds
+	 * 
+	 * @return The relevant annotation(s) ready to add directly as-is in the Velocity template, or "" (an empty string)
+	 *         if there is no annotation to add. The return is never null.
+	 */
+	public String getAnnotation();
+
+	/**
 	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case
 	 * string (for instance: ThisIsCamelCase).
 	 * 
 	 * @return
 	 */
 	public default String getPascalCaseName() {
-		return getName().substring(0, 1).toUpperCase() + getName().substring(1);
+		return TypeUtil.getPascalCase(getName());
 	}
 }

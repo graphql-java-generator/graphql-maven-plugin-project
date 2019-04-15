@@ -35,11 +35,14 @@ import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
 import graphql.mavenplugin.language.Field;
+import graphql.mavenplugin.language.Relation;
+import graphql.mavenplugin.language.RelationType;
 import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.language.impl.EnumType;
 import graphql.mavenplugin.language.impl.FieldImpl;
 import graphql.mavenplugin.language.impl.InterfaceType;
 import graphql.mavenplugin.language.impl.ObjectType;
+import graphql.mavenplugin.language.impl.RelationImpl;
 import graphql.mavenplugin.language.impl.ScalarType;
 import graphql.parser.Parser;
 import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat.FieldType;
@@ -118,6 +121,9 @@ public class DocumentParser {
 	/** All the {@link Type}s that have been parsed, added by the default scalars */
 	Map<String, graphql.mavenplugin.language.Type> types = new HashMap<>();
 
+	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
+	List<Relation> relations = new ArrayList<>();
+
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
@@ -126,16 +132,16 @@ public class DocumentParser {
 
 	public DocumentParser() {
 		// Add of all predefined scalars
-		scalars.add(new ScalarType("ID", "java.lang", "String"));
-		scalars.add(new ScalarType("String", "java.lang", "String"));
+		scalars.add(new ScalarType("ID", "java.lang", "String", mode));
+		scalars.add(new ScalarType("String", "java.lang", "String", mode));
 
 		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
-		scalars.add(new ScalarType("boolean", "java.lang", "Boolean"));
-		scalars.add(new ScalarType("Boolean", "java.lang", "Boolean"));
-		scalars.add(new ScalarType("int", "java.lang", "Integer"));
-		scalars.add(new ScalarType("Int", "java.lang", "Integer"));
-		scalars.add(new ScalarType("Float", "java.lang", "Float"));
-		scalars.add(new ScalarType("float", "java.lang", "Float"));
+		scalars.add(new ScalarType("boolean", "java.lang", "Boolean", mode));
+		scalars.add(new ScalarType("Boolean", "java.lang", "Boolean", mode));
+		scalars.add(new ScalarType("int", "java.lang", "Integer", mode));
+		scalars.add(new ScalarType("Int", "java.lang", "Integer", mode));
+		scalars.add(new ScalarType("Float", "java.lang", "Float", mode));
+		scalars.add(new ScalarType("float", "java.lang", "Float", mode));
 	}
 
 	/**
@@ -201,6 +207,15 @@ public class DocumentParser {
 		defineDefaultInterfaceImplementationClassName();
 
 		fillTypesMap();
+
+		switch (mode) {
+		case client:
+			addClientAnnotations();
+			break;
+		case server:
+			adServerAnnotations();
+			break;
+		}
 
 		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size()
 				+ enumTypes.size() + interfaceTypes.size();
@@ -512,5 +527,41 @@ public class DocumentParser {
 	 */
 	public graphql.mavenplugin.language.Type getType(String typeName) {
 		return types.get(typeName);
+	}
+
+	/**
+	 * Reads all the GraphQl objects, interfaces, union... that have been read from the GraphQL schema, and list all the
+	 * relations between objects. The found relations are stored, to be reused during the code generation.<BR/>
+	 * These relations are important for the server mode of the plugin, to generate the proper JPA annotations.
+	 */
+	void initRelations() {
+		for (Type type : getObjectTypes()) {
+			for (Field field : type.getFields()) {
+				if (field.getType() instanceof ObjectType) {
+					RelationType relType = field.isList() ? RelationType.OneToMany : RelationType.ManyToOne;
+					RelationImpl relation = new RelationImpl(type, field, relType);
+					//
+					relations.add(relation);
+				} // if (instanceof ObjectType)
+			} // for (field)
+		} // for (type)
+	}
+
+	/**
+	 * Add the annotation for the client mode. This is essentially the Jackson annotation, to allow deserialization of
+	 * the server response, into the generated classes.
+	 */
+	void addClientAnnotations() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * Add the annotation for the server mode. This is essentially the JPA annotation, to allow database access by
+	 * Spring Data from and into the generated classes.
+	 */
+	void adServerAnnotations() {
+		// TODO Auto-generated method stub
+
 	}
 }

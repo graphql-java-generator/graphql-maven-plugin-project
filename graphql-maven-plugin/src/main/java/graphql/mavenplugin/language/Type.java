@@ -24,12 +24,12 @@ public interface Type {
 	public String getName();
 
 	/**
-	 * Returns true if this class is a JPA Entity. If yes, the generated code should contain the @Entity annotation, and
-	 * its field should be annotated accordingly
+	 * Returns the annotation or annotations that must be added to this type.
 	 * 
-	 * @return true if this type is a JPA Entity. False otherwise.
+	 * @return The relevant annotation(s) ready to add directly as-is in the Velocity template, or "" (an empty string)
+	 *         if there is no annotation to add. The return is never null.
 	 */
-	public boolean isJPAEntity();
+	public String getAnnotation();
 
 	/**
 	 * The GraphQlType for this type

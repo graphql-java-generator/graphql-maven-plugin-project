@@ -2,7 +2,6 @@ package graphql.mavenplugin.language.impl;
 
 import graphql.mavenplugin.PluginMode;
 import graphql.mavenplugin.language.Type;
-import graphql.mavenplugin.language.Type.GraphQlType;
 import lombok.Data;
 
 @Data
@@ -16,6 +15,12 @@ public abstract class AbstractType implements Type {
 
 	/** The name of the package for this class */
 	private String packageName;
+
+	/**
+	 * Tha Java annotationto add to this type, ready to be added by the Velocity template. That is: one annotation per
+	 * line, each line starting at the beginning of the line
+	 */
+	private String annotation;
 
 	/** The GraphQL type for this type */
 	final private GraphQlType graphQlType;
@@ -47,8 +52,4 @@ public abstract class AbstractType implements Type {
 		return packageName + "." + getClassSimpleName();
 	}
 
-	@Override
-	public boolean isJPAEntity() {
-		return mode.equals(PluginMode.server);
-	}
 }

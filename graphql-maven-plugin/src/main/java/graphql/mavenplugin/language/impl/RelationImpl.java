@@ -5,6 +5,8 @@ import graphql.mavenplugin.language.Relation;
 import graphql.mavenplugin.language.RelationType;
 import graphql.mavenplugin.language.Type;
 import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The class that implements the {@link Relation} interface
@@ -12,15 +14,19 @@ import lombok.Data;
  * @author EtienneSF
  */
 @Data
+@RequiredArgsConstructor
 public class RelationImpl implements Relation {
 
 	/** @See {@link Relation#getObjectType()} */
+	@NonNull
 	Type objectType;
 
 	/** @See {@link Relation#getField()} */
+	@NonNull
 	public Field field;
 
 	/** @See {@link Relation#getRelationType()} */
+	@NonNull
 	RelationType relationType;
 
 	/**
@@ -36,5 +42,17 @@ public class RelationImpl implements Relation {
 	 * @See {@link Relation#getMappedyBy()}
 	 */
 	Field mappedyBy = null;
+
+	/** {@inheritDoc} */
+	@Override
+	public String getDataFetcherName() {
+		return TypeUtil.getCamelCase(objectType.getName()) + TypeUtil.getPascalCase(field.getName());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Object getAnnotation() {
+		return "	@Transient";
+	}
 
 }

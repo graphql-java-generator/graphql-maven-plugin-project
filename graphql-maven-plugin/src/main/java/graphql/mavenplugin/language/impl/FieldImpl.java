@@ -8,6 +8,7 @@ import java.util.List;
 import graphql.mavenplugin.DocumentParser;
 import graphql.mavenplugin.PluginMode;
 import graphql.mavenplugin.language.Field;
+import graphql.mavenplugin.language.Relation;
 import graphql.mavenplugin.language.Type;
 import lombok.Data;
 
@@ -57,6 +58,20 @@ public class FieldImpl implements Field {
 	/** Contains the default value.. Only used if this field is a list. */
 	private String defaultValue = null;
 
+	/** Contans the description of the relation that this field holds */
+	private Relation relation = null;
+
+	/**
+	 * Tha Java annotationto add to this type, ready to be added by the Velocity template. That is: one annotation per
+	 * line, each line starting at the beginning of the line
+	 */
+	private String annotation;
+
+	/**
+	 * To construct such a class, you need ro provide the current DocumentParser
+	 * 
+	 * @param documentParser
+	 */
 	public FieldImpl(DocumentParser documentParser) {
 		this.documentParser = documentParser;
 	}

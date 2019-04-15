@@ -9,6 +9,7 @@ package graphql.mavenplugin.language;
  * @author EtienneSF
  */
 public enum RelationType {
+	// Standard JPA annotations
 	OneToOne, OneToMany, ManyToOne, ManyToMany
 
 }
