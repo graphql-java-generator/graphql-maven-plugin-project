@@ -1,67 +1,41 @@
 package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import graphql.language.Document;
+import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.Relation;
 import graphql.mavenplugin.language.RelationType;
-import graphql.mavenplugin.test.helper.GraphqlTestHelper;
-import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
-import graphql.parser.Parser;
+import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
 /**
  * 
  * @author EtienneSF
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
-class DocumentParserTest_Forum {
+@ContextConfiguration(classes = { Forum_Server_SpringConfiguration.class })
+class DocumentParserTest_Forum_Server {
 
 	@Autowired
-	private ApplicationContext ctx;
-	@Autowired
-	private GraphqlTestHelper graphqlTestHelper;
-	@Autowired
-	String basePackage;
-
-	private DocumentParser documentParser;
-	private Parser parser;
-
-	private Document doc;
+	DocumentParser documentParser;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		documentParser = new DocumentParser();
-		documentParser.basePackage = basePackage;
-		documentParser.log = new SystemStreamLog();
-		parser = new Parser();
-
-		// By default, we parse the allGraphQLCases, as it contains all the cases managed by the plugin. It's the most
-		// used in the latter unit tests.
-		Resource resource = ctx.getResource("/allGraphQLCases.graphqls");
-		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
+		documentParser.parseDocuments();
 	}
 
 	@Test
+	@DirtiesContext
 	void test_initRelations() {
-		// Preparation
-		assertNotNull(documentParser.relations, "relations initialized");
-		assertEquals(0, documentParser.relations.size(), "relations initialized to an empty list");
-
-		// Go, go, go
-		documentParser.initRelations();
 
 		// Verification
 		assertEquals(4, documentParser.relations.size(), "nb relations found");
@@ -99,5 +73,31 @@ class DocumentParserTest_Forum {
 		} else {
 			assertEquals(mappedyBy, relation.getMappedyBy().getName(), msg + " [mappedyBy]");
 		}
+	}
+
+	/** Tests the annotation. We're in Server mode, thanks to the Spring Configuration used for this test */
+	@Test
+	@DirtiesContext
+	void test_addAnnotations_server() {
+		// Preparation
+		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
+
+		// Verification
+		assertEquals("@Entity", topic.getAnnotation(), "Entity annotation");
+		int i = 0;
+		checkFieldAnnotation(topic.getFields().get(i++), "id", "@Id\n	@GeneratedValue");
+		checkFieldAnnotation(topic.getFields().get(i++), "date", "");
+		checkFieldAnnotation(topic.getFields().get(i++), "author", "@Transient");
+		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable", "");
+		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts", "");
+		checkFieldAnnotation(topic.getFields().get(i++), "title", "");
+		checkFieldAnnotation(topic.getFields().get(i++), "content", "");
+		checkFieldAnnotation(topic.getFields().get(i++), "posts", "@Transient");
+	}
+
+	private void checkFieldAnnotation(Field field, String name, String annotation) {
+		String msg = "Check annotation for field " + field.getName() + " (server mode)";
+		assertEquals(name, field.getName(), msg + " [name]");
+		assertEquals(annotation, field.getAnnotation(), msg + " [annotation]");
 	}
 }

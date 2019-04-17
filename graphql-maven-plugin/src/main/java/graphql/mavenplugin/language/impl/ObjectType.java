@@ -8,8 +8,6 @@ import java.util.List;
 
 import graphql.mavenplugin.PluginMode;
 import graphql.mavenplugin.language.Field;
-import graphql.mavenplugin.language.Type;
-import graphql.mavenplugin.language.Type.GraphQlType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,6 +35,26 @@ public class ObjectType extends AbstractType {
 	/** The fields for this object type */
 	private List<Field> fields = new ArrayList<>();
 
+	/**
+	 * 
+	 * @param name
+	 *            The name of this object type
+	 * @param packageName
+	 *            the package name where it must be created
+	 * @param mode
+	 *            The current {@link PluginMode}
+	 */
+	public ObjectType(String name, String packageName, PluginMode mode) {
+		super(packageName, mode, GraphQlType.OBJECT);
+		setName(name);
+	}
+
+	/**
+	 * @param packageName
+	 *            the package name where it must be created
+	 * @param mode
+	 *            The current {@link PluginMode}
+	 */
 	public ObjectType(String packageName, PluginMode mode) {
 		super(packageName, mode, GraphQlType.OBJECT);
 	}
@@ -48,8 +66,9 @@ public class ObjectType extends AbstractType {
 	 * @param mode
 	 * @param type
 	 */
-	public ObjectType(String packageName, PluginMode mode, GraphQlType type) {
+	protected ObjectType(String name, String packageName, PluginMode mode, GraphQlType type) {
 		super(packageName, mode, type);
+		setName(name);
 	}
 
 }

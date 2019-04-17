@@ -1,7 +1,6 @@
 package graphql.mavenplugin.compilation_tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.spy;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +71,7 @@ abstract class AbstractIntegrationTest {
 		// codeGenerator.encoding = encoding;
 		// codeGenerator.targetSourceFolder = targetSourceFolder;
 
-		codeGenerator = spy(codeGenerator);
+		// codeGenerator = spy(codeGenerator);
 		mavenTestHelper.deleteDirectoryAndContentIfExists(targetSourceFolder);
 		mavenTestHelper.deleteDirectoryAndContentIfExists(targetClassFolder);
 

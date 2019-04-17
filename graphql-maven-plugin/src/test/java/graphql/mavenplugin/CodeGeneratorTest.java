@@ -28,6 +28,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.language.impl.ObjectType;
 import graphql.mavenplugin.test.helper.MavenTestHelper;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
@@ -75,7 +76,7 @@ class CodeGeneratorTest {
 
 		ObjectType object1 = new ObjectType(basePackage, PluginMode.client);
 		ObjectType object2 = new ObjectType(basePackage, PluginMode.client);
-		List<ObjectType> objects = new ArrayList<>();
+		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
 
@@ -119,7 +120,7 @@ class CodeGeneratorTest {
 
 		ObjectType object1 = new ObjectType(basePackage, PluginMode.server);
 		ObjectType object2 = new ObjectType(basePackage, PluginMode.server);
-		List<ObjectType> objects = new ArrayList<>();
+		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
 

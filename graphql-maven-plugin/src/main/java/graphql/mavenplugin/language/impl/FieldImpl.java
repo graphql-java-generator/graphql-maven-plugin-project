@@ -86,4 +86,11 @@ public class FieldImpl implements Field {
 		return type;
 	}
 
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+		if (typeName.equals("ID")) {
+			setId(true);
+		}
+	}
+
 }

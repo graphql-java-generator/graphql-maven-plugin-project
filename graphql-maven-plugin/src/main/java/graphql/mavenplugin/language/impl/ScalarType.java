@@ -39,6 +39,7 @@ public class ScalarType extends AbstractType {
 	 */
 	public ScalarType(String name, String packageName, String classSimpleName, PluginMode mode) {
 		super(packageName, mode, GraphQlType.SCALAR);
+		setName(name);
 		this.classSimpleName = classSimpleName;
 	}
 

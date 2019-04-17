@@ -25,6 +25,8 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.stereotype.Component;
 
+import graphql.mavenplugin.language.Type;
+
 /**
  * This class generates the code, from the classes coming from the graphql.mavenplugin.language package. This classes
  * have been created by {link {@link DocumentParser}
@@ -115,11 +117,11 @@ public class CodeGenerator {
 	 *            The absolute path for the template (or relative to the current path)
 	 * @throws IOException
 	 */
-	int generateTargetFile(List<?> objects, String type, String templateFilename) throws RuntimeException {
+	int generateTargetFile(List<Type> objects, String type, String templateFilename) throws RuntimeException {
 		int i = 0;
-		for (Object object : objects) {
+		for (Type object : objects) {
 			File targetFile = getJavaFile((String) exec("getName", object));
-			String msg = "Generating " + type + " '" + object + "' into " + targetFile.getAbsolutePath();
+			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 			VelocityContext context = new VelocityContext();
 			context.put("package", basePackage);
 			context.put("object", object);

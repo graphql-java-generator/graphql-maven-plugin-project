@@ -25,8 +25,23 @@ public class EnumType extends AbstractType {
 
 	/**
 	 * 
+	 * @param name
+	 *            The name of this enum type
 	 * @param packageName
-	 *            The package name for this enum class
+	 *            the package name where it must be created
+	 * @param mode
+	 *            The current {@link PluginMode}
+	 */
+	public EnumType(String name, String packageName, PluginMode mode) {
+		super(packageName, mode, GraphQlType.ENUM);
+		setName(name);
+	}
+
+	/**
+	 * @param packageName
+	 *            the package name where it must be created
+	 * @param mode
+	 *            The current {@link PluginMode}
 	 */
 	public EnumType(String packageName, PluginMode mode) {
 		super(packageName, mode, GraphQlType.ENUM);

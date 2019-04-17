@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Resource;
 
@@ -38,6 +39,7 @@ import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.Relation;
 import graphql.mavenplugin.language.RelationType;
 import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin.language.impl.AbstractType;
 import graphql.mavenplugin.language.impl.EnumType;
 import graphql.mavenplugin.language.impl.FieldImpl;
 import graphql.mavenplugin.language.impl.InterfaceType;
@@ -92,17 +94,20 @@ public class DocumentParser {
 	 * merged
 	 */
 	@Getter
-	List<ObjectType> queryTypes = new ArrayList<>();
+	List<Type> queryTypes = new ArrayList<>();
+
 	/**
 	 * All the Subscription Types for this Document. There may be several ones, if more than one graphqls files have
 	 * been merged
 	 */
+
 	@Getter
 	List<Type> subscriptionTypes = new ArrayList<>();
 	/**
 	 * All the Mutation Types for this Document. There may be several ones, if more than one graphqls files have been
 	 * merged
 	 */
+
 	@Getter
 	List<Type> mutationTypes = new ArrayList<>();
 
@@ -152,7 +157,20 @@ public class DocumentParser {
 	 * @return
 	 */
 	public int parseDocuments() {
-		return documents.stream().mapToInt(this::parseOneDocument).sum();
+		int nbClasses = documents.stream().mapToInt(this::parseOneDocument).sum();
+
+		// Let's finalize some "details":
+
+		// Each interface should have an implementation class, for JSON deserialization, or to map to a JPA Entity
+		nbClasses += defineDefaultInterfaceImplementationClassName();
+		// The types Map allows to retrieve easily a Type from its name
+		fillTypesMap();
+		// Let's identify every relation between objects, interface or union in the model
+		initRelations();
+		// Some annotations are needed for Jackson or JPA
+		addAnnotations();
+
+		return nbClasses;
 	}
 
 	/**
@@ -203,19 +221,6 @@ public class DocumentParser {
 				throw new RuntimeException("Unknown node type: " + node.getClass().getName());
 			}
 		} // for
-
-		defineDefaultInterfaceImplementationClassName();
-
-		fillTypesMap();
-
-		switch (mode) {
-		case client:
-			addClientAnnotations();
-			break;
-		case server:
-			adServerAnnotations();
-			break;
-		}
 
 		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size()
 				+ enumTypes.size() + interfaceTypes.size();
@@ -444,18 +449,18 @@ public class DocumentParser {
 	 * 
 	 * @param methodName
 	 *            The name of the method name
-	 * @param node
+	 * @param object
 	 *            The given node, on which the 'methodName' method is to be called
 	 * @return
 	 */
-	Object exec(String methodName, AbstractNode<?> node) {
+	Object exec(String methodName, Object object) {
 		try {
-			Method getType = node.getClass().getDeclaredMethod(methodName);
-			return getType.invoke(node);
+			Method getType = object.getClass().getDeclaredMethod(methodName);
+			return getType.invoke(object);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
 			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
-					+ node.getClass().getName() + "': " + e.getMessage(), e);
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
 	}
 
@@ -487,20 +492,23 @@ public class DocumentParser {
 	 * suffix Impl1, then Impl2... until there is no collision.<BR/>
 	 * Note: this is useful only for the client code generation (not for the server one)
 	 */
-	void defineDefaultInterfaceImplementationClassName() {
+	int defineDefaultInterfaceImplementationClassName() {
 		String objectName = "interface name to define";
+		int nbGeneratedClasses = 0;
+
 		for (Type i : interfaceTypes) {
 			String defaultName = i.getName() + "Impl";
-			int count = 0;
 			boolean nameFound = true;
+			int objectNamePrefix = 0;
 
 			while (nameFound) {
-				objectName = defaultName + (count == 0 ? "" : count);
-				count += 1;
+				objectName = defaultName + (objectNamePrefix == 0 ? "" : objectNamePrefix);
+				objectNamePrefix += 1;
 				nameFound = false;
 				for (Type o : objectTypes) {
 					if (o.getName().equals(objectName)) {
 						nameFound = true;
+						break;
 					}
 				} // for (ObjectType)
 			} // while
@@ -513,10 +521,13 @@ public class DocumentParser {
 			o.setImplementz(interfaces);
 			o.setFields(i.getFields());
 			objectTypes.add(o);
+			nbGeneratedClasses += 1;
 
 			((InterfaceType) i).setDefaultImplementation(o);
 
 		} // for
+
+		return nbGeneratedClasses;
 	}
 
 	/**
@@ -541,6 +552,7 @@ public class DocumentParser {
 					RelationType relType = field.isList() ? RelationType.OneToMany : RelationType.ManyToOne;
 					RelationImpl relation = new RelationImpl(type, field, relType);
 					//
+					((FieldImpl) field).setRelation(relation);
 					relations.add(relation);
 				} // if (instanceof ObjectType)
 			} // for (field)
@@ -548,20 +560,97 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Add the annotation for the client mode. This is essentially the Jackson annotation, to allow deserialization of
-	 * the server response, into the generated classes.
+	 * Defines the annotation for each field of the read objects and interfaces. For the client mode, this is
+	 * essentially the Jackson annotations, to allow deserialization of the server response, into the generated classes.
+	 * For the server mode, this is essentially the JPA annotations, to define the interaction with the database,
+	 * through Spring Data
 	 */
-	void addClientAnnotations() {
-		// TODO Auto-generated method stub
+	void addAnnotations() {
+		// No annotation for types.
+		// We go through each field of each type we generate, to define the relevant annotation
+		switch (mode) {
+		case client:
+			Stream.concat(objectTypes.stream(), interfaceTypes.stream())
+					.forEach(o -> addTypeAnnotationForClientMode(o));
+			Stream.concat(objectTypes.stream(), interfaceTypes.stream()).flatMap(o -> o.getFields().stream())
+					.forEach(f -> addFieldAnnotationForClientMode(f));
+			break;
+		case server:
+			Stream.concat(objectTypes.stream(), interfaceTypes.stream())
+					.forEach(o -> addTypeAnnotationForServerMode(o));
+			Stream.concat(objectTypes.stream(), interfaceTypes.stream()).flatMap(o -> o.getFields().stream())
+					.forEach(f -> addTypeAnnotationForServerMode(f));
+			break;
+		}
 
 	}
 
 	/**
-	 * Add the annotation for the server mode. This is essentially the JPA annotation, to allow database access by
-	 * Spring Data from and into the generated classes.
+	 * This method add the needed annotation(s) to the given type. It should be called when the maven plugin is in
+	 * client mode
+	 * 
+	 * @param o
 	 */
-	void adServerAnnotations() {
-		// TODO Auto-generated method stub
-
+	void addTypeAnnotationForClientMode(Type o) {
+		// No annotation for objects and interfaces when in client mode.
+		((ObjectType) o).setAnnotation("");
 	}
+
+	/**
+	 * This method add the needed annotation(s) to the given type. It should be called when the maven plugin is in
+	 * server mode. This typically add the JPA @Entity annotation.
+	 * 
+	 * @param o
+	 */
+	void addTypeAnnotationForServerMode(Type o) {
+		String annotation = "";
+
+		if (o instanceof ObjectType && !(o instanceof InterfaceType)) {
+			annotation = "@Entity";
+		}
+
+		((AbstractType) o).setAnnotation(annotation);
+	}
+
+	/**
+	 * This method add the needed annotation(s) to the given field. It should be called when the maven plugin is in
+	 * client mode. This typically add the Jackson annotation, to allow the desialization of the GraphQL server
+	 * response.
+	 * 
+	 * @param field
+	 */
+	void addFieldAnnotationForClientMode(Field field) {
+		String annotation = "";
+
+		if (field.isList()) {
+			annotation = "@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName() + ".class)";
+		}
+
+		log.debug(field.getType().getName() + "." + field.getName() + " annotation set to <" + annotation
+				+ "> (the GraphQL maven plugin is in client mode)");
+		((FieldImpl) field).setAnnotation(annotation);
+	}
+
+	/**
+	 * This method add the needed annotation(s) to the given field. It should be called when the maven plugin is in
+	 * server mode. This typically add the JPA @Id, @GeneratedValue, @Transient annotations.
+	 * 
+	 * @param field
+	 */
+	void addTypeAnnotationForServerMode(Field field) {
+		String annotation = "";
+
+		if (field.isId()) {
+			// We have found the identifier
+			annotation = "@Id\n	@GeneratedValue";
+		} else if (field.getRelation() != null) {
+			// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
+			annotation = "@Transient";
+		}
+
+		log.debug(field.getType().getName() + "." + field.getName() + " annotation set to <" + annotation
+				+ "> (the GraphQL maven plugin is in server mode)");
+		((FieldImpl) field).setAnnotation(annotation);
+	}
+
 }

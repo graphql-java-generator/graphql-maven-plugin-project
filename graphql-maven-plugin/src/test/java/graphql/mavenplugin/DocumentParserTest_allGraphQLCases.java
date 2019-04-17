@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.plugin.logging.SystemStreamLog;
+import javax.annotation.Resource;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,9 +25,7 @@ import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.language.impl.EnumType;
 import graphql.mavenplugin.language.impl.ObjectType;
-import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
-import graphql.parser.Parser;
 
 /**
  * 
@@ -38,34 +36,24 @@ import graphql.parser.Parser;
 class DocumentParserTest_allGraphQLCases {
 
 	@Autowired
-	private ApplicationContext ctx;
-	@Autowired
-	private GraphqlTestHelper graphqlTestHelper;
-	@Autowired
+	private DocumentParser documentParser;
+
+	@Resource
 	String basePackage;
 
-	private DocumentParser documentParser;
-	private Parser parser;
-
-	private Document doc;
+	@Autowired
+	List<Document> documents;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		documentParser = new DocumentParser();
-		documentParser.basePackage = basePackage;
-		documentParser.log = new SystemStreamLog();
-		parser = new Parser();
-
-		// By default, we parse the allGraphQLCases, as it contains all the cases managed by the plugin. It's the most
-		// used in the latter unit tests.
-		Resource resource = ctx.getResource("/allGraphQLCases.graphqls");
-		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
+		//
 	}
 
 	@Test
+	@DirtiesContext
 	void test_parseOneDocument_allGrahpQLCases() {
 		// Go, go, go
-		int i = documentParser.parseOneDocument(doc);
+		int i = documentParser.parseDocuments();
 
 		// Verification
 		assertEquals(13, i, "Nb classes are generated");
@@ -78,18 +66,19 @@ class DocumentParserTest_allGraphQLCases {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_addObjectType_noImplement() {
 		// Preparation
 		String objectName = "allFieldCases";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : doc.getDefinitions()) {
+		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		documentParser.parseOneDocument(doc);
+		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.objectTypes = new ArrayList<>();
 
@@ -127,18 +116,19 @@ class DocumentParserTest_allGraphQLCases {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_addObjectType_withImplement() {
 		// Preparation
 		String objectName = "Human";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : doc.getDefinitions()) {
+		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		documentParser.parseOneDocument(doc);
+		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.objectTypes = new ArrayList<>();
 
@@ -179,6 +169,7 @@ class DocumentParserTest_allGraphQLCases {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_readSchemaDefinition() {
 		// Preparation
 		List<String> queries = new ArrayList<>();
@@ -186,7 +177,7 @@ class DocumentParserTest_allGraphQLCases {
 		List<String> subscriptions = new ArrayList<>();
 		String objectName = "schema";
 		SchemaDefinition schema = null;
-		for (Definition<?> node : doc.getDefinitions()) {
+		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof SchemaDefinition) {
 				schema = (SchemaDefinition) node;
 				break;
@@ -211,20 +202,21 @@ class DocumentParserTest_allGraphQLCases {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_readObjectType_QueryType() {
 		// Preparation
 		String objectName = "MyQueryType";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : doc.getDefinitions()) {
+		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		documentParser.parseOneDocument(doc);
+		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.queryTypes = new ArrayList<ObjectType>();
+		documentParser.queryTypes = new ArrayList<>();
 
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);
@@ -273,18 +265,19 @@ class DocumentParserTest_allGraphQLCases {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_readEnumType() {
 		// Preparation
 		String objectName = "Episode";
 		EnumTypeDefinition def = null;
-		for (Definition<?> node : doc.getDefinitions()) {
+		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof EnumTypeDefinition && ((EnumTypeDefinition) node).getName().equals(objectName)) {
 				def = (EnumTypeDefinition) node;
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.queryTypes = new ArrayList<ObjectType>();
+		documentParser.queryTypes = new ArrayList<>();
 
 		// Go, go, go
 		EnumType type = documentParser.readEnumType(def);
@@ -300,18 +293,19 @@ class DocumentParserTest_allGraphQLCases {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_addObjectType_MutationType() {
 		// Preparation
 		String objectName = "AnotherMutationType";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : doc.getDefinitions()) {
+		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		documentParser.parseOneDocument(doc);
+		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.mutationTypes = new ArrayList<>();
 
@@ -335,18 +329,19 @@ class DocumentParserTest_allGraphQLCases {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_addObjectType_SubscriptionType() {
 		// Preparation
 		String objectName = "TheSubscriptionType";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : doc.getDefinitions()) {
+		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		documentParser.parseOneDocument(doc);
+		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.subscriptionTypes = new ArrayList<>();
 

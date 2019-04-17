@@ -2,7 +2,6 @@ package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +28,16 @@ class DocumentParserTest_basic {
 	@Autowired
 	String basePackage;
 
-	private DocumentParser documentParser;
-	private Parser parser;
+	@Autowired
+	DocumentParser documentParser;
+
+	private Parser parser = new Parser();
 
 	private Document doc;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		graphqlTestHelper.checkSchemaStringProvider("basic.graphqls");
-
-		documentParser = new DocumentParser();
-		documentParser.basePackage = basePackage;
-		documentParser.log = new SystemStreamLog();
-		parser = new Parser();
 	}
 
 	@Test

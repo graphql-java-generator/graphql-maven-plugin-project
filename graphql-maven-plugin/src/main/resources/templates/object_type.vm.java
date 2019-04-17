@@ -2,13 +2,11 @@ package ${package};
 
 import java.util.List;
 
-#if(${object.JPAEntity})
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-#end
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -20,15 +18,8 @@ ${object.annotation}
 public class ${object.name} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
 
 #foreach ($field in $object.fields)
-#if(!${field.list}  &&  ${field.type.graphQlType.toString()} == "INTERFACE")
-	@JsonDeserialize(as = ${field.type.concreteClassSimpleName}.class)
-#end 
-#if(${field.list})
-	@JsonDeserialize(contentAs = ${field.type.concreteClassSimpleName}.class)
-#end
-${field.annotation}
+	${field.annotation}
 	#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name};
-
 	
 #end
 

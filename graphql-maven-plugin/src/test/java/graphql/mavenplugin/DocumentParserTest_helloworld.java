@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -35,20 +35,18 @@ class DocumentParserTest_helloworld {
 	@Autowired
 	String basePackage;
 
-	private DocumentParser documentParser;
-	private Parser parser;
+	@Autowired
+	DocumentParser documentParser;
+
+	private Parser parser = new Parser();
 
 	@BeforeEach
 	void setUp() throws Exception {
 		graphqlTestHelper.checkSchemaStringProvider("helloworld.graphqls");
-
-		documentParser = new DocumentParser();
-		documentParser.basePackage = basePackage;
-		documentParser.log = new SystemStreamLog();
-		parser = new Parser();
 	}
 
 	@Test
+	@DirtiesContext
 	void test_parseDocuments() throws MojoExecutionException {
 		// Preparation
 		Document basic = parser.parseDocument(graphqlTestHelper.readSchema(ctx.getResource("/helloworld.graphqls")));
@@ -66,6 +64,7 @@ class DocumentParserTest_helloworld {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_parseOneDocument_helloworld() {
 		// Preparation
 		Resource resource = ctx.getResource("/helloworld.graphqls");
@@ -75,7 +74,7 @@ class DocumentParserTest_helloworld {
 		int i = documentParser.parseOneDocument(doc);
 
 		// Verification
-		assertEquals(1, i, "Two classes are generated");
+		assertEquals(1, i, "One classe is generated (the query)");
 	}
 
 }

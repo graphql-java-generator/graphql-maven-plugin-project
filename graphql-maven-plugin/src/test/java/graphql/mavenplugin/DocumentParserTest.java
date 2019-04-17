@@ -3,10 +3,14 @@ package graphql.mavenplugin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.ArrayList;
+
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin.language.impl.EnumType;
 import graphql.mavenplugin.language.impl.InterfaceType;
 import graphql.mavenplugin.language.impl.ObjectType;
 
@@ -33,6 +37,8 @@ class DocumentParserTest {
 		// Preparation
 		ObjectType o = new ObjectType(basePackage, PluginMode.server);
 		o.setName("interfaceImpl");
+		documentParser.interfaceTypes = new ArrayList<>();
+		documentParser.objectTypes = new ArrayList<>();
 		documentParser.objectTypes.add(o);
 
 		InterfaceType i1 = new InterfaceType(basePackage, PluginMode.server);
@@ -50,9 +56,10 @@ class DocumentParserTest {
 		assertNull(i2.getDefaultImplementation(), "No default implementation, after instance creation");
 
 		// Go, go, go
-		documentParser.defineDefaultInterfaceImplementationClassName();
+		int count = documentParser.defineDefaultInterfaceImplementationClassName();
 
 		// Verification
+		assertEquals(2, count, "Nb interfaces created, according to defineDefaultInterfaceImplementationClassName()");
 		assertEquals(3, documentParser.objectTypes.size(), "Nb objects (after)");
 		assertEquals(2, documentParser.interfaceTypes.size(), "Nb interfaces (after)");
 
@@ -68,4 +75,36 @@ class DocumentParserTest {
 		assertEquals("anotherInterfaceImpl", documentParser.objectTypes.get(2).getName(),
 				"Default implementation is the standard name, as there is no conflict (general case) (path 2)");
 	}
+
+	@Test
+	public void test_addTypeAnnotationForClientMode() {
+		Type type;
+
+		type = new ObjectType("TheName", "the.package.name", PluginMode.client);
+		documentParser.addTypeAnnotationForClientMode(type);
+		assertEquals("", type.getAnnotation(), type.getClass().getName());
+
+		type = new InterfaceType("TheName", "the.package.name", PluginMode.client);
+		documentParser.addTypeAnnotationForClientMode(type);
+		assertEquals("", type.getAnnotation(), type.getClass().getName());
+	}
+
+	@Test
+	public void test_addTypeAnnotationForServerMode() {
+		Type type;
+		documentParser.mode = PluginMode.server;
+
+		type = new ObjectType("TheName", "the.package.name", PluginMode.server);
+		documentParser.addTypeAnnotationForServerMode(type);
+		assertEquals("@Entity", type.getAnnotation(), type.getClass().getName());
+
+		type = new InterfaceType("TheName", "the.package.name", PluginMode.server);
+		documentParser.addTypeAnnotationForServerMode(type);
+		assertEquals("", type.getAnnotation(), type.getClass().getName());
+
+		type = new EnumType("TheName", "the.package.name", PluginMode.server);
+		documentParser.addTypeAnnotationForServerMode(type);
+		assertEquals("", type.getAnnotation(), type.getClass().getName());
+	}
+
 }
