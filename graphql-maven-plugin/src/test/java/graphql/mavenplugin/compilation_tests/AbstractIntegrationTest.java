@@ -82,7 +82,7 @@ abstract class AbstractIntegrationTest {
 		if (mode.equals(PluginMode.client))
 			assertEquals(i, verif, "Nb generated classes");
 		else
-			assertEquals(i + 3, verif, "Nb generated classes (including the 3 server mode classes)");
+			assertEquals(i + 4, verif, "Nb generated classes (including the 3 server mode classes)");
 
 		compilationTestHelper.checkCompleteCompilationStatus(null);
 	}

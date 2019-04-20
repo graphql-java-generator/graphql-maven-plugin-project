@@ -127,4 +127,10 @@ class DocumentParserTest_Forum_Server {
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 	}
+
+	@Test
+	@DirtiesContext
+	void test_initListOfImplementations() {
+		assertEquals(0, documentParser.interfaceTypes.size(), "No interface");
+	}
 }

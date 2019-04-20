@@ -87,6 +87,13 @@ public class GraphQLProvider {
 #foreach ($dataFetcher in $dataFetchers)
 				.type(newTypeWiring("${dataFetcher.field.type.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.name}()))
 #end
+#if ($interfaces.size() > 0)
+				//
+				// Let's link the interface types to the concrete types
+#end
+#foreach ($interface in $interfaces)
+				.type("${interface.name}", typeWriting -> typeWriting.typeResolver(get${interface.name}Resolver()))
+#end
 				.build();
 	}
 
@@ -115,20 +122,21 @@ public class GraphQLProvider {
 		return characterImplDef.build();
 	}
 
-	private TypeResolver getCharacterResolver() {
+	
+#foreach ($interface in $interfaces)
+	private TypeResolver get${interface.name}Resolver() {
 		return new TypeResolver() {
 			@Override
 			public GraphQLObjectType getType(TypeResolutionEnvironment env) {
 				Object javaObject = env.getObject();
 				String ret = null;
 
-				if (javaObject instanceof Human) {
-					ret = "Human";
-				} else if (javaObject instanceof Droid) {
-					ret = "Droid";
-				} else if (javaObject instanceof CharacterImpl) {
-					ret = "CharacterImpl";
-				} else {
+#foreach ($implementingType in ${interface.implementingTypes})
+				if (javaObject instanceof ${implementingType.name}) {
+					ret = "${implementingType.name}";
+				} else
+#end
+				{
 					throw new RuntimeException("Can't resolve javaObject " + javaObject.getClass().getName());
 				}
 				logger.trace("Resolved type for javaObject {} is {}", javaObject.getClass().getName());
@@ -136,4 +144,6 @@ public class GraphQLProvider {
 			}
 		};
 	}
+
+#end
 }

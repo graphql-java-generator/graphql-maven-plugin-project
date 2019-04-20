@@ -3,6 +3,9 @@
  */
 package graphql.mavenplugin.language.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import graphql.mavenplugin.PluginMode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,6 +57,12 @@ public class InterfaceType extends ObjectType {
 	 */
 	ObjectType defaultImplementation = null;
 
+	/**
+	 * Contains the list of all concrete types which implements this interface. That is: all the types defined in the
+	 * GraphQL schema, and the concrete type created by the GraphQL maven plugin to implement this interface
+	 */
+	List<ObjectType> implementingTypes = new ArrayList<>();
+
 	public InterfaceType(String name, String packageName, PluginMode mode) {
 		super(name, packageName, mode, GraphQlType.INTERFACE);
 	}
@@ -73,4 +82,5 @@ public class InterfaceType extends ObjectType {
 	public String getConcreteClassSimpleName() {
 		return defaultImplementation.getClassSimpleName();
 	}
+
 }

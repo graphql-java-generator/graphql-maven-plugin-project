@@ -3,6 +3,8 @@ package graphql.mavenplugin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import graphql.mavenplugin.language.DataFetcher;
+import graphql.mavenplugin.language.impl.ObjectType;
 import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguration;
 
 /**
@@ -67,6 +70,18 @@ class DocumentParserTest_StarWars_Server {
 	}
 
 	@Test
+	@DirtiesContext
+	void test_initListOfImplementations() {
+		assertEquals(1, documentParser.interfaceTypes.size(), "Only one interface");
+		List<ObjectType> implementingTypes = documentParser.interfaceTypes.get(0).getImplementingTypes();
+		assertEquals(3, implementingTypes.size(), "3 types for this interface");
+		assertEquals("Human", implementingTypes.get(0).getName());
+		assertEquals("Droid", implementingTypes.get(1).getName());
+		assertEquals("CharacterImpl", implementingTypes.get(2).getName());
+	}
+
+	@Test
+	@DirtiesContext
 	void test_initTypeResolvers() {
 		fail("not yet implemented");
 		// // We still need to link the interface types to the concrete types

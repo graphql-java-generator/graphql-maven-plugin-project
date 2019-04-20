@@ -96,34 +96,33 @@ public class DocumentParser {
 	 * merged
 	 */
 	@Getter
-	List<Type> queryTypes = new ArrayList<>();
+	List<ObjectType> queryTypes = new ArrayList<>();
 
 	/**
 	 * All the Subscription Types for this Document. There may be several ones, if more than one graphqls files have
 	 * been merged
 	 */
-
 	@Getter
-	List<Type> subscriptionTypes = new ArrayList<>();
+	List<ObjectType> subscriptionTypes = new ArrayList<>();
+
 	/**
 	 * All the Mutation Types for this Document. There may be several ones, if more than one graphqls files have been
 	 * merged
 	 */
-
 	@Getter
-	List<Type> mutationTypes = new ArrayList<>();
+	List<ObjectType> mutationTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
-	List<Type> objectTypes = new ArrayList<>();
+	List<ObjectType> objectTypes = new ArrayList<>();
 
 	/** All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents */
 	@Getter
-	List<Type> interfaceTypes = new ArrayList<>();
+	List<InterfaceType> interfaceTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
-	List<Type> enumTypes = new ArrayList<>();
+	List<EnumType> enumTypes = new ArrayList<>();
 
 	/** All the {@link Type}s that have been parsed, added by the default scalars */
 	Map<String, graphql.mavenplugin.language.Type> types = new HashMap<>();
@@ -168,13 +167,15 @@ public class DocumentParser {
 
 		// Each interface should have an implementation class, for JSON deserialization, or to map to a JPA Entity
 		nbClasses += defineDefaultInterfaceImplementationClassName();
+		// init the list of the object implementing each interface.
+		initListOfImplementations();
 		// The types Map allows to retrieve easily a Type from its name
 		fillTypesMap();
 		// Let's identify every relation between objects, interface or union in the model
 		initRelations();
 		// Some annotations are needed for Jackson or JPA
 		addAnnotations();
-		// List data fetchers
+		// List all data fetchers
 		initDataFetchers();
 
 		return nbClasses;
@@ -674,7 +675,6 @@ public class DocumentParser {
 			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
 			// interfaces
 			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
-			// interfaceTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
 		}
 	}
 
@@ -699,6 +699,22 @@ public class DocumentParser {
 							(field.getType() instanceof ObjectType || field.getType() instanceof InterfaceType)//
 					)) {
 				dataFetchers.add(new DataFetcherImpl(field));
+			}
+		}
+	}
+
+	/**
+	 * For each interface, identify the list of object types which implements it.
+	 * 
+	 * @see InterfaceType#getImplementingTypes()
+	 */
+	void initListOfImplementations() {
+		for (InterfaceType interfaceType : interfaceTypes) {
+			for (ObjectType objectType : objectTypes) {
+				if (objectType.getImplementz().contains(interfaceType.getName())) {
+					// This object implements the current interface we're looping in.
+					interfaceType.getImplementingTypes().add(objectType);
+				}
 			}
 		}
 	}

@@ -116,7 +116,7 @@ public class CodeGenerator {
 	 *            The absolute path for the template (or relative to the current path)
 	 * @throws IOException
 	 */
-	int generateTargetFile(List<Type> objects, String type, String templateFilename) throws RuntimeException {
+	int generateTargetFile(List<? extends Type> objects, String type, String templateFilename) throws RuntimeException {
 		int i = 0;
 		for (Type object : objects) {
 			File targetFile = getJavaFile((String) exec("getName", object));
@@ -155,6 +155,7 @@ public class CodeGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("package", basePackage);
 		context.put("dataFetchers", documentParser.dataFetchers);
+		context.put("interfaces", documentParser.interfaceTypes);
 
 		int ret = 0;
 		ret += generateOneFile(getJavaFile("GraphQLServer"), "generating GraphQLServer", context,

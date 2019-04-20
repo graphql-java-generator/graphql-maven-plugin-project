@@ -150,15 +150,15 @@ class DocumentParserTest {
 			when(f.getInputParameters()).thenReturn(args);
 		}
 
-		/////////////////////////////////////////////////////////////////////////////// ::
+		///////////////////////////////////////////////////////////////////////////////
 		////////////////////// TEST FOR QUERY TYPES
-		/////////////////////////////////////////////////////////////////////////////// ::
+		///////////////////////////////////////////////////////////////////////////////
 		documentParser.queryTypes = new ArrayList<>();
 		documentParser.interfaceTypes = new ArrayList<>();
 		documentParser.objectTypes = new ArrayList<>();
 		documentParser.dataFetchers = new ArrayList<>();
 		documentParser.queryTypes.add(type);
-		documentParser.enumTypes.add(type);
+		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
 		documentParser.scalars.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
 
 		// Go, go, go
@@ -190,7 +190,7 @@ class DocumentParserTest {
 		documentParser.dataFetchers = new ArrayList<>();
 		//
 		documentParser.objectTypes.add(type);
-		documentParser.enumTypes.add(type);
+		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
 		documentParser.scalars.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
 
 		// Go, go, go
@@ -217,8 +217,8 @@ class DocumentParserTest {
 		documentParser.scalars = new ArrayList<>();
 		documentParser.dataFetchers = new ArrayList<>();
 		//
-		documentParser.interfaceTypes.add(type);
-		documentParser.enumTypes.add(type);
+		documentParser.interfaceTypes.add(new InterfaceType("AnInterface", "a.package", PluginMode.server));
+		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
 		documentParser.scalars.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
 
 		// Go, go, go
@@ -243,4 +243,5 @@ class DocumentParserTest {
 		assertEquals(type, dataFetcher.getField().getOwningType(), "type");
 		assertEquals(inputParameters, dataFetcher.getField().getInputParameters(), "arguments");
 	}
+
 }
