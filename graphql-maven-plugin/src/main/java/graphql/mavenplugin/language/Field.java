@@ -37,6 +37,13 @@ public interface Field {
 	public String getName();
 
 	/**
+	 * Retrieves the {@link Type} which contains this field
+	 * 
+	 * @return
+	 */
+	public Type getOwningType();
+
+	/**
 	 * Retrieves the {@link Type} for this field
 	 * 
 	 * @return

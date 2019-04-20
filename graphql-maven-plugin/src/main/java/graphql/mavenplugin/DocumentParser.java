@@ -35,11 +35,13 @@ import graphql.language.OperationTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
+import graphql.mavenplugin.language.DataFetcher;
 import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.Relation;
 import graphql.mavenplugin.language.RelationType;
 import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.language.impl.AbstractType;
+import graphql.mavenplugin.language.impl.DataFetcherImpl;
 import graphql.mavenplugin.language.impl.EnumType;
 import graphql.mavenplugin.language.impl.FieldImpl;
 import graphql.mavenplugin.language.impl.InterfaceType;
@@ -129,6 +131,9 @@ public class DocumentParser {
 	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
 	List<Relation> relations = new ArrayList<>();
 
+	/** All {@link DataFetcher}s that needs to be implemented for this/these schema/schemas */
+	List<DataFetcher> dataFetchers = new ArrayList<>();
+
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
@@ -169,6 +174,8 @@ public class DocumentParser {
 		initRelations();
 		// Some annotations are needed for Jackson or JPA
 		addAnnotations();
+		// List data fetchers
+		initDataFetchers();
 
 		return nbClasses;
 	}
@@ -282,7 +289,8 @@ public class DocumentParser {
 		objectType.setName(node.getName());
 
 		// Let's read all its fields
-		objectType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
+		objectType.setFields(
+				node.getFieldDefinitions().stream().map(def -> getField(def, objectType)).collect(Collectors.toList()));
 
 		// Let's read all the other object types that this one implements
 		for (graphql.language.Type type : node.getImplements()) {
@@ -313,7 +321,8 @@ public class DocumentParser {
 		interfaceType.setName(node.getName());
 
 		// Let's read all its fields
-		interfaceType.setFields(node.getFieldDefinitions().stream().map(this::getField).collect(Collectors.toList()));
+		interfaceType.setFields(node.getFieldDefinitions().stream().map(def -> getField(def, interfaceType))
+				.collect(Collectors.toList()));
 
 		return interfaceType;
 	}
@@ -337,12 +346,15 @@ public class DocumentParser {
 	 * Reads one graphql {@link FieldDefinition}, and maps it into a {@link Field}.
 	 * 
 	 * @param fieldDef
+	 * @param owningType
+	 *            The type which contains this field
 	 * @return
 	 * @throws MojoExecutionException
 	 */
-	Field getField(FieldDefinition fieldDef) {
+	Field getField(FieldDefinition fieldDef, Type owningType) {
 
 		FieldImpl field = readFieldTypeDefinition(fieldDef);
+		field.setOwningType(owningType);
 
 		// Let's read all its input parameters
 		field.setInputParameters(fieldDef.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
@@ -651,6 +663,44 @@ public class DocumentParser {
 		log.debug(field.getType().getName() + "." + field.getName() + " annotation set to <" + annotation
 				+ "> (the GraphQL maven plugin is in server mode)");
 		((FieldImpl) field).setAnnotation(annotation);
+	}
+
+	/**
+	 * Identified all the GraphQL Data Fetchers needed from this/these schema/schemas
+	 */
+	void initDataFetchers() {
+		if (mode.equals(PluginMode.server)) {
+			queryTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
+			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
+			// interfaces
+			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
+			// interfaceTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
+		}
+	}
+
+	/**
+	 * Identified all the GraphQL Data Fetchers needed for this type
+	 *
+	 * @param type
+	 * @param isQueryType
+	 *            true if the given type is actually a query, false otherwise
+	 */
+	void initDataFetcherForOneObject(Type type, boolean isQueryType) {
+		for (Field field : type.getFields()) {
+			if (
+			// All query field must have their Data Fetcher
+			isQueryType
+					// Whenever this field is a list: the list is stored in an external tables (for relational
+					// databases)
+					|| (field.isList())
+					// For Objects and Characters, only links to other objects have their data fetcher
+					|| ((type instanceof ObjectType || type instanceof InterfaceType) //
+							&& //
+							(field.getType() instanceof ObjectType || field.getType() instanceof InterfaceType)//
+					)) {
+				dataFetchers.add(new DataFetcherImpl(field));
+			}
+		}
 	}
 
 }

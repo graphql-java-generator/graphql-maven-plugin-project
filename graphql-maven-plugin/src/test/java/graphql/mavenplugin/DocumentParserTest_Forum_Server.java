@@ -11,6 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import graphql.mavenplugin.language.DataFetcher;
 import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.Relation;
 import graphql.mavenplugin.language.RelationType;
@@ -99,5 +100,31 @@ class DocumentParserTest_Forum_Server {
 		String msg = "Check annotation for field " + field.getName() + " (server mode)";
 		assertEquals(name, field.getName(), msg + " [name]");
 		assertEquals(annotation, field.getAnnotation(), msg + " [annotation]");
+	}
+
+	/** Tests the Data Fetchers that are listed during parsing */
+	@Test
+	@DirtiesContext
+	void test_initDataFetchers() {
+		assertEquals(6, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+
+		int i = 0;
+		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeBoards", "QueryType", "boards", "Board", true);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeTopics", "QueryType", "topics", "Topic", true);
+
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "BoardTopics", "Board", "topics", "Topic", true);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicAuthor", "Topic", "author", "Member", false);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicPosts", "Topic", "posts", "Post", true);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "PostAuthor", "Post", "author", "Member", false);
+	}
+
+	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,
+			String returnedTypeName, boolean list) {
+		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
+		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
+		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
+		assertEquals(list, dataFetcher.getField().isList(), "list");
+		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 	}
 }

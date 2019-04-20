@@ -96,4 +96,11 @@ class DocumentParserTest_Forum_Client {
 		assertEquals(name, field.getName(), msg + " [name]");
 		assertEquals(annotation, field.getAnnotation(), msg + " [annotation]");
 	}
+
+	/** Tests the Data Fetchers that are listed during parsing */
+	@Test
+	@DirtiesContext
+	void test_initDataFetchers() {
+		assertEquals(0, documentParser.dataFetchers.size(), "no data fetcher in client mode");
+	}
 }

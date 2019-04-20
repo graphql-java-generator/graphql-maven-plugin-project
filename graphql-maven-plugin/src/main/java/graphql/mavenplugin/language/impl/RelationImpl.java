@@ -7,6 +7,7 @@ import graphql.mavenplugin.language.Type;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * The class that implements the {@link Relation} interface
@@ -22,6 +23,7 @@ public class RelationImpl implements Relation {
 	Type objectType;
 
 	/** @See {@link Relation#getField()} */
+	@ToString.Exclude
 	@NonNull
 	public Field field;
 

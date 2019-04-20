@@ -27,6 +27,9 @@ public class FieldImpl implements Field {
 	/** The name of the field */
 	private String name;
 
+	/** The {@link Type} which contains this field */
+	private Type owningType;
+
 	/**
 	 * The type of this field. This type is either the type of the field (if it's not a list), or the type of the items
 	 * in the list (if it's a list)

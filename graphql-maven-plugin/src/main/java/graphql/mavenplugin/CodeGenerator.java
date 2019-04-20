@@ -44,6 +44,7 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServer.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
 
 	@Resource
 	DocumentParser documentParser;
@@ -99,9 +100,7 @@ public class CodeGenerator {
 		i += generateTargetFile(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
 
 		if (mode.equals(PluginMode.server)) {
-			i += generateDataFetcher();
-			i += generateProvider();
-			i += generateServer();
+			i += generateServerFiles();
 		}
 		return i;
 	}
@@ -147,33 +146,27 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Generates the GraphQLProvider class
+	 * Generates the server classes
 	 * 
 	 * @return The number of classes created, that is: 1
 	 */
-	int generateProvider() {
-		String classname = "GraphQLProvider";
+	int generateServerFiles() {
 
 		VelocityContext context = new VelocityContext();
 		context.put("package", basePackage);
+		context.put("dataFetchers", documentParser.dataFetchers);
 
-		return generateOneFile(getJavaFile(classname), "generating " + classname, context,
-				PATH_VELOCITY_TEMPLATE_PROVIDER);
-	}
-
-	/**
-	 * Generates the GraphQLServer class
-	 * 
-	 * @return The number of classes created, that is: 1
-	 */
-	int generateServer() {
-		String classname = "GraphQLServer";
-
-		VelocityContext context = new VelocityContext();
-		context.put("package", basePackage);
-
-		return generateOneFile(getJavaFile(classname), "generating " + classname, context,
+		int ret = 0;
+		ret += generateOneFile(getJavaFile("GraphQLServer"), "generating GraphQLServer", context,
 				PATH_VELOCITY_TEMPLATE_SERVER);
+		ret += generateOneFile(getJavaFile("GraphQLProvider"), "generating GraphQLProvider", context,
+				PATH_VELOCITY_TEMPLATE_PROVIDER);
+		ret += generateOneFile(getJavaFile("GraphQLDataFetchers"), "generating GraphQLDataFetchers", context,
+				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
+		ret += generateOneFile(getJavaFile("GraphQLDataFetchersDelegate"), "generating GraphQLDataFetchersDelegate",
+				context, PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE);
+
+		return ret;
 	}
 
 	/**

@@ -16,9 +16,6 @@ import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.graphql.maven.plugin.samples.server.graphql.CharacterImpl;
-import org.graphql.maven.plugin.samples.server.graphql.Droid;
-import org.graphql.maven.plugin.samples.server.graphql.Human;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
@@ -87,25 +84,9 @@ public class GraphQLProvider {
 		// Also see sample :
 		// https://github.com/graphql-java/graphql-java-examples/tree/master/http-example
 		return RuntimeWiring.newRuntimeWiring()
-				// The Data Fetchers for queries must be defined. They'll trigger the JPA access to the database
-				.type(newTypeWiring("QueryType").dataFetcher("hero", graphQLDataFetchers.hero()))
-				.type(newTypeWiring("QueryType").dataFetcher("characters", graphQLDataFetchers.characters()))
-				.type(newTypeWiring("QueryType").dataFetcher("human", graphQLDataFetchers.human()))
-				.type(newTypeWiring("QueryType").dataFetcher("droid", graphQLDataFetchers.droid()))
-				//
-				// Data fetchers for the friends field (Character is needed when you query hero, or a list of friends)
-				.type(newTypeWiring("CharacterImpl").dataFetcher("friends", graphQLDataFetchers.friends()))
-				.type(newTypeWiring("Droid").dataFetcher("friends", graphQLDataFetchers.friends()))
-				.type(newTypeWiring("Human").dataFetcher("friends", graphQLDataFetchers.friends()))
-				//
-				// Data fetchers for the appearsIn field (Character is needed when you query hero, or a list of friends)
-				.type(newTypeWiring("CharacterImpl").dataFetcher("appearsIn", graphQLDataFetchers.appearsIn()))
-				.type(newTypeWiring("Droid").dataFetcher("appearsIn", graphQLDataFetchers.appearsIn()))
-				.type(newTypeWiring("Human").dataFetcher("appearsIn", graphQLDataFetchers.appearsIn()))
-				//
-				// We still need to link the interface types to the concrete types
-				.type("Character", typeWriting -> typeWriting.typeResolver(getCharacterResolver()))
-				//
+#foreach ($dataFetcher in $dataFetchers)
+				.type(newTypeWiring("${dataFetcher.field.type.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.name}()))
+#end
 				.build();
 	}
 

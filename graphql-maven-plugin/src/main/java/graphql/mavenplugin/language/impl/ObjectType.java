@@ -10,6 +10,7 @@ import graphql.mavenplugin.PluginMode;
 import graphql.mavenplugin.language.Field;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * This class describes one object type, as found in a graphql schema. It aims to be simple enough, so that the Velocity
@@ -33,6 +34,7 @@ public class ObjectType extends AbstractType {
 	private List<String> implementz = new ArrayList<>();
 
 	/** The fields for this object type */
+	@ToString.Exclude
 	private List<Field> fields = new ArrayList<>();
 
 	/**
