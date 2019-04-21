@@ -25,18 +25,18 @@ public class GraphQLDataFetchers {
 
 #foreach ($dataFetcher in $dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.name}#if(${dataFetcher.field.list})>#end> ${dataFetcher.name}() {
+	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.name}() {
 		return dataFetchingEnvironment -> {
-#foreach ($argument in $dataFetcher.arguments)
-			${argument.type.name} ${argument.nameCamelCase} = dataFetchingEnvironment.getArgument("${argument.name}");
+#foreach ($argument in $dataFetcher.field.inputParameters)
+			${argument.type.classSimpleName} ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end
 
 #if (${dataFetcher.field.list})
-			List<${dataFetcher.field.type.name}> ret = dataFetchersDelegate.${dataFetcher.name}(#foreach($argument in $dataFetcher.arguments)${argument.nameCamelCase}#if($foreach.hasNext), #end#end);
+			List<${dataFetcher.field.type.classSimpleName}> ret = dataFetchersDelegate.${dataFetcher.name}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
 			logger.debug("${dataFetcher.name}: {} found rows", ret.size());
 			return ret;
 #else
-			${dataFetcher.field.type.name} ret = dataFetchersDelegate.${dataFetcher.name}(#foreach($argument in $dataFetcher.arguments)${argument.nameCamelCase}#if($foreach.hasNext), #end#end);
+			${dataFetcher.field.type.classSimpleName} ret = dataFetchersDelegate.${dataFetcher.name}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
 			logger.debug("${dataFetcher.name}: {} found result", (ret==null)?"no":"1");
 			return ret;
 #end

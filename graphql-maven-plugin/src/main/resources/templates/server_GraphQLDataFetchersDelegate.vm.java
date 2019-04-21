@@ -13,7 +13,7 @@ public interface GraphQLDataFetchersDelegate {
 	 * Actual execution of the DataFetcher. This is delegated to the developper, as it is not possible to manage every possible use cases.<BR/>
 	 * Note: In the future, more and more standard cases will be generated.
 	 */
-	public #if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.name}#if(${dataFetcher.field.list})>#end ${dataFetcher.name}(#foreach($argument in $dataFetcher.arguments)${argument.nameCamelCase}#if($foreach.hasNext), #end#end);
+	public #if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end ${dataFetcher.name}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.type.classSimpleName} ${argument.camelCaseName}#if($foreach.hasNext), #end#end);
 
 #end
 }

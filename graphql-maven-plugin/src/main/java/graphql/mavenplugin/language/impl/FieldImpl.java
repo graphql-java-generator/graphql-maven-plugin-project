@@ -3,6 +3,7 @@
  */
 package graphql.mavenplugin.language.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import graphql.mavenplugin.DocumentParser;
@@ -44,7 +45,7 @@ public class FieldImpl implements Field {
 	private boolean id = false;
 
 	/** All fields in an object may have parameters. A parameter is actually a field. */
-	private List<Field> inputParameters = null;
+	private List<Field> inputParameters = new ArrayList<>();
 
 	/** Is this field a list? */
 	private boolean list = false;

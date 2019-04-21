@@ -1,7 +1,6 @@
 package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
@@ -80,11 +79,4 @@ class DocumentParserTest_StarWars_Server {
 		assertEquals("CharacterImpl", implementingTypes.get(2).getName());
 	}
 
-	@Test
-	@DirtiesContext
-	void test_initTypeResolvers() {
-		fail("not yet implemented");
-		// // We still need to link the interface types to the concrete types
-		// .type("Character", typeWriting -> typeWriting.typeResolver(getCharacterResolver()))
-	}
 }

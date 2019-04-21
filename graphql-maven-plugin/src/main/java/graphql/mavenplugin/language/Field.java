@@ -106,4 +106,14 @@ public interface Field {
 	public default String getPascalCaseName() {
 		return TypeUtil.getPascalCase(getName());
 	}
+
+	/**
+	 * Convert the given name, which can be in non camel case (for instance: ThisIsCamelCase) to a pascal case string
+	 * (for instance: thisIsCamelCase).
+	 * 
+	 * @return
+	 */
+	public default String getCamelCaseName() {
+		return TypeUtil.getCamelCase(getName());
+	}
 }

@@ -29,7 +29,7 @@ type Board {
     topics: [Topic]!
 }
 
-type Topic implements Message {
+type Topic {
     id: ID!
     date: String!
     author: Member
@@ -40,7 +40,7 @@ type Topic implements Message {
     posts: [Post]!
 }
 
-type Post implements Message {
+type Post {
     id: ID!
     date: String!
     author: Member

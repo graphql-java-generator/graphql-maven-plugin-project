@@ -687,18 +687,32 @@ public class DocumentParser {
 	 */
 	void initDataFetcherForOneObject(Type type, boolean isQueryType) {
 		for (Field field : type.getFields()) {
-			if (
-			// All query field must have their Data Fetcher
-			isQueryType
-					// Whenever this field is a list: the list is stored in an external tables (for relational
-					// databases)
-					|| (field.isList())
-					// For Objects and Characters, only links to other objects have their data fetcher
-					|| ((type instanceof ObjectType || type instanceof InterfaceType) //
-							&& //
-							(field.getType() instanceof ObjectType || field.getType() instanceof InterfaceType)//
-					)) {
+			if (isQueryType || (field.isList())) {
+				// For queries and field that are lists, we take the argument read in the schema as is: all the needed
+				// informations is already parsed.
 				dataFetchers.add(new DataFetcherImpl(field));
+			} else if (((type instanceof ObjectType || type instanceof InterfaceType)
+					&& (field.getType() instanceof ObjectType || field.getType() instanceof InterfaceType))) {
+				// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to manage
+				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loaded : very
+				// important to limit the number of subqueries, when subobjects are queried.
+				// In these case, we need to create a new field that add the object ID as a parameter of the Data
+				// Fetcher
+				FieldImpl newField = new FieldImpl(this);
+				newField.setName(field.getName());
+				newField.setList(field.isList());
+				newField.setOwningType(field.getOwningType());
+				newField.setTypeName(field.getTypeName());
+				// Let's add the id for the owning type of the field, then all its input parameters
+				for (Field fieldOfOwningType : field.getType().getFields()) {
+					if (fieldOfOwningType.isId()) {
+						newField.getInputParameters().add(fieldOfOwningType);
+					}
+				}
+				for (Field inputParameter : field.getInputParameters()) {
+					newField.getInputParameters().add(inputParameter);
+				}
+				dataFetchers.add(new DataFetcherImpl(newField));
 			}
 		}
 	}
