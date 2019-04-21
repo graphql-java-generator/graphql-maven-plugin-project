@@ -38,7 +38,7 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
 class CodeGeneratorTest {
 
 	@Resource
-	String basePackage;
+	String packageName;
 	@Resource
 	Log log;
 	@Resource
@@ -52,7 +52,7 @@ class CodeGeneratorTest {
 		targetSourceFolder = mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
 
 		codeGenerator = new CodeGenerator();
-		codeGenerator.basePackage = basePackage;
+		codeGenerator.packageName = packageName;
 		codeGenerator.log = log;
 		codeGenerator.targetSourceFolder = targetSourceFolder;
 	}
@@ -74,8 +74,8 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
 
-		ObjectType object1 = new ObjectType(basePackage, PluginMode.client);
-		ObjectType object2 = new ObjectType(basePackage, PluginMode.client);
+		ObjectType object1 = new ObjectType(packageName, PluginMode.client);
+		ObjectType object2 = new ObjectType(packageName, PluginMode.client);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
@@ -100,7 +100,7 @@ class CodeGeneratorTest {
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
 		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
-		assertEquals(basePackage, argumentContext.getValue().get("package"), "Context: checks the package");
+		assertEquals(packageName, argumentContext.getValue().get("package"), "Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,8 +118,8 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
 
-		ObjectType object1 = new ObjectType(basePackage, PluginMode.server);
-		ObjectType object2 = new ObjectType(basePackage, PluginMode.server);
+		ObjectType object1 = new ObjectType(packageName, PluginMode.server);
+		ObjectType object2 = new ObjectType(packageName, PluginMode.server);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
@@ -144,7 +144,7 @@ class CodeGeneratorTest {
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
 		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
-		assertEquals(basePackage, argumentContext.getValue().get("package"), "Context: checks the package");
+		assertEquals(packageName, argumentContext.getValue().get("package"), "Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,14 +154,14 @@ class CodeGeneratorTest {
 	void testGetJavaFile() throws IOException {
 		// Preparation
 		String name = "MyClass";
-		codeGenerator.basePackage = basePackage;
+		codeGenerator.packageName = packageName;
 		codeGenerator.targetSourceFolder = targetSourceFolder;
 
 		// Go, go, go
 		File file = codeGenerator.getJavaFile(name);
 
 		// Verification
-		String expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + basePackage + '/' + name)
+		String expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name)
 				.replace('.', '/').replace('\\', '/') + ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));

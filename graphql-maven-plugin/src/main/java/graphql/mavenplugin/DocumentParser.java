@@ -73,9 +73,9 @@ public class DocumentParser {
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// All the maven parameters are exposed as Spring Beans
 
-	/** @See GraphqlMavenPlugin#basePackage */
+	/** @See GraphqlMavenPlugin#packageName */
 	@Resource
-	String basePackage;
+	String packageName;
 
 	/** The current generation mode */
 	@Resource
@@ -285,7 +285,7 @@ public class DocumentParser {
 	ObjectType readObjectType(ObjectTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
 
-		ObjectType objectType = new ObjectType(basePackage, mode);
+		ObjectType objectType = new ObjectType(packageName, mode);
 
 		objectType.setName(node.getName());
 
@@ -317,7 +317,7 @@ public class DocumentParser {
 	InterfaceType readInterfaceType(InterfaceTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
 
-		InterfaceType interfaceType = new InterfaceType(basePackage, mode);
+		InterfaceType interfaceType = new InterfaceType(packageName, mode);
 
 		interfaceType.setName(node.getName());
 
@@ -335,7 +335,7 @@ public class DocumentParser {
 	 * @return
 	 */
 	EnumType readEnumType(EnumTypeDefinition node) {
-		EnumType enumType = new EnumType(basePackage, mode);
+		EnumType enumType = new EnumType(packageName, mode);
 		enumType.setName(node.getName());
 		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
 			enumType.getValues().add(enumValDef.getName());
@@ -489,13 +489,13 @@ public class DocumentParser {
 
 	/**
 	 * A utility method, which maps an object type to the class full name of the Java class which will be generated for
-	 * this object type. This utility method is based on the {@link #basePackage} maven attribute, available in this
+	 * this object type. This utility method is based on the {@link #packageName} maven attribute, available in this
 	 * class
 	 * 
 	 * @param name
 	 */
 	String getGeneratedFieldFullClassName(String name) {
-		return basePackage + "." + name;
+		return packageName + "." + name;
 	}
 
 	/**
@@ -527,7 +527,7 @@ public class DocumentParser {
 			} // while
 
 			// We've found a non used name for the interface implementation.
-			ObjectType o = new ObjectType(basePackage, mode);
+			ObjectType o = new ObjectType(packageName, mode);
 			o.setName(objectName);
 			List<String> interfaces = new ArrayList<>();
 			interfaces.add(i.getName());

@@ -16,7 +16,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 class CodeGeneratorTest_Forum {
 
 	@Resource
-	String basePackage;
+	String packageName;
 	@Resource
 	Log log;
 	@Resource

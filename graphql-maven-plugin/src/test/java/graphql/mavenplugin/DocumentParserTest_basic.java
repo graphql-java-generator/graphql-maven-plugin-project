@@ -26,7 +26,7 @@ class DocumentParserTest_basic {
 	@Autowired
 	private GraphqlTestHelper graphqlTestHelper;
 	@Autowired
-	String basePackage;
+	String packageName;
 
 	@Autowired
 	DocumentParser documentParser;

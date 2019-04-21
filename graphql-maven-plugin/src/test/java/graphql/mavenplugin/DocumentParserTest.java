@@ -28,31 +28,31 @@ import graphql.mavenplugin.language.impl.ScalarType;
 
 class DocumentParserTest {
 
-	String basePackage = "org.graphql.test.generate";
+	String packageName = "org.graphql.test.generate";
 
 	private DocumentParser documentParser;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		documentParser = new DocumentParser();
-		documentParser.basePackage = basePackage;
+		documentParser.packageName = packageName;
 		documentParser.log = new SystemStreamLog();
 	}
 
 	@Test
 	void test_defineDefaultInterfaceImplementationClassName() {
 		// Preparation
-		ObjectType o = new ObjectType(basePackage, PluginMode.server);
+		ObjectType o = new ObjectType(packageName, PluginMode.server);
 		o.setName("interfaceImpl");
 		documentParser.interfaceTypes = new ArrayList<>();
 		documentParser.objectTypes = new ArrayList<>();
 		documentParser.objectTypes.add(o);
 
-		InterfaceType i1 = new InterfaceType(basePackage, PluginMode.server);
+		InterfaceType i1 = new InterfaceType(packageName, PluginMode.server);
 		i1.setName("interface");
 		documentParser.interfaceTypes.add(i1);
 
-		InterfaceType i2 = new InterfaceType(basePackage, PluginMode.server);
+		InterfaceType i2 = new InterfaceType(packageName, PluginMode.server);
 		i2.setName("anotherInterface");
 		documentParser.interfaceTypes.add(i2);
 

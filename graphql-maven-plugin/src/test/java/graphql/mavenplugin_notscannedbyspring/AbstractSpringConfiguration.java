@@ -64,7 +64,7 @@ public abstract class AbstractSpringConfiguration {
 	}
 
 	@Bean
-	String basePackage() {
+	String packageName() {
 		// When I load all the generated code in the eclipse project, Java is unhappy that the same class exists several
 		// times. To solve that, every junit test has its own target package, based on the Spring configuration class.
 		//

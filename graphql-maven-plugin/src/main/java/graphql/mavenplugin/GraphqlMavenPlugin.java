@@ -21,9 +21,9 @@ import org.springframework.context.support.AbstractApplicationContext;
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 public class GraphqlMavenPlugin extends AbstractMojo {
 
-	/** The basePackage in which the generated classes will be created */
-	@Parameter(property = "graphql.mavenplugin.basePackage", defaultValue = "com.generated.graphql")
-	String basePackage;
+	/** The packageName in which the generated classes will be created */
+	@Parameter(property = "graphql.mavenplugin.packageName", defaultValue = "com.generated.graphql")
+	String packageName;
 
 	/** The encoding for the generated source files */
 	@Parameter(property = "graphql.mavenplugin.encoding", defaultValue = "UTF-8")

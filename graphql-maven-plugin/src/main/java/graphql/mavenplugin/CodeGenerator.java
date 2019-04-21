@@ -57,9 +57,9 @@ public class CodeGenerator {
 	@Resource
 	PluginMode mode;
 
-	/** @See GraphqlMavenPlugin#basePackage */
+	/** @See GraphqlMavenPlugin#packageName */
 	@Resource
-	String basePackage;
+	String packageName;
 
 	/** @See {@link GraphqlMavenPlugin#targetSourceFolder} */
 	@Resource
@@ -122,7 +122,7 @@ public class CodeGenerator {
 			File targetFile = getJavaFile((String) exec("getName", object));
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 			VelocityContext context = new VelocityContext();
-			context.put("package", basePackage);
+			context.put("package", packageName);
 			context.put("object", object);
 			context.put("type", type);
 			i += generateOneFile(targetFile, msg, context, templateFilename);
@@ -139,7 +139,7 @@ public class CodeGenerator {
 		String classname = "GraphQLDataFetchers";
 
 		VelocityContext context = new VelocityContext();
-		context.put("package", basePackage);
+		context.put("package", packageName);
 
 		return generateOneFile(getJavaFile(classname), "generating " + classname, context,
 				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
@@ -153,7 +153,7 @@ public class CodeGenerator {
 	int generateServerFiles() {
 
 		VelocityContext context = new VelocityContext();
-		context.put("package", basePackage);
+		context.put("package", packageName);
 		context.put("dataFetchers", documentParser.dataFetchers);
 		context.put("interfaces", documentParser.interfaceTypes);
 
@@ -213,7 +213,7 @@ public class CodeGenerator {
 	 * @return
 	 */
 	File getJavaFile(String simpleClassname) {
-		String relativePath = basePackage.replace('.', '/') + '/' + simpleClassname + ".java";
+		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java";
 		File file = new File(targetSourceFolder, relativePath);
 		file.getParentFile().mkdirs();
 		return file;

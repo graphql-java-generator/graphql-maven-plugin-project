@@ -39,7 +39,7 @@ class DocumentParserTest_allGraphQLCases {
 	private DocumentParser documentParser;
 
 	@Resource
-	String basePackage;
+	String packageName;
 
 	@Autowired
 	List<Document> documents;
@@ -112,7 +112,7 @@ class DocumentParserTest_allGraphQLCases {
 		// planets: [String!]!
 		checkField(type, j++, "planets", true, true, true, "String", String.class.getName());
 		// friends: [Human!]
-		checkField(type, j++, "friends", true, false, true, "Human", basePackage + ".Human");
+		checkField(type, j++, "friends", true, false, true, "Human", packageName + ".Human");
 	}
 
 	@Test
@@ -155,15 +155,15 @@ class DocumentParserTest_allGraphQLCases {
 		// name: String!
 		checkField(type, j++, "name", false, true, null, "String", String.class.getName());
 		// bestFriend: Character
-		checkField(type, j++, "bestFriend", false, false, null, "Character", basePackage + ".Character");
+		checkField(type, j++, "bestFriend", false, false, null, "Character", packageName + ".Character");
 		// friends: [Character]
-		checkField(type, j++, "friends", true, false, false, "Character", basePackage + ".Character");
+		checkField(type, j++, "friends", true, false, false, "Character", packageName + ".Character");
 		// nbComments: int
 		checkField(type, j++, "nbComments", false, false, null, "int", Integer.class.getName());
 		// comments: [String]
 		checkField(type, j++, "comments", true, false, false, "String", String.class.getName());
 		// appearsIn: [Episode]!
-		checkField(type, j++, "appearsIn", true, true, false, "Episode", basePackage + ".Episode");
+		checkField(type, j++, "appearsIn", true, true, false, "Episode", packageName + ".Episode");
 		// homePlanet: String
 		checkField(type, j++, "homePlanet", false, false, null, "String", String.class.getName());
 	}
@@ -231,36 +231,36 @@ class DocumentParserTest_allGraphQLCases {
 		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
 		//
 		// withoutParameters: [Character]!
-		checkField(type, j, "withoutParameters", true, true, false, "Character", basePackage + ".Character");
+		checkField(type, j, "withoutParameters", true, true, false, "Character", packageName + ".Character");
 		j += 1;
 		// withOneOptionalParam(character: Character): Character
-		checkField(type, j, "withOneOptionalParam", false, false, null, "Character", basePackage + ".Character");
-		checkInputParameter(type, j, 0, "character", false, false, null, "Character", basePackage + ".Character", null);
+		checkField(type, j, "withOneOptionalParam", false, false, null, "Character", packageName + ".Character");
+		checkInputParameter(type, j, 0, "character", false, false, null, "Character", packageName + ".Character", null);
 		j += 1;
 		// withOneMandatoryParam(character: Character!): Character
-		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character", basePackage + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character", basePackage + ".Character", null);
+		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character", packageName + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character", packageName + ".Character", null);
 		j += 1;
 		// withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
 		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
-				basePackage + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character", basePackage + ".Character",
+				packageName + ".Character");
+		checkInputParameter(type, j, 0, "character", false, true, null, "Character", packageName + ".Character",
 				"no one");
 		j += 1;
 		// withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
-		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid", basePackage + ".Droid");
-		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid", basePackage + ".Droid", "A droid");
+		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid", packageName + ".Droid");
+		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid", packageName + ".Droid", "A droid");
 		checkInputParameter(type, j, 1, "index", false, false, null, "int", "java.lang.Integer",
 				"Not a number, but ok !!");
 		j += 1;
 		// withEnum(episode: Episode!): Character
-		checkField(type, j, "withEnum", false, false, null, "Character", basePackage + ".Character");
-		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", basePackage + ".Episode", null);
+		checkField(type, j, "withEnum", false, false, null, "Character", packageName + ".Character");
+		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", packageName + ".Episode", null);
 		j += 1;
 		// withList(name: String!, friends: [Character]!): [Characters]
-		checkField(type, j, "withList", true, false, false, "Character", basePackage + ".Character");
+		checkField(type, j, "withList", true, false, false, "Character", packageName + ".Character");
 		checkInputParameter(type, j, 0, "name", false, true, null, "String", String.class.getName(), null);
-		checkInputParameter(type, j, 1, "friends", true, true, false, "Character", basePackage + ".Character", null);
+		checkInputParameter(type, j, 1, "friends", true, true, false, "Character", packageName + ".Character", null);
 		j += 1;
 	}
 
@@ -323,8 +323,8 @@ class DocumentParserTest_allGraphQLCases {
 		// defaultValue)
 		//
 		// createHuman(human: Human!): Human!
-		checkField(type, j, "createHuman", false, true, null, "Human", basePackage + ".Human");
-		checkInputParameter(type, j, 0, "human", false, true, null, "Human", basePackage + ".Human", null);
+		checkField(type, j, "createHuman", false, true, null, "Human", packageName + ".Human");
+		checkInputParameter(type, j, 0, "human", false, true, null, "Human", packageName + ".Human", null);
 		j += 1;
 	}
 
@@ -359,8 +359,8 @@ class DocumentParserTest_allGraphQLCases {
 		// defaultValue)
 		//
 		// subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
-		checkField(type, j, "subscribeNewHumanForEpisode", false, true, null, "Human", basePackage + ".Human");
-		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", basePackage + ".Episode", "NEWHOPE");
+		checkField(type, j, "subscribeNewHumanForEpisode", false, true, null, "Human", packageName + ".Human");
+		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", packageName + ".Episode", "NEWHOPE");
 		j += 1;
 	}
 

@@ -36,7 +36,7 @@ abstract class AbstractIntegrationTest {
 	@Autowired
 	protected PluginMode mode;
 	@Autowired
-	protected String basePackage;
+	protected String packageName;
 	@Autowired
 	protected String encoding;
 	@Autowired
@@ -60,7 +60,7 @@ abstract class AbstractIntegrationTest {
 	void testGenerateCode() throws MojoExecutionException, IOException {
 		// Preparation
 		// documentParser = new DocumentParser();
-		// documentParser.basePackage = basePackage;
+		// documentParser.packageName = packageName;
 		// documentParser.log = new SystemStreamLog();
 		// Resource resource = ctx.getResource(graphqlsResourceLocation);
 		// documentParser.documents = new ArrayList<>();
@@ -69,7 +69,7 @@ abstract class AbstractIntegrationTest {
 		//
 		// codeGenerator = new CodeGenerator();
 		// codeGenerator.documentParser = documentParser;
-		// codeGenerator.basePackage = basePackage;
+		// codeGenerator.packageName = packageName;
 		// codeGenerator.log = documentParser.log;
 		// codeGenerator.encoding = encoding;
 		// codeGenerator.targetSourceFolder = targetSourceFolder;

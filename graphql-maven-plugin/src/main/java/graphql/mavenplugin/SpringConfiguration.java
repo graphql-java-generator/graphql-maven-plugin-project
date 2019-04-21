@@ -51,8 +51,8 @@ public class SpringConfiguration {
 	}
 
 	@Bean
-	String basePackage() {
-		return mojo.basePackage;
+	String packageName() {
+		return mojo.packageName;
 	}
 
 	@Bean
