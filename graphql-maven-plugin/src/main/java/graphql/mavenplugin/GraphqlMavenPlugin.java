@@ -69,7 +69,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
 			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
-			int nbClassesToGenerate = documentParser.parseDocuments();
+			documentParser.parseDocuments();
 
 			CodeGenerator codeGenerator = ctx.getBean(CodeGenerator.class);
 			int nbGeneratedClasses = codeGenerator.generateCode();
@@ -78,10 +78,6 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 
 			project.addCompileSourceRoot(targetSourceFolder.getAbsolutePath());
 
-			if (nbClassesToGenerate != nbGeneratedClasses) {
-				getLog().warn(nbClassesToGenerate + " classes were parsed, but only " + nbGeneratedClasses
-						+ " were generated");
-			}
 			getLog().info(nbGeneratedClasses + " java classes have been generated from graphqls files");
 
 		} catch (Exception e) {
