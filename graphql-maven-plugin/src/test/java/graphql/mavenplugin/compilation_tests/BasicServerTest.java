@@ -1,11 +1,14 @@
 package graphql.mavenplugin.compilation_tests;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import graphql.mavenplugin_notscannedbyspring.Basic_Server_SpringConfiguration;
 
-@SpringJUnitConfig(classes = { Basic_Server_SpringConfiguration.class })
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { Basic_Server_SpringConfiguration.class })
 class BasicServerTest extends AbstractIntegrationTest {
 
 	// Everything is in the AbstractIntegrationTest class.

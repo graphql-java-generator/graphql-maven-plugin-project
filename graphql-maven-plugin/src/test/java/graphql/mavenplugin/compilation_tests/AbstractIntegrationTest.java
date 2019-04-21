@@ -10,6 +10,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 
 import graphql.mavenplugin.CodeGenerator;
 import graphql.mavenplugin.DocumentParser;
@@ -18,6 +19,7 @@ import graphql.mavenplugin.test.compiler.CompilationTestHelper;
 import graphql.mavenplugin.test.helper.GraphqlTestHelper;
 import graphql.mavenplugin.test.helper.MavenTestHelper;
 
+@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 abstract class AbstractIntegrationTest {
 
 	@Autowired
@@ -54,6 +56,7 @@ abstract class AbstractIntegrationTest {
 	 * @throws IOException
 	 */
 	@Test
+	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 	void testGenerateCode() throws MojoExecutionException, IOException {
 		// Preparation
 		// documentParser = new DocumentParser();
