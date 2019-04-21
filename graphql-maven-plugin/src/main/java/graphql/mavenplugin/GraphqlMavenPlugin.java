@@ -62,7 +62,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 
-			getLog().info("Starting generation of java classes from graphqls files");
+			getLog().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
 			SpringConfiguration.mojo = this;
@@ -78,7 +78,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 
 			project.addCompileSourceRoot(targetSourceFolder.getAbsolutePath());
 
-			getLog().info(nbGeneratedClasses + " java classes have been generated from graphqls files");
+			getLog().info(nbGeneratedClasses + " java classes have been generated the schema(s) '" + schemaFilePattern
+					+ "' in the package '" + packageName + "'");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
