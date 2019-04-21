@@ -10,6 +10,8 @@ public interface GraphQLDataFetchersDelegate {
 
 #foreach ($dataFetcher in $dataFetchers)
 	/**
+	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}
+	 * <BR/>
 	 * Actual execution of the DataFetcher. This is delegated to the developper, as it is not possible to manage every possible use cases.<BR/>
 	 * Note: In the future, more and more standard cases will be generated.
 	 */
