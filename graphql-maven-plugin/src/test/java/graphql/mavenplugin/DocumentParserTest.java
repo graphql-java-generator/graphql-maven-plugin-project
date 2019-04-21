@@ -134,6 +134,7 @@ class DocumentParserTest {
 			when(f.getName()).thenReturn("field" + i);
 			when(f.getPascalCaseName()).thenReturn("Field" + i);
 			when(f.isList()).thenReturn((i % 2) == 0);
+			when(f.getTypeName()).thenReturn(fieldTypes.get(i).getName());
 			when(f.getType()).thenReturn(fieldTypes.get(i));
 			when(f.getOwningType()).thenReturn(type);
 

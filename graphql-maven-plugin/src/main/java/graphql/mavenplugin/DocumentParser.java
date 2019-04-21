@@ -48,6 +48,7 @@ import graphql.mavenplugin.language.impl.InterfaceType;
 import graphql.mavenplugin.language.impl.ObjectType;
 import graphql.mavenplugin.language.impl.RelationImpl;
 import graphql.mavenplugin.language.impl.ScalarType;
+import graphql.mavenplugin.language.impl.TypeUtil;
 import graphql.parser.Parser;
 import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat.FieldType;
 import lombok.Getter;
@@ -290,8 +291,8 @@ public class DocumentParser {
 		objectType.setName(node.getName());
 
 		// Let's read all its fields
-		objectType.setFields(
-				node.getFieldDefinitions().stream().map(def -> getField(def, objectType)).collect(Collectors.toList()));
+		objectType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, objectType))
+				.collect(Collectors.toList()));
 
 		// Let's read all the other object types that this one implements
 		for (graphql.language.Type type : node.getImplements()) {
@@ -322,7 +323,7 @@ public class DocumentParser {
 		interfaceType.setName(node.getName());
 
 		// Let's read all its fields
-		interfaceType.setFields(node.getFieldDefinitions().stream().map(def -> getField(def, interfaceType))
+		interfaceType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, interfaceType))
 				.collect(Collectors.toList()));
 
 		return interfaceType;
@@ -352,7 +353,7 @@ public class DocumentParser {
 	 * @return
 	 * @throws MojoExecutionException
 	 */
-	Field getField(FieldDefinition fieldDef, Type owningType) {
+	Field readField(FieldDefinition fieldDef, Type owningType) {
 
 		FieldImpl field = readFieldTypeDefinition(fieldDef);
 		field.setOwningType(owningType);
@@ -687,12 +688,13 @@ public class DocumentParser {
 	 */
 	void initDataFetcherForOneObject(Type type, boolean isQueryType) {
 		for (Field field : type.getFields()) {
-			if (isQueryType || (field.isList())) {
+			if (isQueryType) {
 				// For queries and field that are lists, we take the argument read in the schema as is: all the needed
 				// informations is already parsed.
 				dataFetchers.add(new DataFetcherImpl(field));
-			} else if (((type instanceof ObjectType || type instanceof InterfaceType)
-					&& (field.getType() instanceof ObjectType || field.getType() instanceof InterfaceType))) {
+			} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
+					(field.isList() || field.getType() instanceof ObjectType
+							|| field.getType() instanceof InterfaceType))) {
 				// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to manage
 				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loaded : very
 				// important to limit the number of subqueries, when subobjects are queried.
@@ -704,9 +706,16 @@ public class DocumentParser {
 				newField.setOwningType(field.getOwningType());
 				newField.setTypeName(field.getTypeName());
 				// Let's add the id for the owning type of the field, then all its input parameters
-				for (Field fieldOfOwningType : field.getType().getFields()) {
+				for (Field fieldOfOwningType : field.getOwningType().getFields()) {
 					if (fieldOfOwningType.isId()) {
-						newField.getInputParameters().add(fieldOfOwningType);
+						FieldImpl idField = new FieldImpl(this);
+						// Let's build a sled descriptive name. For Board.id, the parameter name is boardId.
+						// board is the owning type name in camel case.
+						// Id is the field name in Pascal Case
+						idField.setName(TypeUtil.getCamelCase(field.getOwningType().getName())
+								+ fieldOfOwningType.getPascalCaseName());
+						idField.setTypeName(fieldOfOwningType.getTypeName());
+						newField.getInputParameters().add(idField);
 					}
 				}
 				for (Field inputParameter : field.getInputParameters()) {
