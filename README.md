@@ -138,7 +138,10 @@ access to the database.
 * In GraphQL request, a critical factor for performance is the way to query relations between objects. The [graphql-java site](https://www.graphql-java.com/documentation/v12/batching/)
 is very clear on this subject. So the maven plugin mark every relational field as transient, and let the developper manage these relations.
 
+So you have to create the Data Fetchers. You can take a look at the projets that are within the graphql-maven-plugin-samples.
 
+Then... you're app is ready to go!
+:)
 
 
 ## State of the project
