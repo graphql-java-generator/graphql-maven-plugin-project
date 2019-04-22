@@ -54,17 +54,18 @@
 
 		<!-- Dependencies for GraphQL -->
 		<dependency>
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphql-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphql-java-tools</artifactId>
 		</dependency>
 		<dependency>
-			<!-- Fournit une IHM pour tester les requêtes graphql -->
-			<groupId>com.graphql-java</groupId>
+			<!-- gives a GUI to test the GraphQL request on the generated server: http://localhost:8080/graphiql -->
+			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphiql-spring-boot-starter</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Other dependencies -->
