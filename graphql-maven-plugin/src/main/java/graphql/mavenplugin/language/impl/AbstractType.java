@@ -52,4 +52,9 @@ public abstract class AbstractType implements Type {
 		return packageName + "." + getClassSimpleName();
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }

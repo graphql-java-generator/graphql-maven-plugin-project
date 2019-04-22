@@ -36,11 +36,13 @@ import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
 import graphql.mavenplugin.language.DataFetcher;
+import graphql.mavenplugin.language.DataFetcherDelegate;
 import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.Relation;
 import graphql.mavenplugin.language.RelationType;
 import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.language.impl.AbstractType;
+import graphql.mavenplugin.language.impl.DataFetcherDelegateImpl;
 import graphql.mavenplugin.language.impl.DataFetcherImpl;
 import graphql.mavenplugin.language.impl.EnumType;
 import graphql.mavenplugin.language.impl.FieldImpl;
@@ -65,6 +67,7 @@ import lombok.Getter;
  * @author EtienneSF
  */
 @Component
+@Getter
 public class DocumentParser {
 
 	final String DEFAULT_QUERY_NAME = "Query";
@@ -131,8 +134,11 @@ public class DocumentParser {
 	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
 	List<Relation> relations = new ArrayList<>();
 
-	/** All {@link DataFetcher}s that needs to be implemented for this/these schema/schemas */
+	/** All {@link DataFetcher}s that need to be implemented for this/these schema/schemas */
 	List<DataFetcher> dataFetchers = new ArrayList<>();
+
+	/** All {@link DataFetcherDelegate}s that need to be implemented for this/these schema/schemas */
+	List<DataFetcherDelegate> dataFetcherDelegates = new ArrayList<>();
 
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
@@ -687,11 +693,16 @@ public class DocumentParser {
 	 *            true if the given type is actually a query, false otherwise
 	 */
 	void initDataFetcherForOneObject(Type type, boolean isQueryType) {
+		String name = type.getClassSimpleName() + "DataFetchersDelegate";
+		DataFetcherDelegateImpl dataFetcherDelegate = new DataFetcherDelegateImpl(name);
+
 		for (Field field : type.getFields()) {
+			DataFetcherImpl dataFetcher = null;
+
 			if (isQueryType) {
 				// For queries and field that are lists, we take the argument read in the schema as is: all the needed
 				// informations is already parsed.
-				dataFetchers.add(new DataFetcherImpl(field));
+				dataFetcher = new DataFetcherImpl(field);
 			} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
 					(field.isList() || field.getType() instanceof ObjectType
 							|| field.getType() instanceof InterfaceType))) {
@@ -721,8 +732,20 @@ public class DocumentParser {
 				for (Field inputParameter : field.getInputParameters()) {
 					newField.getInputParameters().add(inputParameter);
 				}
-				dataFetchers.add(new DataFetcherImpl(newField));
+				dataFetcher = new DataFetcherImpl(newField);
 			}
+
+			// If we found a DataFether, let's register it.
+			if (dataFetcher != null) {
+				dataFetcher.setDataFetcherDelegate(dataFetcherDelegate);
+				dataFetcherDelegate.getDataFetchers().add(dataFetcher);
+				dataFetchers.add(dataFetcher);
+			}
+		} // for
+
+		// If at least one DataFetcher has been created, we register this DataFetcherDelegate
+		if (dataFetcherDelegate.getDataFetchers().size() > 0) {
+			dataFetcherDelegates.add(dataFetcherDelegate);
 		}
 	}
 

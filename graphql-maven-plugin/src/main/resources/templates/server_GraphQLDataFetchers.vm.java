@@ -20,28 +20,36 @@ public class GraphQLDataFetchers {
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();
 
+#foreach ($dataFetcherDelegate in $dataFetcherDelegates)
 	@Resource
-	GraphQLDataFetchersDelegate dataFetchersDelegate;
+	${dataFetcherDelegate.name} ${dataFetcherDelegate.camelCaseName};
 
-#foreach ($dataFetcher in $dataFetchers)
+#end
 
-	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.name}() {
+#foreach ($dataFetcherDelegate in $dataFetcherDelegates)
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// Data fetchers for ${dataFetcherDelegate.name}
+	////////////////////////////////////////////////////////////////////////////////////////////////
+#foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
+
+	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.camelCaseName}() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)
 			${argument.type.classSimpleName} ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end
 
 #if (${dataFetcher.field.list})
-			List<${dataFetcher.field.type.classSimpleName}> ret = dataFetchersDelegate.${dataFetcher.name}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
+			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
 			logger.debug("${dataFetcher.name}: {} found rows", ret.size());
 			return ret;
 #else
-			${dataFetcher.field.type.classSimpleName} ret = dataFetchersDelegate.${dataFetcher.name}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
+			${dataFetcher.field.type.classSimpleName} ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
 			logger.debug("${dataFetcher.name}: {} found result", (ret==null)?"no":"1");
 			return ret;
 #end
 		};
 	}
 
+#end
 #end
 }

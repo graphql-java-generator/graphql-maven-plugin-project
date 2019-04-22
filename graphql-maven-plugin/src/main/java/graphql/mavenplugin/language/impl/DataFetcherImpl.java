@@ -4,6 +4,7 @@
 package graphql.mavenplugin.language.impl;
 
 import graphql.mavenplugin.language.DataFetcher;
+import graphql.mavenplugin.language.DataFetcherDelegate;
 import graphql.mavenplugin.language.Field;
 import lombok.Data;
 
@@ -14,6 +15,8 @@ import lombok.Data;
 public class DataFetcherImpl implements DataFetcher {
 
 	private Field field;
+
+	private DataFetcherDelegate dataFetcherDelegate;
 
 	/**
 	 * 

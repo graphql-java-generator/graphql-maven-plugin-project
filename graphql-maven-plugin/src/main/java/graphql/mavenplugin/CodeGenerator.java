@@ -25,6 +25,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.stereotype.Component;
 
+import graphql.mavenplugin.language.DataFetcherDelegate;
 import graphql.mavenplugin.language.Type;
 
 /**
@@ -131,21 +132,6 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Generates the GraphQLDataFetcher class
-	 * 
-	 * @return The number of classes created, that is: 1
-	 */
-	int generateDataFetcher() {
-		String classname = "GraphQLDataFetchers";
-
-		VelocityContext context = new VelocityContext();
-		context.put("package", packageName);
-
-		return generateOneFile(getJavaFile(classname), "generating " + classname, context,
-				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
-	}
-
-	/**
 	 * Generates the server classes
 	 * 
 	 * @return The number of classes created, that is: 1
@@ -154,8 +140,8 @@ public class CodeGenerator {
 
 		VelocityContext context = new VelocityContext();
 		context.put("package", packageName);
-		context.put("dataFetchers", documentParser.dataFetchers);
-		context.put("interfaces", documentParser.interfaceTypes);
+		context.put("dataFetcherDelegates", documentParser.getDataFetcherDelegates());
+		context.put("interfaces", documentParser.getInterfaceTypes());
 
 		int ret = 0;
 		ret += generateOneFile(getJavaFile("GraphQLServer"), "generating GraphQLServer", context,
@@ -164,8 +150,12 @@ public class CodeGenerator {
 				PATH_VELOCITY_TEMPLATE_PROVIDER);
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers"), "generating GraphQLDataFetchers", context,
 				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
-		ret += generateOneFile(getJavaFile("GraphQLDataFetchersDelegate"), "generating GraphQLDataFetchersDelegate",
-				context, PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE);
+
+		for (DataFetcherDelegate dataFetcherDelegate : documentParser.dataFetcherDelegates) {
+			context.put("dataFetcherDelegate", dataFetcherDelegate);
+			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getName()),
+					"generating " + dataFetcherDelegate.getName(), context, PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE);
+		}
 
 		return ret;
 	}

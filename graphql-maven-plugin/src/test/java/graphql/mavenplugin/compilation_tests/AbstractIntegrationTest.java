@@ -84,8 +84,13 @@ abstract class AbstractIntegrationTest {
 		// Verification
 		if (mode.equals(PluginMode.client))
 			assertEquals(i, verif, "Nb generated classes");
-		else
-			assertEquals(i + 4, verif, "Nb generated classes (including the 3 server mode classes)");
+		else {
+			// Nb of classes specific to the server mode
+			int nbServerClasses = 3; // GraphQLServer, GraphQLProvider, GraphQLDataFetchers
+			nbServerClasses += documentParser.getDataFetcherDelegates().size();
+
+			assertEquals(i + nbServerClasses, verif, "Nb generated classes (including the 3 server mode classes)");
+		}
 
 		compilationTestHelper.checkCompleteCompilationStatus(null);
 	}

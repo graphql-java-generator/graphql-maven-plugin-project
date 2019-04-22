@@ -84,17 +84,20 @@ public class GraphQLProvider {
 		// Also see sample :
 		// https://github.com/graphql-java/graphql-java-examples/tree/master/http-example
 		return RuntimeWiring.newRuntimeWiring()
-#foreach ($dataFetcher in $dataFetchers)
-				.type(newTypeWiring("${dataFetcher.field.type.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.name}()))
+#foreach ($dataFetcherDelegate in $dataFetcherDelegates)
+			// Data fetchers for ${dataFetcherDelegate.name}
+#foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
+			.type(newTypeWiring("${dataFetcher.field.type.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.camelCaseName}()))
+#end
 #end
 #if ($interfaces.size() > 0)
-				//
-				// Let's link the interface types to the concrete types
+			//
+			// Let's link the interface types to the concrete types
 #end
 #foreach ($interface in $interfaces)
-				.type("${interface.name}", typeWriting -> typeWriting.typeResolver(get${interface.name}Resolver()))
+			.type("${interface.name}", typeWriting -> typeWriting.typeResolver(get${interface.name}Resolver()))
 #end
-				.build();
+			.build();
 	}
 
 	private ObjectTypeDefinition getCharacterImplType(TypeDefinitionRegistry typeRegistry) {

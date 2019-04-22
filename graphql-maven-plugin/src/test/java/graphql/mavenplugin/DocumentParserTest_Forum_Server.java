@@ -109,6 +109,9 @@ class DocumentParserTest_Forum_Server {
 		assertEquals(6, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
+		//
+		// Verification of the data fetchers
+		//
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, list of input parameters
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeBoards", "QueryType", "boards", "Board", true);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeTopics", "QueryType", "topics", "Topic", true,
@@ -122,6 +125,56 @@ class DocumentParserTest_Forum_Server {
 				"since");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "PostAuthor", "Post", "author", "Member", false,
 				"postId");
+
+		//
+		// Verification of the data fetchers delegates
+		//
+		assertEquals(4, documentParser.dataFetcherDelegates.size(), "data fetchers delegates");
+		i = 0;
+		int j = 0;
+
+		// Delegate for QueryType
+		assertEquals("QueryTypeDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+				"delegate name " + i);
+		assertEquals(2, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+				"nb DataFetcher for delegate " + i);
+		assertEquals("QueryTypeBoards", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+		assertEquals("QueryTypeTopics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+		//
+		// Delegate for Board
+		i += 1;
+		j = 0;
+		assertEquals("BoardDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+				"delegate name " + i);
+		assertEquals(1, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+				"nb DataFetcher for delegate " + i);
+		assertEquals("BoardTopics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+		//
+		// Delegate for Topic
+		i += 1;
+		j = 0;
+		assertEquals("TopicDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+				"delegate name " + i);
+		assertEquals(2, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+				"nb DataFetcher for delegate " + i);
+		assertEquals("TopicAuthor", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+		assertEquals("TopicPosts", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+		//
+		// Delegate for Board
+		i += 1;
+		j = 0;
+		assertEquals("PostDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+				"delegate name " + i);
+		assertEquals(1, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+				"nb DataFetcher for delegate " + i);
+		assertEquals("PostAuthor", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,
