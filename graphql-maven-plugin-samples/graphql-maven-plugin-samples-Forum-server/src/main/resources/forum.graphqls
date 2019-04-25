@@ -4,7 +4,7 @@ schema {
 
 type QueryType {
     boards: [Board]
-    topics(board: Board!): [Topic]!
+    topics(boardName: String!): [Topic]!
 }
 
 
@@ -26,22 +26,24 @@ type Board {
     id: ID!
     name: String!
     publiclyAvailable: Boolean
-    topics: [Topic]!
+    topics(since: String): [Topic]!
 }
 
 type Topic {
     id: ID!
     date: String!
+    author: Member
     publiclyAvailable: Boolean
     nbPosts: Int
     title: String!
     content: String!
-    posts: [Post]!
+    posts(since: String): [Post]!
 }
 
 type Post {
     id: ID!
     date: String!
+    author: Member
     publiclyAvailable: Boolean
     title: String!
     content: String!
