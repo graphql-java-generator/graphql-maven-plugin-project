@@ -1,7 +1,5 @@
 package ${package};
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
@@ -32,15 +30,20 @@ public class GraphQLDataFetchers {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.camelCaseName}() {
+	public DataFetcher<#if(${dataFetcher.field.list})Iterable<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.camelCaseName}() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)
 			${argument.type.classSimpleName} ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end
 
 #if (${dataFetcher.field.list})
-			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
-			logger.debug("${dataFetcher.name}: {} found rows", ret.size());
+			Iterable<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
+			if (logger.isDebugEnabled()) {
+				int nbLines = 0;
+				for (${dataFetcher.field.type.classSimpleName} x : ret)
+					nbLines += 1;
+				logger.debug("${dataFetcher.name}: {} found rows", nbLines);
+			}
 			return ret;
 #else
 			${dataFetcher.field.type.classSimpleName} ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(#foreach($argument in $dataFetcher.field.inputParameters)${argument.camelCaseName}#if($foreach.hasNext), #end#end);
