@@ -38,13 +38,14 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
-	 * will search all graphqls files in the "src/main/resources" folder, and that the generated code will search for
-	 * all graphqls file in the root of the classpath.<BR/>
-	 * For instance, you can set in schemaFilePattern this value "myFolder/*.graphqls" to search for all schemas in the
-	 * "myFolder" subfolder of src/main/resources (for the plugin execution). At runtime, the path used for search will
-	 * then be classpath:/myFolder/*.graphqls".<BR/>
-	 * You can also define one schema, by putting "mySchema.myOtherExtension" in the schemaFilePattern configuration
-	 * parameter of the plugin.
+	 * will search all graphqls files in the "src/main/resources" folder. The current version can read only one
+	 * file.<BR/>
+	 * In the future, it will search for all graphqls file in the root of the classpath.<BR/>
+	 * In the future, it will be possible to set in schemaFilePattern values like "myFolder/*.graphqls" to search for
+	 * all schemas in the "myFolder" subfolder of src/main/resources (for the plugin execution). At runtime, the path
+	 * used for search will then be classpath:/myFolder/*.graphqls".<BR/>
+	 * It will also be possible to define one schema, by putting "mySchema.myOtherExtension" in the schemaFilePattern
+	 * configuration parameter of the plugin.
 	 */
 	@Parameter(property = "graphql.mavenplugin.schemaFilePattern", defaultValue = "*.graphqls")
 	String schemaFilePattern;

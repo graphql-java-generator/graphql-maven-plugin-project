@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -48,6 +49,9 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
 
 	@Resource
+	MavenResourceSchemaStringProvider mavenResourceSchemaStringProvider;
+
+	@Resource
 	DocumentParser documentParser;
 
 	/** The maven logging system */
@@ -86,8 +90,9 @@ public class CodeGenerator {
 	 * 
 	 * @Return The number of generated classes
 	 * @throws MojoExecutionException
+	 * @throws IOException
 	 */
-	public int generateCode() throws MojoExecutionException {
+	public int generateCode() throws MojoExecutionException, IOException {
 
 		int i = 0;
 		i += generateTargetFile(documentParser.getQueryTypes(), "query",
@@ -135,13 +140,21 @@ public class CodeGenerator {
 	 * Generates the server classes
 	 * 
 	 * @return The number of classes created, that is: 1
+	 * @throws IOException
 	 */
-	int generateServerFiles() {
+	int generateServerFiles() throws IOException {
 
 		VelocityContext context = new VelocityContext();
 		context.put("package", packageName);
 		context.put("dataFetcherDelegates", documentParser.getDataFetcherDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
+
+		// List of found schemas
+		List<String> schemaFiles = new ArrayList<>();
+		for (org.springframework.core.io.Resource res : mavenResourceSchemaStringProvider.schemas()) {
+			schemaFiles.add(res.getFilename());
+		}
+		context.put("schemaFiles", schemaFiles);
 
 		int ret = 0;
 		ret += generateOneFile(getJavaFile("GraphQLServer"), "generating GraphQLServer", context,

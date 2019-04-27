@@ -60,10 +60,14 @@ public class GraphQLProvider {
 
 	@PostConstruct
 	public void init() throws IOException {
-		Resource res = new ClassPathResource("/starWarsSchema.graphqls");
+		Resource res;
+		StringBuffer sdl = new StringBuffer();
+#foreach ($schemaFile in $schemaFiles)
+		res = new ClassPathResource("/${schemaFile}");
 		Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"));
-		String sdl = FileCopyUtils.copyToString(reader);
-		this.graphQL = GraphQL.newGraphQL(buildSchema(sdl)).build();
+		sdl.append(FileCopyUtils.copyToString(reader));
+#end
+		this.graphQL = GraphQL.newGraphQL(buildSchema(sdl.toString())).build();
 	}
 
 	private GraphQLSchema buildSchema(String sdl) {

@@ -44,12 +44,16 @@ public class MavenResourceSchemaStringProvider implements SchemaStringProvider {
 	@Resource
 	String resourcesFolder;
 
-	@Override
-	public List<String> schemaStrings() throws IOException {
+	public org.springframework.core.io.Resource[] schemas() throws IOException {
 		String fullPathPattern = "file:///" + project.getBasedir().getCanonicalPath() + resourcesFolder
 				+ ((getSchemaFilePattern().startsWith("/") || (getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
 				+ getSchemaFilePattern();
-		org.springframework.core.io.Resource[] resources = applicationContext.getResources(fullPathPattern);
+		return applicationContext.getResources(fullPathPattern);
+	}
+
+	@Override
+	public List<String> schemaStrings() throws IOException {
+		org.springframework.core.io.Resource[] resources = schemas();
 		if (resources.length <= 0) {
 			throw new IllegalStateException(
 					"No graphql schema files found on classpath with location pattern '" + getSchemaFilePattern());
