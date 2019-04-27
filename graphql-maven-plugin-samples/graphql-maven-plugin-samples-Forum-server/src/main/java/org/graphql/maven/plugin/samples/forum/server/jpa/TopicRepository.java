@@ -15,7 +15,7 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
 	@Query(value = "" //
 			+ " select * " //
 			+ " from topic t "//
-			+ " join board b on t.boardId = b.id " //
+			+ " join board b on t.board_id = b.id " //
 			+ " where b.name = ?1" //
 			, nativeQuery = true)
 	Iterable<Topic> findByBoardName(String name);

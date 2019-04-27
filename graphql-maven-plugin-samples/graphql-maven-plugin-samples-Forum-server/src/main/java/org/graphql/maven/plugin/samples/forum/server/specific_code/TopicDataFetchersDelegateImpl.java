@@ -4,10 +4,10 @@
 package org.graphql.maven.plugin.samples.forum.server.specific_code;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.graphql.maven.plugin.samples.forum.server.BoardDataFetchersDelegate;
-import org.graphql.maven.plugin.samples.forum.server.Topic;
+import org.graphql.maven.plugin.samples.forum.server.Member;
+import org.graphql.maven.plugin.samples.forum.server.Post;
+import org.graphql.maven.plugin.samples.forum.server.TopicDataFetchersDelegate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,11 +18,16 @@ import org.springframework.stereotype.Component;
  * @author EtienneSF
  */
 @Component
-public class BoardDataFetchersDelegateImpl implements BoardDataFetchersDelegate {
+public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate {
 
 	@Override
-	public List<Topic> boardTopics(String boardId, String since) {
-		List<Topic> ret = new ArrayList<>();
+	public Member topicAuthor(String topicId) {
+		return null;
+	}
+
+	@Override
+	public Iterable<Post> topicPosts(String topicId, String since) {
+		Iterable<Post> ret = new ArrayList<>();
 		return ret;
 	}
 }

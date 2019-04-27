@@ -64,25 +64,26 @@
 
 		<!-- Dependencies for GraphQL -->
 		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphql-spring-boot-starter</artifactId>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
+			<version>1.0</version>
 		</dependency>
-		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-spring-boot-starter</artifactId> </dependency -->
-		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java-tools</artifactId> </dependency -->
-		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphql-java-tools</artifactId>
-		</dependency>
+		<!-- dependency> <groupId>com.graphql-java-kickstart</groupId> <artifactId>graphql-spring-boot-starter</artifactId> </dependency> 
+			<dependency> <groupId>com.graphql-java-kickstart</groupId> <artifactId>graphql-java-tools</artifactId> </dependency -->
 		<!-- dependency> <!- Fournit une IHM pour tester les requêtes graphql -> <groupId>com.graphql-java</groupId> <artifactId>graphiql-spring-boot-starter</artifactId> 
 			</dependency -->
 		<dependency>
-			<!-- gives a GUI to test the GraphQL request on the generated server: http://localhost:8080/graphiql -->
+			<!-- Generates at runtime a GUI to execute GraphQL requests-->
 			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphiql-spring-boot-starter</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 
 		<!-- Other dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>

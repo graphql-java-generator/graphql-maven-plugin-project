@@ -11,7 +11,7 @@ create table member (
 create table board (
 	id varchar(255) not null,
 	name varchar(255) not null,
-	publiclyAvailable boolean,
+	publicly_available boolean,
 	primary key (id)
 );
 
@@ -20,8 +20,8 @@ create table topic (
 	board_id varchar(255) not null,
 	date datetime not null,
 	author_id varchar(255),
-	publiclyAvailable boolean,
-	nbPost int,
+	publicly_available boolean,
+	nb_posts int,
 	title varchar(255) not null,
 	content varchar(255) not null,
 	primary key (id)
@@ -30,8 +30,9 @@ create table topic (
 create table post (
 	id varchar(255) not null,
 	date datetime not null,
+	topic_id varchar(255) not null,
 	author_id varchar(255),
-	publiclyAvailable boolean,
+	publicly_available boolean,
 	title varchar(255) not null,
 	content varchar(255) not null,
 	primary key (id)
@@ -46,6 +47,11 @@ alter table topic
    add constraint topic_fk_member
    foreign key (author_id) 
    references member
+;
+alter table post 
+   add constraint post_fk_topic
+   foreign key (topic_id) 
+   references topic
 ;
 alter table post 
    add constraint post_fk_member
