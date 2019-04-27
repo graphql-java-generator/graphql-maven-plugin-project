@@ -73,8 +73,12 @@ public class GraphQLProvider {
 	private GraphQLSchema buildSchema(String sdl) {
 		TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
 
+#if ($interfaces.size() > 0)
 		// Add of the CharacterImpl type definition
-		typeRegistry.add(getCharacterImplType(typeRegistry));
+#end
+#foreach ($interface in $interfaces)
+		typeRegistry.add(get${interface.classSimpleName}ImplType(typeRegistry));
+#end
 
 		RuntimeWiring runtimeWiring = buildWiring();
 		SchemaGenerator schemaGenerator = new SchemaGenerator();
@@ -104,30 +108,21 @@ public class GraphQLProvider {
 			.build();
 	}
 
-	private ObjectTypeDefinition getCharacterImplType(TypeDefinitionRegistry typeRegistry) {
-		ObjectTypeDefinition humanDef = (ObjectTypeDefinition) typeRegistry.getType("Human").get();
-		ObjectTypeDefinition.Builder characterImplDef = ObjectTypeDefinition.newObjectTypeDefinition();
-		characterImplDef.name("CharacterImpl");
-		for (FieldDefinition fieldDef : humanDef.getFieldDefinitions()) {
-			// Let's add only the fields coming from the Character interface
-			switch (fieldDef.getName()) {
-			case "id":
-			case "name":
-			case "friends":
-			case "appearsIn":
-				characterImplDef.fieldDefinition(fieldDef);
-			}
+#foreach ($interface in $interfaces)
+	private ObjectTypeDefinition get${interface.classSimpleName}ImplType(TypeDefinitionRegistry typeRegistry) {
+		ObjectTypeDefinition def${interface.classSimpleName} = (ObjectTypeDefinition) typeRegistry.getType("${interface.classSimpleName}").get();
+		ObjectTypeDefinition.Builder def${interface.classSimpleName}Impl = ObjectTypeDefinition.newObjectTypeDefinition();
+		def${interface.classSimpleName}Impl.name("${interface.classSimpleName}Impl");
+		for (FieldDefinition fieldDef : def${interface.classSimpleName}.getFieldDefinitions()) {
+			def${interface.classSimpleName}Impl.fieldDefinition(fieldDef);
 		}
-		for (Type<?> typeName : humanDef.getImplements()) {
-			// Let's add only the fields coming from the Character interface
-			switch (((TypeName) typeName).getName()) {
-			case "Character":
-				characterImplDef.implementz(typeName);
-			}
+		// Let's precise that the new type is an implementation for this interface
+		TypeName typeName = TypeName.newTypeName("${interface.classSimpleName}").build();
+		def${interface.classSimpleName}Impl.implementz(typeName);
 
-		}
-		return characterImplDef.build();
+		return def${interface.classSimpleName}Impl.build();
 	}
+#end
 
 	
 #foreach ($interface in $interfaces)
