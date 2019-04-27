@@ -95,7 +95,7 @@ public class GraphQLProvider {
 #foreach ($dataFetcherDelegate in $dataFetcherDelegates)
 			// Data fetchers for ${dataFetcherDelegate.name}
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
-			.type(newTypeWiring("${dataFetcher.field.type.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.camelCaseName}()))
+			.type(newTypeWiring("${dataFetcher.field.owningType.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.camelCaseName}()))
 #end
 #end
 #if ($interfaces.size() > 0)
@@ -103,7 +103,7 @@ public class GraphQLProvider {
 			// Let's link the interface types to the concrete types
 #end
 #foreach ($interface in $interfaces)
-			.type("${interface.name}", typeWriting -> typeWriting.typeResolver(get${interface.name}Resolver()))
+			.type("${interface.name}", typeWiring -> typeWiring.typeResolver(get${interface.name}Resolver()))
 #end
 			.build();
 	}
