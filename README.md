@@ -144,10 +144,17 @@ Then... you're app is ready to go!
 :)
 
 
+You can access to the GraphQL server with this URL: [http://localhost:8180/graphiql](http://localhost:8180/graphiql). With this interface, you can test your server, by typing any GraphQL query. You'll have some help to type correct values.
+
+You can access to the H2 Console with this URL: [http://localhost:8180/h2-console/](http://localhost:8180/h2-console/). The jdbc URL to connect to the database is: jdbc:h2:mem:testdb. login: sa, no password.
+
+
 ## State of the project
+
 ### Things to change
 
 - The plugin currently manages only one schema. It would be nice to allow several graphqls files, with a pattern like /*.graphqls
+- The plugin currently manages onyl schema stored in the root of the classpath, that is: in the src/main/resources folder. The doc announces that it can also been stored in a subfolder.
 
 ### What the plugin can't manage (as of its current state)
 
