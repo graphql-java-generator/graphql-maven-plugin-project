@@ -37,6 +37,14 @@
 		<spring.version>5.1.4.RELEASE</spring.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<!-- Necessary, to get org.everit.json.schema :( -->
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -185,6 +193,11 @@
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
 				<version>1.4.199</version>
+			</dependency>
+			<dependency>
+				<groupId>org.leadpony.justify</groupId>
+				<artifactId>justify</artifactId>
+				<version>0.16.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.projectlombok</groupId>
