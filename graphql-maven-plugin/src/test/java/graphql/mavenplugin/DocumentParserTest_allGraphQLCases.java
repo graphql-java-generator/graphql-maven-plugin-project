@@ -51,7 +51,7 @@ class DocumentParserTest_allGraphQLCases {
 
 	@Test
 	@DirtiesContext
-	void test_parseOneDocument_allGrahpQLCases() {
+	void test_parseOneDocument_allGraphQLCases() {
 		// Go, go, go
 		int i = documentParser.parseDocuments();
 

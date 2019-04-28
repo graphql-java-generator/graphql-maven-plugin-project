@@ -50,6 +50,16 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(property = "graphql.mavenplugin.schemaFilePattern", defaultValue = "*.graphqls")
 	String schemaFilePattern;
 
+	/**
+	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
+	 * apply before generating the code. See the doc for more details.<BR/>
+	 * The standard file would be something like src/main/graphql/schemaPersonalizationFile.json, which avoid to embed
+	 * this compile time file within your maven artefact<BR/>
+	 * The default value is a file named "noPersonalization", meaning: no schema personalization.
+	 */
+	@Parameter(property = "graphql.mavenplugin.schemaPersonalizationFile", defaultValue = "noPersonalization")
+	File schemaPersonalizationFile;
+
 	/** The folder where the generated classes will be generated */
 	@Parameter(property = "graphql.mavenplugin.targetSourceFolder", defaultValue = "${project.build.directory}/generated-sources/graphql-maven-plugin")
 	File targetSourceFolder;

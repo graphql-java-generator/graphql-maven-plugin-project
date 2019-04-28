@@ -51,6 +51,7 @@ import graphql.mavenplugin.language.impl.ObjectType;
 import graphql.mavenplugin.language.impl.RelationImpl;
 import graphql.mavenplugin.language.impl.ScalarType;
 import graphql.mavenplugin.language.impl.TypeUtil;
+import graphql.mavenplugin.schema_personalization.JsonSchemaPersonalization;
 import graphql.parser.Parser;
 import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat.FieldType;
 import lombok.Getter;
@@ -94,6 +95,13 @@ public class DocumentParser {
 
 	@Resource
 	List<Document> documents;
+
+	/**
+	 * The {@link JsonSchemaPersonalization} allows the user to update what the plugin would have generate, through a
+	 * json configuration file
+	 */
+	@Resource
+	JsonSchemaPersonalization jsonSchemaPersonalization;
 
 	/**
 	 * All the Query Types for this Document. There may be several ones, if more than one graphqls files have been
@@ -184,6 +192,9 @@ public class DocumentParser {
 		addAnnotations();
 		// List all data fetchers
 		initDataFetchers();
+
+		// Apply the user's schema personalization
+		jsonSchemaPersonalization.applySchemaPersonalization();
 
 		return nbClasses;
 	}

@@ -81,6 +81,11 @@ public class SpringConfiguration {
 	}
 
 	@Bean
+	File schemaPersonalizationFile() {
+		return mojo.schemaPersonalizationFile;
+	}
+
+	@Bean
 	File targetSourceFolder() {
 		return mojo.targetSourceFolder;
 	}

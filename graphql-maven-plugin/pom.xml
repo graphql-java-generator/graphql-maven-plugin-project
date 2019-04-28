@@ -119,7 +119,20 @@
 			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphql-java-tools</artifactId>
 		</dependency>
-		
+
+		<!-- dependendencies for json -->
+		<!-- dependency> <groupId>com.github.everit-org.json-schema</groupId> <artifactId>org.everit.json.schema</artifactId> </dependency -->
+		<dependency>
+			<groupId>org.leadpony.justify</groupId>
+			<artifactId>justify</artifactId>
+			<version>0.16.0</version>
+		</dependency>
+		<!-- dependency> <groupId>org.glassfish</groupId> <artifactId>javax.json</artifactId> <version>1.1.3</version> </dependency -->
+		<dependency>
+			<groupId>org.apache.johnzon</groupId>
+			<artifactId>johnzon-core</artifactId>
+			<version>1.1.11</version>
+		</dependency>
 	</dependencies>
 
 </project>

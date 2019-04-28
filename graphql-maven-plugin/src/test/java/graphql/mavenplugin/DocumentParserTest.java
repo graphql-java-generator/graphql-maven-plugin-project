@@ -8,7 +8,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.maven.plugin.logging.SystemStreamLog;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ import graphql.mavenplugin.language.impl.FieldImpl;
 import graphql.mavenplugin.language.impl.InterfaceType;
 import graphql.mavenplugin.language.impl.ObjectType;
 import graphql.mavenplugin.language.impl.ScalarType;
+import graphql.mavenplugin.test.helper.MavenLog;
 
 /**
  * 
@@ -27,6 +29,9 @@ import graphql.mavenplugin.language.impl.ScalarType;
  */
 
 class DocumentParserTest {
+
+	/** Logger pour cette classe */
+	protected Logger logger = LogManager.getLogger();
 
 	String packageName = "org.graphql.test.generate";
 
@@ -36,7 +41,7 @@ class DocumentParserTest {
 	void setUp() throws Exception {
 		documentParser = new DocumentParser();
 		documentParser.packageName = packageName;
-		documentParser.log = new SystemStreamLog();
+		documentParser.log = new MavenLog(logger);
 	}
 
 	@Test

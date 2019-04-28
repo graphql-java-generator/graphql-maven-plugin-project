@@ -1,0 +1,97 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "schemaPersonalization",
+	"description": "The personalization to apply, onto the code generated from the GraphQL schema",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"entityPersonalizations": {
+			"description": "Every entity personalization",
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/entityPersonalization"
+			},
+			"minItems": 1,
+			"uniqueItems": true
+		}
+	},
+	"definitions": {
+		"entityPersonalization": {
+			"description": "Each generated Entity can be personalized",
+			"type": "object",
+			"required": [
+				"name"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"description": "The name of the entity to personalize",
+					"type": "string"
+				},
+				"addAnnotation": {
+					"description": "This string will be added to the annotation(s) of this entity. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline beween each annotation. If this entity already has annotation(s), a newline and indentation will be added first. Default value is null (no change to the annotations)",
+					"type": "string"
+				},
+				"replaceAnnotation": {
+					"description": "This string will replace the annotations of this entity. If empty, the entity will no more be annotated. It's the way to remove the @Entity annotation for an object,if you wish. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline then a tabulation beween each annotation. Default value is null (no change to the annotations)",
+					"type": "string"
+				},
+				"newFields": {
+					"description": "The description of the fields that will be added to this entity, in the generated code",
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/field"
+					},
+					"minItems": 1,
+					"uniqueItems": true
+				},
+				"fieldPersonalizations": {
+					"description": "The changes that will be applied to the entity's fields, before the code generation",
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/field"
+					},
+					"minItems": 1,
+					"uniqueItems": true
+				}
+			}
+		},
+		"field": {
+			"description": "The description of a new field that will be added to the current entity, or of changes to apply on field existing in the GraphQL schema",
+			"required": [
+				"name"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"description": "The name of the new field",
+					"type": "string"
+				},
+				"type": {
+					"description": "The name of the type of this new field. This field must be provided for new fields. It's optional when personalizing fields'",
+					"type": "string"
+				},
+				"id": {
+					"description": "true if this field is the id of the entity (or part of). Default value is: false",
+					"type": "boolean"
+				},
+				"list": {
+					"description": "true if this field is a list. In this case, the type indicates the type of the items in the list. Default value is: false",
+					"type": "boolean"
+				},
+				"mandatory": {
+					"description": "true if this field is mandatory. Default value is: false",
+					"type": "boolean"
+				},
+				"addAnnotation": {
+					"description": "This string will be added to the annotations of this field. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline then a tabulation beween each annotation. If this field already has annotation, a newline and indentation will be added first. Default value is: null (no change)",
+					"type": "string"
+				},
+				"replaceAnnotation": {
+					"description": "This string will replace the annotations of this field. You can put as many annotations as you want here, provided that they are properly separated. At least by a semi column. For proper format of the generated code, the best is to have a newline then a tabulation beween each annotation. If empty, the field will no more be annotated. Default value is: null (no change)",
+					"type": "string"
+				}
+			}
+		}
+	}
+}

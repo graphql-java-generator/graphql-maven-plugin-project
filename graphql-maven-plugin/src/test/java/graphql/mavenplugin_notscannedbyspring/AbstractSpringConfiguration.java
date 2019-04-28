@@ -103,6 +103,11 @@ public abstract class AbstractSpringConfiguration {
 	}
 
 	@Bean
+	File schemaPersonalizationFile() {
+		return new File(mavenTestHelper.getModulePathFile(), "noPersonalization");
+	}
+
+	@Bean
 	File targetSourceFolder() {
 		// Get the folder for this class. If the class name contains a $, like
 		// AllGraphQLCases_Server_SpringConfiguration$$EnhancerBySpringCGLIB$$d8ce51ed, then it's a Spring proxy. We
