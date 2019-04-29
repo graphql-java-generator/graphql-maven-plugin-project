@@ -44,6 +44,7 @@ public abstract class AbstractSpringConfiguration {
 	private final String schemaFilePattern;
 
 	private PluginMode mode;
+	private String schemaPersonalizationFilename = "noPersonalization";
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -51,6 +52,13 @@ public abstract class AbstractSpringConfiguration {
 	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode) {
 		this.schemaFilePattern = schemaFilePattern;
 		this.mode = mode;
+	}
+
+	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode,
+			String schemaPersonalizationFilename) {
+		this.schemaFilePattern = schemaFilePattern;
+		this.mode = mode;
+		this.schemaPersonalizationFilename = schemaPersonalizationFilename;
 	}
 
 	/**
@@ -104,7 +112,7 @@ public abstract class AbstractSpringConfiguration {
 
 	@Bean
 	File schemaPersonalizationFile() {
-		return new File(mavenTestHelper.getModulePathFile(), "noPersonalization");
+		return new File(mavenTestHelper.getModulePathFile(), schemaPersonalizationFilename);
 	}
 
 	@Bean

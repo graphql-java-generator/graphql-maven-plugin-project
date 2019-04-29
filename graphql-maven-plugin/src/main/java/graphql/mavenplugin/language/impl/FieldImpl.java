@@ -69,7 +69,7 @@ public class FieldImpl implements Field {
 	 * Tha Java annotationto add to this type, ready to be added by the Velocity template. That is: one annotation per
 	 * line, each line starting at the beginning of the line
 	 */
-	private String annotation;
+	private String annotation = "";
 
 	/**
 	 * To construct such a class, you need ro provide the current DocumentParser

@@ -1,0 +1,28 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "Topic",
+			"newFields": [
+				{
+					"name": "author_id",
+					"type": "String",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"newFields": [
+				{
+					"name": "author_id",
+					"type": "String",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				}
+			]
+		}
+	]
+}
