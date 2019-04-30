@@ -1,5 +1,7 @@
 package ${package};
 
+import java.util.NoSuchElementException;
+
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
@@ -49,8 +51,14 @@ public class GraphQLDataFetchers {
 			}
 			return ret;
 #else
-			${dataFetcher.field.type.classSimpleName} ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
-			logger.debug("${dataFetcher.name}: {} found result", (ret==null)?"no":"1");
+			${dataFetcher.field.type.classSimpleName} ret = null;
+			try {
+				ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+				logger.debug("${dataFetcher.name}: 1 result found");
+			} catch (NoSuchElementException e) {
+				// There was no items in the Optional
+				logger.debug("${dataFetcher.name}: no result found");
+			}
 			return ret;
 #end
 		};
