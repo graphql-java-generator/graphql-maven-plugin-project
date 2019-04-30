@@ -18,6 +18,8 @@ public class DataFetcherImpl implements DataFetcher {
 
 	private DataFetcherDelegate dataFetcherDelegate;
 
+	private String sourceName = null;
+
 	/**
 	 * 
 	 * @param field

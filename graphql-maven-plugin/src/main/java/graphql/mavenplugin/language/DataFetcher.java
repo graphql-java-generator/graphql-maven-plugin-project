@@ -50,4 +50,12 @@ public interface DataFetcher {
 	 */
 	public DataFetcherDelegate getDataFetcherDelegate();
 
+	/**
+	 * Retrieves the source name, that is: the name of the object which contains the field to fetch (if it is a GraphQL
+	 * object), or null if the field is a field of a query, a mutation or a subscription.
+	 * 
+	 * @return the source name, or null if there is no source
+	 */
+	public String getSourceName();
+
 }

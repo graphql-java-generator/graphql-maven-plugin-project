@@ -40,32 +40,39 @@ class DocumentParserTest_StarWars_Server {
 
 		int i = 0;
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeHero", "QueryType", "hero", "Character",
-				false);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeHero", "QueryType", "hero", "Character", false,
+				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeCharacters", "QueryType", "characters",
-				"Character", true);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeHuman", "QueryType", "human", "Human", false);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeDroid", "QueryType", "droid", "Droid", false);
+				"Character", true, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeHuman", "QueryType", "human", "Human", false,
+				null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeDroid", "QueryType", "droid", "Droid", false,
+				null);
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "HumanFriends", "Human", "friends", "Character", true);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "HumanAppearsIn", "Human", "appearsIn", "Episode", true);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "HumanFriends", "Human", "friends", "Character", true,
+				"Human");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "HumanAppearsIn", "Human", "appearsIn", "Episode", true,
+				"Human");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "DroidFriends", "Droid", "friends", "Character", true);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "DroidAppearsIn", "Droid", "appearsIn", "Episode", true);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "DroidFriends", "Droid", "friends", "Character", true,
+				"Droid");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "DroidAppearsIn", "Droid", "appearsIn", "Episode", true,
+				"Droid");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "CharacterFriends", "Character", "friends", "Character",
-				true);
+				true, "CharacterImpl");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "CharacterAppearsIn", "Character", "appearsIn",
-				"Episode", true);
+				"Episode", true, "CharacterImpl");
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,
-			String returnedTypeName, boolean list) {
+			String returnedTypeName, boolean list, String sourceName) {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
+		assertEquals(sourceName, dataFetcher.getSourceName(), "sourceName");
 	}
 
 	@Test

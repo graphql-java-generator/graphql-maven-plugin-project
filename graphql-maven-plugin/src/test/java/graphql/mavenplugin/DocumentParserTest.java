@@ -176,15 +176,15 @@ class DocumentParserTest {
 		assertEquals(5, documentParser.dataFetchers.size(), "size");
 		//
 		// For query types, there must be a Data Fetcher for each field.
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field0", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "Field0", true, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field1", false, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "Field1", false, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field2", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "Field2", true, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field3", false, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "Field3", false, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field4", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "Field4", true, type, null,
 				type.getFields().get(i++).getInputParameters());
 		//
 		// There should be one DataFetcherDelegate, as we have only one type.
@@ -215,11 +215,11 @@ class DocumentParserTest {
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
 		// For non query types, there must be a Data Fetcher only for non Scalar and non Enum field.
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type, type.getName(),
 				type.getFields().get(2).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field4", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field4", true, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
 		// There should be one DataFetcherDelegate, as we have only one type.
@@ -250,11 +250,11 @@ class DocumentParserTest {
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
 		// For non query types, there must be a Data Fetcher only for non Scalar and non Enum field.
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type, type.getName(),
 				type.getFields().get(2).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field4", true, type,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field4", true, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
 		// There should be one DataFetcherDelegate, as we have only one type.
@@ -263,12 +263,13 @@ class DocumentParserTest {
 				"nb DataFetchers in the DataFetcherDelegate");
 	}
 
-	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type,
+	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type, String sourceName,
 			List<Field> inputParameters) {
 		assertEquals("NameOfTheType" + name, dataFetcher.getName(), "name");
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(type, dataFetcher.getField().getOwningType(), "type");
 		assertEquals(inputParameters, dataFetcher.getField().getInputParameters(), "arguments");
+		assertEquals(sourceName, dataFetcher.getSourceName(), "sourceName");
 	}
 
 }

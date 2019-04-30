@@ -113,18 +113,18 @@ class DocumentParserTest_Forum_Server {
 		// Verification of the data fetchers
 		//
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, list of input parameters
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeBoards", "QueryType", "boards", "Board", true);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeBoards", "QueryType", "boards", "Board", true,
+				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeTopics", "QueryType", "topics", "Topic", true,
-				"board");
+				null, "board");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "BoardTopics", "Board", "topics", "Topic", true,
-				"boardId", "since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicAuthor", "Topic", "author", "Member", false,
-				"topicId");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicPosts", "Topic", "posts", "Post", true, "topicId",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "BoardTopics", "Board", "topics", "Topic", true, "Board",
 				"since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "PostAuthor", "Post", "author", "Member", false,
-				"postId");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicAuthor", "Topic", "author", "Member", false,
+				"Topic");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicPosts", "Topic", "posts", "Post", true, "Topic",
+				"since");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "PostAuthor", "Post", "author", "Member", false, "Post");
 
 		//
 		// Verification of the data fetchers delegates
@@ -178,12 +178,13 @@ class DocumentParserTest_Forum_Server {
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,
-			String returnedTypeName, boolean list, String... inputParameters) {
+			String returnedTypeName, boolean list, String sourceName, String... inputParameters) {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
+		assertEquals(sourceName, dataFetcher.getSourceName(), "sourceName");
 
 		// Check of the data fetcher input parameters
 		assertEquals(inputParameters.length, dataFetcher.getField().getInputParameters().size(),

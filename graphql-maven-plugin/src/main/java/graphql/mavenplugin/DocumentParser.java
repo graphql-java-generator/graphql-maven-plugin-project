@@ -50,7 +50,6 @@ import graphql.mavenplugin.language.impl.InterfaceType;
 import graphql.mavenplugin.language.impl.ObjectType;
 import graphql.mavenplugin.language.impl.RelationImpl;
 import graphql.mavenplugin.language.impl.ScalarType;
-import graphql.mavenplugin.language.impl.TypeUtil;
 import graphql.mavenplugin.schema_personalization.JsonSchemaPersonalization;
 import graphql.parser.Parser;
 import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat.FieldType;
@@ -728,22 +727,23 @@ public class DocumentParser {
 				newField.setOwningType(field.getOwningType());
 				newField.setTypeName(field.getTypeName());
 				// Let's add the id for the owning type of the field, then all its input parameters
-				for (Field fieldOfOwningType : field.getOwningType().getFields()) {
-					if (fieldOfOwningType.isId()) {
-						FieldImpl idField = new FieldImpl(this);
-						// Let's build a sled descriptive name. For Board.id, the parameter name is boardId.
-						// board is the owning type name in camel case.
-						// Id is the field name in Pascal Case
-						idField.setName(TypeUtil.getCamelCase(field.getOwningType().getName())
-								+ fieldOfOwningType.getPascalCaseName());
-						idField.setTypeName(fieldOfOwningType.getTypeName());
-						newField.getInputParameters().add(idField);
-					}
-				}
+				// for (Field fieldOfOwningType : field.getOwningType().getFields()) {
+				// if (fieldOfOwningType.isId()) {
+				// FieldImpl idField = new FieldImpl(this);
+				// // Let's build a sled descriptive name. For Board.id, the parameter name is boardId.
+				// // board is the owning type name in camel case.
+				// // Id is the field name in Pascal Case
+				// idField.setName(TypeUtil.getCamelCase(field.getOwningType().getName())
+				// + fieldOfOwningType.getPascalCaseName());
+				// idField.setTypeName(fieldOfOwningType.getTypeName());
+				// newField.getInputParameters().add(idField);
+				// }
+				// }
 				for (Field inputParameter : field.getInputParameters()) {
 					newField.getInputParameters().add(inputParameter);
 				}
 				dataFetcher = new DataFetcherImpl(newField);
+				dataFetcher.setSourceName(type.getName());
 			}
 
 			// If we found a DataFether, let's register it.
