@@ -15,6 +15,15 @@ public interface TopicRepository extends CrudRepository<Topic, String> {
 	@Query(value = "select t from Topic t where t.boardId= ?1")
 	Iterable<Topic> findByBoardId(String boardId);
 
+	@Query(value = "select t from Topic t where t.boardId= ?1 and t.date >= ?2")
+	Iterable<Topic> findByBoardIdAndSince(String boardId, String since);
+
+	/**
+	 * An example of a native query that could be used for some perticular case
+	 * 
+	 * @param name
+	 * @return
+	 */
 	@Query(value = "" //
 			+ " select * " //
 			+ " from topic t "//

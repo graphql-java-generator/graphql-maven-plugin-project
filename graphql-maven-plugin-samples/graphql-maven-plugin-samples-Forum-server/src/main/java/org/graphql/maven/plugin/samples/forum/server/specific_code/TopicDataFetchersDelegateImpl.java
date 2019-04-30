@@ -37,6 +37,9 @@ public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate 
 
 	@Override
 	public Iterable<Post> topicPosts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, String since) {
-		return postRepository.findByTopicId(source.getId());
+		if (since == null)
+			return postRepository.findByTopicId(source.getId());
+		else
+			return postRepository.findByTopicIdAndSince(source.getId(), since);
 	}
 }
