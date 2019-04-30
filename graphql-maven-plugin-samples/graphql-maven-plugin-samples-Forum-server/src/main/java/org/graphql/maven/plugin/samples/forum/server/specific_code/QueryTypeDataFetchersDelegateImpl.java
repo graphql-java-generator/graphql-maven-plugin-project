@@ -12,6 +12,8 @@ import org.graphql.maven.plugin.samples.forum.server.jpa.BoardRepository;
 import org.graphql.maven.plugin.samples.forum.server.jpa.TopicRepository;
 import org.springframework.stereotype.Component;
 
+import graphql.schema.DataFetchingEnvironment;
+
 /**
  * @author EtienneSF
  */
@@ -24,12 +26,12 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 	TopicRepository topicRepository;
 
 	@Override
-	public Iterable<Board> queryTypeBoards() {
+	public Iterable<Board> queryTypeBoards(DataFetchingEnvironment dataFetchingEnvironment) {
 		return boardRepository.findAll();
 	}
 
 	@Override
-	public Iterable<Topic> queryTypeTopics(String boardName) {
+	public Iterable<Topic> queryTypeTopics(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
 		return topicRepository.findByBoardName(boardName);
 	}
 

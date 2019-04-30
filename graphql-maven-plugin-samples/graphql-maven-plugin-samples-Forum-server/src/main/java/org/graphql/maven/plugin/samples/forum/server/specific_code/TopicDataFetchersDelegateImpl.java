@@ -3,12 +3,17 @@
  */
 package org.graphql.maven.plugin.samples.forum.server.specific_code;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 
 import org.graphql.maven.plugin.samples.forum.server.Member;
 import org.graphql.maven.plugin.samples.forum.server.Post;
+import org.graphql.maven.plugin.samples.forum.server.Topic;
 import org.graphql.maven.plugin.samples.forum.server.TopicDataFetchersDelegate;
+import org.graphql.maven.plugin.samples.forum.server.jpa.MemberRepository;
+import org.graphql.maven.plugin.samples.forum.server.jpa.PostRepository;
 import org.springframework.stereotype.Component;
+
+import graphql.schema.DataFetchingEnvironment;
 
 /**
  * This class implements the access to the database : there are so many ways to do this, that the developper has still
@@ -20,14 +25,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate {
 
+	@Resource
+	MemberRepository memberRepository;
+	@Resource
+	PostRepository postRepository;
+
 	@Override
-	public Member topicAuthor(String topicId) {
-		return null;
+	public Member topicAuthor(DataFetchingEnvironment dataFetchingEnvironment, Topic source) {
+		return memberRepository.findById(source.getAuthorId()).get();
 	}
 
 	@Override
-	public Iterable<Post> topicPosts(String topicId, String since) {
-		Iterable<Post> ret = new ArrayList<>();
-		return ret;
+	public Iterable<Post> topicPosts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, String since) {
+		return postRepository.findByTopicId(source.getId());
 	}
 }

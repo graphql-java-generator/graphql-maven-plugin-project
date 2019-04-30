@@ -12,6 +12,9 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface TopicRepository extends CrudRepository<Topic, String> {
 
+	@Query(value = "select t from Topic t where t.boardId= ?1")
+	Iterable<Topic> findByBoardId(String boardId);
+
 	@Query(value = "" //
 			+ " select * " //
 			+ " from topic t "//

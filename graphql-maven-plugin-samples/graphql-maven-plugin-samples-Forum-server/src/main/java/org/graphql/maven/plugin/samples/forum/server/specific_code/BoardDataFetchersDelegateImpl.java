@@ -3,12 +3,15 @@
  */
 package org.graphql.maven.plugin.samples.forum.server.specific_code;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Resource;
 
+import org.graphql.maven.plugin.samples.forum.server.Board;
 import org.graphql.maven.plugin.samples.forum.server.BoardDataFetchersDelegate;
 import org.graphql.maven.plugin.samples.forum.server.Topic;
+import org.graphql.maven.plugin.samples.forum.server.jpa.TopicRepository;
 import org.springframework.stereotype.Component;
+
+import graphql.schema.DataFetchingEnvironment;
 
 /**
  * This class implements the access to the database : there are so many ways to do this, that the developper has still
@@ -20,9 +23,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class BoardDataFetchersDelegateImpl implements BoardDataFetchersDelegate {
 
+	@Resource
+	TopicRepository topicRepository;
+
 	@Override
-	public List<Topic> boardTopics(String boardId, String since) {
-		List<Topic> ret = new ArrayList<>();
-		return ret;
+	public Iterable<Topic> boardTopics(DataFetchingEnvironment dataFetchingEnvironment, Board board, String since) {
+		return topicRepository.findByBoardId(board.getId());
 	}
 }
