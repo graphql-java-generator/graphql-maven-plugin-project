@@ -56,7 +56,7 @@ public class ManualTest {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("id", "qd"));
+		parameters.add(new InputParameter("id", "180"));
 
 		// ResponseDef
 		ResponseDef responseDef = ResponseDef.newResponseDeBuilder("Human").build();
