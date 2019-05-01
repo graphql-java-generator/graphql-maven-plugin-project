@@ -9,7 +9,7 @@ import graphql.java.client.domain.Episode;
 import graphql.java.client.domain.Human;
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
-import graphql.java.client.request.ResponseDefinitionImpl;
+import graphql.java.client.request.ResponseDefinition;
 import graphql.java.client.response.GraphQLExecutionException;
 
 /**
@@ -29,6 +29,23 @@ public class ManualTest {
 		test.executeHuman();
 	}
 
+	public void executeHeroOld() throws GraphQLExecutionException, IOException {
+		System.out.println("-------------------------------------------------------------------------------------");
+		System.out.println("------------------    executeHero()    ----------------------------------------------");
+
+		// InputParameters
+		List<InputParameter> parameters = new ArrayList<>();
+		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
+
+		// ResponseDefinition
+		ResponseDefinition responseDef = ResponseDefinition.newEntityBuilder().withField("id").withField("name")
+				.withField("appearsIn")
+				.withEntity(ResponseDefinition.newEntityBuilder("friends").withField("name").build()).build();
+
+		CharacterImpl character = executor.execute("hero", parameters, responseDef, CharacterImpl.class);
+		System.out.println(character);
+	}
+
 	public void executeHero() throws GraphQLExecutionException, IOException {
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    executeHero()    ----------------------------------------------");
@@ -38,7 +55,7 @@ public class ManualTest {
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
 		// ResponseDefinition
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_QUERY_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_QUERY_MARKER);
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 		responseDef.addResponseField("appearsIn");
@@ -58,7 +75,7 @@ public class ManualTest {
 		parameters.add(new InputParameter("id", "qd"));
 
 		// ResponseDefinition
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_QUERY_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_QUERY_MARKER);
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 

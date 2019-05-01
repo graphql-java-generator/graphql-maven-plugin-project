@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 class ResponseDefinitionImplTest {
 
 	final Marker GRAPHQL_TEST = MarkerManager.getMarker("junit test for ResponseDefinitionImplTest");
-	ResponseDefinitionImpl responseDef;
+	ResponseDefinition responseDef;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		responseDef = new ResponseDefinitionImpl(GRAPHQL_TEST);
+		responseDef = new ResponseDefinition(GRAPHQL_TEST);
 		assertEquals(0, responseDef.fields.size(), "list initialized, and no field before start");
 	}
 
@@ -163,8 +163,8 @@ class ResponseDefinitionImplTest {
 
 		// Verification
 		assertEquals(3, responseDef.fields.size(), "Main entity");
-		assertEquals(2, ((ResponseDefinitionImpl) subResponseDef).fields.size(), "First sub entity");
-		assertEquals(1, ((ResponseDefinitionImpl) subResponseDef2).fields.size(), "Second sub entity");
+		assertEquals(2, ((ResponseDefinition) subResponseDef).fields.size(), "First sub entity");
+		assertEquals(1, ((ResponseDefinition) subResponseDef2).fields.size(), "Second sub entity");
 		assertEquals(
 				"{theAlias: aGraphqlEntityName{aSubGraphqlField1 aliasField2: aSubGraphqlField2} anotherGraphqlEntityName{aliasField3: aSubGraphqlField3} aThirdFieldName}",
 				sb.toString());

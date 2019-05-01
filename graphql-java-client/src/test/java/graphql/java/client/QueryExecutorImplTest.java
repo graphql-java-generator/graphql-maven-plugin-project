@@ -24,7 +24,7 @@ import graphql.java.client.domain.CharacterImpl;
 import graphql.java.client.domain.Episode;
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ResponseDefinition;
-import graphql.java.client.request.ResponseDefinitionImpl;
+import graphql.java.client.request.ResponseDefinition;
 import graphql.java.client.response.GraphQLResponseParseException;
 
 /**
@@ -64,7 +64,7 @@ class QueryExecutorImplTest {
 		parameters.add(new InputParameter("id", id));
 
 		// The response should contain id and name
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER);
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 
@@ -88,7 +88,7 @@ class QueryExecutorImplTest {
 		parameters.add(new InputParameter("id", id));
 
 		// The response should contain id and name
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER);
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 
@@ -110,7 +110,7 @@ class QueryExecutorImplTest {
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER);
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 		responseDef.addResponseField("appearsIn");
@@ -132,7 +132,7 @@ class QueryExecutorImplTest {
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 		// The response should contain id and name
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER);
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 		responseDef.addResponseField("appearsIn");
@@ -140,30 +140,30 @@ class QueryExecutorImplTest {
 		subResponseDef.addResponseField("name");
 
 		assertThrows(NullPointerException.class, () -> queryExecutorImpl.parseResponse(null, "queryName",
-				new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER), Character.class));
+				new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER), Character.class));
 
 		exception = assertThrows(JsonParseException.class, () -> queryExecutorImpl.parseResponse("invalid JSON",
-				queryName, new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER), Character.class));
+				queryName, new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER), Character.class));
 		assertTrue(exception.getMessage().contains("invalid"));
 
 		exception = assertThrows(GraphQLResponseParseException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"wrongTag\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER), Character.class));
+				queryName, new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER), Character.class));
 		assertTrue(exception.getMessage().contains("'data'"));
 
 		exception = assertThrows(GraphQLResponseParseException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"data\":{\"wrongAlias\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER), Character.class));
+				queryName, new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER), Character.class));
 		assertTrue(exception.getMessage().contains("'hero'"));
 
 		exception = assertThrows(UnrecognizedPropertyException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"data\":{\"hero\":{\"wrongTag\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER), CharacterImpl.class));
+				queryName, new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER), CharacterImpl.class));
 		assertTrue(exception.getMessage().contains("wrongTag"));
 
 		exception = assertThrows(InvalidFormatException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"WRONG_EPISODE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER), CharacterImpl.class));
+				queryName, new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER), CharacterImpl.class));
 		assertTrue(exception.getMessage().contains("WRONG_EPISODE"));
 	}
 
@@ -175,7 +175,7 @@ class QueryExecutorImplTest {
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER);
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 		responseDef.addResponseField("appearsIn");
@@ -207,7 +207,7 @@ class QueryExecutorImplTest {
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER);
 		ResponseDefinition subResponseDef = responseDef.addResponseEntity("friends");
 		subResponseDef.addResponseField("name");
 
@@ -229,7 +229,7 @@ class QueryExecutorImplTest {
 		String queryName = "hero";
 
 		// The response should contain id and name
-		ResponseDefinition responseDef = new ResponseDefinitionImpl(QueryExecutor.GRAPHQL_MARKER);
+		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_MARKER);
 		ResponseDefinition subResponseDef = responseDef.addResponseEntity("friends");
 		subResponseDef.addResponseField("name");
 
