@@ -43,7 +43,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	public QueryExecutorImpl() {
 		client = ClientBuilder.newClient();
-		webTarget = client.target("http://localhost:8080").path("graphql");
+		webTarget = client.target("http://localhost:8180").path("graphql");
 	}
 
 	/** {@inheritDoc} */
@@ -59,13 +59,13 @@ public class QueryExecutorImpl implements QueryExecutor {
 		request = "{\"query\":\"" + request + "\",\"variables\":null,\"operationName\":null}";
 		logger.trace(GRAPHQL_MARKER, "Sending JSON request to GraphQL server: {}", request);
 
-		Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN_TYPE);
+		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
-		String rawResponse = invocationBuilder.post(Entity.entity(request, MediaType.TEXT_PLAIN_TYPE), String.class);
+		String rawResponse = invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON), String.class);
 		logger.trace(GRAPHQL_MARKER, "Received response: {}", rawResponse);
 		// return parseResponse(rawResponse, queryName, responseDef, valueType);
 
-		JsonResponseWrapper response = invocationBuilder.post(Entity.entity(request, MediaType.TEXT_PLAIN_TYPE),
+		JsonResponseWrapper response = invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON),
 				JsonResponseWrapper.class);
 
 		if (response.errors == null || response.errors.size() == 0) {
