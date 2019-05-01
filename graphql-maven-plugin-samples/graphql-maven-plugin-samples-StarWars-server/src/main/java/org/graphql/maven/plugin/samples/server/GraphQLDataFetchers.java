@@ -45,7 +45,7 @@ public class GraphQLDataFetchers {
 				Episode episode = Episode.valueOf(dataFetchingEnvironment.getArgument("episode"));
 				ret = characterRepository.findByAppearsIn(episode.toString());
 			}
-			logger.warn("'hero' query: {} found rows (the first one is returned, or null if no row)", ret.size());
+			logger.warn("'hero' query: return type is not a list, but {} rows were found (the first one is returned, or null if no row)", ret.size());
 			return (ret.size() > 0) ? ret.get(0) : null;
 		};
 
