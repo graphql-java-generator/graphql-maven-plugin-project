@@ -13,6 +13,8 @@ public interface ResponseDefinition {
 	 * 
 	 * @param fieldName
 	 *            The field name to add, as defined in the GraphQL schema
+	 * @throws IllegalArgumentException
+	 *             When the fieldName is not valid
 	 */
 	public void addResponseField(String fieldName);
 

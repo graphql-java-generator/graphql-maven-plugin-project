@@ -41,7 +41,7 @@ class ResponseDefinitionImplTest {
 	}
 
 	@Test
-	void testAddResponseField_KO() {
+	void testAddResponseField_KO_InvalidIdentifier() {
 		// Various types of checks
 		assertThrows(IllegalArgumentException.class, () -> responseDef.addResponseField("qdqd qdsq"));
 		assertThrows(IllegalArgumentException.class, () -> responseDef.addResponseField("qdqd.qdsq"));

@@ -42,6 +42,17 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- GraphQL dependencies -->
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
 		<!-- Other dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -5,7 +5,6 @@ package graphql.java.client;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -80,17 +79,24 @@ public class QueryExecutorImpl implements QueryExecutor {
 			throw new GraphQLResponseParseException("Could not retrieve the 'hero' nor 'human' node");
 
 		} else {
+			int nbErrors = 0;
+			String agregatedMessage = null;
 			for (graphql.java.client.response.Error error : response.errors) {
-				error.logError(logger, GRAPHQL_MARKER);
+				String msg = error.toString();
+				nbErrors += 1;
+				logger.error(GRAPHQL_MARKER, msg);
+				if (agregatedMessage == null) {
+					agregatedMessage = msg;
+				} else {
+					agregatedMessage += ", ";
+					agregatedMessage += msg;
+				}
 			}
-			String msg;
-			if (response.errors.size() == 1)
-				msg = "An error occurred: " + response.errors.get(0).message;
-			else
-				msg = response.errors.size() + " errors occurred: "
-						+ response.errors.stream().map(e -> e.message).collect(Collectors.joining(" / "));
-
-			throw new GraphQLExecutionException(msg);
+			if (nbErrors == 0) {
+				throw new GraphQLExecutionException("An unknown error occured");
+			} else {
+				throw new GraphQLExecutionException(nbErrors + " errors occured: " + agregatedMessage);
+			}
 		}
 
 	}

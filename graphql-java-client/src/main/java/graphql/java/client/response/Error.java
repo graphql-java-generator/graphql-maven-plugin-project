@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
@@ -40,10 +39,31 @@ public class Error {
 	 * 
 	 * @param logger
 	 */
-	public void logError(Logger logger, Marker marker) {
-		String queryPathStr = queryPath.stream().collect(Collectors.joining(","));
-		logger.error(marker, "[{}] {}: {}, path: {} ({})", validationErrorType, errorType, message, queryPathStr,
-				description);
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+
+		if (validationErrorType != null) {
+			sb.append("[{").append(validationErrorType).append("}]");
+		}
+		if (errorType != null) {
+			sb.append("{").append(errorType).append("}");
+		}
+
+		sb.append("{").append(message).append("}");
+
+		if (queryPath != null) {
+			sb.append(" path: {").append(queryPath.stream().collect(Collectors.joining(","))).append("}");
+		}
+		if (locations != null) {
+			sb.append(" - locations: {")
+					.append(locations.stream().map(Object::toString).collect(Collectors.joining(","))).append("}");
+		}
+		if (description != null) {
+			sb.append(" - ({").append(description).append("})");
+		}
+
+		return sb.toString();
 	}
 
 }
