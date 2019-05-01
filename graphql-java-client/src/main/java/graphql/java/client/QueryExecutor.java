@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ResponseDefinition;
+import graphql.java.client.request.ResponseDef;
 import graphql.java.client.response.GraphQLExecutionException;
 
 /**
@@ -45,7 +45,7 @@ public interface QueryExecutor {
 	 * @throws GraphQLExecutionException
 	 * @throws IOException
 	 */
-	public <T> T execute(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef,
+	public <T> T execute(String queryName, List<InputParameter> parameters, ResponseDef responseDef,
 			Class<T> valueType) throws GraphQLExecutionException, IOException;
 
 }

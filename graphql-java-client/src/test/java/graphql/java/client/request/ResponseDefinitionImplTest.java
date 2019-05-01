@@ -1,35 +1,41 @@
 package graphql.java.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import graphql.java.client.QueryExecutor;
+import graphql.java.client.request.ResponseDef.ResponseDefBuilder;
+
 class ResponseDefinitionImplTest {
 
-	final Marker GRAPHQL_TEST = MarkerManager.getMarker("junit test for ResponseDefinitionImplTest");
-	ResponseDefinition responseDef;
+	String objectName = "AnObjectName";
 
 	@BeforeEach
 	void setUp() throws Exception {
-		responseDef = new ResponseDefinition(GRAPHQL_TEST);
-		assertEquals(0, responseDef.fields.size(), "list initialized, and no field before start");
+
 	}
 
 	@Test
 	void testResponseDefinitionImpl() {
-		assertEquals(GRAPHQL_TEST, responseDef.marker);
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
+		assertEquals(QueryExecutor.GRAPHQL_MARKER, responseDef.marker, "Marker");
+		assertEquals(objectName, responseDef.graphqlObjectName, "Name");
+		assertNull(responseDef.fieldAlias, "alias");
 	}
 
 	@Test
 	void testAddResponseField_Ok() {
 		// Preparation
 		String fieldName = "aFieldName";
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
 
 		// Go, go, go
 		responseDef.addResponseField(fieldName);
@@ -37,11 +43,14 @@ class ResponseDefinitionImplTest {
 		// Verification
 		assertEquals(1, responseDef.fields.size(), "one field in the list");
 		assertEquals(fieldName, responseDef.fields.get(0).name, "field name");
-		assertNull(responseDef.fields.get(0).responseDef, "responseDef is null");
 	}
 
 	@Test
 	void testAddResponseField_KO_InvalidIdentifier() {
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
+
 		// Various types of checks
 		assertThrows(IllegalArgumentException.class, () -> responseDef.addResponseField("qdqd qdsq"));
 		assertThrows(IllegalArgumentException.class, () -> responseDef.addResponseField("qdqd.qdsq"));
@@ -55,6 +64,9 @@ class ResponseDefinitionImplTest {
 		// Preparation
 		String name = "aValidName";
 		String alias = "anAlias666";
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
 
 		// Go, go, go
 		responseDef.addResponseFieldWithAlias(name, alias);
@@ -66,6 +78,9 @@ class ResponseDefinitionImplTest {
 
 	@Test
 	void testAddResponseFieldWithAlias_KO() {
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
 		// KO on the name
 		assertThrows(IllegalArgumentException.class,
 				() -> responseDef.addResponseFieldWithAlias("qdqd qdsq", "validAlias"));
@@ -74,52 +89,73 @@ class ResponseDefinitionImplTest {
 	}
 
 	@Test
-	void testAddResponseEntity_OK() {
+	void testAddResponseDef_OK() {
 		// Preparation
-		String fieldName = "aGraphqlEntityName";
+		String fieldName = "aGraphqlResponseDefName";
+		String graphqlObjectName = "AGraphQLObjectName";
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
 
 		// Go, go, go
-		responseDef.addResponseEntity(fieldName);
+		responseDef.addSubObjectResponseDef(graphqlObjectName, fieldName);
 
 		// Verification
-		assertEquals(1, responseDef.fields.size(), "one field in the list");
-		assertEquals(fieldName, responseDef.fields.get(0).name, "field name");
-		assertNull(responseDef.fields.get(0).alias, "alias is null");
-		assertNotNull(responseDef.fields.get(0).responseDef, "responseDef is not null");
+		assertEquals(1, responseDef.subObjects.size(), "one object in the list");
+		assertEquals(graphqlObjectName, responseDef.subObjects.get(0).graphqlObjectName, "field graphqlObjectName");
+		assertEquals(fieldName, responseDef.subObjects.get(0).getFieldName(), "field name");
+		assertNull(responseDef.subObjects.get(0).fieldAlias, "alias is null");
 	}
 
 	@Test
-	void testAddResponseEntity_KO() {
-		assertThrows(IllegalArgumentException.class, () -> responseDef.addResponseEntity("qsd "));
+	void testAddResponseResponseDef_KO() {
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
+
+		assertThrows(IllegalArgumentException.class, () -> responseDef.addSubObjectResponseDef("mml", "qsd "));
 	}
 
 	@Test
-	void testAddResponseEntityWithAlias_OK() {
+	void testAddResponseResponseDefWithAlias_OK() {
 		// Preparation
-		String fieldName = "aGraphqlEntityName";
+		String graphqlObjectName = "AName";
+		String fieldName = "aGraphqlResponseDefName";
 		String alias = "theAlias";
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
 
 		// Go, go, go
-		responseDef.addResponseEntityWithAlias(fieldName, alias);
+		responseDef.addSubObjectResponseDefWithAlias(graphqlObjectName, fieldName, alias);
 
 		// Verification
-		assertEquals(1, responseDef.fields.size(), "one field in the list");
-		assertEquals(fieldName, responseDef.fields.get(0).name, "field name");
-		assertEquals(alias, responseDef.fields.get(0).alias, "alias");
-		assertNotNull(responseDef.fields.get(0).responseDef, "responseDef is not null");
+		assertEquals(1, responseDef.subObjects.size(), "one field in the list");
+		assertEquals(graphqlObjectName, responseDef.subObjects.get(0).graphqlObjectName, "field graphqlObjectName");
+		assertEquals(fieldName, responseDef.subObjects.get(0).getFieldName(), "field name");
+		assertEquals(alias, responseDef.subObjects.get(0).fieldAlias, "alias");
 	}
 
 	@Test
-	void testAddResponseEntityWithAlias_KO() {
+	void testAddResponseResponseDefWithAlias_KO() {
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
+
+		String graphqlObjectName = "AName";
 		assertThrows(IllegalArgumentException.class,
-				() -> responseDef.addResponseEntityWithAlias("not valid name", "validAlias"));
+				() -> responseDef.addSubObjectResponseDefWithAlias(graphqlObjectName, "not valid name", "validAlias"));
 		assertThrows(IllegalArgumentException.class,
-				() -> responseDef.addResponseEntityWithAlias("validName", "non valid alias"));
+				() -> responseDef.addSubObjectResponseDefWithAlias(graphqlObjectName, "validName", "non valid alias"));
 	}
 
 	@Test
-	void testAppendResponseQuery_noSubEntity() {
+	void testAppendResponseQuery_noSubResponseDef() {
 		// Preparation
+		ResponseDef responseDef = new ResponseDef(objectName);
+		assertEquals(0, responseDef.fields.size(), "list fields initialized, and no field before start");
+		assertEquals(0, responseDef.subObjects.size(), "list subObjects initialized, and no field before start");
+
 		String fieldName1 = "aFieldName";
 		String alias1 = "theAlias";
 		responseDef.addResponseFieldWithAlias(fieldName1, alias1);
@@ -133,40 +169,47 @@ class ResponseDefinitionImplTest {
 		responseDef.appendResponseQuery(sb);
 
 		// Verification
-		assertEquals("{theAlias: aFieldName anotherFieldName aThirdFieldName}", sb.toString());
+		assertEquals("{ theAlias: aFieldName anotherFieldName aThirdFieldName}", sb.toString());
 	}
 
 	@Test
-	void testAppendResponseQuery_withSubEntities() {
+	void testAppendResponseQuery_withSubObjects() {
 		// Preparation
-		String fieldName1 = "aGraphqlEntityName";
-		String alias1 = "theAlias";
-		ResponseDefinition subResponseDef = responseDef.addResponseEntityWithAlias(fieldName1, alias1);
-		String fieldName1_1 = "aSubGraphqlField1";
-		subResponseDef.addResponseField(fieldName1_1);
-		String fieldName1_2 = "aSubGraphqlField2";
-		String alias1_2 = "aliasField2";
-		subResponseDef.addResponseFieldWithAlias(fieldName1_2, alias1_2);
-		//
-		String fieldName2 = "anotherGraphqlEntityName";
-		ResponseDefinition subResponseDef2 = responseDef.addResponseEntity(fieldName2);
-		String fieldName2_1 = "aSubGraphqlField3";
-		String alias2_2 = "aliasField3";
-		subResponseDef2.addResponseFieldWithAlias(fieldName2_1, alias2_2);
-		//
-		String fieldName3 = "aThirdFieldName";
-		responseDef.addResponseField(fieldName3);
+
+		ResponseDef subFriendsResponseDef = ResponseDef.newResponseDeBuilder("Character").withField("id")
+				.withField("name").withField("appearsIn").build();
+
+		ResponseDef friendsResponseDef = ResponseDef.newResponseDeBuilder("Character").withField("id")
+				.withField("name", "aliasForName").withSubObject("friends", subFriendsResponseDef).build();
+
+		ResponseDefBuilder responseDefBuilder = ResponseDef.newResponseDeBuilder("Human");
+		responseDefBuilder.withField("id", "aliasForId");
+		responseDefBuilder.withSubObject("friends", "aliasForFriends", friendsResponseDef);
+		responseDefBuilder.withField("name");
+		responseDefBuilder.withField("homePlanet");
+		ResponseDef responseDef = responseDefBuilder.build();
+
 		StringBuilder sb = new StringBuilder();
 
 		// Go, go, go
 		responseDef.appendResponseQuery(sb);
 
 		// Verification
-		assertEquals(3, responseDef.fields.size(), "Main entity");
-		assertEquals(2, ((ResponseDefinition) subResponseDef).fields.size(), "First sub entity");
-		assertEquals(1, ((ResponseDefinition) subResponseDef2).fields.size(), "Second sub entity");
+		assertEquals(3, responseDef.fields.size(), "Human: fields");
+		assertEquals(1, responseDef.subObjects.size(), "Human: objects");
+
+		// Friends : first sublevel
+		assertEquals(2, responseDef.subObjects.get(0).fields.size(), "friends (first level): fields");
+		assertEquals(1, responseDef.subObjects.get(0).subObjects.size(), "friends (first level): objects");
+
+		// Friends : second sublevel
+		assertEquals(3, responseDef.subObjects.get(0).subObjects.get(0).fields.size(),
+				"friends (second level): fields");
+		assertEquals(0, responseDef.subObjects.get(0).subObjects.get(0).subObjects.size(),
+				"friends (second level): objects");
+
 		assertEquals(
-				"{theAlias: aGraphqlEntityName{aSubGraphqlField1 aliasField2: aSubGraphqlField2} anotherGraphqlEntityName{aliasField3: aSubGraphqlField3} aThirdFieldName}",
+				"{ aliasForId: id name homePlanet aliasForFriends: friends{ id aliasForName: name friends{ id name appearsIn}}}",
 				sb.toString());
 	}
 

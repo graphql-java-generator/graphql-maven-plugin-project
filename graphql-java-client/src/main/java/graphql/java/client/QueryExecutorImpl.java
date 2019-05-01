@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ResponseDefinition;
+import graphql.java.client.request.ResponseDef;
 import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLResponseParseException;
 import graphql.java.client.response.JsonResponseWrapper;
@@ -47,7 +47,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef,
+	public <T> T execute(String queryName, List<InputParameter> parameters, ResponseDef responseDef,
 			Class<T> valueType) throws IOException, GraphQLExecutionException {
 		logger.warn(GRAPHQL_MARKER, "[TODO] Check and minimize the jersey dependencies");
 
@@ -109,7 +109,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @param responseDef
 	 * @return The GraphQL request, ready to be sent to the GraphQl server.
 	 */
-	String buildRequest(String queryName, List<InputParameter> parameters, ResponseDefinition responseDef) {
+	String buildRequest(String queryName, List<InputParameter> parameters, ResponseDef responseDef) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
 		sb.append(queryName);
@@ -142,7 +142,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @throws GraphQLResponseParseException
 	 * @throws IOException
 	 */
-	<T> T parseResponse(String rawResponse, String queryName, ResponseDefinition responseDef, Class<T> valueType)
+	<T> T parseResponse(String rawResponse, String queryName, ResponseDef responseDef, Class<T> valueType)
 			throws GraphQLResponseParseException, IOException {
 
 		// Let's read this response with Jackson

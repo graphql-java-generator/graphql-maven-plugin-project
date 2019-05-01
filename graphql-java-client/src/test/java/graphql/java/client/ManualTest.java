@@ -7,9 +7,9 @@ import java.util.List;
 import graphql.java.client.domain.CharacterImpl;
 import graphql.java.client.domain.Episode;
 import graphql.java.client.domain.Human;
+import graphql.java.client.domain.QueryType;
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ResponseDefinition;
-import graphql.java.client.request.ResponseDefinition;
+import graphql.java.client.request.ResponseDef;
 import graphql.java.client.response.GraphQLExecutionException;
 
 /**
@@ -22,14 +22,15 @@ import graphql.java.client.response.GraphQLExecutionException;
 public class ManualTest {
 
 	QueryExecutor executor = new QueryExecutorImpl();
+	QueryType queryType = new QueryType();
 
 	public static void main(String[] args) throws GraphQLExecutionException, IOException {
 		ManualTest test = new ManualTest();
-		test.executeHero();
+		test.executeHeroNew();
 		test.executeHuman();
 	}
 
-	public void executeHeroOld() throws GraphQLExecutionException, IOException {
+	public void executeHeroNew() throws GraphQLExecutionException, IOException {
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    executeHero()    ----------------------------------------------");
 
@@ -37,29 +38,12 @@ public class ManualTest {
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
-		// ResponseDefinition
-		ResponseDefinition responseDef = ResponseDefinition.newEntityBuilder().withField("id").withField("name")
-				.withField("appearsIn")
-				.withEntity(ResponseDefinition.newEntityBuilder("friends").withField("name").build()).build();
-
-		CharacterImpl character = executor.execute("hero", parameters, responseDef, CharacterImpl.class);
-		System.out.println(character);
-	}
-
-	public void executeHero() throws GraphQLExecutionException, IOException {
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("------------------    executeHero()    ----------------------------------------------");
-
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
-
-		// ResponseDefinition
-		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_QUERY_MARKER);
+		// ResponseDef
+		ResponseDef responseDef = ResponseDef.newResponseDeBuilder("Character").build();
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 		responseDef.addResponseField("appearsIn");
-		ResponseDefinition friendsResponseDef = responseDef.addResponseEntity("friends");
+		ResponseDef friendsResponseDef = responseDef.addSubObjectResponseDef("Character", "friends");
 		friendsResponseDef.addResponseField("name");
 
 		CharacterImpl character = executor.execute("hero", parameters, responseDef, CharacterImpl.class);
@@ -68,24 +52,20 @@ public class ManualTest {
 
 	public void executeHuman() throws GraphQLExecutionException, IOException {
 		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("------------------    executeHuman()    ---------------------------------------------");
+		System.out.println("------------------    executeHumanOld()    ---------------------------------------------");
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("id", "qd"));
 
-		// ResponseDefinition
-		ResponseDefinition responseDef = new ResponseDefinition(QueryExecutor.GRAPHQL_QUERY_MARKER);
+		// ResponseDef
+		ResponseDef responseDef = ResponseDef.newResponseDeBuilder("Human").build();
 		responseDef.addResponseField("id");
 		responseDef.addResponseField("name");
 
-		ResponseDefinition bestFriendResponseDef = responseDef.addResponseEntity("bestFriend");
-		bestFriendResponseDef.addResponseField("id");
-		bestFriendResponseDef.addResponseField("name");
-
 		responseDef.addResponseField("appearsIn");
 
-		ResponseDefinition friendsResponseDef = responseDef.addResponseEntity("friends");
+		ResponseDef friendsResponseDef = responseDef.addSubObjectResponseDef("Character", "friends");
 		friendsResponseDef.addResponseField("name");
 
 		Human human = executor.execute("human", parameters, responseDef, Human.class);
