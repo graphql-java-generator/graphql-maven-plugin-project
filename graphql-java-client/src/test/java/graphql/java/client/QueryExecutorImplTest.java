@@ -22,8 +22,10 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import graphql.java.client.domain.Character;
 import graphql.java.client.domain.CharacterImpl;
 import graphql.java.client.domain.Episode;
+import graphql.java.client.domain.QueryType;
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ResponseDef;
+import graphql.java.client.request.ObjectResponseDef;
+import graphql.java.client.response.GraphQLRequestPreparationException;
 import graphql.java.client.response.GraphQLResponseParseException;
 
 /**
@@ -53,142 +55,137 @@ class QueryExecutorImplTest {
 
 	/**
 	 * Build a request with one parameter (ID), and a {@link Character} as the response.
+	 * 
+	 * @throws GraphQLRequestPreparationException
 	 */
 	@Test
-	void test_buildRequest_ID_characters() {
+	void test_buildRequest_ID_characters() throws GraphQLRequestPreparationException {
 		// Preparation
-		String objectName = "Character";
-		String queryName = "hero";
-		String id = "1";
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("id", id));
+		parameters.add(new InputParameter("id", "1"));
 
 		// The response should contain id and name
-		ResponseDef responseDef = ResponseDef.newResponseDeBuilder(objectName).build();
-		responseDef.addResponseField("id");
-		responseDef.addResponseField("name");
+		ObjectResponseDef objectResponseDef = ObjectResponseDef.newQueryResponseDefBuilder(QueryType.class, "hero")//
+				.withField("id").withField("name").build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest(queryName, parameters, responseDef);
+		String request = queryExecutorImpl.buildRequest(objectResponseDef, parameters);
 
 		// Verification
-		assertEquals("{hero(id: \\\"1\\\") { id name}}", request);
+		assertEquals("{\"query\":\"{hero(id: \\\"1\\\") { id name}}\",\"variables\":null,\"operationName\":null}",
+				request);
 	}
 
 	/**
 	 * Build a request with one parameter (ID), and a {@link Character} as the response.
+	 * 
+	 * @throws GraphQLRequestPreparationException
 	 */
 	@Test
-	void test_buildRequest_EpisodeID_characters() {
+	void test_buildRequest_EpisodeID_characters() throws GraphQLRequestPreparationException {
 		// Preparation
-		String objectName = "Character";
-		String queryName = "hero";
-		String id = "this is an id";
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
-		parameters.add(new InputParameter("id", id));
+		parameters.add(new InputParameter("id", "this is an id"));
 
 		// The response should contain id and name
-		ResponseDef responseDef = ResponseDef.newResponseDeBuilder(objectName).build();
-		responseDef.addResponseField("id");
-		responseDef.addResponseField("name");
+		ObjectResponseDef objectResponseDef = ObjectResponseDef.newQueryResponseDefBuilder(QueryType.class, "hero")//
+				.withField("id").withField("name").build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest(queryName, parameters, responseDef);
+		String request = queryExecutorImpl.buildRequest(objectResponseDef, parameters);
 
 		// Verification
-		assertEquals("{hero(episode: NEWHOPE, id: \\\"this is an id\\\") { id name}}", request);
+		assertEquals(
+				"{\"query\":\"{hero(episode: NEWHOPE, id: \\\"this is an id\\\") { id name}}\",\"variables\":null,\"operationName\":null}",
+				request);
 	}
 
 	/**
 	 * Build a request with one parameter (ID), and a {@link Character} as the response.
+	 * 
+	 * @throws GraphQLRequestPreparationException
 	 */
 	@Test
-	void test_buildRequest_Episode_idNameAppearsInFriendsName() {
+	void test_buildRequest_Episode_idNameAppearsInFriendsName() throws GraphQLRequestPreparationException {
 		// Preparation
-		String objectName = "Character";
-		String queryName = "hero";
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ResponseDef responseDef = ResponseDef.newResponseDeBuilder(objectName).withField("id")
-				.withField("name").withField("appearsIn")
-				.withSubObject("friends", ResponseDef.newResponseDeBuilder("Character").withField("name").build())
+		ObjectResponseDef objectResponseDef = ObjectResponseDef.newQueryResponseDefBuilder(QueryType.class, "hero")
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject("friends",
+						ObjectResponseDef.newSubObjectResponseDefBuilder(Character.class).withField("name").build())
 				.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest(queryName, parameters, responseDef);
+		String request = queryExecutorImpl.buildRequest(objectResponseDef, parameters);
 
 		// Verification
-		assertEquals("{hero(episode: NEWHOPE) { id name appearsIn friends{ name}}}", request);
+		assertEquals(
+				"{\"query\":\"{hero(episode: NEWHOPE) { id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
+				request);
 	}
 
 	@Test
-	void test_parseResponse_KO() {
+	void test_parseResponse_KO() throws GraphQLRequestPreparationException {
 		// Preparation
-		String graphqlObjectName = "AnObjectName";
-		String objectName = "Character";
 		Exception exception;
-		String queryName = "hero";
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 		// The response should contain id and name
-		ResponseDef responseDef = ResponseDef.newResponseDeBuilder(objectName).build();
-		responseDef.addResponseField("id");
-		responseDef.addResponseField("name");
-		responseDef.addResponseField("appearsIn");
-		ResponseDef subResponseDef = responseDef.addSubObjectResponseDef(graphqlObjectName, "friends");
-		subResponseDef.addResponseField("name");
+		ObjectResponseDef objectResponseDef = ObjectResponseDef.newQueryResponseDefBuilder(QueryType.class, "hero")//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject("friends",
+						ObjectResponseDef.newSubObjectResponseDefBuilder(Character.class).withField("name").build())
+				.build();
 
-		assertThrows(NullPointerException.class, () -> queryExecutorImpl.parseResponse(null, "queryName",
-				ResponseDef.newResponseDeBuilder(objectName).build(), Character.class));
+		assertThrows(NullPointerException.class,
+				() -> queryExecutorImpl.parseResponse(null, objectResponseDef, Character.class));
 
-		exception = assertThrows(JsonParseException.class, () -> queryExecutorImpl.parseResponse("invalid JSON",
-				queryName, ResponseDef.newResponseDeBuilder(objectName).build(), Character.class));
+		exception = assertThrows(JsonParseException.class,
+				() -> queryExecutorImpl.parseResponse("invalid JSON", objectResponseDef, Character.class));
 		assertTrue(exception.getMessage().contains("invalid"));
 
 		exception = assertThrows(GraphQLResponseParseException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"wrongTag\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, ResponseDef.newResponseDeBuilder(objectName).build(), Character.class));
+				objectResponseDef, Character.class));
 		assertTrue(exception.getMessage().contains("'data'"));
 
 		exception = assertThrows(GraphQLResponseParseException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"data\":{\"wrongAlias\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, ResponseDef.newResponseDeBuilder(objectName).build(), Character.class));
+				objectResponseDef, Character.class));
 		assertTrue(exception.getMessage().contains("'hero'"));
 
 		exception = assertThrows(UnrecognizedPropertyException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"data\":{\"hero\":{\"wrongTag\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, ResponseDef.newResponseDeBuilder(objectName).build(), CharacterImpl.class));
+				objectResponseDef, CharacterImpl.class));
 		assertTrue(exception.getMessage().contains("wrongTag"));
 
 		exception = assertThrows(InvalidFormatException.class, () -> queryExecutorImpl.parseResponse(
 				"{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"WRONG_EPISODE\",\"JEDI\"],\"friends\":null}}}",
-				queryName, ResponseDef.newResponseDeBuilder(objectName).build(), CharacterImpl.class));
+				objectResponseDef, CharacterImpl.class));
 		assertTrue(exception.getMessage().contains("WRONG_EPISODE"));
 	}
 
 	@Test
-	void test_parseResponse_OK_noFriends() throws GraphQLResponseParseException, IOException {
+	void test_parseResponse_OK_noFriends()
+			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
-		String objectName = "Character";
-		String queryName = "hero";
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ResponseDef responseDef = ResponseDef.newResponseDeBuilder(objectName).build();
-		responseDef.addResponseField("id");
-		responseDef.addResponseField("name");
-		responseDef.addResponseField("appearsIn");
-		ResponseDef subResponseDef = responseDef.addSubObjectResponseDef(objectName, "friends");
-		subResponseDef.addResponseField("name");
+		ObjectResponseDef objectResponseDef = ObjectResponseDef.newQueryResponseDefBuilder(QueryType.class, "hero")//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject("friends", ObjectResponseDef.newSubObjectResponseDefBuilder(Character.class).build())//
+				.withField("name").build();
 
 		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}";
 
 		// Go, go, go
-		Object response = queryExecutorImpl.parseResponse(rawResponse, queryName, responseDef, CharacterImpl.class);
+		Object response = queryExecutorImpl.parseResponse(rawResponse, objectResponseDef, CharacterImpl.class);
 
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
@@ -203,22 +200,22 @@ class QueryExecutorImplTest {
 	}
 
 	@Test
-	void test_parseResponse_OK_emptyListOfFriends() throws GraphQLResponseParseException, IOException {
+	void test_parseResponse_OK_emptyListOfFriends()
+			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
-		String objectName = "Character";
-		String queryName = "hero";
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ResponseDef responseDef = ResponseDef.newResponseDeBuilder(objectName).build();
-		ResponseDef subResponseDef = responseDef.addSubObjectResponseDef(objectName, "friends");
-		subResponseDef.addResponseField("name");
+		ObjectResponseDef objectResponseDef = ObjectResponseDef.newQueryResponseDefBuilder(QueryType.class, "hero")//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject("friends", ObjectResponseDef.newSubObjectResponseDefBuilder(Character.class).build())//
+				.withField("name").build();
 
 		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[]}}}";
 
 		// Go, go, go
-		Object response = queryExecutorImpl.parseResponse(rawResponse, queryName, responseDef, CharacterImpl.class);
+		Object response = queryExecutorImpl.parseResponse(rawResponse, objectResponseDef, CharacterImpl.class);
 
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
@@ -228,20 +225,20 @@ class QueryExecutorImplTest {
 	}
 
 	@Test
-	void test_parseResponse_OK_listOfFriends() throws GraphQLResponseParseException, IOException {
+	void test_parseResponse_OK_listOfFriends()
+			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
-		String objectName = "Character";
-		String queryName = "hero";
 
 		// The response should contain id and name
-		ResponseDef responseDef = ResponseDef.newResponseDeBuilder(objectName).build();
-		ResponseDef subResponseDef = responseDef.addSubObjectResponseDef(objectName, "friends");
-		subResponseDef.addResponseField("name");
+		ObjectResponseDef objectResponseDef = ObjectResponseDef.newQueryResponseDefBuilder(QueryType.class, "hero")//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject("friends", ObjectResponseDef.newSubObjectResponseDefBuilder(Character.class).build())//
+				.withField("name").build();
 
 		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[{\"name\":\"name350518\"},{\"name\":\"name381495\"}]}}}";
 
 		// Go, go, go
-		Object response = queryExecutorImpl.parseResponse(rawResponse, queryName, responseDef, CharacterImpl.class);
+		Object response = queryExecutorImpl.parseResponse(rawResponse, objectResponseDef, CharacterImpl.class);
 
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");

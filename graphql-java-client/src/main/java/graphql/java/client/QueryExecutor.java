@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ResponseDef;
+import graphql.java.client.request.ObjectResponseDef;
 import graphql.java.client.response.GraphQLExecutionException;
 
 /**
@@ -35,17 +35,16 @@ public interface QueryExecutor {
 	 * 
 	 * @param <T>
 	 * 
-	 * @param queryName
-	 *            The name of the query, taken from the GraphQL schema
+	 * @param objectResponseDef
+	 *            Defines what response is expected from the server. The {@link ObjectResponseDef#getFieldAlias()} method
+	 *            returns the field of the query, that is: the query name.
 	 * @param parameters
 	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
-	 * @param reponseDef
-	 *            _The_ specificity of GraphQL: the definition of the value, that the GraphQL should return
 	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
 	 * @throws GraphQLExecutionException
 	 * @throws IOException
 	 */
-	public <T> T execute(String queryName, List<InputParameter> parameters, ResponseDef responseDef,
-			Class<T> valueType) throws GraphQLExecutionException, IOException;
+	public <T> T execute(ObjectResponseDef objectResponseDef, List<InputParameter> parameters, Class<T> valueType)
+			throws GraphQLExecutionException, IOException;
 
 }

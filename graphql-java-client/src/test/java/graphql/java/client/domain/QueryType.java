@@ -7,11 +7,13 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import graphql.java.client.NonScalar;
 import graphql.java.client.QueryExecutor;
 import graphql.java.client.QueryExecutorImpl;
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ResponseDef;
+import graphql.java.client.request.ObjectResponseDef;
 import graphql.java.client.response.GraphQLExecutionException;
+import graphql.java.client.response.GraphQLRequestPreparationException;
 
 /**
  * This class represents the GraphQL QueryType defined in the graphQL schema. It contains the java method which allows
@@ -30,14 +32,20 @@ public class QueryType {
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).
 	 * 
-	 * @param episode
-	 * @param responseDef
+	 * @param objectResponseDef
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param episode
 	 * @throws IOException
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponseDef}
 	 * @throws GraphQLExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public Character hero(Episode episode, ResponseDef responseDef)
-			throws GraphQLExecutionException, IOException {
+	@NonScalar(graphqlType = Character.class)
+	public Character hero(ObjectResponseDef objectResponseDef, Episode episode)
+			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'hero' with parameters: {} ", episode);
 		} else if (logger.isDebugEnabled()) {
@@ -48,16 +56,22 @@ public class QueryType {
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", episode));
 
-		return executor.execute("hero", parameters, responseDef, CharacterImpl.class);
+		if (!getClass().equals(objectResponseDef.getClass())) {
+			throw new GraphQLRequestPreparationException("The ObjectResponseDef parameter should be an instance of "
+					+ getClass().getName() + ", but is an instance of " + objectResponseDef.getClass().getName());
+		}
+
+		return executor.execute(objectResponseDef, parameters, CharacterImpl.class);
 	}
 
 	/**
-	 * Get the {@link ResponseDef.ResponseDefBuilder} for the Character, as expected by the hero query.
+	 * Get the {@link ObjectResponseDef.Builder} for the Character, as expected by the hero query.
 	 * 
 	 * @return
+	 * @throws GraphQLRequestPreparationException
 	 */
-	public ResponseDef.ResponseDefBuilder getHeroResponseDefBuilder() {
-		return new ResponseDef.ResponseDefBuilder("Character");
+	public ObjectResponseDef.Builder getHeroResponseDefBuilder() throws GraphQLRequestPreparationException {
+		return ObjectResponseDef.newQueryResponseDefBuilder(getClass(), "hero");
 	}
 
 	/**
@@ -67,7 +81,8 @@ public class QueryType {
 	 * @throws IOException
 	 * @throws GraphQLExecutionException
 	 */
-	public Human human(String id, ResponseDef responseDef) throws GraphQLExecutionException, IOException {
+	@NonScalar(graphqlType = Human.class)
+	public Human human(ObjectResponseDef objectResponseDef, String id) throws GraphQLExecutionException, IOException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'human' with parameters: {} ", id);
 		} else if (logger.isDebugEnabled()) {
@@ -78,14 +93,25 @@ public class QueryType {
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("id", id));
 
-		return executor.execute("human", parameters, responseDef, Human.class);
+		return executor.execute(objectResponseDef, parameters, Human.class);
+	}
+
+	/**
+	 * Get the {@link ObjectResponseDef.Builder} for the Human, as expected by the hero query.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public ObjectResponseDef.Builder getHumanResponseDefBuilder() throws GraphQLRequestPreparationException {
+		return ObjectResponseDef.newQueryResponseDefBuilder(getClass(), "human");
 	}
 
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).
 	 */
-	public Droid droid(String id, ResponseDef responseDef) throws GraphQLExecutionException, IOException {
+	@NonScalar(graphqlType = Droid.class)
+	public Droid droid(ObjectResponseDef objectResponseDef, String id) throws GraphQLExecutionException, IOException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'droid' with parameters: {} ", id);
 		} else if (logger.isDebugEnabled()) {
@@ -96,6 +122,6 @@ public class QueryType {
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("id", id));
 
-		return executor.execute("droid", parameters, responseDef, Droid.class);
+		return executor.execute(objectResponseDef, parameters, Droid.class);
 	}
 }
