@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ObjectResponseDef;
+import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLResponseParseException;
 import graphql.java.client.response.JsonResponseWrapper;
@@ -47,31 +47,53 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(ObjectResponseDef objectResponseDef, List<InputParameter> parameters, Class<T> valueType)
+	public <T> T execute(ObjectResponse objectResponse, List<InputParameter> parameters, Class<T> valueType)
 			throws IOException, GraphQLExecutionException {
-		logger.warn(GRAPHQL_MARKER, "[TODO] Check and minimize the jersey dependencies");
-
 		// Let's build the GraphQL request, to send to the server
-		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
-		String request = buildRequest(objectResponseDef, parameters);
+		String request = buildRequest(objectResponse, parameters);
 		logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
-		// String rawResponse = invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON),
-		// String.class);
-		// logger.trace(GRAPHQL_MARKER, "Received response: {}", rawResponse);
+		return doJsonRequestExecution(request, objectResponse.getFieldName(), valueType);
+	}
 
-		JsonResponseWrapper response = invocationBuilder.post(Entity.entity(request, MediaType.APPLICATION_JSON),
+	/** {@inheritDoc} */
+	@Override
+	public <T> T execute(String query, String queryName, Class<T> valueType)
+			throws IOException, GraphQLExecutionException {
+		return doJsonRequestExecution(query, queryName, valueType);
+	}
+
+	/**
+	 * Executes the given json request, and returns the server response mapped into the relevant java classes.
+	 * 
+	 * @param <T>
+	 *            The GraphQL type to map the response into
+	 * @param jsonRequest
+	 *            The json request to send to the server, as is.
+	 * @param fieldName
+	 *            The GraphQL field name that the response must contain. It's typically the query name.
+	 * @param valueType
+	 *            The GraphQL type to map the response into
+	 * @return
+	 * @throws IOException
+	 * @throws GraphQLExecutionException
+	 */
+	<T> T doJsonRequestExecution(String jsonRequest, String fieldName, Class<T> valueType)
+			throws IOException, GraphQLExecutionException {
+		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
+
+		JsonResponseWrapper response = invocationBuilder.post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON),
 				JsonResponseWrapper.class);
 
 		if (response.errors == null || response.errors.size() == 0) {
 			// No errors. Let's parse the data
 			ObjectMapper mapper = new ObjectMapper();
-			JsonNode json = response.data.get(objectResponseDef.getFieldName());
+			JsonNode json = response.data.get(fieldName);
 			if (json != null) {
 				return mapper.treeToValue(json, valueType);
 			}
-			throw new GraphQLResponseParseException("Could not retrieve the '" + objectResponseDef.getFieldName() + "' node");
+			throw new GraphQLResponseParseException("Could not retrieve the '" + fieldName + "' node");
 
 		} else {
 			int nbErrors = 0;
@@ -93,22 +115,21 @@ public class QueryExecutorImpl implements QueryExecutor {
 				throw new GraphQLExecutionException(nbErrors + " errors occured: " + agregatedMessage);
 			}
 		}
-
 	}
 
 	/**
 	 * Builds a single GraphQL request from the parameter given.
 	 * 
-	 * @param objectResponseDef
-	 *            Defines what response is expected from the server. The {@link ObjectResponseDef#getFieldAlias()} method
-	 *            returns the field of the query, that is: the query name.
+	 * @param objectResponse
+	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()}
+	 *            method returns the field of the query, that is: the query name.
 	 * @param parameters
 	 * @return The GraphQL request, ready to be sent to the GraphQl server.
 	 */
-	String buildRequest(ObjectResponseDef objectResponseDef, List<InputParameter> parameters) {
+	String buildRequest(ObjectResponse objectResponse, List<InputParameter> parameters) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
-		sb.append(objectResponseDef.getFieldName());
+		sb.append(objectResponse.getFieldName());
 		if (parameters != null && parameters.size() > 0) {
 			sb.append("(");
 			boolean writeComma = false;
@@ -121,7 +142,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 			sb.append(")");
 		}
 		sb.append(" ");
-		objectResponseDef.appendResponseQuery(sb);
+		objectResponse.appendResponseQuery(sb);
 		sb.append("}");
 
 		return "{\"query\":\"" + sb.toString() + "\",\"variables\":null,\"operationName\":null}";
@@ -133,12 +154,12 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @param <T>
 	 * 
 	 * @param rawResponse
-	 * @param objectResponseDef
+	 * @param objectResponse
 	 * @return
 	 * @throws GraphQLResponseParseException
 	 * @throws IOException
 	 */
-	<T> T parseResponse(String rawResponse, ObjectResponseDef objectResponseDef, Class<T> valueType)
+	<T> T parseResponse(String rawResponse, ObjectResponse objectResponse, Class<T> valueType)
 			throws GraphQLResponseParseException, IOException {
 
 		// Let's read this response with Jackson

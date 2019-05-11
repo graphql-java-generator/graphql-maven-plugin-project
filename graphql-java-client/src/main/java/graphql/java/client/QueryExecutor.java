@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ObjectResponseDef;
+import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLExecutionException;
 
 /**
@@ -31,20 +31,48 @@ public interface QueryExecutor {
 
 	/**
 	 * Execution of the given simple GraphQL query, and return its response mapped in the relevant POJO. This method
-	 * execute a single GraphQL query, not a multi-operational request.
+	 * execute a single GraphQL query, not a multi-operational request.<BR/>
+	 * The advantage of this method is that you can build all the {@link ObjectResponse} for your application in your
+	 * constructor, or in whatever initialization code you have. Using this allows to be sure at startup that the syntax
+	 * for all your GraphQL request is valid.
 	 * 
 	 * @param <T>
 	 * 
-	 * @param objectResponseDef
-	 *            Defines what response is expected from the server. The {@link ObjectResponseDef#getFieldAlias()} method
-	 *            returns the field of the query, that is: the query name.
+	 * @param objectResponse
+	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()}
+	 *            method returns the field of the query, that is: the query name.
 	 * @param parameters
 	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
 	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
 	 * @throws GraphQLExecutionException
 	 * @throws IOException
 	 */
-	public <T> T execute(ObjectResponseDef objectResponseDef, List<InputParameter> parameters, Class<T> valueType)
+	public <T> T execute(ObjectResponse objectResponse, List<InputParameter> parameters, Class<T> valueType)
+			throws GraphQLExecutionException, IOException;
+
+	/**
+	 * Execution of the given simple GraphQL query, and return its response mapped in the relevant POJO. This method
+	 * execute a single GraphQL query, not a multi-operational request.<BR/>
+	 * With this method, there is no check that the query is valid, before calling the server. And it's up to the caller
+	 * of this method, to properly insert (that is: in compliance with GraphQL grammar) the parameters for the query,
+	 * and for any field that would have parameters.<BR/>
+	 * <B>Note:</B> you can call this query directly. But the easiest way is to all the generated method from the
+	 * generated QueryType relevant for you schema. This method will take care of the parameters for the query itself,
+	 * in pure java.
+	 * 
+	 * @param <T>
+	 *            The GraphQL type to map the response into
+	 * @param graphqlQuery
+	 *            A string which contains the query, in the GraphQL language. For instance: "{ hero { name } }"
+	 * @param queryName
+	 *            The name of the query. In this sample: "hero"
+	 * @param valueType
+	 *            The GraphQL type to map the response into
+	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
+	 * @throws GraphQLExecutionException
+	 * @throws IOException
+	 */
+	public <T> T execute(String graphqlQuery, String queryName, Class<T> valueType)
 			throws GraphQLExecutionException, IOException;
 
 }

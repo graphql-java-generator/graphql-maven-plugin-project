@@ -1,10 +1,10 @@
 package graphql.java.client.domain;
 
-import graphql.java.client.Scalar;
+import graphql.java.client.annotation.GraphQLScalar;
 
 public class ScalarTest {
 
-	@Scalar(graphqlType = Episode.class)
+	@GraphQLScalar(graphqlType = Episode.class)
 	Episode episode;
 
 }

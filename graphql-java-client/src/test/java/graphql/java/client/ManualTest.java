@@ -10,7 +10,7 @@ import graphql.java.client.domain.Episode;
 import graphql.java.client.domain.Human;
 import graphql.java.client.domain.QueryType;
 import graphql.java.client.request.InputParameter;
-import graphql.java.client.request.ObjectResponseDef;
+import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
@@ -23,51 +23,67 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class ManualTest {
 
-	QueryExecutor executor = new QueryExecutorImpl();
-	QueryType queryType = new QueryType();
+	static QueryExecutor executor = new QueryExecutorImpl();
+	static QueryType queryType = new QueryType();
 
 	public static void main(String[] args)
 			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
-		ManualTest test = new ManualTest();
-		test.executeHero();
-		test.executeHuman();
-	}
 
-	public void executeHero() throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////// Short way: your write the GraphQL yourself
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    executeHero()    ----------------------------------------------");
+
+		Character character = queryType.hero("{id name friends {id name appearsIn friends{id name}}}", Episode.NEWHOPE);
+		System.out.println(character); // Note that character is a POJO
+
+		//
+
+		System.out.println("-------------------------------------------------------------------------------------");
+		System.out.println("------------------    executeHuman()    ---------------------------------------------");
+
+		Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", "180");
+		System.out.println(human); // Note that human is a POJO
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////// More verbose: you use our Builder.
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		System.out.println("-------------------------------------------------------------------------------------");
+		System.out.println("------------------    executeHero()    (with builder)   -----------------------------");
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
 
-		// ObjectResponseDef
-		ObjectResponseDef objectResponseDef = queryType.getHeroResponseDefBuilder().withField("id").withField("name")
-				.withField("appearsIn").withSubObject("friends",
-						ObjectResponseDef.newSubObjectResponseDefBuilder(Character.class).withField("name").build())
+		// ObjectResponse
+		ObjectResponse objectResponse = queryType.getHeroResponseBuilder().withField("id").withField("name")
+				.withField("appearsIn")
+				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
 				.build();
 
-		CharacterImpl character = executor.execute(objectResponseDef, parameters, CharacterImpl.class);
-		System.out.println(character);
-	}
+		CharacterImpl characterImpl = executor.execute(objectResponse, parameters, CharacterImpl.class);
+		System.out.println(characterImpl); // Note that characterImpl is a POJO
 
-	public void executeHuman() throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
+		//
+
 		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("------------------    executeHuman()    ---------------------------------------------");
+		System.out.println("------------------    executeHuman()   (with builder)  ------------------------------");
 
 		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
+		parameters = new ArrayList<>();
 		parameters.add(new InputParameter("id", "180"));
 
-		// ObjectResponseDef
-		ObjectResponseDef objectResponseDef = queryType.getHumanResponseDefBuilder()//
+		// ObjectResponse
+		objectResponse = queryType.getHumanResponseBuilder()//
 				.withField("id").withField("name").withField("appearsIn")//
-				.withSubObject("friends",
-						ObjectResponseDef.newSubObjectResponseDefBuilder(Character.class).withField("name").build())
+				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
 				.build();
 
-		Human human = executor.execute(objectResponseDef, parameters, Human.class);
-		System.out.println(human);
+		human = executor.execute(objectResponse, parameters, Human.class);
+		System.out.println(human); // Note that human is a POJO
 	}
 
 }

@@ -21,6 +21,13 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 
+/**
+ * This class uses the native graphql-java framework. It contains various quite technical boilerplate (RuntimeWiring),
+ * that graphql-generator hides.<BR/>
+ * See {@link ManualTest} for a sample.
+ * 
+ * @author EtienneSF
+ */
 public class ManualTest_GraphQLJava {
 
 	public static void main(String[] args) throws GraphQLExecutionException, IOException {

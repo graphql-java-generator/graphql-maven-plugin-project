@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import graphql.java.client.request.ObjectResponseDef;
+import graphql.java.client.annotation.GraphQLNonScalar;
+import graphql.java.client.annotation.GraphQLScalar;
+import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
 /**
@@ -53,12 +55,12 @@ public class GraphqlUtils {
 		}
 		Matcher m = graphqlNamePattern.matcher(graphqlIdentifier);
 		if (!m.matches()) {
-			throw new GraphQLRequestPreparationException("'" + graphqlIdentifier + "' is not a valid GraphQL name");
+			throw new GraphQLRequestPreparationException("<" + graphqlIdentifier + "> is not a valid GraphQL name");
 		}
 	}
 
 	/**
-	 * Check if the given field is owned by the class of this {@link ObjectResponseDef}. This method returns the class
+	 * Check if the given field is owned by the class of this {@link ObjectResponse}. This method returns the class
 	 * for this field.
 	 * 
 	 * @param name
@@ -81,7 +83,7 @@ public class GraphqlUtils {
 		// Let's be sure that the identifier is a valid GraphQL identifier (also checks that it's not null)
 		checkName(name);
 
-		// Let's check that this fieldName is either a method name or a field of the class for this ObjectResponseDef.
+		// Let's check that this fieldName is either a method name or a field of the class for this ObjectResponse.
 		Class<?> fieldClass = null;
 		for (java.lang.reflect.Field field : owningClass.getDeclaredFields()) {
 			if (field.getName().equals(name)) {
@@ -116,7 +118,7 @@ public class GraphqlUtils {
 
 		if (fieldClass == null) {
 			throw new GraphQLRequestPreparationException(
-					"The GraphQL type " + owningClass.getSimpleName() + " has no field of name " + name);
+					"The GraphQL type <" + owningClass.getSimpleName() + "> has no field of name <" + name + ">");
 		}
 
 		return fieldClass;
@@ -152,12 +154,14 @@ public class GraphqlUtils {
 
 		if (shouldBeScalar != null) {
 			if (shouldBeScalar & !isScalar) {
-				throw new GraphQLRequestPreparationException("The field " + field.getName() + " of the GraphQL type "
-						+ field.getDeclaringClass().getName() + " should be a scalar. But is is actually not a Scalar");
+				throw new GraphQLRequestPreparationException("The field <" + field.getName() + "> of the GraphQL type <"
+						+ field.getDeclaringClass().getName()
+						+ "> should be a scalar. But is is actually not a GraphQLScalar");
 			}
 			if (!shouldBeScalar & isScalar) {
-				throw new GraphQLRequestPreparationException("The field " + field.getName() + " of the GraphQL type "
-						+ field.getDeclaringClass().getName() + " should not be a scalar. But is is actually a Scalar");
+				throw new GraphQLRequestPreparationException("The field <" + field.getName() + "> of the GraphQL type <"
+						+ field.getDeclaringClass().getName()
+						+ "> should not be a scalar. But is is actually a GraphQLScalar");
 			}
 		}
 
@@ -187,23 +191,23 @@ public class GraphqlUtils {
 		boolean isScalar = isScalar(method);
 
 		if (method.getReturnType() == null) {
-			throw new GraphQLRequestPreparationException("There is a method of name " + fieldName
-					+ " in the GraphQL type " + method.getDeclaringClass().getName()
-					+ ", but this method is a void method: it can't represent the <" + fieldName + "> GraphQL field");
+			throw new GraphQLRequestPreparationException("There is a method of name <" + fieldName
+					+ "> in the GraphQL type <" + method.getDeclaringClass().getName()
+					+ ">, but this method is a void method: it can't represent the <" + fieldName + "> GraphQL field");
 		}
 
 		if (shouldBeScalar != null) {
 			if (shouldBeScalar && !isScalar) {
 				throw new GraphQLRequestPreparationException(
-						"The field " + fieldName + " (accessed through its getter: " + method.getName()
-								+ ") of the GraphQL type " + method.getDeclaringClass().getName()
-								+ " should be a scalar. But is is actually not a Scalar");
+						"The field <" + fieldName + "> (accessed through its getter: " + method.getName()
+								+ ">) of the GraphQL type <" + method.getDeclaringClass().getName()
+								+ "> should be a scalar. But is is actually not a GraphQLScalar");
 			}
 			if (!shouldBeScalar && isScalar) {
 				throw new GraphQLRequestPreparationException(
-						"The field " + fieldName + " (accessed through its getter: " + method.getName()
-								+ ") of the GraphQL type " + method.getDeclaringClass().getName()
-								+ " should not be a scalar. But is is actually a Scalar");
+						"The field <" + fieldName + "> (accessed through its getter: <" + method.getName()
+								+ ">) of the GraphQL type <" + method.getDeclaringClass().getName()
+								+ "> should not be a scalar. But is is actually a GraphQLScalar");
 			}
 		}
 
@@ -218,48 +222,53 @@ public class GraphqlUtils {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public boolean isScalar(AccessibleObject fieldOrMethod) throws GraphQLRequestPreparationException {
-		if (fieldOrMethod.getAnnotation(Scalar.class) != null || fieldOrMethod.getAnnotation(NonScalar.class) != null) {
-			// Ok, at least on of Scalar and NonScalar annotation is set.
-			return fieldOrMethod.getAnnotation(Scalar.class) != null;
+		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null
+				|| fieldOrMethod.getAnnotation(GraphQLNonScalar.class) != null) {
+			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
+			return fieldOrMethod.getAnnotation(GraphQLScalar.class) != null;
 		} else {
-			// No Scalar or NonScalar annotation: let's thrown an internal error.
+			// No GraphQLScalar or GraphQLNonScalar annotation: let's thrown an internal error.
 			if (fieldOrMethod instanceof Field) {
 				Field field = (Field) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The field " + field.getName() + " of the class "
-						+ field.getDeclaringClass().getName() + " has none of the Scalar and NonScalar annotation");
+				throw new GraphQLRequestPreparationException(
+						"The field <" + field.getName() + "> of the class <" + field.getDeclaringClass().getName()
+								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
 			} else {
 				Method method = (Method) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The method " + method.getDeclaringClass().getName()
-						+ " of the class " + method.getReturnType().getName()
-						+ " has none of the Scalar and NonScalar annotation");
+				throw new GraphQLRequestPreparationException("The method <" + method.getDeclaringClass().getName()
+						+ "> of the class <" + method.getReturnType().getName()
+						+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
 			}
 		}
 	}
 
 	/**
-	 * Returns the Class indicated as the value for the graphqlType attribute of the Scalar or NonScalar annotation
+	 * Returns the Class indicated as the value for the graphqlType attribute of the GraphQLScalar or GraphQLNonScalar
+	 * annotation
 	 * 
 	 * @param fieldOrMethod
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Class<?> getGraphQLType(AccessibleObject fieldOrMethod) throws GraphQLRequestPreparationException {
-		if (fieldOrMethod.getAnnotation(Scalar.class) != null) {
-			// Ok, at least on of Scalar and NonScalar annotation is set.
-			return fieldOrMethod.getAnnotation(Scalar.class).graphqlType();
-		} else if (fieldOrMethod.getAnnotation(NonScalar.class) != null) {
-			// Ok, at least on of Scalar and NonScalar annotation is set.
-			return fieldOrMethod.getAnnotation(NonScalar.class).graphqlType();
+		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
+			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
+			return fieldOrMethod.getAnnotation(GraphQLScalar.class).graphqlType();
+		} else if (fieldOrMethod.getAnnotation(GraphQLNonScalar.class) != null) {
+			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
+			return fieldOrMethod.getAnnotation(GraphQLNonScalar.class).graphqlType();
 		} else {
-			// No Scalar or NonScalar annotation: let's thrown an internal error.
+			// No GraphQLScalar or GraphQLNonScalar annotation: let's thrown an internal error.
 			if (fieldOrMethod instanceof Field) {
 				Field field = (Field) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The field " + field.getName() + " of the class "
-						+ field.getDeclaringClass().getName() + " has none of the Scalar and NonScalar annotation");
+				throw new GraphQLRequestPreparationException(
+						"The field <" + field.getName() + "> of the class <" + field.getDeclaringClass().getName()
+								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
 			} else {
 				Method method = (Method) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The method " + method.getName() + " of the class "
-						+ method.getReturnType().getName() + " has none of the Scalar and NonScalar annotation");
+				throw new GraphQLRequestPreparationException(
+						"The method <" + method.getName() + "> of the class <" + method.getReturnType().getName()
+								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
 			}
 		}
 	}
