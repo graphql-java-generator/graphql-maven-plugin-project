@@ -36,16 +36,20 @@ public class ManualTest {
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    executeHero()    ----------------------------------------------");
 
+		// Execution of the query. We get the result back in a POJO
 		Character character = queryType.hero("{id name friends {id name appearsIn friends{id name}}}", Episode.NEWHOPE);
-		System.out.println(character); // Note that character is a POJO
+
+		System.out.println(character);
 
 		//
 
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    executeHuman()    ---------------------------------------------");
 
+		// Execution of the query. We get the result back in a POJO
 		Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", "180");
-		System.out.println(human); // Note that human is a POJO
+
+		System.out.println(human);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////// More verbose: you use our Builder.
@@ -64,8 +68,10 @@ public class ManualTest {
 				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
 				.build();
 
+		// Execution of the query. We get the result back in a POJO
 		CharacterImpl characterImpl = executor.execute(objectResponse, parameters, CharacterImpl.class);
-		System.out.println(characterImpl); // Note that characterImpl is a POJO
+
+		System.out.println(characterImpl);
 
 		//
 
@@ -82,8 +88,10 @@ public class ManualTest {
 				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
 				.build();
 
+		// Execution of the query. We get the result back in a POJO
 		human = executor.execute(objectResponse, parameters, Human.class);
-		System.out.println(human); // Note that human is a POJO
+
+		System.out.println(human);
 	}
 
 }
