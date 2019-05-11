@@ -49,25 +49,24 @@ class GraphqlUtilsTest {
 
 	@Test
 	void test_checkIsScalar_field() throws NoSuchFieldException, SecurityException, GraphQLRequestPreparationException {
-		GraphQLRequestPreparationException e;
 
-		e = assertThrows(GraphQLRequestPreparationException.class,
+		assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlUtils.checkIsScalar(ScalarTest.class.getDeclaredField("episode"), false));
 		graphqlUtils.checkIsScalar(ScalarTest.class.getDeclaredField("episode"), true);
 
-		e = assertThrows(GraphQLRequestPreparationException.class,
+		assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlUtils.checkIsScalar(Human.class.getDeclaredField("id"), false));
 		graphqlUtils.checkIsScalar(Human.class.getDeclaredField("id"), true);
 
-		e = assertThrows(GraphQLRequestPreparationException.class,
+		assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlUtils.checkIsScalar(Human.class.getDeclaredField("name"), false));
 		graphqlUtils.checkIsScalar(Human.class.getDeclaredField("name"), true);
 
-		e = assertThrows(GraphQLRequestPreparationException.class,
+		assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlUtils.checkIsScalar(Human.class.getDeclaredField("appearsIn"), false));
 		graphqlUtils.checkIsScalar(Human.class.getDeclaredField("appearsIn"), true);
 
-		e = assertThrows(GraphQLRequestPreparationException.class,
+		assertThrows(GraphQLRequestPreparationException.class,
 				() -> graphqlUtils.checkIsScalar(Human.class.getDeclaredField("bestFriend"), true));
 		graphqlUtils.checkIsScalar(Human.class.getDeclaredField("bestFriend"), false);
 	}

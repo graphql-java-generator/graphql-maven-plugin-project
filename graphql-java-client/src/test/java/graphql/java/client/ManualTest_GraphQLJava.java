@@ -67,6 +67,7 @@ public class ManualTest_GraphQLJava {
 		return writer.toString();
 	}
 
+	@SuppressWarnings("unused")
 	private void executeHero() {
 		ExecutionInput executionInput = ExecutionInput.newExecutionInput().query("query { hero { name } }").build();
 
