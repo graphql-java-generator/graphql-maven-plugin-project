@@ -5,7 +5,7 @@ package org.graphql.maven.plugin.samples.server.jpa;
 
 import java.util.List;
 
-import org.graphql.maven.plugin.samples.server.graphql.CharacterImpl;
+import org.graphql.maven.plugin.samples.server.generated.CharacterImpl;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
@@ -16,6 +16,19 @@ public interface CharacterRepository extends Repository<CharacterImpl, String> {
 
 	@Query(value = "select d.id, d.name from droid d UNION ALL select h.id, h.name from human h", nativeQuery = true)
 	List<CharacterImpl> findAll();
+
+	@Query(value = "" //
+			+ " select e.label " //
+			+ " from droid_appears_in dai, episode e "//
+			+ " where dai.episode_id=e.id"//
+			+ " and  dai.droid_id = ?1"//
+			+ " UNION ALL" //
+			+ " select e.label " //
+			+ " from human_appears_in hai, episode e "//
+			+ " where hai.episode_id = e.id"//
+			+ " and   hai.human_id = ?1" //
+			, nativeQuery = true)
+	List<String> findAppearsInById(String id);
 
 	@Query(value = "" //
 			+ " select d.id, d.name " //

@@ -11,16 +11,6 @@ It's a work in progress. But the generated code is already ready to use.
 ### Server mode
 
 Create a new Maven Project, with this pom, for instance :
-<?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>com.graphql-java</groupId>
-		<artifactId>graphql-maven-plugin-samples</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -147,6 +137,108 @@ Then... you're app is ready to go!
 You can access to the GraphQL server with this URL: [http://localhost:8180/graphiql](http://localhost:8180/graphiql). With this interface, you can test your server, by typing any GraphQL query. You'll have some help to type correct values.
 
 You can access to the H2 Console with this URL: [http://localhost:8180/h2-console/](http://localhost:8180/h2-console/). The jdbc URL to connect to the database is: jdbc:h2:mem:testdb. login: sa, no password.
+
+### Client mode
+
+Create a new Maven Project, with this pom, for instance :
+
+```xml
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.3.RELEASE</version>
+	</parent>
+	<artifactId>graphql-maven-plugin-samples-Forum-client</artifactId>
+
+	<name>graphql-maven-plugin-samples-Forum-client</name>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.graphql-java</groupId>
+				<artifactId>graphql-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>graphql</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mode>client</mode>
+					<packageName>org.graphql.maven.plugin.samples.forum.client</packageName>
+					<!-- schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target\generated-sources\graphql-maven-plugin</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- Dependencies for tests -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Dependencies for GraphQL -->
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
+		</dependency>
+
+		<!-- Other dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+	</dependencies>
+
+</project>
+```
+
+Put your graphQL schema file in your src/main/resources folder. Its extension must be ".graphqls"
+
+Run 'mvn clean install', to generate the client classes
 
 
 ## State of the project

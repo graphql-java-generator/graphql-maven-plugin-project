@@ -124,7 +124,7 @@ class DocumentParserTest {
 		// Preparation
 		List<Type> fieldTypes = new ArrayList<>();
 		fieldTypes.add(new ObjectType("Object1", "package", PluginMode.server));
-		fieldTypes.add(new ScalarType("Scalar", "packageName", "classSimpleName", PluginMode.server));
+		fieldTypes.add(new ScalarType("GraphQLScalar", "packageName", "classSimpleName", PluginMode.server));
 		fieldTypes.add(new InterfaceType("Interface0", "packageName", PluginMode.server));
 		fieldTypes.add(new EnumType("Enum0", "packageName", PluginMode.server));
 		fieldTypes.add(new ObjectType("Object2", "package", PluginMode.server));
@@ -214,7 +214,7 @@ class DocumentParserTest {
 		i = 0;
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
-		// For non query types, there must be a Data Fetcher only for non Scalar and non Enum field.
+		// For non query types, there must be a Data Fetcher only for non GraphQLScalar and non Enum field.
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type, type.getName(),
@@ -249,7 +249,7 @@ class DocumentParserTest {
 		i = 0;
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
-		// For non query types, there must be a Data Fetcher only for non Scalar and non Enum field.
+		// For non query types, there must be a Data Fetcher only for non GraphQLScalar and non Enum field.
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type, type.getName(),

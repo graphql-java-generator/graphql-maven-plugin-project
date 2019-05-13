@@ -26,6 +26,7 @@ import org.springframework.util.FileCopyUtils;
 import graphql.GraphQL;
 import graphql.TypeResolutionEnvironment;
 import graphql.language.FieldDefinition;
+import graphql.language.InterfaceTypeDefinition;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.Type;
 import graphql.language.TypeName;
@@ -96,6 +97,9 @@ public class GraphQLProvider {
 			// Data fetchers for ${dataFetcherDelegate.name}
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
 			.type(newTypeWiring("${dataFetcher.field.owningType.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.camelCaseName}()))
+#if ($dataFetcher.field.owningType.class.simpleName == "InterfaceType")
+			.type(newTypeWiring("${dataFetcher.field.owningType.concreteClassSimpleName}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.camelCaseName}()))
+#end
 #end
 #end
 #if ($interfaces.size() > 0)
@@ -110,7 +114,7 @@ public class GraphQLProvider {
 
 #foreach ($interface in $interfaces)
 	private ObjectTypeDefinition get${interface.classSimpleName}ImplType(TypeDefinitionRegistry typeRegistry) {
-		ObjectTypeDefinition def${interface.classSimpleName} = (ObjectTypeDefinition) typeRegistry.getType("${interface.classSimpleName}").get();
+		InterfaceTypeDefinition def${interface.classSimpleName} = (InterfaceTypeDefinition) typeRegistry.getType("${interface.classSimpleName}").get();
 		ObjectTypeDefinition.Builder def${interface.classSimpleName}Impl = ObjectTypeDefinition.newObjectTypeDefinition();
 		def${interface.classSimpleName}Impl.name("${interface.classSimpleName}Impl");
 		for (FieldDefinition fieldDef : def${interface.classSimpleName}.getFieldDefinitions()) {

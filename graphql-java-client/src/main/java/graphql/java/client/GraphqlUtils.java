@@ -60,8 +60,8 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Check if the given field is owned by the class of this {@link ObjectResponse}. This method returns the class
-	 * for this field.
+	 * Check if the given field is owned by the class of this {@link ObjectResponse}. This method returns the class for
+	 * this field.
 	 * 
 	 * @param name
 	 *            The name of the field we want to check
@@ -235,9 +235,9 @@ public class GraphqlUtils {
 								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
 			} else {
 				Method method = (Method) fieldOrMethod;
-				throw new GraphQLRequestPreparationException("The method <" + method.getDeclaringClass().getName()
-						+ "> of the class <" + method.getReturnType().getName()
-						+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
+				throw new GraphQLRequestPreparationException(
+						"The method <" + method.getName() + "> of the class <" + method.getDeclaringClass().getName()
+								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
 			}
 		}
 	}
@@ -267,7 +267,7 @@ public class GraphqlUtils {
 			} else {
 				Method method = (Method) fieldOrMethod;
 				throw new GraphQLRequestPreparationException(
-						"The method <" + method.getName() + "> of the class <" + method.getReturnType().getName()
+						"The method <" + method.getName() + "> of the class <" + method.getDeclaringClass().getName()
 								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
 			}
 		}

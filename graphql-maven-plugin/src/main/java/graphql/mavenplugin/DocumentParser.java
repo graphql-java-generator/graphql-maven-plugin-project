@@ -652,8 +652,15 @@ public class DocumentParser {
 	void addFieldAnnotationForClientMode(Field field) {
 		String annotation = "";
 
+		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
+			annotation = "@GraphQLScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
+		} else {
+			annotation = "@GraphQLNonScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
+		}
+
 		if (field.isList()) {
-			annotation = "@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName() + ".class)";
+			annotation += "\n\t@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName()
+					+ ".class)";
 		}
 
 		log.debug(field.getType().getName() + "." + field.getName() + " annotation set to <" + annotation
@@ -673,7 +680,7 @@ public class DocumentParser {
 		if (field.isId()) {
 			// We have found the identifier
 			annotation = "@Id\n	@GeneratedValue";
-		} else if (field.getRelation() != null) {
+		} else if (field.getRelation() != null || field.isList()) {
 			// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
 			annotation = "@Transient";
 		}

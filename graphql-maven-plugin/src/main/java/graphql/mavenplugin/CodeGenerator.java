@@ -131,6 +131,8 @@ public class CodeGenerator {
 			context.put("package", packageName);
 			context.put("object", object);
 			context.put("type", type);
+			context.put("mode", documentParser.getMode());
+
 			i += generateOneFile(targetFile, msg, context, templateFilename);
 		} // for
 		return i;

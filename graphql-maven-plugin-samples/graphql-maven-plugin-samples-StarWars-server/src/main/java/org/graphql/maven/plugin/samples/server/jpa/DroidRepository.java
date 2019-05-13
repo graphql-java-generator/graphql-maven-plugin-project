@@ -3,7 +3,7 @@
  */
 package org.graphql.maven.plugin.samples.server.jpa;
 
-import org.graphql.maven.plugin.samples.server.graphql.Droid;
+import org.graphql.maven.plugin.samples.server.generated.Droid;
 import org.springframework.data.repository.CrudRepository;
 
 /**

@@ -1,5 +1,6 @@
 package ${package};
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public interface ${dataFetcherDelegate.name} {
 	 * by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 * wheter or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
-	public #if(${dataFetcher.field.list})Iterable<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end ${dataFetcher.camelCaseName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.sourceName), ${dataFetcher.sourceName} source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.type.classSimpleName} ${argument.camelCaseName}#end);
+	public #if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end ${dataFetcher.camelCaseName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.sourceName), ${dataFetcher.sourceName} source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.type.classSimpleName} ${argument.camelCaseName}#end);
 	
 #end
 }

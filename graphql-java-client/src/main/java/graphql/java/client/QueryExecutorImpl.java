@@ -48,12 +48,17 @@ public class QueryExecutorImpl implements QueryExecutor {
 	/** {@inheritDoc} */
 	@Override
 	public <T> T execute(ObjectResponse objectResponse, List<InputParameter> parameters, Class<T> valueType)
-			throws IOException, GraphQLExecutionException {
-		// Let's build the GraphQL request, to send to the server
-		String request = buildRequest(objectResponse, parameters);
-		logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
+			throws GraphQLExecutionException {
+		String request = null;
+		try {
+			// Let's build the GraphQL request, to send to the server
+			request = buildRequest(objectResponse, parameters);
+			logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
-		return doJsonRequestExecution(request, objectResponse.getFieldName(), valueType);
+			return doJsonRequestExecution(request, objectResponse.getFieldName(), valueType);
+		} catch (IOException e) {
+			throw new GraphQLExecutionException("Error when executing query <" + request + ">: " + e.getMessage(), e);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -121,8 +126,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * Builds a single GraphQL request from the parameter given.
 	 * 
 	 * @param objectResponse
-	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()}
-	 *            method returns the field of the query, that is: the query name.
+	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()} method
+	 *            returns the field of the query, that is: the query name.
 	 * @param parameters
 	 * @return The GraphQL request, ready to be sent to the GraphQl server.
 	 */

@@ -39,16 +39,18 @@ public interface QueryExecutor {
 	 * @param <T>
 	 * 
 	 * @param objectResponse
-	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()}
-	 *            method returns the field of the query, that is: the query name.
+	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()} method
+	 *            returns the field of the query, that is: the query name.
 	 * @param parameters
 	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
 	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
 	 * @throws GraphQLExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
 	public <T> T execute(ObjectResponse objectResponse, List<InputParameter> parameters, Class<T> valueType)
-			throws GraphQLExecutionException, IOException;
+			throws GraphQLExecutionException;
 
 	/**
 	 * Execution of the given simple GraphQL query, and return its response mapped in the relevant POJO. This method

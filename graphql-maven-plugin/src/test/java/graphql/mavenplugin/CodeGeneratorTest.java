@@ -74,6 +74,9 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
 
+		codeGenerator.documentParser = mock(DocumentParser.class);
+		when(codeGenerator.documentParser.getMode()).thenReturn(PluginMode.client);
+
 		ObjectType object1 = new ObjectType(packageName, PluginMode.client);
 		ObjectType object2 = new ObjectType(packageName, PluginMode.client);
 		List<Type> objects = new ArrayList<>();
@@ -117,6 +120,9 @@ class CodeGeneratorTest {
 		codeGenerator.velocityEngine = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
+
+		codeGenerator.documentParser = mock(DocumentParser.class);
+		when(codeGenerator.documentParser.getMode()).thenReturn(PluginMode.server);
 
 		ObjectType object1 = new ObjectType(packageName, PluginMode.server);
 		ObjectType object2 = new ObjectType(packageName, PluginMode.server);

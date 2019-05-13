@@ -60,7 +60,7 @@ class JsonSchemaPersonalizationTest {
 		SchemaPersonalization verif = jsonSchemaPersonalization.loadGraphQLSchemaPersonalization();
 
 		// Verification
-		assertEquals(2, verif.getEntityPersonalizations().size(), "nb entities");
+		assertEquals(2, verif.getEntityPersonalizations().size(), "nb subObjects");
 		int i = -1;
 		int j = -1;
 

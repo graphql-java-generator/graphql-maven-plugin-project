@@ -5,14 +5,15 @@ package org.graphql.maven.plugin.samples.server.jpa;
 
 import java.util.List;
 
-import org.graphql.maven.plugin.samples.server.graphql.Episode;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
 
 /**
+ * Repository is commented: so it's no more found by Spring<BR/>
+ * TODO remove if really useless
+ * 
  * @author EtienneSF
  */
-public interface EpisodeRepository extends Repository<Episode, Integer> {
+public interface EpisodeRepository /* extends Repository<Episode, Integer> */ {
 
 	@Query(value = ""//
 			+ " select e.label "//

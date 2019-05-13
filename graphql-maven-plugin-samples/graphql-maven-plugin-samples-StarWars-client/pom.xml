@@ -24,22 +24,59 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mode>server</mode>
+					<mode>client</mode>
 				</configuration>
 			</plugin>
-			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
-				<executions> <execution> <id>add-source</id> <phase>generate-sources</phase> <goals> <goal>add-source</goal> </goals> <configuration> 
-				<sources> <source>some directory</source> ... </sources> </configuration> </execution> </executions> </plugin -->
+			<plugin>
+				<!-- Execution of the integration tests -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
+				<groupId>com.bazaarvoice.maven.plugins</groupId>
+				<artifactId>process-exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>switchboard-process</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<name>StarWars GraphQL server</name>
+							<workingDir>starwars_graphql_server</workingDir>
+							<waitForInterrupt>false</waitForInterrupt>
+							<healthcheckUrl>http://localhost:8180/graphiql</healthcheckUrl>
+							<arguments>
+								<argument>java</argument>
+								<argument>-jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-StarWars-server/target/graphql-maven-plugin-samples-StarWars-server-${project.version}.jar</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<!--Stop all processes in reverse order -->
+					<execution>
+						<id>stop-all</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop-all</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
-		<!-- The client must be built after the server -->
-		<dependency>
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
-		</dependency>
-
 		<!-- Dependencies for tests -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -51,27 +88,21 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Dependencies for GraphQL -->
 		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphql-spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphql-java-tools</artifactId>
-		</dependency>
-		<dependency>
-			<!-- gives a GUI to test the GraphQL request on the generated server: http://localhost:8080/graphiql -->
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphiql-spring-boot-starter</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<!-- Other dependencies -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-client</artifactId>
 		</dependency>
 
 	</dependencies>

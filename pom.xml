@@ -67,6 +67,12 @@
 						</dependency>
 					</dependencies>
 				</plugin>
+				<plugin>
+					<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
+					<groupId>com.bazaarvoice.maven.plugins</groupId>
+					<artifactId>process-exec-maven-plugin</artifactId>
+					<version>0.7</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

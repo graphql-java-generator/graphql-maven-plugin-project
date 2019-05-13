@@ -64,8 +64,8 @@ public interface Type {
 	public String getConcreteClassSimpleName();
 
 	/**
-	 * Returns the list of {@link Field}s for this type. Or null, if this field can't have any field, like a Scalar for
-	 * instance
+	 * Returns the list of {@link Field}s for this type. Or null, if this field can't have any field, like a
+	 * GraphQLScalar for instance
 	 * 
 	 * @return
 	 */

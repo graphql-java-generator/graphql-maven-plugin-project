@@ -24,8 +24,21 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- plugin> <groupId>com.graphql-java</groupId> <artifactId>graphql-maven-plugin</artifactId> <executions> <execution> 
-				<goals> <goal>graphql</goal> </goals> </execution> </executions> <configuration> <mode>server</mode> </configuration> </plugin -->
+			<plugin>
+				<groupId>com.graphql-java</groupId>
+				<artifactId>graphql-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>graphql</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mode>server</mode>
+					<packageName>org.graphql.maven.plugin.samples.server.generated</packageName>
+				</configuration>
+			</plugin>
 			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
 				<executions> <execution> <id>add-source</id> <phase>generate-sources</phase> <goals> <goal>add-source</goal> </goals> <configuration> 
 				<sources> <source>some directory</source> ... </sources> </configuration> </execution> </executions> </plugin -->
@@ -45,6 +58,7 @@
 			<scope>test</scope>
 		</dependency>
 
+
 		<!-- dependendencies within this project -->
 		<!-- dependency> <groupId>com.graphql-java</groupId> <artifactId>graphql-java-client</artifactId> </dependency -->
 
@@ -59,11 +73,16 @@
 		<!-- dependency> <!- Fournit une IHM pour tester les requêtes graphql -> <groupId>com.graphql-java</groupId> <artifactId>graphiql-spring-boot-starter</artifactId> 
 			</dependency -->
 		<dependency>
-			<!-- Generates at runtime a GUI to execute GraphQL requests-->
+			<!-- Generates at runtime a GUI to execute GraphQL requests -->
 			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphiql-spring-boot-starter</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-client</artifactId>
+		</dependency>
+
 
 		<!-- Other dependencies -->
 		<dependency>

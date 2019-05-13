@@ -1,5 +1,6 @@
 package ${package};
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.annotation.Resource;
@@ -32,17 +33,21 @@ public class GraphQLDataFetchers {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.field.list})Iterable<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.camelCaseName}() {
+	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.camelCaseName}() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)
+#if ($argument.type.class.simpleName == "EnumType")
+			${argument.type.classSimpleName} ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+#else
 			${argument.type.classSimpleName} ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
+#end
 #end
 #if($dataFetcher.sourceName)
 			${dataFetcher.sourceName} source = dataFetchingEnvironment.getSource();
 #end
 
 #if (${dataFetcher.field.list})
-			Iterable<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
 			if (logger.isDebugEnabled()) {
 				int nbLines = 0;
 				for (${dataFetcher.field.type.classSimpleName} x : ret)

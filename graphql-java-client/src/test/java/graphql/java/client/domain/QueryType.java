@@ -56,8 +56,7 @@ public class QueryType {
 	public Character hero(String queryResponseDef, Episode episode)
 			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'hero' in query mode: {} ", queryResponseDef);
-		ObjectResponse objectResponse = getHeroResponseBuilder().withQueryResponseDef(queryResponseDef)
-				.build();
+		ObjectResponse objectResponse = getHeroResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return hero(objectResponse, episode);
 	}
 
@@ -136,8 +135,7 @@ public class QueryType {
 	public Human human(String queryResponseDef, String id)
 			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'human' in query mode: {} ", queryResponseDef);
-		ObjectResponse objectResponse = getHeroResponseBuilder().withQueryResponseDef(queryResponseDef)
-				.build();
+		ObjectResponse objectResponse = getHumanResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return human(objectResponse, id);
 	}
 
