@@ -8,10 +8,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.graphql.maven.plugin.samples.server.generated.Character;
-import org.graphql.maven.plugin.samples.server.generated.Droid;
-import org.graphql.maven.plugin.samples.server.generated.DroidDataFetchersDelegate;
-import org.graphql.maven.plugin.samples.server.generated.Episode;
+import org.graphql.maven.plugin.samples.server.Character;
+import org.graphql.maven.plugin.samples.server.Droid;
+import org.graphql.maven.plugin.samples.server.DroidDataFetchersDelegate;
+import org.graphql.maven.plugin.samples.server.Episode;
 import org.graphql.maven.plugin.samples.server.jpa.CharacterRepository;
 import org.springframework.stereotype.Component;
 

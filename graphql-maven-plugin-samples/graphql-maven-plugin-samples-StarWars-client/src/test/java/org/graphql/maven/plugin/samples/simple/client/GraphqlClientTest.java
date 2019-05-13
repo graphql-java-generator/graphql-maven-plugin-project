@@ -90,7 +90,7 @@ class GraphqlClientIT {
 		assertNull(h.getHomePlanet());
 
 		Character friends_0 = h.getFriends().get(0); // "24", "Padmé Amidala"
-		checkCharacter(friends_0, "testHeroFriendsFriendsFriends[friends_0]", null, "Padmé Amidala", 1);
+		checkCharacter(friends_0, "testHeroFriendsFriendsFriends[friends_0]", null, "Padme Amidala", 1);
 		//
 		Character friends_0_0 = friends_0.getFriends().get(0); // "179", "Anakin Skywalker"
 		checkCharacter(friends_0_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 2);

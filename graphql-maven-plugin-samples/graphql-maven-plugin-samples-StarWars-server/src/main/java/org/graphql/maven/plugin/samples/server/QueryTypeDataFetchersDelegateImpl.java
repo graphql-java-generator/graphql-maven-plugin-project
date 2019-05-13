@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.graphql.maven.plugin.samples.server.generated.Character;
-import org.graphql.maven.plugin.samples.server.generated.CharacterImpl;
-import org.graphql.maven.plugin.samples.server.generated.Droid;
-import org.graphql.maven.plugin.samples.server.generated.Episode;
-import org.graphql.maven.plugin.samples.server.generated.Human;
-import org.graphql.maven.plugin.samples.server.generated.QueryTypeDataFetchersDelegate;
+import org.graphql.maven.plugin.samples.server.Character;
+import org.graphql.maven.plugin.samples.server.CharacterImpl;
+import org.graphql.maven.plugin.samples.server.Droid;
+import org.graphql.maven.plugin.samples.server.Episode;
+import org.graphql.maven.plugin.samples.server.Human;
+import org.graphql.maven.plugin.samples.server.QueryTypeDataFetchersDelegate;
 import org.graphql.maven.plugin.samples.server.jpa.CharacterRepository;
 import org.graphql.maven.plugin.samples.server.jpa.DroidRepository;
 import org.graphql.maven.plugin.samples.server.jpa.HumanRepository;

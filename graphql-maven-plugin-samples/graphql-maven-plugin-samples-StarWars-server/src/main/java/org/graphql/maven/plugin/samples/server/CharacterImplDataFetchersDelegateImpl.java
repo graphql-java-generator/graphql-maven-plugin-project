@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.graphql.maven.plugin.samples.server.generated.Character;
-import org.graphql.maven.plugin.samples.server.generated.CharacterImpl;
-import org.graphql.maven.plugin.samples.server.generated.CharacterImplDataFetchersDelegate;
-import org.graphql.maven.plugin.samples.server.generated.Episode;
+import org.graphql.maven.plugin.samples.server.Character;
+import org.graphql.maven.plugin.samples.server.CharacterImpl;
+import org.graphql.maven.plugin.samples.server.CharacterImplDataFetchersDelegate;
+import org.graphql.maven.plugin.samples.server.Episode;
 import org.graphql.maven.plugin.samples.server.jpa.CharacterRepository;
 import org.springframework.stereotype.Component;
 

@@ -5,7 +5,7 @@ package org.graphql.maven.plugin.samples.server.jpa;
 
 import java.util.List;
 
-import org.graphql.maven.plugin.samples.server.generated.CharacterImpl;
+import org.graphql.maven.plugin.samples.server.CharacterImpl;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
