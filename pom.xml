@@ -141,6 +141,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
+				<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
 				<version>${project.version}</version>
 			</dependency>

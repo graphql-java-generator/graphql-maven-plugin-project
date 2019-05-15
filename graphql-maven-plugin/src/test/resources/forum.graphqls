@@ -4,7 +4,7 @@ schema {
 
 type QueryType {
     boards: [Board]
-    topics(board: Board!): [Topic]!
+    topics(boardName: String!): [Topic]!
 }
 
 

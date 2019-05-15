@@ -176,7 +176,7 @@ public class Builder {
 
 		// The subobject is identified by the given fieldName in the fieldClass of the current objetResponseDef.
 		// Let's check that the responseDefParam is of the good class.
-		Class<?> subObjetClass = graphqlUtils.checkFieldOfGraphQLType(fieldName, false, subobjetResponseDef.fieldClass);
+		Class<?> subObjetClass = graphqlUtils.checkFieldOfGraphQLType(fieldName, false, objectResponse.fieldClass);
 		if (!subObjetClass.equals(subobjetResponseDef.fieldClass)) {
 			throw new GraphQLRequestPreparationException("Error creating subobject: the given field <" + fieldName
 					+ "> is of type " + subObjetClass.getName() + ", but the given ObjetResponseDef is of type "

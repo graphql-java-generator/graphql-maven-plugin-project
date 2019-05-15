@@ -3,8 +3,11 @@
  */
 package org.graphql.maven.plugin.samples.forum.server.specific_code;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.graphql.maven.plugin.samples.forum.server.GraphQLUtil;
 import org.graphql.maven.plugin.samples.forum.server.Member;
 import org.graphql.maven.plugin.samples.forum.server.Post;
 import org.graphql.maven.plugin.samples.forum.server.Topic;
@@ -30,16 +33,19 @@ public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate 
 	@Resource
 	PostRepository postRepository;
 
+	@Resource
+	GraphQLUtil graphQLUtil;
+
 	@Override
 	public Member topicAuthor(DataFetchingEnvironment dataFetchingEnvironment, Topic source) {
 		return memberRepository.findById(source.getAuthorId()).get();
 	}
 
 	@Override
-	public Iterable<Post> topicPosts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, String since) {
+	public List<Post> topicPosts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, String since) {
 		if (since == null)
-			return postRepository.findByTopicId(source.getId());
+			return graphQLUtil.iterableToList(postRepository.findByTopicId(source.getId()));
 		else
-			return postRepository.findByTopicIdAndSince(source.getId(), since);
+			return graphQLUtil.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
 	}
 }

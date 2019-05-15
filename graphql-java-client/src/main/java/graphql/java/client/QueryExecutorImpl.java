@@ -55,7 +55,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 			request = buildRequest(objectResponse, parameters);
 			logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
-			return doJsonRequestExecution(request, objectResponse.getFieldName(), valueType);
+			return doJsonRequestExecution(request, valueType);
 		} catch (IOException e) {
 			throw new GraphQLExecutionException("Error when executing query <" + request + ">: " + e.getMessage(), e);
 		}
@@ -63,9 +63,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String query, String queryName, Class<T> valueType)
-			throws IOException, GraphQLExecutionException {
-		return doJsonRequestExecution(query, queryName, valueType);
+	public <T> T execute(String query, Class<T> valueType) throws IOException, GraphQLExecutionException {
+		return doJsonRequestExecution(query, valueType);
 	}
 
 	/**
@@ -75,16 +74,13 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            The GraphQL type to map the response into
 	 * @param jsonRequest
 	 *            The json request to send to the server, as is.
-	 * @param fieldName
-	 *            The GraphQL field name that the response must contain. It's typically the query name.
 	 * @param valueType
 	 *            The GraphQL type to map the response into
 	 * @return
 	 * @throws IOException
 	 * @throws GraphQLExecutionException
 	 */
-	<T> T doJsonRequestExecution(String jsonRequest, String fieldName, Class<T> valueType)
-			throws IOException, GraphQLExecutionException {
+	<T> T doJsonRequestExecution(String jsonRequest, Class<T> valueType) throws IOException, GraphQLExecutionException {
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
 
@@ -94,12 +90,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 		if (response.errors == null || response.errors.size() == 0) {
 			// No errors. Let's parse the data
 			ObjectMapper mapper = new ObjectMapper();
-			JsonNode json = response.data.get(fieldName);
-			if (json != null) {
-				return mapper.treeToValue(json, valueType);
-			}
-			throw new GraphQLResponseParseException("Could not retrieve the '" + fieldName + "' node");
-
+			return mapper.treeToValue(response.data, valueType);
 		} else {
 			int nbErrors = 0;
 			String agregatedMessage = null;

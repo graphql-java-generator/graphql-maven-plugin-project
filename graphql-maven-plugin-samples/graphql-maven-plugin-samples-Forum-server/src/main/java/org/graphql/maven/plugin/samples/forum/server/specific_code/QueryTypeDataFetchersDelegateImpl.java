@@ -3,9 +3,12 @@
  */
 package org.graphql.maven.plugin.samples.forum.server.specific_code;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.graphql.maven.plugin.samples.forum.server.Board;
+import org.graphql.maven.plugin.samples.forum.server.GraphQLUtil;
 import org.graphql.maven.plugin.samples.forum.server.QueryTypeDataFetchersDelegate;
 import org.graphql.maven.plugin.samples.forum.server.Topic;
 import org.graphql.maven.plugin.samples.forum.server.jpa.BoardRepository;
@@ -25,13 +28,16 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 	@Resource
 	TopicRepository topicRepository;
 
+	@Resource
+	GraphQLUtil graphQLUtil;
+
 	@Override
-	public Iterable<Board> queryTypeBoards(DataFetchingEnvironment dataFetchingEnvironment) {
-		return boardRepository.findAll();
+	public List<Board> queryTypeBoards(DataFetchingEnvironment dataFetchingEnvironment) {
+		return graphQLUtil.iterableToList(boardRepository.findAll());
 	}
 
 	@Override
-	public Iterable<Topic> queryTypeTopics(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
+	public List<Topic> queryTypeTopics(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
 		return topicRepository.findByBoardName(boardName);
 	}
 

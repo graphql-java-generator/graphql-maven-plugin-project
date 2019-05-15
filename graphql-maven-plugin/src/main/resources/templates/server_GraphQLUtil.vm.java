@@ -1,4 +1,4 @@
-package org.graphql.maven.plugin.samples.server;
+package ${package};
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,23 @@ import org.springframework.stereotype.Component;
 public class GraphQLUtil {
 
 	/**
+	 * Transform an {@link Iterable} (which can be a {@link List}), into a {@link List} of items of the same type. It's
+	 * usefull to transform the native type from Spring Data repositories (which needs concrete class to map into) into
+	 * the list of relevant GraphQL interface
+	 * 
+	 * @param <I>
+	 * @param iterable
+	 * @return
+	 */
+	public <I> List<I> iterableToList(Iterable<I> iterable) {
+		List<I> ret = new ArrayList<I>();
+		for (I i : iterable) {
+			ret.add(i);
+		}
+		return ret;
+	}
+
+	/**
 	 * Transform an {@link Iterable} (which can be a {@link List}) of a concrete class, into a {@link List} of the I
 	 * interface or superclass. It's usefull to transform the native type from Spring Data repositories (which needs
 	 * concrete class to map into) into the list of relevant GraphQL interface
@@ -18,7 +35,7 @@ public class GraphQLUtil {
 	 * @param iterable
 	 * @return
 	 */
-	public <I> List<I> iterableConcreteClassToListInterface(List<? extends I> iterable) {
+	public <I> List<I> iterableConcreteClassToListInterface(Iterable<? extends I> iterable) {
 		List<I> ret = new ArrayList<I>();
 		for (I i : iterable) {
 			ret.add(i);

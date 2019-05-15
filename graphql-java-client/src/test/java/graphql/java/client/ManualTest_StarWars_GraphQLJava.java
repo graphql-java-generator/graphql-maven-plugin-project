@@ -24,21 +24,21 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 /**
  * This class uses the native graphql-java framework. It contains various quite technical boilerplate (RuntimeWiring),
  * that graphql-generator hides.<BR/>
- * See {@link ManualTest} for a sample.
+ * See {@link ManualTest_StarWars} for a sample.
  * 
  * @author EtienneSF
  */
-public class ManualTest_GraphQLJava {
+public class ManualTest_StarWars_GraphQLJava {
 
 	public static void main(String[] args) throws GraphQLExecutionException, IOException {
-		ManualTest_GraphQLJava test = new ManualTest_GraphQLJava();
+		ManualTest_StarWars_GraphQLJava test = new ManualTest_StarWars_GraphQLJava();
 		test.executeHero();
 		// test.executeHuman();
 	}
 
 	GraphQL graphQL;
 
-	public ManualTest_GraphQLJava() {
+	public ManualTest_StarWars_GraphQLJava() {
 		graphQL = getGraphQL();
 	}
 

@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import graphql.java.client.domain.Character;
-import graphql.java.client.domain.CharacterImpl;
-import graphql.java.client.domain.Episode;
-import graphql.java.client.domain.Human;
-import graphql.java.client.domain.QueryType;
+import graphql.java.client.domain.starwars.Character;
+import graphql.java.client.domain.starwars.CharacterImpl;
+import graphql.java.client.domain.starwars.Episode;
+import graphql.java.client.domain.starwars.Human;
+import graphql.java.client.domain.starwars.QueryType;
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLExecutionException;
@@ -21,7 +21,7 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  * 
  * @author EtienneSF
  */
-public class ManualTest {
+public class ManualTest_StarWars {
 
 	static QueryExecutor executor = new QueryExecutorImpl();
 	static QueryType queryType = new QueryType();

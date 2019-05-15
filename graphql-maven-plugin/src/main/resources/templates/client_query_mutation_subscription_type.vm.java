@@ -53,7 +53,7 @@ public class ${object.name} {
 	 */
 	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
-	public ${field.type.classSimpleName} ${field.name}(String queryResponseDef#inputParams())
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(String queryResponseDef#inputParams())
 			throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -77,7 +77,7 @@ public class ${object.name} {
 	 */
 	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
-	public ${field.type.classSimpleName} ${field.name}(ObjectResponse objectResponse#inputParams()) 
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(ObjectResponse objectResponse#inputParams()) 
 			throws GraphQLRequestPreparationException, GraphQLExecutionException  {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of $type '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.name}#end);
@@ -96,7 +96,9 @@ public class ${object.name} {
 					+ ${field.type.classSimpleName}.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
-		return executor.execute(objectResponse, parameters, ${field.type.concreteClassSimpleName}.class);
+		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute(objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
+		
+		return ret.${field.name};
 	}
 
 	/**

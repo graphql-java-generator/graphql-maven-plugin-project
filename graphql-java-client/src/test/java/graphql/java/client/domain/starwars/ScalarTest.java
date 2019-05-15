@@ -1,4 +1,4 @@
-package graphql.java.client.domain;
+package graphql.java.client.domain.starwars;
 
 import graphql.java.client.annotation.GraphQLScalar;
 

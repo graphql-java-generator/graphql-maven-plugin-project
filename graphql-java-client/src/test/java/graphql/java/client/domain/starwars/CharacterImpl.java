@@ -1,4 +1,4 @@
-package graphql.java.client.domain;
+package graphql.java.client.domain.starwars;
 
 import java.util.List;
 

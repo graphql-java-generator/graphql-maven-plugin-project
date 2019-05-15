@@ -19,10 +19,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
-import graphql.java.client.domain.Character;
-import graphql.java.client.domain.CharacterImpl;
-import graphql.java.client.domain.Episode;
-import graphql.java.client.domain.QueryType;
+import graphql.java.client.domain.starwars.Character;
+import graphql.java.client.domain.starwars.CharacterImpl;
+import graphql.java.client.domain.starwars.Episode;
+import graphql.java.client.domain.starwars.QueryType;
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLRequestPreparationException;

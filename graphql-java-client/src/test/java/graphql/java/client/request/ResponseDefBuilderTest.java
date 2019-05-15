@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import graphql.java.client.domain.Character;
-import graphql.java.client.domain.Droid;
-import graphql.java.client.domain.Human;
-import graphql.java.client.domain.QueryType;
+import graphql.java.client.domain.starwars.Character;
+import graphql.java.client.domain.starwars.Droid;
+import graphql.java.client.domain.starwars.Human;
+import graphql.java.client.domain.starwars.QueryType;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
 class ResponseDefBuilderTest {
@@ -128,8 +128,8 @@ class ResponseDefBuilderTest {
 	@Test
 	void testWithSubObject_OK() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		humanResponseDefBuilder.withSubObject("friends", ObjectResponse
-				.newSubObjectBuilder(Character.class).withField("id").withField("name").build());
+		humanResponseDefBuilder.withSubObject("friends",
+				ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build());
 
 		// Verification
 		assertEquals(1, humanResponseDefBuilder.objectResponse.subObjects.size(), "one object in the list");
@@ -149,12 +149,12 @@ class ResponseDefBuilderTest {
 	void testWithSubObject_KO_fieldPresentTwoTimes() throws GraphQLRequestPreparationException {
 		// Preparation
 		GraphQLRequestPreparationException e;
-		humanResponseDefBuilder.withSubObject("friends", ObjectResponse
-				.newSubObjectBuilder(Character.class).withField("id").withField("name").build());
+		humanResponseDefBuilder.withSubObject("friends",
+				ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build());
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("friends", ObjectResponse
-						.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("friends",
+						ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("<friends>"));
 	}
 
@@ -164,29 +164,28 @@ class ResponseDefBuilderTest {
 
 		// Bad class for the ReponseDef of the subObject : different of the type of the given field name
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("friends", ObjectResponse
-						.newSubObjectBuilder(Droid.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("friends",
+						ObjectResponse.newSubObjectBuilder(Droid.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("friends"));
 		assertTrue(e.getMessage().contains("Droid"));
 
 		// Non existant field
-		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("mml", ObjectResponse
-						.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder.withSubObject("mml",
+				ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("mml"));
 
 		// subObject added, whereas it is a Field
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("appearsIn", ObjectResponse
-						.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("appearsIn",
+						ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("appearsIn"));
 	}
 
 	@Test
 	void testWithSubObject_withAlias_OK() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		humanResponseDefBuilder.withSubObject("friends", "aValidAlias", ObjectResponse
-				.newSubObjectBuilder(Character.class).withField("id").withField("name").build());
+		humanResponseDefBuilder.withSubObject("friends", "aValidAlias",
+				ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build());
 
 		// Verification
 		assertEquals(1, humanResponseDefBuilder.objectResponse.subObjects.size(), "one field in the list");
@@ -208,32 +207,32 @@ class ResponseDefBuilderTest {
 
 		// Bad class for the ReponseDef of the subObject : different of the type of the given field name
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("friends", "anAlias", ObjectResponse
-						.newSubObjectBuilder(Droid.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("friends", "anAlias",
+						ObjectResponse.newSubObjectBuilder(Droid.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("friends"));
 		assertTrue(e.getMessage().contains("Droid"));
 
 		// Non existant field
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("mml", "anAlias", ObjectResponse
-						.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("mml", "anAlias",
+						ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("mml"));
 
 		// subObject added, whereas it is a Field
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("appearsIn", "anAlias", ObjectResponse
-						.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("appearsIn", "anAlias",
+						ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("appearsIn"));
 
 		// Bad identifiers
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("not valid name", "validAlias", ObjectResponse
-						.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("not valid name", "validAlias",
+						ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("not valid name"));
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> humanResponseDefBuilder.withSubObject("friends", "non valid alias", ObjectResponse
-						.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
+				() -> humanResponseDefBuilder.withSubObject("friends", "non valid alias",
+						ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name").build()));
 		assertTrue(e.getMessage().contains("non valid alias"));
 	}
 
@@ -281,6 +280,14 @@ class ResponseDefBuilderTest {
 		assertNull(friends2.scalarFields.get(1).alias);
 		//
 		assertEquals(0, friends2.subObjects.size());
+	}
+
+	@Test
+	public void test_withQueryResponseDef_Forum() throws GraphQLRequestPreparationException {
+		// Go, go, go
+		String queryResponseDef = "{id name publiclyAvailable topics{id date author{id name email type} nbPosts posts{date author{name email type}}}}";
+		new graphql.java.client.domain.forum.QueryType().getBoardsResponseBuilder()
+				.withQueryResponseDef(queryResponseDef).build();
 	}
 
 	@Test

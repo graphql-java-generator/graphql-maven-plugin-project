@@ -27,7 +27,9 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.mavenplugin.language.DataFetcherDelegate;
+import graphql.mavenplugin.language.Field;
 import graphql.mavenplugin.language.Type;
+import graphql.mavenplugin.language.impl.ObjectType;
 
 /**
  * This class generates the code, from the classes coming from the graphql.mavenplugin.language package. This classes
@@ -38,15 +40,19 @@ import graphql.mavenplugin.language.Type;
 @Component
 public class CodeGenerator {
 
-	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/query_mutation_subscription_type__for_server.vm.java";
+	// Templates for both client and server generation
 	private static final String PATH_VELOCITY_TEMPLATE_OBJECT = "templates/object_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_INTERFACE = "templates/interface_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";
+	// Templates for client generation only
+	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
 	// Templates for server generation only
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServer.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL = "templates/server_GraphQLUtil.vm.java";
 
 	@Resource
 	MavenResourceSchemaStringProvider mavenResourceSchemaStringProvider;
@@ -95,18 +101,23 @@ public class CodeGenerator {
 	public int generateCode() throws MojoExecutionException, IOException {
 
 		int i = 0;
-		i += generateTargetFile(documentParser.getQueryTypes(), "query",
-				PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
-		i += generateTargetFile(documentParser.getMutationTypes(), "mutation",
-				PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
-		i += generateTargetFile(documentParser.getSubscriptionTypes(), "subscription",
-				PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
 		i += generateTargetFile(documentParser.getObjectTypes(), "object", PATH_VELOCITY_TEMPLATE_OBJECT);
 		i += generateTargetFile(documentParser.getInterfaceTypes(), "interface", PATH_VELOCITY_TEMPLATE_INTERFACE);
 		i += generateTargetFile(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
 
-		if (mode.equals(PluginMode.server)) {
+		switch (mode) {
+		case server:
 			i += generateServerFiles();
+			break;
+		case client:
+			i += generateTargetFile(documentParser.getQueryTypes(), "query",
+					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+			i += generateTargetFile(documentParser.getMutationTypes(), "mutation",
+					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+			i += generateTargetFile(documentParser.getSubscriptionTypes(), "subscription",
+					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+			i += generateQueryTargetType();
+			break;
 		}
 		return i;
 	}
@@ -139,6 +150,34 @@ public class CodeGenerator {
 	}
 
 	/**
+	 * Generates one wrapper for each query, that will receive the response json.
+	 * 
+	 * @return
+	 */
+	int generateQueryTargetType() {
+		int i = 0;
+		List<ObjectType> types = new ArrayList<>(documentParser.getQueryTypes());
+		types.addAll(documentParser.getMutationTypes());
+		types.addAll(documentParser.getSubscriptionTypes());
+
+		for (ObjectType queryType : types) {
+			for (Field query : queryType.getFields()) {
+				String objectName = queryType.getClassSimpleName() + query.getPascalCaseName();
+				File targetFile = getJavaFile(objectName);
+				String msg = "Generating target for query " + query.getName() + " '" + objectName + "' into "
+						+ targetFile.getAbsolutePath();
+				VelocityContext context = new VelocityContext();
+				context.put("package", packageName);
+				context.put("objectName", objectName);
+				context.put("query", query);
+
+				i += generateOneFile(targetFile, msg, context, PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE);
+			}
+		}
+		return i;
+	}
+
+	/**
 	 * Generates the server classes
 	 * 
 	 * @return The number of classes created, that is: 1
@@ -165,6 +204,8 @@ public class CodeGenerator {
 				PATH_VELOCITY_TEMPLATE_PROVIDER);
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers"), "generating GraphQLDataFetchers", context,
 				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
+		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
+				PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL);
 
 		for (DataFetcherDelegate dataFetcherDelegate : documentParser.dataFetcherDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);

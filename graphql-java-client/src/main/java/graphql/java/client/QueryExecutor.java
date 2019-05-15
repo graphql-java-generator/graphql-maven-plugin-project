@@ -74,7 +74,6 @@ public interface QueryExecutor {
 	 * @throws GraphQLExecutionException
 	 * @throws IOException
 	 */
-	public <T> T execute(String graphqlQuery, String queryName, Class<T> valueType)
-			throws GraphQLExecutionException, IOException;
+	public <T> T execute(String graphqlQuery, Class<T> valueType) throws GraphQLExecutionException, IOException;
 
 }

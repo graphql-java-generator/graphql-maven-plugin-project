@@ -3,6 +3,8 @@
  */
 package org.graphql.maven.plugin.samples.forum.server.specific_code;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.graphql.maven.plugin.samples.forum.server.Board;
@@ -27,7 +29,7 @@ public class BoardDataFetchersDelegateImpl implements BoardDataFetchersDelegate 
 	TopicRepository topicRepository;
 
 	@Override
-	public Iterable<Topic> boardTopics(DataFetchingEnvironment dataFetchingEnvironment, Board source, String since) {
+	public List<Topic> boardTopics(DataFetchingEnvironment dataFetchingEnvironment, Board source, String since) {
 		if (since == null)
 			return topicRepository.findByBoardId(source.getId());
 		else

@@ -116,7 +116,7 @@ class DocumentParserTest_Forum_Server {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeBoards", "QueryType", "boards", "Board", true,
 				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeTopics", "QueryType", "topics", "Topic", true,
-				null, "board");
+				null, "boardName");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "BoardTopics", "Board", "topics", "Topic", true, "Board",
 				"since");

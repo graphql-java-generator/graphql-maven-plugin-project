@@ -156,12 +156,12 @@ public class GraphqlUtils {
 			if (shouldBeScalar & !isScalar) {
 				throw new GraphQLRequestPreparationException("The field <" + field.getName() + "> of the GraphQL type <"
 						+ field.getDeclaringClass().getName()
-						+ "> should be a scalar. But is is actually not a GraphQLScalar");
+						+ "> is not a GraphQLScalar. At least one field must be defined for the server response.");
 			}
 			if (!shouldBeScalar & isScalar) {
 				throw new GraphQLRequestPreparationException("The field <" + field.getName() + "> of the GraphQL type <"
 						+ field.getDeclaringClass().getName()
-						+ "> should not be a scalar. But is is actually a GraphQLScalar");
+						+ "> is not a GraphQLScalar. At least one field must be defined for the server response.");
 			}
 		}
 

@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import graphql.java.client.QueryExecutor;
-import graphql.java.client.domain.Character;
-import graphql.java.client.domain.Human;
-import graphql.java.client.domain.QueryType;
+import graphql.java.client.domain.starwars.Character;
+import graphql.java.client.domain.starwars.Human;
+import graphql.java.client.domain.starwars.QueryType;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
 class ObjectResponseDefTest {
