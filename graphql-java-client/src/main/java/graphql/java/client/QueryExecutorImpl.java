@@ -87,6 +87,12 @@ public class QueryExecutorImpl implements QueryExecutor {
 		JsonResponseWrapper response = invocationBuilder.post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON),
 				JsonResponseWrapper.class);
 
+		if (logger.isTraceEnabled()) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			logger.trace("Parsed response data: {}", objectMapper.writeValueAsString(response.data));
+			logger.trace("Parsed response errors: {}", objectMapper.writeValueAsString(response.errors));
+		}
+
 		if (response.errors == null || response.errors.size() == 0) {
 			// No errors. Let's parse the data
 			ObjectMapper mapper = new ObjectMapper();

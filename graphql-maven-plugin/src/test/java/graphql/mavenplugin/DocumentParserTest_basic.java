@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import graphql.language.Document;
@@ -41,6 +42,7 @@ class DocumentParserTest_basic {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_parseOneDocument_basic() {
 		// Preparation
 		Resource resource = ctx.getResource("/basic.graphqls");

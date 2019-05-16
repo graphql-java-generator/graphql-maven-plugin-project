@@ -66,9 +66,6 @@ class GraphqlUtilsTest {
 				() -> graphqlUtils.checkIsScalar(Human.class.getDeclaredField("appearsIn"), false));
 		graphqlUtils.checkIsScalar(Human.class.getDeclaredField("appearsIn"), true);
 
-		assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlUtils.checkIsScalar(Human.class.getDeclaredField("bestFriend"), true));
-		graphqlUtils.checkIsScalar(Human.class.getDeclaredField("bestFriend"), false);
 	}
 
 	@Test

@@ -16,11 +16,10 @@
 		<Logger name="graphql" level="info" />
 		<Logger name="graphql.execution" level="info" />
 		<Logger name="org.dbunit" level="info" />
-		<Logger name="org.graphql" level="debug" />
+		<Logger name="org.graphql" level="info" />
 		<Logger name="org.hibernate" level="info" />
 		<!-- Logger name="org.hibernate.SQL" level="debug" /> <!- Logs each SQL query execution -->
 		<!-- Logger name="org.hibernate.type.descriptor.sql" level="trace" /> <!- Logs each SQL query execution, with the bind values -->
-		<Logger name=" com.coxautodev" level="trace" />
 		<Root level="info">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" />

@@ -13,7 +13,7 @@ class BasicClientTest extends AbstractIntegrationTest {
 
 	// Everything is in the AbstractIntegrationTest class.
 
-	// The only aim of this class, is ti have its own Spring Configuration (Basic_Server_SpringConfiguration)
+	// The only aim of this class, is to have its own Spring Configuration
 
 	@BeforeEach
 	public void setUp() {

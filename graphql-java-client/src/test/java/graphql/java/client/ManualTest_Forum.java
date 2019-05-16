@@ -1,17 +1,13 @@
 package graphql.java.client;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import graphql.java.client.domain.forum.Board;
 import graphql.java.client.domain.forum.Member;
 import graphql.java.client.domain.forum.Post;
 import graphql.java.client.domain.forum.QueryType;
-import graphql.java.client.domain.forum.QueryTypeBoards;
-import graphql.java.client.domain.forum.QueryTypeTopics;
 import graphql.java.client.domain.forum.Topic;
-import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLRequestPreparationException;
@@ -63,9 +59,6 @@ public class ManualTest_Forum {
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    boards()    (with builder)   -----------------------------");
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-
 		// ObjectResponse
 		ObjectResponse objectResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
 				.withField("publiclyAvailable")//
@@ -76,18 +69,14 @@ public class ManualTest_Forum {
 				.build();
 
 		// Execution of the query. We get the result back in a POJO
-		QueryTypeBoards ret = executor.execute(objectResponse, null, QueryTypeBoards.class);
+		boards = queryType.boards(objectResponse);
 
-		System.out.println(ret.getBoards());
+		System.out.println(boards);
 
 		//
 
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    topics()   (with builder)  ------------------------------");
-
-		// InputParameters
-		parameters = new ArrayList<>();
-		parameters.add(new InputParameter("boardName", "Board name 2"));
 
 		// ObjectResponse
 		objectResponse = queryType.getTopicsResponseBuilder()//
@@ -104,9 +93,15 @@ public class ManualTest_Forum {
 				.build();
 
 		// Execution of the query. We get the result back in a POJO
-		QueryTypeTopics ret2 = executor.execute(objectResponse, parameters, QueryTypeTopics.class);
+		topics = queryType.topics(objectResponse, "Board name 2");
 
-		System.out.println(ret2.getTopics());
+		System.out.println(topics);
+
+		System.out.println("");
+		System.out.println("");
+		System.out.println("Sample application finished ... enjoy !    :)");
+		System.out.println("");
+		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
 }

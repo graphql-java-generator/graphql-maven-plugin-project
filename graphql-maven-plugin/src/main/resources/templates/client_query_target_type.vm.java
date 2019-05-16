@@ -10,8 +10,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class ${objectName} {
 
-#if(${query.type.list})
+#if ($query.list  &&  $query.type.class.simpleName == "InterfaceType")
+	@JsonDeserialize(contentAs = ${query.type.concreteClassSimpleName}.class)
+#elseif (${query.list})
 	@JsonDeserialize(contentAs = ${query.type.classSimpleName}.class)
+#elseif ($query.type.class.simpleName == "InterfaceType")
+	@JsonDeserialize(as = ${query.type.concreteClassSimpleName}.class)
 #end
 	#if(${query.list})List<#end${query.type.classSimpleName}#if(${query.list})>#end ${query.name};
 

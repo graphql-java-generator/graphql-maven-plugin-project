@@ -1,15 +1,11 @@
 package graphql.java.client;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import graphql.java.client.domain.starwars.Character;
-import graphql.java.client.domain.starwars.CharacterImpl;
 import graphql.java.client.domain.starwars.Episode;
 import graphql.java.client.domain.starwars.Human;
 import graphql.java.client.domain.starwars.QueryType;
-import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ObjectResponse;
 import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLRequestPreparationException;
@@ -58,10 +54,6 @@ public class ManualTest_StarWars {
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    executeHero()    (with builder)   -----------------------------");
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
-
 		// ObjectResponse
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder().withField("id").withField("name")
 				.withField("appearsIn")
@@ -69,18 +61,14 @@ public class ManualTest_StarWars {
 				.build();
 
 		// Execution of the query. We get the result back in a POJO
-		CharacterImpl characterImpl = executor.execute(objectResponse, parameters, CharacterImpl.class);
+		Character hero = queryType.hero(objectResponse, Episode.NEWHOPE);
 
-		System.out.println(characterImpl);
+		System.out.println(hero);
 
 		//
 
 		System.out.println("-------------------------------------------------------------------------------------");
 		System.out.println("------------------    executeHuman()   (with builder)  ------------------------------");
-
-		// InputParameters
-		parameters = new ArrayList<>();
-		parameters.add(new InputParameter("id", "180"));
 
 		// ObjectResponse
 		objectResponse = queryType.getHumanResponseBuilder()//
@@ -89,9 +77,15 @@ public class ManualTest_StarWars {
 				.build();
 
 		// Execution of the query. We get the result back in a POJO
-		human = executor.execute(objectResponse, parameters, Human.class);
+		human = queryType.human(objectResponse, "180");
 
 		System.out.println(human);
+
+		System.out.println("");
+		System.out.println("");
+		System.out.println("Sample application finished ... enjoy !    :)");
+		System.out.println("");
+		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
 }
