@@ -14,8 +14,31 @@
 	<version>0.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Container for the Graphql Java Maven Plugin</name>
-	<description>Maven plugin to generate the graphql code, based on graphqs files</description>
+	<name>Container for the GraphQL Generator project</name>
+	<description>
+		Generation of the java code, to help developping GraphQL client and GraphQL servers in Java. 
+		It generates the POJO to hide as much as possible the GraphQL part, and make it easy to develop GraphQL stuff in Java.
+	</description>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>EtienneSF</name>
+			<email>etienne_sf@users.sf.net</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/graphql-java-generator/graphql-java-generator.git</connection>
+		<developerConnection>scm:git:ssh://github.com:graphql-java-generator/graphql-java-generator.git</developerConnection>
+		<url>http://github.com/graphql-java-generator/graphql-java-generator/tree/master</url>
+	</scm>
 
 	<modules>
 		<module>graphql-maven-plugin</module>
