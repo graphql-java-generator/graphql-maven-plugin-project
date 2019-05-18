@@ -8,8 +8,10 @@ import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
 /**
- * Hello world!
- *
+ * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
+ * {@link WithQueries}, {@link WithBuilder}
+ * 
+ * @author EtienneSF
  */
 public class Main {
 
