@@ -68,9 +68,6 @@ public class ${object.name} {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLRequestPreparationException
-	 *             When an error occurs during the request preparation, typically when building the
-	 *             {@link ObjectResponse}
 	 * @throws GraphQLExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
@@ -78,7 +75,7 @@ public class ${object.name} {
 	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(ObjectResponse objectResponse#inputParams()) 
-			throws GraphQLRequestPreparationException, GraphQLExecutionException  {
+			throws GraphQLExecutionException  {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of $type '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.name}#end);
 		} else if (logger.isDebugEnabled()) {
@@ -92,7 +89,7 @@ public class ${object.name} {
 #end
 
 		if (!${field.type.classSimpleName}.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestPreparationException("The ObjectResponse parameter should be an instance of "
+			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of "
 					+ ${field.type.classSimpleName}.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
