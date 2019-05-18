@@ -24,7 +24,7 @@
 				</executions>
 				<configuration>
 					<mode>client</mode>
-					<packageName>org.graphql.maven.plugin.samples.forum.client.forum.client</packageName>
+					<packageName>org.graphql.maven.plugin.samples.forum.client.graphql.forum.client</packageName>
 				</configuration>
 			</plugin>
 			<plugin>
