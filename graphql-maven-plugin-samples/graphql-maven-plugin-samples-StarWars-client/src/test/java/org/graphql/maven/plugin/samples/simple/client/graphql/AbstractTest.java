@@ -1,9 +1,9 @@
-package org.graphql.maven.plugin.samples.simple.client;
+package org.graphql.maven.plugin.samples.simple.client.graphql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.graphql.maven.plugin.samples.simple.client.Queries;
 import org.junit.jupiter.api.Test;
 
 import com.generated.graphql.Character;
@@ -20,19 +20,14 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  * 
  * @author EtienneSF
  */
-class GraphqlClientIT {
+abstract class AbstractTest {
 
-	GraphqlClient graphqlClient;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		graphqlClient = new GraphqlClient();
-	}
+	Queries directQueries;
 
 	@Test
 	void testHeroSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
-		Character c = graphqlClient.heroSimple();
+		Character c = directQueries.heroSimple();
 
 		checkCharacter(c, "heroSimple", "2", "BB-8", 0, Episode.NEWHOPE);
 	}
@@ -40,7 +35,7 @@ class GraphqlClientIT {
 	@Test
 	void testHeroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn friends {name friends {friends{id name appearsIn}}}}", Episode.NEWHOPE);
-		Character c = graphqlClient.heroFriendsFriendsFriends();
+		Character c = directQueries.heroFriendsFriendsFriends();
 
 		checkCharacter(c, "testHeroFriendsFriendsFriends", "2", null, 2, Episode.NEWHOPE);
 
@@ -75,7 +70,7 @@ class GraphqlClientIT {
 	@Test
 	void testHumanSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn homePlanet name}", "45");
-		Human h = graphqlClient.humanSimple();
+		Human h = directQueries.humanSimple();
 
 		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1_0]", "45", "Joruus C'Baoth", 0, Episode.EMPIRE);
 		assertEquals("Kashyyyk", h.getHomePlanet());
@@ -84,7 +79,7 @@ class GraphqlClientIT {
 	@Test
 	void testHumanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}", "180");
-		Human h = graphqlClient.humanFriendsFriendsFriends();
+		Human h = directQueries.humanFriendsFriendsFriends();
 
 		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1]", "180", "Luke Skywalker", 3, Episode.EMPIRE);
 		assertNull(h.getHomePlanet());
@@ -111,7 +106,7 @@ class GraphqlClientIT {
 	@Test
 	void testDroidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.droid("{id appearsIn primaryFunction name}", "3");
-		Droid d = graphqlClient.droidSimple();
+		Droid d = directQueries.droidSimple();
 
 		checkCharacter(d, "droidSimple", "3", "C-3PO", 0, Episode.EMPIRE);
 		assertEquals("Function of C-3PO", d.getPrimaryFunction());
@@ -120,7 +115,7 @@ class GraphqlClientIT {
 	@Test
 	void testDroidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }", "2");
-		Droid d = graphqlClient.droidFriendsFriendsFriends();
+		Droid d = directQueries.droidFriendsFriendsFriends();
 
 		checkCharacter(d, "testDroidFriendsFriendsFriends", "2", "BB-8", 2, Episode.NEWHOPE);
 		assertEquals("Function of BB-8", d.getPrimaryFunction());
@@ -134,7 +129,7 @@ class GraphqlClientIT {
 
 	@Test
 	void testDroidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		assertNull(graphqlClient.droidDoesNotExist());
+		assertNull(directQueries.droidDoesNotExist());
 	}
 
 	private void checkCharacter(Character c, String testDecription, String id, String name, int nbFriends,
