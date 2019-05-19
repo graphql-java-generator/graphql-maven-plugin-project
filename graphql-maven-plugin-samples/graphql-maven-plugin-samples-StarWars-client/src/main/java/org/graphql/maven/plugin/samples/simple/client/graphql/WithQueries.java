@@ -31,11 +31,17 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 public class WithQueries implements Queries {
 
 	QueryType queryType = new QueryType();
-	ObjectResponse heroSimpleResponse;
+
+	ObjectResponse heroFullResponse;
+	ObjectResponse heroPartialResponse;
 	ObjectResponse heroFriendsFriendsFriendsResponse;
-	ObjectResponse humanSimpleResponse;
+
+	ObjectResponse humanFullResponse;
+	ObjectResponse humanPartialResponse;
 	ObjectResponse humanFriendsFriendsFriendsResponse;
-	ObjectResponse droidSimpleResponse;
+
+	ObjectResponse droidFullResponse;
+	ObjectResponse droidPartialResponse;
 	ObjectResponse droidFriendsFriendsFriendsResponse;
 
 	/**
@@ -45,16 +51,30 @@ public class WithQueries implements Queries {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public WithQueries() throws GraphQLRequestPreparationException {
-		heroSimpleResponse = queryType.getHeroResponseBuilder().withQueryResponseDef("{id appearsIn name}").build();
+		// The easiest way: don't precise which fields you want, and all known scalar fields are queried
+		heroFullResponse = queryType.getHeroResponseBuilder().build();
+
+		// Of course, you can precise the fields you want
+		heroPartialResponse = queryType.getHeroResponseBuilder().withQueryResponseDef("{appearsIn name}").build();
 		heroFriendsFriendsFriendsResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef("{id appearsIn friends {name friends {friends{id name appearsIn}}}}").build();
-		humanSimpleResponse = queryType.getHumanResponseBuilder().withQueryResponseDef("{id appearsIn homePlanet name}")
+
+		// The easiest way: don't precise which fields you want, and all known scalar fields are queried
+		humanFullResponse = queryType.getHumanResponseBuilder().build();
+
+		// Of course, you can precise the fields you want
+		humanPartialResponse = queryType.getHumanResponseBuilder().withQueryResponseDef("{appearsIn homePlanet name}")
 				.build();
 		humanFriendsFriendsFriendsResponse = queryType.getHumanResponseBuilder()
 				.withQueryResponseDef("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}")
 				.build();
-		droidSimpleResponse = queryType.getDroidResponseBuilder()
-				.withQueryResponseDef("{id appearsIn primaryFunction name}").build();
+
+		// The easiest way: don't precise which fields you want, and all known scalar fields are queried
+		droidFullResponse = queryType.getDroidResponseBuilder().build();
+
+		// Of course, you can precise the fields you want
+		droidPartialResponse = queryType.getDroidResponseBuilder()
+				.withQueryResponseDef("{appearsIn primaryFunction name}").build();
 		droidFriendsFriendsFriendsResponse = queryType.getDroidResponseBuilder()
 				.withQueryResponseDef(
 						"{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }")
@@ -82,8 +102,13 @@ public class WithQueries implements Queries {
 	}
 
 	@Override
-	public Character heroSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.hero(heroSimpleResponse, Episode.NEWHOPE);
+	public Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.hero(heroFullResponse, Episode.NEWHOPE);
+	}
+
+	@Override
+	public Character heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.hero(heroPartialResponse, Episode.NEWHOPE);
 	}
 
 	@Override
@@ -92,8 +117,13 @@ public class WithQueries implements Queries {
 	}
 
 	@Override
-	public Human humanSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human(humanSimpleResponse, "45");
+	public Human humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.human(humanFullResponse, "45");
+	}
+
+	@Override
+	public Human humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.human(humanPartialResponse, "45");
 	}
 
 	@Override
@@ -102,8 +132,13 @@ public class WithQueries implements Queries {
 	}
 
 	@Override
-	public Droid droidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.droid(droidSimpleResponse, "3");
+	public Droid droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.droid(droidFullResponse, "3");
+	}
+
+	@Override
+	public Droid droidPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.droid(droidPartialResponse, "3");
 	}
 
 	@Override

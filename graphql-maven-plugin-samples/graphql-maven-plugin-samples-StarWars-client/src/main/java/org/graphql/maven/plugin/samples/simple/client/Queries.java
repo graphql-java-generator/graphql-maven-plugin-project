@@ -9,15 +9,21 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 
 public interface Queries {
 
-	Character heroSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+
+	Character heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
 	Character heroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
-	Human humanSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Human humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+
+	Human humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
 	Human humanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
-	Droid droidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Droid droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+
+	Droid droidPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
 	Droid droidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 

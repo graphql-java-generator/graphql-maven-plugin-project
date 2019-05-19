@@ -22,20 +22,28 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 abstract class AbstractTest {
 
-	Queries directQueries;
+	Queries queries;
 
 	@Test
-	void testHeroSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void testHeroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
-		Character c = directQueries.heroSimple();
+		Character c = queries.heroFull();
 
 		checkCharacter(c, "heroSimple", "2", "BB-8", 0, Episode.NEWHOPE);
 	}
 
 	@Test
+	void testHeroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
+		Character c = queries.heroPartial();
+
+		checkCharacter(c, "heroSimple", null, "BB-8", 0, Episode.NEWHOPE);
+	}
+
+	@Test
 	void testHeroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn friends {name friends {friends{id name appearsIn}}}}", Episode.NEWHOPE);
-		Character c = directQueries.heroFriendsFriendsFriends();
+		Character c = queries.heroFriendsFriendsFriends();
 
 		checkCharacter(c, "testHeroFriendsFriendsFriends", "2", null, 2, Episode.NEWHOPE);
 
@@ -68,18 +76,27 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testHumanSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void testHumanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn homePlanet name}", "45");
-		Human h = directQueries.humanSimple();
+		Human h = queries.humanFull();
 
 		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1_0]", "45", "Joruus C'Baoth", 0, Episode.EMPIRE);
 		assertEquals("Kashyyyk", h.getHomePlanet());
 	}
 
 	@Test
+	void testHumanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// queryType.human("{appearsIn homePlanet name}", "45");
+		Human h = queries.humanPartial();
+
+		checkCharacter(h, "humanPartial", null, "Joruus C'Baoth", 0, Episode.EMPIRE);
+		assertEquals("Kashyyyk", h.getHomePlanet());
+	}
+
+	@Test
 	void testHumanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}", "180");
-		Human h = directQueries.humanFriendsFriendsFriends();
+		Human h = queries.humanFriendsFriendsFriends();
 
 		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1]", "180", "Luke Skywalker", 3, Episode.EMPIRE);
 		assertNull(h.getHomePlanet());
@@ -104,18 +121,27 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testDroidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void testDroidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.droid("{id appearsIn primaryFunction name}", "3");
-		Droid d = directQueries.droidSimple();
+		Droid d = queries.droidFull();
 
 		checkCharacter(d, "droidSimple", "3", "C-3PO", 0, Episode.EMPIRE);
 		assertEquals("Function of C-3PO", d.getPrimaryFunction());
 	}
 
 	@Test
+	void testDroidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// queryType.droid("{id appearsIn primaryFunction name}", "3");
+		Droid d = queries.droidPartial();
+
+		checkCharacter(d, "droidSimple", null, "C-3PO", 0, Episode.EMPIRE);
+		assertEquals("Function of C-3PO", d.getPrimaryFunction());
+	}
+
+	@Test
 	void testDroidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }", "2");
-		Droid d = directQueries.droidFriendsFriendsFriends();
+		Droid d = queries.droidFriendsFriendsFriends();
 
 		checkCharacter(d, "testDroidFriendsFriendsFriends", "2", "BB-8", 2, Episode.NEWHOPE);
 		assertEquals("Function of BB-8", d.getPrimaryFunction());
@@ -129,7 +155,7 @@ abstract class AbstractTest {
 
 	@Test
 	void testDroidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		assertNull(directQueries.droidDoesNotExist());
+		assertNull(queries.droidDoesNotExist());
 	}
 
 	private void checkCharacter(Character c, String testDecription, String id, String name, int nbFriends,

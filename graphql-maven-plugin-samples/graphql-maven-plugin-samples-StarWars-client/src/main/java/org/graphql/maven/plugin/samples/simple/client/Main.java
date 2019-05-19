@@ -46,7 +46,7 @@ public class Main {
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  heroSimple  ----------------------------------------------");
-			System.out.println(client.heroSimple());
+			System.out.println(client.heroPartial());
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  heroFriendsFriendsFriends  -------------------------------");
@@ -54,7 +54,7 @@ public class Main {
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  humanSimple  ----------------------------------------------");
-			System.out.println(client.humanSimple());
+			System.out.println(client.humanPartial());
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  humanFriendsFriendsFriends  ------------------------------");
@@ -62,11 +62,11 @@ public class Main {
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  droidSimple  ----------------------------------------------");
-			System.out.println(client.droidSimple());
+			System.out.println(client.droidPartial());
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  droidFriendsFriendsFriends  ------------------------------");
-			System.out.println(client.droidSimple());
+			System.out.println(client.droidPartial());
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  droidDoesNotExist  ---------------------------------------");

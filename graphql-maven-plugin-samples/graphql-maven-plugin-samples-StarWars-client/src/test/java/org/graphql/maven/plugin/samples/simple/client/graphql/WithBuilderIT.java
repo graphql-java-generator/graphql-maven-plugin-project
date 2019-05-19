@@ -12,7 +12,7 @@ class WithBuilderIT extends AbstractTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		directQueries = new WithBuilder();
+		queries = new WithBuilder();
 	}
 
 }

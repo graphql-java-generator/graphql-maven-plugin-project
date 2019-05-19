@@ -12,7 +12,7 @@ class DirectQueriesIT extends AbstractTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		directQueries = new DirectQueries();
+		queries = new DirectQueries();
 	}
 
 }

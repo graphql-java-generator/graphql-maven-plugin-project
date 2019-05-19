@@ -12,7 +12,7 @@ class WithQueriesIT extends AbstractTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		directQueries = new WithQueries();
+		queries = new WithQueries();
 	}
 
 }

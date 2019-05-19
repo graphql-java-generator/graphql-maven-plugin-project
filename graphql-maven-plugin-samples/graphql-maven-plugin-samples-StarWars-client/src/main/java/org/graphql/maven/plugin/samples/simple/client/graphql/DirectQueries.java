@@ -21,8 +21,13 @@ public class DirectQueries implements Queries {
 	QueryType queryType = new QueryType();
 
 	@Override
-	public Character heroSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
+	public Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.hero("", Episode.NEWHOPE);
+	}
+
+	@Override
+	public Character heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.hero("{appearsIn name}", Episode.NEWHOPE);
 	}
 
 	@Override
@@ -31,8 +36,13 @@ public class DirectQueries implements Queries {
 	}
 
 	@Override
-	public Human humanSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human("{id appearsIn homePlanet name}", "45");
+	public Human humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.human((String) null, "45");
+	}
+
+	@Override
+	public Human humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.human("{appearsIn homePlanet name}", "45");
 	}
 
 	@Override
@@ -41,8 +51,13 @@ public class DirectQueries implements Queries {
 	}
 
 	@Override
-	public Droid droidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.droid("{id appearsIn primaryFunction name}", "3");
+	public Droid droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.droid("", "3");
+	}
+
+	@Override
+	public Droid droidPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.droid("{appearsIn primaryFunction name}", "3");
 	}
 
 	@Override
