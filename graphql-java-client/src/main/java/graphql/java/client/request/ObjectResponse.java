@@ -17,19 +17,19 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 /**
  * This class describes what response is expected from the GraphQL server. That is: the fields and sub-objects that the
  * response from the GraphQL server should contain, for one GraphQL type. <BR/>
- * The structure is recursive: a {@link ObjectResponse} itsled contains one or more {@link ObjectResponse}, to
- * describe the Sub-object(s) that should be returned.<BR/>
+ * The structure is recursive: a {@link ObjectResponse} itsled contains one or more {@link ObjectResponse}, to describe
+ * the Sub-object(s) that should be returned.<BR/>
  * A {@link ObjectResponse} can not be created directly. You must use an {@link Builder} to create a
- * {@link ObjectResponse}. This {@link Builder} allows to easily add fields, which can be scalars or sub-objects. And
- * it validates for each the GraphQL schema is respected.<BR/>
+ * {@link ObjectResponse}. This {@link Builder} allows to easily add fields, which can be scalars or sub-objects. And it
+ * validates for each the GraphQL schema is respected.<BR/>
  * There are two types of {@link ObjectResponse}:
  * <UL>
- * <LI><B>Query {@link ObjectResponse}</B>: a query ResponsDef is returned by the generated code. For instance, if
- * your schema contains a QueryType type, a QueryType object will be generated. For each query in the GraphQL schema,
- * this QueryType object contains two methods: a getter which returns the {@link Builder} for this query, and the method
- * wich actually do the call to the GraphQL server for this query.</LI>
- * <LI><B>Sub-object {@link ObjectResponse}</B>: such a {@link ObjectResponse} allow you to define what's expected
- * for a field that is actually an object. This field is a sub-object of the object owning this field. To link such a
+ * <LI><B>Query {@link ObjectResponse}</B>: a query ResponsDef is returned by the generated code. For instance, if your
+ * schema contains a QueryType type, a QueryType object will be generated. For each query in the GraphQL schema, this
+ * QueryType object contains two methods: a getter which returns the {@link Builder} for this query, and the method wich
+ * actually do the call to the GraphQL server for this query.</LI>
+ * <LI><B>Sub-object {@link ObjectResponse}</B>: such a {@link ObjectResponse} allow you to define what's expected for a
+ * field that is actually an object. This field is a sub-object of the object owning this field. To link such a
  * {@link ObjectResponse}, you'll use the {@link Builder#withSubObject(String, ObjectResponse)} or the
  * {@link Builder#withSubObject(String, String, ObjectResponse)} method.</LI>
  * </UL>
@@ -44,8 +44,7 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  * <LI><B>One of the withField methods</B> to add a scalar field to the expected response</LI>
  * <LI><B>One of the withEntity methods</B> to add a field whose type is not scalar. That is, to add a field whose type
  * is an object defined in the GraphQL schema. The withEntity methods needs a {@link ObjectResponse}. To get this
- * {@link ObjectResponse}, you'll create a {@link Builder} with one of the newSubObjectResponseDefBuilder
- * methods.</LI>
+ * {@link ObjectResponse}, you'll create a {@link Builder} with one of the newSubObjectResponseDefBuilder methods.</LI>
  * </UL>
  * 
  * @author EtienneSF
@@ -204,18 +203,18 @@ public class ObjectResponse {
 	 *             If fieldName is null
 	 * @throws GraphQLRequestPreparationException
 	 *             If the given fieldName is not a valid identifier, or if the field is not owned by the class of this
-	 *             {@link ObjectResponse} or if this field is not a scalar ({@link ObjectResponse} can not be
-	 *             built for scalars)
+	 *             {@link ObjectResponse} or if this field is not a scalar ({@link ObjectResponse} can not be built for
+	 *             scalars)
 	 */
 	void setField(String fieldName) throws GraphQLRequestPreparationException {
 		setField(fieldName, null);
 	}
 
 	/**
-	 * Set the field for this {@link ObjectResponse}, that is the field for which the instance describes what
-	 * response is expected from the GraphQL Server. This method checks that the given GraphQL name is valid, and that
-	 * the class of this {@link ObjectResponse} actually contains such a field. This field can be either a non scalar
-	 * field of an object, a query of a QueryType, a mutation of a MutationType, a subscription of a SubscriptionType.
+	 * Set the field for this {@link ObjectResponse}, that is the field for which the instance describes what response
+	 * is expected from the GraphQL Server. This method checks that the given GraphQL name is valid, and that the class
+	 * of this {@link ObjectResponse} actually contains such a field. This field can be either a non scalar field of an
+	 * object, a query of a QueryType, a mutation of a MutationType, a subscription of a SubscriptionType.
 	 * 
 	 * @param fieldName
 	 *            The name of the field
@@ -225,8 +224,8 @@ public class ObjectResponse {
 	 *             If fieldName is null
 	 * @throws GraphQLRequestPreparationException
 	 *             If the given fieldName is not a valid identifier, or if the field is not owned by the class of this
-	 *             {@link ObjectResponse} or if this field is not a scalar ({@link ObjectResponse} can not be
-	 *             built for scalars)
+	 *             {@link ObjectResponse} or if this field is not a scalar ({@link ObjectResponse} can not be built for
+	 *             scalars)
 	 */
 	void setField(String fieldName, String fieldAlias) throws GraphQLRequestPreparationException {
 		// We check that this field exist, whether or not it is a scaler

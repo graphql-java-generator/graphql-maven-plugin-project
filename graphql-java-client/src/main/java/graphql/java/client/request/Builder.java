@@ -1,10 +1,12 @@
 package graphql.java.client.request;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import graphql.java.client.GraphqlUtils;
+import graphql.java.client.annotation.GraphQLScalar;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
 /**
@@ -202,7 +204,18 @@ public class Builder {
 		return this;
 	}
 
-	public ObjectResponse build() {
+	/**
+	 * Returns the built {@link ObjectResponse}. If no field (either scalar or suboject) has been added, then all scalar
+	 * fields are added.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public ObjectResponse build() throws GraphQLRequestPreparationException {
+		// If no field (either scalar or suboject) has been added, then all scalar fields are added.
+		if (objectResponse.scalarFields.size() == 0 && objectResponse.subObjects.size() == 0) {
+			addKnownScalarFields();
+		}
 		return objectResponse;
 	}
 
@@ -213,53 +226,99 @@ public class Builder {
 	 * @param queryResponseDef
 	 *            A part of a response, for instance (for the hero query of the Star Wars GraphQL schema): "{ id name
 	 *            friends{name}}"<BR/>
-	 *            No special character are allowed (linefeed...).
+	 *            No special character are allowed (linefeed...).<BR/>
+	 *            This parameter can be a null or an empty string. In this case, all scalar fields are added.
 	 * @param episode
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder withQueryResponseDef(String queryResponseDef) throws GraphQLRequestPreparationException {
-		// Ok, we have to parse a string which looks like that: "{ id name friends{name}}"
-		// We first replace each "{" by " { " and "}" by " } ". Then we tokenize the string, by using the space as a
-		// delimiter
-		StringTokenizer st = new StringTokenizer(queryResponseDef, " {}:()", true);
-		// We expect a first "{"
-		String token = " ";
-		while (token.equals(" ")) {
-			token = st.nextToken();
-		}
-		if (!token.equals("{")) {
-			throw new GraphQLRequestPreparationException(
-					"The queryResponseDef should start and finish with '{' and '}'");
-		}
 
-		QueryField queryField = new QueryField(objectResponse.fieldName);
-		try {
-			queryField.readTokenizer(st);
-		} catch (GraphQLRequestPreparationException e) {
-			throw new GraphQLRequestPreparationException(
-					e.getMessage() + " while reading the queryReponseDef: " + queryResponseDef, e);
-		}
-
-		// We should have only spaces left
-		while (st.hasMoreTokens()) {
-			token = st.nextToken();
-			switch (token) {
-			case " ":
-				// Nothing to do.
-				break;
-			default:
+		if (queryResponseDef == null || queryResponseDef.trim().equals("")) {
+			addKnownScalarFields();
+		} else {
+			// Ok, we have to parse a string which looks like that: "{ id name friends{name}}"
+			// We first replace each "{" by " { " and "}" by " } ". Then we tokenize the string, by using the space as a
+			// delimiter
+			StringTokenizer st = new StringTokenizer(queryResponseDef, " {}:()", true);
+			// We expect a first "{"
+			String token = " ";
+			while (token.equals(" ")) {
+				token = st.nextToken();
+			}
+			if (!token.equals("{")) {
 				throw new GraphQLRequestPreparationException(
-						"Unexpected token <" + token + "> at the end of the queryReponseDef: " + queryResponseDef);
-			}// switch
-		} // while
+						"The queryResponseDef should start and finish with '{' and '}'");
+			}
 
-		// Ok, the queryResponseDef has been parsed, and the content is store in our queryField.
-		// Let's build our ObjectResponse
-		withQueryField(queryField);
+			QueryField queryField = new QueryField(objectResponse.fieldName);
+			try {
+				queryField.readTokenizer(st);
+			} catch (GraphQLRequestPreparationException e) {
+				throw new GraphQLRequestPreparationException(
+						e.getMessage() + " while reading the queryReponseDef: " + queryResponseDef, e);
+			}
+
+			// We should have only spaces left
+			while (st.hasMoreTokens()) {
+				token = st.nextToken();
+				switch (token) {
+				case " ":
+					// Nothing to do.
+					break;
+				default:
+					throw new GraphQLRequestPreparationException(
+							"Unexpected token <" + token + "> at the end of the queryReponseDef: " + queryResponseDef);
+				}// switch
+			} // while
+
+			// Ok, the queryResponseDef has been parsed, and the content is store in our queryField.
+			// Let's build our ObjectResponse
+			withQueryField(queryField);
+		}
 
 		return this;
 
+	}
+
+	/**
+	 * Add all scalar fields of the current class into the current {@link ObjectResponse}. The scalar fields which have
+	 * already been added to the query are not added, just in case.
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * 
+	 */
+	private void addKnownScalarFields() throws GraphQLRequestPreparationException {
+		if (objectResponse.getFieldClass().isInterface()) {
+			// For interfaces, we loop through all getters
+			for (Method method : objectResponse.getFieldClass().getDeclaredMethods()) {
+				if (method.getName().startsWith("get")) {
+					GraphQLScalar annotation = method.getAnnotation(GraphQLScalar.class);
+					if (annotation != null) {
+						// Ok, we have a getter (like getName), annotated by GraphQLNonScalar
+						withField(getCamelCase(method.getName().substring(3)));
+					}
+				}
+			}
+		} else {
+			// For classes, we loop through all attributes
+			for (java.lang.reflect.Field attribute : objectResponse.getFieldClass().getDeclaredFields()) {
+				GraphQLScalar annotation = attribute.getAnnotation(GraphQLScalar.class);
+				if (annotation != null) {
+					// Ok, we have a getter (like getName), annotated by GraphQLNonScalar
+					withField(getCamelCase(attribute.getName()));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Convert the given name, to a camel case name. Currenly very simple : it puts the first character in lower case.
+	 * 
+	 * @return
+	 */
+	public static String getCamelCase(String name) {
+		return name.substring(0, 1).toLowerCase() + name.substring(1);
 	}
 
 	/**

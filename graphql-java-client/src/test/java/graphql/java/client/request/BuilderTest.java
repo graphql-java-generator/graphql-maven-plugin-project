@@ -14,7 +14,7 @@ import graphql.java.client.domain.starwars.Human;
 import graphql.java.client.domain.starwars.QueryType;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
-class ResponseDefBuilderTest {
+class BuilderTest {
 
 	Class<?> clazz = Human.class;
 	Builder humanResponseDefBuilder;
@@ -237,6 +237,48 @@ class ResponseDefBuilderTest {
 	}
 
 	@Test
+	public void test_withQueryResponseDef_emptyQuery() throws GraphQLRequestPreparationException {
+
+		// Go, go, go
+		humanResponseDefBuilder.withQueryResponseDef("");
+
+		// Verification
+		// Verification
+		assertEquals(4, humanResponseDefBuilder.objectResponse.scalarFields.size(), "all scalar fields");
+		//
+		// field name check
+		int i = 0;
+		assertEquals("id", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+
+		// No non scalar
+		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
+	}
+
+	@Test
+	public void test_withQueryResponseDef_nullQuery() throws GraphQLRequestPreparationException {
+
+		// Go, go, go
+		humanResponseDefBuilder.withQueryResponseDef(null);
+
+		// Verification
+		// Verification
+		assertEquals(4, humanResponseDefBuilder.objectResponse.scalarFields.size(), "all scalar fields");
+		//
+		// field name check
+		int i = 0;
+		assertEquals("id", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+
+		// No non scalar
+		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
+	}
+
+	@Test
 	public void test_withQueryResponseDef() throws GraphQLRequestPreparationException {
 
 		// Go, go, go
@@ -348,5 +390,24 @@ class ResponseDefBuilderTest {
 						"{id friends{ id(since)      nameAlias:name amis  :     friends{id name} appearsIn} name    "),
 				"missing a '}'");
 		assertTrue(e.getMessage().contains("("), e.getMessage());
+	}
+
+	@Test
+	void testBuild_NoFields() throws GraphQLRequestPreparationException {
+		// Go, go, go
+		ObjectResponse resp = humanResponseDefBuilder.build();
+
+		// Verification
+		assertEquals(4, humanResponseDefBuilder.objectResponse.scalarFields.size(), "all scalar fields");
+		//
+		// field name check
+		int i = 0;
+		assertEquals("id", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+
+		// No non scalar
+		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
 	}
 }
