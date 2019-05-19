@@ -33,9 +33,8 @@ public class WithBuilder implements Queries {
 	ObjectResponse topicAuthorPostAuthorResponse;
 
 	public WithBuilder() throws GraphQLRequestPreparationException {
-		// {id name publiclyAvailable}
-		boardsSimpleResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
-				.withField("publiclyAvailable").build();
+		// No field specified: all known scalar fields of the root type will be queried
+		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 
 		// {id date author{name email alias id type} nbPosts title content posts{id date author{name email alias} title
 		// content}}

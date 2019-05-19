@@ -21,7 +21,8 @@ public class DirectQueries implements Queries {
 
 	@Override
 	public List<Board> boardsSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.boards("{id name publiclyAvailable}");
+		// No field specified: all known scalar fields of the root type will be queried
+		return queryType.boards("");
 	}
 
 	@Override
