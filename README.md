@@ -12,6 +12,7 @@ The aim of this project is to:
 * Make it __easy__ to create a GraphQL server. The plugin generated the server boilerplate code and the POJOs. But it's still up to the developper to map the GraphQL schema to the database schema. See the provided samples for different ways to do this. The generated code integrate the JPA schema, making the database access easy, thanks to the Spring Data Repositories.
 
 In the near future :
+* Implement also Mutations and Subscriptions. Currently only queries are managed.
 * Provides implementation for the GraphQL best practices, including the dataloader (very important for performance, see [https://github.com/graphql-java/java-dataloader](https://github.com/graphql-java/java-dataloader)).    
 
 
