@@ -130,52 +130,52 @@ public class WithBuilder implements Queries {
 	}
 
 	@Override
-	public Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Character heroFull() throws GraphQLExecutionException {
 		return queryType.hero(heroFullResponse, Episode.NEWHOPE);
 	}
 
 	@Override
-	public Character heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Character heroPartial() throws GraphQLExecutionException {
 		return queryType.hero(heroPartialResponse, Episode.NEWHOPE);
 	}
 
 	@Override
-	public Character heroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Character heroFriendsFriendsFriends() throws GraphQLExecutionException {
 		return queryType.hero(heroFriendsFriendsFriendsResponse, Episode.NEWHOPE);
 	}
 
 	@Override
-	public Human humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Human humanFull() throws GraphQLExecutionException {
 		return queryType.human(humanFullResponse, "45");
 	}
 
 	@Override
-	public Human humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Human humanPartial() throws GraphQLExecutionException {
 		return queryType.human(humanPartialResponse, "45");
 	}
 
 	@Override
-	public Human humanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Human humanFriendsFriendsFriends() throws GraphQLExecutionException {
 		return queryType.human(humanFriendsFriendsFriendsResponse, "180");
 	}
 
 	@Override
-	public Droid droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Droid droidFull() throws GraphQLExecutionException {
 		return queryType.droid(droidFullResponse, "3");
 	}
 
 	@Override
-	public Droid droidPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Droid droidPartial() throws GraphQLExecutionException {
 		return queryType.droid(droidPartialResponse, "3");
 	}
 
 	@Override
-	public Droid droidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Droid droidFriendsFriendsFriends() throws GraphQLExecutionException {
 		return queryType.droid(droidFriendsFriendsFriendsResponse, "2");
 	}
 
 	@Override
-	public Droid droidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public Droid droidDoesNotExist() throws GraphQLExecutionException {
 		return queryType.droid(droidFriendsFriendsFriendsResponse, "doesn't exist");
 	}
 
