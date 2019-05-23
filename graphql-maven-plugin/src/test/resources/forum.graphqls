@@ -1,10 +1,17 @@
 schema {
     query: QueryType
+    mutation: MutationType
 }
 
 type QueryType {
     boards: [Board]
     topics(boardName: String!): [Topic]!
+}
+
+type MutationType {
+	createBoard(name: String!, publiclyAvailable: Boolean): Board!
+	createTopic(authorId: ID!, publiclyAvailable: Boolean, title: String!, content: String): Topic!
+	createPost(authorId: ID!, publiclyAvailable: Boolean, title: String!, content: String!): Post!
 }
 
 
@@ -32,11 +39,11 @@ type Board {
 type Topic {
     id: ID!
     date: String!
-    author: Member
+    author: Member!
     publiclyAvailable: Boolean
     nbPosts: Int
     title: String!
-    content: String!
+    content: String
     posts(since: String): [Post]!
 }
 

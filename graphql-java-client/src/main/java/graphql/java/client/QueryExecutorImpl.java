@@ -47,12 +47,12 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(ObjectResponse objectResponse, List<InputParameter> parameters, Class<T> valueType)
-			throws GraphQLExecutionException {
+	public <T> T execute(String requestType, ObjectResponse objectResponse, List<InputParameter> parameters,
+			Class<T> valueType) throws GraphQLExecutionException {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
-			request = buildRequest(objectResponse, parameters);
+			request = buildRequest(requestType, objectResponse, parameters);
 			logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
 			return doJsonRequestExecution(request, valueType);
@@ -122,14 +122,23 @@ public class QueryExecutorImpl implements QueryExecutor {
 	/**
 	 * Builds a single GraphQL request from the parameter given.
 	 * 
+	 * @param requestType
+	 *            One of "query", "mutation" or "subscription"
 	 * @param objectResponse
 	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()} method
 	 *            returns the field of the query, that is: the query name.
 	 * @param parameters
 	 * @return The GraphQL request, ready to be sent to the GraphQl server.
 	 */
-	String buildRequest(ObjectResponse objectResponse, List<InputParameter> parameters) {
+	String buildRequest(String requestType, ObjectResponse objectResponse, List<InputParameter> parameters) {
+		if (!requestType.equals("query") && !requestType.equals("mutation") && !requestType.equals("subscription")) {
+			throw new IllegalArgumentException(
+					"requestType must be one of \"query\", \"mutation\" or \"subscription\", but is \"" + requestType
+							+ "\"");
+		}
+
 		StringBuilder sb = new StringBuilder();
+		sb.append(requestType).append(" ");
 		sb.append("{");
 		sb.append(objectResponse.getFieldName());
 		if (parameters != null && parameters.size() > 0) {
@@ -143,7 +152,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 			} // for
 			sb.append(")");
 		}
-		sb.append(" ");
 		objectResponse.appendResponseQuery(sb);
 		sb.append("}");
 

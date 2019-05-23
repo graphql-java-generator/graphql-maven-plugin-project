@@ -29,7 +29,7 @@ public class Error {
 
 	public String errorType;
 
-	public String path;
+	public List<String> path;
 
 	@JsonDeserialize(contentAs = Extension.class)
 	public List<Extension> extensions;

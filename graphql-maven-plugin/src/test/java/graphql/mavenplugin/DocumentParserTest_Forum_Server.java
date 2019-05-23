@@ -106,7 +106,7 @@ class DocumentParserTest_Forum_Server {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
-		assertEquals(6, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(9, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		//
@@ -117,6 +117,13 @@ class DocumentParserTest_Forum_Server {
 				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeTopics", "QueryType", "topics", "Topic", true,
 				null, "boardName");
+
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreateBoard", "MutationType", "createBoard",
+				"Board", false, null, "name", "publiclyAvailable");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreateTopic", "MutationType", "createTopic",
+				"Topic", false, null, "authorId", "publiclyAvailable", "title", "content");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreatePost", "MutationType", "createPost",
+				"Post", false, null, "authorId", "publiclyAvailable", "title", "content");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "BoardTopics", "Board", "topics", "Topic", true, "Board",
 				"since");
@@ -129,7 +136,7 @@ class DocumentParserTest_Forum_Server {
 		//
 		// Verification of the data fetchers delegates
 		//
-		assertEquals(4, documentParser.dataFetcherDelegates.size(), "data fetchers delegates");
+		assertEquals(5, documentParser.dataFetcherDelegates.size(), "data fetchers delegates");
 		i = 0;
 		int j = 0;
 
@@ -144,7 +151,7 @@ class DocumentParserTest_Forum_Server {
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Board
-		i += 1;
+		i += 2;
 		j = 0;
 		assertEquals("BoardDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
 				"delegate name " + i);

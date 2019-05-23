@@ -36,7 +36,7 @@ class DocumentParserTest_StarWars_Server {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
-		assertEquals(10, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(12, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list
@@ -48,6 +48,11 @@ class DocumentParserTest_StarWars_Server {
 				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeDroid", "QueryType", "droid", "Droid", false,
 				null);
+
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreateHuman", "MutationType", "createHuman",
+				"Human", false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeAddFriend", "MutationType", "addFriend",
+				"Character", false, null);
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "HumanFriends", "Human", "friends", "Character", true,
 				"Human");

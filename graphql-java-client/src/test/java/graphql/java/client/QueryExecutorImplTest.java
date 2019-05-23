@@ -69,10 +69,10 @@ class QueryExecutorImplTest {
 				.withField("id").withField("name").build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest(objectResponse, parameters);
+		String request = queryExecutorImpl.buildRequest("mutation", objectResponse, parameters);
 
 		// Verification
-		assertEquals("{\"query\":\"{hero(id: \\\"1\\\") { id name}}\",\"variables\":null,\"operationName\":null}",
+		assertEquals("{\"mutation\":\"{hero(id: \\\"1\\\") { id name}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -93,7 +93,7 @@ class QueryExecutorImplTest {
 				.withField("id").withField("name").build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest(objectResponse, parameters);
+		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
 
 		// Verification
 		assertEquals(
@@ -115,16 +115,15 @@ class QueryExecutorImplTest {
 		// The response should contain id and name
 		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")
 				.withField("id").withField("name").withField("appearsIn")
-				.withSubObject("friends",
-						ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
+				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
 				.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest(objectResponse, parameters);
+		String request = queryExecutorImpl.buildRequest("subscription", objectResponse, parameters);
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"{hero(episode: NEWHOPE) { id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"subscription\":\"{hero(episode: NEWHOPE) { id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -137,8 +136,7 @@ class QueryExecutorImplTest {
 		// The response should contain id and name
 		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")//
 				.withField("id").withField("name").withField("appearsIn")
-				.withSubObject("friends",
-						ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
+				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
 				.build();
 
 		assertThrows(NullPointerException.class,

@@ -37,6 +37,12 @@ public class ObjectType extends AbstractType {
 	@ToString.Exclude
 	private List<Field> fields = new ArrayList<>();
 
+	/***
+	 * One of null, "query", "mutation" or "subscription". This is used for queries, mutations and subscriptions as the
+	 * string to put in the JSON query toward the GraphQL server
+	 */
+	String requestType;
+
 	/**
 	 * 
 	 * @param name

@@ -33,8 +33,8 @@ public class QueryType {
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
 	 * describes the format of the response of the server response, that is the expected fields of the {@link Board}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
-	 * the StarWars, Forum and other samples for more complex queries.
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
@@ -65,33 +65,29 @@ public class QueryType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLRequestPreparationException
-	 *             When an error occurs during the request preparation, typically when building the
-	 *             {@link ObjectResponse}
 	 * @throws GraphQLExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Board.class)
 	@GraphQLQuery
-	public List<Board> boards(ObjectResponse objectResponse) 
-			throws GraphQLRequestPreparationException, GraphQLExecutionException  {
+	public List<Board> boards(ObjectResponse objectResponse) throws GraphQLExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'boards' with parameters: ");
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of query 'boards'");
 		}
-	
+
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 
 		if (!Board.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestPreparationException("The ObjectResponse parameter should be an instance of "
-					+ Board.class + ", but is an instance of " + objectResponse.getClass().getName());
+			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of " + Board.class
+					+ ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
-		QueryTypeBoards ret = executor.execute(objectResponse, parameters, QueryTypeBoards.class);
-		
+		QueryTypeBoards ret = executor.execute("query", objectResponse, parameters, QueryTypeBoards.class);
+
 		return ret.boards;
 	}
 
@@ -104,14 +100,14 @@ public class QueryType {
 	public Builder getBoardsResponseBuilder() throws GraphQLRequestPreparationException {
 		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "boards");
 	}
-	
+
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
 	 * describes the format of the response of the server response, that is the expected fields of the {@link Topic}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
-	 * the StarWars, Forum and other samples for more complex queries.
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
@@ -142,34 +138,30 @@ public class QueryType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLRequestPreparationException
-	 *             When an error occurs during the request preparation, typically when building the
-	 *             {@link ObjectResponse}
 	 * @throws GraphQLExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Topic.class)
 	@GraphQLQuery
-	public List<Topic> topics(ObjectResponse objectResponse, String boardName) 
-			throws GraphQLRequestPreparationException, GraphQLExecutionException  {
+	public List<Topic> topics(ObjectResponse objectResponse, String boardName) throws GraphQLExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'topics' with parameters: {} ", boardName);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of query 'topics'");
 		}
-	
+
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("boardName", boardName));
 
 		if (!Topic.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestPreparationException("The ObjectResponse parameter should be an instance of "
-					+ Topic.class + ", but is an instance of " + objectResponse.getClass().getName());
+			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of " + Topic.class
+					+ ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
-		QueryTypeTopics ret = executor.execute(objectResponse, parameters, QueryTypeTopics.class);
-		
+		QueryTypeTopics ret = executor.execute("query", objectResponse, parameters, QueryTypeTopics.class);
+
 		return ret.topics;
 	}
 
@@ -182,5 +174,5 @@ public class QueryType {
 	public Builder getTopicsResponseBuilder() throws GraphQLRequestPreparationException {
 		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "topics");
 	}
-	
+
 }

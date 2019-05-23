@@ -93,7 +93,7 @@ public class ${object.name} {
 					+ ${field.type.classSimpleName}.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
-		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute(objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
+		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute("${object.requestType}", objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
 		
 		return ret.${field.name};
 	}

@@ -228,11 +228,17 @@ public class DocumentParser {
 				// Let's check what kind of ObjectDefinition we have
 				String name = ((ObjectTypeDefinition) node).getName();
 				if (queryObjectNames.contains(name) || DEFAULT_QUERY_NAME.equals(name)) {
-					queryTypes.add(readObjectType((ObjectTypeDefinition) node));
+					ObjectType query = readObjectType((ObjectTypeDefinition) node);
+					query.setRequestType("query");
+					queryTypes.add(query);
 				} else if (mutationObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
-					mutationTypes.add(readObjectType((ObjectTypeDefinition) node));
+					ObjectType mutation = readObjectType((ObjectTypeDefinition) node);
+					mutation.setRequestType("mutation");
+					mutationTypes.add(mutation);
 				} else if (subscriptionObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
-					subscriptionTypes.add(readObjectType((ObjectTypeDefinition) node));
+					ObjectType subscription = readObjectType((ObjectTypeDefinition) node);
+					subscription.setRequestType("subscription");
+					subscriptionTypes.add(subscription);
 				} else {
 					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
 				}
@@ -696,6 +702,7 @@ public class DocumentParser {
 	void initDataFetchers() {
 		if (mode.equals(PluginMode.server)) {
 			queryTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
+			mutationTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
 			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
 			// interfaces
 			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));

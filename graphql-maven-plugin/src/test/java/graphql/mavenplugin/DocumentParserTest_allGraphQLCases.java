@@ -63,6 +63,10 @@ class DocumentParserTest_allGraphQLCases {
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
 		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
 		assertEquals(1, documentParser.subscriptionTypes.size(), "Nb subscriptions");
+
+		assertEquals("query", documentParser.queryTypes.get(0).getRequestType());
+		assertEquals("mutation", documentParser.mutationTypes.get(0).getRequestType());
+		assertEquals("subscription", documentParser.subscriptionTypes.get(0).getRequestType());
 	}
 
 	@Test
@@ -222,8 +226,8 @@ class DocumentParserTest_allGraphQLCases {
 		ObjectType type = documentParser.readObjectType(def);
 
 		// Verification
-		assertEquals("MyQueryType", type.getName(), "The name is MyQueryType");
-		assertEquals(7, type.getFields().size(), "Number of queries");
+		assertEquals("MyQueryType", type.getName());
+		assertEquals(7, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -313,8 +317,8 @@ class DocumentParserTest_allGraphQLCases {
 		ObjectType type = documentParser.readObjectType(def);
 
 		// Verification
-		assertEquals(objectName, type.getName(), "The name is " + objectName);
-		assertEquals(1, type.getFields().size(), "Number of fields");
+		assertEquals(objectName, type.getName());
+		assertEquals(1, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
@@ -349,8 +353,8 @@ class DocumentParserTest_allGraphQLCases {
 		ObjectType type = documentParser.readObjectType(def);
 
 		// Verification
-		assertEquals(objectName, type.getName(), "The name is " + objectName);
-		assertEquals(1, type.getFields().size(), "Number of fields");
+		assertEquals(objectName, type.getName());
+		assertEquals(1, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
