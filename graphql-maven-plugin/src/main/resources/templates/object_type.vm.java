@@ -1,8 +1,9 @@
 package ${package};
 
 import java.util.List;
-
 #if ($mode == "server")
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,6 +31,19 @@ public class ${object.name} #if($object.implementz.size()>0)implements #foreach(
 #end
 
 #foreach ($field in $object.fields)
+#if (${field.useUUID})
+	public void set${field.pascalCaseName}(String ${field.name}) {
+		this.${field.name} = UUID.fromString(${field.name});
+	}
+
+	public String get${field.pascalCaseName}() {
+		if (${field.name} == null) {
+			return null;
+		} else {
+			return ${field.name}.toString();
+		}
+	}
+#else
 	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}) {
 		this.${field.name} = ${field.name};
 	}
@@ -37,7 +51,8 @@ public class ${object.name} #if($object.implementz.size()>0)implements #foreach(
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end get${field.pascalCaseName}() {
 		return ${field.name};
 	}
-	
+#end
+
 #end
     public String toString() {
         return "${object.name} {"

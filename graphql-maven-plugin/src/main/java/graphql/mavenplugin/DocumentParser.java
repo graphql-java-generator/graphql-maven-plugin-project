@@ -460,6 +460,7 @@ public class DocumentParser {
 		field.setTypeName(typeName.getName());
 		if (typeName.equals("ID")) {
 			field.setId(true);
+			field.setUseUUID(true);
 		}
 
 		// For InputValueDefinition, we may have a defaut value
