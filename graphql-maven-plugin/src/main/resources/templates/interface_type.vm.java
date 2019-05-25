@@ -3,6 +3,8 @@ package ${package};
 import java.util.List;
 
 #if ($mode == "server")
+import java.util.UUID;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;

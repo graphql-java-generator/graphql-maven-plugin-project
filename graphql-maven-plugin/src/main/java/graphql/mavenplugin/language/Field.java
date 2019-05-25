@@ -63,12 +63,6 @@ public interface Field {
 	 */
 	public boolean isId();
 
-	/**
-	 * Indicates if this id field should be a UUID field. This is used only in server mode, and only for id fields. This
-	 * allows to let JPA generate an UUID when creating an entity, in GraphQL mutation.
-	 */
-	public boolean isUseUUID();
-
 	/** All fields in an object may have parameters. A parameter is actually a field. */
 	public List<Field> getInputParameters();
 

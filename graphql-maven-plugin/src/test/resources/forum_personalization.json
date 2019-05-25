@@ -1,11 +1,26 @@
 {
 	"entityPersonalizations": [
 		{
-			"name": "Topic",
+			"name": "Member",
+			"fieldPersonalizations": [
+				{
+					"name": "type",
+					"addAnnotation": "@javax.persistence.Enumerated(javax.persistence.EnumType.STRING)"
+				}
+			]		},
+		{
+			"name": "Post",
 			"newFields": [
 				{
-					"name": "author_id",
-					"type": "String",
+					"name": "authorId",
+					"type": "UUID",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				},
+				{
+					"name": "topicId",
+					"type": "UUID",
 					"id": false,
 					"list": false,
 					"mandatory": false
@@ -13,11 +28,18 @@
 			]
 		},
 		{
-			"name": "Post",
+			"name": "Topic",
 			"newFields": [
 				{
-					"name": "author_id",
-					"type": "String",
+					"name": "boardId",
+					"type": "UUID",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				},
+				{
+					"name": "authorId",
+					"type": "UUID",
 					"id": false,
 					"list": false,
 					"mandatory": false

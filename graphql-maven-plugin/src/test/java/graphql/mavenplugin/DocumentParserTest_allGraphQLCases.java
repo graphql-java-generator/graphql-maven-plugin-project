@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -98,7 +99,7 @@ class DocumentParserTest_allGraphQLCases {
 
 		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
 		// id: ID!
-		checkField(type, j++, "id", false, true, null, "ID", String.class.getName());
+		checkField(type, j++, "id", false, true, null, "UUID", UUID.class.getName());
 		// name: String!
 		checkField(type, j++, "name", false, true, null, "String", String.class.getName());
 		// forname: String
@@ -155,7 +156,7 @@ class DocumentParserTest_allGraphQLCases {
 
 		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
 		// id: ID!
-		checkField(type, j++, "id", false, true, null, "ID", String.class.getName());
+		checkField(type, j++, "id", false, true, null, "UUID", UUID.class.getName());
 		// name: String!
 		checkField(type, j++, "name", false, true, null, "String", String.class.getName());
 		// bestFriend: Character

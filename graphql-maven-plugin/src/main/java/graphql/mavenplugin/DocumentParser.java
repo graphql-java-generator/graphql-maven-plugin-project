@@ -156,6 +156,7 @@ public class DocumentParser {
 	public DocumentParser() {
 		// Add of all predefined scalars
 		scalars.add(new ScalarType("ID", "java.lang", "String", mode));
+		scalars.add(new ScalarType("UUID", "java.util", "UUID", mode));
 		scalars.add(new ScalarType("String", "java.lang", "String", mode));
 
 		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
@@ -458,9 +459,14 @@ public class DocumentParser {
 		// We have the type. But we may not have parsed it yet. So we just write its name. And will get the
 		// graphql.mavenplugin.language.Type when generating the code.
 		field.setTypeName(typeName.getName());
-		if (typeName.equals("ID")) {
+		if (typeName.getName().equals("ID")) {
 			field.setId(true);
-			field.setUseUUID(true);
+
+			// In server mode, we use the UUID type.
+			// For client, we keep complying to the GraphQL schema
+			if (mode.equals(PluginMode.server)) {
+				field.setTypeName("UUID");
+			}
 		}
 
 		// For InputValueDefinition, we may have a defaut value
@@ -714,17 +720,17 @@ public class DocumentParser {
 	 * Identified all the GraphQL Data Fetchers needed for this type
 	 *
 	 * @param type
-	 * @param isQueryType
+	 * @param isQueryOrMutationType
 	 *            true if the given type is actually a query, false otherwise
 	 */
-	void initDataFetcherForOneObject(Type type, boolean isQueryType) {
+	void initDataFetcherForOneObject(Type type, boolean isQueryOrMutationType) {
 		String name = type.getClassSimpleName() + "DataFetchersDelegate";
 		DataFetcherDelegateImpl dataFetcherDelegate = new DataFetcherDelegateImpl(name);
 
 		for (Field field : type.getFields()) {
 			DataFetcherImpl dataFetcher = null;
 
-			if (isQueryType) {
+			if (isQueryOrMutationType) {
 				// For queries and field that are lists, we take the argument read in the schema as is: all the needed
 				// informations is already parsed.
 				dataFetcher = new DataFetcherImpl(field);
@@ -732,7 +738,7 @@ public class DocumentParser {
 					(field.isList() || field.getType() instanceof ObjectType
 							|| field.getType() instanceof InterfaceType))) {
 				// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to manage
-				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loaded : very
+				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loader : very
 				// important to limit the number of subqueries, when subobjects are queried.
 				// In these case, we need to create a new field that add the object ID as a parameter of the Data
 				// Fetcher

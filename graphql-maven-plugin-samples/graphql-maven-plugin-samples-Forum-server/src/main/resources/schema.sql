@@ -1,6 +1,6 @@
 
 create table member (
-	id varchar(255) not null,
+	id uuid not null,
 	name varchar(255) not null,
 	alias varchar(255),
 	email varchar(255) not null,
@@ -9,17 +9,17 @@ create table member (
 );
 
 create table board (
-	id varchar(255) not null,
+	id uuid not null,
 	name varchar(255) not null,
 	publicly_available boolean,
 	primary key (id)
 );
 
 create table topic (
-	id varchar(255) not null,
-	board_id varchar(255) not null,
+	id uuid not null,
+	board_id uuid not null,
 	date datetime not null,
-	author_id varchar(255),
+	author_id uuid,
 	publicly_available boolean,
 	nb_posts int,
 	title varchar(255) not null,
@@ -28,10 +28,10 @@ create table topic (
 );
 
 create table post (
-	id varchar(255) not null,
+	id uuid not null,
 	date datetime not null,
-	topic_id varchar(255) not null,
-	author_id varchar(255),
+	topic_id uuid not null,
+	author_id uuid,
 	publicly_available boolean,
 	title varchar(255) not null,
 	content varchar(255) not null,

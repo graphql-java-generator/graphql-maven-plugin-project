@@ -2,6 +2,7 @@ package ${package};
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -38,6 +39,8 @@ public class GraphQLDataFetchers {
 #foreach ($argument in $dataFetcher.field.inputParameters)
 #if ($argument.type.class.simpleName == "EnumType")
 			${argument.type.classSimpleName} ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+#elseif (${argument.type.classSimpleName} == "UUID")
+			${argument.type.classSimpleName} ${argument.camelCaseName} = UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
 #else
 			${argument.type.classSimpleName} ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end

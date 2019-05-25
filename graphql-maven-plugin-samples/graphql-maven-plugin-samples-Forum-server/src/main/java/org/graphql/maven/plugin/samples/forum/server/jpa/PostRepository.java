@@ -3,6 +3,8 @@
  */
 package org.graphql.maven.plugin.samples.forum.server.jpa;
 
+import java.util.UUID;
+
 import org.graphql.maven.plugin.samples.forum.server.Post;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -10,12 +12,12 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * @author EtienneSF
  */
-public interface PostRepository extends CrudRepository<Post, String> {
+public interface PostRepository extends CrudRepository<Post, UUID> {
 
 	@Query(value = "select p from Post p where p.topicId= ?1")
-	Iterable<Post> findByTopicId(String topicId);
+	Iterable<Post> findByTopicId(UUID topicId);
 
 	@Query(value = "select p from Post p where p.topicId= ?1 and p.date >= ?2")
-	Iterable<Post> findByTopicIdAndSince(String id, String since);
+	Iterable<Post> findByTopicIdAndSince(UUID id, String since);
 
 }

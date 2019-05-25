@@ -13,14 +13,14 @@
 			"newFields": [
 				{
 					"name": "authorId",
-					"type": "String",
+					"type": "UUID",
 					"id": false,
 					"list": false,
 					"mandatory": false
 				},
 				{
 					"name": "topicId",
-					"type": "String",
+					"type": "UUID",
 					"id": false,
 					"list": false,
 					"mandatory": false
@@ -32,14 +32,14 @@
 			"newFields": [
 				{
 					"name": "boardId",
-					"type": "String",
+					"type": "UUID",
 					"id": false,
 					"list": false,
 					"mandatory": false
 				},
 				{
 					"name": "authorId",
-					"type": "String",
+					"type": "UUID",
 					"id": false,
 					"list": false,
 					"mandatory": false
