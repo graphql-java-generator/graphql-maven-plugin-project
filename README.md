@@ -2,6 +2,11 @@
 
 This project is a maven plugin, which makes it easy to work in Java with graphQL in a schema first approach.
 
+TODO : 
+- Client : personalize the endpoint
+- Serveur : personalize the port number
+- Serveur : howto reply with a fonctionnal error
+
 ## Aim of this projet
 
 The aim of this project is to:
@@ -131,10 +136,10 @@ You can access to the H2 Console with this URL: [http://localhost:8180/h2-consol
 ### Main evolutions for the near future
 
 You'll find below the main changes, that are foreseen in the near future
-- Add a gradle plugin
-- Manage properties which name is a java keyword, like: public, private, class...
 - Manage Mutations and Subscriptions. Currently, GraphQL Java Generator manages only queries.
 - Generate the package as a jar or war form. Currently, GraphQL Java Generator generates a Spring Boot application.
+- Add a gradle plugin
+- Manage properties which name is a java keyword, like: public, private, class...
 - Manage field parameters. Currently, GraphQL Java Generator accepts only parameters at the query level
 - Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subsciptions
 - Define specific Scalars (for instance Date, DateTime, Time)
