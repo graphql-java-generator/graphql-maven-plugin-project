@@ -5,6 +5,7 @@ import java.util.List;
 import org.graphql.maven.plugin.samples.forum.client.Queries;
 import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.Board;
 import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.Member;
+import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.MutationType;
 import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.Post;
 import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.QueryType;
 import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.Topic;
@@ -29,8 +30,11 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 public class WithBuilder implements Queries {
 
 	QueryType queryType = new QueryType();
+	MutationType mutationType = new MutationType();
 	ObjectResponse boardsSimpleResponse;
+	ObjectResponse boardsAndTopicsResponse;
 	ObjectResponse topicAuthorPostAuthorResponse;
+	ObjectResponse createBoardResponse;
 
 	public WithBuilder() throws GraphQLRequestPreparationException {
 		// No field specified: all known scalar fields of the root type will be queried
@@ -48,6 +52,17 @@ public class WithBuilder implements Queries {
 				.withSubObject("author", author1).withField("nbPosts").withSubObject("posts", posts).withField("title")
 				.withField("content").build();
 
+		createBoardResponse = mutationType.getCreateBoardResponseBuilder().withField("id").withField("name")
+				.withField("publiclyAvailable").build();
+	}
+
+	ObjectResponse getBoardsAndTopics() throws GraphQLRequestPreparationException {
+		if (boardsAndTopicsResponse == null) {
+			boardsAndTopicsResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
+					.withField("publiclyAvailable")
+					.withSubObject("topics", ObjectResponse.newSubObjectBuilder(Topic.class).build()).build();
+		}
+		return boardsAndTopicsResponse;
 	}
 
 	@Override
@@ -56,7 +71,19 @@ public class WithBuilder implements Queries {
 	}
 
 	@Override
+	public List<Board> boardsAndTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// Used to check that a newly created Board has no topic
+		return queryType.boards(getBoardsAndTopics());
+	}
+
+	@Override
 	public List<Topic> topicAuthorPostAuthor() throws GraphQLExecutionException {
 		return queryType.topics(topicAuthorPostAuthorResponse, "Board name 2");
+	}
+
+	@Override
+	public Board createBoard(String name, boolean publiclyAvailable)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createBoard(createBoardResponse, name, publiclyAvailable);
 	}
 }

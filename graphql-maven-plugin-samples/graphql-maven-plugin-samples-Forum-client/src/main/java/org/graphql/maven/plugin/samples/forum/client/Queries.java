@@ -12,6 +12,11 @@ public interface Queries {
 
 	List<Board> boardsSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
+	List<Board> boardsAndTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+
 	List<Topic> topicAuthorPostAuthor() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+
+	Board createBoard(String name, boolean publiclyAvailable)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
 }

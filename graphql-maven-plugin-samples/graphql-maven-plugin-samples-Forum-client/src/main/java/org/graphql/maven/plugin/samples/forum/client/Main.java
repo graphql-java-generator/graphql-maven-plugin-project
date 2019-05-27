@@ -16,20 +16,24 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 public class Main {
 
 	public static void main(String[] args) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+
+		System.out.println("");
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		exec(new DirectQueries());
+		exec(new DirectQueries(), null);
 
+		System.out.println("");
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		exec(new WithQueries());
+		exec(new WithQueries(), null);
 
+		System.out.println("");
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		exec(new WithBuilder());
+		exec(new WithBuilder(), null);
 
 		System.out.println("");
 		System.out.println("");
@@ -38,7 +42,7 @@ public class Main {
 		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
-	static void exec(Queries client) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	static void exec(Queries client, String name) throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		try {
 
 			System.out.println("----------------------------------------------------------------------------");
@@ -48,6 +52,12 @@ public class Main {
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  topicAuthorPostAuthor  -----------------------------------");
 			System.out.println(client.topicAuthorPostAuthor());
+
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------  createBoard  ---------------------------------------------");
+			// We need a unique name. Let's use a random name for that, if none was provided.
+			name = (name != null) ? name : "Name " + Float.floatToIntBits((float) Math.random() * Integer.MAX_VALUE);
+			System.out.println(client.createBoard(name, true));
 
 		} catch (javax.ws.rs.ProcessingException e) {
 			System.out.println("");

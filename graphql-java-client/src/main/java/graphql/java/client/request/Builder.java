@@ -95,7 +95,7 @@ public class Builder {
 
 			// Oups, we should not arrive here :
 			throw new GraphQLRequestPreparationException("The field <" + name
-					+ "> has a non finished list of fields (it lacks the finishing '}' while reading <" + this.name
+					+ "> has a non finished list of fields (it lacks the finishing '}') while reading <" + this.name
 					+ ">");
 		}
 	}
@@ -247,8 +247,7 @@ public class Builder {
 				token = st.nextToken();
 			}
 			if (!token.equals("{")) {
-				throw new GraphQLRequestPreparationException(
-						"The queryResponseDef should start and finish with '{' and '}'");
+				throw new GraphQLRequestPreparationException("The queryResponseDef should start with '{'");
 			}
 
 			QueryField queryField = new QueryField(objectResponse.fieldName);
