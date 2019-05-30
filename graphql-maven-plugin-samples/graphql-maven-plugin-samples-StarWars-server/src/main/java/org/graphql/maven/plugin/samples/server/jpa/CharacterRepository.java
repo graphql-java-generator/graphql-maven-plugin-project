@@ -4,9 +4,13 @@
 package org.graphql.maven.plugin.samples.server.jpa;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
 import org.graphql.maven.plugin.samples.server.CharacterImpl;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -59,7 +63,19 @@ public interface CharacterRepository extends CrudRepository<CharacterImpl, UUID>
 			, nativeQuery = true)
 	List<CharacterImpl> findFriends(UUID id);
 
+	@Modifying
+	@Transactional
 	@Query(value = "insert into character_friends (character_id, friend_id) values (?1, ?2)", nativeQuery = true)
 	void addFriend(UUID idCharacter, UUID idFriend);
+
+	/**
+	 * As in this implementation, we have separate tables for the concrete classes of the Character interface, we use a
+	 * nativeQuery. Another option is to use a CharacterImpl view.
+	 */
+	@Query(value = ""//
+			+ " select id, name from droid where id = ?1"//
+			+ " union all " + " select id, name from human where id = ?1"//
+			, nativeQuery = true)
+	Optional<CharacterImpl> findById(UUID id);
 
 }

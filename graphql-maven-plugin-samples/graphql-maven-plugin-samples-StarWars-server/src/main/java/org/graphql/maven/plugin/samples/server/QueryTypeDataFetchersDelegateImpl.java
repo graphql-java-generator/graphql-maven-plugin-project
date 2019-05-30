@@ -31,7 +31,14 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 
 	@Override
 	public Character hero(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		List<CharacterImpl> characters = characterRepository.findByAppearsIn(episode.toString());
+		List<CharacterImpl> characters;
+
+		// episode may be null
+		if (episode == null) {
+			characters = characterRepository.findAll();
+		} else {
+			characters = characterRepository.findByAppearsIn(episode.toString());
+		}
 
 		// For an unknown reason to me, the sample returns one item.
 		if (characters.size() == 0) {
@@ -43,8 +50,13 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 
 	@Override
 	public List<Character> characters(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		return graphQLUtil
-				.iterableConcreteClassToListInterface(characterRepository.findByAppearsIn(episode.toString()));
+		// episode may be null
+		if (episode == null) {
+			return graphQLUtil.iterableConcreteClassToListInterface(characterRepository.findAll());
+		} else {
+			return graphQLUtil
+					.iterableConcreteClassToListInterface(characterRepository.findByAppearsIn(episode.toString()));
+		}
 	}
 
 	@Override

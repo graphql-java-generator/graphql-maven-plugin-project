@@ -1,11 +1,18 @@
 schema {
     query: QueryType
+    mutation: MutationType
 }
 
 type QueryType {
     hero(episode: Episode): Character
-    human(id : String) : Human
+    characters(episode: Episode): [Character]!
+    human(id: ID) : Human
     droid(id: ID!): Droid
+}
+
+type MutationType {
+	createHuman(name: String!, homePlanet: String): Human
+	addFriend(idCharacter: ID!, idNewFriend: ID!): Character
 }
 
 

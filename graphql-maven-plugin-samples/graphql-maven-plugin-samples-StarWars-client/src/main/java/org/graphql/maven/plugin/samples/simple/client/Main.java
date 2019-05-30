@@ -42,6 +42,9 @@ public class Main {
 	}
 
 	public static void exec(Queries client) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// A random value, to variabilize mutations
+		int i = (int) (Math.random() * Integer.MAX_VALUE);
+
 		try {
 
 			System.out.println("----------------------------------------------------------------------------");
@@ -70,6 +73,14 @@ public class Main {
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  droidDoesNotExist  ---------------------------------------");
+			System.out.println(client.droidDoesNotExist());
+
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------  createHuman  ---------------------------------------------");
+			System.out.println(client.createHuman("A new Human (" + i++ + ")", "A random planet"));
+
+			System.out.println("----------------------------------------------------------------------------");
+			System.out.println("----------------  addFriend  -----------------------------------------------");
 			System.out.println(client.droidDoesNotExist());
 
 		} catch (javax.ws.rs.ProcessingException e) {

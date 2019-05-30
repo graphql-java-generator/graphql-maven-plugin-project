@@ -9,6 +9,8 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 
 public interface Queries {
 
+	// First part: queries
+
 	Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
 	Character heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException;
@@ -29,4 +31,11 @@ public interface Queries {
 
 	Droid droidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException;
 
+	// Second part: mutations
+
+	Human createHuman(String name, String homePlanet)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException;
+
+	Character addFriend(String idCharacter, String idNewFriend)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException;
 }

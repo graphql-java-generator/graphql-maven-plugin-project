@@ -37,12 +37,12 @@ public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate 
 	GraphQLUtil graphQLUtil;
 
 	@Override
-	public Member topicAuthor(DataFetchingEnvironment dataFetchingEnvironment, Topic source) {
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic source) {
 		return memberRepository.findById(source.getAuthorId()).get();
 	}
 
 	@Override
-	public List<Post> topicPosts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, String since) {
+	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, String since) {
 		if (since == null)
 			return graphQLUtil.iterableToList(postRepository.findByTopicId(source.getId()));
 		else

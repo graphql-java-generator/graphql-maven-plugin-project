@@ -23,7 +23,7 @@ public class PostDataFetchersDelegateImpl implements PostDataFetchersDelegate {
 	MemberRepository memberRepository;
 
 	@Override
-	public Member postAuthor(DataFetchingEnvironment dataFetchingEnvironment, Post source) {
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post source) {
 		return memberRepository.findById(source.getAuthorId()).get();
 	}
 

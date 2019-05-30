@@ -32,8 +32,7 @@ public class MutationTypeDataFetchersDelegateImpl implements MutationTypeDataFet
 	PostRepository postRepository;
 
 	@Override
-	public Board mutationTypeCreateBoard(DataFetchingEnvironment dataFetchingEnvironment, String name,
-			Boolean publiclyAvailable) {
+	public Board createBoard(DataFetchingEnvironment dataFetchingEnvironment, String name, Boolean publiclyAvailable) {
 		Board board = new Board();
 		board.setName(name);
 		if (publiclyAvailable != null) {
@@ -44,8 +43,8 @@ public class MutationTypeDataFetchersDelegateImpl implements MutationTypeDataFet
 	}
 
 	@Override
-	public Topic mutationTypeCreateTopic(DataFetchingEnvironment dataFetchingEnvironment, UUID authorId,
-			Boolean publiclyAvailable, String title, String content) {
+	public Topic createTopic(DataFetchingEnvironment dataFetchingEnvironment, UUID authorId, Boolean publiclyAvailable,
+			String title, String content) {
 		Topic topic = new Topic();
 		topic.setAuthorId(authorId);
 		topic.setPubliclyAvailable(publiclyAvailable);
@@ -56,8 +55,8 @@ public class MutationTypeDataFetchersDelegateImpl implements MutationTypeDataFet
 	}
 
 	@Override
-	public Post mutationTypeCreatePost(DataFetchingEnvironment dataFetchingEnvironment, UUID authorId,
-			Boolean publiclyAvailable, String title, String content) {
+	public Post createPost(DataFetchingEnvironment dataFetchingEnvironment, UUID authorId, Boolean publiclyAvailable,
+			String title, String content) {
 		Post post = new Post();
 		post.setAuthorId(authorId);
 		post.setPubliclyAvailable(publiclyAvailable);

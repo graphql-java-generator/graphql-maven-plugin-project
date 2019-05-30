@@ -9,6 +9,7 @@ import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
+import com.generated.graphql.MutationType;
 import com.generated.graphql.QueryType;
 
 import graphql.java.client.request.ObjectResponse;
@@ -31,6 +32,7 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 public class WithQueries implements Queries {
 
 	QueryType queryType = new QueryType();
+	MutationType mutationType = new MutationType();
 
 	ObjectResponse heroFullResponse;
 	ObjectResponse heroPartialResponse;
@@ -43,6 +45,9 @@ public class WithQueries implements Queries {
 	ObjectResponse droidFullResponse;
 	ObjectResponse droidPartialResponse;
 	ObjectResponse droidFriendsFriendsFriendsResponse;
+
+	ObjectResponse createHuman;
+	ObjectResponse addFriend;
 
 	/**
 	 * The constructors prepares the queries. That is: once the instance is created, you know that your queries are
@@ -99,11 +104,17 @@ public class WithQueries implements Queries {
 		} catch (GraphQLRequestPreparationException e) {
 			// This what's expected. So, no further action ... as we're in a sample !
 		}
+
+		// Mutations
+		createHuman = mutationType.getCreateHumanResponseBuilder()
+				.withQueryResponseDef("{id name homePlanet appearsIn friends {id name}}").build();
+		addFriend = mutationType.getAddFriendResponseBuilder()
+				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 	}
 
 	@Override
 	public Character heroFull() throws GraphQLExecutionException {
-		return queryType.hero(heroFullResponse, Episode.NEWHOPE);
+		return queryType.hero(heroFullResponse, null);
 	}
 
 	@Override
@@ -151,4 +162,15 @@ public class WithQueries implements Queries {
 		return queryType.droid(droidFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000001111");
 	}
 
+	@Override
+	public Human createHuman(String name, String homePlanet)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createHuman(createHuman, name, homePlanet);
+	}
+
+	@Override
+	public Character addFriend(String idCharacter, String idNewFriend)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return mutationType.addFriend(addFriend, idCharacter, idNewFriend);
+	}
 }

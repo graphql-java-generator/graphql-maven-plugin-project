@@ -32,12 +32,12 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 	GraphQLUtil graphQLUtil;
 
 	@Override
-	public List<Board> queryTypeBoards(DataFetchingEnvironment dataFetchingEnvironment) {
+	public List<Board> boards(DataFetchingEnvironment dataFetchingEnvironment) {
 		return graphQLUtil.iterableToList(boardRepository.findAll());
 	}
 
 	@Override
-	public List<Topic> queryTypeTopics(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
+	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
 		return topicRepository.findByBoardName(boardName);
 	}
 

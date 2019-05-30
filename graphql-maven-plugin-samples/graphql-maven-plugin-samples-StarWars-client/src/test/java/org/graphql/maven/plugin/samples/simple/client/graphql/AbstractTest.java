@@ -1,7 +1,11 @@
 package org.graphql.maven.plugin.samples.simple.client.graphql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import org.graphql.maven.plugin.samples.simple.client.Queries;
 import org.junit.jupiter.api.Test;
@@ -10,6 +14,7 @@ import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
+import com.generated.graphql.QueryType;
 
 import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLRequestPreparationException;
@@ -22,18 +27,19 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 abstract class AbstractTest {
 
+	QueryType queryType = new QueryType();
 	Queries queries;
 
 	@Test
-	void testHeroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
 		Character c = queries.heroFull();
 
-		checkCharacter(c, "heroSimple", "00000000-0000-0000-0000-000000000002", "BB-8", 0, Episode.NEWHOPE);
+		checkCharacter(c, "heroSimple", "00000000-0000-0000-0000-000000000001", "Bala-Tik", 0, Episode.JEDI);
 	}
 
 	@Test
-	void testHeroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
 		Character c = queries.heroPartial();
 
@@ -41,7 +47,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testHeroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_heroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn friends {name friends {friends{id name appearsIn}}}}", Episode.NEWHOPE);
 		Character c = queries.heroFriendsFriendsFriends();
 
@@ -77,7 +83,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testHumanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn homePlanet name}", "45");
 		Human h = queries.humanFull();
 
@@ -87,7 +93,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testHumanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{appearsIn homePlanet name}", "45");
 		Human h = queries.humanPartial();
 
@@ -96,7 +102,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testHumanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_humanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}", "180");
 		Human h = queries.humanFriendsFriendsFriends();
 
@@ -124,7 +130,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testDroidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.droid("{id appearsIn primaryFunction name}", "3");
 		Droid d = queries.droidFull();
 
@@ -133,7 +139,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testDroidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// queryType.droid("{id appearsIn primaryFunction name}", "3");
 		Droid d = queries.droidPartial();
 
@@ -142,7 +148,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testDroidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }", "2");
 		Droid d = queries.droidFriendsFriendsFriends();
 
@@ -158,8 +164,46 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testDroidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		assertNull(queries.droidDoesNotExist());
+	}
+
+	@Test
+	void test_createHuman() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// Preparation
+		List<Character> charactersBefore = queryType.characters("{id name}", null);
+
+		// Go, go, go
+		Human human = queries.createHuman("A name", "a planet");
+
+		// Verification
+		assertNotNull(human.getId());
+		assertEquals("A name", human.getName());
+		assertEquals("a planet", human.getHomePlanet());
+		//
+		List<Character> charactersAfter = queryType.characters("{id name }", null);
+		assertEquals(charactersBefore.size() + 1, charactersAfter.size());
+		// The last character should be the new one
+		Character lastCharacter = charactersAfter.get(charactersAfter.size() - 1);
+		assertEquals("A name", lastCharacter.getName());
+		assertEquals(human.getId(), lastCharacter.getId());
+	}
+
+	@Test
+	void test_addFriend() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// Preparation
+		int idCharacter = (int) (Math.random() * 200);
+		Character characterBefore = queryType.characters("{id name friends{id name}}", null).get(idCharacter);
+		int idFriend = (int) (Math.random() * 200);
+		Character friend = queryType.characters("{id name friends{id name}}", null).get(idFriend);
+
+		// Go, go, go
+		Character characterAfter = queries.addFriend(characterBefore.getId(), friend.getId());
+
+		// Verification
+		assertEquals(characterBefore.getFriends().size() + 1, characterAfter.getFriends().size());
+		// The new friend should be at the end of the list
+		assertEquals(friend.getId(), characterAfter.getFriends().get(characterAfter.getFriends().size() - 1).getId());
 	}
 
 	private void checkCharacter(Character c, String testDecription, String id, String name, int nbFriends,
@@ -167,13 +211,14 @@ abstract class AbstractTest {
 		assertEquals(id, c.getId(), testDecription + " (id)");
 		assertEquals(name, c.getName(), testDecription + " (name)");
 
+		// nbFriends is the number of friends... before any call to addFriend
 		if (nbFriends == 0) {
 			// c.getFriends() may be null
 			if (c.getFriends() != null) {
-				assertEquals(0, c.getFriends().size(), testDecription + " (friends)");
+				assertTrue(c.getFriends().size() >= 0, testDecription + " (friends)");
 			}
 		} else {
-			assertEquals(nbFriends, c.getFriends().size(), testDecription + " (friends)");
+			assertTrue(c.getFriends().size() >= nbFriends, testDecription + " (friends)");
 		}
 		if (episodes.length == 0) {
 			assertNull(c.getAppearsIn(), testDecription + " (appearsIn null)");

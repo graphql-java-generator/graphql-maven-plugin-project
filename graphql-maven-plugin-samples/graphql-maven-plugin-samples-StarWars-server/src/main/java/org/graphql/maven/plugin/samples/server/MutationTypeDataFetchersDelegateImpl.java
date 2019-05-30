@@ -6,9 +6,11 @@ package org.graphql.maven.plugin.samples.server;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 import org.graphql.maven.plugin.samples.server.jpa.CharacterRepository;
 import org.graphql.maven.plugin.samples.server.jpa.HumanRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -23,6 +25,8 @@ public class MutationTypeDataFetchersDelegateImpl implements MutationTypeDataFet
 	HumanRepository humanRepository;
 	@Resource
 	CharacterRepository characterRepository;
+	@Autowired
+	private DataSource dataSource;
 
 	@Override
 	public Human createHuman(DataFetchingEnvironment dataFetchingEnvironment, String name, String homePlanet) {
@@ -35,6 +39,7 @@ public class MutationTypeDataFetchersDelegateImpl implements MutationTypeDataFet
 
 	@Override
 	public Character addFriend(DataFetchingEnvironment dataFetchingEnvironment, String idCharacter, String idFriend) {
+
 		// First, we add the friend
 		characterRepository.addFriend(UUID.fromString(idCharacter), UUID.fromString(idFriend));
 

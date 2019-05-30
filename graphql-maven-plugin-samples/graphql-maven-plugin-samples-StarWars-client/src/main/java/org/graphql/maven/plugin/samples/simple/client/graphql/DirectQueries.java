@@ -6,6 +6,7 @@ import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
+import com.generated.graphql.MutationType;
 import com.generated.graphql.QueryType;
 
 import graphql.java.client.response.GraphQLExecutionException;
@@ -19,10 +20,11 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
 public class DirectQueries implements Queries {
 
 	QueryType queryType = new QueryType();
+	MutationType mutationType = new MutationType();
 
 	@Override
 	public Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.hero("", Episode.NEWHOPE);
+		return queryType.hero("", null);
 	}
 
 	@Override
@@ -72,6 +74,18 @@ public class DirectQueries implements Queries {
 	public Droid droidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		return queryType.droid("{id appearsIn friends {name friends {friends{id name appearsIn}}} primaryFunction }",
 				"00000000-0000-0000-0000-000000001111");
+	}
+
+	@Override
+	public Human createHuman(String name, String homePlanet)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createHuman("{id name appearsIn homePlanet friends {id name}}", name, homePlanet);
+	}
+
+	@Override
+	public Character addFriend(String idCharacter, String idNewFriend)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return mutationType.addFriend("{id name appearsIn friends {id name}}", idCharacter, idNewFriend);
 	}
 
 }

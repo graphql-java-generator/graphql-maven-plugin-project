@@ -5,8 +5,6 @@ This project is a maven plugin, which makes it easy to work in Java with graphQL
 TODO : 
 - Client : personalize the endpoint
 - Serveur : personalize the port number
-- Serveur : howto reply with a fonctionnal error
-- Delegates : le nom du delegate porte la classe, donc ne mettre que le nom du field dans la méthode.
 - Renames DataFetcher to DataResolver, as it's the GraphQL official name
 
 ## Aim of this projet
@@ -138,11 +136,11 @@ You can access to the H2 Console with this URL: [http://localhost:8180/h2-consol
 ### Main evolutions for the near future
 
 You'll find below the main changes, that are foreseen in the near future
-- Manage Mutations and Subscriptions. Currently, GraphQL Java Generator manages only queries.
+- Manage Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 - Generate the package as a jar or war form. Currently, GraphQL Java Generator generates a Spring Boot application.
 - Add a gradle plugin
 - Manage properties which name is a java keyword, like: public, private, class...
-- Manage field parameters. Currently, GraphQL Java Generator accepts only parameters at the query level
+- Manage field parameters. Currently, GraphQL Java Generator accepts parameters out of the query level (that is on object fields), only wih Direct Queries (which is nice enough to begin)
 - Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subsciptions
 - Define specific Scalars (for instance Date, DateTime, Time)
 - The plugin currently manages only one schema. It would be nice to allow several graphqls files, with a pattern like /*.graphqls

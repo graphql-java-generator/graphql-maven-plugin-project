@@ -12,7 +12,7 @@ type QueryType {
 
 type MutationType {
 	createHuman(name: String!, homePlanet: String): Human
-	addFriend(idCharacter: String!, idNewFriend: String!): Character
+	addFriend(idCharacter: ID!, idNewFriend: ID!): Character
 }
 
 
