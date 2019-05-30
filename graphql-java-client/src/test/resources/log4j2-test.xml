@@ -15,7 +15,7 @@
 	<Loggers>
 		<Logger name="graphql" level="trace" />
 		<Root level="trace">
-			<AppenderRef ref="Console" />
+			<!-- AppenderRef ref="Console" / -->
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>

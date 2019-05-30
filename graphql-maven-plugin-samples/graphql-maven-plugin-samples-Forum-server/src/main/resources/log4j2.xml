@@ -5,7 +5,7 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-		<File name="File" fileName="target/JUnit-tests.log4j.log">
+		<File name="File" fileName="target/server.log">
 			<PatternLayout>
 				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
@@ -21,7 +21,7 @@
 		<Logger name="org.hibernate.SQL" level="debug" /> <!-- Logs each SQL query execution -->
 		<Logger name="org.hibernate.type.descriptor.sql" level="trace" /> <!-- Logs each SQL query execution, with the bind values -->
 		<Root level="info">
-			<AppenderRef ref="Console" />
+			<!-- AppenderRef ref="Console" / -->
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>
