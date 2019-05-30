@@ -1,5 +1,6 @@
 package org.graphql.maven.plugin.samples.simple.client.graphql;
 
+import org.graphql.maven.plugin.samples.simple.client.Main;
 import org.graphql.maven.plugin.samples.simple.client.Queries;
 
 import com.generated.graphql.Character;
@@ -19,8 +20,8 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class DirectQueries implements Queries {
 
-	QueryType queryType = new QueryType();
-	MutationType mutationType = new MutationType();
+	QueryType queryType = new QueryType(Main.graphqlEndpoint);
+	MutationType mutationType = new MutationType(Main.graphqlEndpoint);
 
 	@Override
 	public Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {

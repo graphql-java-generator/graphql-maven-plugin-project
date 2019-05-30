@@ -28,7 +28,17 @@ public class ${object.name} {
 	/** Logger for this class */
 	private static Logger logger = LogManager.getLogger();
 
-	QueryExecutor executor = new QueryExecutorImpl();
+	final QueryExecutor executor;
+	
+	/**
+	 * This constructor expects the URI of the GraphQL server.<BR/>
+	 * For example: https://my.server.com/graphql
+	 * 
+	 * @param graphqlEndpoint
+	 */
+	public ${object.name}(String graphqlEndpoint) {
+		this.executor = new QueryExecutorImpl(graphqlEndpoint);
+	}
 
 #foreach ($field in $object.fields)
 	/**

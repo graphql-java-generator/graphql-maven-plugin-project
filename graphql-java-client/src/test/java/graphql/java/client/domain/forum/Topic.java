@@ -2,7 +2,6 @@ package graphql.java.client.domain.forum;
 
 import java.util.List;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import graphql.java.client.annotation.GraphQLNonScalar;
 import graphql.java.client.annotation.GraphQLScalar;
@@ -16,29 +15,37 @@ public class Topic  {
 
 	@GraphQLScalar(graphqlType = String.class)
 	String id;
-	
+
+
 	@GraphQLScalar(graphqlType = String.class)
 	String date;
-	
+
+
 	@GraphQLNonScalar(graphqlType = Member.class)
 	Member author;
-	
+
+
 	@GraphQLScalar(graphqlType = Boolean.class)
 	Boolean publiclyAvailable;
-	
+
+
 	@GraphQLScalar(graphqlType = Integer.class)
 	Integer nbPosts;
-	
+
+
 	@GraphQLScalar(graphqlType = String.class)
 	String title;
-	
+
+
 	@GraphQLScalar(graphqlType = String.class)
 	String content;
-	
+
+
 	@GraphQLNonScalar(graphqlType = Post.class)
 	@JsonDeserialize(contentAs = Post.class)
 	List<Post> posts;
-	
+
+
 
 	public void setId(String id) {
 		this.id = id;
@@ -47,7 +54,7 @@ public class Topic  {
 	public String getId() {
 		return id;
 	}
-	
+
 	public void setDate(String date) {
 		this.date = date;
 	}
@@ -55,7 +62,7 @@ public class Topic  {
 	public String getDate() {
 		return date;
 	}
-	
+
 	public void setAuthor(Member author) {
 		this.author = author;
 	}
@@ -63,7 +70,7 @@ public class Topic  {
 	public Member getAuthor() {
 		return author;
 	}
-	
+
 	public void setPubliclyAvailable(Boolean publiclyAvailable) {
 		this.publiclyAvailable = publiclyAvailable;
 	}
@@ -71,7 +78,7 @@ public class Topic  {
 	public Boolean getPubliclyAvailable() {
 		return publiclyAvailable;
 	}
-	
+
 	public void setNbPosts(Integer nbPosts) {
 		this.nbPosts = nbPosts;
 	}
@@ -79,7 +86,7 @@ public class Topic  {
 	public Integer getNbPosts() {
 		return nbPosts;
 	}
-	
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -87,7 +94,7 @@ public class Topic  {
 	public String getTitle() {
 		return title;
 	}
-	
+
 	public void setContent(String content) {
 		this.content = content;
 	}
@@ -95,7 +102,7 @@ public class Topic  {
 	public String getContent() {
 		return content;
 	}
-	
+
 	public void setPosts(List<Post> posts) {
 		this.posts = posts;
 	}
@@ -103,7 +110,7 @@ public class Topic  {
 	public List<Post> getPosts() {
 		return posts;
 	}
-	
+
     public String toString() {
         return "Topic {"
 				+ "id: " + id

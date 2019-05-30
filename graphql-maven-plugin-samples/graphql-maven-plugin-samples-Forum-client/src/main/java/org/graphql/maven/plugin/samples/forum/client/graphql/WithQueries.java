@@ -2,6 +2,7 @@ package org.graphql.maven.plugin.samples.forum.client.graphql;
 
 import java.util.List;
 
+import org.graphql.maven.plugin.samples.forum.client.Main;
 import org.graphql.maven.plugin.samples.forum.client.Queries;
 import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.Board;
 import org.graphql.maven.plugin.samples.forum.client.graphql.forum.client.MutationType;
@@ -27,8 +28,8 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class WithQueries implements Queries {
 
-	QueryType queryType = new QueryType();
-	MutationType mutationType = new MutationType();
+	QueryType queryType = new QueryType(Main.graphqlEndpoint);
+	MutationType mutationType = new MutationType(Main.graphqlEndpoint);
 	ObjectResponse boardsSimpleResponse;
 	ObjectResponse boardsAndTopicsResponse;
 	ObjectResponse topicAuthorPostAuthorResponse;

@@ -26,7 +26,9 @@ import graphql.java.client.response.GraphQLResponseParseException;
 import graphql.java.client.response.JsonResponseWrapper;
 
 /**
- * This class is the query executor : a generic class, reponsible for calling
+ * This class is the query executor : a generic class, reponsible for calling the GraphQL server, for query, mutation
+ * and subscription.<BR/>
+ * It has one major parameter: the GraphQL endpoint. See the {@link #QueryExecutorImpl(String)} for more information.
  * 
  * @author EtienneSF
  */
@@ -40,9 +42,15 @@ public class QueryExecutorImpl implements QueryExecutor {
 	/** The Jersey {@link WebTarget}, used to execute the request toward the GraphQL server */
 	WebTarget webTarget;
 
-	public QueryExecutorImpl() {
+	/**
+	 * This constructor expects the URI of the GraphQL server.<BR/>
+	 * For example: https://my.server.com/graphql
+	 * 
+	 * @param graphqlEndpoint
+	 */
+	public QueryExecutorImpl(String graphqlEndpoint) {
 		client = ClientBuilder.newClient();
-		webTarget = client.target("http://localhost:8180").path("graphql");
+		webTarget = client.target(graphqlEndpoint);
 	}
 
 	/** {@inheritDoc} */

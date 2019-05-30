@@ -2,7 +2,6 @@ package graphql.java.client.domain.forum;
 
 import java.util.List;
 
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import graphql.java.client.annotation.GraphQLNonScalar;
 import graphql.java.client.annotation.GraphQLScalar;
@@ -16,22 +15,28 @@ public class Post  {
 
 	@GraphQLScalar(graphqlType = String.class)
 	String id;
-	
+
+
 	@GraphQLScalar(graphqlType = String.class)
 	String date;
-	
+
+
 	@GraphQLNonScalar(graphqlType = Member.class)
 	Member author;
-	
+
+
 	@GraphQLScalar(graphqlType = Boolean.class)
 	Boolean publiclyAvailable;
-	
+
+
 	@GraphQLScalar(graphqlType = String.class)
 	String title;
-	
+
+
 	@GraphQLScalar(graphqlType = String.class)
 	String content;
-	
+
+
 
 	public void setId(String id) {
 		this.id = id;
@@ -40,7 +45,7 @@ public class Post  {
 	public String getId() {
 		return id;
 	}
-	
+
 	public void setDate(String date) {
 		this.date = date;
 	}
@@ -48,7 +53,7 @@ public class Post  {
 	public String getDate() {
 		return date;
 	}
-	
+
 	public void setAuthor(Member author) {
 		this.author = author;
 	}
@@ -56,7 +61,7 @@ public class Post  {
 	public Member getAuthor() {
 		return author;
 	}
-	
+
 	public void setPubliclyAvailable(Boolean publiclyAvailable) {
 		this.publiclyAvailable = publiclyAvailable;
 	}
@@ -64,7 +69,7 @@ public class Post  {
 	public Boolean getPubliclyAvailable() {
 		return publiclyAvailable;
 	}
-	
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -72,7 +77,7 @@ public class Post  {
 	public String getTitle() {
 		return title;
 	}
-	
+
 	public void setContent(String content) {
 		this.content = content;
 	}
@@ -80,7 +85,7 @@ public class Post  {
 	public String getContent() {
 		return content;
 	}
-	
+
     public String toString() {
         return "Post {"
 				+ "id: " + id

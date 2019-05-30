@@ -328,7 +328,7 @@ class BuilderTest {
 	public void test_withQueryResponseDef_Forum() throws GraphQLRequestPreparationException {
 		// Go, go, go
 		String queryResponseDef = "{id name publiclyAvailable topics{id date author{id name email type} nbPosts posts{date author{name email type}}}}";
-		new graphql.java.client.domain.forum.QueryType().getBoardsResponseBuilder()
+		new graphql.java.client.domain.forum.QueryType("http://localhost:8180/graphql").getBoardsResponseBuilder()
 				.withQueryResponseDef(queryResponseDef).build();
 	}
 

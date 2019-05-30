@@ -3,7 +3,7 @@
 This project is a maven plugin, which makes it easy to work in Java with graphQL in a schema first approach.
 
 TODO : 
-- Client : personalize the endpoint
+- Client and Server : manage https
 - Serveur : personalize the port number
 - Renames DataFetcher to DataResolver, as it's the GraphQL official name
 

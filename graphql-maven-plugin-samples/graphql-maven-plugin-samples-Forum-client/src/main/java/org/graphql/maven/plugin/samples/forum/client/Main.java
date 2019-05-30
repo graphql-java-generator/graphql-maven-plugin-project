@@ -15,6 +15,8 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class Main {
 
+	public static String graphqlEndpoint = "http://localhost:8180/graphql";
+
 	public static void main(String[] args) throws GraphQLExecutionException, GraphQLRequestPreparationException {
 
 		System.out.println("");

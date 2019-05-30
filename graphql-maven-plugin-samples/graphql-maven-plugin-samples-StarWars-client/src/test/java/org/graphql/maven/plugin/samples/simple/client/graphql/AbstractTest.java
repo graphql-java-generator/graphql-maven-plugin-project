@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.graphql.maven.plugin.samples.simple.client.Main;
 import org.graphql.maven.plugin.samples.simple.client.Queries;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 abstract class AbstractTest {
 
-	QueryType queryType = new QueryType();
+	QueryType queryType = new QueryType(Main.graphqlEndpoint);
 	Queries queries;
 
 	@Test

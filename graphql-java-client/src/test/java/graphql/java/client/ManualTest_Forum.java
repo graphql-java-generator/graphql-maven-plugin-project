@@ -22,9 +22,10 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class ManualTest_Forum {
 
-	static QueryExecutor executor = new QueryExecutorImpl();
-	static QueryType queryType = new QueryType();
-	static MutationType mutationType = new MutationType();
+	static String graphqlEndpoint = "http://localhost:8180/graphql";
+	static QueryExecutor executor = new QueryExecutorImpl(graphqlEndpoint);
+	static QueryType queryType = new QueryType(graphqlEndpoint);
+	static MutationType mutationType = new MutationType(graphqlEndpoint);
 
 	public static void main(String[] args)
 			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {

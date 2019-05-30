@@ -38,7 +38,7 @@ class QueryExecutorImplTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		queryExecutorImpl = new QueryExecutorImpl();
+		queryExecutorImpl = new QueryExecutorImpl("http://localhost:8180/graphql");
 	}
 
 	@Disabled

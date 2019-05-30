@@ -19,8 +19,9 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class ManualTest_StarWars {
 
-	static QueryExecutor executor = new QueryExecutorImpl();
-	static QueryType queryType = new QueryType();
+	static String graphqlEndpoint = "http://localhost:8180/graphql";
+	static QueryExecutor executor = new QueryExecutorImpl(graphqlEndpoint);
+	static QueryType queryType = new QueryType(graphqlEndpoint);
 
 	public static void main(String[] args)
 			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
@@ -43,7 +44,8 @@ public class ManualTest_StarWars {
 		System.out.println("------------------    executeHuman()    ---------------------------------------------");
 
 		// Execution of the query. We get the result back in a POJO
-		Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", "180");
+		Human human = queryType.human("{id name appearsIn homePlanet friends{name}}",
+				"00000000-0000-0000-0000-000000000180");
 
 		System.out.println(human);
 
@@ -77,7 +79,7 @@ public class ManualTest_StarWars {
 				.build();
 
 		// Execution of the query. We get the result back in a POJO
-		human = queryType.human(objectResponse, "180");
+		human = queryType.human(objectResponse, "00000000-0000-0000-0000-000000000180");
 
 		System.out.println(human);
 
