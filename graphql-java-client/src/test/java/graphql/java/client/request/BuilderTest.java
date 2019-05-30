@@ -398,16 +398,16 @@ class BuilderTest {
 		ObjectResponse resp = humanResponseDefBuilder.build();
 
 		// Verification
-		assertEquals(4, humanResponseDefBuilder.objectResponse.scalarFields.size(), "all scalar fields");
+		assertEquals(4, resp.scalarFields.size(), "all scalar fields");
 		//
 		// field name check
 		int i = 0;
-		assertEquals("id", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
-		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
-		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
-		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("id", resp.scalarFields.get(i++).name);
+		assertEquals("name", resp.scalarFields.get(i++).name);
+		assertEquals("appearsIn", resp.scalarFields.get(i++).name);
+		assertEquals("homePlanet", resp.scalarFields.get(i++).name);
 
 		// No non scalar
-		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
+		assertEquals(0, resp.subObjects.size(), "no non scalar fields");
 	}
 }
