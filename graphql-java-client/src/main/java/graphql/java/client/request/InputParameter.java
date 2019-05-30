@@ -45,11 +45,15 @@ public class InputParameter {
 	 * @return
 	 */
 	public String getValueForGraphqlQuery() {
-		switch (value.getClass().getName()) {
-		case "java.lang.String":
-			return getStringValue((String) value);
-		default:
-			return value.toString();
+		if (value == null) {
+			return null;
+		} else {
+			switch (value.getClass().getName()) {
+			case "java.lang.String":
+				return getStringValue((String) value);
+			default:
+				return value.toString();
+			}
 		}
 	}
 
