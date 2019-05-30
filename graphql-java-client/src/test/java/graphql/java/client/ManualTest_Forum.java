@@ -2,7 +2,6 @@ package graphql.java.client;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import graphql.java.client.domain.forum.Board;
 import graphql.java.client.domain.forum.Member;
@@ -32,8 +31,6 @@ public class ManualTest_Forum {
 		ObjectResponse resp;
 		List<Board> boards;
 		List<Topic> topics;
-
-		UUID uuid = UUID.fromString("123e4567-e89b-42d3-a456-556642440001");
 
 		System.out.println("/////////////////////////////////////////////////////////////////////////////////////");
 		System.out.println("////////////////// Short way: you write the GraphQL yourself");
