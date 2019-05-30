@@ -4,15 +4,16 @@
 package org.graphql.maven.plugin.samples.server.jpa;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.graphql.maven.plugin.samples.server.CharacterImpl;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  * @author EtienneSF
  */
-public interface CharacterRepository extends Repository<CharacterImpl, String> {
+public interface CharacterRepository extends CrudRepository<CharacterImpl, UUID> {
 
 	@Query(value = "select d.id, d.name from droid d UNION ALL select h.id, h.name from human h", nativeQuery = true)
 	List<CharacterImpl> findAll();
@@ -28,7 +29,7 @@ public interface CharacterRepository extends Repository<CharacterImpl, String> {
 			+ " where hai.episode_id = e.id"//
 			+ " and   hai.human_id = ?1" //
 			, nativeQuery = true)
-	List<String> findAppearsInById(String id);
+	List<String> findAppearsInById(UUID id);
 
 	@Query(value = "" //
 			+ " select d.id, d.name " //
@@ -56,6 +57,9 @@ public interface CharacterRepository extends Repository<CharacterImpl, String> {
 			+ " where  f.character_id = ?1 " //
 			+ " and    f.friend_id = h.id " //
 			, nativeQuery = true)
-	List<CharacterImpl> findFriends(String id);
+	List<CharacterImpl> findFriends(UUID id);
+
+	@Query(value = "insert into character_friends (character_id, friend_id) values (?1, ?2)", nativeQuery = true)
+	void addFriend(UUID idCharacter, UUID idFriend);
 
 }

@@ -40,34 +40,31 @@ class DocumentParserTest_StarWars_Server {
 
 		int i = 0;
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeHero", "QueryType", "hero", "Character", false,
-				null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeCharacters", "QueryType", "characters",
-				"Character", true, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeHuman", "QueryType", "human", "Human", false,
-				null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeDroid", "QueryType", "droid", "Droid", false,
-				null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "hero", "QueryType", "hero", "Character", false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "characters", "QueryType", "characters", "Character",
+				true, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "human", "QueryType", "human", "Human", false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "droid", "QueryType", "droid", "Droid", false, null);
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreateHuman", "MutationType", "createHuman",
-				"Human", false, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeAddFriend", "MutationType", "addFriend",
-				"Character", false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createHuman", "MutationType", "createHuman", "Human",
+				false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "addFriend", "MutationType", "addFriend", "Character",
+				false, null);
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "HumanFriends", "Human", "friends", "Character", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Human", "friends", "Character", true,
 				"Human");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "HumanAppearsIn", "Human", "appearsIn", "Episode", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Human", "appearsIn", "Episode", true,
 				"Human");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "DroidFriends", "Droid", "friends", "Character", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Droid", "friends", "Character", true,
 				"Droid");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "DroidAppearsIn", "Droid", "appearsIn", "Episode", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Droid", "appearsIn", "Episode", true,
 				"Droid");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "CharacterFriends", "Character", "friends", "Character",
-				true, "CharacterImpl");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "CharacterAppearsIn", "Character", "appearsIn",
-				"Episode", true, "CharacterImpl");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Character", "friends", "Character", true,
+				"CharacterImpl");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Character", "appearsIn", "Episode", true,
+				"CharacterImpl");
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,

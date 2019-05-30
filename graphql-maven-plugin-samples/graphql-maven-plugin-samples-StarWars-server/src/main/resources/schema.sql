@@ -1,13 +1,13 @@
 
 create table droid (
-	id varchar(255) not null,
+	id uuid not null,
 	name varchar(255),
 	primary_function varchar(255),
 	primary key (id)
 );
 
 create table human (
-	id varchar(255) not null,
+	id uuid not null,
 	home_planet varchar(255),
 	name varchar(255),
 	primary key (id)
@@ -20,18 +20,18 @@ create table episode (
 ); 
 
 create table droid_appears_in (
-	droid_id varchar(255) not null,
-	episode_id varchar(255)
+	droid_id uuid not null,
+	episode_id int
 ); 
 
 create table human_appears_in (
-	human_id varchar(255) not null,
-	episode_id varchar(255)
+	human_id uuid not null,
+	episode_id int
 ); 
 
 create table character_friends (
-	character_id varchar(255) not null,
-	friend_id varchar(255) not null
+	character_id uuid not null,
+	friend_id uuid not null
 );
 
 alter table droid_appears_in 

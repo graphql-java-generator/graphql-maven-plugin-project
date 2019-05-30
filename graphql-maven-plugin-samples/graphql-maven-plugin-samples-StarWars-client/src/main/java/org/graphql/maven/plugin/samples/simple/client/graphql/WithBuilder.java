@@ -146,37 +146,37 @@ public class WithBuilder implements Queries {
 
 	@Override
 	public Human humanFull() throws GraphQLExecutionException {
-		return queryType.human(humanFullResponse, "45");
+		return queryType.human(humanFullResponse, "00000000-0000-0000-0000-000000000045");
 	}
 
 	@Override
 	public Human humanPartial() throws GraphQLExecutionException {
-		return queryType.human(humanPartialResponse, "45");
+		return queryType.human(humanPartialResponse, "00000000-0000-0000-0000-000000000045");
 	}
 
 	@Override
 	public Human humanFriendsFriendsFriends() throws GraphQLExecutionException {
-		return queryType.human(humanFriendsFriendsFriendsResponse, "180");
+		return queryType.human(humanFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000000180");
 	}
 
 	@Override
 	public Droid droidFull() throws GraphQLExecutionException {
-		return queryType.droid(droidFullResponse, "3");
+		return queryType.droid(droidFullResponse, "00000000-0000-0000-0000-000000000003");
 	}
 
 	@Override
 	public Droid droidPartial() throws GraphQLExecutionException {
-		return queryType.droid(droidPartialResponse, "3");
+		return queryType.droid(droidPartialResponse, "00000000-0000-0000-0000-000000000003");
 	}
 
 	@Override
 	public Droid droidFriendsFriendsFriends() throws GraphQLExecutionException {
-		return queryType.droid(droidFriendsFriendsFriendsResponse, "2");
+		return queryType.droid(droidFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000000002");
 	}
 
 	@Override
 	public Droid droidDoesNotExist() throws GraphQLExecutionException {
-		return queryType.droid(droidFriendsFriendsFriendsResponse, "doesn't exist");
+		return queryType.droid(droidFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000001111");
 	}
 
 }

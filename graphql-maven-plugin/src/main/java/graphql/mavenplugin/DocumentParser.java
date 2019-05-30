@@ -724,8 +724,9 @@ public class DocumentParser {
 	 *            true if the given type is actually a query, false otherwise
 	 */
 	void initDataFetcherForOneObject(Type type, boolean isQueryOrMutationType) {
-		String name = type.getClassSimpleName() + "DataFetchersDelegate";
-		DataFetcherDelegateImpl dataFetcherDelegate = new DataFetcherDelegateImpl(name);
+
+		DataFetcherDelegate dataFetcherDelegate = new DataFetcherDelegateImpl(
+				type.getClassSimpleName() + "DataFetchersDelegate");
 
 		for (Field field : type.getFields()) {
 			DataFetcherImpl dataFetcher = null;

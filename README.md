@@ -6,6 +6,8 @@ TODO :
 - Client : personalize the endpoint
 - Serveur : personalize the port number
 - Serveur : howto reply with a fonctionnal error
+- Delegates : le nom du delegate porte la classe, donc ne mettre que le nom du field dans la méthode.
+- Renames DataFetcher to DataResolver, as it's the GraphQL official name
 
 ## Aim of this projet
 

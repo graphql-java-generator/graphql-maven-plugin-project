@@ -24,7 +24,7 @@ public class GraphQLDataFetchers {
 
 #foreach ($dataFetcherDelegate in $dataFetcherDelegates)
 	@Resource
-	${dataFetcherDelegate.name} ${dataFetcherDelegate.camelCaseName};
+	${dataFetcherDelegate.pascalCaseName} ${dataFetcherDelegate.camelCaseName};
 
 #end
 
@@ -34,7 +34,7 @@ public class GraphQLDataFetchers {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.camelCaseName}() {
+	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcherDelegate.camelCaseName}${dataFetcher.pascalCaseName}() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)
 #if ($argument.type.class.simpleName == "EnumType")

@@ -113,25 +113,23 @@ class DocumentParserTest_Forum_Server {
 		// Verification of the data fetchers
 		//
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, list of input parameters
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeBoards", "QueryType", "boards", "Board", true,
-				null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "QueryTypeTopics", "QueryType", "topics", "Topic", true,
-				null, "boardName");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, null,
+				"boardName");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreateBoard", "MutationType", "createBoard",
-				"Board", false, null, "name", "publiclyAvailable");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreateTopic", "MutationType", "createTopic",
-				"Topic", false, null, "authorId", "publiclyAvailable", "title", "content");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "MutationTypeCreatePost", "MutationType", "createPost",
-				"Post", false, null, "authorId", "publiclyAvailable", "title", "content");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
+				false, null, "name", "publiclyAvailable");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic",
+				false, null, "authorId", "publiclyAvailable", "title", "content");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post",
+				false, null, "authorId", "publiclyAvailable", "title", "content");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "BoardTopics", "Board", "topics", "Topic", true, "Board",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, "Board",
 				"since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicAuthor", "Topic", "author", "Member", false,
-				"Topic");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "TopicPosts", "Topic", "posts", "Post", true, "Topic",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", false, "Topic");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", true, "Topic",
 				"since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "PostAuthor", "Post", "author", "Member", false, "Post");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, "Post");
 
 		//
 		// Verification of the data fetchers delegates
@@ -145,9 +143,9 @@ class DocumentParserTest_Forum_Server {
 				"delegate name " + i);
 		assertEquals(2, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("QueryTypeBoards", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("boards", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
-		assertEquals("QueryTypeTopics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
+		assertEquals("topics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Board
@@ -157,7 +155,7 @@ class DocumentParserTest_Forum_Server {
 				"delegate name " + i);
 		assertEquals(1, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("BoardTopics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("topics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Topic
@@ -167,9 +165,9 @@ class DocumentParserTest_Forum_Server {
 				"delegate name " + i);
 		assertEquals(2, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("TopicAuthor", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("author", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
-		assertEquals("TopicPosts", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
+		assertEquals("posts", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Board
@@ -179,7 +177,7 @@ class DocumentParserTest_Forum_Server {
 				"delegate name " + i);
 		assertEquals(1, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("PostAuthor", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("author", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 
 	}

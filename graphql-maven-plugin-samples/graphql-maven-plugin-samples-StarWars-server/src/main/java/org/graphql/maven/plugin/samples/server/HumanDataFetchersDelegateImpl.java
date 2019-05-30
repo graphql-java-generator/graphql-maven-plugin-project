@@ -8,10 +8,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.graphql.maven.plugin.samples.server.Character;
-import org.graphql.maven.plugin.samples.server.Episode;
-import org.graphql.maven.plugin.samples.server.Human;
-import org.graphql.maven.plugin.samples.server.HumanDataFetchersDelegate;
 import org.graphql.maven.plugin.samples.server.jpa.CharacterRepository;
 import org.springframework.stereotype.Component;
 
@@ -30,12 +26,12 @@ public class HumanDataFetchersDelegateImpl implements HumanDataFetchersDelegate 
 	GraphQLUtil graphQLUtil;
 
 	@Override
-	public List<Character> humanFriends(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
+	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
 		return graphQLUtil.iterableConcreteClassToListInterface(characterRepository.findFriends(source.getId()));
 	}
 
 	@Override
-	public List<Episode> humanAppearsIn(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
+	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
 		List<String> episodeStr = characterRepository.findAppearsInById(source.getId());
 		List<Episode> ret = new ArrayList<>(episodeStr.size());
 		for (String s : episodeStr) {

@@ -37,39 +37,41 @@ public class DirectQueries implements Queries {
 
 	@Override
 	public Human humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human((String) null, "45");
+		return queryType.human((String) null, "00000000-0000-0000-0000-000000000045");
 	}
 
 	@Override
 	public Human humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human("{appearsIn homePlanet name}", "45");
+		return queryType.human("{appearsIn homePlanet name}", "00000000-0000-0000-0000-000000000045");
 	}
 
 	@Override
 	public Human humanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}", "180");
+		return queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}",
+				"00000000-0000-0000-0000-000000000180");
 	}
 
 	@Override
 	public Droid droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.droid("", "3");
+		return queryType.droid("", "00000000-0000-0000-0000-000000000003");
 	}
 
 	@Override
 	public Droid droidPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.droid("{appearsIn primaryFunction name}", "3");
+		return queryType.droid("{appearsIn primaryFunction name}", "00000000-0000-0000-0000-000000000003");
 	}
 
 	@Override
 	public Droid droidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType
-				.droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }", "2");
+		return queryType.droid(
+				"{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }",
+				"00000000-0000-0000-0000-000000000002");
 	}
 
 	@Override
 	public Droid droidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		return queryType.droid("{id appearsIn friends {name friends {friends{id name appearsIn}}} primaryFunction }",
-				"doesn't exist");
+				"00000000-0000-0000-0000-000000001111");
 	}
 
 }

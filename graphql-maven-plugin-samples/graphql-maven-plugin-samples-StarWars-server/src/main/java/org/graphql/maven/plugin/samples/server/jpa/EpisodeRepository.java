@@ -4,6 +4,7 @@
 package org.graphql.maven.plugin.samples.server.jpa;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,7 +14,7 @@ import org.springframework.data.jpa.repository.Query;
  * 
  * @author EtienneSF
  */
-public interface EpisodeRepository /* extends Repository<Episode, Integer> */ {
+public interface EpisodeRepository {
 
 	@Query(value = ""//
 			+ " select e.label "//
@@ -26,5 +27,5 @@ public interface EpisodeRepository /* extends Repository<Episode, Integer> */ {
 			+ " where  hai.human_id = ?1 " //
 			+ " and    hai.episode_id = e.id " //
 			, nativeQuery = true)
-	List<String> findAppearsIn(String id);
+	List<String> findAppearsIn(UUID id);
 }

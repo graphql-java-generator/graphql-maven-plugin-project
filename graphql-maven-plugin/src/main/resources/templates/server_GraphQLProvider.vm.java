@@ -96,9 +96,9 @@ public class GraphQLProvider {
 #foreach ($dataFetcherDelegate in $dataFetcherDelegates)
 			// Data fetchers for ${dataFetcherDelegate.name}
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
-			.type(newTypeWiring("${dataFetcher.field.owningType.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.camelCaseName}()))
+			.type(newTypeWiring("${dataFetcher.field.owningType.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcherDelegate.camelCaseName}${dataFetcher.pascalCaseName}()))
 #if ($dataFetcher.field.owningType.class.simpleName == "InterfaceType")
-			.type(newTypeWiring("${dataFetcher.field.owningType.concreteClassSimpleName}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcher.camelCaseName}()))
+			.type(newTypeWiring("${dataFetcher.field.owningType.concreteClassSimpleName}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetcherDelegate.camelCaseName}${dataFetcher.pascalCaseName}()))
 #end
 #end
 #end

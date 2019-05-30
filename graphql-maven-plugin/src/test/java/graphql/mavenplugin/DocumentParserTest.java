@@ -2,8 +2,6 @@ package graphql.mavenplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,31 +127,39 @@ class DocumentParserTest {
 		fieldTypes.add(new EnumType("Enum0", "packageName", PluginMode.server));
 		fieldTypes.add(new ObjectType("Object2", "package", PluginMode.server));
 
+		documentParser.objectTypes = new ArrayList<>();
+		documentParser.objectTypes.add((ObjectType) fieldTypes.get(0));
+		documentParser.objectTypes.add((ObjectType) fieldTypes.get(4));
+		//
+		documentParser.scalars.add((ScalarType) fieldTypes.get(1));
+		//
+		documentParser.interfaceTypes = new ArrayList<>();
+		documentParser.interfaceTypes.add((InterfaceType) fieldTypes.get(2));
+		//
+		documentParser.enumTypes = new ArrayList<>();
+		documentParser.enumTypes.add((EnumType) fieldTypes.get(3));
+
 		ObjectType type = new ObjectType("Package name", PluginMode.client);
 		type.setName("NameOfTheType");
 
 		for (int i = 0; i < 5; i += 1) {
-			FieldImpl f = mock(FieldImpl.class);
+			FieldImpl f = new FieldImpl(documentParser); // Necessary to manage the FieldImpl.getType() method
 			type.getFields().add(f);
 
-			when(f.getName()).thenReturn("field" + i);
-			when(f.getPascalCaseName()).thenReturn("Field" + i);
-			when(f.isList()).thenReturn((i % 2) == 0);
-			when(f.getTypeName()).thenReturn(fieldTypes.get(i).getName());
-			when(f.getType()).thenReturn(fieldTypes.get(i));
-			when(f.getOwningType()).thenReturn(type);
+			f.setName("field" + i);
+			f.setList((i % 2) == 0);
+			f.setTypeName(fieldTypes.get(i).getName());
+			f.setOwningType(type);
 
 			// Let's create its argument list
 			List<Field> args = new ArrayList<>();
 			for (int j = 0; j < i; j += 1) {// means: the first field has
-				FieldImpl arg = mock(FieldImpl.class);
-				when(arg.getName()).thenReturn("arg" + j);
-				when(arg.getPascalCaseName()).thenReturn("Field" + j);
-				when(arg.isList()).thenReturn((j % 2) == 0);
-				when(arg.getType()).thenReturn(fieldTypes.get(j));
+				FieldImpl arg = new FieldImpl(documentParser);
+				arg.setName("arg" + j);
+				arg.setList((j % 2) == 0);
 				args.add(arg);
 			}
-			when(f.getInputParameters()).thenReturn(args);
+			f.setInputParameters(args);
 		}
 
 		///////////////////////////////////////////////////////////////////////////////
@@ -167,6 +173,7 @@ class DocumentParserTest {
 		documentParser.queryTypes.add(type);
 		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
 		documentParser.scalars.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
+		documentParser.scalars.add((ScalarType) fieldTypes.get(1));
 
 		// Go, go, go
 		documentParser.initDataFetcherForOneObject(type, true);
@@ -176,15 +183,15 @@ class DocumentParserTest {
 		assertEquals(5, documentParser.dataFetchers.size(), "size");
 		//
 		// For query types, there must be a Data Fetcher for each field.
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field0", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field0", true, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field1", false, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field1", false, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field2", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field2", true, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field3", false, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field3", false, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "Field4", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", true, type, null,
 				type.getFields().get(i++).getInputParameters());
 		//
 		// There should be one DataFetcherDelegate, as we have only one type.
@@ -206,6 +213,9 @@ class DocumentParserTest {
 		documentParser.objectTypes.add(type);
 		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
 		documentParser.scalars.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
+		documentParser.scalars.add((ScalarType) fieldTypes.get(1));
+		documentParser.enumTypes.add((EnumType) fieldTypes.get(3));
+		documentParser.fillTypesMap();
 
 		// Go, go, go
 		documentParser.initDataFetcherForOneObject(type, false);
@@ -215,11 +225,11 @@ class DocumentParserTest {
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
 		// For non query types, there must be a Data Fetcher only for non GraphQLScalar and non Enum field.
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field0", true, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field2", true, type, type.getName(),
 				type.getFields().get(2).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field4", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", true, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
 		// There should be one DataFetcherDelegate, as we have only one type.
@@ -250,11 +260,11 @@ class DocumentParserTest {
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
 		// For non query types, there must be a Data Fetcher only for non GraphQLScalar and non Enum field.
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field0", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field0", true, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field2", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field2", true, type, type.getName(),
 				type.getFields().get(2).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "Field4", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", true, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
 		// There should be one DataFetcherDelegate, as we have only one type.
@@ -265,7 +275,7 @@ class DocumentParserTest {
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type, String sourceName,
 			List<Field> inputParameters) {
-		assertEquals("NameOfTheType" + name, dataFetcher.getName(), "name");
+		assertEquals(name, dataFetcher.getName(), "name");
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(type, dataFetcher.getField().getOwningType(), "type");
 		assertEquals(inputParameters, dataFetcher.getField().getInputParameters(), "arguments");

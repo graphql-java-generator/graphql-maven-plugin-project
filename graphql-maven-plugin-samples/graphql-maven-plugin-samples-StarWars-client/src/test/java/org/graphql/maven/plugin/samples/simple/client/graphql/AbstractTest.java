@@ -29,7 +29,7 @@ abstract class AbstractTest {
 		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
 		Character c = queries.heroFull();
 
-		checkCharacter(c, "heroSimple", "2", "BB-8", 0, Episode.NEWHOPE);
+		checkCharacter(c, "heroSimple", "00000000-0000-0000-0000-000000000002", "BB-8", 0, Episode.NEWHOPE);
 	}
 
 	@Test
@@ -45,7 +45,8 @@ abstract class AbstractTest {
 		// return queryType.hero("{id appearsIn friends {name friends {friends{id name appearsIn}}}}", Episode.NEWHOPE);
 		Character c = queries.heroFriendsFriendsFriends();
 
-		checkCharacter(c, "testHeroFriendsFriendsFriends", "2", null, 2, Episode.NEWHOPE);
+		checkCharacter(c, "testHeroFriendsFriendsFriends", "00000000-0000-0000-0000-000000000002", null, 2,
+				Episode.NEWHOPE);
 
 		Character friends_0 = c.getFriends().get(0);
 		checkCharacter(friends_0, "testHeroFriendsFriendsFriends[friends_0]", null, "Poe Dameron", 0);
@@ -56,23 +57,23 @@ abstract class AbstractTest {
 		Character friends_1_0 = friends_1.getFriends().get(0); // "24", "Padmé Amidala"
 		checkCharacter(friends_1_0, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 1);
 		Character friends_1_0_0 = friends_1_0.getFriends().get(0);
-		checkCharacter(friends_1_0_0, "testHeroFriendsFriendsFriends[friends_1_0]", "179", "Anakin Skywalker", 0,
-				Episode.NEWHOPE);
+		checkCharacter(friends_1_0_0, "testHeroFriendsFriendsFriends[friends_1_0]",
+				"00000000-0000-0000-0000-000000000179", "Anakin Skywalker", 0, Episode.NEWHOPE);
 
 		Character friends_1_1 = friends_1.getFriends().get(1); // "94", "Mara Jade"
 		checkCharacter(friends_1_1, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 1);
 		Character friends_1_1_0 = friends_1_1.getFriends().get(0);
-		checkCharacter(friends_1_1_0, "testHeroFriendsFriendsFriends[friends_1_0]", "180", "Luke Skywalker", 0,
-				Episode.EMPIRE);
+		checkCharacter(friends_1_1_0, "testHeroFriendsFriendsFriends[friends_1_0]",
+				"00000000-0000-0000-0000-000000000180", "Luke Skywalker", 0, Episode.EMPIRE);
 
 		Character friends_1_2 = friends_1.getFriends().get(2); // "179", "Anakin Skywalker"
 		checkCharacter(friends_1_2, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 2);
 		Character friends_1_2_0 = friends_1_2.getFriends().get(0);
-		checkCharacter(friends_1_2_0, "testHeroFriendsFriendsFriends[friends_1_0]", "8", "Obi-Wan Kenobi", 0,
-				Episode.NEWHOPE);
+		checkCharacter(friends_1_2_0, "testHeroFriendsFriendsFriends[friends_1_0]",
+				"00000000-0000-0000-0000-000000000008", "Obi-Wan Kenobi", 0, Episode.NEWHOPE);
 		Character friends_1_2_1 = friends_1_2.getFriends().get(1);
-		checkCharacter(friends_1_2_1, "testHeroFriendsFriendsFriends[friends_1_0]", "213", "Dark Vador", 0,
-				Episode.NEWHOPE);
+		checkCharacter(friends_1_2_1, "testHeroFriendsFriendsFriends[friends_1_0]",
+				"00000000-0000-0000-0000-000000000213", "Dark Vador", 0, Episode.NEWHOPE);
 	}
 
 	@Test
@@ -80,7 +81,8 @@ abstract class AbstractTest {
 		// queryType.human("{id appearsIn homePlanet name}", "45");
 		Human h = queries.humanFull();
 
-		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1_0]", "45", "Joruus C'Baoth", 0, Episode.EMPIRE);
+		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1_0]", "00000000-0000-0000-0000-000000000045",
+				"Joruus C'Baoth", 0, Episode.EMPIRE);
 		assertEquals("Kashyyyk", h.getHomePlanet());
 	}
 
@@ -98,7 +100,8 @@ abstract class AbstractTest {
 		// queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}", "180");
 		Human h = queries.humanFriendsFriendsFriends();
 
-		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1]", "180", "Luke Skywalker", 3, Episode.EMPIRE);
+		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1]", "00000000-0000-0000-0000-000000000180",
+				"Luke Skywalker", 3, Episode.EMPIRE);
 		assertNull(h.getHomePlanet());
 
 		Character friends_0 = h.getFriends().get(0); // "24", "Padmé Amidala"
@@ -125,7 +128,7 @@ abstract class AbstractTest {
 		// queryType.droid("{id appearsIn primaryFunction name}", "3");
 		Droid d = queries.droidFull();
 
-		checkCharacter(d, "droidSimple", "3", "C-3PO", 0, Episode.EMPIRE);
+		checkCharacter(d, "droidSimple", "00000000-0000-0000-0000-000000000003", "C-3PO", 0, Episode.EMPIRE);
 		assertEquals("Function of C-3PO", d.getPrimaryFunction());
 	}
 
@@ -143,7 +146,8 @@ abstract class AbstractTest {
 		// droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }", "2");
 		Droid d = queries.droidFriendsFriendsFriends();
 
-		checkCharacter(d, "testDroidFriendsFriendsFriends", "2", "BB-8", 2, Episode.NEWHOPE);
+		checkCharacter(d, "testDroidFriendsFriendsFriends", "00000000-0000-0000-0000-000000000002", "BB-8", 2,
+				Episode.NEWHOPE);
 		assertEquals("Function of BB-8", d.getPrimaryFunction());
 
 		Character friends_0 = d.getFriends().get(0); // "52", "Poe Dameron"

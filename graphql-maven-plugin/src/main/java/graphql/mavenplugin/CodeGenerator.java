@@ -209,8 +209,9 @@ public class CodeGenerator {
 
 		for (DataFetcherDelegate dataFetcherDelegate : documentParser.dataFetcherDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
-			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getName()),
-					"generating " + dataFetcherDelegate.getName(), context, PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE);
+			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName()),
+					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
+					PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE);
 		}
 
 		return ret;

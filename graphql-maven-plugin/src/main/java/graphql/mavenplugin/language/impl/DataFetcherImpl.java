@@ -31,7 +31,7 @@ public class DataFetcherImpl implements DataFetcher {
 
 	@Override
 	public String getName() {
-		return field.getOwningType().getName() + field.getPascalCaseName();
+		return field.getCamelCaseName();
 	}
 
 }

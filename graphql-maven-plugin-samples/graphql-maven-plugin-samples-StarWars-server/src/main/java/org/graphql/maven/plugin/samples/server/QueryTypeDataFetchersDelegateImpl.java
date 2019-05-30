@@ -1,15 +1,10 @@
 package org.graphql.maven.plugin.samples.server;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.graphql.maven.plugin.samples.server.Character;
-import org.graphql.maven.plugin.samples.server.CharacterImpl;
-import org.graphql.maven.plugin.samples.server.Droid;
-import org.graphql.maven.plugin.samples.server.Episode;
-import org.graphql.maven.plugin.samples.server.Human;
-import org.graphql.maven.plugin.samples.server.QueryTypeDataFetchersDelegate;
 import org.graphql.maven.plugin.samples.server.jpa.CharacterRepository;
 import org.graphql.maven.plugin.samples.server.jpa.DroidRepository;
 import org.graphql.maven.plugin.samples.server.jpa.HumanRepository;
@@ -35,7 +30,7 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 	GraphQLUtil graphQLUtil;
 
 	@Override
-	public Character queryTypeHero(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
+	public Character hero(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
 		List<CharacterImpl> characters = characterRepository.findByAppearsIn(episode.toString());
 
 		// For an unknown reason to me, the sample returns one item.
@@ -47,18 +42,18 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 	}
 
 	@Override
-	public List<Character> queryTypeCharacters(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
+	public List<Character> characters(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
 		return graphQLUtil
 				.iterableConcreteClassToListInterface(characterRepository.findByAppearsIn(episode.toString()));
 	}
 
 	@Override
-	public Human queryTypeHuman(DataFetchingEnvironment dataFetchingEnvironment, String id) {
+	public Human human(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
 		return graphQLUtil.optionnalToObject(humanRepository.findById(id));
 	}
 
 	@Override
-	public Droid queryTypeDroid(DataFetchingEnvironment dataFetchingEnvironment, String id) {
+	public Droid droid(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
 		return graphQLUtil.optionnalToObject(droidRepository.findById(id));
 	}
 
