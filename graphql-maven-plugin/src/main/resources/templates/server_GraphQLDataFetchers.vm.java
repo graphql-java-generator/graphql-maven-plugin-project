@@ -38,7 +38,13 @@ public class GraphQLDataFetchers {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)
 #if ($argument.type.class.simpleName == "EnumType")
+#if ($argument.mandatory)
 			${argument.type.classSimpleName} ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+#else
+			${argument.type.classSimpleName} ${argument.camelCaseName} = null;
+			if (dataFetchingEnvironment.getArgument("${argument.name}") != null)
+				${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+#end
 #elseif (${argument.type.classSimpleName} == "UUID")
 			${argument.type.classSimpleName} ${argument.camelCaseName} = UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
 #else

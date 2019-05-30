@@ -29,7 +29,7 @@ public class BoardDataFetchersDelegateImpl implements BoardDataFetchersDelegate 
 	TopicRepository topicRepository;
 
 	@Override
-	public List<Topic> boardTopics(DataFetchingEnvironment dataFetchingEnvironment, Board source, String since) {
+	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, Board source, String since) {
 		if (since == null)
 			return topicRepository.findByBoardId(source.getId());
 		else
