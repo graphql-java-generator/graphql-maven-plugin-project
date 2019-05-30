@@ -72,7 +72,8 @@ class QueryExecutorImplTest {
 		String request = queryExecutorImpl.buildRequest("mutation", objectResponse, parameters);
 
 		// Verification
-		assertEquals("{\"mutation\":\"{hero(id: \\\"1\\\") { id name}}\",\"variables\":null,\"operationName\":null}",
+		assertEquals(
+				"{\"query\":\"mutation {hero(id: \\\"1\\\"){ id name}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -97,7 +98,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"{hero(episode: NEWHOPE, id: \\\"this is an id\\\") { id name}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query {hero(episode: NEWHOPE, id: \\\"this is an id\\\"){ id name}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -123,7 +124,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"subscription\":\"{hero(episode: NEWHOPE) { id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"subscription {hero(episode: NEWHOPE){ id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
