@@ -16,7 +16,7 @@ The generator is currently a maven plugin. A Gradle plugin will come.
 
 
 TODO : 
-- Client and Server : manage https	
+- Client and Server : manage https	(it works OK, but the whole build fails, because of an issue in the build itself, see the '_manage__https_' branch)
 
 ## Aim of this projet
 
