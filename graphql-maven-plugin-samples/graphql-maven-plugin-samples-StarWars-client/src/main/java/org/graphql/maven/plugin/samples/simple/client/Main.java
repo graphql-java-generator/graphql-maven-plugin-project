@@ -1,5 +1,17 @@
 package org.graphql.maven.plugin.samples.simple.client;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.graphql.maven.plugin.samples.simple.client.graphql.DirectQueries;
 import org.graphql.maven.plugin.samples.simple.client.graphql.WithBuilder;
 import org.graphql.maven.plugin.samples.simple.client.graphql.WithQueries;
@@ -15,26 +27,30 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class Main {
 
-	public static String graphqlEndpoint = "http://localhost:8180/graphql";
+	public static String graphqlEndpoint = "https://localhost:8443/graphql";
 
-	public static void main(String[] args) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public static void main(String[] args) throws Exception {
+		new Main().execAll();
+	}
+
+	void execAll() throws Exception {
 
 		// Execution of three way to user the GraphQL client, to call the GraphQL server
 
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		exec(new DirectQueries());
+		execOne(new DirectQueries(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		exec(new WithQueries());
+		execOne(new WithQueries(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		exec(new WithBuilder());
+		execOne(new WithBuilder(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("");
 		System.out.println("");
@@ -43,7 +59,7 @@ public class Main {
 		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
-	public static void exec(Queries client) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public void execOne(Queries client) throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// A random value, to variabilize mutations
 		int i = (int) (Math.random() * Integer.MAX_VALUE);
 
@@ -94,4 +110,41 @@ public class Main {
 		}
 	}
 
+	public SSLContext getSslContext() throws NoSuchAlgorithmException, KeyManagementException {
+		SSLContext sslContext = SSLContext.getInstance("TLSv1");
+
+		KeyManager[] keyManagers = null;
+		TrustManager[] trustManager = { new NoOpTrustManager() };
+		SecureRandom secureRandom = new SecureRandom();
+
+		sslContext.init(keyManagers, trustManager, secureRandom);
+
+		return sslContext;
+	}
+
+	public HostnameVerifier getHostnameVerifier() {
+		return new NoOpHostnameVerifier();
+	}
+
+	public class NoOpTrustManager implements X509TrustManager {
+		@Override
+		public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
+		}
+
+		@Override
+		public X509Certificate[] getAcceptedIssuers() {
+			return new X509Certificate[0];
+		}
+	}
+
+	public class NoOpHostnameVerifier implements HostnameVerifier {
+		@Override
+		public boolean verify(String s, SSLSession sslSession) {
+			return true;
+		}
+	}
 }
