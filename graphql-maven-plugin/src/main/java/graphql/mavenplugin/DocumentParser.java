@@ -52,7 +52,6 @@ import graphql.mavenplugin.language.impl.RelationImpl;
 import graphql.mavenplugin.language.impl.ScalarType;
 import graphql.mavenplugin.schema_personalization.JsonSchemaPersonalization;
 import graphql.parser.Parser;
-import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat.FieldType;
 import lombok.Getter;
 
 /**
@@ -505,16 +504,6 @@ public class DocumentParser {
 			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
 					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
-	}
-
-	/**
-	 * Reads one graphql {@link FieldDefinition}, and maps it into a {@link FieldType}
-	 * 
-	 * @param fieldDef
-	 * @return
-	 */
-	FieldType getType(FieldDefinition fieldDef) {
-		return null;
 	}
 
 	/**

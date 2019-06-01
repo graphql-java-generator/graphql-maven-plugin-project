@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.graphql-java</groupId>
+		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-java-generator</artifactId>
 		<version>0.3.0-SNAPSHOT</version>
 	</parent>
@@ -26,11 +26,11 @@
 
 		<!-- dependendencies for graphql -->
 		<dependency>
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.graphql-java</groupId>
+			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java</artifactId>
 		</dependency>
 

@@ -175,4 +175,4 @@ If you want to compile it, you'll have to add the lombok.jar file in your IDE. P
 
 # License
 
-`graphql-maven-plugin` is licensed under the MIT License. See [LICENSE](LICENSE.md) for details.
+`graphql-java-generator` is licensed under the MIT License. See [LICENSE](LICENSE.md) for details.

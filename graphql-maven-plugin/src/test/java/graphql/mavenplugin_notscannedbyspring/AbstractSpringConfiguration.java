@@ -19,8 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
-
 import graphql.mavenplugin.PluginMode;
 import graphql.mavenplugin.SpringConfiguration;
 import graphql.mavenplugin.test.helper.MavenLog;
@@ -33,7 +31,7 @@ import graphql.mavenplugin.test.helper.MavenTestHelper;
  * @author EtienneSF
  */
 @Configuration
-@Import({ JacksonAutoConfiguration.class, GraphQLJavaToolsAutoConfiguration.class })
+@Import({ JacksonAutoConfiguration.class })
 public abstract class AbstractSpringConfiguration {
 
 	private final static String BASE_PACKAGE = "org.graphql.mavenplugin.junittest";

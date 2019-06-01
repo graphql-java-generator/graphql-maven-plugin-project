@@ -15,9 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import com.oembedler.moon.graphql.boot.SchemaStringProvider;
-
 import graphql.mavenplugin.MavenResourceSchemaStringProvider;
+import graphql.mavenplugin.SchemaStringProvider;
 
 /**
  * @author EtienneSF
@@ -53,7 +52,7 @@ public class GraphqlTestHelper {
 		assertTrue(schemaStringProvider instanceof MavenResourceSchemaStringProvider,
 				"schemaStringProvider should be an instance of MavenResourceSchemaStringProvider but is "
 						+ schemaStringProvider.getClass().getName());
-		String foundPattern = ((MavenResourceSchemaStringProvider) schemaStringProvider).getSchemaFilePattern();
+		String foundPattern = ((graphql.mavenplugin.SchemaStringProvider) schemaStringProvider).getSchemaFilePattern();
 		assertTrue(foundPattern.endsWith(patternToCheck), "schemaStringProvider pattern should end with '"
 				+ patternToCheck + "', but it is '" + foundPattern + "'");
 	}

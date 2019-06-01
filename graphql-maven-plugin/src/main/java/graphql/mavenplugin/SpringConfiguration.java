@@ -18,9 +18,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
-import com.oembedler.moon.graphql.boot.SchemaStringProvider;
-
 import graphql.language.Document;
 import graphql.parser.Parser;
 
@@ -28,7 +25,7 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @Configuration
-@Import({ JacksonAutoConfiguration.class, GraphQLJavaToolsAutoConfiguration.class })
+@Import({ JacksonAutoConfiguration.class })
 @ComponentScan
 public class SpringConfiguration {
 

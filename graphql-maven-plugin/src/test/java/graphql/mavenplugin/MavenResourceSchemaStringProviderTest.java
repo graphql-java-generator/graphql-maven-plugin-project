@@ -19,7 +19,7 @@ import graphql.mavenplugin_notscannedbyspring.MavenResourceSchemaStringProviderT
 class MavenResourceSchemaStringProviderTest {
 
 	@Autowired
-	private MavenResourceSchemaStringProvider mavenResourceSchemaStringProvider;
+	private SchemaStringProvider mavenResourceSchemaStringProvider;
 
 	MavenProject project;
 

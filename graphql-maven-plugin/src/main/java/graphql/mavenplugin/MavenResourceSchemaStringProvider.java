@@ -16,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.oembedler.moon.graphql.boot.GraphQLJavaToolsAutoConfiguration;
-import com.oembedler.moon.graphql.boot.SchemaStringProvider;
-
 /**
  * 
  */
@@ -72,6 +69,7 @@ public class MavenResourceSchemaStringProvider implements SchemaStringProvider {
 		return writer.toString();
 	}
 
+	@Override
 	public String getSchemaFilePattern() {
 		return schemaFilePattern;
 	}
