@@ -101,7 +101,8 @@
 		<!-- Dependencies for GraphQL -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client</artifactId>
+			<artifactId>graphql-java-client-dependencies</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -44,6 +44,7 @@
 		<module>graphql-maven-plugin</module>
 		<module>graphql-maven-plugin-samples</module>
 		<module>graphql-java-client</module>
+		<module>graphql-java-client-dependencies</module>
 	</modules>
 
 	<properties>
@@ -125,7 +126,7 @@
 				<scope>test</scope>
 			</dependency>
 
-			<!-- Maven plugin's dependencies -->
+			<!-- Dependencies used to build the Maven plugin -->
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-core</artifactId>
@@ -164,6 +165,11 @@
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-java-client-dependencies</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -194,9 +200,9 @@
 
 			<!-- Other dependencies -->
 			<dependency>
-				<groupId>org.dbunit</groupId>
-				<artifactId>dbunit</artifactId>
-				<version>2.6.0</version>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.6</version>
 			</dependency>
 			<dependency>
 				<groupId>com.opencsv</groupId>

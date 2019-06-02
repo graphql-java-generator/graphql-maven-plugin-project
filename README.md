@@ -10,7 +10,7 @@ This project is an accelerator to develop <B>GraphQL clients</B> and <B>GraphQL 
 Please, take a look at the projets that are within the graphql-maven-plugin-samples: they show various ways to implement a GraphQL server, based on the graphql-java library. 
 
 <B>The interesting part is that graphql-java-generator is just an accelerator: you don't depend on additional library</B>. So, it just helps you. 
-If the generated code doesn't fully suit your needs, you can change it. But then, please indicate us what change you needed, so that we can embed it into next versions.
+If the generated code doesn't fully suit your needs, you can: take what's generated as a full sample for graphql-java usage, based on your use case. You can then update the generated code, where it's not compliant for you. And that's it. The only thing, there, is that we would like to know what was not correct for your use case, so that we can embed it into next versions. Or perhaps it's just a matter of documentation, to better explain how to use it... 
 
 The generator is currently a maven plugin. A Gradle plugin will come.
 

@@ -10,6 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import javax.annotation.Resource;
 
@@ -24,6 +26,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import graphql.mavenplugin.language.DataFetcherDelegate;
@@ -117,9 +120,37 @@ public class CodeGenerator {
 			i += generateTargetFile(documentParser.getSubscriptionTypes(), "subscription",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
 			i += generateQueryTargetType();
+			copyGraphQLJavaClientSources();
 			break;
 		}
 		return i;
+
+	}
+
+	void copyGraphQLJavaClientSources() throws IOException {
+		final int NB_BYTES = 1000;
+		ClassPathResource res = new ClassPathResource("/graphql-java-client-sources.jar");
+		JarEntry entry;
+		int nbBytesRead;
+		byte[] bytes = new byte[NB_BYTES];
+
+		try (JarInputStream jar = new JarInputStream(res.getInputStream())) {
+			while ((entry = jar.getNextJarEntry()) != null) {
+				if (!entry.getName().startsWith("META-INF")) {
+					java.io.File file = new java.io.File(targetSourceFolder, entry.getName());
+					if (entry.isDirectory()) {
+						// if its a directory, create it
+						file.mkdir();
+					} else {
+						try (java.io.FileOutputStream fos = new java.io.FileOutputStream(file)) {
+							while ((nbBytesRead = jar.read(bytes, 0, bytes.length)) > 0) {
+								fos.write(bytes, 0, nbBytesRead);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
