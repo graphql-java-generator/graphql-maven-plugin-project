@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -70,6 +71,10 @@ public class CodeGenerator {
 	/** @See {@link GraphqlMavenPlugin#mode} */
 	@Resource
 	PluginMode mode;
+	
+	/** The current maven project */
+	@Resource
+	MavenProject project;
 
 	/** @See GraphqlMavenPlugin#packageName */
 	@Resource
@@ -218,6 +223,7 @@ public class CodeGenerator {
 
 		VelocityContext context = new VelocityContext();
 		context.put("package", packageName);
+		context.put("packaging", project.getPackaging());
 		context.put("dataFetcherDelegates", documentParser.getDataFetcherDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
 
