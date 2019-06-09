@@ -26,7 +26,7 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  * 
  * @author EtienneSF
  */
-abstract class AbstractTest {
+abstract class AbstractIT {
 
 	QueryType queryType = new QueryType(Main.graphqlEndpoint);
 	Queries queries;

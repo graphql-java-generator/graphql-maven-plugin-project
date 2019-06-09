@@ -1,5 +1,8 @@
 # GraphQL Java Generator
 
+TODO: remove need to graphql-java-client from the server (needed because of the annotations)
+
+
 The GraphQL Java Generator makes it easy to work in Java with graphQL in a schema first approach.
 
 This project is an accelerator to develop <B>GraphQL clients</B> and <B>GraphQL servers</B> in java. That is: it generates the boilerplate code, and let you concentrate on what's specific to your use case: the queries/mutations/subscriptions you will call, when in client mode. And the response to the queries/mutations/subscriptions call, as well as the relations between objects, when in server mode. 
@@ -14,9 +17,6 @@ If the generated code doesn't fully suit your needs, you can: take what's genera
 
 The generator is currently a maven plugin. A Gradle plugin will come.
 
-
-TODO : 
-- Client and Server : manage https	(it works OK, but the whole build fails, because of an issue in the build itself, see the '_manage__https_' branch)
 
 ## Aim of this projet
 
@@ -101,6 +101,11 @@ _Note: In all cases, an ObjectResponse is built. This will help to add future fu
 
 ### Server mode
 
+
+#### Spring Boot application (server mode)
+
+When the package type of the maven module (or project) is _jar_, then this mode is used.
+
 The server mode is more complex, as its subject is to link the GraphQL schema to the underlying data structure. This data structure can vary a lot (relational database with lots of possible physical schema, document database like MongoDB, underlying JSON services...). Of course, the generated code can not guess what's your data structure, and how to access it.
 
 So the GraphQL Java Generator generates:
@@ -141,6 +146,26 @@ So you have to create the Data Fetchers. Please, take a look at the projets that
 
 Then... you're app is ready to go!
 :)
+
+#### WAR packaging (server mode)
+
+The StarWars server is a war. You can refer to it, as a working sample.
+
+To package in war mode, it's almost as the previous way, with these differences:
+* Of course, you'll have to set the maven package type as _war_
+* You'll have to provide the tomcat dependencies, to ensure that the embedded servlet container does not interfere with the servlet container to which the war file is deployed. To do so, add this dependency:
+
+```XML
+<dependencies>
+	<!-- … -->
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-tomcat</artifactId>
+		<scope>provided</scope>
+	</dependency>
+	<!-- … -->
+</dependencies>
+```
 
 ## Access to the demo GraphQL server
 

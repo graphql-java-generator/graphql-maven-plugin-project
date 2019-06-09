@@ -6,6 +6,8 @@ package graphql.java.client;
 import java.io.IOException;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -43,13 +45,38 @@ public class QueryExecutorImpl implements QueryExecutor {
 	WebTarget webTarget;
 
 	/**
-	 * This constructor expects the URI of the GraphQL server.<BR/>
+	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
+	 * https ones.<BR/>
+	 * For example: http://my.server.com/graphql
+	 * 
+	 * @param graphqlEndpoint
+	 *            the http URI for the GraphQL endpoint
+	 */
+	public QueryExecutorImpl(String graphqlEndpoint) {
+		if (graphqlEndpoint.startsWith("https:")) {
+			throw new IllegalArgumentException(
+					"This GraphQL endpoint is an https one. Please provide the SSLContext and HostnameVerifier items, by using the relevant Query/Mutation/Subscription constructor");
+		}
+		client = ClientBuilder.newClient();
+		webTarget = client.target(graphqlEndpoint);
+	}
+
+	/**
+	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
+	 * https ones.<BR/>
 	 * For example: https://my.server.com/graphql
 	 * 
 	 * @param graphqlEndpoint
+	 *            the https URI for the GraphQL endpoint
+	 * @param sslContext
+	 * @param hostnameVerifier
 	 */
-	public QueryExecutorImpl(String graphqlEndpoint) {
-		client = ClientBuilder.newClient();
+	public QueryExecutorImpl(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+		if (graphqlEndpoint.startsWith("http:")) {
+			throw new IllegalArgumentException(
+					"This GraphQL endpoint is an http one. Please use the relevant Query/Mutation/Subscription constructor (without the SSLContext and HostnameVerifier parameters)");
+		}
+		client = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(hostnameVerifier).build();
 		webTarget = client.target(graphqlEndpoint);
 	}
 

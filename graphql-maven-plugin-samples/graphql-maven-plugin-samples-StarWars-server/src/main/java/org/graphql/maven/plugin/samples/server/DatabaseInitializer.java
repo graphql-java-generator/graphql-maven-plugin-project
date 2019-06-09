@@ -38,15 +38,17 @@ public class DatabaseInitializer {
 	String password = "";
 
 	/**
-	 * This method waits for the application to be ready. Then it fills the database with sample data
+	 * This method waits for the application to be ready. Then it fills the database
+	 * with sample data
 	 * 
 	 * @throws Exception
 	 */
 	@EventListener(ApplicationReadyEvent.class)
 	public void initDatabase() throws Exception {
+		Connection connection = null;
 		try {
 			Class.forName("org.h2.Driver");
-			Connection connection = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
+			connection = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
 			connection.setAutoCommit(true);
 
 			// Let's load our data
@@ -59,18 +61,25 @@ public class DatabaseInitializer {
 			loader.loadCSV("character_friends", false);
 
 		} catch (Exception e) {
-			// An error occured. We logged, but don't block the start of the server : very often, the issue is a gap
-			// with the database model. And we need the in-memory database to be started, to check that.
+			// An error occured. We logged, but don't block the start of the server : very
+			// often, the issue is a gap
+			// with the database model. And we need the in-memory database to be started, to
+			// check that.
 			Throwable e2 = e;
 			while (e2 != null) {
 				logger.error(e2.getMessage());
 				e2 = e2.getCause();
 			}
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
 	/**
-	 * Writes to a temporary file, the content of the file located to the given path on the classpath
+	 * Writes to a temporary file, the content of the file located to the given path
+	 * on the classpath
 	 * 
 	 * @param path
 	 * @param prefix

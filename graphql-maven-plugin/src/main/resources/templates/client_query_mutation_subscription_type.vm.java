@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,17 +32,36 @@ public class ${object.name} {
 	private static Logger logger = LogManager.getLogger();
 
 	final QueryExecutor executor;
-	
+
 	/**
-	 * This constructor expects the URI of the GraphQL server.<BR/>
-	 * For example: https://my.server.com/graphql
+	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
+	 * https ones.<BR/>
+	 * For example: http://my.server.com/graphql
 	 * 
 	 * @param graphqlEndpoint
+	 *            the http URI for the GraphQL endpoint
 	 */
 	public ${object.name}(String graphqlEndpoint) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint);
 	}
 
+	/**
+	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
+	 * http ones.<BR/>
+	 * For example: https://my.server.com/graphql<BR/><BR/>
+	 * {@link SSLContext} and {@link HostnameVerifier} are regular Java stuff. You'll find lots of documentation on the web. 
+	 * The StarWars sample is based on the <A HREF="http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https">http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https</A> blog.
+	 * But this sample implements a noHostVerification, which of course, is the simplest but the safest way to go.
+	 * 
+	 * @param graphqlEndpoint
+	 *            the https URI for the GraphQL endpoint
+	 * @param sslContext
+	 * @param hostnameVerifier
+	 */
+	public ${object.name}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+		this.executor = new QueryExecutorImpl(graphqlEndpoint, sslContext, hostnameVerifier);
+	}
+	
 #foreach ($field in $object.fields)
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a

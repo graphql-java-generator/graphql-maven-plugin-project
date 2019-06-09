@@ -3,7 +3,9 @@
  */
 package org.graphql.maven.plugin.samples.simple.client.graphql;
 
-import org.graphql.maven.plugin.samples.simple.client.Main;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import org.graphql.maven.plugin.samples.simple.client.Queries;
 
 import com.generated.graphql.Character;
@@ -32,8 +34,8 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class WithQueries implements Queries {
 
-	QueryType queryType = new QueryType(Main.graphqlEndpoint);
-	MutationType mutationType = new MutationType(Main.graphqlEndpoint);
+	final QueryType queryType;
+	final MutationType mutationType;
 
 	ObjectResponse heroFullResponse;
 	ObjectResponse heroPartialResponse;
@@ -51,12 +53,21 @@ public class WithQueries implements Queries {
 	ObjectResponse addFriend;
 
 	/**
-	 * The constructors prepares the queries. That is: once the instance is created, you know that your queries are
-	 * syntaxly correct
+	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
+	 * https ones.<BR/>
+	 * For example: https://my.server.com/graphql
 	 * 
+	 * @param graphqlEndpoint
+	 *            the https URI for the GraphQL endpoint
+	 * @param sslContext
+	 * @param hostnameVerifier
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public WithQueries() throws GraphQLRequestPreparationException {
+	public WithQueries(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)
+			throws GraphQLRequestPreparationException {
+		queryType = new QueryType(graphqlEndpoint, sslContext, hostnameVerifier);
+		mutationType = new MutationType(graphqlEndpoint, sslContext, hostnameVerifier);
+
 		// The easiest way: don't precise which fields you want, and all known scalar fields are queried
 		heroFullResponse = queryType.getHeroResponseBuilder().build();
 

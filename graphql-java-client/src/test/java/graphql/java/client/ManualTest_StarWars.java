@@ -1,14 +1,22 @@
 package graphql.java.client;
 
-import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import graphql.java.client.domain.starwars.Character;
 import graphql.java.client.domain.starwars.Episode;
 import graphql.java.client.domain.starwars.Human;
 import graphql.java.client.domain.starwars.QueryType;
 import graphql.java.client.request.ObjectResponse;
-import graphql.java.client.response.GraphQLExecutionException;
-import graphql.java.client.response.GraphQLRequestPreparationException;
 
 /**
  * Manual test for query execution. Not a JUnit test. The automation for this test is done in the
@@ -19,12 +27,17 @@ import graphql.java.client.response.GraphQLRequestPreparationException;
  */
 public class ManualTest_StarWars {
 
-	static String graphqlEndpoint = "http://localhost:8180/graphql";
-	static QueryExecutor executor = new QueryExecutorImpl(graphqlEndpoint);
-	static QueryType queryType = new QueryType(graphqlEndpoint);
+	String graphqlEndpoint = "https://localhost:8443/graphql";
+	QueryExecutor executor;
+	QueryType queryType;
 
-	public static void main(String[] args)
-			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
+	public static void main(String[] args) throws Exception {
+		new ManualTest_StarWars().exec();
+	}
+
+	public void exec() throws Exception {
+		executor = new QueryExecutorImpl(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier());
+		queryType = new QueryType(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////// Short way: your write the GraphQL yourself
@@ -90,4 +103,37 @@ public class ManualTest_StarWars {
 		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
+	private SSLContext getSslContext() throws NoSuchAlgorithmException, KeyManagementException {
+		SSLContext sslContext = SSLContext.getInstance("TLSv1");
+
+		KeyManager[] keyManagers = null;
+		TrustManager[] trustManager = { new NoOpTrustManager() };
+		SecureRandom secureRandom = new SecureRandom();
+
+		sslContext.init(keyManagers, trustManager, secureRandom);
+
+		return sslContext;
+	}
+
+	public class NoOpTrustManager implements X509TrustManager {
+		@Override
+		public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
+		}
+
+		@Override
+		public X509Certificate[] getAcceptedIssuers() {
+			return new X509Certificate[0];
+		}
+	}
+
+	public class NoOpHostnameVerifier implements HostnameVerifier {
+		@Override
+		public boolean verify(String s, SSLSession sslSession) {
+			return true;
+		}
+	}
 }

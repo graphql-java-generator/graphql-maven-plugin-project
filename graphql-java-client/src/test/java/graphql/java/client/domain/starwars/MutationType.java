@@ -27,9 +27,10 @@ public class MutationType {
 	private static Logger logger = LogManager.getLogger();
 
 	final QueryExecutor executor;
-	
+
 	/**
-	 * This constructor expects the URI of the GraphQL server.<BR/>
+	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
+	 * https ones.<BR/>
 	 * For example: https://my.server.com/graphql
 	 * 
 	 * @param graphqlEndpoint
@@ -43,8 +44,8 @@ public class MutationType {
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
 	 * describes the format of the response of the server response, that is the expected fields of the {@link Human}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
-	 * the StarWars, Forum and other samples for more complex queries.
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
@@ -81,26 +82,27 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Human.class)
 	@GraphQLQuery
-	public Human createHuman(ObjectResponse objectResponse, String name, String homePlanet) 
-			throws GraphQLExecutionException  {
+	public Human createHuman(ObjectResponse objectResponse, String name, String homePlanet)
+			throws GraphQLExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'createHuman' with parameters: {}, {} ", name, homePlanet);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of mutation 'createHuman'");
 		}
-	
+
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("name", name));
 		parameters.add(new InputParameter("homePlanet", homePlanet));
 
 		if (!Human.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
+			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of " + Human.class
+					+ ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
-		MutationTypeCreateHuman ret = executor.execute("mutation", objectResponse, parameters, MutationTypeCreateHuman.class);
-		
+		MutationTypeCreateHuman ret = executor.execute("mutation", objectResponse, parameters,
+				MutationTypeCreateHuman.class);
+
 		return ret.createHuman;
 	}
 
@@ -113,14 +115,14 @@ public class MutationType {
 	public Builder getCreateHumanResponseBuilder() throws GraphQLRequestPreparationException {
 		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "createHuman");
 	}
-	
+
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
 	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
-	 * the StarWars, Forum and other samples for more complex queries.
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
@@ -157,14 +159,14 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
-	public Character addFriend(ObjectResponse objectResponse, String idCharacter, String idNewFriend) 
-			throws GraphQLExecutionException  {
+	public Character addFriend(ObjectResponse objectResponse, String idCharacter, String idNewFriend)
+			throws GraphQLExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'addFriend' with parameters: {}, {} ", idCharacter, idNewFriend);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of mutation 'addFriend'");
 		}
-	
+
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 		parameters.add(new InputParameter("idCharacter", idCharacter));
@@ -175,8 +177,9 @@ public class MutationType {
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
-		MutationTypeAddFriend ret = executor.execute("mutation", objectResponse, parameters, MutationTypeAddFriend.class);
-		
+		MutationTypeAddFriend ret = executor.execute("mutation", objectResponse, parameters,
+				MutationTypeAddFriend.class);
+
 		return ret.addFriend;
 	}
 
@@ -189,5 +192,5 @@ public class MutationType {
 	public Builder getAddFriendResponseBuilder() throws GraphQLRequestPreparationException {
 		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "addFriend");
 	}
-	
+
 }

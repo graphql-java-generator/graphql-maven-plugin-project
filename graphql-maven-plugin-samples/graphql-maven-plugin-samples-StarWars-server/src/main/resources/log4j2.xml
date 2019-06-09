@@ -5,7 +5,12 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-		<File name="File" fileName="target/server.log">
+		<File name="File_mavenTarget" fileName="target/server.log">
+			<PatternLayout>
+				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+		<File name="File" fileName="../logs/GraphQL_StarWars_server.log">
 			<PatternLayout>
 				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>

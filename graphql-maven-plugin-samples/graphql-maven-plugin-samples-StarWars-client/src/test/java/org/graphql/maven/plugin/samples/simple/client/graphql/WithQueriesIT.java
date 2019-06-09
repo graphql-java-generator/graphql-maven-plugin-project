@@ -1,5 +1,6 @@
 package org.graphql.maven.plugin.samples.simple.client.graphql;
 
+import org.graphql.maven.plugin.samples.simple.client.Main;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -8,11 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
  * 
  * @author EtienneSF
  */
-class WithQueriesIT extends AbstractTest {
+class WithQueriesIT extends AbstractIT {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		queries = new WithQueries();
+		Main main = new Main();
+		queries = new WithQueries(Main.graphqlEndpoint, main.getSslContext(), main.getHostnameVerifier());
 	}
 
 }

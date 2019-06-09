@@ -1,8 +1,15 @@
 # GraphQL Maven Plugin : StarWars Server example
 
-This project shows the use of the plugin to support the Star Wars graphql schema.
+This project shows the use of the maven plugin to support the Star Wars graphql schema.
+
 
 ## General principles
+
+The code is packaged as a war. It runs into a jetty web server.
+
+There is no integration test in the Server module. The integration tests are run in the StarWars Client module, so that both the client code and the serer code are properly tested. 
+
+## Choices of this sample about the underlying database physical schema
 
 The graphql-maven-plugin generates the maximum of boilerplate code, to avoid you to do it. This works very well with entities and scalar types.
 

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -10,21 +12,19 @@
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
+	<packaging>war</packaging>
 
 	<build>
 		<plugins>
 			<plugin>
+				<!-- Needed to properly package the jar or war, so that spring can link 
+					all resources together -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
+				<!-- This is core of graphql-java-generator: it generates the boilerplate 
+					code for you -->
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
@@ -39,9 +39,6 @@
 					<packageName>org.graphql.maven.plugin.samples.server</packageName>
 				</configuration>
 			</plugin>
-			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
-				<executions> <execution> <id>add-source</id> <phase>generate-sources</phase> <goals> <goal>add-source</goal> </goals> <configuration> 
-				<sources> <source>some directory</source> ... </sources> </configuration> </execution> </executions> </plugin -->
 		</plugins>
 	</build>
 
@@ -58,22 +55,22 @@
 			<scope>test</scope>
 		</dependency>
 
-
-		<!-- dependendencies within this project -->
-		<!-- dependency> <groupId>com.graphql-java-generator</groupId> <artifactId>graphql-java-client</artifactId> </dependency -->
-
 		<!-- Dependencies for GraphQL -->
 		<dependency>
+			<!-- The needed runtime to link graphql-java to the spring boot stuff -->
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
 		</dependency>
 		<dependency>
-			<!-- Generates at runtime a GUI to execute GraphQL requests -->
+			<!-- Generates at runtime a GUI to execute GraphQL requests. -->
+			<!-- Very useful for tests, but take care for production ! -->
 			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphiql-spring-boot-starter</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<!-- This dependency is here only to lower the number of entries in this 
+				pom: this project is just a pom with the relevant dependencies. -->
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client</artifactId>
 		</dependency>
@@ -85,6 +82,14 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
+			<!-- needed as the packaging for this project is was: to ensure that the 
+				embedded servlet container does not interfere with the servlet container 
+				to which the war file is deployed -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
@@ -93,11 +98,15 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
+			<!-- Needed only for this project as a sample: we store the data in a 
+				H2 in-memory database -->
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
+			<!-- Needed only for this project as a sample: we load the data into the 
+				database, from csv files -->
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 		</dependency>

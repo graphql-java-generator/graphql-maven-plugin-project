@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -40,37 +42,54 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
-				<groupId>com.bazaarvoice.maven.plugins</groupId>
-				<artifactId>process-exec-maven-plugin</artifactId>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>1.7.4</version>
 				<executions>
 					<execution>
-						<id>switchboard-process</id>
+						<id>start-jetty</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>start</goal>
 						</goals>
-						<configuration>
-							<name>StarWars GraphQL server</name>
-							<workingDir>starwars_graphql_server</workingDir>
-							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8180/graphiql</healthcheckUrl>
-							<arguments>
-								<argument>java</argument>
-								<argument>-jar</argument>
-								<argument>${basedir}/../graphql-maven-plugin-samples-StarWars-server/target/graphql-maven-plugin-samples-StarWars-server-${project.version}.jar</argument>
-							</arguments>
-						</configuration>
 					</execution>
-					<!--Stop all processes in reverse order -->
 					<execution>
-						<id>stop-all</id>
+						<id>stop-jetty</id>
 						<phase>post-integration-test</phase>
 						<goals>
-							<goal>stop-all</goal>
+							<goal>stop</goal>
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<container>
+						<containerId>tomcat9x</containerId>
+						<zipUrlInstaller>
+							<url>http://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/9.0.20/tomcat-9.0.20.zip</url>
+							<downloadDir>${project.basedir}/downloads</downloadDir>
+						</zipUrlInstaller>
+					</container>
+					<configuration>
+						<properties>
+							<cargo.protocol>https</cargo.protocol>
+							<cargo.tomcat.connector.keyAlias>graphql</cargo.tomcat.connector.keyAlias>
+							<cargo.tomcat.connector.keystoreFile>${project.basedir}/src/main/resources/keystore.jks</cargo.tomcat.connector.keystoreFile>
+							<cargo.tomcat.connector.keystorePass>graphql</cargo.tomcat.connector.keystorePass>
+							<cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
+							<cargo.servlet.port>8443</cargo.servlet.port>
+							<cargo.servlet.users>admin:tomcat:manager-gui</cargo.servlet.users>
+						</properties>
+					</configuration>
+					<deployables>
+						<deployable>
+							<location>${basedir}/../graphql-maven-plugin-samples-StarWars-server/target/graphql-maven-plugin-samples-StarWars-server-${project.version}.war</location>
+							<type>war</type>
+							<properties>
+								<context>/starwars</context>
+							</properties>
+						</deployable>
+					</deployables>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -102,8 +121,8 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-dependencies</artifactId>
-			<version>${project.version}</version>
 		</dependency>
+
 	</dependencies>
 
 </project>
