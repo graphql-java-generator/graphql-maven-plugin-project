@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import org.graphql.maven.plugin.samples.simple.client.Main;
 import org.graphql.maven.plugin.samples.simple.client.Queries;
 import org.junit.jupiter.api.Test;
@@ -21,14 +24,14 @@ import graphql.java.client.response.GraphQLExecutionException;
 import graphql.java.client.response.GraphQLRequestPreparationException;
 
 /**
- * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
- * the pom.xml file for details.
+ * As it is suffixed by "IT", this is an integration test. Thus, it allows us to
+ * start the GraphQL StatWars server, see the pom.xml file for details.
  * 
  * @author EtienneSF
  */
 abstract class AbstractIT {
 
-	QueryType queryType = new QueryType(Main.graphqlEndpoint);
+	QueryType queryType;
 	Queries queries;
 
 	@Test
@@ -49,7 +52,8 @@ abstract class AbstractIT {
 
 	@Test
 	void test_heroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		// return queryType.hero("{id appearsIn friends {name friends {friends{id name appearsIn}}}}", Episode.NEWHOPE);
+		// return queryType.hero("{id appearsIn friends {name friends {friends{id name
+		// appearsIn}}}}", Episode.NEWHOPE);
 		Character c = queries.heroFriendsFriendsFriends();
 
 		checkCharacter(c, "testHeroFriendsFriendsFriends", "00000000-0000-0000-0000-000000000002", null, 2,
@@ -104,7 +108,8 @@ abstract class AbstractIT {
 
 	@Test
 	void test_humanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		// queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}", "180");
+		// queryType.human("{id appearsIn name friends {name friends {friends{id name
+		// appearsIn}}}}", "180");
 		Human h = queries.humanFriendsFriendsFriends();
 
 		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1]", "00000000-0000-0000-0000-000000000180",
@@ -150,7 +155,8 @@ abstract class AbstractIT {
 
 	@Test
 	void test_droidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		// droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }", "2");
+		// droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}}
+		// primaryFunction }", "2");
 		Droid d = queries.droidFriendsFriendsFriends();
 
 		checkCharacter(d, "testDroidFriendsFriendsFriends", "00000000-0000-0000-0000-000000000002", "BB-8", 2,
@@ -203,8 +209,15 @@ abstract class AbstractIT {
 
 		// Verification
 		assertEquals(characterBefore.getFriends().size() + 1, characterAfter.getFriends().size());
-		// The new friend should be at the end of the list
-		assertEquals(friend.getId(), characterAfter.getFriends().get(characterAfter.getFriends().size() - 1).getId());
+		// The new friend should be somewhere in the list
+		boolean found = false;
+		for (Character c : characterAfter.getFriends()) {
+			if (c.getId().equals(friend.getId())) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found, "We should have found the new friend");
 	}
 
 	private void checkCharacter(Character c, String testDecription, String id, String name, int nbFriends,
