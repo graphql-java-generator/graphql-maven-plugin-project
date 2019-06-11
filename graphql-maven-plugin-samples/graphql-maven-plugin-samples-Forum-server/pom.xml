@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -30,25 +32,15 @@
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
 				</configuration>
 			</plugin>
-			<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> <version>3.0.0</version> 
-				<executions> <execution> <id>add-source</id> <phase>generate-sources</phase> <goals> <goal>add-source</goal> </goals> <configuration> 
-				<sources> <source>some directory</source> ... </sources> </configuration> </execution> </executions> </plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
-		<!-- Dependencies for tests -->
+		<!-- Dependencies for junit tests -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -60,36 +52,32 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Dependencies for GraphQL -->
+		<!-- Generates at runtime a GUI to execute GraphQL requests. -->
+		<!-- Very useful for tests, but take care for production ! -->
 		<dependency>
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<!-- Generates at runtime a GUI to execute GraphQL requests -->
 			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphiql-spring-boot-starter</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Dependencies for the generated code -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client</artifactId>
+			<artifactId>graphql-java-server-dependencies</artifactId>
+			<type>pom</type>
 		</dependency>
+		<!-- dependency>
+			<!- You need to provide in your pom the fact the this dependency is provided. 
+				This is to ensure that the embedded servlet container does not interfere 
+				with the servlet container to which the war file is deployed ->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency-->
 
-		<!-- Other dependencies -->
+		<!-- Dependencies that are specific to this project -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
+			<!-- Only here for the tests, to load the data in an in-memory database -->
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>

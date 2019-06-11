@@ -115,12 +115,16 @@
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
 			<scope>test</scope>
+			<type>pom</type>
+			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Dependencies for GraphQL -->
+
+		<!-- Dependencies for graphql-java-generator -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-dependencies</artifactId>
+			<type>pom</type>
 		</dependency>
 
 	</dependencies>

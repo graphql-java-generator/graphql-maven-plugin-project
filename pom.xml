@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -41,14 +42,16 @@
 	</scm>
 
 	<modules>
+		<module>graphql-java-runtime</module>
 		<module>graphql-maven-plugin</module>
 		<module>graphql-maven-plugin-samples</module>
-		<module>graphql-java-client</module>
 		<module>graphql-java-client-dependencies</module>
+		<module>graphql-java-server-dependencies</module>
 	</modules>
 
 	<properties>
-		<!-- kotlin version should be upgraded for graphql-java-tools, when using spring boot under v2.2 -->
+		<!-- kotlin version should be upgraded for graphql-java-tools, when using 
+			spring boot under v2.2 -->
 		<kotlin.version>1.3.10</kotlin.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -83,8 +86,8 @@
 					<version>2.21.0</version>
 					<dependencies>
 						<dependency>
-							<!-- Necessary due to a bug in the previous version. This conf will probably be obsolete in a next version of spring 
-								boot -->
+							<!-- Necessary due to a bug in the previous version. This conf will 
+								probably be obsolete in a next version of spring boot -->
 							<groupId>org.junit.platform</groupId>
 							<artifactId>junit-platform-surefire-provider</artifactId>
 							<version>1.2.0</version>
@@ -92,7 +95,8 @@
 					</dependencies>
 				</plugin>
 				<plugin>
-					<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
+					<!-- This plugin allows to start the SpringBoot StarWars-server in the 
+						background during the integration tests -->
 					<groupId>com.bazaarvoice.maven.plugins</groupId>
 					<artifactId>process-exec-maven-plugin</artifactId>
 					<version>0.7</version>
@@ -157,15 +161,23 @@
 			</dependency>
 
 
-			<!-- dependendencies within this project -->
-			<dependency>
-				<groupId>com.graphql-java-generator</groupId>
-				<artifactId>graphql-java-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+			<!-- dependencies within this project -->
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-java-client-dependencies</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-java-server-dependencies</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<!-- This module must have been built before -->
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-java-runtime</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -179,7 +191,7 @@
 				<version>${project.version}</version>
 			</dependency>
 
-			<!-- dependendencies for graphql -->
+			<!-- dependencies for graphql -->
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java</artifactId>
@@ -196,7 +208,8 @@
 				<version>1.0</version>
 			</dependency>
 			<dependency>
-				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
+				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This 
+					project has been moved to com.graphql-java-kickstart -->
 				<groupId>com.graphql-java-kickstart</groupId>
 				<artifactId>graphiql-spring-boot-starter</artifactId>
 				<version>5.7.0</version>

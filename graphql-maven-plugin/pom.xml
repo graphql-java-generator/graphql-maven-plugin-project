@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -16,36 +17,6 @@
 
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-dependency-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>copy</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute>
-											<runOnIncremental>false</runOnIncremental>
-										</execute>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -55,8 +26,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- We'll read the sources from graphql-client, to add the sources to the generated code (thus: no external dependency 
-					in the generated code) -->
+				<!-- We'll read the sources from graphql-client, to add the sources to 
+					the generated code (thus: no external dependency in the generated code) -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
@@ -70,12 +41,11 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
-									<artifactId>graphql-java-client</artifactId>
-									<version>${project.version}</version>
+									<artifactId>graphql-java-runtime</artifactId>
 									<type>jar</type>
 									<classifier>sources</classifier>
 									<overWrite>true</overWrite>
-									<destFileName>graphql-java-client-sources.jar</destFileName>
+									<destFileName>graphql-java-runtime-sources.jar</destFileName>
 									<outputDirectory>${project.build.directory}/classes/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
@@ -89,16 +59,10 @@
 	<dependencies>
 		<!-- Internal dependencies -->
 		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client-dependencies</artifactId>
-		</dependency>
-		<dependency>
 			<!-- This module must have been built before -->
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client</artifactId>
-			<scope>provided</scope>
+			<artifactId>graphql-java-runtime</artifactId>
 		</dependency>
-
 
 		<!-- Dependencies for tests -->
 		<dependency>
@@ -111,8 +75,6 @@
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- dependency> <groupId>org.junit.jupiter</groupId> <artifactId>junit-jupiter-params</artifactId> <version>${junit.jupiter.version}</version> 
-			<scope>test</scope> </dependency -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
@@ -129,8 +91,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<!-- This dependency is necessary for tests only. But, to check in eclipse that the generated code compiles, we need to 
-				add it to the compilation classpath -->
+			<!-- This dependency is necessary for tests only. But, to check in eclipse 
+				that the generated code compiles, we need to add it to the compilation classpath -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<scope>provided</scope>
@@ -162,7 +124,6 @@
 		</dependency>
 
 		<!-- Other dependencies -->
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-log4j2</artifactId> </dependency -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

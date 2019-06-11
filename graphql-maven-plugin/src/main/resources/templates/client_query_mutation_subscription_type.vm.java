@@ -12,10 +12,10 @@ import javax.net.ssl.SSLContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import graphql.java.annotation.GraphQLNonScalar;
+import graphql.java.annotation.GraphQLQuery;
 import graphql.java.client.QueryExecutor;
 import graphql.java.client.QueryExecutorImpl;
-import graphql.java.client.annotation.GraphQLNonScalar;
-import graphql.java.client.annotation.GraphQLQuery;
 import graphql.java.client.request.Builder;
 import graphql.java.client.request.InputParameter;
 import graphql.java.client.request.ObjectResponse;

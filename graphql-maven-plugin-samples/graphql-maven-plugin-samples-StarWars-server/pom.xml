@@ -55,48 +55,30 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Dependencies for GraphQL -->
+		<!-- Generates at runtime a GUI to execute GraphQL requests. -->
+		<!-- Very useful for tests, but take care for production ! -->
 		<dependency>
-			<!-- The needed runtime to link graphql-java to the spring boot stuff -->
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<!-- Generates at runtime a GUI to execute GraphQL requests. -->
-			<!-- Very useful for tests, but take care for production ! -->
 			<groupId>com.graphql-java-kickstart</groupId>
 			<artifactId>graphiql-spring-boot-starter</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Dependencies for the generated code -->
 		<dependency>
-			<!-- This dependency is here only to lower the number of entries in this 
-				pom: this project is just a pom with the relevant dependencies. -->
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client</artifactId>
+			<artifactId>graphql-java-server-dependencies</artifactId>
+			<type>pom</type>
 		</dependency>
-
-
-		<!-- Other dependencies -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<!-- needed as the packaging for this project is was: to ensure that the 
-				embedded servlet container does not interfere with the servlet container 
-				to which the war file is deployed -->
+		<!-- dependency>
+			<!- You need to provide in your pom the fact the this dependency is provided. 
+				This is to ensure that the embedded servlet container does not interfere 
+				with the servlet container to which the war file is deployed ->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+		</dependency-->
+
+		<!-- Dependencies that are specific to this project -->
 		<dependency>
 			<!-- Needed only for this project as a sample: we store the data in a 
 				H2 in-memory database -->

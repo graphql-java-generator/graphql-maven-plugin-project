@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -41,7 +43,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot Forum-server in the background during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot Forum-server in the background 
+					during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
@@ -132,7 +135,7 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-dependencies</artifactId>
-			<version>${project.version}</version>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 

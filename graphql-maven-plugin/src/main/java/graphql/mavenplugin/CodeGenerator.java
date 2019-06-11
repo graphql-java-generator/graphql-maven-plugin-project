@@ -36,8 +36,9 @@ import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.language.impl.ObjectType;
 
 /**
- * This class generates the code, from the classes coming from the graphql.mavenplugin.language package. This classes
- * have been created by {link {@link DocumentParser}
+ * This class generates the code, from the classes coming from the
+ * graphql.mavenplugin.language package. This classes have been created by {link
+ * {@link DocumentParser}
  * 
  * @author EtienneSF
  */
@@ -71,7 +72,7 @@ public class CodeGenerator {
 	/** @See {@link GraphqlMavenPlugin#mode} */
 	@Resource
 	PluginMode mode;
-	
+
 	/** The current maven project */
 	@Resource
 	MavenProject project;
@@ -100,7 +101,8 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Execution of the code generation. The generation is done on the data build by the {@link #documentParser}
+	 * Execution of the code generation. The generation is done on the data build by
+	 * the {@link #documentParser}
 	 * 
 	 * @Return The number of generated classes
 	 * @throws MojoExecutionException
@@ -125,24 +127,31 @@ public class CodeGenerator {
 			i += generateTargetFile(documentParser.getSubscriptionTypes(), "subscription",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
 			i += generateQueryTargetType();
-			copyGraphQLJavaClientSources();
 			break;
 		}
+
+		copyGraphQLJavaSources();
+
 		return i;
 
 	}
 
-	void copyGraphQLJavaClientSources() throws IOException {
+	void copyGraphQLJavaSources() throws IOException {
 		final int NB_BYTES = 1000;
-		ClassPathResource res = new ClassPathResource("/graphql-java-client-sources.jar");
+		ClassPathResource res = new ClassPathResource("/graphql-java-runtime-sources.jar");
 		JarEntry entry;
 		int nbBytesRead;
 		byte[] bytes = new byte[NB_BYTES];
 
 		try (JarInputStream jar = new JarInputStream(res.getInputStream())) {
 			while ((entry = jar.getNextJarEntry()) != null) {
-				if (!entry.getName().startsWith("META-INF")) {
+				boolean metaInf = entry.getName().startsWith("META-INF");
+				boolean serverAndIsClientFile = entry.getName().contains("graphql/java/client")
+						&& mode.equals(PluginMode.server);
+
+				if (!metaInf && !serverAndIsClientFile) {
 					java.io.File file = new java.io.File(targetSourceFolder, entry.getName());
+
 					if (entry.isDirectory()) {
 						// if its a directory, create it
 						file.mkdir();
@@ -161,12 +170,11 @@ public class CodeGenerator {
 	/**
 	 * Utility method to centralize the common actions around the file generation.
 	 * 
-	 * @param object
-	 *            The object to send to the template
-	 * @param type
-	 *            The kind of graphql object (object, query, mutation...), just for proper logging
-	 * @param templateFilename
-	 *            The absolute path for the template (or relative to the current path)
+	 * @param object           The object to send to the template
+	 * @param type             The kind of graphql object (object, query,
+	 *                         mutation...), just for proper logging
+	 * @param templateFilename The absolute path for the template (or relative to
+	 *                         the current path)
 	 * @throws IOException
 	 */
 	int generateTargetFile(List<? extends Type> objects, String type, String templateFilename) throws RuntimeException {
@@ -255,17 +263,15 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Generates one file from the given parameter, based on a Velocity context and template.
+	 * Generates one file from the given parameter, based on a Velocity context and
+	 * template.
 	 * 
-	 * @param targetFile
-	 *            The file to be generated. It will be either created or rewrited
-	 * @param msg
-	 *            A log message. It will be logged in debug mode, or send as the error message if an exception is
-	 *            raised.
-	 * @param context
-	 *            The Velocity context
-	 * @param templateFilename
-	 *            The Velocity template
+	 * @param targetFile       The file to be generated. It will be either created
+	 *                         or rewrited
+	 * @param msg              A log message. It will be logged in debug mode, or
+	 *                         send as the error message if an exception is raised.
+	 * @param context          The Velocity context
+	 * @param templateFilename The Velocity template
 	 * @return The number of classes created, that is: 1
 	 */
 	int generateOneFile(File targetFile, String msg, VelocityContext context, String templateFilename) {
@@ -280,7 +286,8 @@ public class CodeGenerator {
 			writer.close();
 
 			// Let's return the number of created files. That is: 1.
-			// Not very useful. But it helps making simpler the code of the caller for this method
+			// Not very useful. But it helps making simpler the code of the caller for this
+			// method
 			return 1;
 		} catch (ResourceNotFoundException | ParseErrorException | TemplateInitException | MethodInvocationException
 				| IOException e) {
@@ -289,11 +296,10 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * This method returns the {@link File} where the class is to be generated. It adds the preceding path, and the
-	 * suffix ".java" to the given parameter.
+	 * This method returns the {@link File} where the class is to be generated. It
+	 * adds the preceding path, and the suffix ".java" to the given parameter.
 	 * 
-	 * @param simpleClassname
-	 *            The classname, without the package
+	 * @param simpleClassname The classname, without the package
 	 * @return
 	 */
 	File getJavaFile(String simpleClassname) {
@@ -306,10 +312,9 @@ public class CodeGenerator {
 	/**
 	 * Calls the 'methodName' method on the given object
 	 * 
-	 * @param methodName
-	 *            The name of the method name
-	 * @param object
-	 *            The given node, on which the 'methodName' method is to be called
+	 * @param methodName The name of the method name
+	 * @param object     The given node, on which the 'methodName' method is to be
+	 *                   called
 	 * @return
 	 */
 	Object exec(String methodName, Object object) {
