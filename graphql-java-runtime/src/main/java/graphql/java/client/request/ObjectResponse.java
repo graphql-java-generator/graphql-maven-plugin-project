@@ -262,20 +262,23 @@ public class ObjectResponse {
 	 * @return
 	 */
 	public void appendResponseQuery(StringBuilder sb) {
-		logger.debug("Appending ReponseDef content for field " + fieldName + " of type " + fieldClass);
-		sb.append("{");
 
-		// We first loop through the field of the current ObjectResponse
-		scalarFields.stream().forEach(f -> appendFieldName(sb, f.name, f.alias));
+		if (scalarFields.size() > 0 || subObjects.size() > 0) {
+			logger.debug("Appending ReponseDef content for field " + fieldName + " of type " + fieldClass);
+			sb.append("{");
 
-		// Then we loop though all sub-objects
-		for (ObjectResponse o : subObjects) {
-			appendFieldName(sb, o.fieldName, o.fieldAlias);
-			// Let's add all queried fields for this object
-			o.appendResponseQuery(sb);
-		} // for
+			// We first loop through the field of the current ObjectResponse
+			scalarFields.stream().forEach(f -> appendFieldName(sb, f.name, f.alias));
 
-		sb.append("}");
+			// Then we loop though all sub-objects
+			for (ObjectResponse o : subObjects) {
+				appendFieldName(sb, o.fieldName, o.fieldAlias);
+				// Let's add all queried fields for this object
+				o.appendResponseQuery(sb);
+			} // for
+
+			sb.append("}");
+		}
 	}
 
 	/**
