@@ -36,9 +36,8 @@ import graphql.mavenplugin.language.Type;
 import graphql.mavenplugin.language.impl.ObjectType;
 
 /**
- * This class generates the code, from the classes coming from the
- * graphql.mavenplugin.language package. This classes have been created by {link
- * {@link DocumentParser}
+ * This class generates the code, from the classes coming from the graphql.mavenplugin.language package. This classes
+ * have been created by {link {@link DocumentParser}
  * 
  * @author EtienneSF
  */
@@ -55,7 +54,7 @@ public class CodeGenerator {
 	// Templates for server generation only
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServer.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServerMain.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL = "templates/server_GraphQLUtil.vm.java";
 
@@ -101,8 +100,7 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Execution of the code generation. The generation is done on the data build by
-	 * the {@link #documentParser}
+	 * Execution of the code generation. The generation is done on the data build by the {@link #documentParser}
 	 * 
 	 * @Return The number of generated classes
 	 * @throws MojoExecutionException
@@ -170,11 +168,12 @@ public class CodeGenerator {
 	/**
 	 * Utility method to centralize the common actions around the file generation.
 	 * 
-	 * @param object           The object to send to the template
-	 * @param type             The kind of graphql object (object, query,
-	 *                         mutation...), just for proper logging
-	 * @param templateFilename The absolute path for the template (or relative to
-	 *                         the current path)
+	 * @param object
+	 *            The object to send to the template
+	 * @param type
+	 *            The kind of graphql object (object, query, mutation...), just for proper logging
+	 * @param templateFilename
+	 *            The absolute path for the template (or relative to the current path)
 	 * @throws IOException
 	 */
 	int generateTargetFile(List<? extends Type> objects, String type, String templateFilename) throws RuntimeException {
@@ -243,7 +242,7 @@ public class CodeGenerator {
 		context.put("schemaFiles", schemaFiles);
 
 		int ret = 0;
-		ret += generateOneFile(getJavaFile("GraphQLServer"), "generating GraphQLServer", context,
+		ret += generateOneFile(getJavaFile("GraphQLServerMain"), "generating GraphQLServerMain", context,
 				PATH_VELOCITY_TEMPLATE_SERVER);
 		ret += generateOneFile(getJavaFile("GraphQLProvider"), "generating GraphQLProvider", context,
 				PATH_VELOCITY_TEMPLATE_PROVIDER);
@@ -263,15 +262,17 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Generates one file from the given parameter, based on a Velocity context and
-	 * template.
+	 * Generates one file from the given parameter, based on a Velocity context and template.
 	 * 
-	 * @param targetFile       The file to be generated. It will be either created
-	 *                         or rewrited
-	 * @param msg              A log message. It will be logged in debug mode, or
-	 *                         send as the error message if an exception is raised.
-	 * @param context          The Velocity context
-	 * @param templateFilename The Velocity template
+	 * @param targetFile
+	 *            The file to be generated. It will be either created or rewrited
+	 * @param msg
+	 *            A log message. It will be logged in debug mode, or send as the error message if an exception is
+	 *            raised.
+	 * @param context
+	 *            The Velocity context
+	 * @param templateFilename
+	 *            The Velocity template
 	 * @return The number of classes created, that is: 1
 	 */
 	int generateOneFile(File targetFile, String msg, VelocityContext context, String templateFilename) {
@@ -296,10 +297,11 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * This method returns the {@link File} where the class is to be generated. It
-	 * adds the preceding path, and the suffix ".java" to the given parameter.
+	 * This method returns the {@link File} where the class is to be generated. It adds the preceding path, and the
+	 * suffix ".java" to the given parameter.
 	 * 
-	 * @param simpleClassname The classname, without the package
+	 * @param simpleClassname
+	 *            The classname, without the package
 	 * @return
 	 */
 	File getJavaFile(String simpleClassname) {
@@ -312,9 +314,10 @@ public class CodeGenerator {
 	/**
 	 * Calls the 'methodName' method on the given object
 	 * 
-	 * @param methodName The name of the method name
-	 * @param object     The given node, on which the 'methodName' method is to be
-	 *                   called
+	 * @param methodName
+	 *            The name of the method name
+	 * @param object
+	 *            The given node, on which the 'methodName' method is to be called
 	 * @return
 	 */
 	Object exec(String methodName, Object object) {

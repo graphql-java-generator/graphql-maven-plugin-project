@@ -12,17 +12,17 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  */
 @SpringBootApplication
 @EnableConfigurationProperties
-public class GraphQLServer#if($packaging=="war") extends SpringBootServletInitializer#end {
+public class GraphQLServerMain#if($packaging=="war") extends SpringBootServletInitializer#end {
 
 #if($packaging=="war")
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(GraphQLServer.class);
+		return application.sources(GraphQLServerMain.class);
 	}
 #end
 
 	public static void main(String[] args) {
-		SpringApplication.run(GraphQLServer.class, args);
+		SpringApplication.run(GraphQLServerMain.class, args);
 	}
 
 }
