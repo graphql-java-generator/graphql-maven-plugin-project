@@ -32,6 +32,18 @@ In the near future :
 
 ## How to use it
 
+### Samples
+
+You'll find this samples in the project:
+* Basic
+    * The simplest samples. Start from them, when you want to start a new project
+* StarWars
+    * The server is packaged as a war
+    * The graphql server exposes https
+    * The data model is directly compatible with the generated code  
+*  Forum
+    * The server uses the schema personalization, to overcome the default code generation
+
 ### Client mode
 
 When in _client_ mode, you can query the server with just one line of code.
