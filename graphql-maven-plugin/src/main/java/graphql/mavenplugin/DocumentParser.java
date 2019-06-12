@@ -56,7 +56,7 @@ import lombok.Getter;
 
 /**
  * This class generates the Java classes, from the documents. These documents are read from the
- * graphql-spring-boot-starter code, in injected here thanks to spring's magik.<BR/>
+ * graphql-spring-boot-starter code, in injected here thanks to spring's magic.<BR/>
  * There is no validity check: we trust the information in the Document, as it is read by the graphql {@link Parser}.
  * <BR/>
  * The graphQL-java library maps both FieldDefinition and InputValueDefinition in very similar structures, which are
@@ -122,15 +122,21 @@ public class DocumentParser {
 	@Getter
 	List<ObjectType> mutationTypes = new ArrayList<>();
 
-	/** All the {@link ObjectType} which have been read during the reading of the documents */
+	/**
+	 * All the {@link ObjectType} which have been read during the reading of the documents
+	 */
 	@Getter
 	List<ObjectType> objectTypes = new ArrayList<>();
 
-	/** All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents */
+	/**
+	 * All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents
+	 */
 	@Getter
 	List<InterfaceType> interfaceTypes = new ArrayList<>();
 
-	/** All the {@link ObjectType} which have been read during the reading of the documents */
+	/**
+	 * All the {@link ObjectType} which have been read during the reading of the documents
+	 */
 	@Getter
 	List<EnumType> enumTypes = new ArrayList<>();
 
@@ -140,10 +146,14 @@ public class DocumentParser {
 	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
 	List<Relation> relations = new ArrayList<>();
 
-	/** All {@link DataFetcher}s that need to be implemented for this/these schema/schemas */
+	/**
+	 * All {@link DataFetcher}s that need to be implemented for this/these schema/schemas
+	 */
 	List<DataFetcher> dataFetchers = new ArrayList<>();
 
-	/** All {@link DataFetcherDelegate}s that need to be implemented for this/these schema/schemas */
+	/**
+	 * All {@link DataFetcherDelegate}s that need to be implemented for this/these schema/schemas
+	 */
 	List<DataFetcherDelegate> dataFetcherDelegates = new ArrayList<>();
 
 	/**
@@ -179,13 +189,15 @@ public class DocumentParser {
 
 		// Let's finalize some "details":
 
-		// Each interface should have an implementation class, for JSON deserialization, or to map to a JPA Entity
+		// Each interface should have an implementation class, for JSON deserialization,
+		// or to map to a JPA Entity
 		nbClasses += defineDefaultInterfaceImplementationClassName();
 		// init the list of the object implementing each interface.
 		initListOfImplementations();
 		// The types Map allows to retrieve easily a Type from its name
 		fillTypesMap();
-		// Let's identify every relation between objects, interface or union in the model
+		// Let's identify every relation between objects, interface or union in the
+		// model
 		initRelations();
 		// Some annotations are needed for Jackson or JPA
 		addAnnotations();
@@ -306,7 +318,8 @@ public class DocumentParser {
 	 */
 	@SuppressWarnings("rawtypes")
 	ObjectType readObjectType(ObjectTypeDefinition node) {
-		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
+		// Let's check if it's a real object, or part of a schema (query, subscription,
+		// mutation) definition
 
 		ObjectType objectType = new ObjectType(packageName, mode);
 
@@ -338,7 +351,8 @@ public class DocumentParser {
 	 * @return
 	 */
 	InterfaceType readInterfaceType(InterfaceTypeDefinition node) {
-		// Let's check if it's a real object, or part of a schema (query, subscription, mutation) definition
+		// Let's check if it's a real object, or part of a schema (query, subscription,
+		// mutation) definition
 
 		InterfaceType interfaceType = new InterfaceType(packageName, mode);
 
@@ -455,7 +469,8 @@ public class DocumentParser {
 			}
 		}
 
-		// We have the type. But we may not have parsed it yet. So we just write its name. And will get the
+		// We have the type. But we may not have parsed it yet. So we just write its
+		// name. And will get the
 		// graphql.mavenplugin.language.Type when generating the code.
 		field.setTypeName(typeName.getName());
 		if (typeName.getName().equals("ID")) {
@@ -599,7 +614,8 @@ public class DocumentParser {
 	 */
 	void addAnnotations() {
 		// No annotation for types.
-		// We go through each field of each type we generate, to define the relevant annotation
+		// We go through each field of each type we generate, to define the relevant
+		// annotation
 		switch (mode) {
 		case client:
 			Stream.concat(objectTypes.stream(), interfaceTypes.stream())
@@ -683,7 +699,8 @@ public class DocumentParser {
 			// We have found the identifier
 			annotation = "@Id\n	@GeneratedValue";
 		} else if (field.getRelation() != null || field.isList()) {
-			// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
+			// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to
+			// do it, instead.
 			annotation = "@Transient";
 		}
 
@@ -699,7 +716,8 @@ public class DocumentParser {
 		if (mode.equals(PluginMode.server)) {
 			queryTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
 			mutationTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
-			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
+			// objectTypes contains both the objects defined in the schema, and the concrete
+			// objects created to map the
 			// interfaces
 			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
 		}
@@ -721,27 +739,33 @@ public class DocumentParser {
 			DataFetcherImpl dataFetcher = null;
 
 			if (isQueryOrMutationType) {
-				// For queries and field that are lists, we take the argument read in the schema as is: all the needed
+				// For queries and field that are lists, we take the argument read in the schema
+				// as is: all the needed
 				// informations is already parsed.
 				dataFetcher = new DataFetcherImpl(field);
 			} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
 					(field.isList() || field.getType() instanceof ObjectType
 							|| field.getType() instanceof InterfaceType))) {
-				// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to manage
-				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loader : very
+				// For Objects and Interfaces, we need to add a specific data fetcher. The
+				// objective there is to manage
+				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL
+				// data loader : very
 				// important to limit the number of subqueries, when subobjects are queried.
-				// In these case, we need to create a new field that add the object ID as a parameter of the Data
+				// In these case, we need to create a new field that add the object ID as a
+				// parameter of the Data
 				// Fetcher
 				FieldImpl newField = new FieldImpl(this);
 				newField.setName(field.getName());
 				newField.setList(field.isList());
 				newField.setOwningType(field.getOwningType());
 				newField.setTypeName(field.getTypeName());
-				// Let's add the id for the owning type of the field, then all its input parameters
+				// Let's add the id for the owning type of the field, then all its input
+				// parameters
 				// for (Field fieldOfOwningType : field.getOwningType().getFields()) {
 				// if (fieldOfOwningType.isId()) {
 				// FieldImpl idField = new FieldImpl(this);
-				// // Let's build a sled descriptive name. For Board.id, the parameter name is boardId.
+				// // Let's build a sled descriptive name. For Board.id, the parameter name is
+				// boardId.
 				// // board is the owning type name in camel case.
 				// // Id is the field name in Pascal Case
 				// idField.setName(TypeUtil.getCamelCase(field.getOwningType().getName())
@@ -765,7 +789,8 @@ public class DocumentParser {
 			}
 		} // for
 
-		// If at least one DataFetcher has been created, we register this DataFetcherDelegate
+		// If at least one DataFetcher has been created, we register this
+		// DataFetcherDelegate
 		if (dataFetcherDelegate.getDataFetchers().size() > 0) {
 			dataFetcherDelegates.add(dataFetcherDelegate);
 		}

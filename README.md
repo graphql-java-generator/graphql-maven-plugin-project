@@ -111,17 +111,36 @@ So the GraphQL Java Generator generates:
     * TODO: in the future, it will also be possible to generate war packages.
 * The code expected by the graphql-java library. It depends on no other graphql dependency
 * The POJOs, so that you can manipulate your data.
-* JPA annotations on the POJO's fields, so that you can with Spring Data (or Hibernate) with a minimum of additional work. 
+* JPA annotations on the POJO's fields, so that you can work with Spring Data (which uses Hibernate by default) with a minimum of additional work. 
     * If these annotations don't fit your needs, you can add or replace annotations for the JPA entities and their field, through a configuration file. You can find a sample for that in the Forum server sample. Take a look at the src/main/graphql/forum_personalization.json file.
     * In the future, we'll open the capability to define your own templates, so that the generated code fits exactly in your needs
 * The DataFetchersDelegate interfaces. This is entry point, where you'll define how to access to the underlying data structure. There is a DataFetchersDelegate interface for each object in the schema, that is: for each query, mutation and subscription, and also for each regular object (to fetch the non scalar fields of this object). To find all the DataFetchersDelegate you have to implement, you can either navigate to the generated code, and find all the XxxDataFetchersDelegate java files. Or do it in test and learn: when the GraphQL server starts, it searches for the a spring component for each XxxDataFetchersDelegate generated interface. So it will complains for the missing DataFetchersDelegate (see below).        
 
 Then do a first build :
+
 ```
 mvn clean install
 ```
 
-The build will complain about the Data Fetchers Delegate you need to define.
+The build will complain about the Data Fetchers Delegate you need to define. 
+
+Two important hints for these Data Fetchers Delegates :
+* It must by annotated with _@Component_ (org.springframework.stereotype.Component)
+* It must be in the same package or a sub-package of the package where the generated code is (com.generated.graphql by default, or the one you defined). This is necessary, so that Spring find it.
+
+For instance, the _Basic_ server needs this one:
+
+```Java
+@Component
+public class QueryDataFetchersDelegateImpl implements QueryDataFetchersDelegate {
+	@Override
+	public String hello(DataFetchingEnvironment dataFetchingEnvironment, String name) {
+		return "Hello" + ((name == null) ? "" : " " + name);
+	}
+}
+```
+
+
 
 A Data Fetcher Delegate is a class that implements a XxxDataFetcherDelegate. It is responsible to return the data, as specified in the GraphQL schema. Of course, for mutation, it needs to do some complementary work.
 

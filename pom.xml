@@ -15,11 +15,14 @@
 	<version>0.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Container for the GraphQL Generator project</name>
+	<name>${project.groupId}:${project.artifactId}</name>
 	<description>
-		Generation of the java code, to help developping GraphQL client and GraphQL servers in Java. 
-		It generates the POJO to hide as much as possible the GraphQL part, and make it easy to develop GraphQL stuff in Java.
+		This project is an accelerator to develop GraphQL clients and GraphQL servers in java. 
+		That is, it generates the boilerplate code, and let you concentrate on what's specific to your use case: 
+		the queries/mutations/subscriptions you will call, when in client mode. 
+		And the response to the queries/mutations/subscriptions call, as well as the relations between objects, when in server mode. 
 	</description>
+	<url>https://github.com/graphql-java-generator/graphql-java-generator</url>
 
 	<licenses>
 		<license>

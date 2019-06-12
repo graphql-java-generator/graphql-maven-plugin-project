@@ -52,6 +52,6 @@ class DocumentParserTest_basic {
 		int i = documentParser.parseOneDocument(doc);
 
 		// Verification
-		assertEquals(2, i, "One class is generated");
+		assertEquals(2, i);
 	}
 }
