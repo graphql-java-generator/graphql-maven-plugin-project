@@ -6,8 +6,10 @@ package graphql.mavenplugin;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -15,6 +17,7 @@ import java.util.jar.JarInputStream;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
@@ -277,11 +280,18 @@ public class CodeGenerator {
 	 */
 	int generateOneFile(File targetFile, String msg, VelocityContext context, String templateFilename) {
 		try {
+			Writer writer = null;
+
 			log.debug(msg);
 			Template template = velocityEngine.getTemplate(templateFilename);
 
 			targetFile.getParentFile().mkdirs();
-			FileWriter writer = new FileWriter(targetFile);
+			String sourceEncoding = project.getProperties().getProperty("project.build.sourceEncoding");
+			if (sourceEncoding != null) {
+				writer = new FileWriterWithEncoding(targetFile, Charset.forName(sourceEncoding));
+			} else {
+				writer = new FileWriter(targetFile);
+			}
 			template.merge(context, writer);
 			writer.flush();
 			writer.close();
