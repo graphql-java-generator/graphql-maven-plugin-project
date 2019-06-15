@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -37,6 +38,8 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
 class CodeGeneratorTest {
 
+	@Resource
+	ApplicationContext context;
 	@Resource
 	String packageName;
 	@Resource
@@ -51,10 +54,7 @@ class CodeGeneratorTest {
 	void setUp() throws Exception {
 		targetSourceFolder = mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
 
-		codeGenerator = new CodeGenerator();
-		codeGenerator.packageName = packageName;
-		codeGenerator.log = log;
-		codeGenerator.targetSourceFolder = targetSourceFolder;
+		codeGenerator = context.getBean(CodeGenerator.class);
 	}
 
 	@Test
@@ -72,7 +72,7 @@ class CodeGeneratorTest {
 		// Let's mock the Velocity engine, to check how it is called
 		codeGenerator.velocityEngine = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
+		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
 		codeGenerator.documentParser = mock(DocumentParser.class);
 		when(codeGenerator.documentParser.getMode()).thenReturn(PluginMode.client);
@@ -93,9 +93,11 @@ class CodeGeneratorTest {
 		assertEquals(objects.size(), i, "Nb files generated");
 
 		// Let's check the parameter for getTemplate
-		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(2)).getTemplate(argument.capture());
-		assertEquals(templateFilename, argument.getValue(), "checks the parameter for getTemplate");
+		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
+		verify(codeGenerator.velocityEngine, times(2)).getTemplate(argument1.capture(), argument2.capture());
+		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
+		assertEquals("UTF-8", argument2.getValue());
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's check the velocity context sent to the template ... THIS IS IMPORTANT! DO NOT BREAK IT!
@@ -119,7 +121,7 @@ class CodeGeneratorTest {
 		// Let's mock the Velocity engine, to check how it is called
 		codeGenerator.velocityEngine = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngine.getTemplate(anyString())).thenReturn(mockedTemplate);
+		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
 		codeGenerator.documentParser = mock(DocumentParser.class);
 		when(codeGenerator.documentParser.getMode()).thenReturn(PluginMode.server);
@@ -140,9 +142,11 @@ class CodeGeneratorTest {
 		assertEquals(objects.size(), i, "Nb files generated");
 
 		// Let's check the parameter for getTemplate
-		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(2)).getTemplate(argument.capture());
-		assertEquals(templateFilename, argument.getValue(), "checks the parameter for getTemplate");
+		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
+		verify(codeGenerator.velocityEngine, times(2)).getTemplate(argument1.capture(), argument2.capture());
+		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
+		assertEquals("UTF-8", argument2.getValue());
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's check the velocity context sent to the template ... THIS IS IMPORTANT! DO NOT BREAK IT!

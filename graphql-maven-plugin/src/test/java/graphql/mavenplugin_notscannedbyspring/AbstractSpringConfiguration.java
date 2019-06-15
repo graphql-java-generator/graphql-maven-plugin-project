@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -99,7 +100,15 @@ public abstract class AbstractSpringConfiguration {
 	@Bean
 	MavenProject project() {
 		MavenProject project = mock(MavenProject.class);
+
+		// getModulePathFile
 		when(project.getBasedir()).thenReturn(mavenTestHelper.getModulePathFile());
+
+		// getProperties
+		Properties props = new Properties();
+		props.setProperty("project.build.sourceEncoding", "UTF-8");
+		when(project.getProperties()).thenReturn(props);
+
 		return project;
 	}
 

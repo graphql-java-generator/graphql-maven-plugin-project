@@ -283,7 +283,7 @@ public class CodeGenerator {
 			Writer writer = null;
 
 			log.debug(msg);
-			Template template = velocityEngine.getTemplate(templateFilename);
+			Template template = velocityEngine.getTemplate(templateFilename, "UTF-8");
 
 			targetFile.getParentFile().mkdirs();
 			String sourceEncoding = project.getProperties().getProperty("project.build.sourceEncoding");
