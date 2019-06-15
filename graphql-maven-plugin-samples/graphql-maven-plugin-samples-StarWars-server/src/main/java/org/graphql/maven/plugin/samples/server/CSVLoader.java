@@ -29,7 +29,8 @@ import com.opencsv.CSVReader;
  * </UL>
  * 
  * @author Viral Patel
- * @See https://viralpatel.net/blogs/java-load-csv-file-to-database/
+ * @see <a href=
+ *      "https://viralpatel.net/blogs/java-load-csv-file-to-database/">https://viralpatel.net/blogs/java-load-csv-file-to-database/</a>
  */
 public class CSVLoader {
 	private static final String SQL_INSERT = "INSERT INTO ${table}(${keys}) VALUES(${values})";
@@ -58,8 +59,6 @@ public class CSVLoader {
 	/**
 	 * Parse CSV file using OpenCSV library and load in given database table.
 	 * 
-	 * @param csvFile
-	 *            Input CSV file
 	 * @param tableName
 	 *            Database table name to import data
 	 * @param truncateBeforeLoad

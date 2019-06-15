@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -29,11 +28,25 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<!-- You need to provide in your pom the fact the this dependency is provided. 
-				This is to ensure that the embedded servlet container does not interfere 
-				with the servlet container to which the war file is deployed -->
-			<!-- If you just import the graphql-java-servlet-dependencies pom in your 
-				own pom, this dependency is imported as compile scope -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<!-- Exclusion needed to remove logback and allow log4j -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+			<!-- You need to provide in your pom the fact the this dependency is provided. This is to ensure that the embedded servlet 
+				container does not interfere with the servlet container to which the war file is deployed -->
+			<!-- If you just import the graphql-java-servlet-dependencies pom in your own pom, this dependency is imported as compile 
+				scope -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>

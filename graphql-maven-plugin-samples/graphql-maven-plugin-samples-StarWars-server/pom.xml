@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -17,14 +15,12 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Needed to properly package the jar or war, so that spring can link 
-					all resources together -->
+				<!-- Needed to properly package the jar or war, so that spring can link all resources together -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- This is core of graphql-java-generator: it generates the boilerplate 
-					code for you -->
+				<!-- This is core of graphql-java-generator: it generates the boilerplate code for you -->
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
@@ -69,28 +65,19 @@
 			<artifactId>graphql-java-server-dependencies</artifactId>
 			<type>pom</type>
 		</dependency>
-		<!-- dependency>
-			<!- You need to provide in your pom the fact the this dependency is provided. 
-				This is to ensure that the embedded servlet container does not interfere 
-				with the servlet container to which the war file is deployed ->
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency-->
 
 		<!-- Dependencies that are specific to this project -->
 		<dependency>
-			<!-- Needed only for this project as a sample: we store the data in a 
-				H2 in-memory database -->
+			<!-- Needed only for this project as a sample: we store the data in a H2 in-memory database -->
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<!-- Needed only for this project as a sample: we load the data into the 
-				database, from csv files -->
+			<!-- Needed only for this project as a sample: we load the data into the database, from csv files -->
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 		</dependency>
 	</dependencies>
+
 </project>
