@@ -11,7 +11,7 @@
 
 	<groupId>com.graphql-java-generator</groupId>
 	<artifactId>graphql-maven-plugin-project</artifactId>
-	<version>0.3.0-SNAPSHOT</version>
+	<version>1.0.0-RC1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -80,19 +80,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.21.0</version>
-					<dependencies>
-						<dependency>
-							<!-- Necessary due to a bug in the previous version. This conf will probably be obsolete in a next version of spring 
-								boot -->
-							<groupId>org.junit.platform</groupId>
-							<artifactId>junit-platform-surefire-provider</artifactId>
-							<version>1.2.0</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.0</version>
@@ -105,11 +92,28 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-gpg-plugin</artifactId>
 					<version>1.6</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>3.1.0</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
 					<configuration> <!-- add this to disable checking -->
 						<doclint>none</doclint>
 						<failOnError>false</failOnError>
@@ -134,6 +138,13 @@
 					<version>2.5.3</version>
 				</plugin>
 				<plugin>
+					<artifactId>maven-scm-plugin</artifactId>
+					<version>1.9.4</version>
+					<configuration>
+						<tag>${project.artifactId}-${project.version}</tag>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>3.7.1</version>
@@ -145,11 +156,41 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<version>3.1.0</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+							<configuration>
+								<additionalparam>${javadoc.opts}</additionalparam>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.21.0</version>
+					<dependencies>
+						<dependency>
+							<!-- Necessary due to a bug in the previous version. This conf will probably be obsolete in a next version of spring 
+								boot -->
+							<groupId>org.junit.platform</groupId>
+							<artifactId>junit-platform-surefire-provider</artifactId>
+							<version>1.2.0</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
 					<artifactId>nexus-staging-maven-plugin</artifactId>
 					<version>1.6.8</version>
+					<extensions>true</extensions>
+					<configuration>
+						<serverId>ossrh</serverId>
+						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+						<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					</configuration>
 				</plugin>
 				<plugin>
 					<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
@@ -307,14 +348,14 @@
 			<!-- Activate this release, to generate releases, and deploy them to the central repository -->
 			<!-- https://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment -->
 			<id>release</id>
-			<properties>
-				<javadoc.opts>-Xdoclint:none</javadoc.opts>
-			</properties>
 			<build>
 				<plugins>
+					<!-- mvn release:clean release:prepare -->
+					<!-- mvn release:perform -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
 						<configuration>
 							<autoVersionSubmodules>true</autoVersionSubmodules>
 							<useReleaseProfile>false</useReleaseProfile>
@@ -325,63 +366,32 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-								<configuration>
-									<additionalparam>${javadoc.opts}</additionalparam>
-								</configuration>
-							</execution>
-						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
 					</plugin>
 					<plugin>
+						<!-- -->
+						<!-- NOT USED. USE maven-release-plugin, instead -->
+						<!-- -->
 						<!-- The change of the versions for your project, and the parent references in a multi module setup, can be performed 
 							manually or with the help of the Maven versions plugin. -->
 						<!-- mvn versions:set -DnewVersion=1.2.3 -->
 						<!-- If your version is a release version (does not end in -SNAPSHOT) and with this setup in place, you can run a deployment 
 							to OSSRH and an automated release to the Central Repository with the usual: -->
-						<!-- mvn clean deploy -P release -->
+						<!-- mvn clean deploy -Prelease -->
 						<!-- With the property autoReleaseAfterClose set to false you can manually inspect the staging repository in the Nexus 
 							Repository Manager and trigger a release of the staging repository later with -->
 						<!-- mvn nexus-staging:release -P release -->
 						<!-- If you find something went wrong you can drop the staging repository with -->
-						<!-- mvn nexus-staging:drop -P release -->
+						<!-- mvn nexus-staging:drop -Prelease -->
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
