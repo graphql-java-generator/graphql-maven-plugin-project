@@ -38,7 +38,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/graphql-java-generator/graphql-java-generator.git</connection>
-		<developerConnection>scm:git:ssh://github.com:graphql-java-generator/graphql-java-generator.git</developerConnection>
+		<developerConnection>scm:git:ssh://github.com/graphql-java-generator/graphql-java-generator.git</developerConnection>
 		<url>http://github.com/graphql-java-generator/graphql-java-generator/tree/master</url>
 	  <tag>graphql-maven-plugin-project-1.0.0-RC1</tag>
   </scm>
