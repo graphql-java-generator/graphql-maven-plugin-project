@@ -8,3 +8,7 @@ logs/
 
 # ignore temporary files (especially office's one)
 ~$*
+
+# Ignore files from maven-release-plugin
+pom.xml.releaseBackup
+release.properties
