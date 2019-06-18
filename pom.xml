@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -38,16 +39,12 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/graphql-java-generator/graphql-java-generator.git</connection>
-		<developerConnection>scm:git:ssh://github.com/graphql-java-generator/graphql-java-generator.git</developerConnection>
+		<developerConnection>scm:git:git://github.com/graphql-java-generator/graphql-java-generator.git</developerConnection>
 		<url>http://github.com/graphql-java-generator/graphql-java-generator/tree/master</url>
-	  <tag>graphql-maven-plugin-project-1.0.0-RC1</tag>
-  </scm>
+		<tag>graphql-maven-plugin-project-1.0.0-RC1</tag>
+	</scm>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
