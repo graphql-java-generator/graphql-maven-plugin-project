@@ -42,8 +42,8 @@
 		<!-- See first response of https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
 		<!-- Principle the project.scm.id property allows to define a server name, then define the relevant user/password for this 
 			server id in the settings.xml -->
-		<connection>scm:git:https://github.com/graphql-java-generator/graphql-java-generator.git</connection>
-		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-java-generator.git</developerConnection>
+		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
+		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
 		<url>https://github.com/graphql-java-generator/graphql-java-generator/tree/master</url>
 		<tag>graphql-maven-plugin-project-1.0.0-RC1</tag>
 	</scm>
