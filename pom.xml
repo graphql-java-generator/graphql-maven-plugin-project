@@ -38,6 +38,10 @@
 	</developers>
 
 	<scm>
+		<!-- See the connection id in the properties, which allows to define the credentials -->
+		<!-- See first response of https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
+		<!-- Principle the project.scm.id property allows to define a server name, then define the relevant user/password for this 
+			server id in the settings.xml -->
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-java-generator.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-java-generator.git</developerConnection>
 		<url>https://github.com/graphql-java-generator/graphql-java-generator/tree/master</url>
@@ -60,6 +64,12 @@
 	</modules>
 
 	<properties>
+		<!-- See the connection id in the properties, which allows to define the credentials -->
+		<!-- See first response of https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
+		<!-- Principle the project.scm.id property allows to define a server name, then define the relevant user/password for this 
+			server id in the settings.xml -->
+		<project.scm.id>git-graphql-java-generator</project.scm.id>
+
 		<!-- kotlin version should be upgraded for graphql-java-tools, when using spring boot under v2.2 -->
 		<kotlin.version>1.3.10</kotlin.version>
 
