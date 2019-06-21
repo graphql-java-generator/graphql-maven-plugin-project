@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -43,7 +44,7 @@
 			server id in the settings.xml -->
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
-		<url>https://github.com/graphql-java-generator/graphql-java-generator/tree/master</url>
+		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
 		<tag>graphql-maven-plugin-project-1.0.0-RC1</tag>
 	</scm>
 
@@ -52,6 +53,10 @@
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
+		<site>
+			<id>www.graphql-java-generator.com</id>
+			<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project</url>
+		</site>
 	</distributionManagement>
 
 	<modules>
