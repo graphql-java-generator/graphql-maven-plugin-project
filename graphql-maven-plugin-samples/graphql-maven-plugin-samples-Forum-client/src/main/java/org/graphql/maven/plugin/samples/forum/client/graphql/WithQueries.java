@@ -30,6 +30,8 @@ public class WithQueries implements Queries {
 
 	QueryType queryType = new QueryType(Main.graphqlEndpoint);
 	MutationType mutationType = new MutationType(Main.graphqlEndpoint);
+
+	// Below are the ObjectResponses, that are created at initialization time.
 	ObjectResponse boardsSimpleResponse;
 	ObjectResponse boardsAndTopicsResponse;
 	ObjectResponse topicAuthorPostAuthorResponse;
@@ -39,19 +41,15 @@ public class WithQueries implements Queries {
 		// No field specified: all known scalar fields of the root type will be queried
 		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 
+		boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
+				.withQueryResponseDef("{id name publiclyAvailable topics{id}}").build();
+
 		topicAuthorPostAuthorResponse = queryType.getTopicsResponseBuilder().withQueryResponseDef(
 				"{id date author{name email alias id type} nbPosts title content posts{id date author{name email alias} title content}}")
 				.build();
 
 		createBoardResponse = mutationType.getCreateBoardResponseBuilder().build();
-	}
 
-	ObjectResponse getBoardsAndTopics() throws GraphQLRequestPreparationException {
-		if (boardsAndTopicsResponse == null) {
-			boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
-					.withQueryResponseDef("{id name publiclyAvailable topics{id}}").build();
-		}
-		return boardsAndTopicsResponse;
 	}
 
 	@Override
@@ -62,7 +60,7 @@ public class WithQueries implements Queries {
 	@Override
 	public List<Board> boardsAndTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// Used to check that a newly created Board has no topic
-		return queryType.boards(getBoardsAndTopics());
+		return queryType.boards(boardsAndTopicsResponse);
 	}
 
 	@Override

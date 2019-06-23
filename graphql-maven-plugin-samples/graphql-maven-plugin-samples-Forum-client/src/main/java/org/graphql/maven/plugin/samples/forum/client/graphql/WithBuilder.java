@@ -41,6 +41,10 @@ public class WithBuilder implements Queries {
 		// No field specified: all known scalar fields of the root type will be queried
 		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 
+		boardsAndTopicsResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
+				.withField("publiclyAvailable")
+				.withSubObject("topics", ObjectResponse.newSubObjectBuilder(Topic.class).build()).build();
+
 		// {id date author{name email alias id type} nbPosts title content posts{id date author{name email alias} title
 		// content}}
 		ObjectResponse author1 = ObjectResponse.newSubObjectBuilder(Member.class).withField("name").withField("email")
@@ -57,15 +61,6 @@ public class WithBuilder implements Queries {
 				.withField("publiclyAvailable").build();
 	}
 
-	ObjectResponse getBoardsAndTopics() throws GraphQLRequestPreparationException {
-		if (boardsAndTopicsResponse == null) {
-			boardsAndTopicsResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
-					.withField("publiclyAvailable")
-					.withSubObject("topics", ObjectResponse.newSubObjectBuilder(Topic.class).build()).build();
-		}
-		return boardsAndTopicsResponse;
-	}
-
 	@Override
 	public List<Board> boardsSimple() throws GraphQLExecutionException {
 		return queryType.boards(boardsSimpleResponse);
@@ -74,7 +69,7 @@ public class WithBuilder implements Queries {
 	@Override
 	public List<Board> boardsAndTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		// Used to check that a newly created Board has no topic
-		return queryType.boards(getBoardsAndTopics());
+		return queryType.boards(boardsAndTopicsResponse);
 	}
 
 	@Override
