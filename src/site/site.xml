@@ -14,9 +14,9 @@
 		<src>http://maven.apache.org/images/maven-small.gif</src>
 	</bannerRight-->
 
-	<poweredBy>
+	<!-- poweredBy>
 		<logo name="Maven" href="https://maven.apache.org/" img="https://maven.apache.org/images/logos/maven-feather.png" />
-	</poweredBy>
+	</poweredBy-->
 
 	<body>
 		<!-- links>
@@ -24,9 +24,10 @@
 		</links -->
 
 		<menu name="Maven Plugin Usage">
-			<item name="Introduction" href="README.html" />
+			<item name="Introduction" href="index.html" />
 			<item name="Create a GraphQL Client" href="client.html" />
 			<item name="Create a GraphQL Server" href="server.html" />
+			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 
 		<menu ref="modules" />
