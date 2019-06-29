@@ -1,0 +1,25 @@
+<project name="DeploySite" default="deploy" basedir=".">
+	<description>
+		Deploy the site. The site must have been previously been staged in the target/stage folder. The site is
+		checked out from the gh-pages branch of the github repository, then synchronized with the target/stage folder, then
+		commited back to github.
+	</description>
+	<!-- set global properties for this build -->
+	<property name="sourceFolder" location="target/site" />
+	<property name="targetFolder" location="target/gh-pages_branch" />
+
+	<target name="deploy">
+
+		<!-- Checks that the site has been staged -->
+		<available file="${sourceFolder}" type="dir" property="siteHasBeenStaged" value="true" />
+		<fail unless="siteHasBeenStaged" message="The site has not been staged" />
+
+		<!-- Cleaning the check out folder  -->
+		<delete dir="${targetFolder}" />
+		<mkdir dir="${targetFolder}" />
+
+		<exec executable="git clone https://github.com/$owner/$project --branch gh-pages --single-branch" />
+
+	</target>
+
+</project>
