@@ -30,6 +30,10 @@
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 
+		<menu name="Internal stuff">
+			<item name="How to publish the site" href="howto_publish_site.html" />
+		</menu>
+
 		<menu ref="modules" />
 
 		<menu ref="reports" />
