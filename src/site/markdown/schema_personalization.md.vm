@@ -1,4 +1,4 @@
-### Schema Personalization (for server mode)
+# Schema Personalization (for server mode)
 
 The generated code embeds Java annotations that should suit most of your needs. But you can have special needs.
 
