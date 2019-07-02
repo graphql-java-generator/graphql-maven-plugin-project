@@ -7,19 +7,64 @@
 	<!-- set global properties for this build -->
 	<property name="sourceFolder" location="target/site" />
 	<property name="targetFolder" location="target/gh-pages_branch" />
+	<property name="targetProjectFolder" location="target/gh-pages_branch/graphql-maven-plugin-project" />
 
 	<target name="deploy">
 
+		<!-- This is an ant implementation largely inspired from this page (thanks a lot to you, guys!): -->
+		<!-- http://wiki.bitplan.com/index.php/Multi-Module_Maven_with_github_pages -->
+
+		<!-- Stages the site -->
+		<!-- This doesn't work on windows, as .bat file can not be started by 'exec'! :( -->
+		<!-- exec executable="mvn" failonerror="true"> <arg value="site:stage" /> </exec -->
+
 		<!-- Checks that the site has been staged -->
 		<available file="${sourceFolder}" type="dir" property="siteHasBeenStaged" value="true" />
-		<fail unless="siteHasBeenStaged" message="The site has not been staged" />
+		<fail unless="siteHasBeenStaged" message="The site has not been staged. Please run first: mvn site:stage" />
 
-		<!-- Cleaning the check out folder  -->
+		<!-- Cleaning the check out folder -->
 		<delete dir="${targetFolder}" />
 		<mkdir dir="${targetFolder}" />
 
-		<exec executable="git clone https://github.com/$owner/$project --branch gh-pages --single-branch" />
+		<!-- Checkout the gh-pages branch,to commit the site onto it -->
+		<!-- git clone https://github.com/graphql-java-generator/graphql-maven-plugin-project - -branch gh-pages - -single-branch -->
+		<exec executable="git" dir="${targetFolder}" failonerror="true">
+			<arg value="clone" />
+			<arg value="https://github.com/graphql-java-generator/graphql-maven-plugin-project" />
+			<arg value="--branch" />
+			<arg value="gh-pages" />
+			<arg value="--single-branch" />
+		</exec>
 
+		<!-- Synchronize the target gh-pages folder, with the staged site -->
+		<sync todir="${targetProjectFolder}" overwrite="true">
+			<fileset dir="${sourceFolder}" />
+			<preserveintarget>
+				<include name="/.git/**" />
+			</preserveintarget>
+		</sync>
+
+		<!-- git add * -->
+		<exec executable="git" dir="${targetProjectFolder}" failonerror="true">
+			<arg value="add" />
+			<arg value="*" />
+		</exec>
+
+
+		<!-- git commit -m "checking new site in" -->
+		<exec executable="git" dir="${targetProjectFolder}" failonerror="true">
+			<arg value="commit" />
+			<arg value="-m" />
+			<arg value="Checking new site in" />
+			<arg value="--author=EtienneSF &lt;etienne_sf@users.sf.net>" />
+		</exec>
+
+
+		<!-- git push -->
+		<echo message="The site is ready to be pushed. Do these commands:" level="info" />
+		<echo message="cd ${targetProjectFolder}" level="info" />
+		<echo message="git push" level="info" />
+		<!-- exec executable="git" dir="${targetProjectFolder}" failonerror="true"> <arg value="push" /> </exec -->
 	</target>
 
 </project>

@@ -55,7 +55,7 @@
 		</repository>
 		<site>
 			<id>www.graphql-java-generator.com</id>
-			<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project</url>
+			<url>https://graphql-maven-plugin-project.graphql-java-generator.com</url>
 		</site>
 	</distributionManagement>
 
@@ -417,6 +417,9 @@
 						<artifactId>nexus-staging-maven-plugin</artifactId>
 					</plugin>
 					<plugin>
+						<!-- To manually publish the site, with my local conf: -->
+						<!-- mvn site:stage -->
+						<!-- "C:\appli\java\apache-ant\bin\ant.bat" -f ant-deploy-site.xml -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
