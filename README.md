@@ -15,6 +15,10 @@ If the generated code doesn't fully suit your needs, you can: take what's genera
 
 The generator is currently available as a maven plugin. A Gradle plugin will come soon.
 
+The project site is available at [https://graphql-maven-plugin-project.graphql-java-generator.com](https://graphql-maven-plugin-project.graphql-java-generator.com). You'll find more detailed informations there.
+
+For a first sight, see below 
+
 
 ## Aim of this project
 
