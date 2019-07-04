@@ -1,5 +1,7 @@
 # Schema Personalization (for server mode)
 
+## Presentation
+
 The generated code embeds Java annotations that should suit most of your needs. But you can have special needs.
 
 The current version is stable. But we need your feedback to improve it, according to your needs.

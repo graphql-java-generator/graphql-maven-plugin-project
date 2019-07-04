@@ -1,5 +1,8 @@
 # GraphQL Maven Plugin (client mode)
 
+
+## Presentation
+
 When configuring the graphql-maven-plugin in client mode, it reads a graphqls schema file, and will generates all the necessary code to make it easy to call a GraphQL server. 
 
 As an overview, it generates:
