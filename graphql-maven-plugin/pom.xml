@@ -23,43 +23,14 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<!-- We'll read the sources from graphql-client, to add the sources to the generated code (thus: no external dependency 
-					in the generated code) -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>graphql-java-client-sources</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>${project.groupId}</groupId>
-									<artifactId>graphql-java-runtime</artifactId>
-									<type>jar</type>
-									<classifier>sources</classifier>
-									<overWrite>true</overWrite>
-									<destFileName>graphql-java-runtime-sources.jar</destFileName>
-									<outputDirectory>${project.build.directory}/classes/</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
 		<!-- Internal dependencies -->
 		<dependency>
-			<!-- This module must have been built before -->
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-runtime</artifactId>
+			<artifactId>graphql-maven-plugin-logic</artifactId>
 		</dependency>
 
 		<!-- Dependencies for tests -->
@@ -115,38 +86,6 @@
 			<artifactId>maven-core</artifactId>
 		</dependency>
 
-		<!-- We use spring to reuse the graphql-spring-boot-starter classes -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-
-		<!-- Other dependencies -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-		</dependency>
-
-		<!-- dependendencies for graphql -->
-		<dependency>
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java</artifactId>
-		</dependency>
-
-		<!-- dependendencies for json -->
-		<dependency>
-			<groupId>org.leadpony.justify</groupId>
-			<artifactId>justify</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.johnzon</groupId>
-			<artifactId>johnzon-core</artifactId>
-		</dependency>
 	</dependencies>
 
 </project>

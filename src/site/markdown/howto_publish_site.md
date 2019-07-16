@@ -1,6 +1,8 @@
 # HowTo publish the site
 
-This page is more an internal howto, as publishing a site is really complex, from the maven-site-plugin, to the github configuration to use a specific domain, through the issue of the multi-module stuff.
+This page is more an internal howto, to remind of the step to publish the project web site, as publishing a site is really complex, from the maven-site-plugin, to the github configuration to use a specific domain, through the issue of the multi-module stuff.
+
+And of course, if it can be useful for anyone to publish a site, then, it's nice! :)
 
 ## Configuring the domain name
 
@@ -24,10 +26,11 @@ The use of [maven-sit-plugin](https://maven.apache.org/plugins/maven-site-plugin
 
 Here are the steps to execute:
 
-* mvn site -Prelease
+* mvn site -Prelease -DlastReleasedVersion=x.y.z
     * As the site configuration is in the "release" profile, to avoid polluting standard build
     * Don't use mvn site-deploy, as this won't work to stage then deploy the site on github. If that's wrong, please provide a comment on this one !  :)
     * After that, the site for each module is ready. But there is no link between each module's site.
+    * lastReleasedVersion can be optionally defined, so that the samples in the site have this version number.
 * mvn site:stage
     * This agregate all the module sites built by the previous command into the target/staging folder of the root project.
 
