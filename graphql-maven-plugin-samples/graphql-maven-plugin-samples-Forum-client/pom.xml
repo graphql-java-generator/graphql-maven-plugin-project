@@ -23,7 +23,7 @@
 				</executions>
 				<configuration>
 					<mode>client</mode>
-					<packageName>org.graphql.maven.plugin.samples.forum.client.graphql.forum.client</packageName>
+					<packageName>com.graphql_java_generator.mavenplugin.samples.forum.client.graphql.forum.client</packageName>
 				</configuration>
 			</plugin>
 			<plugin>

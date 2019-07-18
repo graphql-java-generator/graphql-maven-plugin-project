@@ -31,7 +31,7 @@
 				</executions>
 				<configuration>
 					<mode>server</mode>
-					<packageName>org.graphql.maven.plugin.samples.server</packageName>
+					<packageName>com.graphql_java_generator.mavenplugin.samples.server</packageName>
 				</configuration>
 			</plugin>
 		</plugins>

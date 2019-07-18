@@ -17,12 +17,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
+import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+
 import graphql.language.Document;
-import graphql.mavenplugin.PluginConfiguration;
-import graphql.mavenplugin.PluginMode;
-import graphql.mavenplugin.ResourceSchemaStringProvider;
-import graphql.mavenplugin.test.helper.MavenTestHelper;
-import graphql.mavenplugin.test.helper.PluginConfigurationTestHelper;
 import graphql.parser.Parser;
 
 /**

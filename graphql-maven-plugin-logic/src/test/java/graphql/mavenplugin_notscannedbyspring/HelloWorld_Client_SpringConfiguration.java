@@ -6,7 +6,7 @@ package graphql.mavenplugin_notscannedbyspring;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import graphql.mavenplugin.PluginMode;
+import com.graphql_java_generator.plugin.PluginMode;
 
 /**
  * The Spring configuration used for JUnit tests
@@ -14,7 +14,7 @@ import graphql.mavenplugin.PluginMode;
  * @author EtienneSF
  */
 @Configuration
-@ComponentScan(basePackages = "graphql.mavenplugin")
+@ComponentScan(basePackages = "com.graphql_java_generator.plugin")
 public class HelloWorld_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public HelloWorld_Client_SpringConfiguration() {
