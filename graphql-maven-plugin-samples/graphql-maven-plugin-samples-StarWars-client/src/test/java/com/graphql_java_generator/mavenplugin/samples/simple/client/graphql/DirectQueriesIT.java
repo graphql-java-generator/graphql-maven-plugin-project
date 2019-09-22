@@ -6,8 +6,8 @@ import javax.net.ssl.SSLContext;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.generated.graphql.QueryType;
-import com.graphql_java_generator.mavenplugin.samples.simple.client.Main;
-import com.graphql_java_generator.mavenplugin.samples.simple.client.graphql.DirectQueries;
+import com.graphql_java_generator.samples.simple.client.Main;
+import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to

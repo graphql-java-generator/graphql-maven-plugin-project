@@ -131,6 +131,12 @@ Create a new Maven Project, with this pom, for instance :
 </project>
 ```
 
+Take care of the two parameters of the Maven Plugin that have been set there:
+* mode: as client is the default mode, you must define the mode as server, here, to generate the server code.
+* __packageName__: Very important. This package is where the main code is defined. The Spring container is started from this package. 
+The implementations of the Data Fetchers Delegate (see below) will be searched in this package, or in its subpackages. 
+So this package must be a package that is the same, or that contains the packages where you define your implementations of Data Fetchers Delegate   
+
 Then do a first build :
 ```
 mvn clean install
@@ -149,9 +155,9 @@ The generated code can not be automatically adapted to all and every data model 
 Then, it's up to you to map the generated POJOs to your own data model. This 'mapping', in usual cases, is more the implementation of the DataFetchersDelegates interface that have been generated. If the GraphQL schema maps well with your data model, this implementation is straightforward. It's just a matter of calling the right Spring Repository (see the forum server sample for this knd of sample).
 
 If the GraphQL schema is really different from the data model, then you may have to implement the relevant logic to fit your data model into the GraphQL model.  
-
+
 __Write the implementation for the XxxxDataFetchersDelegate__:
-
+
 Basically, the plugin generates one XxxxDataFetchersDelegate interface for each object in the GraphQL schema, whether they are regular objects or query/mutation/subscription objects.
 
 These XxxxDataFetchersDelegate interfaces contains one method for each Data Fetcher that must be implemented:

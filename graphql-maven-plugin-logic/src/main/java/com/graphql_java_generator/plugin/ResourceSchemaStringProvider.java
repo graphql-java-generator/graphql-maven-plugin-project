@@ -38,7 +38,7 @@ public class ResourceSchemaStringProvider {
 	PluginConfiguration pluginConfiguration;
 
 	public org.springframework.core.io.Resource[] schemas() throws IOException {
-		String fullPathPattern = "file:///" + pluginConfiguration.getResourcesFolder().getCanonicalPath()
+		String fullPathPattern = "file:///" + pluginConfiguration.getMainResourcesFolder().getCanonicalPath()
 				+ ((pluginConfiguration.getSchemaFilePattern().startsWith("/")
 						|| (pluginConfiguration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
 				+ pluginConfiguration.getSchemaFilePattern();

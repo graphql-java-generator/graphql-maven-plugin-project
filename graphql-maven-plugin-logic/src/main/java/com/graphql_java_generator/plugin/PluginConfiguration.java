@@ -18,6 +18,14 @@ import org.springframework.context.annotation.Configuration;
  */
 public interface PluginConfiguration {
 
+	public final static String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
+	public final static String DEFAULT_SOURCE_ENCODING = "UTF-8";
+	public final static String DEFAULT_MODE = "client";// Must be a string, for maven plugin declaration
+	public final static String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
+	public final static String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
+																				// Dummy Java issue... :(
+	public final static String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
+
 	/**
 	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
 	 * can use log4j2, by adding the 'Log4j JDK Logging Adapter' (JUL)
@@ -41,10 +49,10 @@ public interface PluginConfiguration {
 	public Packaging getPackaging();
 
 	/**
-	 * The resources folder. That's where the GraphQL schema(s) are expected to be: in this folder, or one of these
-	 * subfolders
+	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
+	 * schema(s) are expected to be: in this folder, or one of these subfolders
 	 */
-	public File getResourcesFolder();
+	public File getMainResourcesFolder();
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
@@ -86,9 +94,9 @@ public interface PluginConfiguration {
 			getLog().debug("  Mode: " + getMode());
 			getLog().debug("  PackageName" + getPackageName());
 			getLog().debug("  Packaging: " + getPackaging());
-			getLog().debug("  ResourcesFolder: " + getResourcesFolder().getAbsolutePath());
+			getLog().debug("  MainResourcesFolder: " + getMainResourcesFolder());
 			getLog().debug("  SchemaFilePattern: " + getSchemaFilePattern());
-			getLog().debug("  SchemaPersonalizationFile: " + getSchemaPersonalizationFile().getAbsolutePath());
+			getLog().debug("  SchemaPersonalizationFile: " + getSchemaPersonalizationFile());
 			getLog().debug("  SourceEncoding: " + getMode());
 			getLog().debug("  TargetClassFolder" + getTargetClassFolder());
 			getLog().debug("  TargetSourceFolder: " + getTargetSourceFolder());

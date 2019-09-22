@@ -31,7 +31,7 @@
 				</executions>
 				<configuration>
 					<mode>server</mode>
-					<packageName>com.graphql_java_generator.mavenplugin.samples.forum.server</packageName>
+					<packageName>com.graphql_java_generator.samples.forum.server</packageName>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
 				</configuration>
 			</plugin>

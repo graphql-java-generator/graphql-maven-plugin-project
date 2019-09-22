@@ -44,7 +44,7 @@ public abstract class AbstractSpringConfiguration {
 	private final String schemaFilePattern;
 
 	private PluginMode mode;
-	private String schemaPersonalizationFilename = "noPersonalization";
+	private String schemaPersonalizationFilename = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -64,7 +64,7 @@ public abstract class AbstractSpringConfiguration {
 	@Bean
 	PluginConfiguration pluginConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
 		PluginConfigurationTestHelper pluginConfigurationTestHelper = new PluginConfigurationTestHelper(this);
-		pluginConfigurationTestHelper.resourcesFolder = new File(mavenTestHelper.getModulePathFile(),
+		pluginConfigurationTestHelper.mainResourcesFolder = new File(mavenTestHelper.getModulePathFile(),
 				"/src/test/resources");
 
 		String classname = this.getClass().getSimpleName();
@@ -75,8 +75,9 @@ public abstract class AbstractSpringConfiguration {
 		pluginConfigurationTestHelper.sourceEncoding = ENCODING;
 		pluginConfigurationTestHelper.mode = mode;
 		pluginConfigurationTestHelper.schemaFilePattern = schemaFilePattern;
-		pluginConfigurationTestHelper.schemaPersonalizationFile = new File(mavenTestHelper.getModulePathFile(),
-				schemaPersonalizationFilename);
+		pluginConfigurationTestHelper.schemaPersonalizationFile = (PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE
+				.equals(schemaPersonalizationFilename)) ? null
+						: new File(mavenTestHelper.getModulePathFile(), schemaPersonalizationFilename);
 		pluginConfigurationTestHelper.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
 				(classname.contains("$")) ? classname = classname.substring(0, classname.indexOf('$')) : classname);
 		pluginConfigurationTestHelper.targetClassFolder = new File(

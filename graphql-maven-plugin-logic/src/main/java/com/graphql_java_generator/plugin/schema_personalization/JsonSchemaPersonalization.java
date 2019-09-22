@@ -41,12 +41,6 @@ public class JsonSchemaPersonalization {
 
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 
-	/**
-	 * If the file in pluginConfiguration.getSchemaPersonalizationFile() is this constant, it means that there is no
-	 * personalization to apply
-	 */
-	private static final Object NO_PERSONALIZATION = "noPersonalization";
-
 	@Resource
 	DocumentParser documentParser;
 
@@ -87,7 +81,8 @@ public class JsonSchemaPersonalization {
 					}
 
 					// Let's add all new fields
-					for (com.graphql_java_generator.plugin.schema_personalization.Field field : objectPers.getNewFields()) {
+					for (com.graphql_java_generator.plugin.schema_personalization.Field field : objectPers
+							.getNewFields()) {
 						// There must not be any field of that name in that object
 						if (checkIfFieldExists(objectType, field.getName())) {
 							throw new RuntimeException("The object " + objectType.getName()
@@ -178,7 +173,7 @@ public class JsonSchemaPersonalization {
 	 */
 	public SchemaPersonalization loadGraphQLSchemaPersonalization() throws IOException, URISyntaxException {
 
-		if (pluginConfiguration.getSchemaPersonalizationFile().getName().equals(NO_PERSONALIZATION)) {
+		if (pluginConfiguration.getSchemaPersonalizationFile() == null) {
 			return null;
 		} else {
 

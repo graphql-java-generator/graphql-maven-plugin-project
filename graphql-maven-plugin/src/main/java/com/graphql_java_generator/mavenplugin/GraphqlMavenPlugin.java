@@ -28,11 +28,11 @@ import com.graphql_java_generator.plugin.PluginMode;
 public class GraphqlMavenPlugin extends AbstractMojo {
 
 	/** The packageName in which the generated classes will be created */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = "com.generated.graphql")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = PluginConfiguration.DEFAULT_PACKAGE_NAME)
 	String packageName;
 
 	/** The encoding for the generated source files */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = "UTF-8")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = PluginConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;
 
 	Log log;
@@ -41,7 +41,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * The generation mode: either client or server. Choose client to generate the code which can query a graphql server
 	 * or server to generate a code for the server side.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.mode", defaultValue = "client")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.mode", defaultValue = PluginConfiguration.DEFAULT_MODE)
 	PluginMode mode;
 
 	/**
@@ -55,7 +55,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * It will also be possible to define one schema, by putting "mySchema.myOtherExtension" in the schemaFilePattern
 	 * configuration parameter of the plugin.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = "*.graphqls")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
 	String schemaFilePattern;
 
 	/**
@@ -65,12 +65,12 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * this compile time file within your maven artefact<BR/>
 	 * The default value is a file named "noPersonalization", meaning: no schema personalization.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = "noPersonalization")
-	File schemaPersonalizationFile;
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
+	String schemaPersonalizationFile;
 
 	/** The folder where the generated classes will be generated */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = "${project.build.directory}/generated-sources/graphql-maven-plugin")
-	File targetSourceFolder;
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = PluginConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
+	String targetSourceFolder;
 
 	/** Not available to the user: the {@link MavenProject} in which the plugin executes */
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
@@ -98,7 +98,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 
 			ctx.close();
 
-			project.addCompileSourceRoot(targetSourceFolder.getAbsolutePath());
+			File targetDir = new File(project.getBasedir(), "target");
+			project.addCompileSourceRoot(new File(targetDir, targetSourceFolder).getAbsolutePath());
 
 			getLog().info(nbGeneratedClasses + " java classes have been generated the schema(s) '" + schemaFilePattern
 					+ "' in the package '" + packageName + "'");

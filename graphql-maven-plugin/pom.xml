@@ -31,10 +31,6 @@
 		<dependency>
 			<!-- This module must have been built before -->
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-runtime</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-logic</artifactId>
 		</dependency>
 

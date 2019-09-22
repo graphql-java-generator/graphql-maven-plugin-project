@@ -16,7 +16,7 @@ import com.generated.graphql.Human;
 import com.generated.graphql.QueryType;
 import com.graphql_java_generator.client.response.GraphQLExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
-import com.graphql_java_generator.mavenplugin.samples.simple.client.Queries;
+import com.graphql_java_generator.samples.simple.client.Queries;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see

@@ -53,7 +53,7 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
-	public File getResourcesFolder() {
+	public File getMainResourcesFolder() {
 		return new File(mojo.project.getBasedir(), "/src/main/resources");
 	}
 
@@ -64,7 +64,8 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 
 	@Override
 	public File getSchemaPersonalizationFile() {
-		return mojo.schemaPersonalizationFile;
+		return (PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(mojo.schemaPersonalizationFile)) ? null
+				: new File(mojo.project.getBasedir(), mojo.schemaPersonalizationFile);
 	}
 
 	@Override
@@ -72,14 +73,18 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 		return mojo.sourceEncoding;
 	}
 
+	public File getTargetFolder() {
+		return new File(mojo.project.getBasedir(), "target");
+	}
+
 	@Override
 	public File getTargetClassFolder() {
-		return new File(mojo.project.getBasedir(), "target/classes");
+		return new File(getTargetFolder(), "classes");
 	}
 
 	@Override
 	public File getTargetSourceFolder() {
-		return mojo.targetSourceFolder;
+		return new File(getTargetFolder(), mojo.targetSourceFolder);
 	}
 
 }
