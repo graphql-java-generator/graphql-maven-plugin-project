@@ -18,8 +18,8 @@ import com.graphql_java_generator.samples.forum.client.Queries;
  */
 public class DirectQueries implements Queries {
 
-	QueryType queryType = new QueryType(Main.graphqlEndpoint);
-	MutationType mutationType = new MutationType(Main.graphqlEndpoint);
+	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
+	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
 
 	@Override
 	public List<Board> boardsSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {

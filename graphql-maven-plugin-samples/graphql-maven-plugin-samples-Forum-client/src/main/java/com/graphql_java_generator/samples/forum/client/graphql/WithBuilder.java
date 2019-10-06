@@ -29,8 +29,8 @@ import com.graphql_java_generator.samples.forum.client.Queries;
  */
 public class WithBuilder implements Queries {
 
-	QueryType queryType = new QueryType(Main.graphqlEndpoint);
-	MutationType mutationType = new MutationType(Main.graphqlEndpoint);
+	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
+	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
 	ObjectResponse boardsSimpleResponse;
 	ObjectResponse boardsAndTopicsResponse;
 	ObjectResponse topicAuthorPostAuthorResponse;

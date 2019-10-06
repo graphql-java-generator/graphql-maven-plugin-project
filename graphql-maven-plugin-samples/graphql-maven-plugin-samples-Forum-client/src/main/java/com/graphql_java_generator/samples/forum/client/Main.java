@@ -14,7 +14,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.WithQueries;
  */
 public class Main {
 
-	public static String graphqlEndpoint = "http://localhost:8180/graphql";
+	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
 
 	public static void main(String[] args) throws GraphQLExecutionException, GraphQLRequestPreparationException {
 
