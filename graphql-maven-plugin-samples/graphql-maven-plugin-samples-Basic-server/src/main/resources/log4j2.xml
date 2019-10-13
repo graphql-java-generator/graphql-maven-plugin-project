@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="WARN">
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<File name="File_mavenTarget" fileName="target/server.log">
+			<PatternLayout>
+				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+		<File name="File" fileName="../logs/GraphQL_StarWars_server.log">
+			<PatternLayout>
+				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+			</PatternLayout>
+		</File>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="graphql" level="info" />
+		<Logger name="graphql.execution" level="info" />
+		<Logger name="org.dbunit" level="trace" />
+		<Logger name="org.graphql" level="info" />
+		<Logger name="org.hibernate" level="info" />
+		<!-- Logger name="org.hibernate.SQL" level="debug" /> <!- Logs each SQL query execution -->
+		<!-- Logger name="org.hibernate.type.descriptor.sql" level="trace" /> <!- Logs each SQL query execution, with the bind values -->
+		<Root level="info">
+			<AppenderRef ref="Console" />
+			<AppenderRef ref="File" />
+		</Root>
+	</Loggers>
+
+</Configuration>
