@@ -118,7 +118,9 @@ public class ${object.name} {
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 #foreach ($inputParameter in $field.inputParameters)
-		parameters.add(new InputParameter("${inputParameter.name}", ${inputParameter.name}));
+		if (${inputParameter.name} != null){
+			parameters.add(new InputParameter("${inputParameter.name}",${inputParameter.name}));
+		}
 #end
 
 		if (!${field.type.classSimpleName}.class.equals(objectResponse.getFieldClass())) {
