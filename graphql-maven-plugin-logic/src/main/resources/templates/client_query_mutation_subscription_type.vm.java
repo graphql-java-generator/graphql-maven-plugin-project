@@ -1,5 +1,6 @@
 package ${package};
-#macro(inputParams)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.type.classSimpleName} ${inputParameter.name}#end#end
+#macro(inputParams)#foreach ($inputParameter in $field.inputParameters), #if(${inputParameter.list})List<#end${inputParameter.type.classSimpleName}#if(${inputParameter.list})>#end ${inputParameter.name}#end#end
+
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.name}#end#end
 
 import java.io.IOException;
@@ -117,7 +118,9 @@ public class ${object.name} {
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
 #foreach ($inputParameter in $field.inputParameters)
-		parameters.add(new InputParameter("${inputParameter.name}", ${inputParameter.name}));
+		if (${inputParameter.name} != null){
+			parameters.add(new InputParameter("${inputParameter.name}",${inputParameter.name}));
+		}
 #end
 
 		if (!${field.type.classSimpleName}.class.equals(objectResponse.getFieldClass())) {

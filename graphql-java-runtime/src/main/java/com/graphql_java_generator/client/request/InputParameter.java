@@ -3,6 +3,8 @@
  */
 package com.graphql_java_generator.client.request;
 
+import java.util.List;
+
 /**
  * Contains a parameter, to be sent to a query (mutation...).
  * 
@@ -45,23 +47,46 @@ public class InputParameter {
 	 * @return
 	 */
 	public String getValueForGraphqlQuery() {
-		if (value == null) {
+		return this.getValueForGraphqlQuery(this.value);
+	}
+
+	private String getValueForGraphqlQuery(Object val) {
+		if (val == null) {
 			return null;
+		} else if (val instanceof String) {
+			return getStringValue((String) val);
+		} else if (val instanceof java.util.List) {
+			return getListValue((List) val);
 		} else {
-			switch (value.getClass().getName()) {
-			case "java.lang.String":
-				return getStringValue((String) value);
-			default:
-				return value.toString();
-			}
+			return val.toString();
 		}
 	}
 
 	/**
 	 * @return
 	 */
-	private static String getStringValue(String str) {
+	private String getStringValue(String str) {
 		return "\\\"" + str.replace("\"", "\\\"") + "\\\"";
+	}
+
+	/**
+	 * @param lst
+	 * @return
+	 */
+	private String getListValue(List lst) {
+		if (lst == null) {
+			return null;
+		} else {
+			StringBuilder result = new StringBuilder("[");
+			for (int index = 0; index < lst.size(); index ++) {
+				Object obj = lst.get(index);
+				result.append(this.getValueForGraphqlQuery(obj));
+				if (index < lst.size() - 1) {
+					result.append(",");
+				}
+			}
+			return result.append("]").toString();
+		}
 	}
 
 }
