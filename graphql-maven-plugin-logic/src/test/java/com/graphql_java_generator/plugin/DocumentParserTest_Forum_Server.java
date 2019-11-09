@@ -1,7 +1,9 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
@@ -108,7 +109,7 @@ class DocumentParserTest_Forum_Server {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
-		assertEquals(9, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(10, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		//
@@ -118,6 +119,11 @@ class DocumentParserTest_Forum_Server {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, null,
 				"boardName");
+		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "QueryType",
+				"findTopics", "Topic", true, null, "boardName", "keyword");
+		// Let's check the input parameters for this dataFetcher
+		assertFalse(dataFetcher.getField().getInputParameters().get(0).isList());
+		assertTrue(dataFetcher.getField().getInputParameters().get(1).isList());
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
 				false, null, "name", "publiclyAvailable");
@@ -143,11 +149,13 @@ class DocumentParserTest_Forum_Server {
 		// Delegate for QueryType
 		assertEquals("QueryTypeDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(2, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+		assertEquals(3, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
 		assertEquals("boards", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		assertEquals("topics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+		assertEquals("findTopics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(2).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Board
@@ -172,7 +180,7 @@ class DocumentParserTest_Forum_Server {
 		assertEquals("posts", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
-		// Delegate for Board
+		// Delegate for Post
 		i += 1;
 		j = 0;
 		assertEquals("PostDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
@@ -184,8 +192,8 @@ class DocumentParserTest_Forum_Server {
 
 	}
 
-	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,
-			String returnedTypeName, boolean list, String sourceName, String... inputParameters) {
+	private DataFetcher checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType,
+			String fieldName, String returnedTypeName, boolean list, String sourceName, String... inputParameters) {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
@@ -202,6 +210,8 @@ class DocumentParserTest_Forum_Server {
 					"param " + i + " for Data Fetcher " + dataFetcherName);
 			i += 1;
 		}
+
+		return dataFetcher;
 	}
 
 	@Test

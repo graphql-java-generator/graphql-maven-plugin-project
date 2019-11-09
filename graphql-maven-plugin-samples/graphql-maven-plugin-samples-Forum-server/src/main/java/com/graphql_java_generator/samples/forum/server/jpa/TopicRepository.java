@@ -14,7 +14,7 @@ import com.graphql_java_generator.samples.forum.server.Topic;
 /**
  * @author EtienneSF
  */
-public interface TopicRepository extends CrudRepository<Topic, UUID> {
+public interface TopicRepository extends CrudRepository<Topic, UUID>, FindTopicRepository {
 
 	@Query(value = "select t from Topic t where t.boardId= ?1")
 	List<Topic> findByBoardId(UUID boardId);
@@ -23,7 +23,7 @@ public interface TopicRepository extends CrudRepository<Topic, UUID> {
 	List<Topic> findByBoardIdAndSince(UUID boardId, String since);
 
 	/**
-	 * An example of a native query that could be used for some perticular case
+	 * An example of a native query that could be used for some particular case
 	 * 
 	 * @param name
 	 * @return

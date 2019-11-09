@@ -42,4 +42,10 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 		return topicRepository.findByBoardName(boardName);
 	}
 
+	@Override
+	public List<Topic> findTopics(DataFetchingEnvironment dataFetchingEnvironment, String boardName,
+			List<String> keyword) {
+		return topicRepository.findByBoardNameAndKeywords(boardName, keyword);
+	}
+
 }

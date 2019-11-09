@@ -6,6 +6,7 @@ schema {
 type QueryType {
     boards: [Board]
     topics(boardName: String!): [Topic]!
+    findTopics(boardName: String!, keyword: [String!]): [Topic]
 }
 
 type MutationType {
@@ -13,7 +14,6 @@ type MutationType {
 	createTopic(authorId: ID!, publiclyAvailable: Boolean, title: String!, content: String): Topic!
 	createPost(authorId: ID!, publiclyAvailable: Boolean, title: String!, content: String!): Post!
 }
-
 
 enum MemberType {
     ADMIN

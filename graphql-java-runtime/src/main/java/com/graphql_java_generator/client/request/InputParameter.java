@@ -50,13 +50,20 @@ public class InputParameter {
 		return this.getValueForGraphqlQuery(this.value);
 	}
 
+	/**
+	 * This method is used both by {@link #getValueForGraphqlQuery()} and {@link #getListValue(List)} to extract a value
+	 * as a string.
+	 * 
+	 * @param val
+	 * @return
+	 */
 	private String getValueForGraphqlQuery(Object val) {
 		if (val == null) {
 			return null;
 		} else if (val instanceof String) {
 			return getStringValue((String) val);
 		} else if (val instanceof java.util.List) {
-			return getListValue((List) val);
+			return getListValue((List<?>) val);
 		} else {
 			return val.toString();
 		}
@@ -73,12 +80,12 @@ public class InputParameter {
 	 * @param lst
 	 * @return
 	 */
-	private String getListValue(List lst) {
+	private String getListValue(List<?> lst) {
 		if (lst == null) {
 			return null;
 		} else {
 			StringBuilder result = new StringBuilder("[");
-			for (int index = 0; index < lst.size(); index ++) {
+			for (int index = 0; index < lst.size(); index++) {
 				Object obj = lst.get(index);
 				result.append(this.getValueForGraphqlQuery(obj));
 				if (index < lst.size() - 1) {

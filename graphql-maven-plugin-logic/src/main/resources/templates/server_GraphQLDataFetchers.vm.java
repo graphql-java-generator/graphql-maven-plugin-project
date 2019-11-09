@@ -36,19 +36,20 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcherDelegate.camelCaseName}${dataFetcher.pascalCaseName}() {
 		return dataFetchingEnvironment -> {
-#foreach ($argument in $dataFetcher.field.inputParameters)
+#foreach ($argument in $dataFetcher.field.inputParameters)          
+## $argument is an instance of Field
 #if ($argument.type.class.simpleName == "EnumType")
 #if ($argument.mandatory)
-			${argument.type.classSimpleName} ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
 #else
 			${argument.type.classSimpleName} ${argument.camelCaseName} = null;
 			if (dataFetchingEnvironment.getArgument("${argument.name}") != null)
 				${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
 #end
 #elseif (${argument.type.classSimpleName} == "UUID")
-			${argument.type.classSimpleName} ${argument.camelCaseName} = UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
 #else
-			${argument.type.classSimpleName} ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end
 #end
 #if($dataFetcher.sourceName)
