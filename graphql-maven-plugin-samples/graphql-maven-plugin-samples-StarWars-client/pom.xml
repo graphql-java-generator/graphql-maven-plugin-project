@@ -88,6 +88,13 @@
 					</deployables>
 				</configuration>
 			</plugin>
+			<plugin>
+				<!-- We don't want to spam the repository with test/sample artefacts -->
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
