@@ -4,12 +4,12 @@ import java.util.List;
 
 import com.graphql_java_generator.client.response.GraphQLExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.client.Main;
+import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
-import com.graphql_java_generator.samples.forum.client.Main;
-import com.graphql_java_generator.samples.forum.client.Queries;
 
 /**
  * This class implements the simplest way to call GraphQl queries, with the GraphQL Java Generator
@@ -41,8 +41,15 @@ public class DirectQueries implements Queries {
 	}
 
 	@Override
+	public List<Topic> findTopics(String boardName, List<String> keyword)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.findTopics("{id date title content}", boardName, keyword);
+	}
+
+	@Override
 	public Board createBoard(String name, boolean publiclyAvailable)
 			throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createBoard("{id name publiclyAvailable}", name, publiclyAvailable);
 	}
+
 }

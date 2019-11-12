@@ -5,12 +5,12 @@ import java.util.List;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.client.Main;
+import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
-import com.graphql_java_generator.samples.forum.client.Main;
-import com.graphql_java_generator.samples.forum.client.Queries;
 
 /**
  * This class implements the away to call GraphQl queries, where all queries are prepared before execution.<BR/>
@@ -34,6 +34,7 @@ public class WithQueries implements Queries {
 	ObjectResponse boardsSimpleResponse;
 	ObjectResponse boardsAndTopicsResponse;
 	ObjectResponse topicAuthorPostAuthorResponse;
+	ObjectResponse findTopicIdDateTitleContent;
 	ObjectResponse createBoardResponse;
 
 	public WithQueries() throws GraphQLRequestPreparationException {
@@ -46,6 +47,9 @@ public class WithQueries implements Queries {
 		topicAuthorPostAuthorResponse = queryType.getTopicsResponseBuilder().withQueryResponseDef(
 				"{id date author{name email alias id type} nbPosts title content posts{id date author{name email alias} title content}}")
 				.build();
+
+		findTopicIdDateTitleContent = queryType.getFindTopicsResponseBuilder()
+				.withQueryResponseDef(" {id date title content} ").build();
 
 		createBoardResponse = mutationType.getCreateBoardResponseBuilder().build();
 
@@ -65,6 +69,12 @@ public class WithQueries implements Queries {
 	@Override
 	public List<Topic> topicAuthorPostAuthor() throws GraphQLExecutionException {
 		return queryType.topics(topicAuthorPostAuthorResponse, "Board name 2");
+	}
+
+	@Override
+	public List<Topic> findTopics(String boardName, List<String> keyword)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.findTopics(findTopicIdDateTitleContent, boardName, keyword);
 	}
 
 	@Override

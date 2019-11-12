@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -95,6 +97,22 @@ abstract class AbstractTest {
 		assertEquals("Alias of Name 12", author12bis.getAlias());
 		assertEquals("name.12@graphql-java.com", author12bis.getEmail());
 		assertEquals(null, author12bis.getType());
+	}
+
+	@Test
+	void testFindTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		// Preparation
+		String boardName = "Board name 3";
+		List<String> keyword = new ArrayList<>(Arrays.asList("3", "content"));
+
+		// Go, go, go
+		List<Topic> topics = queries.findTopics(boardName, keyword);
+
+		// Verification
+		assertEquals(5, topics.size());
+		Topic topic = topics.get(3);
+		assertEquals("The title of <33>", topic.getTitle());
+		assertEquals("The content of the topic <33>", topic.getContent());
 	}
 
 	@Test
