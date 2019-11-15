@@ -32,7 +32,7 @@
 				</executions>
 				<configuration>
 					<mode>server</mode>
-					<packageName>com.graphql_java_generator.samples.server</packageName>
+					<packageName>com.graphql_java_generator</packageName>
 				</configuration>
 			</plugin>
 			<plugin>

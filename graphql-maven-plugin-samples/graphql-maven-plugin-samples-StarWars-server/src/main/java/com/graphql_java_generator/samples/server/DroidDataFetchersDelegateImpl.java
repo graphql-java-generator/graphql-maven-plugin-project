@@ -10,6 +10,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.Character;
+import com.graphql_java_generator.Droid;
+import com.graphql_java_generator.DroidDataFetchersDelegate;
+import com.graphql_java_generator.Episode;
+import com.graphql_java_generator.GraphQLUtil;
 import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 
 import graphql.schema.DataFetchingEnvironment;

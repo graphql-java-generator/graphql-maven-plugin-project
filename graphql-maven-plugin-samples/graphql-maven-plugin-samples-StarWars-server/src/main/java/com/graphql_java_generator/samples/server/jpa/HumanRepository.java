@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.graphql_java_generator.samples.server.Human;
+import com.graphql_java_generator.Human;
 
 /**
  * @author EtienneSF

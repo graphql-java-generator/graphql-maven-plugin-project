@@ -7,6 +7,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.Character;
+import com.graphql_java_generator.CharacterImpl;
+import com.graphql_java_generator.CharacterImplDataFetchersDelegate;
+import com.graphql_java_generator.Episode;
+import com.graphql_java_generator.GraphQLUtil;
 import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 
 import graphql.schema.DataFetchingEnvironment;

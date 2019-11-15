@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.graphql_java_generator.samples.server.CharacterImpl;
+import com.graphql_java_generator.CharacterImpl;
 
 /**
  * @author EtienneSF

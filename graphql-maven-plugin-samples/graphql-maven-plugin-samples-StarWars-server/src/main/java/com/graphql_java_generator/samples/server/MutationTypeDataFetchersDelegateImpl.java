@@ -11,6 +11,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.Character;
+import com.graphql_java_generator.Human;
+import com.graphql_java_generator.MutationTypeDataFetchersDelegate;
 import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 import com.graphql_java_generator.samples.server.jpa.HumanRepository;
 
