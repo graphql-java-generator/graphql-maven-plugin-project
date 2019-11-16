@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.graphql_java_generator.Character;
 import com.graphql_java_generator.CharacterImpl;
 
 /**
@@ -77,8 +78,16 @@ public interface CharacterRepository extends CrudRepository<CharacterImpl, UUID>
 	@Override
 	@Query(value = ""//
 			+ " select id, name from droid where id = ?1"//
-			+ " union all " + " select id, name from human where id = ?1"//
+			+ " union all "//
+			+ " select id, name from human where id = ?1"//
 			, nativeQuery = true)
 	Optional<CharacterImpl> findById(UUID id);
+
+	@Query(value = "" //
+			+ " select id, name from droid where id = ?1"//
+			+ " union all "//
+			+ " select id, name from human where id = ?1"//
+			, nativeQuery = true)
+	List<Character> batchLoader(List<String> keys);
 
 }

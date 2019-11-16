@@ -15,6 +15,8 @@ import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dataloader.DataLoader;
+import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
@@ -47,6 +49,7 @@ public class GraphQLProvider {
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();
 
+	/** The {@link GraphQLDataFetchers} class contains all the Data Fetcher declarations */
 	@Autowired
 	GraphQLDataFetchers graphQLDataFetchers;
 
@@ -55,6 +58,21 @@ public class GraphQLProvider {
 	@Bean
 	public GraphQL graphQL() {
 		return graphQL;
+	}
+
+	/**
+	 * The {@link DataLoaderRegistry} will be autowired by Spring in the GraphQL Java Spring Boot framework. It will
+	 * then be wired for each request execution, as specified in this page:
+	 * <A HREF="https://www.graphql-java.com/documentation/master/batching/">graphql-java batching</A>
+	 * 
+	 * @return
+	 */
+	@Bean
+	public DataLoaderRegistry dataLoaderRegistry() {
+		DataLoaderRegistry registry = new DataLoaderRegistry();
+		registry.register("CharacterImpl", DataLoader.newDataLoader(graphQLDataFetchers.characterImplBatchLoader()));
+
+		return registry;
 	}
 
 	@PostConstruct
