@@ -65,11 +65,15 @@ public class GraphQLDataFetchers {
 			${dataFetcher.field.type.classSimpleName} ret = null;
 			try {
 				ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
-				logger.debug("${dataFetcher.name}: 1 result found");
 			} catch (NoSuchElementException e) {
 				// There was no items in the Optional
-				logger.debug("${dataFetcher.name}: no result found");
 			}
+
+			if (ret != null)
+				logger.debug("human: 1 result found");
+			else
+				logger.debug("human: no result found");
+
 			return ret;
 #end
 		};
