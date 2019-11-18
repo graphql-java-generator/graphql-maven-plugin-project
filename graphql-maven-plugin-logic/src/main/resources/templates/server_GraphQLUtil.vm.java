@@ -50,7 +50,7 @@ public class GraphQLUtil {
 	 * @param optional
 	 * @return
 	 */
-	public <T> T optionnalToObject(Optional<T> optional) {
+	public <T> T optionalToObject(Optional<T> optional) {
 		return optional.isPresent() ? optional.get() : null;
 	}
 
