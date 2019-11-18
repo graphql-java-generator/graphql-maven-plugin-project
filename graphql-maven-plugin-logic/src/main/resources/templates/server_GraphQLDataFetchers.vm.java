@@ -58,7 +58,7 @@ public class GraphQLDataFetchers {
 
 #if (${dataFetcher.field.list})
 			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
-			logger.debug("${dataFetcher.name}: {} found rows", ${dataFetcher.field.type.classSimpleName}.size());
+			logger.debug("${dataFetcher.name}: {} found rows", ret.size());
 
 			return ret;
 #else
