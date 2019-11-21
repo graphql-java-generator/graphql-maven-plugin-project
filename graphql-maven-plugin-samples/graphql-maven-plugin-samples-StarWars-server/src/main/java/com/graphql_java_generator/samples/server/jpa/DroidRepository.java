@@ -63,6 +63,6 @@ public interface DroidRepository extends CrudRepository<Droid, UUID> {
 	Optional<Droid> findById(UUID id);
 
 	@Query(value = "select id, name from droid where id = ?1", nativeQuery = true)
-	List<Droid> batchLoader(List<String> keys);
+	List<Droid> batchLoader(List<UUID> keys);
 
 }

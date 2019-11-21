@@ -3,6 +3,8 @@ package com.graphql_java_generator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -30,7 +32,8 @@ public interface HumanDataFetchersDelegate {
 	 *             {@link Optional#get()} method directly, without caring of wheter or not there is a value. The
 	 *             generated code will take care of the {@link NoSuchElementException} exception.
 	 */
-	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Human source);
+	public CompletableFuture<List<CharacterImpl>> friends(DataFetchingEnvironment dataFetchingEnvironment,
+			Human source);
 
 	/**
 	 * This method loads the data for Human.appearsIn <BR/>
@@ -51,6 +54,6 @@ public interface HumanDataFetchersDelegate {
 	 */
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Human source);
 
-	public List<Human> humanBatchLoader(List<String> keys);
+	public List<Human> humanBatchLoader(List<UUID> keys);
 
 }

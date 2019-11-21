@@ -21,7 +21,7 @@ import com.graphql_java_generator.Human;
 public interface HumanRepository extends CrudRepository<Human, UUID> {
 
 	@Override
-	@Query(value = "select d.id, d.name from human d", nativeQuery = true)
+	@Query(value = "select d.id, d.name, d.home_planet from human d", nativeQuery = true)
 	List<Human> findAll();
 
 	@Query(value = "" //
@@ -33,7 +33,7 @@ public interface HumanRepository extends CrudRepository<Human, UUID> {
 	List<String> findAppearsInById(UUID id);
 
 	@Query(value = "" //
-			+ " select d.id, d.name " //
+			+ " select d.id, d.name, d.home_planet " //
 			+ " from human d, human_appears_in dai, episode e "//
 			+ " where e.label = ?1 "//
 			+ " and dai.episode_id=e.id"//
@@ -59,10 +59,10 @@ public interface HumanRepository extends CrudRepository<Human, UUID> {
 	 * nativeQuery. Another option is to use a CharacterImpl view.
 	 */
 	@Override
-	@Query(value = "select id, name from human where id = ?1", nativeQuery = true)
+	@Query(value = "select id, name, home_planet from human where id = ?1", nativeQuery = true)
 	Optional<Human> findById(UUID id);
 
-	@Query(value = "select id, name from human where id = ?1", nativeQuery = true)
-	List<Human> batchLoader(List<String> keys);
+	@Query(value = "select id, name, home_planet from human where id = ?1", nativeQuery = true)
+	List<Human> batchLoader(List<UUID> keys);
 
 }

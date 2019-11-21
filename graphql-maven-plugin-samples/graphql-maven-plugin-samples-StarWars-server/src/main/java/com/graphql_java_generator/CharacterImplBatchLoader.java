@@ -4,6 +4,7 @@
 package com.graphql_java_generator;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Component;
  * <A HREF="https://www.graphql-java.com/documentation/master/batching/">graphql-java batching</A>
  */
 @Component
-public class CharacterImplBatchLoader implements BatchLoader<String, Character> {
+public class CharacterImplBatchLoader implements BatchLoader<UUID, CharacterImpl> {
 
 	/**
 	 * The DataFetcherDelegate is specific to the use case. A Spring component must be provided, that implements this
@@ -33,7 +34,7 @@ public class CharacterImplBatchLoader implements BatchLoader<String, Character> 
 	 * data along object associations.
 	 */
 	@Override
-	public CompletionStage<List<Character>> load(List<String> keys) {
+	public CompletionStage<List<CharacterImpl>> load(List<UUID> keys) {
 		// we use supplyAsync() of values here for maximum parellisation
 		return CompletableFuture.supplyAsync(() -> characterImplDataFetchersDelegate.characterImplBatchLoader(keys));
 	}

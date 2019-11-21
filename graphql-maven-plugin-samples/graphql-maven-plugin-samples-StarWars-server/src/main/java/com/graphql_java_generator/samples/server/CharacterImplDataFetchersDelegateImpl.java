@@ -2,14 +2,16 @@ package com.graphql_java_generator.samples.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.Character;
 import com.graphql_java_generator.CharacterImpl;
 import com.graphql_java_generator.CharacterImplDataFetchersDelegate;
 import com.graphql_java_generator.Episode;
@@ -31,9 +33,12 @@ public class CharacterImplDataFetchersDelegateImpl implements CharacterImplDataF
 	GraphQLUtil graphQLUtil;
 
 	@Override
-	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, CharacterImpl source) {
-		logger.debug("Executing characterImpl.friends, with this character: ", source.getId());
-		return graphQLUtil.iterableConcreteClassToListInterface(characterRepository.findFriends(source.getId()));
+	public CompletableFuture<List<CharacterImpl>> friends(DataFetchingEnvironment environment, CharacterImpl source) {
+		logger.debug("Executing characterImpl.friends, with this character: {}", source.getId().toString());
+		List<UUID> friendIds = graphQLUtil
+				.convertListByteArrayToListUUID(characterRepository.findFriendsId(source.getId()));
+		DataLoader<UUID, CharacterImpl> dataLoader = environment.getDataLoader("Character");
+		return dataLoader.loadMany(friendIds);
 	}
 
 	@Override
@@ -48,11 +53,14 @@ public class CharacterImplDataFetchersDelegateImpl implements CharacterImplDataF
 	}
 
 	@Override
-	public List<Character> characterImplBatchLoader(List<String> keys) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Executing droidBatchLoader, with this list of keys: ", String.join(", ", keys));
-		}
-		return characterRepository.batchLoader(keys);
+	public List<CharacterImpl> characterImplBatchLoader(List<UUID> keys) {
+		if (logger.isTraceEnabled())
+			logger.trace("Executing characterImplBatchLoader, with {} keys: {}", keys.size(), keys);
+		else if (logger.isDebugEnabled())
+			logger.debug("Executing characterImplBatchLoader, with {} keys", keys.size());
+
+		List<CharacterImpl> ret = characterRepository.batchLoader(keys);
+		return ret;
 	}
 
 }

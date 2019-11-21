@@ -69,8 +69,11 @@ public class GraphQLProvider {
 	 */
 	@Bean
 	public DataLoaderRegistry dataLoaderRegistry() {
+		logger.debug("Creating DataLoader registry");
 		DataLoaderRegistry registry = new DataLoaderRegistry();
-		registry.register("CharacterImpl", DataLoader.newDataLoader(graphQLDataFetchers.characterImplBatchLoader()));
+		registry.register("Character", DataLoader.newDataLoader(graphQLDataFetchers.characterImplBatchLoader()));
+		registry.register("Droid", DataLoader.newDataLoader(graphQLDataFetchers.droidBatchLoader()));
+		registry.register("Human", DataLoader.newDataLoader(graphQLDataFetchers.humanBatchLoader()));
 
 		return registry;
 	}

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -31,7 +32,7 @@
 				</executions>
 				<configuration>
 					<mode>server</mode>
-					<packageName>com.graphql_java_generator</packageName>
+					<packageName>com.graphql_java_generator.samples.server</packageName>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -70,6 +71,19 @@
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-server-dependencies</artifactId>
 			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<!-- This dependency should come from graphql-java spring stuff -->
+			<groupId>com.graphql-java</groupId>
+			<artifactId>java-dataloader</artifactId>
 		</dependency>
 
 		<!-- Dependencies that are specific to this project -->

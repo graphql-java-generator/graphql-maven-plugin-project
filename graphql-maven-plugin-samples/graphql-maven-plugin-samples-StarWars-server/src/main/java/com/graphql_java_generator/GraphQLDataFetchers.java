@@ -70,7 +70,7 @@ public class GraphQLDataFetchers {
 				episode = Episode.valueOf(dataFetchingEnvironment.getArgument("episode"));
 
 			List<Character> ret = queryTypeDataFetchersDelegate.characters(dataFetchingEnvironment, episode);
-			logger.debug("appearsIn: {} found rows", ret.size());
+			logger.debug("character: {} found rows", ret.size());
 
 			return ret;
 		};
@@ -83,11 +83,15 @@ public class GraphQLDataFetchers {
 			Human ret = null;
 			try {
 				ret = queryTypeDataFetchersDelegate.human(dataFetchingEnvironment, id);
-				logger.debug("human: 1 result found");
 			} catch (NoSuchElementException e) {
 				// There was no items in the Optional
-				logger.debug("human: no result found");
 			}
+
+			if (ret != null)
+				logger.debug("human: 1 result found");
+			else
+				logger.debug("human: no result found");
+
 			return ret;
 		};
 	}
@@ -150,14 +154,11 @@ public class GraphQLDataFetchers {
 	// Data fetchers for HumanDataFetchersDelegate
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public DataFetcher<List<Character>> humanDataFetchersDelegateFriends() {
+	public DataFetcher<CompletableFuture<List<CharacterImpl>>> humanDataFetchersDelegateFriends() {
 		return dataFetchingEnvironment -> {
 			Human source = dataFetchingEnvironment.getSource();
 
-			List<Character> ret = humanDataFetchersDelegate.friends(dataFetchingEnvironment, source);
-			logger.debug("appearsIn: {} found rows", ret.size());
-
-			return ret;
+			return humanDataFetchersDelegate.friends(dataFetchingEnvironment, source);
 		};
 	}
 
@@ -176,11 +177,11 @@ public class GraphQLDataFetchers {
 	 * A batch loader function that will be called with N or more keys for batch loading. This can be a singleton object
 	 * since it's stateless.
 	 */
-	public BatchLoader<String, Human> humanBatchLoader() {
+	public BatchLoader<UUID, Human> humanBatchLoader() {
 		logger.info("Building humanBatchLoader data loader");
-		return new BatchLoader<String, Human>() {
+		return new BatchLoader<UUID, Human>() {
 			@Override
-			public CompletionStage<List<Human>> load(List<String> keys) {
+			public CompletionStage<List<Human>> load(List<UUID> keys) {
 				// We use supplyAsync() of values here for maximum parellisation
 				return CompletableFuture.supplyAsync(() -> humanDataFetchersDelegate.humanBatchLoader(keys));
 			}
@@ -191,14 +192,11 @@ public class GraphQLDataFetchers {
 	// Data fetchers for DroidDataFetchersDelegate
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public DataFetcher<List<Character>> droidDataFetchersDelegateFriends() {
+	public DataFetcher<CompletableFuture<List<CharacterImpl>>> droidDataFetchersDelegateFriends() {
 		return dataFetchingEnvironment -> {
 			Droid source = dataFetchingEnvironment.getSource();
 
-			List<Character> ret = droidDataFetchersDelegate.friends(dataFetchingEnvironment, source);
-			logger.debug("appearsIn: {} found rows", ret.size());
-
-			return ret;
+			return droidDataFetchersDelegate.friends(dataFetchingEnvironment, source);
 		};
 	}
 
@@ -217,11 +215,11 @@ public class GraphQLDataFetchers {
 	 * A batch loader function that will be called with N or more keys for batch loading. This can be a singleton object
 	 * since it's stateless.
 	 */
-	public BatchLoader<String, Droid> droidBatchLoader() {
+	public BatchLoader<UUID, Droid> droidBatchLoader() {
 		logger.info("Building droidBatchLoader data loader");
-		return new BatchLoader<String, Droid>() {
+		return new BatchLoader<UUID, Droid>() {
 			@Override
-			public CompletionStage<List<Droid>> load(List<String> keys) {
+			public CompletionStage<List<Droid>> load(List<UUID> keys) {
 				// We use supplyAsync() of values here for maximum parellisation
 				return CompletableFuture.supplyAsync(() -> droidDataFetchersDelegate.droidBatchLoader(keys));
 			}
@@ -232,13 +230,11 @@ public class GraphQLDataFetchers {
 	// Data fetchers for CharacterImplDataFetchersDelegate
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public DataFetcher<List<Character>> characterImplDataFetchersDelegateFriends() {
+	public DataFetcher<CompletableFuture<List<CharacterImpl>>> characterImplDataFetchersDelegateFriends() {
 		return dataFetchingEnvironment -> {
 			CharacterImpl source = dataFetchingEnvironment.getSource();
 
-			List<Character> ret = characterImplDataFetchersDelegate.friends(dataFetchingEnvironment, source);
-			logger.debug("appearsIn: {} found rows", ret.size());
-			return ret;
+			return characterImplDataFetchersDelegate.friends(dataFetchingEnvironment, source);
 		};
 	}
 
@@ -256,11 +252,11 @@ public class GraphQLDataFetchers {
 	 * A batch loader function that will be called with N or more keys for batch loading. This can be a singleton object
 	 * since it's stateless.
 	 */
-	public BatchLoader<String, Character> characterImplBatchLoader() {
+	public BatchLoader<UUID, CharacterImpl> characterImplBatchLoader() {
 		logger.info("Building characterImplBatchLoader data loader");
-		return new BatchLoader<String, Character>() {
+		return new BatchLoader<UUID, CharacterImpl>() {
 			@Override
-			public CompletionStage<List<Character>> load(List<String> keys) {
+			public CompletionStage<List<CharacterImpl>> load(List<UUID> keys) {
 				// We use supplyAsync() of values here for maximum parellisation
 				return CompletableFuture
 						.supplyAsync(() -> characterImplDataFetchersDelegate.characterImplBatchLoader(keys));

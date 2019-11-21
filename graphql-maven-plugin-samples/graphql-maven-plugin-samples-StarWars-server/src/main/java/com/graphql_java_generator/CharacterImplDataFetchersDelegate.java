@@ -3,6 +3,8 @@ package com.graphql_java_generator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -24,7 +26,7 @@ public interface CharacterImplDataFetchersDelegate {
 	 *            A list of character's id
 	 * @return A list of Characters
 	 */
-	public List<Character> characterImplBatchLoader(List<String> keys);
+	public List<CharacterImpl> characterImplBatchLoader(List<UUID> keys);
 
 	/**
 	 * This method loads the data for Character.friends <BR/>
@@ -43,7 +45,8 @@ public interface CharacterImplDataFetchersDelegate {
 	 *             {@link Optional#get()} method directly, without caring of wheter or not there is a value. The
 	 *             generated code will take care of the {@link NoSuchElementException} exception.
 	 */
-	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, CharacterImpl source);
+	public CompletableFuture<List<CharacterImpl>> friends(DataFetchingEnvironment dataFetchingEnvironment,
+			CharacterImpl source);
 
 	/**
 	 * This method loads the data for Character.appearsIn <BR/>

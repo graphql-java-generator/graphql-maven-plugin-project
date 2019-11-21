@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.graphql_java_generator.Character;
 import com.graphql_java_generator.CharacterImpl;
 
 /**
@@ -24,6 +23,12 @@ public interface CharacterRepository extends CrudRepository<CharacterImpl, UUID>
 	@Override
 	@Query(value = "select d.id, d.name from droid d UNION ALL select h.id, h.name from human h", nativeQuery = true)
 	List<CharacterImpl> findAll();
+
+	@Query(value = "select friend_id from character_friends where character_id = ?1 ", nativeQuery = true)
+	List<byte[]> findFriendsIdStr(UUID id);
+
+	@Query(value = "select friend_id from character_friends where character_id = ?1 ", nativeQuery = true)
+	List<byte[]> findFriendsId(UUID id);
 
 	@Query(value = "" //
 			+ " select e.label " //
@@ -84,10 +89,10 @@ public interface CharacterRepository extends CrudRepository<CharacterImpl, UUID>
 	Optional<CharacterImpl> findById(UUID id);
 
 	@Query(value = "" //
-			+ " select id, name from droid where id = ?1"//
+			+ " select id, name from droid where id in ?1"//
 			+ " union all "//
-			+ " select id, name from human where id = ?1"//
+			+ " select id, name from human where id in ?1"//
 			, nativeQuery = true)
-	List<Character> batchLoader(List<String> keys);
+	List<CharacterImpl> batchLoader(List<UUID> keys);
 
 }

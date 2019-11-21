@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -325,12 +326,12 @@
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
-				<version>1.0</version>
+				<version>2019-11-16T19-22-11-31ab4f9</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-spring-webmvc</artifactId>
-				<version>1.0</version>
+				<version>2019-11-16T19-22-11-31ab4f9</version>
 			</dependency>
 			<dependency>
 				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
@@ -338,6 +339,11 @@
 				<artifactId>graphiql-spring-boot-starter</artifactId>
 				<version>5.7.0</version>
 				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java</groupId>
+				<artifactId>java-dataloader</artifactId>
+				<version>2.2.3</version>
 			</dependency>
 
 			<!-- Other dependencies -->
