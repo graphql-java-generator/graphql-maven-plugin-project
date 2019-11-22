@@ -44,46 +44,47 @@ public class DirectQueries implements Queries {
 	}
 
 	@Override
-	public Character heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.hero("{appearsIn name}", Episode.NEWHOPE);
+	public Character heroPartial(Episode episode) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.hero("{appearsIn name}", episode);
 	}
 
 	@Override
-	public Character heroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.hero("{id appearsIn friends {name friends {friends{id name appearsIn}}}}", Episode.NEWHOPE);
+	public Character heroFriendsFriendsFriends(Episode episode)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.hero("{id appearsIn friends {name friends {friends{id name appearsIn}}}}", episode);
 	}
 
 	@Override
-	public Human humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human((String) null, "00000000-0000-0000-0000-000000000045");
+	public Human humanFull(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.human((String) null, id);
 	}
 
 	@Override
-	public Human humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human("{appearsIn homePlanet name}", "00000000-0000-0000-0000-000000000045");
+	public Human humanPartial(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.human("{appearsIn homePlanet name}", id);
 	}
 
 	@Override
-	public Human humanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}",
-				"00000000-0000-0000-0000-000000000180");
+	public Human humanFriendsFriendsFriends(String id)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.human("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}", id);
 	}
 
 	@Override
-	public Droid droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.droid("", "00000000-0000-0000-0000-000000000003");
+	public Droid droidFull(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.droid("", id);
 	}
 
 	@Override
-	public Droid droidPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.droid("{appearsIn primaryFunction name}", "00000000-0000-0000-0000-000000000003");
+	public Droid droidPartial(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType.droid("{appearsIn primaryFunction name}", id);
 	}
 
 	@Override
-	public Droid droidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.droid(
-				"{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }",
-				"00000000-0000-0000-0000-000000000002");
+	public Droid droidFriendsFriendsFriends(String id)
+			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+		return queryType
+				.droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }", id);
 	}
 
 	@Override

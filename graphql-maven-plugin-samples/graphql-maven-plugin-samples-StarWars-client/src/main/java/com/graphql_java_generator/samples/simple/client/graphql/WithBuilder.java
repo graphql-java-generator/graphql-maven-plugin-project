@@ -152,43 +152,43 @@ public class WithBuilder implements Queries {
 	}
 
 	@Override
-	public Character heroPartial() throws GraphQLExecutionException {
-		return queryType.hero(heroPartialResponse, Episode.NEWHOPE);
+	public Character heroPartial(Episode episode) throws GraphQLExecutionException {
+		return queryType.hero(heroPartialResponse, episode);
 	}
 
 	@Override
-	public Character heroFriendsFriendsFriends() throws GraphQLExecutionException {
-		return queryType.hero(heroFriendsFriendsFriendsResponse, Episode.NEWHOPE);
+	public Character heroFriendsFriendsFriends(Episode episode) throws GraphQLExecutionException {
+		return queryType.hero(heroFriendsFriendsFriendsResponse, episode);
 	}
 
 	@Override
-	public Human humanFull() throws GraphQLExecutionException {
-		return queryType.human(humanFullResponse, "00000000-0000-0000-0000-000000000045");
+	public Human humanFull(String id) throws GraphQLExecutionException {
+		return queryType.human(humanFullResponse, id);
 	}
 
 	@Override
-	public Human humanPartial() throws GraphQLExecutionException {
-		return queryType.human(humanPartialResponse, "00000000-0000-0000-0000-000000000045");
+	public Human humanPartial(String id) throws GraphQLExecutionException {
+		return queryType.human(humanPartialResponse, id);
 	}
 
 	@Override
-	public Human humanFriendsFriendsFriends() throws GraphQLExecutionException {
-		return queryType.human(humanFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000000180");
+	public Human humanFriendsFriendsFriends(String id) throws GraphQLExecutionException {
+		return queryType.human(humanFriendsFriendsFriendsResponse, id);
 	}
 
 	@Override
-	public Droid droidFull() throws GraphQLExecutionException {
-		return queryType.droid(droidFullResponse, "00000000-0000-0000-0000-000000000003");
+	public Droid droidFull(String id) throws GraphQLExecutionException {
+		return queryType.droid(droidFullResponse, id);
 	}
 
 	@Override
-	public Droid droidPartial() throws GraphQLExecutionException {
-		return queryType.droid(droidPartialResponse, "00000000-0000-0000-0000-000000000003");
+	public Droid droidPartial(String id) throws GraphQLExecutionException {
+		return queryType.droid(droidPartialResponse, id);
 	}
 
 	@Override
-	public Droid droidFriendsFriendsFriends() throws GraphQLExecutionException {
-		return queryType.droid(droidFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000000002");
+	public Droid droidFriendsFriendsFriends(String id) throws GraphQLExecutionException {
+		return queryType.droid(droidFriendsFriendsFriendsResponse, id);
 	}
 
 	@Override

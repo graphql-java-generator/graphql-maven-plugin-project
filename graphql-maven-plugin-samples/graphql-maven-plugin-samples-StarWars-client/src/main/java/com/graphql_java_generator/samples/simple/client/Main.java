@@ -12,6 +12,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import com.generated.graphql.Episode;
 import com.graphql_java_generator.client.response.GraphQLExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
@@ -19,8 +20,8 @@ import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
 import com.graphql_java_generator.samples.simple.client.graphql.WithQueries;
 
 /**
- * The main class, which executes the same queries, built by three different
- * methods. See {@link DirectQueries}, {@link WithQueries}, {@link WithBuilder}
+ * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
+ * {@link WithQueries}, {@link WithBuilder}
  * 
  * @author EtienneSF
  */
@@ -66,27 +67,27 @@ public class Main {
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  heroSimple  ----------------------------------------------");
-			System.out.println(client.heroPartial());
+			System.out.println(client.heroPartial(Episode.NEWHOPE));
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  heroFriendsFriendsFriends  -------------------------------");
-			System.out.println(client.heroFriendsFriendsFriends());
+			System.out.println(client.heroFriendsFriendsFriends(Episode.NEWHOPE));
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  humanSimple  ----------------------------------------------");
-			System.out.println(client.humanPartial());
+			System.out.println(client.humanPartial("00000000-0000-0000-0000-000000000045"));
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  humanFriendsFriendsFriends  ------------------------------");
-			System.out.println(client.humanFriendsFriendsFriends());
+			System.out.println(client.humanFriendsFriendsFriends("00000000-0000-0000-0000-000000000180"));
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  droidSimple  ----------------------------------------------");
-			System.out.println(client.droidPartial());
+			System.out.println(client.droidPartial("00000000-0000-0000-0000-000000000003"));
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  droidFriendsFriendsFriends  ------------------------------");
-			System.out.println(client.droidPartial());
+			System.out.println(client.droidPartial("00000000-0000-0000-0000-000000000003"));
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  droidDoesNotExist  ---------------------------------------");
