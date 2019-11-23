@@ -4,13 +4,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dataloader.BatchLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetcher;
@@ -39,7 +37,7 @@ public class GraphQLDataFetchers {
 	DroidDataFetchersDelegate droidDataFetchersDelegate;
 
 	@Resource
-	CharacterImplDataFetchersDelegate characterImplDataFetchersDelegate;
+	CharacterDataFetchersDelegate characterImplDataFetchersDelegate;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Data fetchers for QueryTypeDataFetchersDelegate
@@ -173,21 +171,6 @@ public class GraphQLDataFetchers {
 		};
 	}
 
-	/**
-	 * A batch loader function that will be called with N or more keys for batch loading. This can be a singleton object
-	 * since it's stateless.
-	 */
-	public BatchLoader<UUID, Human> humanBatchLoader() {
-		logger.info("Building humanBatchLoader data loader");
-		return new BatchLoader<UUID, Human>() {
-			@Override
-			public CompletionStage<List<Human>> load(List<UUID> keys) {
-				// We use supplyAsync() of values here for maximum parellisation
-				return CompletableFuture.supplyAsync(() -> humanDataFetchersDelegate.humanBatchLoader(keys));
-			}
-		};
-	}
-
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// Data fetchers for DroidDataFetchersDelegate
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,26 +194,11 @@ public class GraphQLDataFetchers {
 		};
 	}
 
-	/**
-	 * A batch loader function that will be called with N or more keys for batch loading. This can be a singleton object
-	 * since it's stateless.
-	 */
-	public BatchLoader<UUID, Droid> droidBatchLoader() {
-		logger.info("Building droidBatchLoader data loader");
-		return new BatchLoader<UUID, Droid>() {
-			@Override
-			public CompletionStage<List<Droid>> load(List<UUID> keys) {
-				// We use supplyAsync() of values here for maximum parellisation
-				return CompletableFuture.supplyAsync(() -> droidDataFetchersDelegate.droidBatchLoader(keys));
-			}
-		};
-	}
-
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	// Data fetchers for CharacterImplDataFetchersDelegate
+	// Data fetchers for CharacterDataFetchersDelegate
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public DataFetcher<CompletableFuture<List<CharacterImpl>>> characterImplDataFetchersDelegateFriends() {
+	public DataFetcher<CompletableFuture<List<Character>>> characterImplDataFetchersDelegateFriends() {
 		return dataFetchingEnvironment -> {
 			CharacterImpl source = dataFetchingEnvironment.getSource();
 
@@ -248,19 +216,4 @@ public class GraphQLDataFetchers {
 		};
 	}
 
-	/**
-	 * A batch loader function that will be called with N or more keys for batch loading. This can be a singleton object
-	 * since it's stateless.
-	 */
-	public BatchLoader<UUID, CharacterImpl> characterImplBatchLoader() {
-		logger.info("Building characterImplBatchLoader data loader");
-		return new BatchLoader<UUID, CharacterImpl>() {
-			@Override
-			public CompletionStage<List<CharacterImpl>> load(List<UUID> keys) {
-				// We use supplyAsync() of values here for maximum parellisation
-				return CompletableFuture
-						.supplyAsync(() -> characterImplDataFetchersDelegate.characterImplBatchLoader(keys));
-			}
-		};
-	}
 }

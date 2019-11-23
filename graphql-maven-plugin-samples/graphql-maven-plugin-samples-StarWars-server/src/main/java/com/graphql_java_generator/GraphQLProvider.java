@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.dataloader.DataLoader;
 import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -49,6 +50,9 @@ public class GraphQLProvider {
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();
 
+	@Autowired
+	ApplicationContext applicationContext;
+
 	/** The {@link GraphQLDataFetchers} class contains all the Data Fetcher declarations */
 	@Autowired
 	GraphQLDataFetchers graphQLDataFetchers;
@@ -71,9 +75,11 @@ public class GraphQLProvider {
 	public DataLoaderRegistry dataLoaderRegistry() {
 		logger.debug("Creating DataLoader registry");
 		DataLoaderRegistry registry = new DataLoaderRegistry();
-		registry.register("Character", DataLoader.newDataLoader(graphQLDataFetchers.characterImplBatchLoader()));
-		registry.register("Droid", DataLoader.newDataLoader(graphQLDataFetchers.droidBatchLoader()));
-		registry.register("Human", DataLoader.newDataLoader(graphQLDataFetchers.humanBatchLoader()));
+
+		for (BatchLoaderDelegate<?, ?> batchLoaderDelegate : applicationContext
+				.getBeansOfType(BatchLoaderDelegate.class).values()) {
+			registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
+		}
 
 		return registry;
 	}
@@ -130,7 +136,7 @@ public class GraphQLProvider {
 						graphQLDataFetchers.droidDataFetchersDelegateFriends()))
 				.type(newTypeWiring("Droid").dataFetcher("appearsIn",
 						graphQLDataFetchers.droidDataFetchersDelegateAppearsIn()))
-				// Data fetchers for CharacterImplDataFetchersDelegate
+				// Data fetchers for CharacterDataFetchersDelegate
 				.type(newTypeWiring("Character").dataFetcher("friends",
 						graphQLDataFetchers.characterImplDataFetchersDelegateFriends()))
 				.type(newTypeWiring("CharacterImpl").dataFetcher("friends",
