@@ -66,10 +66,17 @@ public interface DataFetcherDelegate {
 	}
 
 	/**
-	 * Retrieves the {@link DataFetcher} that are to be implemented by this Data Fetcher Delegate.
+	 * Retrieves the {@link DataFetcher}s that are to be implemented by this Data Fetcher Delegate.
 	 * 
 	 * @return
 	 */
 	public List<DataFetcher> getDataFetchers();
+
+	/**
+	 * Retrieves the {@link BatchLoader}s that are to be implemented by this Data Fetcher Delegate.
+	 * 
+	 * @return
+	 */
+	public List<BatchLoader> getBatchLoaders();
 
 }

@@ -2,6 +2,7 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,10 +16,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
+import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
@@ -104,6 +107,26 @@ class DocumentParserTest_Forum_Server {
 		String msg = "Check annotation for field " + field.getName() + " (server mode)";
 		assertEquals(name, field.getName(), msg + " [name]");
 		assertEquals(annotation, field.getAnnotation(), msg + " [annotation]");
+	}
+
+	@Test
+	@DirtiesContext
+	void getDataFetcherDelegate() {
+		// Check, to start on a proper base
+		assertEquals(6, documentParser.dataFetcherDelegates.size());
+
+		// No DataFetcherDelegate creation
+		Type type = new ObjectType("my.package", "Test", PluginMode.server);
+		DataFetcherDelegate dfd = documentParser.getDataFetcherDelegate(type, false);
+		assertNull(dfd, "No DataFetcherDelegate creation");
+		assertEquals(6, documentParser.dataFetcherDelegates.size());
+
+		// With DataFetcherDelegate creation
+		type = new ObjectType("my.package", "Test2", PluginMode.server);
+		dfd = documentParser.getDataFetcherDelegate(type, true);
+		assertNotNull(dfd, "With DataFetcherDelegate creation");
+		assertEquals(type, dfd.getType());
+		assertEquals(7, documentParser.dataFetcherDelegates.size());
 	}
 
 	/** Tests the Data Fetchers that are listed during parsing */
@@ -225,18 +248,30 @@ class DocumentParserTest_Forum_Server {
 		BatchLoader batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Member", batchLoader.getType().getName());
 		assertEquals("MemberDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetcherDelegate is this one");
 
 		batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Board", batchLoader.getType().getName());
 		assertEquals("BoardDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetcherDelegate is this one");
 
 		batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Topic", batchLoader.getType().getName());
 		assertEquals("TopicDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetcherDelegate is this one");
 
 		batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Post", batchLoader.getType().getName());
 		assertEquals("PostDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetcherDelegate is this one");
 	}
 
 	@Test

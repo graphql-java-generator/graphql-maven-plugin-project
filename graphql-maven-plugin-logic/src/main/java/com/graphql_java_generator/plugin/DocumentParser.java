@@ -595,21 +595,33 @@ public class DocumentParser {
 	 * 
 	 * @param type
 	 *            The type, for which the DataFetcherDelegate is searched. It may not be null.
-	 * @return The relevant DataFetcherDelegate, or null of there is no DataFetcherDelegate for this type
+	 * @param createIfNotExists
+	 *            if true: a new DataFetcherDelegate is created when there is no {@link DataFetcherDelegate} for this
+	 *            type yet. If false: no DataFetcherDelegate creation.
+	 * @return The relevant DataFetcherDelegate, or null of there is no DataFetcherDelegate for this type and
+	 *         createIfNotExists is false
 	 * @throws NullPointerException
 	 *             If type is null
 	 */
-	public DataFetcherDelegate getDataFetcherDelegate(Type type) {
+	public DataFetcherDelegate getDataFetcherDelegate(Type type, boolean createIfNotExists) {
 		if (type == null) {
 			throw new NullPointerException("type may not be null");
 		}
+
 		for (DataFetcherDelegate dfd : dataFetcherDelegates) {
 			if (dfd.getType().equals(type)) {
 				return dfd;
 			}
 		}
-		// No DataFetcherDelegate found
-		return null;
+
+		// No DataFetcherDelegate for this type exists yet
+		if (createIfNotExists) {
+			DataFetcherDelegate dfd = new DataFetcherDelegateImpl(type);
+			dataFetcherDelegates.add(dfd);
+			return dfd;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -848,17 +860,7 @@ public class DocumentParser {
 		Field id = t.getIdentifier();
 
 		if (id != null) {
-			BatchLoaderImpl batchLoader = new BatchLoaderImpl(t, getDataFetcherDelegate(t));
-
-			DataFetcherDelegate dfd = getDataFetcherDelegate(t);
-			// if there is no DataFetcherDelegate still, then one is created
-			if (dfd == null) {
-				dfd = new DataFetcherDelegateImpl(t);
-				dataFetcherDelegates.add(dfd);
-			}
-			batchLoader.setDataFetcherDelegate(dfd);
-
-			batchLoaders.add(batchLoader);
+			batchLoaders.add(new BatchLoaderImpl(t, getDataFetcherDelegate(t, true)));
 		}
 	}
 

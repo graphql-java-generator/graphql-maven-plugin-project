@@ -22,11 +22,13 @@ public class BatchLoaderImpl implements BatchLoader {
 	Type type;
 
 	/** The {@link DataFetcherDelegate} that will contain the actual request for this batch loaded */
-	DataFetcherDelegate dataFetcherDelegate;
+	final DataFetcherDelegate dataFetcherDelegate;
 
 	public BatchLoaderImpl(Type type, DataFetcherDelegate dataFetcherDelegate) {
 		this.type = type;
 		this.dataFetcherDelegate = dataFetcherDelegate;
+
+		dataFetcherDelegate.getBatchLoaders().add(this);
 	}
 
 }
