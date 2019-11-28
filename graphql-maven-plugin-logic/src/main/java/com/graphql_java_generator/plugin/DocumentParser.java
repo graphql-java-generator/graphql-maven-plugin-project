@@ -17,13 +17,16 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.Type.GraphQlType;
 import com.graphql_java_generator.plugin.language.impl.AbstractType;
+import com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
@@ -148,6 +151,11 @@ public class DocumentParser {
 	List<DataFetcherDelegate> dataFetcherDelegates = new ArrayList<>();
 
 	/**
+	 * All {@link BatchLoader}s that need to be implemented for this/these schema/schemas
+	 */
+	List<BatchLoader> batchLoaders = new ArrayList<>();
+
+	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
@@ -195,6 +203,8 @@ public class DocumentParser {
 		addAnnotations();
 		// List all data fetchers
 		initDataFetchers();
+		// List all Batch Loaders
+		initBatchLoaders();
 
 		// Apply the user's schema personalization
 		jsonSchemaPersonalization.applySchemaPersonalization();
@@ -581,6 +591,28 @@ public class DocumentParser {
 	}
 
 	/**
+	 * Returns the {@link DataFetcherDelegate} that manages the given type.
+	 * 
+	 * @param type
+	 *            The type, for which the DataFetcherDelegate is searched. It may not be null.
+	 * @return The relevant DataFetcherDelegate, or null of there is no DataFetcherDelegate for this type
+	 * @throws NullPointerException
+	 *             If type is null
+	 */
+	public DataFetcherDelegate getDataFetcherDelegate(Type type) {
+		if (type == null) {
+			throw new NullPointerException("type may not be null");
+		}
+		for (DataFetcherDelegate dfd : dataFetcherDelegates) {
+			if (dfd.getType().equals(type)) {
+				return dfd;
+			}
+		}
+		// No DataFetcherDelegate found
+		return null;
+	}
+
+	/**
 	 * Reads all the GraphQl objects, interfaces, union... that have been read from the GraphQL schema, and list all the
 	 * relations between objects. The found relations are stored, to be reused during the code generation.<BR/>
 	 * These relations are important for the server mode of the plugin, to generate the proper JPA annotations.
@@ -692,8 +724,7 @@ public class DocumentParser {
 			// We have found the identifier
 			annotation = "@Id\n	@GeneratedValue";
 		} else if (field.getRelation() != null || field.isList()) {
-			// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to
-			// do it, instead.
+			// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
 			annotation = "@Transient";
 		}
 
@@ -709,8 +740,7 @@ public class DocumentParser {
 		if (pluginConfiguration.getMode().equals(PluginMode.server)) {
 			queryTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
 			mutationTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
-			// objectTypes contains both the objects defined in the schema, and the concrete
-			// objects created to map the
+			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
 			// interfaces
 			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
 		}
@@ -725,8 +755,9 @@ public class DocumentParser {
 	 */
 	void initDataFetcherForOneObject(Type type, boolean isQueryOrMutationType) {
 
-		DataFetcherDelegate dataFetcherDelegate = new DataFetcherDelegateImpl(
-				type.getClassSimpleName() + "DataFetchersDelegate");
+		// Creation of the DataFetcherDelegate. It will be added to the list only if it contains at least one
+		// DataFetcher.
+		DataFetcherDelegate dataFetcherDelegate = new DataFetcherDelegateImpl(type);
 
 		for (Field field : type.getFields()) {
 			DataFetcherImpl dataFetcher = null;
@@ -735,7 +766,7 @@ public class DocumentParser {
 				// For queries and field that are lists, we take the argument read in the schema
 				// as is: all the needed
 				// informations is already parsed.
-				dataFetcher = new DataFetcherImpl(field);
+				dataFetcher = new DataFetcherImpl(field, false);
 			} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
 					(field.isList() || field.getType() instanceof ObjectType
 							|| field.getType() instanceof InterfaceType))) {
@@ -770,7 +801,7 @@ public class DocumentParser {
 				for (Field inputParameter : field.getInputParameters()) {
 					newField.getInputParameters().add(inputParameter);
 				}
-				dataFetcher = new DataFetcherImpl(newField);
+				dataFetcher = new DataFetcherImpl(newField, false);
 				dataFetcher.setSourceName(type.getName());
 			}
 
@@ -786,6 +817,48 @@ public class DocumentParser {
 		// DataFetcherDelegate
 		if (dataFetcherDelegate.getDataFetchers().size() > 0) {
 			dataFetcherDelegates.add(dataFetcherDelegate);
+		}
+	}
+
+	/**
+	 * Identify each BatchLoader to generate, and attach its {@link DataFetcher} to its {@link DataFetcherDelegate}. The
+	 * whole stuff is stored into {@link #batchLoaders}
+	 */
+	private void initBatchLoaders() {
+		if (pluginConfiguration.getMode().equals(PluginMode.server)) {
+			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
+			// interfaces, along with Enums...
+
+			// We fetch only the objects, here. The interfaces are managed just after
+			objectTypes.stream().filter(o -> o.getGraphQlType() == GraphQlType.OBJECT)
+					.forEach(o -> initOneBatchLoader(o));
+
+			// Let's go through all interfaces.
+			interfaceTypes.stream().forEach(i -> initOneBatchLoader(i));
+		}
+	}
+
+	/**
+	 * Analyzes one object, and decides if there should be a {@link BatchLoader} for it
+	 * 
+	 * @param t
+	 *            the Type that may need a BatchLoader
+	 */
+	private void initOneBatchLoader(Type t) {
+		Field id = t.getIdentifier();
+
+		if (id != null) {
+			BatchLoaderImpl batchLoader = new BatchLoaderImpl(t, getDataFetcherDelegate(t));
+
+			DataFetcherDelegate dfd = getDataFetcherDelegate(t);
+			// if there is no DataFetcherDelegate still, then one is created
+			if (dfd == null) {
+				dfd = new DataFetcherDelegateImpl(t);
+				dataFetcherDelegates.add(dfd);
+			}
+			batchLoader.setDataFetcherDelegate(dfd);
+
+			batchLoaders.add(batchLoader);
 		}
 	}
 

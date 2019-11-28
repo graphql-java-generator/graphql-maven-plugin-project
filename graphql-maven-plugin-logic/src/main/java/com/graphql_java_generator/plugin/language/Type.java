@@ -70,4 +70,13 @@ public interface Type {
 	 * @return
 	 */
 	public List<Field> getFields();
+
+	/**
+	 * Returns the identifier for this type. Typically : the field which has an ID as a type.
+	 * 
+	 * @return The identifier for this type, or null of this type has no identifier or multiplier identifers (that is:
+	 *         multiple identifiers or identifier based on several fields are not currently managed)
+	 */
+	public Field getIdentifier();
+
 }

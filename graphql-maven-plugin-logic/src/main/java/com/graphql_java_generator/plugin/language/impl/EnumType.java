@@ -58,4 +58,14 @@ public class EnumType extends AbstractType {
 		return null;
 	}
 
+	/**
+	 * An enum has no identifier.
+	 * 
+	 * @return null
+	 */
+	@Override
+	public Field getIdentifier() {
+		return null;
+	}
+
 }

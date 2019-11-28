@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
+import com.graphql_java_generator.plugin.language.Type;
 
 import lombok.Data;
 
@@ -17,11 +18,18 @@ import lombok.Data;
 @Data
 public class DataFetcherDelegateImpl implements DataFetcherDelegate {
 
-	private String name;
+	private Type type;
 
 	private List<DataFetcher> dataFetchers = new ArrayList<>();
 
-	public DataFetcherDelegateImpl(String name) {
-		this.name = name;
+	public DataFetcherDelegateImpl(Type type) {
+		if (type == null)
+			throw new NullPointerException("type may not be null");
+		this.type = type;
+	}
+
+	@Override
+	public String getName() {
+		return type.getClassSimpleName() + "DataFetchersDelegate";
 	}
 }

@@ -10,6 +10,21 @@ import javax.annotation.Resource;
 import org.dataloader.DataLoaderRegistry;
 import org.springframework.stereotype.Component;
 
+/**
+ * 
+ * <PRE>
+ * &#64;Override
+ * public CompletableFuture<List<CharacterImpl>> friends(DataFetchingEnvironment environment, CharacterImpl source) {
+ * 	logger.debug("Executing characterImpl.friends, with this character: {}", source.getId().toString());
+ * 	List<UUID> friendIds = graphQLUtil
+ * 			.convertListByteArrayToListUUID(characterRepository.findFriendsId(source.getId()));
+ * 	DataLoader<UUID, CharacterImpl> dataLoader = environment.getDataLoader("Character");
+ * 	return dataLoader.loadMany(friendIds);
+ * }
+ * </PRE>
+ * 
+ * @author EtienneSF
+ */
 @Component
 public class BatchLoaderDelegateCharacterImpl implements BatchLoaderDelegate<UUID, Character> {
 
@@ -33,18 +48,6 @@ public class BatchLoaderDelegateCharacterImpl implements BatchLoaderDelegate<UUI
 	/**
 	 * The name for this {@link BatchLoaderDelegate}, as ot is stored in the {@link DataLoaderRegistry}. <BR/>
 	 * The BatchLoader can then be retrieved by this command, in a DataFetchDelegate implementation:<BR/>
-	 * 
-	 * <PRE>
-	 * &#64;Override
-	 * public CompletableFuture<List<CharacterImpl>> friends(DataFetchingEnvironment environment,
-	 * 		CharacterImpl source) {
-	 * 	logger.debug("Executing characterImpl.friends, with this character: {}", source.getId().toString());
-	 * 	List<UUID> friendIds = graphQLUtil
-	 * 			.convertListByteArrayToListUUID(characterRepository.findFriendsId(source.getId()));
-	 * 	DataLoader<UUID, CharacterImpl> dataLoader = environment.getDataLoader("Character");
-	 * 	return dataLoader.loadMany(friendIds);
-	 * }
-	 * </PRE>
 	 */
 	@Override
 	public String getName() {

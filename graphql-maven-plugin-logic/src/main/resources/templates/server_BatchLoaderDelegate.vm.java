@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.graphql_java_generator;
+package ${package};
 
 import org.dataloader.BatchLoader;
 import org.dataloader.DataLoaderRegistry;

@@ -10,14 +10,15 @@ import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.language.impl.TypeUtil;
 
 /**
- * This class represents a GraphQL Data Fetcher Delegate. It is only used when in server mode, the GraphQL maven plugin
- * generates on data fetcher delegate for each objet whose fields need at least one data fetcher. This helps to limit
- * the impact on the specific code, when the GraphQL schema changes. Their characteristics are read by
- * {@link DocumentParser}, and used by {@link CodeGenerator} and the Velocity templates to generate the code of the
- * DataFechers, and their declaration in the GraphQLProvider.<BR/>
+ * This class represents a GraphQL Data Fetcher Delegate. A DataFetcherDelegate agregates all {@link DataFetcher} for a
+ * GraphQL type. It is only used when in server mode, the GraphQL maven plugin generates on data fetcher delegate for
+ * each object whose fields need at least one data fetcher. This helps to limit the impact on the specific code, when
+ * the GraphQL schema changes. Their characteristics are read by {@link DocumentParser}, and used by
+ * {@link CodeGenerator} and the Velocity templates to generate the code of the DataFechers, and their declaration in
+ * the GraphQLProvider.<BR/>
  * Thus there are two kinds of {@link DataFetcherDelegate}:
  * <UL>
- * <LI>The {@link DataFetcherDelegate} for regular GraphQL objets. These {@link DataFetcher}s are used to read non
+ * <LI>The {@link DataFetcherDelegate} for regular GraphQL objects. These {@link DataFetcher}s are used to read non
  * scalar fields, that is: fields that are subjects, like friends of the human types, in the StarWars schema.</LI>
  * <LI>The {@link DataFetcherDelegate} for queries, mutations and subscriptions type. These {@link DataFetcherDelegate}
  * are actually the entry points of the GraphQL server. For such {@link DataFetcherDelegate}s, each field is actually a
@@ -37,6 +38,13 @@ public interface DataFetcherDelegate {
 	 * @return
 	 */
 	public String getName();
+
+	/**
+	 * Returns the {@link Type}, for which the DataFetcherDelegate aggregates the access methods.
+	 * 
+	 * @return
+	 */
+	public Type getType();
 
 	/**
 	 * The name of the DataFetcher, in camelCase. This name is a valid for a java variable identifier, and is the name

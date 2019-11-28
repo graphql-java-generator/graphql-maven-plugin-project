@@ -3,6 +3,8 @@
  */
 package com.graphql_java_generator.plugin.language;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.language.impl.TypeUtil;
@@ -72,5 +74,16 @@ public interface DataFetcher {
 	 * @return the source name, or null if there is no source
 	 */
 	public String getSourceName();
+
+	/**
+	 * Returns true if this DataFetcher returns a {@link CompletableFuture}, which will be used within a
+	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to optimize the
+	 * accesses to the database. <BR/>
+	 * For instance, the DataDetcher would return CompletableFuture<List<Human>> (if completableFuture is true) or
+	 * List<Human> (if completableFuture is false).
+	 * 
+	 * @return
+	 */
+	public boolean isCompletableFuture();
 
 }

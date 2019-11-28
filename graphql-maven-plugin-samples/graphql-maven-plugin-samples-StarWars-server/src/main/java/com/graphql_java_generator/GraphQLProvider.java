@@ -75,9 +75,17 @@ public class GraphQLProvider {
 	public DataLoaderRegistry dataLoaderRegistry() {
 		logger.debug("Creating DataLoader registry");
 		DataLoaderRegistry registry = new DataLoaderRegistry();
+		DataLoader<Object, Object> dl;
 
 		for (BatchLoaderDelegate<?, ?> batchLoaderDelegate : applicationContext
 				.getBeansOfType(BatchLoaderDelegate.class).values()) {
+			// Let's check that we didn't already register a BatchLoaderDelegate with this name
+			if ((dl = registry.getDataLoader(batchLoaderDelegate.getName())) != null) {
+				throw new RuntimeException(
+						"Only one BatchLoaderDelegate with a given name is allows, but two have been found: "
+								+ dl.getClass().getName() + " and " + batchLoaderDelegate.getClass().getName());
+			}
+			// Ok, let's register this new one.
 			registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
 		}
 

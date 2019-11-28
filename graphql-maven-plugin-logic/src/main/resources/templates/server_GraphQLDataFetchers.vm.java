@@ -3,11 +3,14 @@ package ${package};
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dataloader.BatchLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetcher;
@@ -34,7 +37,7 @@ public class GraphQLDataFetchers {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcherDelegate.camelCaseName}${dataFetcher.pascalCaseName}() {
+	public DataFetcher<#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.completableFuture})>#end> ${dataFetcherDelegate.camelCaseName}${dataFetcher.pascalCaseName}() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)          
 ## $argument is an instance of Field
@@ -56,7 +59,9 @@ public class GraphQLDataFetchers {
 			${dataFetcher.sourceName} source = dataFetchingEnvironment.getSource();
 #end
 
-#if (${dataFetcher.field.list})
+#if (${dataFetcher.completableFuture})
+			return ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+#elseif (${dataFetcher.field.list})
 			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
 			logger.debug("${dataFetcher.name}: {} found rows", ret.size());
 

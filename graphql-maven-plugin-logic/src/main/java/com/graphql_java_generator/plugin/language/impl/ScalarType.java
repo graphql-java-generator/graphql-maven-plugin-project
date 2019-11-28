@@ -21,12 +21,6 @@ public class ScalarType extends AbstractType {
 	/** The simple name for this class */
 	final String classSimpleName;
 
-	// /**
-	// * Indicates whether this type is predefined (as Integer or String), or not. If not, it has a specific class
-	// * defining it.
-	// */
-	// boolean preDefined;
-
 	/**
 	 * 
 	 * @param name
@@ -45,12 +39,22 @@ public class ScalarType extends AbstractType {
 	}
 
 	/**
-	 * An enum has no fields.
+	 * A scalar has no fields.
 	 * 
 	 * @return null
 	 */
 	@Override
 	public List<Field> getFields() {
+		return null;
+	}
+
+	/**
+	 * A scalar has no identifier.
+	 * 
+	 * @return null
+	 */
+	@Override
+	public Field getIdentifier() {
 		return null;
 	}
 

@@ -13,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
@@ -140,9 +141,9 @@ class DocumentParserTest_Forum_Server {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, "Post");
 
 		//
-		// Verification of the data fetchers delegates
+		// Verification of the data fetchers delegates : QueryType, MutationType and 4 objects
 		//
-		assertEquals(5, documentParser.dataFetcherDelegates.size(), "data fetchers delegates");
+		assertEquals(6, documentParser.dataFetcherDelegates.size(), "data fetchers delegates");
 		i = 0;
 		int j = 0;
 
@@ -212,6 +213,30 @@ class DocumentParserTest_Forum_Server {
 		}
 
 		return dataFetcher;
+	}
+
+	/** Tests the Batch Loader that are listed during parsing */
+	@Test
+	@DirtiesContext
+	void test_initBatchLoaders() {
+		assertEquals(4, documentParser.batchLoaders.size());
+
+		int i = -1;
+		BatchLoader batchLoader = documentParser.batchLoaders.get(++i);
+		assertEquals("Member", batchLoader.getType().getName());
+		assertEquals("MemberDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
+
+		batchLoader = documentParser.batchLoaders.get(++i);
+		assertEquals("Board", batchLoader.getType().getName());
+		assertEquals("BoardDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
+
+		batchLoader = documentParser.batchLoaders.get(++i);
+		assertEquals("Topic", batchLoader.getType().getName());
+		assertEquals("TopicDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
+
+		batchLoader = documentParser.batchLoaders.get(++i);
+		assertEquals("Post", batchLoader.getType().getName());
+		assertEquals("PostDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
 	}
 
 	@Test

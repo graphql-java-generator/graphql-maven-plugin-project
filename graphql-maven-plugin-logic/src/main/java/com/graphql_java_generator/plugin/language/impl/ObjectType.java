@@ -80,4 +80,18 @@ public class ObjectType extends AbstractType {
 		setName(name);
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public Field getIdentifier() {
+		List<Field> identifiers = new ArrayList<>();
+		for (Field f : getFields()) {
+			if (f.isId()) {
+				identifiers.add(f);
+			}
+		}
+
+		// Currently, only one identifier per Type is managed
+		return identifiers.size() == 1 ? identifiers.get(0) : null;
+	}
+
 }
