@@ -30,6 +30,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
@@ -52,11 +53,13 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
 	// Templates for server generation only
+	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE = "templates/server_BatchLoaderDelegate.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL = "templates/server_BatchLoaderDelegateImpl.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServerMain.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL = "templates/server_GraphQLUtil.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServerMain.vm.java";
 
 	@Resource
 	DocumentParser documentParser;
@@ -241,7 +244,17 @@ public class CodeGenerator {
 					PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE);
 		}
 
+		ret += generateOneFile(getJavaFile("BatchLoaderDelegate"), "generating BatchLoaderDelegate", context,
+				PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE);
+		for (BatchLoader batchLoader : documentParser.batchLoaders) {
+			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
+			context.put("batchLoader", batchLoader);
+			ret += generateOneFile(getJavaFile(name), "generating " + name, context,
+					PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL);
+		}
+
 		return ret;
+
 	}
 
 	/**

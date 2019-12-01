@@ -1,3 +1,10 @@
+##
+## Velocity template for the BatchLoaderDelegateXxxxImpl classes, where Xxxx successively every object in the GraphQL schema
+## which has an ID.
+##
+## This template has these input:
+## package
+##
 package ${package};
 
 import org.dataloader.BatchLoader;
