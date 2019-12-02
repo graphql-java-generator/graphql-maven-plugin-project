@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
+import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
 import com.graphql_java_generator.plugin.language.Field;
@@ -30,6 +31,8 @@ public class DataFetcherImpl implements DataFetcher {
 	 * 
 	 * @param field
 	 *            The field that this data fetcher must fill
+	 * @param completableFuture
+	 *            indicates that this DataFetcher will be actually loaded later, with the help of a {@link BatchLoader}.
 	 */
 	public DataFetcherImpl(Field field, boolean completableFuture) {
 		this.field = field;

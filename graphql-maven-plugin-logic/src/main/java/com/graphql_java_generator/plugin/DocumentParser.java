@@ -782,38 +782,28 @@ public class DocumentParser {
 			} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
 					(field.isList() || field.getType() instanceof ObjectType
 							|| field.getType() instanceof InterfaceType))) {
-				// For Objects and Interfaces, we need to add a specific data fetcher. The
-				// objective there is to manage
-				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL
-				// data loader : very
+				// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to manage
+				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loader : very
 				// important to limit the number of subqueries, when subobjects are queried.
-				// In these case, we need to create a new field that add the object ID as a
-				// parameter of the Data
+				// In these case, we need to create a new field that add the object ID as a parameter of the Data
 				// Fetcher
 				FieldImpl newField = new FieldImpl(this);
 				newField.setName(field.getName());
 				newField.setList(field.isList());
 				newField.setOwningType(field.getOwningType());
 				newField.setTypeName(field.getTypeName());
-				// Let's add the id for the owning type of the field, then all its input
-				// parameters
-				// for (Field fieldOfOwningType : field.getOwningType().getFields()) {
-				// if (fieldOfOwningType.isId()) {
-				// FieldImpl idField = new FieldImpl(this);
-				// // Let's build a sled descriptive name. For Board.id, the parameter name is
-				// boardId.
-				// // board is the owning type name in camel case.
-				// // Id is the field name in Pascal Case
-				// idField.setName(TypeUtil.getCamelCase(field.getOwningType().getName())
-				// + fieldOfOwningType.getPascalCaseName());
-				// idField.setTypeName(fieldOfOwningType.getTypeName());
-				// newField.getInputParameters().add(idField);
-				// }
-				// }
+
+				// Let's add the id for the owning type of the field, then all its input parameters
 				for (Field inputParameter : field.getInputParameters()) {
 					newField.getInputParameters().add(inputParameter);
 				}
-				dataFetcher = new DataFetcherImpl(newField, false);
+
+				// We'll use a Batch Loader if:
+				// 1) It's a Data Fetcher from an object to another one (we're already in this case)
+				// 2) That target object has an id (it can be either a list or a single object)
+				boolean useBatchLoader = field.getType().getIdentifier() != null;
+
+				dataFetcher = new DataFetcherImpl(newField, useBatchLoader);
 				dataFetcher.setSourceName(type.getName());
 			}
 

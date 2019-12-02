@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -140,28 +142,31 @@ class DocumentParserTest_Forum_Server {
 		// Verification of the data fetchers
 		//
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, list of input parameters
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, null,
-				"boardName");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, false,
+				null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, false,
+				null, "boardName");
 		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "QueryType",
-				"findTopics", "Topic", true, null, "boardName", "keyword");
+				"findTopics", "Topic", true, false, null, "boardName", "keyword");
 		// Let's check the input parameters for this dataFetcher
 		assertFalse(dataFetcher.getField().getInputParameters().get(0).isList());
 		assertTrue(dataFetcher.getField().getInputParameters().get(1).isList());
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
-				false, null, "name", "publiclyAvailable");
+				false, false, null, "name", "publiclyAvailable");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic",
-				false, null, "authorId", "publiclyAvailable", "title", "content");
+				false, false, null, "authorId", "publiclyAvailable", "title", "content");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post",
-				false, null, "authorId", "publiclyAvailable", "title", "content");
+				false, false, null, "authorId", "publiclyAvailable", "title", "content");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, "Board",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, true,
+				"Board", "since");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", false, true,
+				"Topic");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", true, true, "Topic",
 				"since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", false, "Topic");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", true, "Topic",
-				"since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, "Post");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, true,
+				"Post");
 
 		//
 		// Verification of the data fetchers delegates : QueryType, MutationType and 4 objects
@@ -216,12 +221,38 @@ class DocumentParserTest_Forum_Server {
 
 	}
 
+	/**
+	 * 
+	 * @param dataFetcher
+	 *            The {@link DataFetcher} to be tested
+	 * @param dataFetcherName
+	 *            The expected name
+	 * @param owningType
+	 *            The expected owning type for the field to be fetched
+	 * @param fieldName
+	 *            The expected field name
+	 * @param returnedTypeName
+	 *            The expected return type name
+	 * @param list
+	 *            true if the return type is a list
+	 * @param completableFuture
+	 *            true if the DataFetcher uses a BatchLoader (that is, if the method should return a
+	 *            {@link CompletableFuture} that will be loaded in a second time, by a Data Loader)
+	 * @param sourceName
+	 *            The expected source name, that is: the name of the object which contains the field to fetch (if it is
+	 *            a GraphQLobject), or null if the field is a field of a query, a mutation or a subscription
+	 * @param inputParameters
+	 *            The expected list of parameters for this Data Fetcher
+	 * @return
+	 */
 	private DataFetcher checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType,
-			String fieldName, String returnedTypeName, boolean list, String sourceName, String... inputParameters) {
+			String fieldName, String returnedTypeName, boolean list, boolean completableFuture, String sourceName,
+			String... inputParameters) {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
 		assertEquals(list, dataFetcher.getField().isList(), "list");
+		assertEquals(completableFuture, dataFetcher.isCompletableFuture(), "completableFuture");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 		assertEquals(sourceName, dataFetcher.getSourceName(), "sourceName");
 
