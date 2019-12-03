@@ -801,7 +801,8 @@ public class DocumentParser {
 				// We'll use a Batch Loader if:
 				// 1) It's a Data Fetcher from an object to another one (we're already in this case)
 				// 2) That target object has an id (it can be either a list or a single object)
-				boolean useBatchLoader = field.getType().getIdentifier() != null;
+				// 3) The Relation toward the target object is OneToOne or ManyToOne. That is this field is not a list
+				boolean useBatchLoader = (field.getType().getIdentifier() != null) && (!field.isList());
 
 				dataFetcher = new DataFetcherImpl(newField, useBatchLoader);
 				dataFetcher.setSourceName(type.getName());
