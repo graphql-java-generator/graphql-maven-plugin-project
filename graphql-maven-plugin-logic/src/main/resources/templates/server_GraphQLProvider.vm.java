@@ -61,6 +61,34 @@ public class GraphQLProvider {
 		return graphQL;
 	}
 
+	/**
+	 * The {@link DataLoaderRegistry} will be autowired by Spring in the GraphQL Java Spring Boot framework. It will
+	 * then be wired for each request execution, as specified in this page:
+	 * <A HREF="https://www.graphql-java.com/documentation/master/batching/">graphql-java batching</A>
+	 * 
+	 * @return
+	 */
+	@Bean
+	public DataLoaderRegistry dataLoaderRegistry() {
+		logger.debug("Creating DataLoader registry");
+		DataLoaderRegistry registry = new DataLoaderRegistry();
+		DataLoader<Object, Object> dl;
+
+		for (BatchLoaderDelegate<?, ?> batchLoaderDelegate : applicationContext
+				.getBeansOfType(BatchLoaderDelegate.class).values()) {
+			// Let's check that we didn't already register a BatchLoaderDelegate with this name
+			if ((dl = registry.getDataLoader(batchLoaderDelegate.getName())) != null) {
+				throw new RuntimeException(
+						"Only one BatchLoaderDelegate with a given name is allows, but two have been found: "
+								+ dl.getClass().getName() + " and " + batchLoaderDelegate.getClass().getName());
+			}
+			// Ok, let's register this new one.
+			registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
+		}
+
+		return registry;
+	}
+	
 	@PostConstruct
 	public void init() throws IOException {
 		Resource res;
