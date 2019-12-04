@@ -16,7 +16,10 @@ import javax.annotation.PostConstruct;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dataloader.DataLoader;
+import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -50,6 +53,9 @@ public class GraphQLProvider {
 
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();
+
+	@Autowired
+	ApplicationContext applicationContext;
 
 	@Autowired
 	GraphQLDataFetchers graphQLDataFetchers;
