@@ -38,7 +38,15 @@ public class ObjectType extends AbstractType {
 	@ToString.Exclude
 	private List<Field> fields = new ArrayList<>();
 
-	/***
+	/**
+	 * If null: this object is defined in the GraphQL schema(s).<BR/>
+	 * If not null : this Object is not defined in the given GraphQL schema(s). Instead it has been added as a default
+	 * implementation for this interface. Such an object is mandatory for the client mode (when returning instances of
+	 * this Interface), and can be used in the server mode.
+	 */
+	private InterfaceType defaultImplementationForInterface = null;
+
+	/**
 	 * One of null, "query", "mutation" or "subscription". This is used for queries, mutations and subscriptions as the
 	 * string to put in the JSON query toward the GraphQL server
 	 */

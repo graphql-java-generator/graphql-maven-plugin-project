@@ -12,7 +12,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
@@ -38,6 +37,10 @@ class DocumentParserTest_StarWars_Server {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
+
+		// DataFetchers are aggregated into DataFetcherDelegate (one DataFetcherDelegate per type in the graphQL schema
+		// that needs at least one DataFetcher)
+		assertEquals(5, documentParser.dataFetcherDelegates.size(), "nb of data fetchers Delegate in server mode");
 		assertEquals(12, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
@@ -64,9 +67,9 @@ class DocumentParserTest_StarWars_Server {
 				"Droid");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Character", "friends", "Character", true,
-				"CharacterImpl");
+				"Character");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Character", "appearsIn", "Episode", true,
-				"CharacterImpl");
+				"Character");
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,

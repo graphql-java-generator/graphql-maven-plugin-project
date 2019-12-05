@@ -537,7 +537,7 @@ public class DocumentParser {
 
 	/**
 	 * This method add an {@link ObjectType} for each GraphQL interface, to the list of objects to create. The name of
-	 * the objet is typically the name of the interface, suffixed by "Impl". A test is done to insure that there is no
+	 * the object is typically the name of the interface, suffixed by "Impl". A test is done to insure that there is no
 	 * "name collision", that is: that InterfaceNameImpl doesn't exist. If there is a collision, the method attempts to
 	 * suffix Impl1, then Impl2... until there is no collision.<BR/>
 	 * Note: this is useful only for the client code generation (not for the server one)
@@ -546,7 +546,7 @@ public class DocumentParser {
 		String objectName = "interface name to define";
 		int nbGeneratedClasses = 0;
 
-		for (Type i : interfaceTypes) {
+		for (InterfaceType i : interfaceTypes) {
 			String defaultName = i.getName() + "Impl";
 			boolean nameFound = true;
 			int objectNamePrefix = 0;
@@ -570,10 +570,11 @@ public class DocumentParser {
 			interfaces.add(i.getName());
 			o.setImplementz(interfaces);
 			o.setFields(i.getFields());
+			o.setDefaultImplementationForInterface(i);
 			objectTypes.add(o);
 			nbGeneratedClasses += 1;
 
-			((InterfaceType) i).setDefaultImplementation(o);
+			i.setDefaultImplementation(o);
 
 		} // for
 
@@ -752,9 +753,8 @@ public class DocumentParser {
 		if (pluginConfiguration.getMode().equals(PluginMode.server)) {
 			queryTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
 			mutationTypes.stream().forEach(o -> initDataFetcherForOneObject(o, true));
-			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
-			// interfaces
 			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
+			interfaceTypes.stream().forEach(o -> initDataFetcherForOneObject(o, false));
 		}
 	}
 
@@ -765,61 +765,69 @@ public class DocumentParser {
 	 * @param isQueryOrMutationType
 	 *            true if the given type is actually a query, false otherwise
 	 */
-	void initDataFetcherForOneObject(Type type, boolean isQueryOrMutationType) {
+	void initDataFetcherForOneObject(ObjectType type, boolean isQueryOrMutationType) {
 
-		// Creation of the DataFetcherDelegate. It will be added to the list only if it contains at least one
-		// DataFetcher.
-		DataFetcherDelegate dataFetcherDelegate = new DataFetcherDelegateImpl(type);
+		// No DataFetcher for the "artificial" Object Type created to instanciate an Interface. This "artificial" Object
+		// Type is for internal usage only, and to be used in Client mode to allow instanciation of the server response
+		// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no DataFetcherDelegate.
+		if (type.getDefaultImplementationForInterface() == null) {
 
-		for (Field field : type.getFields()) {
-			DataFetcherImpl dataFetcher = null;
+			// Creation of the DataFetcherDelegate. It will be added to the list only if it contains at least one
+			// DataFetcher.
+			DataFetcherDelegate dataFetcherDelegate = new DataFetcherDelegateImpl(type);
 
-			if (isQueryOrMutationType) {
-				// For queries and field that are lists, we take the argument read in the schema
-				// as is: all the needed
-				// informations is already parsed.
-				dataFetcher = new DataFetcherImpl(field, false);
-			} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
-					(field.isList() || field.getType() instanceof ObjectType
-							|| field.getType() instanceof InterfaceType))) {
-				// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to manage
-				// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loader : very
-				// important to limit the number of subqueries, when subobjects are queried.
-				// In these case, we need to create a new field that add the object ID as a parameter of the Data
-				// Fetcher
-				FieldImpl newField = new FieldImpl(this);
-				newField.setName(field.getName());
-				newField.setList(field.isList());
-				newField.setOwningType(field.getOwningType());
-				newField.setTypeName(field.getTypeName());
+			for (Field field : type.getFields()) {
+				DataFetcherImpl dataFetcher = null;
 
-				// Let's add the id for the owning type of the field, then all its input parameters
-				for (Field inputParameter : field.getInputParameters()) {
-					newField.getInputParameters().add(inputParameter);
+				if (isQueryOrMutationType) {
+					// For queries and field that are lists, we take the argument read in the schema
+					// as is: all the needed
+					// informations is already parsed.
+					dataFetcher = new DataFetcherImpl(field, false);
+				} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
+						(field.isList() || field.getType() instanceof ObjectType
+								|| field.getType() instanceof InterfaceType))) {
+					// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to
+					// manage
+					// the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loader : very
+					// important to limit the number of subqueries, when subobjects are queried.
+					// In these case, we need to create a new field that add the object ID as a parameter of the Data
+					// Fetcher
+					FieldImpl newField = new FieldImpl(this);
+					newField.setName(field.getName());
+					newField.setList(field.isList());
+					newField.setOwningType(field.getOwningType());
+					newField.setTypeName(field.getTypeName());
+
+					// Let's add the id for the owning type of the field, then all its input parameters
+					for (Field inputParameter : field.getInputParameters()) {
+						newField.getInputParameters().add(inputParameter);
+					}
+
+					// We'll use a Batch Loader if:
+					// 1) It's a Data Fetcher from an object to another one (we're already in this case)
+					// 2) That target object has an id (it can be either a list or a single object)
+					// 3) The Relation toward the target object is OneToOne or ManyToOne. That is this field is not a
+					// list
+					boolean useBatchLoader = (field.getType().getIdentifier() != null) && (!field.isList());
+
+					dataFetcher = new DataFetcherImpl(newField, useBatchLoader);
+					dataFetcher.setSourceName(type.getName());
 				}
 
-				// We'll use a Batch Loader if:
-				// 1) It's a Data Fetcher from an object to another one (we're already in this case)
-				// 2) That target object has an id (it can be either a list or a single object)
-				// 3) The Relation toward the target object is OneToOne or ManyToOne. That is this field is not a list
-				boolean useBatchLoader = (field.getType().getIdentifier() != null) && (!field.isList());
+				// If we found a DataFether, let's register it.
+				if (dataFetcher != null) {
+					dataFetcher.setDataFetcherDelegate(dataFetcherDelegate);
+					dataFetcherDelegate.getDataFetchers().add(dataFetcher);
+					dataFetchers.add(dataFetcher);
+				}
+			} // for
 
-				dataFetcher = new DataFetcherImpl(newField, useBatchLoader);
-				dataFetcher.setSourceName(type.getName());
+			// If at least one DataFetcher has been created, we register this
+			// DataFetcherDelegate
+			if (dataFetcherDelegate.getDataFetchers().size() > 0) {
+				dataFetcherDelegates.add(dataFetcherDelegate);
 			}
-
-			// If we found a DataFether, let's register it.
-			if (dataFetcher != null) {
-				dataFetcher.setDataFetcherDelegate(dataFetcherDelegate);
-				dataFetcherDelegate.getDataFetchers().add(dataFetcher);
-				dataFetchers.add(dataFetcher);
-			}
-		} // for
-
-		// If at least one DataFetcher has been created, we register this
-		// DataFetcherDelegate
-		if (dataFetcherDelegate.getDataFetchers().size() > 0) {
-			dataFetcherDelegates.add(dataFetcherDelegate);
 		}
 	}
 
@@ -844,14 +852,18 @@ public class DocumentParser {
 	/**
 	 * Analyzes one object, and decides if there should be a {@link BatchLoader} for it
 	 * 
-	 * @param t
+	 * @param type
 	 *            the Type that may need a BatchLoader
 	 */
-	private void initOneBatchLoader(Type t) {
-		Field id = t.getIdentifier();
-
-		if (id != null) {
-			batchLoaders.add(new BatchLoaderImpl(t, getDataFetcherDelegate(t, true)));
+	private void initOneBatchLoader(ObjectType type) {
+		// No BatchLoader for the "artificial" Object Type created to instanciate an Interface. This "artificial" Object
+		// Type is for internal usage only, and to be used in Client mode to allow instanciation of the server response
+		// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no BatchLoader.
+		if (type.getDefaultImplementationForInterface() == null) {
+			Field id = type.getIdentifier();
+			if (id != null) {
+				batchLoaders.add(new BatchLoaderImpl(type, getDataFetcherDelegate(type, true)));
+			}
 		}
 	}
 
