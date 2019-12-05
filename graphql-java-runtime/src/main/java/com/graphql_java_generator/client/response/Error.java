@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client.response;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
@@ -31,8 +32,8 @@ public class Error {
 
 	public List<String> path;
 
-	@JsonDeserialize(contentAs = Extension.class)
-	public List<Extension> extensions;
+	// @JsonDeserialize(contentAs = Extension.class)
+	public Map<String, String> extensions;
 
 	/**
 	 * Logs this error to the given {@link Logger}
