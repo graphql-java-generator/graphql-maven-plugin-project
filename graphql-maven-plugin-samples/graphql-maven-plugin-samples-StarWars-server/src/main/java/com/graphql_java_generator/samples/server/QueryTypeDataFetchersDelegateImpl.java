@@ -7,13 +7,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.Character;
-import com.graphql_java_generator.CharacterImpl;
-import com.graphql_java_generator.Droid;
-import com.graphql_java_generator.Episode;
-import com.graphql_java_generator.GraphQLUtil;
-import com.graphql_java_generator.Human;
-import com.graphql_java_generator.QueryTypeDataFetchersDelegate;
 import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 import com.graphql_java_generator.samples.server.jpa.DroidRepository;
 import com.graphql_java_generator.samples.server.jpa.HumanRepository;
@@ -69,12 +62,12 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 
 	@Override
 	public Human human(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
-		return graphQLUtil.optionnalToObject(humanRepository.findById(id));
+		return graphQLUtil.optionalToObject(humanRepository.findById(id));
 	}
 
 	@Override
 	public Droid droid(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
-		return graphQLUtil.optionnalToObject(droidRepository.findById(id));
+		return graphQLUtil.optionalToObject(droidRepository.findById(id));
 	}
 
 }

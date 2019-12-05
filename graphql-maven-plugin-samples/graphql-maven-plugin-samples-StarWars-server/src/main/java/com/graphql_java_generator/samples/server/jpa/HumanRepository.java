@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.graphql_java_generator.Human;
+import com.graphql_java_generator.samples.server.Human;
 
 /**
  * @author EtienneSF
@@ -42,7 +42,7 @@ public interface HumanRepository extends CrudRepository<Human, UUID> {
 	List<Human> findByAppearsIn(String episode);
 
 	@Query(value = ""//
-			+ " select d.id, d.name "//
+			+ " select d.id, d.name, d.home_planet "//
 			+ " from human d, character_friends f " //
 			+ " where  f.character_id = ?1 " //
 			+ " and    f.friend_id = d.id " //

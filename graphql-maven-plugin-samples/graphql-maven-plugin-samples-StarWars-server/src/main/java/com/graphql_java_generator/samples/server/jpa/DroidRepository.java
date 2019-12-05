@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.graphql_java_generator.Droid;
+import com.graphql_java_generator.samples.server.Droid;
 
 /**
  * @author EtienneSF
@@ -59,10 +59,10 @@ public interface DroidRepository extends CrudRepository<Droid, UUID> {
 	 * nativeQuery. Another option is to use a CharacterImpl view.
 	 */
 	@Override
-	@Query(value = "select id, name from droid where id = ?1", nativeQuery = true)
+	@Query(value = "select id, name, primary_function from droid where id = ?1", nativeQuery = true)
 	Optional<Droid> findById(UUID id);
 
-	@Query(value = "select id, name from droid where id = ?1", nativeQuery = true)
+	@Query(value = "select id, name, primary_function from droid where id = ?1", nativeQuery = true)
 	List<Droid> batchLoader(List<UUID> keys);
 
 }

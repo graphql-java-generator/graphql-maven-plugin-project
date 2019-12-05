@@ -36,4 +36,7 @@ public interface TopicRepository extends CrudRepository<Topic, UUID>, FindTopicR
 			, nativeQuery = true)
 	List<Topic> findByBoardName(String name);
 
+	/** The query for the BatchLoader */
+	@Query(value = "select t from Topic t where id in ?1")
+	List<Topic> findByIds(List<UUID> ids);
 }

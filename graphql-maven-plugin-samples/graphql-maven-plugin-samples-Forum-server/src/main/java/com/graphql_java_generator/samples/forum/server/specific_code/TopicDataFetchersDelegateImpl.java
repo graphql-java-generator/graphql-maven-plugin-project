@@ -4,9 +4,14 @@
 package com.graphql_java_generator.samples.forum.server.specific_code;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.forum.server.GraphQLUtil;
@@ -16,6 +21,7 @@ import com.graphql_java_generator.samples.forum.server.Topic;
 import com.graphql_java_generator.samples.forum.server.TopicDataFetchersDelegate;
 import com.graphql_java_generator.samples.forum.server.jpa.MemberRepository;
 import com.graphql_java_generator.samples.forum.server.jpa.PostRepository;
+import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -29,17 +35,23 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate {
 
+	/** The logger for this instance */
+	protected Logger logger = LogManager.getLogger();
+
 	@Resource
 	MemberRepository memberRepository;
 	@Resource
 	PostRepository postRepository;
+	@Resource
+	TopicRepository topicRepository;
 
 	@Resource
 	GraphQLUtil graphQLUtil;
 
 	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic source) {
-		return memberRepository.findById(source.getAuthorId()).get();
+	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, Member> dataLoader, Topic source) {
+		return dataLoader.load(source.getAuthorId());
 	}
 
 	@Override
@@ -48,5 +60,11 @@ public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate 
 			return graphQLUtil.iterableToList(postRepository.findByTopicId(source.getId()));
 		else
 			return graphQLUtil.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+	}
+
+	@Override
+	public List<Topic> batchLoader(List<UUID> keys) {
+		logger.debug("Batch loading {} topics", keys.size());
+		return topicRepository.findByIds(keys);
 	}
 }
