@@ -5,7 +5,7 @@
 		commited back to github.
 	</description>
 	<!-- set global properties for this build -->
-	<property name="sourceFolder" location="target/site" />
+	<property name="sourceFolder" location="target/staging" />
 	<property name="targetFolder" location="target/gh-pages_branch" />
 	<property name="targetProjectFolder" location="target/gh-pages_branch/graphql-maven-plugin-project" />
 
