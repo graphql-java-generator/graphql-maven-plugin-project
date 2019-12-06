@@ -228,7 +228,7 @@ com.graphql-java-generator:graphql-maven-plugin-project
 <ul>
 
 <li><a class="externalLink" href="https://github.com/graphql-java/graphql-java/blob/master/src/main/java/graphql/schema/DataFetchingEnvironment.java">DataFetchingEnvironment</a>: This is the GraphQL context. It can be used to retrieve data about the request.</li>
-<li>(Optional) DataLoader: the data loader that will retrieve the data, asynchronously, merging all loading into one database call. Big performance improvement!</li>
+<li>(Optional) <b>DataLoader</b>: the data loader that will retrieve the data, asynchronously, merging all loading into one database call. Big performance improvement!</li>
 <li><b>Source Object</b>: The POJO that is the parent object from which this DataFetcher will fetch an attribute. Typically, you can get its id, to read the data from a join in a database. See the provided samples for more details.</li>
 <li><b>Parameters</b>: The list of each parameters for the field to be fetched, as defined in the GraphQL schema. The parameter is null if not provided (only possible if this parameter is not mandatory)</li>
 </ul>
@@ -258,7 +258,7 @@ com.graphql-java-generator:graphql-maven-plugin-project
 
 <div>
 <div>
-<pre class="source">package my.target.package.specific_code;
+<pre class="source">package com.graphql_java_generator.samples.forum.server.specific_code;
 
 import java.util.List;
 import java.util.UUID;
@@ -266,8 +266,6 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -284,9 +282,6 @@ import graphql.schema.DataFetchingEnvironment;
 
 @Component
 public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic {
-
-	/** The logger for this instance */
-	protected Logger logger = LogManager.getLogger();
 
 	@Resource
 	MemberRepository memberRepository;
@@ -314,7 +309,6 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 	@Override
 	public List&lt;Topic&gt; batchLoader(List&lt;UUID&gt; keys) {
-		logger.debug(&quot;Batch loading {} topics&quot;, keys.size());
 		return topicRepository.findByIds(keys);
 	}
 }
