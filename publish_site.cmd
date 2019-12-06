@@ -13,7 +13,18 @@ REM
 REM
 REM This script executes several commands, with PAUSE in between, to let the user check that everything went well
 
+echo "Working in the current dir. Want to use target/checkout instead ?    (after a release)"
+pause
 
+REM We need the correct release number
+set /p version="Enter the last released version (e.g.: 1.0): "
+mvn site -Prelease -DlastReleasedVersion=%version%
+
+REM The script seems to stop here !   :(
+pause
+
+mvn site:stage
+pause
 
 mvn antrun:run -Prelease
 pause
