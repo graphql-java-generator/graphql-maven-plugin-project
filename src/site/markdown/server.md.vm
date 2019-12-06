@@ -181,7 +181,7 @@ These DataFetchersDelegate interfaces contains one method for each Data Fetcher 
 
 The methods implemented by a DataFetchersDelegate are the actual DataFetchers. They can return (also see the sample below):
 
-* CompletableFuture<Xxx>: this is when the data can be retrieved asynchronously through a DataLoader. In this case, the DataLoader collects all the Id that must be read from the datastore. This id list is de-duplicated (an id will be loaded once), and all the remaining ids are loaded in unique call to the datastore, thanks to the DataLoader that calls the relevant _batchLoader_ method.
+* CompletableFuture&lt;Xxx&gt;: this is when the data can be retrieved asynchronously through a DataLoader. In this case, the DataLoader collects all the Id that must be read from the datastore. This id list is de-duplicated (an id will be loaded once), and all the remaining ids are loaded in unique call to the datastore, thanks to the DataLoader that calls the relevant _batchLoader_ method.
 * Xxx (not a CompletableFuture): the request will be executed for each object, and must return the expected Xxx data. 
 
 
