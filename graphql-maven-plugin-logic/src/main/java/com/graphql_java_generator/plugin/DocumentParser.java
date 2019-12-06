@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
-import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
+import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
@@ -27,7 +27,7 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.Type.GraphQlType;
 import com.graphql_java_generator.plugin.language.impl.AbstractType;
 import com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl;
-import com.graphql_java_generator.plugin.language.impl.DataFetcherDelegateImpl;
+import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -146,9 +146,9 @@ public class DocumentParser {
 	List<DataFetcher> dataFetchers = new ArrayList<>();
 
 	/**
-	 * All {@link DataFetcherDelegate}s that need to be implemented for this/these schema/schemas
+	 * All {@link DataFetchersDelegate}s that need to be implemented for this/these schema/schemas
 	 */
-	List<DataFetcherDelegate> dataFetcherDelegates = new ArrayList<>();
+	List<DataFetchersDelegate> dataFetchersDelegates = new ArrayList<>();
 
 	/**
 	 * All {@link BatchLoader}s that need to be implemented for this/these schema/schemas
@@ -592,33 +592,33 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Returns the {@link DataFetcherDelegate} that manages the given type.
+	 * Returns the {@link DataFetchersDelegate} that manages the given type.
 	 * 
 	 * @param type
-	 *            The type, for which the DataFetcherDelegate is searched. It may not be null.
+	 *            The type, for which the DataFetchersDelegate is searched. It may not be null.
 	 * @param createIfNotExists
-	 *            if true: a new DataFetcherDelegate is created when there is no {@link DataFetcherDelegate} for this
-	 *            type yet. If false: no DataFetcherDelegate creation.
-	 * @return The relevant DataFetcherDelegate, or null of there is no DataFetcherDelegate for this type and
+	 *            if true: a new DataFetchersDelegate is created when there is no {@link DataFetchersDelegate} for this
+	 *            type yet. If false: no DataFetchersDelegate creation.
+	 * @return The relevant DataFetchersDelegate, or null of there is no DataFetchersDelegate for this type and
 	 *         createIfNotExists is false
 	 * @throws NullPointerException
 	 *             If type is null
 	 */
-	public DataFetcherDelegate getDataFetcherDelegate(Type type, boolean createIfNotExists) {
+	public DataFetchersDelegate getDataFetchersDelegate(Type type, boolean createIfNotExists) {
 		if (type == null) {
 			throw new NullPointerException("type may not be null");
 		}
 
-		for (DataFetcherDelegate dfd : dataFetcherDelegates) {
+		for (DataFetchersDelegate dfd : dataFetchersDelegates) {
 			if (dfd.getType().equals(type)) {
 				return dfd;
 			}
 		}
 
-		// No DataFetcherDelegate for this type exists yet
+		// No DataFetchersDelegate for this type exists yet
 		if (createIfNotExists) {
-			DataFetcherDelegate dfd = new DataFetcherDelegateImpl(type);
-			dataFetcherDelegates.add(dfd);
+			DataFetchersDelegate dfd = new DataFetchersDelegateImpl(type);
+			dataFetchersDelegates.add(dfd);
 			return dfd;
 		} else {
 			return null;
@@ -769,12 +769,12 @@ public class DocumentParser {
 
 		// No DataFetcher for the "artificial" Object Type created to instanciate an Interface. This "artificial" Object
 		// Type is for internal usage only, and to be used in Client mode to allow instanciation of the server response
-		// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no DataFetcherDelegate.
+		// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no DataFetchersDelegate.
 		if (type.getDefaultImplementationForInterface() == null) {
 
-			// Creation of the DataFetcherDelegate. It will be added to the list only if it contains at least one
+			// Creation of the DataFetchersDelegate. It will be added to the list only if it contains at least one
 			// DataFetcher.
-			DataFetcherDelegate dataFetcherDelegate = new DataFetcherDelegateImpl(type);
+			DataFetchersDelegate dataFetcherDelegate = new DataFetchersDelegateImpl(type);
 
 			for (Field field : type.getFields()) {
 				DataFetcherImpl dataFetcher = null;
@@ -824,15 +824,15 @@ public class DocumentParser {
 			} // for
 
 			// If at least one DataFetcher has been created, we register this
-			// DataFetcherDelegate
+			// DataFetchersDelegate
 			if (dataFetcherDelegate.getDataFetchers().size() > 0) {
-				dataFetcherDelegates.add(dataFetcherDelegate);
+				dataFetchersDelegates.add(dataFetcherDelegate);
 			}
 		}
 	}
 
 	/**
-	 * Identify each BatchLoader to generate, and attach its {@link DataFetcher} to its {@link DataFetcherDelegate}. The
+	 * Identify each BatchLoader to generate, and attach its {@link DataFetcher} to its {@link DataFetchersDelegate}. The
 	 * whole stuff is stored into {@link #batchLoaders}
 	 */
 	private void initBatchLoaders() {
@@ -862,7 +862,7 @@ public class DocumentParser {
 		if (type.getDefaultImplementationForInterface() == null) {
 			Field id = type.getIdentifier();
 			if (id != null) {
-				batchLoaders.add(new BatchLoaderImpl(type, getDataFetcherDelegate(type, true)));
+				batchLoaders.add(new BatchLoaderImpl(type, getDataFetchersDelegate(type, true)));
 			}
 		}
 	}

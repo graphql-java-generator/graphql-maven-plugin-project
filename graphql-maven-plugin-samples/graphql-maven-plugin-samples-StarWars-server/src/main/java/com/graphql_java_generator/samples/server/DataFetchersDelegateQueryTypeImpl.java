@@ -18,7 +18,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author EtienneSF
  */
 @Component
-public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersDelegate {
+public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQueryType {
 
 	@Resource
 	CharacterRepository characterRepository;

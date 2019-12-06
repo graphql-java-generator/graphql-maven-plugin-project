@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import graphql.schema.DataFetchingEnvironment;
 
 @Component
-public class QueryDataFetchersDelegateImpl implements QueryDataFetchersDelegate {
+public class DataFetchersDelegateQueryImpl implements DataFetchersDelegateQuery {
 
 	@Override
 	public String hello(DataFetchingEnvironment dataFetchingEnvironment, String name) {

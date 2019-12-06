@@ -15,7 +15,7 @@ import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 import graphql.schema.DataFetchingEnvironment;
 
 @Component
-public class CharacterImplDataFetchersDelegateImpl implements CharacterDataFetchersDelegate {
+public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCharacter {
 
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();

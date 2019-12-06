@@ -41,7 +41,7 @@ public class BatchLoaderDelegate${batchLoader.type.classSimpleName}Impl implemen
 
 	/** The DataFetcherDelegates contain the requests to the data */
 	@Resource
-	${batchLoader.dataFetcherDelegate.pascalCaseName} ${batchLoader.dataFetcherDelegate.camelCaseName};
+	${batchLoader.dataFetchersDelegate.pascalCaseName} ${batchLoader.dataFetchersDelegate.camelCaseName};
 
 	/**
 	 * A batch loader function that will be called with N or more keys for batch loading. This can be a singleton object
@@ -54,7 +54,7 @@ public class BatchLoaderDelegate${batchLoader.type.classSimpleName}Impl implemen
 	@Override
 	public CompletionStage<List<${batchLoader.type.classSimpleName}>> load(List<${batchLoader.type.identifier.type.classSimpleName}> keys) {
 		// We use supplyAsync() of values here for maximum parellisation
-		return CompletableFuture.supplyAsync(() -> ${batchLoader.dataFetcherDelegate.camelCaseName}.batchLoader(keys));
+		return CompletableFuture.supplyAsync(() -> ${batchLoader.dataFetchersDelegate.camelCaseName}.batchLoader(keys));
 	}
 
 	/**

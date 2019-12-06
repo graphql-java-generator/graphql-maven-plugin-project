@@ -10,8 +10,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.forum.server.Board;
+import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateQueryType;
 import com.graphql_java_generator.samples.forum.server.GraphQLUtil;
-import com.graphql_java_generator.samples.forum.server.QueryTypeDataFetchersDelegate;
 import com.graphql_java_generator.samples.forum.server.Topic;
 import com.graphql_java_generator.samples.forum.server.jpa.BoardRepository;
 import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
@@ -22,7 +22,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author EtienneSF
  */
 @Component
-public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersDelegate {
+public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQueryType {
 
 	@Resource
 	BoardRepository boardRepository;

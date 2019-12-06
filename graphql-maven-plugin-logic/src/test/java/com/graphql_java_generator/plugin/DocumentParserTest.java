@@ -172,7 +172,7 @@ class DocumentParserTest {
 		documentParser.interfaceTypes = new ArrayList<>();
 		documentParser.objectTypes = new ArrayList<>();
 		documentParser.dataFetchers = new ArrayList<>();
-		documentParser.dataFetcherDelegates = new ArrayList<>();
+		documentParser.dataFetchersDelegates = new ArrayList<>();
 		documentParser.queryTypes.add(type);
 		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
 		documentParser.scalars.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
@@ -197,10 +197,10 @@ class DocumentParserTest {
 		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", true, type, null,
 				type.getFields().get(i++).getInputParameters());
 		//
-		// There should be one DataFetcherDelegate, as we have only one type.
-		assertEquals(1, documentParser.dataFetcherDelegates.size(), "nb DataFetcherDelegates");
-		assertEquals(5, documentParser.dataFetcherDelegates.get(0).getDataFetchers().size(),
-				"nb DataFetchers in the DataFetcherDelegate");
+		// There should be one DataFetchersDelegate, as we have only one type.
+		assertEquals(1, documentParser.dataFetchersDelegates.size(), "nb DataFetchersDelegates");
+		assertEquals(5, documentParser.dataFetchersDelegates.get(0).getDataFetchers().size(),
+				"nb DataFetchers in the DataFetchersDelegate");
 
 		/////////////////////////////////////////////////////////////////////////////// ::
 		////////////////////// TEST FOR OBJECT TYPES
@@ -211,7 +211,7 @@ class DocumentParserTest {
 		documentParser.enumTypes = new ArrayList<>();
 		documentParser.scalars = new ArrayList<>();
 		documentParser.dataFetchers = new ArrayList<>();
-		documentParser.dataFetcherDelegates = new ArrayList<>();
+		documentParser.dataFetchersDelegates = new ArrayList<>();
 		//
 		documentParser.objectTypes.add(type);
 		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
@@ -235,10 +235,10 @@ class DocumentParserTest {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", true, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
-		// There should be one DataFetcherDelegate, as we have only one type.
-		assertEquals(1, documentParser.dataFetcherDelegates.size(), "nb DataFetcherDelegates");
-		assertEquals(3, documentParser.dataFetcherDelegates.get(0).getDataFetchers().size(),
-				"nb DataFetchers in the DataFetcherDelegate");
+		// There should be one DataFetchersDelegate, as we have only one type.
+		assertEquals(1, documentParser.dataFetchersDelegates.size(), "nb DataFetchersDelegates");
+		assertEquals(3, documentParser.dataFetchersDelegates.get(0).getDataFetchers().size(),
+				"nb DataFetchers in the DataFetchersDelegate");
 
 		/////////////////////////////////////////////////////////////////////////////// ::
 		////////////////////// TEST FOR INTERFACE TYPES
@@ -249,7 +249,7 @@ class DocumentParserTest {
 		documentParser.enumTypes = new ArrayList<>();
 		documentParser.scalars = new ArrayList<>();
 		documentParser.dataFetchers = new ArrayList<>();
-		documentParser.dataFetcherDelegates = new ArrayList<>();
+		documentParser.dataFetchersDelegates = new ArrayList<>();
 		//
 		documentParser.interfaceTypes.add(new InterfaceType("AnInterface", "a.package", PluginMode.server));
 		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
@@ -270,10 +270,10 @@ class DocumentParserTest {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", true, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
-		// There should be one DataFetcherDelegate, as we have only one type.
-		assertEquals(1, documentParser.dataFetcherDelegates.size(), "nb DataFetcherDelegates");
-		assertEquals(3, documentParser.dataFetcherDelegates.get(0).getDataFetchers().size(),
-				"nb DataFetchers in the DataFetcherDelegate");
+		// There should be one DataFetchersDelegate, as we have only one type.
+		assertEquals(1, documentParser.dataFetchersDelegates.size(), "nb DataFetchersDelegates");
+		assertEquals(3, documentParser.dataFetchersDelegates.get(0).getDataFetchers().size(),
+				"nb DataFetchers in the DataFetchersDelegate");
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type, String sourceName,

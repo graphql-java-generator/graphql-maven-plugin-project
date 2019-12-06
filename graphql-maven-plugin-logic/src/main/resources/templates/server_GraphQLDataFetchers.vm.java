@@ -26,19 +26,19 @@ public class GraphQLDataFetchers {
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();
 
-#foreach ($dataFetcherDelegate in $dataFetcherDelegates)
+#foreach ($dataFetchersDelegate in $dataFetchersDelegates)
 	@Resource
-	${dataFetcherDelegate.pascalCaseName} ${dataFetcherDelegate.camelCaseName};
+	${dataFetchersDelegate.pascalCaseName} ${dataFetchersDelegate.camelCaseName};
 
 #end
 
-#foreach ($dataFetcherDelegate in $dataFetcherDelegates)
+#foreach ($dataFetchersDelegate in $dataFetchersDelegates)
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	// Data fetchers for ${dataFetcherDelegate.name}
+	// Data fetchers for ${dataFetchersDelegate.name}
 	////////////////////////////////////////////////////////////////////////////////////////////////
-#foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
+#foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.completableFuture})>#end> ${dataFetcherDelegate.camelCaseName}${dataFetcher.pascalCaseName}() {
+	public DataFetcher<#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.completableFuture})>#end> ${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)          
 ## $argument is an instance of Field
@@ -63,16 +63,16 @@ public class GraphQLDataFetchers {
 #if (${dataFetcher.completableFuture})
 			DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader = dataFetchingEnvironment.getDataLoader("${dataFetcher.field.type.classSimpleName}"); 
 			
-			return ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+			return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
 #elseif (${dataFetcher.field.list})
-			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
 			logger.debug("${dataFetcher.name}: {} found rows", ret.size());
 
 			return ret;
 #else
 			${dataFetcher.field.type.classSimpleName} ret = null;
 			try {
-				ret = ${dataFetcherDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+				ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
 			} catch (NoSuchElementException e) {
 				// There was no items in the Optional
 			}

@@ -38,9 +38,9 @@ class DocumentParserTest_StarWars_Server {
 	@DirtiesContext
 	void test_initDataFetchers() {
 
-		// DataFetchers are aggregated into DataFetcherDelegate (one DataFetcherDelegate per type in the graphQL schema
+		// DataFetchers are aggregated into DataFetchersDelegate (one DataFetchersDelegate per type in the graphQL schema
 		// that needs at least one DataFetcher)
-		assertEquals(5, documentParser.dataFetcherDelegates.size(), "nb of data fetchers Delegate in server mode");
+		assertEquals(5, documentParser.dataFetchersDelegates.size(), "nb of data fetchers Delegate in server mode");
 		assertEquals(12, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;

@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.forum.server.Board;
-import com.graphql_java_generator.samples.forum.server.BoardDataFetchersDelegate;
+import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateBoard;
 import com.graphql_java_generator.samples.forum.server.Topic;
 import com.graphql_java_generator.samples.forum.server.jpa.BoardRepository;
 import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
@@ -28,7 +28,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author EtienneSF
  */
 @Component
-public class BoardDataFetchersDelegateImpl implements BoardDataFetchersDelegate {
+public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard {
 
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();

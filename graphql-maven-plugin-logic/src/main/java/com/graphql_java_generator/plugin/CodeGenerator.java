@@ -31,7 +31,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.language.BatchLoader;
-import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
+import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -217,7 +217,7 @@ public class CodeGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("package", pluginConfiguration.getPackageName());
 		context.put("packaging", pluginConfiguration.getPackaging());
-		context.put("dataFetcherDelegates", documentParser.getDataFetcherDelegates());
+		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
 
 		// List of found schemas
@@ -237,7 +237,7 @@ public class CodeGenerator {
 		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
 				PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL);
 
-		for (DataFetcherDelegate dataFetcherDelegate : documentParser.dataFetcherDelegates) {
+		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
 			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName()),
 					"generating " + dataFetcherDelegate.getPascalCaseName(), context,

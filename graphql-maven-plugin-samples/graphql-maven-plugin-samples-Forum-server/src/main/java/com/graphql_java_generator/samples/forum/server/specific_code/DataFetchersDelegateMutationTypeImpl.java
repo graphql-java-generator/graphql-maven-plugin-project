@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.forum.server.Board;
-import com.graphql_java_generator.samples.forum.server.MutationTypeDataFetchersDelegate;
+import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateMutationType;
 import com.graphql_java_generator.samples.forum.server.Post;
 import com.graphql_java_generator.samples.forum.server.Topic;
 import com.graphql_java_generator.samples.forum.server.jpa.BoardRepository;
@@ -23,7 +23,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author EtienneSF
  */
 @Component
-public class MutationTypeDataFetchersDelegateImpl implements MutationTypeDataFetchersDelegate {
+public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegateMutationType {
 
 	@Resource
 	BoardRepository boardRepository;

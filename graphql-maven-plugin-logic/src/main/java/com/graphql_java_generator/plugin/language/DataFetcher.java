@@ -13,7 +13,7 @@ import com.graphql_java_generator.plugin.language.impl.TypeUtil;
  * This class represents a GraphQL Data Fetcher. It's a piece of code which responsability is to read non scalar fields
  * on GraphQL objects, which includes: all fields for queries, mutations and subscriptions, and all non scalar fields
  * for regular GraphQL objects. <BR/>
- * They are grouped into {@link DataFetcherDelegate}s (see {@link DataFetcherDelegate} doc for more information on
+ * They are grouped into {@link DataFetchersDelegate}s (see {@link DataFetchersDelegate} doc for more information on
  * that).<BR/>
  * Its characteristics are read by {@link DocumentParser}, and used by {@link CodeGenerator} and the Velocity templates
  * to generate the code of the DataFechers, and their declaration in the GraphQLProvider.<BR/>
@@ -61,11 +61,11 @@ public interface DataFetcher {
 	public Field getField();
 
 	/**
-	 * Retrieves the {@link DataFetcherDelegate} in which this Data Fetcher is implemented
+	 * Retrieves the {@link DataFetchersDelegate} in which this Data Fetcher is implemented
 	 * 
 	 * @return
 	 */
-	public DataFetcherDelegate getDataFetcherDelegate();
+	public DataFetchersDelegate getDataFetcherDelegate();
 
 	/**
 	 * Retrieves the source name, that is: the name of the object which contains the field to fetch (if it is a GraphQL

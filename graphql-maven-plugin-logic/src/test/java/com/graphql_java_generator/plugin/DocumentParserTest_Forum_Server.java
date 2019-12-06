@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
-import com.graphql_java_generator.plugin.language.DataFetcherDelegate;
+import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
@@ -113,22 +113,22 @@ class DocumentParserTest_Forum_Server {
 
 	@Test
 	@DirtiesContext
-	void getDataFetcherDelegate() {
+	void test_getDataFetchersDelegate() {
 		// Check, to start on a proper base
-		assertEquals(6, documentParser.dataFetcherDelegates.size());
+		assertEquals(6, documentParser.dataFetchersDelegates.size());
 
-		// No DataFetcherDelegate creation
+		// No DataFetchersDelegate creation
 		Type type = new ObjectType("my.package", "Test", PluginMode.server);
-		DataFetcherDelegate dfd = documentParser.getDataFetcherDelegate(type, false);
-		assertNull(dfd, "No DataFetcherDelegate creation");
-		assertEquals(6, documentParser.dataFetcherDelegates.size());
+		DataFetchersDelegate dfd = documentParser.getDataFetchersDelegate(type, false);
+		assertNull(dfd, "No DataFetchersDelegate creation");
+		assertEquals(6, documentParser.dataFetchersDelegates.size());
 
-		// With DataFetcherDelegate creation
+		// With DataFetchersDelegate creation
 		type = new ObjectType("my.package", "Test2", PluginMode.server);
-		dfd = documentParser.getDataFetcherDelegate(type, true);
-		assertNotNull(dfd, "With DataFetcherDelegate creation");
+		dfd = documentParser.getDataFetchersDelegate(type, true);
+		assertNotNull(dfd, "With DataFetchersDelegate creation");
 		assertEquals(type, dfd.getType());
-		assertEquals(7, documentParser.dataFetcherDelegates.size());
+		assertEquals(7, documentParser.dataFetchersDelegates.size());
 	}
 
 	/** Tests the Data Fetchers that are listed during parsing */
@@ -171,52 +171,52 @@ class DocumentParserTest_Forum_Server {
 		//
 		// Verification of the data fetchers delegates : QueryType, MutationType and 4 objects
 		//
-		assertEquals(6, documentParser.dataFetcherDelegates.size(), "data fetchers delegates");
+		assertEquals(6, documentParser.dataFetchersDelegates.size(), "data fetchers delegates");
 		i = 0;
 		int j = 0;
 
 		// Delegate for QueryType
-		assertEquals("QueryTypeDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+		assertEquals("DataFetchersDelegateQueryType", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(3, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+		assertEquals(3, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("boards", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("boards", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
-		assertEquals("topics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
+		assertEquals("topics", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(1).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
-		assertEquals("findTopics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(2).getName(),
+		assertEquals("findTopics", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(2).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Board
 		i += 2;
 		j = 0;
-		assertEquals("BoardDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+		assertEquals("DataFetchersDelegateBoard", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(1, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+		assertEquals(1, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("topics", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("topics", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Topic
 		i += 1;
 		j = 0;
-		assertEquals("TopicDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+		assertEquals("DataFetchersDelegateTopic", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(2, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+		assertEquals(2, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("author", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("author", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
-		assertEquals("posts", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(1).getName(),
+		assertEquals("posts", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(1).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Post
 		i += 1;
 		j = 0;
-		assertEquals("PostDataFetchersDelegate", documentParser.dataFetcherDelegates.get(i).getName(),
+		assertEquals("DataFetchersDelegatePost", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(1, documentParser.dataFetcherDelegates.get(i).getDataFetchers().size(),
+		assertEquals(1, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("author", documentParser.dataFetcherDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("author", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(0).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 
 	}
@@ -278,31 +278,31 @@ class DocumentParserTest_Forum_Server {
 		int i = -1;
 		BatchLoader batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Member", batchLoader.getType().getName());
-		assertEquals("MemberDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
-		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
-		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
-				"The only BatchLoader in this DataFetcherDelegate is this one");
+		assertEquals("DataFetchersDelegateMember", batchLoader.getDataFetchersDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetchersDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetchersDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetchersDelegate is this one");
 
 		batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Board", batchLoader.getType().getName());
-		assertEquals("BoardDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
-		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
-		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
-				"The only BatchLoader in this DataFetcherDelegate is this one");
+		assertEquals("DataFetchersDelegateBoard", batchLoader.getDataFetchersDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetchersDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetchersDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetchersDelegate is this one");
 
 		batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Topic", batchLoader.getType().getName());
-		assertEquals("TopicDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
-		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
-		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
-				"The only BatchLoader in this DataFetcherDelegate is this one");
+		assertEquals("DataFetchersDelegateTopic", batchLoader.getDataFetchersDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetchersDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetchersDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetchersDelegate is this one");
 
 		batchLoader = documentParser.batchLoaders.get(++i);
 		assertEquals("Post", batchLoader.getType().getName());
-		assertEquals("PostDataFetchersDelegate", batchLoader.getDataFetcherDelegate().getName());
-		assertEquals(1, batchLoader.getDataFetcherDelegate().getBatchLoaders().size());
-		assertEquals(batchLoader, batchLoader.getDataFetcherDelegate().getBatchLoaders().get(0),
-				"The only BatchLoader in this DataFetcherDelegate is this one");
+		assertEquals("DataFetchersDelegatePost", batchLoader.getDataFetchersDelegate().getName());
+		assertEquals(1, batchLoader.getDataFetchersDelegate().getBatchLoaders().size());
+		assertEquals(batchLoader, batchLoader.getDataFetchersDelegate().getBatchLoaders().get(0),
+				"The only BatchLoader in this DataFetchersDelegate is this one");
 	}
 
 	@Test

@@ -18,7 +18,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author EtienneSF
  */
 @Component
-public class MutationTypeDataFetchersDelegateImpl implements MutationTypeDataFetchersDelegate {
+public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegateMutationType {
 
 	@Resource
 	HumanRepository humanRepository;

@@ -10,18 +10,18 @@ import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.language.impl.TypeUtil;
 
 /**
- * This class represents a GraphQL Data Fetcher Delegate. A DataFetcherDelegate agregates all {@link DataFetcher} for a
+ * This class represents a GraphQL Data Fetcher Delegate. A DataFetchersDelegate agregates all {@link DataFetcher} for a
  * GraphQL type. It is only used when in server mode, the GraphQL maven plugin generates on data fetcher delegate for
  * each object whose fields need at least one data fetcher. This helps to limit the impact on the specific code, when
  * the GraphQL schema changes. Their characteristics are read by {@link DocumentParser}, and used by
  * {@link CodeGenerator} and the Velocity templates to generate the code of the DataFechers, and their declaration in
  * the GraphQLProvider.<BR/>
- * Thus there are two kinds of {@link DataFetcherDelegate}:
+ * Thus there are two kinds of {@link DataFetchersDelegate}:
  * <UL>
- * <LI>The {@link DataFetcherDelegate} for regular GraphQL objects. These {@link DataFetcher}s are used to read non
+ * <LI>The {@link DataFetchersDelegate} for regular GraphQL objects. These {@link DataFetcher}s are used to read non
  * scalar fields, that is: fields that are subjects, like friends of the human types, in the StarWars schema.</LI>
- * <LI>The {@link DataFetcherDelegate} for queries, mutations and subscriptions type. These {@link DataFetcherDelegate}
- * are actually the entry points of the GraphQL server. For such {@link DataFetcherDelegate}s, each field is actually a
+ * <LI>The {@link DataFetchersDelegate} for queries, mutations and subscriptions type. These {@link DataFetchersDelegate}
+ * are actually the entry points of the GraphQL server. For such {@link DataFetchersDelegate}s, each field is actually a
  * {@link DataFetcher}.</LI>
  * </UL>
  * <BR/>
@@ -29,7 +29,7 @@ import com.graphql_java_generator.plugin.language.impl.TypeUtil;
  * 
  * @author EtienneSF
  */
-public interface DataFetcherDelegate {
+public interface DataFetchersDelegate {
 
 	/**
 	 * The name of the DataFetcher. This name is a valid java classname identifier, and is the name to use as a method
@@ -40,7 +40,7 @@ public interface DataFetcherDelegate {
 	public String getName();
 
 	/**
-	 * Returns the {@link Type}, for which the DataFetcherDelegate aggregates the access methods.
+	 * Returns the {@link Type}, for which the DataFetchersDelegate aggregates the access methods.
 	 * 
 	 * @return
 	 */

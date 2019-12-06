@@ -19,10 +19,10 @@ public interface BatchLoader {
 	public Type getType();
 
 	/**
-	 * The {@link DataFetcherDelegate} which contains the method that will retrieve the data. That is: the
-	 * {@link DataFetcherDelegate} that works on the same {@link Type} that this BatchLoader.
+	 * The {@link DataFetchersDelegate} which contains the method that will retrieve the data. That is: the
+	 * {@link DataFetchersDelegate} that works on the same {@link Type} that this BatchLoader.
 	 * 
 	 * @return
 	 */
-	public DataFetcherDelegate getDataFetcherDelegate();
+	public DataFetchersDelegate getDataFetchersDelegate();
 }
