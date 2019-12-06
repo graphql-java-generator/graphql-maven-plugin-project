@@ -25,6 +25,7 @@ Then, the project site is available at [https://graphql-maven-plugin-project.gra
 The use of [maven-site-plugin](https://maven.apache.org/plugins/maven-site-plugin/) is complex, but well described. 
 
 Here are the steps to execute:
+
 * cd target/checkout
     * This allows to go to the just performed release, and get all the code in the relevant version
 * mvn site -Prelease -DlastReleasedVersion=x.y.z
