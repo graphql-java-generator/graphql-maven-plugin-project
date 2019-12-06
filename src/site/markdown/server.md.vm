@@ -172,7 +172,7 @@ These DataFetchersDelegate interfaces contains one method for each Data Fetcher 
 
 * For regular objects, there is one method par attribute that is another object or a list. This method will be called each time the GraphQL engine needs to read such an attribute, that is, each time it needs to go across a relationship from one object to a linked one. This method will have these parameters:
     * [DataFetchingEnvironment](https://github.com/graphql-java/graphql-java/blob/master/src/main/java/graphql/schema/DataFetchingEnvironment.java): This is the GraphQL context. It can be used to retrieve data about the request.
-    * (Optional) DataLoader: the data loader that will retrieve the data, asynchronously, merging all loading into one database call. Big performance improvement! 
+    * (Optional) __DataLoader__: the data loader that will retrieve the data, asynchronously, merging all loading into one database call. Big performance improvement! 
     * __Source Object__: The POJO that is the parent object from which this DataFetcher will fetch an attribute. Typically, you can get its id, to read the data from a join in a database. See the provided samples for more details.
     * __Parameters__: The list of each parameters for the field to be fetched, as defined in the GraphQL schema. The parameter is null if not provided (only possible if this parameter is not mandatory)    
 * For query/mutation/subscription objects, there is one method for each attribute, as each attribute is actually a query, a mutation or a subscription.
@@ -195,7 +195,7 @@ The only constraint you __must__ respect is that these DataFetchersDelegate impl
 So your DataFetchersDelegate implementation class will look like the sample below. Rather simple, isn't it!
 
 ```Java
-package my.target.package.specific_code;
+package com.graphql_java_generator.samples.forum.server.specific_code;
 
 import java.util.List;
 import java.util.UUID;
@@ -203,8 +203,6 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -221,9 +219,6 @@ import graphql.schema.DataFetchingEnvironment;
 
 @Component
 public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic {
-
-	/** The logger for this instance */
-	protected Logger logger = LogManager.getLogger();
 
 	@Resource
 	MemberRepository memberRepository;
@@ -251,7 +246,6 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 	@Override
 	public List<Topic> batchLoader(List<UUID> keys) {
-		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
 	}
 }

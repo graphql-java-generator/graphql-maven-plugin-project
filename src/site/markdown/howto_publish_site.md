@@ -36,6 +36,9 @@ Here are the steps to execute:
 * mvn site:stage
     * This agregate all the module sites built by the previous command into the target/staging folder of the root project.
 
+
+__Note:__ All these steps are automated through the publish_site.cmd Windows command file (very easy to adapt to a Unix shell)
+
 ## Publishing the site
 
 At this step, you 'just' have to push the staged site to github. But that's not that simple.
