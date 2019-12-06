@@ -18,16 +18,23 @@ pause
 
 REM We need the correct release number
 set /p version="Enter the last released version (e.g.: 1.0): "
-mvn site -Prelease -DlastReleasedVersion=%version%
 
-REM The script seems to stop here !   :(
+REM The next command is long to execute
+call mvn site -Prelease -DlastReleasedVersion=%version%
 pause
 
-mvn site:stage
+call mvn site:stage
 pause
 
-mvn antrun:run -Prelease
+call mvn antrun:run -Prelease
 pause
 
 cd target\gh-pages_branch\graphql-maven-plugin-project
 git push
+cd ..\..\..
+
+echo Go to https://github.com/graphql-java-generator/graphql-maven-plugin-project/settings
+echo Put graphql-maven-plugin-project.graphql-java-generator.com
+echo into the "Custom domain" parameter
+
+
