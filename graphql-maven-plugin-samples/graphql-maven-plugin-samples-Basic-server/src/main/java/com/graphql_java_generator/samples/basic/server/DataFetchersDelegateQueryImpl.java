@@ -12,4 +12,13 @@ public class DataFetchersDelegateQueryImpl implements DataFetchersDelegateQuery 
 		return "Hello" + ((name == null) ? "" : " " + name);
 	}
 
+	/**
+	 * Error will always thrown an error. This very interesting query is used to check that errors are properly managed,
+	 * in integration tests.
+	 */
+	@Override
+	public String error(DataFetchingEnvironment dataFetchingEnvironment) {
+		throw new RuntimeException("This is an expected error");
+	}
+
 }
