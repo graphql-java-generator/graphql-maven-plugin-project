@@ -16,8 +16,8 @@ import com.generated.graphql.Episode;
 import com.graphql_java_generator.client.response.GraphQLExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
-import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
 import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
+import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
 
 /**
  * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
@@ -111,6 +111,7 @@ public class Main {
 	public SSLContext getSslContext() throws NoSuchAlgorithmException, KeyManagementException {
 		SSLContext sslContext = SSLContext.getInstance("TLSv1");
 
+		// Very, very bad. Don't do that in production !
 		KeyManager[] keyManagers = null;
 		TrustManager[] trustManager = { new NoOpTrustManager() };
 		SecureRandom secureRandom = new SecureRandom();
@@ -121,6 +122,7 @@ public class Main {
 	}
 
 	public HostnameVerifier getHostnameVerifier() {
+		// Very, very bad. Don't do that in production !
 		return new NoOpHostnameVerifier();
 	}
 
