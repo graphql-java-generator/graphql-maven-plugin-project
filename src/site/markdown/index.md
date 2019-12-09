@@ -36,20 +36,26 @@ The aim of this project is to:
 
 ### Samples
 
-You'll find these samples in the project. For all of these samples, there are two projects: the client and the server.
+You'll find the following samples in the project. For all of these samples, there are two projects: the client and the server.
 
 * Basic
-    * The simplest samples. Start from them, when you want to start a new project
-* StarWars
-    * The server is packaged as a war
-    * The GraphQL server exposes https
-    * The data model is directly compatible with the generated code  
+    * The simplest sample: "Hello World" ! :) Start from them, when you want to start a new project
+    * It also contains an "error" query, which always returns an error. This allows you to check how to manage errors returned when executing a GraphQL query.
+    * The server is packaged as a Spring Boot application
+    * The GraphQL server exposes http
 *  Forum
     * The server is packaged as a Spring Boot application
     * The GraphQL server exposes http
-    * The server uses the schema personalization, to overcome the default code generation
+    * The server uses the schema personalization, to override the default code generation
+    * The GraphQL model maps to the database model
+    * The Forum client project shows implementation of the same queries in the XxxQueries classes. 
+* StarWars
+    * The server is packaged as a war
+    * The GraphQL server exposes https
+    * The GraphQL interfaces in this model (character, and friends relation) makes it difficult to map to native RDBMS data model. This project uses JPA native queries to overcome this.
+    * The StarWars client project shows implementation of the same queries in the XxxQueries classes.
 
-Note: The client project for the StarWars and Forum samples contains integration tests. They are part of the global build. As such, the client projects contains integration tests that allow to check the graphql-maven-plugin for both the client and the server for these two projects. 
+Note: The client projects for these samples contain integration tests. They are part of the global build. These integration tests check the graphql-maven-plugin behaviour for both the client and the server for these samples. 
 
 ### Client mode
 
@@ -66,9 +72,7 @@ In this mode, the plugin generates:
 * One java class for the Query object
 * One java class for the Mutation object (if any)
 * One POJO for each standard object of the GraphQL object
-
-The generated code is stand-alone. That is: your project, when it runs, it doesn't depend on any dependency from graphql-java-generator.
-
+* All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
 
 You'll find more information on the [client](client.html) page.
 
@@ -76,19 +80,20 @@ You'll find more information on the [client](client.html) page.
 
 When in server mode, the plugin generates:
 
-* When in a jar maven project, the main class to start a Spring Boot application
-* When in a war maven project, the servlet configuration to be embedded in a war package. It can then be deployed in any standard application server
-* The declaration to [graphql-java](https://www.graphql-java.com/), which is the only GraphQL dependency. It's actually mandatory for any GraphQL implementation in Java
-* The DataFetcherDelegate interface declarations for all the [Data Fetchers](https://www.graphql-java.com/documentation/master/data-fetching/), which is the graphql-java word for GraphQL resolvers.
-* The wiring of these Data Fetchers with the graphql-java
+* The main class:
+    * When in a jar maven project, the main class to start a Spring Boot application
+    * When in a war maven project, the servlet configuration to be embedded in a war package. It can then be deployed in any standard application server
+* The declaration of all the [graphql-java](https://www.graphql-java.com/) stuff
+* The DataFetchersDelegate interface declarations for all the [Data Fetchers](https://www.graphql-java.com/documentation/master/data-fetching/), which is the graphql-java word for GraphQL resolvers.
+    * The DataFetchersDelegate groups the Data Fetchers into one class per GraphQL object (including the Query and the Mutation)
+    * It contains the proper declarations to use the [DataLoader](https://github.com/graphql-java/java-dataloader) out of the box
 * The POJOs to manipulate the GraphQL objects defined in the GraphQL schema. 
-    * These POJOs are annotated with JPA annotations. This allows to link them to almost any database
+    * These POJOs are annotated with JPA annotations. This allows you to link them to almost any database
     * You can customize these annotations, with the Schema Personalization file (see below for details)
     * (in a near future) It will be possible to define your own code template, to generate exactly the code you want 
- 
-In a near future, graphql-java-generator will also provide an implementation for the dataloader, which will improve performances, see [https://github.com/graphql-java/java-dataloader](https://github.com/graphql-java/java-dataloader).
+* All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
 
-Once all this is generated, you'll have to implement the DataFetcherDelegate interfaces. The DataFetcherDelegate implementation is the only work that remains on your side. They are the link between the GraphQL schema and your data storage. A DataFetcherDelegate implementation looks like this:
+Once all this is generated, your only work is to implement the DataFetchersDelegate interfaces. They are the link between the GraphQL schema and your data storage. As such, they are specific to your use case. A DataFetchersDelegate implementation looks like this:
 
 ```Java
 @Component
@@ -120,15 +125,15 @@ You'll find all the info on the [server](server.html) page.
 
 # Main evolutions for the near future
 
-You'll find below the main changes, that are foreseen in the near future
-- Manage Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
+You'll find below the main changes, that are planned in the near future:
+- Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 - Add a gradle plugin (work in progress)
 - Manage properties which name are java keyword, like: public, private, class... Currently, it would generate a compilation error.
 - Manage field parameters. Currently, GraphQL Java Generator accepts parameters out of the query level (that is on object fields), only with Direct Queries (which is nice enough to begin)
 - Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
-- Define specific Scalars (for instance Date, DateTime, Time)
+- Allow definition of specific Scalars (for instance Date, DateTime, Time)
 - Fragment in graphql queries
-- The plugin currently manages only one schema. It would be nice to allow several graphqls files, with a pattern like /*.graphqls
+- The plugin currently manages only one GraphQL schema file. It would be nice to allow several graphqls files, with a pattern like /*.graphqls
 
 
 # Note for contributors
