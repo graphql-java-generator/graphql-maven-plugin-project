@@ -74,7 +74,7 @@ In this mode, the plugin generates:
 * One POJO for each standard object of the GraphQL object
 * All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
 
-You'll find more information on the [client](client.html) page.
+You'll find more information on the [client](https://graphql-maven-plugin-project.graphql-java-generator.com/client.html) page.
 
 ### Server mode
 
@@ -96,19 +96,27 @@ When in server mode, the plugin generates:
 Once all this is generated, your only work is to implement the DataFetchersDelegate interfaces. They are the link between the GraphQL schema and your data storage. As such, they are specific to your use case. A DataFetchersDelegate implementation looks like this:
 
 ```Java
+package com.graphql_java_generator.samples.forum.server.specific_code;
+
+[imports]
+
 @Component
-public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate {
+public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic {
 
 	@Resource
 	MemberRepository memberRepository;
 	@Resource
 	PostRepository postRepository;
 	@Resource
+	TopicRepository topicRepository;
+
+	@Resource
 	GraphQLUtil graphQLUtil;
 
 	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic source) {
-		return memberRepository.findById(source.getAuthorId()).get();
+	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, Member> dataLoader, Topic source) {
+		return dataLoader.load(source.getAuthorId());
 	}
 
 	@Override
@@ -117,6 +125,11 @@ public class TopicDataFetchersDelegateImpl implements TopicDataFetchersDelegate 
 			return graphQLUtil.iterableToList(postRepository.findByTopicId(source.getId()));
 		else
 			return graphQLUtil.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+	}
+
+	@Override
+	public List<Topic> batchLoader(List<UUID> keys) {
+		return topicRepository.findByIds(keys);
 	}
 }
 ```

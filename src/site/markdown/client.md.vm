@@ -10,13 +10,7 @@ As an overview, it generates:
 * One java class for the Query object
 * One java class for the Mutation object (if any)
 * One POJO for each standard object of the GraphQL object
-
-The generated code is stand-alone. That is: your project, when it runs, it doesn't depend on any dependency from graphql-java-generator.
-
-This is why we call it an accelerator: you can generate the code once, and get rid of graphql-java-generator if you wish.
-
-BTW: we think its better to continue using it! But you're free to leave, and keep the generated code.  
-:)
+* All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator. This is why we call it an accelerator: you can generate the code once, and get rid of graphql-java-generator if you wish. BTW: we think its better to continue using it! But you're free to leave, and keep the generated code. :)
 
 
 ## How to use the plugin ?
@@ -55,11 +49,11 @@ Then, add the plugin to your Maven POM file:
 </project>
 ```
 
-You must precise the mode. It can be either _client_ or _server_.
+The mode is optional, here, as client is the default one. Valid values are: _client_ and _server_.
 
-You can define the package that will contain the generated code. If not defined, the default package is _com.generated.graphql_. This package contains the generated code. 
+You can define the package that will contain the generated code. If you don't, the default package is _com.generated.graphql_. This package contains the generated code. 
 
-The necessary runtime code source is joined to the generated code, but remains in its original package, which is _graphql.java.client.*_ and _graphql.java.annotation_.
+The necessary runtime code source is joined to the generated code, but remains in its original package, which is _graphql.java.client.*_ and _graphql.java.annotation_. So everything is embedded.
 
 ## How to execute a GraphQL query ?
 
@@ -68,8 +62,8 @@ When in _client_ mode, you can query the server with just one line of code.
 For instance :
 
 ```Java
-import my.target.package.Human; // my.target.package is package name defined in the pom
-import my.target.package.QueryType; // my.target.package is package name defined in the pom
+import my.target.package.Human; // my.target.package is the package name defined in the pom
+import my.target.package.QueryType; // my.target.package is the package name defined in the pom
 
 ...
 
@@ -77,30 +71,88 @@ import my.target.package.QueryType; // my.target.package is package name defined
 	Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", "180");
 ```
 
-Where human is a POJO, that you can manipulate as any java object. This POJOs and the QueryType(s) have been generated at build time, thanks to the plugin configurated in the your pom.  
+Where human is a POJO, that you can manipulate as any java object. This POJOs and the QueryType(s) have been generated at build time, thanks to the plugin configured in your pom.  
 
+## GraphQL query (and mutation) calls
+
+You call query and mutation in the same way: by calling the relevant java method that has been generated at build time.
+
+The Query and the Mutation generated classes have the same name, as defined in the GraphQL schema. They are generated into the package defined in your pom (see above). They have two constructors:
+
+* _Xxx(String graphqlEndpoint)_: This constructor is for http GraphQL server. Just provide here the URL for the GraphQL endpoint, for instance "http://localhost:8180/graphql"
+* _Xxx(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)_: This constructor is for https GraphQL server. The parameters are :
+    * The https URL for the GraphQL endpoint. For instance: "https://localhost:8443/starwars/graphql"
+    * The SSLContext. You must provide such a context. There are a lot of doc on the net, for instance [use these initiators](https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/class-use/SSLContext.html) or [these samples](https://www.codota.com/code/java/methods/javax.net.ssl.SSLContext/init) 
+    * The hostnameVerifier. You can the same [as here](https://forums.xamarin.com/discussion/14527/how-do-i-implement-a-custom-host-name-verifier)
+
+Once the Query or/and the Mutation class(es) is/are created, you can call the GraphQL server. Just use the instance, you created, and call the query or mutation method.
+
+Each such method has the same name as in the GraphQL schema. Each such method is generated twice, with two kind of parameters, described just below. It returns the type indicated in the GraphQL schema. The two kind of methods are the direct query (or mutation) and the prepared query (or mutation).
+
+### Direct Query (or Mutation) call
+
+The signature is of this type:
+
+```Java
+    Yyyy xxx(String queryResponseDef, Pppp param1, Pppp param2..)
+```
+
+Where:
+* Yyyy is the type, defined in the GraphQL schema as the return type for this Query or Mutation. Yyyy is actually the POJO generated by graphql-java-generator, from the GraphQL Type of the same name.
+* xxx is the name of the Query or Mutation
+* queryResponseDef is directly the GraphQL request 
+* param1, param2 (..) are the parameters, as defined in the GraphQL schema
+
+Here is a sample, taken from the StarWars sample project:
+
+```Java
+    mutationType.addFriend("{id name appearsIn friends {id name}}", idCharacter, idNewFriend);
+```
+
+This is the simplest way to execute a GraphQL query. But:
+
+* There are some checks at each execution (to check that your parameters are valid). It is more efficient to prepare the request first (see below).
+* And you'll know if the request is valid only when you execute it 
+
+### Prepared Query (or Mutation) call
+
+In this second method call, you have to prepare the response of the query/mutation first. The idea is to build an _ObjectResponse_ once, that you'll reuse for every call of this type to the server. An _ObjectResponse_ is actually the graphql-java-generator object created to match a query string like "{id name appearsIn homePlanet friends{name}}".
+
+You do this once, typically when the application starts:
+
+* The graphql-java-generator initializes its stuff only once
+* You known at startup time that all your requests are valid.
+    * Also, when starting an integration test, the requests are prepared ... and checked. 
+
+There are two ways to prepare the query/mutation response:
+
+* The builder way:
+
+```Java
+ObjectResponse addFriendResponse = mutationType.getAddFriendResponseBuilder().withField("id").withField("name").withField("appearsIn")
+				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).build()).build();
+```
+
+* The GraphQL way:
+
+```Java
+ObjectResponse addFriendResponse = mutationType.getAddFriendResponseBuilder().withQueryResponseDef("{id name appearsIn friends {id name}}").build();
+```
+
+Then, you can call to the method itself:
+
+```Java
+    mutationType.addFriend(addFriendResponse, idCharacter, idNewFriend);
+```
 
 ## Prepare your GraphQL queries
 
-A _good idea_ is to prepare the queries at startup time. Doing this executes all the GraphQL query checks during the application startup. Preparing a query is actually __creating an create an ObjectResponse__. This ObjectResponse is then built once, and reused for each query execution of this type.
-
-There are two ways to create an ObjectResponse (details below):
-
-* The GraphQL way, with a string where you list the expected fields like this one "{id name appearsIn homePlanet friends{name}}" (more info <https://graphql.org/learn/queries/>)
-    * This is the shortest way.
-* The java builder way, with a java call for each field (see below)
-    * This is more verbose, especially when fetching subobjects. It's actually done under the hood, when you use the GraphQL way. 
-
-In both cases, the idea is to build an ObjectResponse once, that you'll reuse for every call of this type to the server. An ObjectResponse is actually the graphql-java-generator object created to match a query string like "{id name appearsIn homePlanet friends{name}}".
-
-This ObjectResponse is the heart of the graphql-java-generator, when in client mode. It is responsible for:
+The _ObjectResponse_ is the heart of the graphql-java-generator, when in client mode. It is responsible for:
 
 * Defining what fields are expected in the GraphQL server response, for instance "{id name appearsIn homePlanet friends{name}}" 
 * Check the validity of the query string at build time. That is: if the query string is invalid, a GraphQLRequestPreparationException exception is thrown.
 * (in the near future) mark the queried fields as queried, so that calling a getter on a non-queried field result in an error (instead of "believing" that this value is null). 
 
-_Note: In all cases, an ObjectResponse is built. This will help to add future functionnalities_. For instance, in the near future, when you access a field, the generated code will check that this field has actually been queried.
- 
 ## Create an ObjectResponse with a query string
 
 To prepare the queries during startup, you can initialize a local variable, like in the given samples, for instance here is an extract of WithQueries, from the StarWars sample. In this sample, the _heroFriendsFriendsFriends()_ method executes the query and returns the GraphQL server response, mapped into the relevant POJO.

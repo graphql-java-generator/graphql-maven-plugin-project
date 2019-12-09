@@ -1,4 +1,6 @@
 Here are the next tasks listed, as a TODO list:
+* Finish the "## GraphQL query (and mutation) calls" section
+* Client mode: simplify the SSL conf, and update the client doc (removing the complex stuff about SSL)
 * Client mode: Separate documentation for PreparedQueries and WithBuilder queries
     * And simplify the doc in the README and Index (to make them identical) 
 * Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
