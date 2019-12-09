@@ -30,7 +30,7 @@ import com.graphql_java_generator.samples.simple.client.Queries;
  * 
  * @author EtienneSF
  */
-public class WithQueries implements Queries {
+public class PreparedQueries implements Queries {
 
 	final QueryType queryType;
 	final MutationType mutationType;
@@ -61,7 +61,7 @@ public class WithQueries implements Queries {
 	 * @param hostnameVerifier
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public WithQueries(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)
+	public PreparedQueries(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)
 			throws GraphQLRequestPreparationException {
 		queryType = new QueryType(graphqlEndpoint, sslContext, hostnameVerifier);
 		mutationType = new MutationType(graphqlEndpoint, sslContext, hostnameVerifier);

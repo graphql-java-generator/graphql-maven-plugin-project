@@ -25,7 +25,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author EtienneSF
  */
-public class WithQueries implements Queries {
+public class PreparedQueries implements Queries {
 
 	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
 	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
@@ -37,7 +37,7 @@ public class WithQueries implements Queries {
 	ObjectResponse findTopicIdDateTitleContent;
 	ObjectResponse createBoardResponse;
 
-	public WithQueries() throws GraphQLRequestPreparationException {
+	public PreparedQueries() throws GraphQLRequestPreparationException {
 		// No field specified: all known scalar fields of the root type will be queried
 		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 

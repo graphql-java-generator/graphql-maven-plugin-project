@@ -17,11 +17,11 @@ import com.graphql_java_generator.client.response.GraphQLExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
 import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
-import com.graphql_java_generator.samples.simple.client.graphql.WithQueries;
+import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
 
 /**
  * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
- * {@link WithQueries}, {@link WithBuilder}
+ * {@link PreparedQueries}, {@link WithBuilder}
  * 
  * @author EtienneSF
  */
@@ -45,7 +45,7 @@ public class Main {
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new WithQueries(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
+		execOne(new PreparedQueries(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
