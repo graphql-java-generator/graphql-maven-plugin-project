@@ -20,13 +20,13 @@ class WithBuilderIT extends AbstractIT {
 	@BeforeEach
 	void setUp() throws Exception {
 		Main main = new Main();
-		SSLContext sslContext = main.getSslContext();
+		SSLContext sslContext = main.getNoCheckSslContext();
 		HostnameVerifier hostNameVerifier = main.getHostnameVerifier();
 		// For some tests, we need to execute additional queries
 		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new WithBuilder(Main.graphqlEndpoint, main.getSslContext(), main.getHostnameVerifier());
+		queries = new WithBuilder(Main.graphqlEndpoint, main.getNoCheckSslContext(), main.getHostnameVerifier());
 	}
 
 }

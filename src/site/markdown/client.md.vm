@@ -77,13 +77,9 @@ Where human is a POJO, that you can manipulate as any java object. This POJOs an
 
 You call query and mutation in the same way: by calling the relevant java method that has been generated at build time.
 
-The Query and the Mutation generated classes have the same name, as defined in the GraphQL schema. They are generated into the package defined in your pom (see above). They have two constructors:
+The Query and the Mutation generated classes have the same name, as defined in the GraphQL schema. They are generated into the package defined in your pom (see above). The standard way is to provide the URL (either http or https) to the constuctor of the Query or Mutation class.
 
-* _Xxx(String graphqlEndpoint)_: This constructor is for http GraphQL server. Just provide here the URL for the GraphQL endpoint, for instance "http://localhost:8180/graphql"
-* _Xxx(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)_: This constructor is for https GraphQL server. The parameters are :
-    * The https URL for the GraphQL endpoint. For instance: "https://localhost:8443/starwars/graphql"
-    * The SSLContext. You must provide such a context. There are a lot of doc on the net, for instance [use these initiators](https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/class-use/SSLContext.html) or [these samples](https://www.codota.com/code/java/methods/javax.net.ssl.SSLContext/init) 
-    * The hostnameVerifier. You can the same [as here](https://forums.xamarin.com/discussion/14527/how-do-i-implement-a-custom-host-name-verifier)
+For https server, a second constructor allows you to provide a specific SSLContext and HostnameVerifier. We use it in Integration Test, to allow the client to connect to an https server with a self-signed certificate (as we don't have the money to buy a proper certificate)
 
 Once the Query or/and the Mutation class(es) is/are created, you can call the GraphQL server. Just use the instance, you created, and call the query or mutation method.
 

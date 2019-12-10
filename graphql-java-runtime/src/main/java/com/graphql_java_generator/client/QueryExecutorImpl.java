@@ -44,26 +44,23 @@ public class QueryExecutorImpl implements QueryExecutor {
 	WebTarget webTarget;
 
 	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: http://my.server.com/graphql
+	 * This constructor expects the URI of the GraphQL server<BR/>
+	 * For example: http://my.server.com/graphql or https://my.server.com/graphql
 	 * 
 	 * @param graphqlEndpoint
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public QueryExecutorImpl(String graphqlEndpoint) {
-		if (graphqlEndpoint.startsWith("https:")) {
-			throw new IllegalArgumentException(
-					"This GraphQL endpoint is an https one. Please provide the SSLContext and HostnameVerifier items, by using the relevant Query/Mutation/Subscription constructor");
-		}
 		client = ClientBuilder.newClient();
 		webTarget = client.target(graphqlEndpoint);
 	}
 
 	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: https://my.server.com/graphql
+	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
+	 * http ones.<BR/>
+	 * For example: https://my.server.com/graphql<BR/>
+	 * It allows to specify the SSLContext and the HostnameVerifier. It is used in the integration test... to remove
+	 * most of the control on https protocol, and allow connection to an https with a self-signed certificate.
 	 * 
 	 * @param graphqlEndpoint
 	 *            the https URI for the GraphQL endpoint

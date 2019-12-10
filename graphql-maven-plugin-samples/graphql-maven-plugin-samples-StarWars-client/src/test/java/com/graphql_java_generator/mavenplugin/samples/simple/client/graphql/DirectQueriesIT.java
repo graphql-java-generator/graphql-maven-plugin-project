@@ -20,7 +20,7 @@ class DirectQueriesIT extends AbstractIT {
 	@BeforeEach
 	void setUp() throws Exception {
 		Main main = new Main();
-		SSLContext sslContext = main.getSslContext();
+		SSLContext sslContext = main.getNoCheckSslContext();
 		HostnameVerifier hostNameVerifier = main.getHostnameVerifier();
 		// For some tests, we need to execute additional queries
 		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);

@@ -40,17 +40,17 @@ public class Main {
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		execOne(new DirectQueries(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
+		execOne(new DirectQueries(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new PreparedQueries(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
+		execOne(new PreparedQueries(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new WithBuilder(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier()));
+		execOne(new WithBuilder(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("");
 		System.out.println("");
@@ -108,7 +108,16 @@ public class Main {
 		}
 	}
 
-	public SSLContext getSslContext() throws NoSuchAlgorithmException, KeyManagementException {
+	/**
+	 * Returns a Dummy SSLContext, that won't check the server certificate. With a real check, an exception is thrown,
+	 * as it is self signed.<BR/>
+	 * DON'T USE IT IN PRODUCTION.
+	 * 
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyManagementException
+	 */
+	public SSLContext getNoCheckSslContext() throws NoSuchAlgorithmException, KeyManagementException {
 		SSLContext sslContext = SSLContext.getInstance("TLSv1");
 
 		// Very, very bad. Don't do that in production !
@@ -121,6 +130,11 @@ public class Main {
 		return sslContext;
 	}
 
+	/**
+	 * A dummy checker. DON'T USE IT IN PRODUCTION. But we can't buy a real certificat for this project.
+	 * 
+	 * @return
+	 */
 	public HostnameVerifier getHostnameVerifier() {
 		// Very, very bad. Don't do that in production !
 		return new NoOpHostnameVerifier();
