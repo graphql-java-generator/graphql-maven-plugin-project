@@ -44,7 +44,7 @@ type Topic {
     nbPosts: Int
     title: String!
     content: String
-    posts(since: String): [Post]!
+    posts(memberId: ID, memberName: String, since: String!): [Post]!
 }
 
 type Post {
