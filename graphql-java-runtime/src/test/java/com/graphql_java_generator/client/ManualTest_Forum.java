@@ -3,22 +3,20 @@ package com.graphql_java_generator.client;
 import java.io.IOException;
 import java.util.List;
 
-import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.domain.forum.Board;
-import com.graphql_java_generator.client.domain.forum.Member;
 import com.graphql_java_generator.client.domain.forum.MutationType;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.forum.QueryType;
 import com.graphql_java_generator.client.domain.forum.Topic;
+import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**
- * Manual test for query execution. Not a JUnit test. The automation for this test is done in the
- * graphql-maven-plugin-samples-StarWars-server module. This class is done for manual testing of the client, before
- * checking all around with the maven build of all modules.
+ * Manual test for query execution. Not a JUnit test. This allows to execute checks<BR/>
+ * The automation for this test is done in the graphql-maven-plugin-samples-Forum-server module. This class is done for
+ * manual testing of the client, before checking all around with the whole maven build of all modules.
  * 
  * @author EtienneSF
  */
@@ -30,7 +28,7 @@ public class ManualTest_Forum {
 	static MutationType mutationType = new MutationType(graphqlEndpoint);
 
 	public static void main(String[] args)
-			throws GraphQLExecutionException, IOException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, IOException, GraphQLRequestPreparationException {
 		ObjectResponse resp;
 		List<Board> boards;
 		List<Topic> topics;
@@ -44,7 +42,7 @@ public class ManualTest_Forum {
 
 		// Execution of the query. We get the result back in a POJO
 		boards = queryType.boards(
-				"{id name publiclyAvailable topics{id date author{id name email type} nbPosts posts{date author{name email type}}}}");
+				"{id name publiclyAvailable topics(since: \"2018-12-20\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}");
 
 		System.out.println(boards);
 
@@ -115,9 +113,8 @@ public class ManualTest_Forum {
 		// ObjectResponse
 		ObjectResponse objectResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
 				.withField("publiclyAvailable")//
-				.withSubObject("topics", ObjectResponse.newSubObjectBuilder(Topic.class).withField("date")
-						.withSubObject("author", ObjectResponse.newSubObjectBuilder(Member.class).withField("name")
-								.withField("type").build())
+				.withSubObject(new Builder(QueryType.class, "topics").withField("date")
+						.withSubObject(new Builder(Topic.class, "author").withField("name").withField("type").build())
 						.withField("publiclyAvailable").withField("nbPosts").build())
 				.build();
 
@@ -134,15 +131,12 @@ public class ManualTest_Forum {
 		// ObjectResponse
 		objectResponse = queryType.getTopicsResponseBuilder()//
 				.withField("id").withField("date").withField("publiclyAvailable")//
-				.withSubObject("author",
-						ObjectResponse.newSubObjectBuilder(Member.class).withField("name").withField("type")
-								.withField("email").build())
-				.withSubObject("posts",
-						ObjectResponse.newSubObjectBuilder(Post.class).withField("date").withField("title")
-								.withField("content")
-								.withSubObject("author", ObjectResponse.newSubObjectBuilder(Member.class)
-										.withField("name").withField("type").withField("email").build())
-								.build())
+				.withSubObject(new Builder(Topic.class, "author").withField("name").withField("type").withField("email")
+						.build())
+				.withSubObject(new Builder(Topic.class, "posts").withField("date").withField("title")
+						.withField("content").withSubObject(new Builder(Post.class, "author").withField("name")
+								.withField("type").withField("email").build())
+						.build())
 				.build();
 
 		// Execution of the query. We get the result back in a POJO

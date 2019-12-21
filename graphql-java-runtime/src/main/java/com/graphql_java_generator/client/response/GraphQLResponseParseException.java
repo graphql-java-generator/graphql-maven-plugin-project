@@ -13,7 +13,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
  * 
  * @author EtienneSF
  */
-public class GraphQLResponseParseException extends GraphQLExecutionException {
+public class GraphQLResponseParseException extends GraphQLRequestExecutionException {
 
 	private static final long serialVersionUID = 1L;
 

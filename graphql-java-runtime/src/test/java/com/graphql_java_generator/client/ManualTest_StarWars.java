@@ -12,12 +12,11 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
+import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.ObjectResponse;
 
 /**
@@ -73,8 +72,7 @@ public class ManualTest_StarWars {
 
 		// ObjectResponse
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder().withField("id").withField("name")
-				.withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
+				.withField("appearsIn").withSubObject(new Builder(Character.class, "friends").withField("name").build())
 				.build();
 
 		// Execution of the query. We get the result back in a POJO
@@ -90,8 +88,7 @@ public class ManualTest_StarWars {
 		// ObjectResponse
 		objectResponse = queryType.getHumanResponseBuilder()//
 				.withField("id").withField("name").withField("appearsIn")//
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
-				.build();
+				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
 		// Execution of the query. We get the result back in a POJO
 		human = queryType.human(objectResponse, "00000000-0000-0000-0000-000000000180");

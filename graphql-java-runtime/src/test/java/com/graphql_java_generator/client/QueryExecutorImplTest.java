@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
 import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
+import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
@@ -62,10 +62,10 @@ class QueryExecutorImplTest {
 	void test_buildRequest_ID_characters() throws GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("id", "1"));
+		parameters.add(InputParameter.newHardCodedParameter("id", "1"));
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")//
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -86,11 +86,11 @@ class QueryExecutorImplTest {
 	void test_buildRequest_EpisodeID_characters() throws GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
-		parameters.add(new InputParameter("id", "this is an id"));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("id", "this is an id"));
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")//
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -111,12 +111,11 @@ class QueryExecutorImplTest {
 	void test_buildRequest_Episode_idNameAppearsInFriendsName() throws GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")
-				.withField("id").withField("name").withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero").withField("id").withField("name")
+				.withField("appearsIn").withSubObject(new Builder(Character.class, "friends").withField("name").build())
 				.build();
 
 		// Go, go, go
@@ -133,12 +132,11 @@ class QueryExecutorImplTest {
 		// Preparation
 		Exception exception;
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
 		// The response should contain id and name
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")//
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
 				.withField("id").withField("name").withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).withField("name").build())
-				.build();
+				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
 		assertThrows(NullPointerException.class,
 				() -> queryExecutorImpl.parseResponse(null, objectResponse, Character.class));
@@ -173,12 +171,11 @@ class QueryExecutorImplTest {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")//
-				.withField("id").withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).build())//
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
+				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
 		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}";
@@ -203,12 +200,11 @@ class QueryExecutorImplTest {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")//
-				.withField("id").withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).build())//
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
+				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
 		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[]}}}";
@@ -229,9 +225,8 @@ class QueryExecutorImplTest {
 		// Preparation
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "hero")//
-				.withField("id").withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).build())//
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
+				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
 		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[{\"name\":\"name350518\"},{\"name\":\"name381495\"}]}}}";

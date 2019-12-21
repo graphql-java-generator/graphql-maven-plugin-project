@@ -14,7 +14,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**
@@ -55,14 +55,14 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Human.class)
 	@GraphQLQuery
 	public Human createHuman(String queryResponseDef, String name, String homePlanet)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createHuman' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateHumanResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return createHuman(objectResponse, name, homePlanet);
@@ -76,14 +76,14 @@ public class MutationType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Human.class)
 	@GraphQLQuery
 	public Human createHuman(ObjectResponse objectResponse, String name, String homePlanet)
-			throws GraphQLExecutionException {
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'createHuman' with parameters: {}, {} ", name, homePlanet);
 		} else if (logger.isDebugEnabled()) {
@@ -92,12 +92,12 @@ public class MutationType {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("name", name));
-		parameters.add(new InputParameter("homePlanet", homePlanet));
+		parameters.add(InputParameter.newHardCodedParameter("name", name));
+		parameters.add(InputParameter.newHardCodedParameter("homePlanet", homePlanet));
 
 		if (!Human.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of " + Human.class
-					+ ", but is an instance of " + objectResponse.getClass().getName());
+			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
+					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
 		MutationTypeCreateHuman ret = executor.execute("mutation", objectResponse, parameters,
@@ -113,7 +113,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "createHuman");
+		return new Builder(getClass(), "createHuman");
 	}
 
 	/**
@@ -132,14 +132,14 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
 	public Character addFriend(String queryResponseDef, String idCharacter, String idNewFriend)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'addFriend' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getAddFriendResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return addFriend(objectResponse, idCharacter, idNewFriend);
@@ -153,14 +153,14 @@ public class MutationType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
 	public Character addFriend(ObjectResponse objectResponse, String idCharacter, String idNewFriend)
-			throws GraphQLExecutionException {
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'addFriend' with parameters: {}, {} ", idCharacter, idNewFriend);
 		} else if (logger.isDebugEnabled()) {
@@ -169,11 +169,11 @@ public class MutationType {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("idCharacter", idCharacter));
-		parameters.add(new InputParameter("idNewFriend", idNewFriend));
+		parameters.add(InputParameter.newHardCodedParameter("idCharacter", idCharacter));
+		parameters.add(InputParameter.newHardCodedParameter("idNewFriend", idNewFriend));
 
 		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of "
+			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
@@ -190,7 +190,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getAddFriendResponseBuilder() throws GraphQLRequestPreparationException {
-		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "addFriend");
+		return new Builder(getClass(), "addFriend");
 	}
 
 }

@@ -1,5 +1,5 @@
 Here are the next tasks listed, as a TODO list:
-* Manage field parameters. Currently, GraphQL Java Generator accepts parameters out of the query level (that is on object fields), only with Direct Queries (which is nice enough to begin)
+* Parsing the Query request for Query Preparation should directly call the Builder (instead of creating the QueryField array, then calling the Builder)
 * Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 * Add a gradle plugin (work in progress)
 * Manage properties which name are java keyword, like: public, private, class... Currently, it would generate a compilation error.

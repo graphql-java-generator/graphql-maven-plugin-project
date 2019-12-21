@@ -11,7 +11,7 @@ import org.apache.logging.log4j.MarkerManager;
 
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, and return its
@@ -46,13 +46,13 @@ public interface QueryExecutor {
 	 * @param parameters
 	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
 	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
 	public <T> T execute(String requestType, ObjectResponse objectResponse, List<InputParameter> parameters,
-			Class<T> valueType) throws GraphQLExecutionException;
+			Class<T> valueType) throws GraphQLRequestExecutionException;
 
 	/**
 	 * Execution of the given simple GraphQL query, and return its response mapped in the relevant POJO. This method
@@ -73,9 +73,9 @@ public interface QueryExecutor {
 	 * @param valueType
 	 *            The GraphQL type to map the response into
 	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 * @throws IOException
 	 */
-	public <T> T execute(String graphqlQuery, Class<T> valueType) throws GraphQLExecutionException, IOException;
+	public <T> T execute(String graphqlQuery, Class<T> valueType) throws GraphQLRequestExecutionException, IOException;
 
 }

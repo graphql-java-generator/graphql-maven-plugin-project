@@ -17,15 +17,41 @@ import com.graphql_java_generator.client.response.GraphQLRequestPreparationExcep
  */
 public class Builder {
 
+	/**
+	 * The list of character that can separate tokens, in the GraphQL query string. These token are read by the
+	 * {@link StringTokenizer}.
+	 */
+	private static final String STRING_TOKENIZER_DELIMITER = " {},:()";
+
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	final ObjectResponse objectResponse;
 
+	/** Indicates what is being read by the {@link #readTokenizerForInputParameters(StringTokenizer) method */
+	private enum InputParameterStep {
+		NAME, VALUE
+	};
+
+	/**
+	 * This class gives parsing capabilities for the QueryString for one object.<BR/>
+	 * For instance, for the GraphQL query <I>queryType.boards("{id name publiclyAvailable topics(since:
+	 * \"2018-12-20\"){id}}")</I>, it is created for the field named <I>boards</I>, then the
+	 * {@link #readTokenizerForResponseDefinition(StringTokenizer)} is called for the whole String. <BR/>
+	 * Then another {@link QueryField} is created, for the field named <I>topics</I>, and the <I>(since:
+	 * \"2018-12-20\")</I> is parsed by the {@link #readTokenizerForInputParameters(StringTokenizer)}, then the
+	 * <I>{id}</I> String is parsed by {@link #readTokenizerForResponseDefinition(StringTokenizer)} .
+	 * 
+	 * @author EtienneSF
+	 */
 	class QueryField {
 		/** The name of this field */
 		String name;
 		/** The alias of this field */
 		String alias;
+
+		/** The list of input parameters for this QueryFields */
+		List<InputParameter> inputParameters = new ArrayList<>();
+
 		/**
 		 * All subfields contained in this field. Empty if the field is a GraphQL Scalar. At least one if the field is a
 		 * not a Scalar
@@ -36,8 +62,26 @@ public class Builder {
 			this.name = name;
 		}
 
-		public void readTokenizer(StringTokenizer st) throws GraphQLRequestPreparationException {
-			// The last field we've read.
+		/**
+		 * Reads the definition of the expected response definition from the server. It is recursive.<BR/>
+		 * For instance, for the GraphQL query <I>queryType.boards("{id name publiclyAvailable topics(since:
+		 * \"2018-12-20\"){id}}")</I>, it will be called twice: <BR/>
+		 * Once for the String <I>id name publiclyAvailable topics(since: \"2018-12-20\"){id}}</I> (without the leading
+		 * '{'), where QueryField is <I>boards</I>,<BR/>
+		 * Then for the String <I>id}</I>, where the QueryField is <I>topics</I>
+		 * 
+		 * @param st
+		 *            The {@link StringTokenizer}, where the next token is the first token <B><I>after</I></B> the '{'
+		 *            have already been read. <BR/>
+		 *            The {@link StringTokenizer} is read until the '}' associated with this already read '{'.<BR/>
+		 *            For instance, when this method is called with the {@link StringTokenizer} where these characters
+		 *            are still to read: <I>id date author{name email alias} title content}}</I>, the
+		 *            {@link StringTokenizer} is read until and including the first '}' that follows content. Thus,
+		 *            there is still a '}' to read.
+		 * @throws GraphQLRequestPreparationException
+		 */
+		public void readTokenizerForResponseDefinition(StringTokenizer st) throws GraphQLRequestPreparationException {
+			/** The last field we've read. */
 			QueryField lastReadField = null;
 
 			while (st.hasMoreTokens()) {
@@ -61,15 +105,22 @@ public class Builder {
 					}
 					break;
 				case "(":
-					throw new GraphQLRequestPreparationException(
-							"The given query contains a '(' (parenthesis), field parameters are not managed yet");
+					// We're starting the reading of field parameters
+					if (lastReadField == null) {
+						throw new GraphQLRequestPreparationException(
+								"The given query has a parentesis '(' not preceded by a field name (error while reading field <"
+										+ name + ">");
+					} else {
+						lastReadField.readTokenizerForInputParameters(st);
+					}
+					break;
 				case "{":
 					// The last field we've read is actually an object (a non Scalar GraphQL type), as it itself has
 					// fields
 					if (lastReadField == null) {
 						throw new GraphQLRequestPreparationException(
 								"The given query has two '{', one after another (error while reading field <" + name
-										+ ">) while reading <" + this.name + ">");
+										+ ">)");
 					} else if (lastReadField.fields.size() > 0) {
 						throw new GraphQLRequestPreparationException(
 								"The given query contains a '{' not preceded by a fieldname, after field <"
@@ -77,7 +128,7 @@ public class Builder {
 					} else {
 						// Ok, let's read the field for the subobject, for which we just read the name (and potentiel
 						// alias :
-						lastReadField.readTokenizer(st);
+						lastReadField.readTokenizerForResponseDefinition(st);
 						// Let's clear the lastReadField, as we already have read its content.
 						lastReadField = null;
 					}
@@ -93,15 +144,112 @@ public class Builder {
 				}// switch
 			} // while
 
-			// Oups, we should not arrive here :
+			// Oups, we should not arrive here:
 			throw new GraphQLRequestPreparationException("The field <" + name
 					+ "> has a non finished list of fields (it lacks the finishing '}') while reading <" + this.name
 					+ ">");
 		}
+
+		/**
+		 * Reads the input parameters for a Field. It can be either a Field of a Query, Mutation or Subscription, or a
+		 * Field of a standard GraphQL Type.
+		 * 
+		 * @param st
+		 *            The StringTokenizer, where the opening parenthesis has been read. It will be read until and
+		 *            including the next closing parenthesis.
+		 * @throws GraphQLRequestPreparationException
+		 *             If the request string is invalid
+		 */
+		void readTokenizerForInputParameters(StringTokenizer st) throws GraphQLRequestPreparationException {
+			InputParameterStep step = InputParameterStep.NAME;
+
+			String parameterName = null;
+
+			while (st.hasMoreTokens()) {
+				String token = st.nextToken();
+				switch (token) {
+				case ":":
+				case " ":
+					break;
+				case ",":
+					if (step != InputParameterStep.NAME) {
+						throw new GraphQLRequestPreparationException("Misplacer comma for the field '" + name
+								+ "' is not finished (no closing parenthesis)");
+					}
+					break;
+				case ")":
+					// We should be waiting for a name, and have already read at least one name
+					if (parameterName == null) {
+						throw new GraphQLRequestPreparationException("Misplaced closing parenthesis for the field '"
+								+ name + "' (no parameter has been read)");
+					} else if (step != InputParameterStep.NAME) {
+						throw new GraphQLRequestPreparationException("Misplaced closing parenthesis for the field '"
+								+ name + "' is not finished (no closing parenthesis)");
+					}
+					// We're finished, here.
+					return;
+				default:
+					switch (step) {
+					case NAME:
+						parameterName = token;
+						step = InputParameterStep.VALUE;
+						break;
+					case VALUE:
+						// We've read the parameter value. Let's add this parameter.
+						if (token.startsWith("?")) {
+							inputParameters.add(InputParameter.newBindParameter(parameterName, token.substring(1)));
+						} else {
+							// The inputParameter should start and end by "
+							if (!token.startsWith("\"") || !token.endsWith("\"")) {
+								throw new GraphQLRequestPreparationException(
+										"Bad parameter value: parameter values should start and finish by \". But it's not the case for the value <"
+												+ token + "> of parameter <" + parameterName + ">");
+							}
+							String value = token.substring(1, token.length() - 1);
+							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, value));
+						}
+						step = InputParameterStep.NAME;
+						break;
+					}
+				}
+			}
+
+			throw new GraphQLRequestPreparationException(
+					"The list of parameters for the field '" + name + "' is not finished (no closing parenthesis)");
+		}
+	}// class QueryField
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////// START OF THE CLASS CODE /////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Creates a Builder, for a field without alias
+	 * 
+	 * @param owningClass
+	 *            The class that contains this field
+	 * @param fieldName
+	 *            The field for which we must build an ObjectResponse
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder(Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
+		objectResponse = new ObjectResponse(owningClass, fieldName, null);
 	}
 
-	Builder(Class<?> objectClass) {
-		objectResponse = new ObjectResponse(objectClass);
+	/**
+	 * Creates a Builder
+	 * 
+	 * @param owningClass
+	 *            The class that contains this field
+	 * @param fieldName
+	 *            The field for which we must build an ObjectResponse
+	 * @param fieldAlias
+	 *            Its optional alias (may be null)
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder(Class<?> owningClass, String fieldName, String fieldAlias)
+			throws GraphQLRequestPreparationException {
+		objectResponse = new ObjectResponse(owningClass, fieldName, fieldAlias);
 	}
 
 	/**
@@ -131,71 +279,73 @@ public class Builder {
 	 */
 	public Builder withField(String fieldName, String alias) throws GraphQLRequestPreparationException {
 		// We check that this field exist, and is a scaler
-		graphqlUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.fieldClass);
+		graphqlUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz);
 
 		// Let's check that this field is not already in the list
 		for (ObjectResponse.Field field : objectResponse.scalarFields) {
 			if (field.name.equals(fieldName)) {
 				throw new GraphQLRequestPreparationException("The field <" + fieldName
-						+ "> is already in the field list for the objet <" + objectResponse.fieldName + ">");
+						+ "> is already in the field list for the objet <" + objectResponse.field.name + ">");
 			}
 		}
 
 		// This will check that the alias is null or a valid GraphQL identifier
-		objectResponse.scalarFields.add(new ObjectResponse.Field(fieldName, alias));
+		objectResponse.scalarFields.add(new ObjectResponse.Field(fieldName, alias, objectResponse.field.clazz,
+				graphqlUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz)));
 		return this;
 	}
 
 	/**
-	 * Adds a non scalar field (a subobject) without alias, to the {@link ObjectResponse} we are building
+	 * Add an {@link InputParameter} to the current Object Response definition.
 	 * 
-	 * @param fieldName
-	 * @param alias
-	 * @return The current builder, to allow the standard builder construction chain
-	 * @throws NullPointerException
-	 *             If the fieldName is null
-	 * @throws GraphQLRequestPreparationException
-	 *             If the fieldName or the fieldAlias is not valid
+	 * @param inputParameter
+	 * @return The current {@link Builder}
 	 */
-	public Builder withSubObject(String fieldName, ObjectResponse objectResponse)
-			throws GraphQLRequestPreparationException {
-		return withSubObject(fieldName, null, objectResponse);
+	public Builder withInputParameter(InputParameter inputParameter) {
+		objectResponse.addInputParameter(inputParameter);
+		return this;
 	}
 
 	/**
-	 * Adds a scalar field (a subobject) with an alias, to the {@link ObjectResponse} we are building
+	 * Add a list of {@link InputParameter}s to the current Object Response definition.
 	 * 
-	 * @param fieldName
-	 * @param alias
+	 * @param inputParameters
+	 * @return The current {@link Builder}
+	 */
+	public Builder withInputParameters(List<InputParameter> inputParameters) {
+		objectResponse.addInputParameters(inputParameters);
+		return this;
+	}
+
+	/**
+	 * Adds a non scalar field (a sub-object), to the {@link ObjectResponse} we are building. The given objectResponse
+	 * contains the field name and its optional alias.
+	 * 
+	 * @param subobjetResponseDef
+	 *            The {@link ObjectResponse} for this sub-object
 	 * @return The current builder, to allow the standard builder construction chain
 	 * @throws NullPointerException
 	 *             If the fieldName is null
 	 * @throws GraphQLRequestPreparationException
-	 *             If the fieldName or the fieldAlias is not valid
+	 *             If the subobjetResponseDef can't be added. For instance: the fieldName or the fieldAlias is not
+	 *             valid, or if the field of this subobjetResponseDef doesn't exist in the current owningClass...
 	 */
-	public Builder withSubObject(String fieldName, String fieldAlias, ObjectResponse subobjetResponseDef)
-			throws GraphQLRequestPreparationException {
-
-		// The subobject is identified by the given fieldName in the fieldClass of the current objetResponseDef.
-		// Let's check that the responseDefParam is of the good class.
-		Class<?> subObjetClass = graphqlUtils.checkFieldOfGraphQLType(fieldName, false, objectResponse.fieldClass);
-		if (!subObjetClass.equals(subobjetResponseDef.fieldClass)) {
-			throw new GraphQLRequestPreparationException("Error creating subobject: the given field <" + fieldName
-					+ "> is of type " + subObjetClass.getName() + ", but the given ObjetResponseDef is of type "
-					+ subobjetResponseDef.fieldClass.getName());
+	public Builder withSubObject(ObjectResponse subobjetResponseDef) throws GraphQLRequestPreparationException {
+		// The sub-object must be based ... on a subobject of the current Field.
+		// That is: the owningClass for the subject must be our field class.
+		if (subobjetResponseDef.field.owningClass != objectResponse.getFieldClass()) {
+			throw new GraphQLRequestPreparationException("Trying to add the Field '"
+					+ subobjetResponseDef.getFieldName() + "' owned by the class '"
+					+ subobjetResponseDef.getOwningClass().getName() + "' to the field '"
+					+ objectResponse.getFieldName() + "' of class '" + objectResponse.getFieldClass().getName() + "'");
 		}
-
-		// Let's check that this subobject is not already in the list
+		// Let's check that this sub-object is not already in the list
 		for (ObjectResponse subObject : objectResponse.subObjects) {
-			if (subObject.fieldName.equals(fieldName)) {
-				throw new GraphQLRequestPreparationException("The field <" + subObject.fieldName
-						+ "> is already in the field list for the objet <" + objectResponse.fieldName + ">");
+			if (subObject.field.name.equals(subobjetResponseDef.getFieldName())) {
+				throw new GraphQLRequestPreparationException("The field <" + subObject.field.name
+						+ "> is already in the field list for the objet <" + objectResponse.field.name + ">");
 			}
 		}
-
-		// Ok, s let's create the subobject
-		subobjetResponseDef.setOwningClass(this.objectResponse.fieldClass);
-		subobjetResponseDef.setField(fieldName, fieldAlias);
 
 		// Then, we register this objectResponse as a subObject
 		this.objectResponse.subObjects.add(subobjetResponseDef);
@@ -212,7 +362,7 @@ public class Builder {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public ObjectResponse build() throws GraphQLRequestPreparationException {
-		// If no field (either scalar or suboject) has been added, then all scalar fields are added.
+		// If no field (either scalar or sub-object) has been added, then all scalar fields are added.
 		if (objectResponse.scalarFields.size() == 0 && objectResponse.subObjects.size() == 0) {
 			addKnownScalarFields();
 		}
@@ -238,10 +388,11 @@ public class Builder {
 			addKnownScalarFields();
 		} else {
 			// Ok, we have to parse a string which looks like that: "{ id name friends{name}}"
-			// We first replace each "{" by " { " and "}" by " } ". Then we tokenize the string, by using the space as a
-			// delimiter
-			StringTokenizer st = new StringTokenizer(queryResponseDef, " {}:()", true);
+			// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
+			StringTokenizer st = new StringTokenizer(queryResponseDef, STRING_TOKENIZER_DELIMITER, true);
+
 			// We expect a first "{"
+			// But leading spaces are allowed. Let's skip them.
 			String token = " ";
 			while (token.equals(" ")) {
 				token = st.nextToken();
@@ -250,9 +401,9 @@ public class Builder {
 				throw new GraphQLRequestPreparationException("The queryResponseDef should start with '{'");
 			}
 
-			QueryField queryField = new QueryField(objectResponse.fieldName);
+			QueryField queryField = new QueryField(objectResponse.field.name);
 			try {
-				queryField.readTokenizer(st);
+				queryField.readTokenizerForResponseDefinition(st);
 			} catch (GraphQLRequestPreparationException e) {
 				throw new GraphQLRequestPreparationException(
 						e.getMessage() + " while reading the queryReponseDef: " + queryResponseDef, e);
@@ -339,10 +490,9 @@ public class Builder {
 				withField(field.name, field.alias);
 			} else {
 				// It's a non Scalar field : we'll recurse down one level, by calling withQueryField again.
-				ObjectResponse subobjectResponseDef = ObjectResponse
-						.newQueryResponseDefBuilder(objectResponse.fieldClass, field.name, field.alias)
-						.withQueryField(field).build();
-				withSubObject(field.name, field.alias, subobjectResponseDef);
+				Builder subobjectResponseDef = new Builder(objectResponse.field.clazz, field.name, field.alias)
+						.withQueryField(field).withInputParameters(field.inputParameters);
+				withSubObject(subobjectResponseDef.build());
 			}
 		}
 

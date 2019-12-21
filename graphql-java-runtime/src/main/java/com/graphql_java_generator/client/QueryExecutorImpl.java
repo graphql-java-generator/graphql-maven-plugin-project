@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLResponseParseException;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 
@@ -79,7 +79,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	/** {@inheritDoc} */
 	@Override
 	public <T> T execute(String requestType, ObjectResponse objectResponse, List<InputParameter> parameters,
-			Class<T> valueType) throws GraphQLExecutionException {
+			Class<T> valueType) throws GraphQLRequestExecutionException {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
@@ -88,13 +88,14 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 			return doJsonRequestExecution(request, valueType);
 		} catch (IOException e) {
-			throw new GraphQLExecutionException("Error when executing query <" + request + ">: " + e.getMessage(), e);
+			throw new GraphQLRequestExecutionException(
+					"Error when executing query <" + request + ">: " + e.getMessage(), e);
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String query, Class<T> valueType) throws IOException, GraphQLExecutionException {
+	public <T> T execute(String query, Class<T> valueType) throws IOException, GraphQLRequestExecutionException {
 		return doJsonRequestExecution(query, valueType);
 	}
 
@@ -109,9 +110,10 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            The GraphQL type to map the response into
 	 * @return
 	 * @throws IOException
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 */
-	<T> T doJsonRequestExecution(String jsonRequest, Class<T> valueType) throws IOException, GraphQLExecutionException {
+	<T> T doJsonRequestExecution(String jsonRequest, Class<T> valueType)
+			throws IOException, GraphQLRequestExecutionException {
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
 
@@ -143,9 +145,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 				}
 			}
 			if (nbErrors == 0) {
-				throw new GraphQLExecutionException("An unknown error occured");
+				throw new GraphQLRequestExecutionException("An unknown error occured");
 			} else {
-				throw new GraphQLExecutionException(nbErrors + " errors occured: " + agregatedMessage);
+				throw new GraphQLRequestExecutionException(nbErrors + " errors occured: " + agregatedMessage);
 			}
 		}
 	}
@@ -172,14 +174,14 @@ public class QueryExecutorImpl implements QueryExecutor {
 		sb.append(requestType).append(" ");
 		sb.append("{");
 		sb.append(objectResponse.getFieldName());
-		if (parameters != null && parameters.size() > 0) {
+		if (objectResponse.getInputParameters().size() > 0) {
 			sb.append("(");
 			boolean writeComma = false;
-			for (InputParameter param : parameters) {
+			for (InputParameter param : objectResponse.getInputParameters()) {
 				if (writeComma)
 					sb.append(", ");
 				writeComma = true;
-				sb.append(param.getName()).append(": ").append(param.getValueForGraphqlQuery());
+				sb.append(param.getName()).append(": ").append(param.getValueForGraphqlQuery(parameters));
 			} // for
 			sb.append(")");
 		}

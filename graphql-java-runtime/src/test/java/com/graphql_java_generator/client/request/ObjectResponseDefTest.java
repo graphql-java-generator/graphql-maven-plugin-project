@@ -11,94 +11,68 @@ import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
-import com.graphql_java_generator.client.request.Builder;
-import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 class ObjectResponseDefTest {
 
 	@Test
-	void testResponseDefinitionImpl() {
-		ObjectResponse objectResponse = new ObjectResponse(Human.class);
-		objectResponse.setOwningClass(QueryType.class);
+	void testResponseDefinitionImpl() throws GraphQLRequestPreparationException {
+		ObjectResponse objectResponse = new ObjectResponse(QueryType.class, "human");
 
 		assertEquals(0, objectResponse.scalarFields.size(), "list fields initialized, and no field before start");
 		assertEquals(0, objectResponse.subObjects.size(), "list subObjects initialized, and no field before start");
 		assertEquals(QueryExecutor.GRAPHQL_MARKER, objectResponse.marker, "Marker");
-		assertEquals(Human.class, objectResponse.fieldClass, "Name");
-		assertNull(objectResponse.fieldAlias, "alias");
+		assertEquals(Human.class, objectResponse.getFieldClass(), "Classname");
+		assertEquals("human", objectResponse.getFieldName(), "name");
+		assertNull(objectResponse.getFieldAlias(), "alias");
 	}
 
 	@Test
 	void test_setFieldName_OK() throws GraphQLRequestPreparationException {
 		// Preparation
-		ObjectResponse objectResponse = new ObjectResponse(Character.class);
-		objectResponse.setOwningClass(Human.class);
-
-		// Go, go, go
-		objectResponse.setField("friends");
+		ObjectResponse objectResponse = new ObjectResponse(Human.class, "friends");
 
 		// Verification
 		assertEquals("friends", objectResponse.getFieldName(), "getter");
-		assertEquals("friends", objectResponse.fieldName, "attribute");
+		assertEquals("friends", objectResponse.field.name, "attribute");
+		assertEquals(null, objectResponse.field.alias, "alias");
 	}
 
 	@Test
-	void test_setFieldName_KO() {
-		// Preparation
-		ObjectResponse objectResponse = new ObjectResponse(Character.class);
-		objectResponse.setOwningClass(Human.class);
-		Exception e;
-
-		// Go, go, go
-		e = assertThrows(NullPointerException.class, () -> objectResponse.setField(null));
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> objectResponse.setField("doesNotExist"));
+	void test_setFieldName_KO() throws GraphQLRequestPreparationException {
+		Exception e = assertThrows(NullPointerException.class, () -> new ObjectResponse(Human.class, null));
+		e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new ObjectResponse(Human.class, "doesNotExist"));
 		assertTrue(e.getMessage().contains("doesNotExist"), "doesNotExist doesn't exist");
 
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> objectResponse.setField("name"));
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new ObjectResponse(Human.class, "name"));
 		assertTrue(e.getMessage().contains("name"), "name is a scalar (no response def for a scalar)");
 	}
 
 	@Test
 	void test_setFieldAlias_OK() throws GraphQLRequestPreparationException {
 		// Preparation
-		ObjectResponse objectResponse = new ObjectResponse(Character.class);
-		objectResponse.setOwningClass(Human.class);
-
-		// Go, go, go
-		objectResponse.setField("friends", "aValidAlias");
+		ObjectResponse objectResponse = new ObjectResponse(Human.class, "friends", "aValidAlias");
 
 		// Verification
 		assertEquals("friends", objectResponse.getFieldName(), "getter");
-		assertEquals("friends", objectResponse.fieldName, "attribute");
+		assertEquals("friends", objectResponse.field.name, "attribute");
 		assertEquals("aValidAlias", objectResponse.getFieldAlias(), "getter");
-		assertEquals("aValidAlias", objectResponse.fieldAlias, "attribute");
-
-		// Go, go, go
-		objectResponse.setField("friends", null);
-
-		// Verification
-		assertEquals(null, objectResponse.getFieldAlias(), "getter");
-		assertEquals(null, objectResponse.fieldAlias, "attribute");
+		assertEquals("aValidAlias", objectResponse.field.alias, "attribute");
 	}
 
 	@Test
 	void test_setFieldAlias_KO() {
-		// Preparation
-		ObjectResponse objectResponse = new ObjectResponse(Character.class);
-		objectResponse.setOwningClass(Human.class);
-
-		// Go, go, go
 		Exception e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> objectResponse.setField("friends", "not valid"));
+				() -> new ObjectResponse(Human.class, "friends", "not valid"));
 		assertTrue(e.getMessage().contains("not valid"), "'not valid' is not a valid identifier");
 	}
 
 	@Test
 	void testAppendResponseQuery_noSubResponseDef() throws GraphQLRequestPreparationException {
 		// Preparation
-		ObjectResponse objectResponse = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "human")
-				.withField("name", "aliasForName").withField("id").withField("homePlanet").build();
+		ObjectResponse objectResponse = new Builder(QueryType.class, "human").withField("name", "aliasForName")
+				.withField("id").withField("homePlanet").build();
 		StringBuilder sb = new StringBuilder();
 
 		// Go, go, go
@@ -112,16 +86,15 @@ class ObjectResponseDefTest {
 	void testAppendResponseQuery_withSubObjects() throws GraphQLRequestPreparationException {
 		// Preparation
 
-		ObjectResponse subFriendsResponseDef = ObjectResponse.newSubObjectBuilder(Character.class)
-				.withField("id").withField("name").withField("appearsIn").build();
+		ObjectResponse subFriendsResponseDef = new Builder(Character.class, "friends").withField("id").withField("name")
+				.withField("appearsIn").build();
 
-		ObjectResponse friendsResponseDef = ObjectResponse.newSubObjectBuilder(Character.class)
-				.withField("id").withField("name", "aliasForName").withSubObject("friends", subFriendsResponseDef)
-				.build();
+		ObjectResponse friendsResponseDef = new Builder(Character.class, "friends").withField("id")
+				.withField("name", "aliasForName").withSubObject(subFriendsResponseDef).build();
 
-		Builder builder = ObjectResponse.newQueryResponseDefBuilder(QueryType.class, "human");
+		Builder builder = new Builder(QueryType.class, "human", "aliasForFriends");
 		builder.withField("id", "aliasForId");
-		builder.withSubObject("friends", "aliasForFriends", friendsResponseDef);
+		builder.withSubObject(friendsResponseDef);
 		builder.withField("name");
 		builder.withField("homePlanet");
 		ObjectResponse objectResponse = builder.build();

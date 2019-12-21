@@ -57,51 +57,43 @@ public class ObjectResponse {
 	static GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	/**
-	 * Internal class represents an attribute of a GraphQL Object, that should appear in the response from the GraphQL
+	 * Internal class represents a field of a GraphQL Object, that should appear in the response from the GraphQL
 	 * server.
 	 */
 	static class Field {
 		final String name;
 		final String alias;
+		final Class<?> owningClass;
+		final Class<?> clazz;
+		final List<InputParameter> inputParameters;
 
-		Field(String name, String alias) throws GraphQLRequestPreparationException {
+		Field(String name, String alias, Class<?> owningClass, Class<?> clazz)
+				throws GraphQLRequestPreparationException {
 			graphqlUtils.checkName(name);
 			if (alias != null) {
 				graphqlUtils.checkName(alias);
 			}
 			this.name = name;
 			this.alias = alias;
+			this.owningClass = owningClass;
+			this.clazz = clazz;
+			this.inputParameters = new ArrayList<>();
 		}
 	}
 
 	Marker marker = QueryExecutor.GRAPHQL_MARKER;
 
 	/**
-	 * Indicates the GraphQL which contains the field, for which this object lists the field and sub-objects that should
-	 * be returned by the GraphQL server
+	 * Indicates the field within the owning object, for which this {@link ObjectResponse} lists the fields and
+	 * sub-objects that should be returned by the GraphQL server.
 	 */
-	Class<?> owningClass;
-
-	/**
-	 * Indicates the fieldName within the owning objet, for which this {@link ObjectResponse} lists the fields and
-	 * sub-objects that should be returned by the GraphQL server
-	 */
-	String fieldName;
-	/**
-	 * Indicates the class of the field, for which fieldName within the {@link ObjectResponse} lists the fields and
-	 * sub-objects that should be returned by the GraphQL server
-	 */
-	Class<?> fieldClass;
-	/**
-	 * Indicates the alias under which this GraphQl field should be returned by the GraphQL server
-	 */
-	String fieldAlias;
+	final Field field;
 
 	/** The list of fields that the GraphQL server should return for this GraphQL object */
 	List<Field> scalarFields = new ArrayList<>();
 
 	/**
-	 * The list of direct sub-ojects that the GraphQL server should return for this GraphQL object, in the form of the
+	 * The list of direct sub-objects that the GraphQL server should return for this GraphQL object, in the form of the
 	 * list of what response is expected for each. This is recursive, so of course, this sub-object may also have their
 	 * own sub-objects
 	 */
@@ -111,144 +103,81 @@ public class ObjectResponse {
 	 * A {@link ObjectResponse} can only be created through the {@link Builder} created for it. See the
 	 * {@link #newResponseDefBuilder(String)} to create such a builder.
 	 * 
-	 * @param fieldClass
-	 *            the class of the field, for which we'll define the
+	 * @param owningClass
+	 *            The class that owns the field for which we create this ObjectResponse
+	 * @param fieldName
+	 *            The field in the owningClass that owns the field for which we create this ObjectResponse
+	 * @throws GraphQLRequestPreparationException
+	 *             If the given field name doesn't exist in this owningClass
 	 * @see #newResponseDefBuilder(String)
 	 */
-	ObjectResponse(Class<?> fieldClass) {
-		this.fieldClass = fieldClass;
+	ObjectResponse(Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
+		this(owningClass, fieldName, null);
 	}
 
 	/**
-	 * Contruct a new {@link Builder}. You can then call the withField or withSubObject methods to
+	 * A {@link ObjectResponse} can only be created through the {@link Builder} created for it. See the
+	 * {@link #newResponseDefBuilder(String)} to create such a builder.
 	 * 
-	 * @param clazz
-	 *            The Class for which contains the field for which this {@link ObjectResponse} defines the expected
-	 *            response from the GraphQL server
+	 * @param owningClass
+	 *            The class that owns the field for which we create this ObjectResponse
 	 * @param fieldName
-	 *            The name of the field for which this {@link ObjectResponse} defines the expected response from the
-	 *            GraphQL server. There will be no alias for this field in the request.
-	 * @return
-	 * @throws NullPointerException
-	 *             If the fieldName is null
-	 * @throws GraphQLRequestPreparationException
-	 *             If the fieldName is not valid
-	 */
-	public static Builder newQueryResponseDefBuilder(Class<?> clazz, String fieldName)
-			throws GraphQLRequestPreparationException {
-		return newQueryResponseDefBuilder(clazz, fieldName, null);
-	}
-
-	/**
-	 * Contruct a new {@link Builder}
-	 * 
-	 * @param clazz
-	 *            The Class for which contains the field for which this {@link ObjectResponse} defines the expected
-	 *            response from the GraphQL server
-	 * @param fieldName
-	 *            The name of the field for which this {@link ObjectResponse} defines the expected response from the
-	 *            GraphQL server
+	 *            The field in the owningClass that owns the field for which we create this ObjectResponse
 	 * @param fieldAlias
-	 *            The alias for this field. Typically necessay if you want to do two queries of the name within one
-	 *            server call
-	 * @return
-	 * @throws NullPointerException
-	 *             If the fieldName is null
+	 *            The optional alias for this field (may be null)
 	 * @throws GraphQLRequestPreparationException
-	 *             If the fieldName or the fieldAlias is not valid
+	 *             If the given field name doesn't exist in this owningClass
+	 * @see #newResponseDefBuilder(String)
 	 */
-	public static Builder newQueryResponseDefBuilder(Class<?> clazz, String fieldName, String fieldAlias)
+	ObjectResponse(Class<?> owningClass, String fieldName, String fieldAlias)
 			throws GraphQLRequestPreparationException {
-		Builder ret = new Builder(clazz);
-
-		// The next line checks that the given name is not null, and is owned by the ObjectResponse class (that is:
-		// the given clazz), and that the alias is a valid GraphQL identifier
-		ret.objectResponse.setOwningClass(clazz);
-		ret.objectResponse.setField(fieldName, fieldAlias);
-
-		return ret;
+		this.field = new Field(fieldName, fieldAlias, owningClass,
+				graphqlUtils.checkFieldOfGraphQLType(fieldName, false, owningClass));
 	}
 
 	/**
-	 * Contruct a new {@link Builder}
+	 * Retrieves the alias for the field, which response is defined by this instance
 	 * 
-	 * @param name
 	 * @return
 	 */
-	public static Builder newSubObjectBuilder(Class<?> clazz) {
-		return new Builder(clazz);
-	}
-
-	/**
-	 * Sets the clazz that contains the non scalar field, which response is defined by the {@link ObjectResponse}.
-	 * 
-	 * @param clazz
-	 *            may not be null
-	 * @throw NullPointerException when clazz is null
-	 */
-	void setOwningClass(Class<?> clazz) {
-		if (clazz == null) {
-			throw new NullPointerException("The owningClass of an " + this.getClass().getName() + " may not be null");
-		}
-		this.owningClass = clazz;
-	}
-
-	/**
-	 * Defines the field for this {@link ObjectResponse}, with a null alias. See
-	 * {@link ObjectResponse#setField(String, String)} for more information
-	 * 
-	 * @param fieldName
-	 *            The name of the field
-	 * @throws NullPointerException
-	 *             If fieldName is null
-	 * @throws GraphQLRequestPreparationException
-	 *             If the given fieldName is not a valid identifier, or if the field is not owned by the class of this
-	 *             {@link ObjectResponse} or if this field is not a scalar ({@link ObjectResponse} can not be built for
-	 *             scalars)
-	 */
-	void setField(String fieldName) throws GraphQLRequestPreparationException {
-		setField(fieldName, null);
-	}
-
-	/**
-	 * Set the field for this {@link ObjectResponse}, that is the field for which the instance describes what response
-	 * is expected from the GraphQL Server. This method checks that the given GraphQL name is valid, and that the class
-	 * of this {@link ObjectResponse} actually contains such a field. This field can be either a non scalar field of an
-	 * object, a query of a QueryType, a mutation of a MutationType, a subscription of a SubscriptionType.
-	 * 
-	 * @param fieldName
-	 *            The name of the field
-	 * @param fieldAlias
-	 *            The alias for this field. It can be null
-	 * @throws NullPointerException
-	 *             If fieldName is null
-	 * @throws GraphQLRequestPreparationException
-	 *             If the given fieldName is not a valid identifier, or if the field is not owned by the class of this
-	 *             {@link ObjectResponse} or if this field is not a scalar ({@link ObjectResponse} can not be built for
-	 *             scalars)
-	 */
-	void setField(String fieldName, String fieldAlias) throws GraphQLRequestPreparationException {
-		// We check that this field exist, whether or not it is a scaler
-		Class<?> clazz = graphqlUtils.checkFieldOfGraphQLType(fieldName, false, owningClass);
-		if (fieldAlias != null) {
-			graphqlUtils.checkName(fieldAlias);
-		}
-
-		this.fieldName = fieldName;
-		this.fieldAlias = fieldAlias;
-		this.fieldClass = clazz;
-	}
-
 	public String getFieldAlias() {
-		return fieldAlias;
+		return field.alias;
 	}
 
+	/**
+	 * Retrieves the GraphQL type that owns the field, which response is defined by this instance
+	 * 
+	 * @return
+	 */
+	public Class<?> getOwningClass() {
+		return field.owningClass;
+	}
+
+	/**
+	 * Retrieves the class for the field, which response is defined by this instance
+	 * 
+	 * @return
+	 */
 	public Class<?> getFieldClass() {
-		return fieldClass;
+		return field.clazz;
 	}
 
+	/**
+	 * Retrieves the name for the field, which response is defined by this instance
+	 * 
+	 * @return
+	 */
 	public String getFieldName() {
-		return fieldName;
+		return field.name;
+	}
+
+	/**
+	 * Retrieves the {@link InputParameter} for the field, which response is defined by this instance
+	 * 
+	 * @return
+	 */
+	public List<InputParameter> getInputParameters() {
+		return field.inputParameters;
 	}
 
 	/**
@@ -264,7 +193,7 @@ public class ObjectResponse {
 	public void appendResponseQuery(StringBuilder sb) {
 
 		if (scalarFields.size() > 0 || subObjects.size() > 0) {
-			logger.debug("Appending ReponseDef content for field " + fieldName + " of type " + fieldClass);
+			logger.debug("Appending ReponseDef content for field " + field.name + " of type " + field.clazz);
 			sb.append("{");
 
 			// We first loop through the field of the current ObjectResponse
@@ -272,7 +201,7 @@ public class ObjectResponse {
 
 			// Then we loop though all sub-objects
 			for (ObjectResponse o : subObjects) {
-				appendFieldName(sb, o.fieldName, o.fieldAlias);
+				appendFieldName(sb, o.field.name, o.field.alias);
 				// Let's add all queried fields for this object
 				o.appendResponseQuery(sb);
 			} // for
@@ -296,6 +225,24 @@ public class ObjectResponse {
 		}
 
 		sb.append(name);
+	}
+
+	/**
+	 * Add an {@link InputParameter} to this object.
+	 * 
+	 * @param inputParameter
+	 */
+	public void addInputParameter(InputParameter inputParameter) {
+		field.inputParameters.add(inputParameter);
+	}
+
+	/**
+	 * Add a list of {@link InputParameter}s to this object.
+	 * 
+	 * @param inputParameters
+	 */
+	public void addInputParameters(List<InputParameter> inputParameters) {
+		field.inputParameters.addAll(inputParameters);
 	}
 
 }

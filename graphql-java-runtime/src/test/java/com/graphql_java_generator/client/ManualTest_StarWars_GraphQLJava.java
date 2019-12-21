@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
@@ -31,7 +31,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
  */
 public class ManualTest_StarWars_GraphQLJava {
 
-	public static void main(String[] args) throws GraphQLExecutionException, IOException {
+	public static void main(String[] args) throws GraphQLRequestExecutionException, IOException {
 		ManualTest_StarWars_GraphQLJava test = new ManualTest_StarWars_GraphQLJava();
 		test.executeHero();
 		// test.executeHuman();

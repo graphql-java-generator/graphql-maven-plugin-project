@@ -17,7 +17,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**
@@ -73,14 +73,14 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
 	public Character hero(String queryResponseDef, Episode episode)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'hero' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getHeroResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return hero(objectResponse, episode);
@@ -94,13 +94,13 @@ public class QueryType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
-	public Character hero(ObjectResponse objectResponse, Episode episode) throws GraphQLExecutionException {
+	public Character hero(ObjectResponse objectResponse, Episode episode) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'hero' with parameters: {} ", episode);
 		} else if (logger.isDebugEnabled()) {
@@ -109,10 +109,10 @@ public class QueryType {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", episode));
+		parameters.add(InputParameter.newHardCodedParameter("episode", episode));
 
 		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of "
+			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
@@ -128,7 +128,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getHeroResponseBuilder() throws GraphQLRequestPreparationException {
-		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "hero");
+		return new Builder(getClass(), "hero");
 	}
 
 	/**
@@ -147,14 +147,14 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
 	public List<Character> characters(String queryResponseDef, Episode episode)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'characters' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCharactersResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return characters(objectResponse, episode);
@@ -168,13 +168,14 @@ public class QueryType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
-	public List<Character> characters(ObjectResponse objectResponse, Episode episode) throws GraphQLExecutionException {
+	public List<Character> characters(ObjectResponse objectResponse, Episode episode)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'characters' with parameters: {} ", episode);
 		} else if (logger.isDebugEnabled()) {
@@ -183,10 +184,10 @@ public class QueryType {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("episode", episode));
+		parameters.add(InputParameter.newHardCodedParameter("episode", episode));
 
 		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of "
+			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
@@ -202,7 +203,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCharactersResponseBuilder() throws GraphQLRequestPreparationException {
-		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "characters");
+		return new Builder(getClass(), "characters");
 	}
 
 	/**
@@ -221,14 +222,14 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Human.class)
 	@GraphQLQuery
 	public Human human(String queryResponseDef, String id)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'human' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getHumanResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return human(objectResponse, id);
@@ -242,13 +243,13 @@ public class QueryType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Human.class)
 	@GraphQLQuery
-	public Human human(ObjectResponse objectResponse, String id) throws GraphQLExecutionException {
+	public Human human(ObjectResponse objectResponse, String id) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'human' with parameters: {} ", id);
 		} else if (logger.isDebugEnabled()) {
@@ -257,11 +258,11 @@ public class QueryType {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("id", id));
+		parameters.add(InputParameter.newHardCodedParameter("id", id));
 
 		if (!Human.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of " + Human.class
-					+ ", but is an instance of " + objectResponse.getClass().getName());
+			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
+					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
 		QueryTypeHuman ret = executor.execute("query", objectResponse, parameters, QueryTypeHuman.class);
@@ -276,7 +277,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "human");
+		return new Builder(getClass(), "human");
 	}
 
 	/**
@@ -295,14 +296,14 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Droid.class)
 	@GraphQLQuery
 	public Droid droid(String queryResponseDef, String id)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'droid' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getDroidResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return droid(objectResponse, id);
@@ -316,13 +317,13 @@ public class QueryType {
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 	 * @param episode
 	 * @throws IOException
-	 * @throws GraphQLExecutionException
+	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(graphqlType = Droid.class)
 	@GraphQLQuery
-	public Droid droid(ObjectResponse objectResponse, String id) throws GraphQLExecutionException {
+	public Droid droid(ObjectResponse objectResponse, String id) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'droid' with parameters: {} ", id);
 		} else if (logger.isDebugEnabled()) {
@@ -331,11 +332,11 @@ public class QueryType {
 
 		// InputParameters
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(new InputParameter("id", id));
+		parameters.add(InputParameter.newHardCodedParameter("id", id));
 
 		if (!Droid.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLExecutionException("The ObjectResponse parameter should be an instance of " + Droid.class
-					+ ", but is an instance of " + objectResponse.getClass().getName());
+			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
+					+ Droid.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
 		QueryTypeDroid ret = executor.execute("query", objectResponse, parameters, QueryTypeDroid.class);
@@ -350,7 +351,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getDroidResponseBuilder() throws GraphQLRequestPreparationException {
-		return ObjectResponse.newQueryResponseDefBuilder(getClass(), "droid");
+		return new Builder(getClass(), "droid");
 	}
 
 }
