@@ -1,8 +1,8 @@
 package com.graphql_java_generator.client.domain.forum;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,11 +60,12 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Board.class)
 	@GraphQLQuery
-	public Board createBoard(String queryResponseDef, String name, Boolean publiclyAvailable)
+	public Board createBoard(String queryResponseDef, String name, Boolean publiclyAvailable,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createBoard' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateBoardResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return createBoard(objectResponse, name, publiclyAvailable);
+		return createBoard(objectResponse, name, publiclyAvailable, parameters);
 	}
 
 	/**
@@ -81,18 +82,17 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Board.class)
 	@GraphQLQuery
-	public Board createBoard(ObjectResponse objectResponse, String name, Boolean publiclyAvailable)
-			throws GraphQLRequestExecutionException {
+	public Board createBoard(ObjectResponse objectResponse, String name, Boolean publiclyAvailable,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'createBoard' with parameters: {}, {} ", name, publiclyAvailable);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of mutation 'createBoard'");
 		}
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("name", name));
-		parameters.add(InputParameter.newHardCodedParameter("publiclyAvailable", publiclyAvailable));
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("mutationTypeCreateBoardName", name);
 
 		if (!Board.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
@@ -105,6 +105,11 @@ public class MutationType {
 		return ret.createBoard;
 	}
 
+	public Board createBoard(ObjectResponse objectResponse, String name, Boolean publiclyAvailable)
+			throws GraphQLRequestExecutionException {
+		return createBoard(objectResponse, name, publiclyAvailable, null);
+	}
+
 	/**
 	 * Get the {@link ObjectResponse.Builder} for the Board, as expected by the createBoard query.
 	 * 
@@ -112,7 +117,11 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateBoardResponseBuilder() throws GraphQLRequestPreparationException {
-		return new Builder(getClass(), "createBoard");
+		Builder builder = new Builder(getClass(), "createBoard");
+		builder.withInputParameter(InputParameter.newBindParameter("name", "mutationTypeCreateBoard"));
+		builder.withInputParameter(
+				InputParameter.newBindParameter("publiclyAvailable", "mutationTypePubliclyAvailable"));
+		return builder;
 	}
 
 	/**
@@ -138,10 +147,11 @@ public class MutationType {
 	@GraphQLNonScalar(graphqlType = Topic.class)
 	@GraphQLQuery
 	public Topic createTopic(String queryResponseDef, String authorId, Boolean publiclyAvailable, String title,
-			String content) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+			String content, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createTopic' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateTopicResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return createTopic(objectResponse, authorId, publiclyAvailable, title, content);
+		return createTopic(objectResponse, authorId, publiclyAvailable, title, content, parameters);
 	}
 
 	/**
@@ -159,7 +169,7 @@ public class MutationType {
 	@GraphQLNonScalar(graphqlType = Topic.class)
 	@GraphQLQuery
 	public Topic createTopic(ObjectResponse objectResponse, String authorId, Boolean publiclyAvailable, String title,
-			String content) throws GraphQLRequestExecutionException {
+			String content, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'createTopic' with parameters: {}, {}, {}, {} ", authorId,
 					publiclyAvailable, title, content);
@@ -167,12 +177,12 @@ public class MutationType {
 			logger.debug("Executing of mutation 'createTopic'");
 		}
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("authorId", authorId));
-		parameters.add(InputParameter.newHardCodedParameter("publiclyAvailable", publiclyAvailable));
-		parameters.add(InputParameter.newHardCodedParameter("title", title));
-		parameters.add(InputParameter.newHardCodedParameter("content", content));
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("mutationTypeCreateTopicAuthorId", authorId);
+		parameters.put("mutationTypeCreateTopicPubliclyAvailable", publiclyAvailable);
+		parameters.put("mutationTypeCreateTopicTitle", title);
+		parameters.put("mutationTypeCreateTopicContent", content);
 
 		if (!Topic.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
@@ -218,10 +228,11 @@ public class MutationType {
 	@GraphQLNonScalar(graphqlType = Post.class)
 	@GraphQLQuery
 	public Post createPost(String queryResponseDef, String authorId, Boolean publiclyAvailable, String title,
-			String content) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+			String content, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createPost' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreatePostResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return createPost(objectResponse, authorId, publiclyAvailable, title, content);
+		return createPost(objectResponse, authorId, publiclyAvailable, title, content, parameters);
 	}
 
 	/**
@@ -239,7 +250,7 @@ public class MutationType {
 	@GraphQLNonScalar(graphqlType = Post.class)
 	@GraphQLQuery
 	public Post createPost(ObjectResponse objectResponse, String authorId, Boolean publiclyAvailable, String title,
-			String content) throws GraphQLRequestExecutionException {
+			String content, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'createPost' with parameters: {}, {}, {}, {} ", authorId,
 					publiclyAvailable, title, content);
@@ -247,12 +258,12 @@ public class MutationType {
 			logger.debug("Executing of mutation 'createPost'");
 		}
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("authorId", authorId));
-		parameters.add(InputParameter.newHardCodedParameter("publiclyAvailable", publiclyAvailable));
-		parameters.add(InputParameter.newHardCodedParameter("title", title));
-		parameters.add(InputParameter.newHardCodedParameter("content", content));
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("mutationTypeCreatePostAuthorId", authorId);
+		parameters.put("mutationTypeCreatePostPubliclyAvailable", publiclyAvailable);
+		parameters.put("mutationTypeCreatePostTitle", title);
+		parameters.put("mutationTypeCreatePostContent", content);
 
 		if (!Post.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "

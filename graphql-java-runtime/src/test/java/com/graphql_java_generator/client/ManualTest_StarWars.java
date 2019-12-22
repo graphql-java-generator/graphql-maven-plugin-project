@@ -59,7 +59,7 @@ public class ManualTest_StarWars {
 
 		// Execution of the query. We get the result back in a POJO
 		Human human = queryType.human("{id name appearsIn homePlanet friends{name}}",
-				"00000000-0000-0000-0000-000000000180");
+				"00000000-0000-0000-0000-000000000180", null);
 
 		System.out.println(human);
 
@@ -76,7 +76,7 @@ public class ManualTest_StarWars {
 				.build();
 
 		// Execution of the query. We get the result back in a POJO
-		Character hero = queryType.hero(objectResponse, Episode.NEWHOPE);
+		Character hero = queryType.hero(objectResponse, Episode.NEWHOPE, null);
 
 		System.out.println(hero);
 
@@ -91,7 +91,7 @@ public class ManualTest_StarWars {
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
 		// Execution of the query. We get the result back in a POJO
-		human = queryType.human(objectResponse, "00000000-0000-0000-0000-000000000180");
+		human = queryType.human(objectResponse, "00000000-0000-0000-0000-000000000180", null);
 
 		System.out.println(human);
 

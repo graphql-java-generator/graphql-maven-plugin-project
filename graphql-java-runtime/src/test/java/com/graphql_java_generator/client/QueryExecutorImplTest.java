@@ -9,7 +9,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -25,6 +27,7 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.client.response.GraphQLResponseParseException;
 
@@ -57,15 +60,17 @@ class QueryExecutorImplTest {
 	 * Build a request with one parameter (ID), and a {@link Character} as the response.
 	 * 
 	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
 	 */
 	@Test
-	void test_buildRequest_ID_characters() throws GraphQLRequestPreparationException {
+	void test_buildRequest_ID_characters() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("id", "1"));
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("queryTypeHeroId", "1");
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId"))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -81,16 +86,20 @@ class QueryExecutorImplTest {
 	 * Build a request with one parameter (ID), and a {@link Character} as the response.
 	 * 
 	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
 	 */
 	@Test
-	void test_buildRequest_EpisodeID_characters() throws GraphQLRequestPreparationException {
+	void test_buildRequest_EpisodeID_characters()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
-		parameters.add(InputParameter.newHardCodedParameter("id", "this is an id"));
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("queryTypeHeroEpisode", Episode.NEWHOPE);
+		parameters.put("queryTypeHeroId", "this is an id");
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode"))//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId"))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -106,24 +115,27 @@ class QueryExecutorImplTest {
 	 * Build a request with one parameter (ID), and a {@link Character} as the response.
 	 * 
 	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
 	 */
 	@Test
-	void test_buildRequest_Episode_idNameAppearsInFriendsName() throws GraphQLRequestPreparationException {
+	void test_buildRequest_Episode_idNameAppearsInFriendsName()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("queryTypeHeroEpisode", Episode.NEWHOPE);
 
 		// The response should contain id and name
-		ObjectResponse objectResponse = new Builder(QueryType.class, "hero").withField("id").withField("name")
-				.withField("appearsIn").withSubObject(new Builder(Character.class, "friends").withField("name").build())
-				.build();
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode"))//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("subscription", objectResponse, parameters);
+		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"subscription {hero(episode: NEWHOPE){ id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query {hero(episode: NEWHOPE){ id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 

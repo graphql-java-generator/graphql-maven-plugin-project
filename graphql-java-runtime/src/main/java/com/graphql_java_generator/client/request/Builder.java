@@ -334,10 +334,11 @@ public class Builder {
 		// The sub-object must be based ... on a subobject of the current Field.
 		// That is: the owningClass for the subject must be our field class.
 		if (subobjetResponseDef.field.owningClass != objectResponse.getFieldClass()) {
-			throw new GraphQLRequestPreparationException("Trying to add the Field '"
-					+ subobjetResponseDef.getFieldName() + "' owned by the class '"
-					+ subobjetResponseDef.getOwningClass().getName() + "' to the field '"
-					+ objectResponse.getFieldName() + "' of class '" + objectResponse.getFieldClass().getName() + "'");
+			throw new GraphQLRequestPreparationException(
+					"Class mismatch when trying to add the Field '" + subobjetResponseDef.getFieldName()
+							+ "' owned by the class '" + subobjetResponseDef.getOwningClass().getName()
+							+ "' to the field '" + objectResponse.getFieldName() + "' of class '"
+							+ objectResponse.getFieldClass().getName() + "' (the two classes should be identical)");
 		}
 		// Let's check that this sub-object is not already in the list
 		for (ObjectResponse subObject : objectResponse.subObjects) {

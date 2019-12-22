@@ -89,7 +89,7 @@ class ObjectResponseDefTest {
 		ObjectResponse subFriendsResponseDef = new Builder(Character.class, "friends").withField("id").withField("name")
 				.withField("appearsIn").build();
 
-		ObjectResponse friendsResponseDef = new Builder(Character.class, "friends").withField("id")
+		ObjectResponse friendsResponseDef = new Builder(Human.class, "friends", "aliasForFriends").withField("id")
 				.withField("name", "aliasForName").withSubObject(subFriendsResponseDef).build();
 
 		Builder builder = new Builder(QueryType.class, "human", "aliasForFriends");

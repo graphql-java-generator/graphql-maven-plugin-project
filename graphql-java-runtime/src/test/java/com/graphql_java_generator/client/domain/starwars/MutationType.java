@@ -1,8 +1,8 @@
 package com.graphql_java_generator.client.domain.starwars;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +12,6 @@ import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
-import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
@@ -61,11 +60,11 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Human.class)
 	@GraphQLQuery
-	public Human createHuman(String queryResponseDef, String name, String homePlanet)
+	public Human createHuman(String queryResponseDef, String name, String homePlanet, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createHuman' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateHumanResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return createHuman(objectResponse, name, homePlanet);
+		return createHuman(objectResponse, name, homePlanet, parameters);
 	}
 
 	/**
@@ -82,18 +81,18 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Human.class)
 	@GraphQLQuery
-	public Human createHuman(ObjectResponse objectResponse, String name, String homePlanet)
-			throws GraphQLRequestExecutionException {
+	public Human createHuman(ObjectResponse objectResponse, String name, String homePlanet,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'createHuman' with parameters: {}, {} ", name, homePlanet);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of mutation 'createHuman'");
 		}
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("name", name));
-		parameters.add(InputParameter.newHardCodedParameter("homePlanet", homePlanet));
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("mutationTypeCreateHumanName", name);
+		parameters.put("mutationTypeCreateHumanHomePlanet", homePlanet);
 
 		if (!Human.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
@@ -138,11 +137,12 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
-	public Character addFriend(String queryResponseDef, String idCharacter, String idNewFriend)
+	public Character addFriend(String queryResponseDef, String idCharacter, String idNewFriend,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'addFriend' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getAddFriendResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return addFriend(objectResponse, idCharacter, idNewFriend);
+		return addFriend(objectResponse, idCharacter, idNewFriend, parameters);
 	}
 
 	/**
@@ -159,18 +159,18 @@ public class MutationType {
 	 */
 	@GraphQLNonScalar(graphqlType = Character.class)
 	@GraphQLQuery
-	public Character addFriend(ObjectResponse objectResponse, String idCharacter, String idNewFriend)
-			throws GraphQLRequestExecutionException {
+	public Character addFriend(ObjectResponse objectResponse, String idCharacter, String idNewFriend,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of mutation 'addFriend' with parameters: {}, {} ", idCharacter, idNewFriend);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of mutation 'addFriend'");
 		}
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("idCharacter", idCharacter));
-		parameters.add(InputParameter.newHardCodedParameter("idNewFriend", idNewFriend));
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("mutationTypeAddFriendIdCharacter", idCharacter);
+		parameters.put("mutationTypeAddFriendIdNewFriend", idNewFriend);
 
 		if (!Character.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "

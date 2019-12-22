@@ -4,7 +4,9 @@
 package com.graphql_java_generator.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -78,7 +80,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String requestType, ObjectResponse objectResponse, List<InputParameter> parameters,
+	public <T> T execute(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters,
 			Class<T> valueType) throws GraphQLRequestExecutionException {
 		String request = null;
 		try {
@@ -162,8 +164,10 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            returns the field of the query, that is: the query name.
 	 * @param parameters
 	 * @return The GraphQL request, ready to be sent to the GraphQl server.
+	 * @throws GraphQLRequestExecutionException
 	 */
-	String buildRequest(String requestType, ObjectResponse objectResponse, List<InputParameter> parameters) {
+	String buildRequest(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		if (!requestType.equals("query") && !requestType.equals("mutation") && !requestType.equals("subscription")) {
 			throw new IllegalArgumentException(
 					"requestType must be one of \"query\", \"mutation\" or \"subscription\", but is \"" + requestType
@@ -174,17 +178,28 @@ public class QueryExecutorImpl implements QueryExecutor {
 		sb.append(requestType).append(" ");
 		sb.append("{");
 		sb.append(objectResponse.getFieldName());
-		if (objectResponse.getInputParameters().size() > 0) {
+
+		// Let's list the non null parameters ...
+		List<String> params = new ArrayList<String>();
+		for (InputParameter param : objectResponse.getInputParameters()) {
+			String stringValue = param.getValueForGraphqlQuery(parameters);
+			if (stringValue != null) {
+				params.add(param.getName() + ": " + stringValue);
+			}
+		}
+		// ... in order to generate the list of parameters to send to the server
+		if (params.size() > 0) {
 			sb.append("(");
 			boolean writeComma = false;
-			for (InputParameter param : objectResponse.getInputParameters()) {
+			for (String param : params) {
 				if (writeComma)
 					sb.append(", ");
 				writeComma = true;
-				sb.append(param.getName()).append(": ").append(param.getValueForGraphqlQuery(parameters));
+				sb.append(param);
 			} // for
 			sb.append(")");
 		}
+
 		objectResponse.appendResponseQuery(sb);
 		sb.append("}");
 

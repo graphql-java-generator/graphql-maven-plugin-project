@@ -1,8 +1,9 @@
 package com.graphql_java_generator.client.domain.forum;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +13,6 @@ import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
-import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
@@ -50,6 +50,9 @@ public class QueryType {
 	 *            The response definition of the query, in the native GraphQL format (see here above)
 	 * @param episode
 	 *            Parameter 1 of this query
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
 	 * @throws IOException
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
@@ -60,11 +63,18 @@ public class QueryType {
 	 */
 	@GraphQLNonScalar(graphqlType = Board.class)
 	@GraphQLQuery
-	public List<Board> boards(String queryResponseDef)
+	public List<Board> boards(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'boards' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return boards(objectResponse);
+		return boards(objectResponse, parameters);
+	}
+
+	@GraphQLNonScalar(graphqlType = Board.class)
+	@GraphQLQuery
+	public List<Board> boards(String queryResponseDef)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return boards(queryResponseDef, null);
 	}
 
 	/**
@@ -81,15 +91,16 @@ public class QueryType {
 	 */
 	@GraphQLNonScalar(graphqlType = Board.class)
 	@GraphQLQuery
-	public List<Board> boards(ObjectResponse objectResponse) throws GraphQLRequestExecutionException {
+	public List<Board> boards(ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'boards' with parameters: ");
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of query 'boards'");
 		}
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
 
 		if (!Board.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
@@ -99,6 +110,12 @@ public class QueryType {
 		QueryTypeBoards ret = executor.execute("query", objectResponse, parameters, QueryTypeBoards.class);
 
 		return ret.boards;
+	}
+
+	@GraphQLNonScalar(graphqlType = Board.class)
+	@GraphQLQuery
+	public List<Board> boards(ObjectResponse objectResponse) throws GraphQLRequestExecutionException {
+		return boards(objectResponse, null);
 	}
 
 	/**
@@ -133,11 +150,17 @@ public class QueryType {
 	 */
 	@GraphQLNonScalar(graphqlType = Topic.class)
 	@GraphQLQuery
-	public List<Topic> topics(String queryResponseDef, String boardName)
+	public List<Topic> topics(String queryResponseDef, String boardName, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'topics' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getTopicsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return topics(objectResponse, boardName);
+		return topics(objectResponse, boardName, parameters);
+	}
+
+	@GraphQLNonScalar(graphqlType = Topic.class)
+	@GraphQLQuery
+	public List<Topic> topics(String queryResponseDef, String boardName) {
+		return topics(queryResponseDef, null);
 	}
 
 	/**
@@ -154,16 +177,17 @@ public class QueryType {
 	 */
 	@GraphQLNonScalar(graphqlType = Topic.class)
 	@GraphQLQuery
-	public List<Topic> topics(ObjectResponse objectResponse, String boardName) throws GraphQLRequestExecutionException {
+	public List<Topic> topics(ObjectResponse objectResponse, String boardName, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'topics' with parameters: {} ", boardName);
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of query 'topics'");
 		}
 
-		// InputParameters
-		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("boardName", boardName));
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("queryTypeTopicsBoardName", boardName);
 
 		if (!Topic.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
@@ -173,6 +197,12 @@ public class QueryType {
 		QueryTypeTopics ret = executor.execute("query", objectResponse, parameters, QueryTypeTopics.class);
 
 		return ret.topics;
+	}
+
+	@GraphQLNonScalar(graphqlType = Topic.class)
+	@GraphQLQuery
+	public List<Topic> topics(ObjectResponse objectResponse, String boardName) {
+		return topics(objectResponse, null);
 	}
 
 	/**

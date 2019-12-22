@@ -4,12 +4,11 @@
 package com.graphql_java_generator.client;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
-import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 
@@ -51,7 +50,7 @@ public interface QueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <T> T execute(String requestType, ObjectResponse objectResponse, List<InputParameter> parameters,
+	public <T> T execute(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters,
 			Class<T> valueType) throws GraphQLRequestExecutionException;
 
 	/**
