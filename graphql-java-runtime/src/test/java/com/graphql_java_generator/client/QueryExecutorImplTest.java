@@ -77,8 +77,7 @@ class QueryExecutorImplTest {
 		String request = queryExecutorImpl.buildRequest("mutation", objectResponse, parameters);
 
 		// Verification
-		assertEquals(
-				"{\"query\":\"mutation {hero(id: \\\"1\\\"){ id name}}\",\"variables\":null,\"operationName\":null}",
+		assertEquals("{\"query\":\"mutation{hero(id:\\\"1\\\"){id name}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -107,7 +106,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query {hero(episode: NEWHOPE, id: \\\"this is an id\\\"){ id name}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE, id:\\\"this is an id\\\"){id name}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -135,7 +134,47 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query {hero(episode: NEWHOPE){ id name appearsIn friends{ name}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn friends{name}}}\",\"variables\":null,\"operationName\":null}",
+				request);
+	}
+
+	@Test
+	void test_buildRequest_withFieldParameters_hardCoded()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		ObjectResponse objectResponse = new Builder(com.graphql_java_generator.client.domain.forum.QueryType.class,
+				"boards").withQueryResponseDef(
+						"{id name publiclyAvailable topics(since: ?sinceParam, memberName: ?memberName) {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
+						.build();
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("queryTypeHeroEpisode", Episode.NEWHOPE);
+		parameters.put("sinceParam", "2019-12-21");
+		parameters.put("memberName", "a member name");
+
+		// Go, go, go
+		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+
+		// Verification
+		assertEquals(
+				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2019-12-21\\\", memberName:\\\"a member name\\\"){id date nbPosts author{id name email type} posts{date author{name email type}}}}}\",\"variables\":null,\"operationName\":null}",
+				request);
+	}
+
+	@Test
+	void test_buildRequest_withFieldParameters_bindVariables()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		ObjectResponse objectResponse = new Builder(com.graphql_java_generator.client.domain.forum.QueryType.class,
+				"boards").withQueryResponseDef(
+						"{id name publiclyAvailable topics(since: \"2018-12-20\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
+						.build();
+
+		// Go, go, go
+		String request = queryExecutorImpl.buildRequest("query", objectResponse, null);
+
+		// Verification
+		assertEquals(
+				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2018-12-20\\\"){id date nbPosts author{id name email type} posts{date author{name email type}}}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -254,4 +293,5 @@ class QueryExecutorImplTest {
 		assertEquals("name350518", character.getFriends().get(0).getName(), "First friend's name");
 		assertEquals("name381495", character.getFriends().get(1).getName(), "Second friend's name");
 	}
+
 }

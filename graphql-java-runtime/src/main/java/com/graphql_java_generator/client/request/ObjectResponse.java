@@ -5,6 +5,7 @@ package com.graphql_java_generator.client.request;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.Marker;
 
 import com.graphql_java_generator.client.GraphqlUtils;
 import com.graphql_java_generator.client.QueryExecutor;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**
@@ -189,21 +191,58 @@ public class ObjectResponse {
 	 *            The {@link StringBuilder} where the response must be appended
 	 * 
 	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 *             When there is an issue during execution, typically while managing the bind variables.
 	 */
-	public void appendResponseQuery(StringBuilder sb) {
+	public void appendResponseQuery(StringBuilder sb, Map<String, Object> parameters, boolean appendSpaceParam)
+			throws GraphQLRequestExecutionException {
 
+		//////////////////////////////////////////////////////////
+		// We start with the field name
+		appendFieldName(sb, appendSpaceParam, getFieldName(), getFieldAlias());
+
+		//////////////////////////////////////////////////////////
+		// Then the input parameters
+
+		// Let's list the non null parameters ...
+		List<String> params = new ArrayList<String>();
+		for (InputParameter param : getInputParameters()) {
+			String stringValue = param.getValueForGraphqlQuery(parameters);
+			if (stringValue != null) {
+				params.add(param.getName() + ":" + stringValue);
+			}
+		}
+		// ... in order to generate the list of parameters to send to the server
+		if (params.size() > 0) {
+			sb.append("(");
+			boolean writeComma = false;
+			for (String param : params) {
+				if (writeComma)
+					sb.append(", ");
+				writeComma = true;
+				sb.append(param);
+			} // for
+			sb.append(")");
+		}
+
+		//////////////////////////////////////////////////////////
+		// Then field list (if any)
+
+		boolean appendSpaceLocal = false;
 		if (scalarFields.size() > 0 || subObjects.size() > 0) {
 			logger.debug("Appending ReponseDef content for field " + field.name + " of type " + field.clazz);
 			sb.append("{");
 
 			// We first loop through the field of the current ObjectResponse
-			scalarFields.stream().forEach(f -> appendFieldName(sb, f.name, f.alias));
+			for (Field f : scalarFields) {
+				appendFieldName(sb, appendSpaceLocal, f.name, f.alias);
+				appendSpaceLocal = true;
+			}
 
 			// Then we loop though all sub-objects
 			for (ObjectResponse o : subObjects) {
-				appendFieldName(sb, o.field.name, o.field.alias);
-				// Let's add all queried fields for this object
-				o.appendResponseQuery(sb);
+				o.appendResponseQuery(sb, parameters, appendSpaceLocal);
+				appendSpaceLocal = true;
 			} // for
 
 			sb.append("}");
@@ -216,12 +255,15 @@ public class ObjectResponse {
 	 * @param sb
 	 * @param f
 	 */
-	void appendFieldName(StringBuilder sb, String name, String alias) {
-		sb.append(" ");
+	void appendFieldName(StringBuilder sb, boolean appendSpace, String name, String alias) {
+
+		if (appendSpace) {
+			sb.append(" ");
+		}
 
 		// If we've an alias, let's write it
 		if (alias != null) {
-			sb.append(alias).append(": ");
+			sb.append(alias).append(":");
 		}
 
 		sb.append(name);

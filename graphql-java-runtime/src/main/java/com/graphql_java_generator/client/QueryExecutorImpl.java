@@ -4,8 +4,6 @@
 package com.graphql_java_generator.client;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
@@ -22,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLResponseParseException;
@@ -168,6 +165,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 */
 	String buildRequest(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
+
 		if (!requestType.equals("query") && !requestType.equals("mutation") && !requestType.equals("subscription")) {
 			throw new IllegalArgumentException(
 					"requestType must be one of \"query\", \"mutation\" or \"subscription\", but is \"" + requestType
@@ -175,32 +173,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(requestType).append(" ");
+		sb.append(requestType);
 		sb.append("{");
-		sb.append(objectResponse.getFieldName());
-
-		// Let's list the non null parameters ...
-		List<String> params = new ArrayList<String>();
-		for (InputParameter param : objectResponse.getInputParameters()) {
-			String stringValue = param.getValueForGraphqlQuery(parameters);
-			if (stringValue != null) {
-				params.add(param.getName() + ": " + stringValue);
-			}
-		}
-		// ... in order to generate the list of parameters to send to the server
-		if (params.size() > 0) {
-			sb.append("(");
-			boolean writeComma = false;
-			for (String param : params) {
-				if (writeComma)
-					sb.append(", ");
-				writeComma = true;
-				sb.append(param);
-			} // for
-			sb.append(")");
-		}
-
-		objectResponse.appendResponseQuery(sb);
+		objectResponse.appendResponseQuery(sb, parameters, false);
 		sb.append("}");
 
 		return "{\"query\":\"" + sb.toString() + "\",\"variables\":null,\"operationName\":null}";

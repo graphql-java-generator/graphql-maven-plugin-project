@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
+
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 class ObjectResponseDefTest {
@@ -69,21 +72,23 @@ class ObjectResponseDefTest {
 	}
 
 	@Test
-	void testAppendResponseQuery_noSubResponseDef() throws GraphQLRequestPreparationException {
+	void testAppendResponseQuery_noSubResponseDef()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 		ObjectResponse objectResponse = new Builder(QueryType.class, "human").withField("name", "aliasForName")
 				.withField("id").withField("homePlanet").build();
 		StringBuilder sb = new StringBuilder();
 
 		// Go, go, go
-		objectResponse.appendResponseQuery(sb);
+		objectResponse.appendResponseQuery(sb, new HashMap<String, Object>(), false);
 
 		// Verification
-		assertEquals("{ aliasForName: name id homePlanet}", sb.toString());
+		assertEquals("human{aliasForName:name id homePlanet}", sb.toString());
 	}
 
 	@Test
-	void testAppendResponseQuery_withSubObjects() throws GraphQLRequestPreparationException {
+	void testAppendResponseQuery_withSubObjects()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 
 		ObjectResponse subFriendsResponseDef = new Builder(Character.class, "friends").withField("id").withField("name")
@@ -92,7 +97,7 @@ class ObjectResponseDefTest {
 		ObjectResponse friendsResponseDef = new Builder(Human.class, "friends", "aliasForFriends").withField("id")
 				.withField("name", "aliasForName").withSubObject(subFriendsResponseDef).build();
 
-		Builder builder = new Builder(QueryType.class, "human", "aliasForFriends");
+		Builder builder = new Builder(QueryType.class, "human");
 		builder.withField("id", "aliasForId");
 		builder.withSubObject(friendsResponseDef);
 		builder.withField("name");
@@ -102,7 +107,7 @@ class ObjectResponseDefTest {
 		StringBuilder sb = new StringBuilder();
 
 		// Go, go, go
-		objectResponse.appendResponseQuery(sb);
+		objectResponse.appendResponseQuery(sb, new HashMap<String, Object>(), false);
 
 		// Verification
 		assertEquals(3, objectResponse.scalarFields.size(), "Human: scalarFields");
@@ -119,7 +124,7 @@ class ObjectResponseDefTest {
 				"friends (second level): objects");
 
 		assertEquals(
-				"{ aliasForId: id name homePlanet aliasForFriends: friends{ id aliasForName: name friends{ id name appearsIn}}}",
+				"human{aliasForId:id name homePlanet aliasForFriends:friends{id aliasForName:name friends{id name appearsIn}}}",
 				sb.toString());
 	}
 }
