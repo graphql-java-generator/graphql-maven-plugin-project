@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -84,6 +86,24 @@ class InputParameterTest {
 		assertEquals(id, param.getValue(), "value");
 		assertEquals("\\\"00000000-0000-0000-0000-000000000012\\\"", param.getValueForGraphqlQuery(new HashMap<>()),
 				"escaped value");
+	}
+
+	@Test
+	void test_getValueAsString_ListString() throws GraphQLRequestExecutionException {
+		String name = "anotherName";
+		String value1 = "first value";
+		String value2 = "second value";
+		String value3 = "third value";
+		List<String> values = new ArrayList<>();
+		values.add(value1);
+		values.add(value2);
+		values.add(value3);
+		InputParameter param = InputParameter.newHardCodedParameter(name, values);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(values, param.getValue(), "value");
+		assertEquals("[\\\"" + value1 + "\\\",\\\"" + value2 + "\\\",\\\"" + value3 + "\\\"]",
+				param.getValueForGraphqlQuery(new HashMap<>()), "escaped value");
 	}
 
 	@Test
