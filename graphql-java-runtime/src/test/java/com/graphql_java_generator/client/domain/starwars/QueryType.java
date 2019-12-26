@@ -138,7 +138,7 @@ public class QueryType {
 	 */
 	public Builder getHeroResponseBuilder() throws GraphQLRequestPreparationException {
 		Builder builder = new Builder(getClass(), "hero");
-		builder.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeEpisode"));
+		builder.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeEpisode", false));
 		return builder;
 	}
 

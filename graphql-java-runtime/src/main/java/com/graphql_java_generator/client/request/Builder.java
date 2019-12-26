@@ -197,13 +197,18 @@ public class Builder {
 					case VALUE:
 						// We've read the parameter value. Let's add this parameter.
 						if (token.startsWith("?")) {
-							inputParameters.add(InputParameter.newBindParameter(parameterName, token.substring(1)));
+							inputParameters
+									.add(InputParameter.newBindParameter(parameterName, token.substring(1), false));
+						} else if (token.startsWith("&")) {
+							inputParameters
+									.add(InputParameter.newBindParameter(parameterName, token.substring(1), true));
 						} else {
 							// The inputParameter should start and end by "
 							if (!token.startsWith("\"") || !token.endsWith("\"")) {
 								throw new GraphQLRequestPreparationException(
 										"Bad parameter value: parameter values should start and finish by \". But it's not the case for the value <"
-												+ token + "> of parameter <" + parameterName + ">");
+												+ token + "> of parameter <" + parameterName
+												+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 							}
 							String value = token.substring(1, token.length() - 1);
 							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, value));

@@ -35,17 +35,26 @@ public class InputParameter {
 	/** The value to send, for this input parameter */
 	final Object value;
 
+	/** Indicates whether this parameter is mandatory or not */
+	boolean mandatory;
+
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
 	 * this bind variable must be provided, when calling the request execution.
 	 * 
 	 * @param name
 	 * @param bindParameterName
+	 * @param mandatory
+	 *            true if the parameter's value must be defined during request/mutation/subscription execution. <BR/>
+	 *            If mandatory is true and the parameter's value is not provided, a
+	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
+	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
+	 *            the server
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
-	public static InputParameter newBindParameter(String name, String bindParameterName) {
-		return new InputParameter(name, bindParameterName, null);
+	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory) {
+		return new InputParameter(name, bindParameterName, null, mandatory);
 	}
 
 	/**
@@ -57,7 +66,7 @@ public class InputParameter {
 	 * @return
 	 */
 	public static InputParameter newHardCodedParameter(String name, Object value) {
-		return new InputParameter(name, null, value);
+		return new InputParameter(name, null, value, true);
 	}
 
 	/**
@@ -73,10 +82,11 @@ public class InputParameter {
 	 *            The value to send, for this input parameter. If null, it's a bind parameter. The bindParameterName is
 	 *            then mandatory.
 	 */
-	private InputParameter(String name, String bindParameterName, Object value) {
+	private InputParameter(String name, String bindParameterName, Object value, boolean mandatory) {
 		this.name = name;
 		this.bindParameterName = bindParameterName;
 		this.value = value;
+		this.mandatory = mandatory;
 	}
 
 	public String getName() {
@@ -103,18 +113,20 @@ public class InputParameter {
 	 */
 	public String getValueForGraphqlQuery(Map<String, Object> bindVariables) throws GraphQLRequestExecutionException {
 		if (this.value == null) {
-			// It's a Bind Variable. Let's get its value, which should be given in the map of BindVariables.
-			if (bindVariables == null) {
-				throw new NullPointerException(
-						"Internal error: the bindVariables Map is mandatory, as this parameter is a Bind Parameter");
-			} else if (!bindVariables.keySet().contains(this.bindParameterName)) {
+			// It's a Bind Variable.
+
+			// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
+			if (mandatory && (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))) {
 				throw new GraphQLRequestExecutionException("The Bind Parameter for '" + this.bindParameterName
 						+ "' must be provided in the BindVariables map");
 			}
-			return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName));
-		} else {
+
+			if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
+				return null;
+			else
+				return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName));
+		} else
 			return this.getValueForGraphqlQuery(this.value);
-		}
 
 	}
 

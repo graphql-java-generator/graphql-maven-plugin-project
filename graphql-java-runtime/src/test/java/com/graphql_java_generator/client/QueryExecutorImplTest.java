@@ -70,7 +70,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
-				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId"))//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -97,8 +97,8 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode"))//
-				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId"))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -125,7 +125,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode"))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -136,6 +136,85 @@ class QueryExecutorImplTest {
 		assertEquals(
 				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn friends{name}}}\",\"variables\":null,\"operationName\":null}",
 				request);
+	}
+
+	/**
+	 * Build a request with one parameter (ID), and a {@link Character} as the response.
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 */
+	@Test
+	void test_buildRequest_Episode_idNameAppearsInFriendsName_noFieldParameter()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		Map<String, Object> parameters = new HashMap<>();// The map remains empty
+
+		// The response should contain id and name
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
+
+		// Go, go, go
+		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+
+		// Verification
+		assertEquals(
+				"{\"query\":\"query{hero{id name appearsIn friends{name}}}\",\"variables\":null,\"operationName\":null}",
+				request);
+	}
+
+	/**
+	 * Build a request with one parameter (ID), and a {@link Character} as the response.
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 */
+	@Test
+	void test_buildRequest_Episode_idNameAppearsInFriendsName_nullMap()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// The response should contain id and name
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
+
+		// Go, go, go
+		String request = queryExecutorImpl.buildRequest("query", objectResponse, null); // No map given (null instead)
+
+		// Verification
+		assertEquals(
+				"{\"query\":\"query{hero{id name appearsIn friends{name}}}\",\"variables\":null,\"operationName\":null}",
+				request);
+	}
+
+	/**
+	 * Build a request with one parameter (ID), and a {@link Character} as the response.
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 */
+	@Test
+	void test_buildRequest_Episode_idNameAppearsInFriendsName_nullMap_MissingMandatoryParameter()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// The response should contain id and name
+		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", true))//
+				.withField("id").withField("name").withField("appearsIn")
+				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
+
+		// Go, go, go
+		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+				() -> queryExecutorImpl.buildRequest("query", objectResponse, new HashMap<>())); // Empty map given
+		GraphQLRequestExecutionException e2 = assertThrows(GraphQLRequestExecutionException.class,
+				() -> queryExecutorImpl.buildRequest("query", objectResponse, null)); // No map given (null instead)
+
+		// Verification
+		assertTrue(e.getMessage().contains("queryTypeHeroEpisode"));
+		assertTrue(e2.getMessage().contains("queryTypeHeroEpisode"));
 	}
 
 	@Test

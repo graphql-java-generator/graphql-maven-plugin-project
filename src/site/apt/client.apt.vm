@@ -1,0 +1,436 @@
+               ------------------------------------------
+               GraphQL Maven Plugin (client mode)
+               ------------------------------------------
+               ------------------------------------------
+               ------------------------------------------
+
+
+Client mode usage description
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%{toc}
+	
+* {Presentation}
+~~~~~~~~~~~~~~~~~~~
+
+  When configuring the graphql-maven-plugin in client mode, it reads a graphqls schema file, and will generates all the necessary code to make it easy to call a GraphQL server. 
+
+  As an overview, it generates:
+
+  * One java class for the Query object
+  
+  * One java class for the Mutation object (if any)
+  
+  * One POJO for each standard object of the GraphQL object
+  
+  * All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. 
+    So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator. 
+    <<This is why we call it an accelerator>>: you can generate the code once, and get rid of graphql-java-generator if you wish. 
+    BTW: we think its better to continue using it! But you're free to leave, and keep the generated code. :)
+
+  []
+
+* {How to use the plugin?}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  First, you'll have to create or get your GraphQL schema. The GraphQL plugin expects a <.graphqls> file. 
+  See the [GraphQL schema doc](https://graphql.org/learn/schema/) for all the details.
+
+  Then, add the plugin to your Maven POM file:
+
++--------------------------------------------------------------------------------------------
+<project ...>
+...
+
+	<build>
+		<plugins>
+...
+			<plugin>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-maven-plugin</artifactId>
+				<version>${lastReleasedVersion}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>graphql</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mode>client</mode>
+					<packageName>my.target.package</packageName>
+				</configuration>
+			</plugin>
+...
+		</plugins>
+	</build>
+...
+</project>
++--------------------------------------------------------------------------------------------
+
+  The mode is optional, here, as client is the default one. Valid values are: <client> and <server>.
+
+  You can define the package that will contain the generated code. If you don't, the default package is <com.generated.graphql>. 
+  This package contains the generated code. 
+
+  The necessary runtime code source is joined to the generated code, but remains in its original package, 
+  which is <graphql.java.client.*> and <graphql.java.annotation>. So everything is embedded.
+
+* {How to execute a GraphQL query?}
+~~~~~~~~~~~~~~~~~~~
+
+  When in <client> mode, you can query the server with just one line of code.
+
+  For instance :
+
++--------------------------------------------------------------------------------------------
+import my.target.package.Human; // my.target.package is the package name defined in the pom
+import my.target.package.QueryType; // my.target.package is the package name defined in the pom
+
+...
+
+	QueryType queryType = new QueryType();
+	Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", "180");
++--------------------------------------------------------------------------------------------
+
+  Where human is a POJO, that you can manipulate as any java object. This POJOs and the QueryType(s) have been generated at build time, 
+  thanks to the plugin configured in your pom.  
+
+* {GraphQL query (and mutation) calls}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  You call query and mutation in the same way: by calling the relevant java method that has been generated at build time.
+
+  The Query and the Mutation generated classes have the same name, as defined in the GraphQL schema. 
+  They are generated into the package defined in your pom (see above). The standard way is to provide the URL 
+  (either http or https) to the constuctor of the Query or Mutation class.
+
+  For https server, a second constructor allows you to provide a specific SSLContext and HostnameVerifier. 
+  We use it in Integration Test, to allow the client to connect to an https server with a self-signed certificate 
+  (as we don't have the money to buy a proper certificate)
+
+  Once the Query or/and the Mutation class(es) is/are created, you can call the GraphQL server. 
+  Just use the instance, you created, and call the query or mutation method.
+
+  Each such method has the same name as in the GraphQL schema. Each such method is generated twice, with two kind of parameters, 
+  described just below. It returns the type indicated in the GraphQL schema. The two kind of methods are the direct query (or mutation) 
+  and the prepared query (or mutation).
+
+** {Direct Query (or Mutation) call}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The signature is of this type:
+
++--------------------------------------------------------------------------------------------
+    Yyyy xxx(String queryResponseDef, Pppp param1, Pppp param2..)
++--------------------------------------------------------------------------------------------
+
+  Where:
+  
+  * Yyyy is the type, defined in the GraphQL schema as the return type for this Query or Mutation. 
+    Yyyy is actually the POJO generated by graphql-java-generator, from the GraphQL Type of the same name.
+  
+  * xxx is the name of the Query or Mutation
+  
+  * queryResponseDef is directly the GraphQL request 
+  
+  * param1, param2 (..) are the parameters, as defined in the GraphQL schema
+  
+  []
+
+  Here is a sample, taken from the StarWars sample project:
+
++--------------------------------------------------------------------------------------------
+    mutationType.addFriend("{id name appearsIn friends {id name}}", idCharacter, idNewFriend);
++--------------------------------------------------------------------------------------------
+
+  This is the simplest way to execute a GraphQL query. But:
+
+  * There are some checks at each execution (to check that your parameters are valid). 
+    It is more efficient to prepare the request first (see below).
+
+  * And you'll know if the request is valid only when you execute it 
+
+  []
+
+  <<Note about field parameters:>> In direct queries, it's up to you to generate the query string that will be sent to the server. So it's up to you to properly format this string, with
+  any input parameter that is needed for the field in them.
+  
+  For instance, in the :
+
+  <<TODO: Update this sample>>
+
++--------------------------------------------------------------------------------------------
+	public List<Topic> topicAuthorPostAuthor(String boardName, Date since)
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		return queryType.topics("{id date author{name email alias id type} nbPosts title content posts(since:\""
+				+ dateFormat.format(since) + "\"){id date author{name email alias} title content}}", boardName);
+
+	}
++--------------------------------------------------------------------------------------------
+
+** Prepared Query (or Mutation) call
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  In this second method call, you have to prepare the response of the query/mutation first. 
+  The idea is to build an <ObjectResponse> once, that you'll reuse for every call of this type to the server. 
+  An <ObjectResponse> is actually the graphql-java-generator object created to match a query string  
+  <\{id name appearsIn homePlanet friends\{name\}\}>.
+
+  You do this once, typically when the application starts:
+
+  * The graphql-java-generator initializes its stuff only once
+  
+  * You known at startup time that all your requests are valid.
+
+      * Also, when starting an integration test, the requests are prepared ... and checked. 
+
+  []
+
+  There are two ways to prepare the query/mutation response:
+
+  [[1]] The builder way:
+  
+  []
+  
++--------------------------------------------------------------------------------------------
+ObjectResponse addFriendResponse = mutationType.getAddFriendResponseBuilder().withField("id").withField("name").withField("appearsIn")
+				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).build()).build();
++--------------------------------------------------------------------------------------------
+
+  [[2]] The GraphQL way:
+  
+  []
+
++--------------------------------------------------------------------------------------------
+ObjectResponse addFriendResponse = mutationType.getAddFriendResponseBuilder().withQueryResponseDef("{id name appearsIn friends {id name}}").build();
++--------------------------------------------------------------------------------------------
+
+  Then, you can call to the method itself:
+
++--------------------------------------------------------------------------------------------
+    mutationType.addFriend(addFriendResponse, idCharacter, idNewFriend);
++--------------------------------------------------------------------------------------------
+
+
+  You
+  <<TODO: Add a sample with field input parameters>>
+
+* {Prepare your GraphQL queries}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The <ObjectResponse> is the heart of the graphql-java-generator, when in client mode. It is responsible for:
+
+  * Defining what fields are expected in the GraphQL server response, for instance <\{id name appearsIn homePlanet friends\{name\}\}>
+  
+  * Check the validity of the query string at build time. That is: if the query string is invalid, 
+  a GraphQLRequestPreparationException exception is thrown.
+  
+  * (in the near future) mark the queried fields as queried, so that calling a getter on a non-queried field result in an error 
+  (instead of "believing" that this value is null). 
+  
+  []
+
+* {Create an ObjectResponse with a query string}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  To prepare the queries during startup, you can initialize a local variable, like in the given samples, 
+  for instance here is an extract of WithQueries, from the StarWars sample. 
+  In this sample, the <heroFriendsFriendsFriends()> method executes the query and returns the GraphQL server response, 
+  mapped into the relevant POJO.
+
++--------------------------------------------------------------------------------------------
+public class WithQueries implements Queries {
+
+	final QueryType queryType;
+	ObjectResponse heroFriendsFriendsFriendsResponse;
+...
+
+	public WithQueries(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)
+			throws GraphQLRequestPreparationException {
+		queryType = new QueryType(graphqlEndpoint, sslContext, hostnameVerifier);
+...
+		heroFriendsFriendsFriendsResponse = queryType.getHeroResponseBuilder()
+				.withQueryResponseDef("{id appearsIn friends {name friends {friends{id name appearsIn}}}}").build();
+...
+	}
+
+	public Character heroFriendsFriendsFriends() throws GraphQLExecutionException {
+		return queryType.hero(heroFriendsFriendsFriendsResponse, Episode.NEWHOPE);
+	}
+
+}
++--------------------------------------------------------------------------------------------
+
+* {Create an ObjectResponse with an ObjectResponse Builder}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  You can also use a Builder to generate the query, by adding field by field, and subobject by subobject, like below. 
+  Of course, it's more verbose.
+
++--------------------------------------------------------------------------------------------
+public class WithQueries implements Queries {
+
+	final QueryType queryType;
+	ObjectResponse heroFriendsFriendsFriendsResponse;
+...
+
+	public WithQueries(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)
+			throws GraphQLRequestPreparationException {
+		queryType = new QueryType(graphqlEndpoint, sslContext, hostnameVerifier);
+...
+		// Equivalent to  "{id appearsIn name friends {name friends {friends{id name appearsIn}}} primaryFunction }"
+		ObjectResponse friends3 = ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name")
+				.withField("appearsIn").build();
+		ObjectResponse friends2 = ObjectResponse.newSubObjectBuilder(Character.class).withSubObject("friends", friends3)
+				.build();
+		ObjectResponse friends1 = ObjectResponse.newSubObjectBuilder(Character.class).withField("name")
+				.withSubObject("friends", friends2).build();
+		heroFriendsFriendsFriendsResponse = queryType.getHeroResponseBuilder().withField("id").withField("appearsIn")
+				.withSubObject("friends", friends1).build();
+...
+	}
+
+	public Character heroFriendsFriendsFriends() throws GraphQLExecutionException {
+		return queryType.hero(heroFriendsFriendsFriendsResponse, Episode.NEWHOPE);
+	}
+
+}
++--------------------------------------------------------------------------------------------
+
+
+* {How to manager input parameters}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  graphql-java-generator manages two kind of parameters:
+  
+  * The query/mutation/subscription input parameters. That is, the parameters for the field of Query type, Mutation type or Subscription type. These input parameters are parsed before the code
+  is generated. In the generated code, there is a method per query, mutation and subscription. This method has, as parameters, the list of input parameters defined in the GraphQL schema, for 
+  this query/mutation/subscription. See below for more details.
+  
+  * The input parameters for field in standard GraphQL type. This input parameters are in the GraphQL query, depending on the ObjetResponse you define. So these parameters must be managed
+  by you, when you define the response expected by the server. See below for more details.
+  
+  []
+
+
+** {How to use Query/Mutation/Subscription input parameters}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  See samples :
+  
+  * In the <graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client project>, 
+   in the <com.graphql_java_generator.samples.forum.client.graphql.PreparedQueries> class,
+
+    * The constructor creates the ObjectResponse objects that will be use latter, for query executions.
+    
+    * The <boardsSimple()> method calls a query without query parameters: there is no parameter when calling <queryType.boards(ObjectResponse)> 
+    out of the ObjectResponse itself (which defines what returns is expected from the server).
+    
+    * The <findTopics(String boardName, List\<String\> keyword)> calls the <queryType.findTopics(findTopicIdDateTitleContent, boardName, keyword)>
+    method with these parameters: the ObjectResponse, and the two parameters for the GraphQL query. 
+    
+      * This <queryType.findTopics(..)> method is generated by graphql-java-generator. It contains all the query/mutation/subscription parameters
+      as method parameters.
+      
+      * If you don't want to use one of these parameters, <<just send null as a value>>, and this parameter will be ignored. Of course, if
+      this parameter is mandatory, this will throw a server-side error.
+      
+      * It would work the same, if it was a GraphQL mutation or a GraphQL subscription, instead of a GraphQL query
+    
+  []
+
+  <<TODO : to be completed, with a sample in this doc>>
+
+
+
+** {How to use Field input parameters, for standard GraphQL Types}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  See samples :
+  
+  * In the graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client project:
+
+    * In the <com.graphql_java_generator.samples.forum.client.PreparedQueriesWithFieldInputParametersIT> class, all the test methods use
+    the ObjectResponse prepared in the <beforeAll()> method
+
+    * Depending on the method, one parameter to three parameters are added to the parameter <map>:
+    
+      * <since> is added in the <beforeEach()>
+      
+      * The other parameters are added, or not, in their respective methods.
+      
+      * If a parameter is not added into the map, it will be ignored during the query build, and not sent to the GraphQL server. Of course, if
+      this input parameter is mandatory, this will throw a server-side error.
+
+  []
+  
+  The input parameters can be defined in several ways:
+  
+  * For Direct queries, it's up to you to build the query string that is sent to the server. So it's up to you to write the field input parameters in this query string, to escape and format them.
+  
+    * You can find such samples in the DirectQueries classes of the various client samples. Especially the Forum one.
+  
+  * For queries prepared with a Query String:
+  
+    * You defined the input parameters of your query/mutation/subscription, when you create the ObjectResponse object.
+
++--------------------------------------------------------------------------------------------
+		// Request preparation
+		String queryResponseDef = "{id name publiclyAvailable topics{id date author{id name email type} nbPosts "
+				+ "posts(memberId:\"00000000-0000-0000-0000-000000000012\", memberName: ?memberName, since: &sinceParam) {date author{name email type}}}}";
+		ObjectResponse response = queryType.getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+...
+		// Request execution
+		// 1) Definition of the bind variable values for THIS execution
+		Map<String, Object> map = new HashMap<>();
+		map.put("memberName", "a member Name");
+		map.put("sinceParam", "1900/10/24");
+		// 2) Request execution
+		List<Board> boards = queryType.boards(response, map);
++--------------------------------------------------------------------------------------------
+
+    * You can see here that you can have three kind of input parameters (here for the posts field of the Topic GraphQL object):
+    
+      * memberId is a hard coded value. It's a hard coded value, as the value is given while building the ObjectReponse.
+      The value is stored once in the ObjectResponse, at preparation time. It can not be changed later, at execution time.
+      
+      * memberName is an optional bind parameter. It's optional, as the value is a string, starting with '?'. What's next of the '?' is the bind variable name. Here the bind variable has 
+      the same name as the input parameter. Which is Ok.
+      
+      * sinceParam is a mandatory bind parameter. It's mandatory, as the value is a string, starting with '!'. What's next of the '!' is the bind variable name. Here the bind variable has 
+      a name that is different from the name as the input parameter. Which is also Ok. Thus, you can have several 'since' (or any other) parameters in your query request, and you can define
+      a specific bind variable for each occurrence, or you the same bind variable for all (in which case, of course, all parameters will receive the same value).
+ 
+  []
+
+  <<TODO : to be completed, with a sample in this doc>>
+
+
+
+
+* {Use a Spring Bean}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Instead of create a local variable for your ObjectResponse, another idea is to create a Spring Bean:
+
++--------------------------------------------------------------------------------------------
+	@Bean
+	ObjectResponse heroResponse(QueryType queryType) {
+		return queryType.getHeroResponseBuilder().build();
+	}
++--------------------------------------------------------------------------------------------
+
+  Doing this allows you to use this ObjectResponse, later on, in other Spring component(s), with something like this: 
+
++--------------------------------------------------------------------------------------------
+	@Component
+	class YourClass {
+	
+	@Resource
+	ObjectResponse heroResponse;
+	
+	Character hero = queryType.hero(heroResponse, Episode.NEWHOPE);
+	...
+}
++--------------------------------------------------------------------------------------------

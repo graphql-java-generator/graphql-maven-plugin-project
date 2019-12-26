@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
@@ -62,22 +63,43 @@ class InputParameterTest {
 	}
 
 	@Test
-	void getValueForGraphqlQuery_BindVariable_OK() throws GraphQLRequestExecutionException {
+	void getValueForGraphqlQuery_MandatoryBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter param = InputParameter.newBindParameter(name, bindParameterName);
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, true);
 
-		assertEquals(name, param.getName(), "name");
-		assertEquals(null, param.getValue(), "value");
-		assertEquals(bindParameterName, param.bindParameterName, "bindParameterName");
-		assertThrows(NullPointerException.class, () -> param.getValueForGraphqlQuery(null), "escaped value (null map)");
-		assertThrows(GraphQLRequestExecutionException.class, () -> param.getValueForGraphqlQuery(new HashMap<>()),
-				"escaped value (empty map)");
+		assertEquals(name, mandatoryBindParam.getName(), "name");
+		assertEquals(null, mandatoryBindParam.getValue(), "value");
+		assertEquals(bindParameterName, mandatoryBindParam.bindParameterName, "bindParameterName");
+		assertThrows(GraphQLRequestExecutionException.class, () -> mandatoryBindParam.getValueForGraphqlQuery(null),
+				"escaped value (null map)");
+		assertThrows(GraphQLRequestExecutionException.class,
+				() -> mandatoryBindParam.getValueForGraphqlQuery(new HashMap<>()), "escaped value (empty map)");
 
 		Map<String, Object> bindVariablesValues = new HashMap<>();
 		bindVariablesValues.put("anotherBind", "A value");
 		bindVariablesValues.put(bindParameterName, 666);
-		assertEquals("666", param.getValueForGraphqlQuery(bindVariablesValues), "escaped value (correct map)");
+		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(bindVariablesValues),
+				"escaped value (correct map)");
+	}
+
+	@Test
+	void getValueForGraphqlQuery_OptionalBindVariable_OK() throws GraphQLRequestExecutionException {
+		String name = "aName";
+		String bindParameterName = "variableName";
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, false);
+
+		assertEquals(name, mandatoryBindParam.getName(), "name");
+		assertEquals(null, mandatoryBindParam.getValue(), "value");
+		assertEquals(bindParameterName, mandatoryBindParam.bindParameterName, "bindParameterName");
+		assertNull(mandatoryBindParam.getValueForGraphqlQuery(null), "with no given map");
+		assertNull(mandatoryBindParam.getValueForGraphqlQuery(new HashMap<>()), "escaped value (empty map)");
+
+		Map<String, Object> bindVariablesValues = new HashMap<>();
+		bindVariablesValues.put("anotherBind", "A value");
+		bindVariablesValues.put(bindParameterName, 666);
+		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(bindVariablesValues),
+				"escaped value (correct map)");
 	}
 
 }

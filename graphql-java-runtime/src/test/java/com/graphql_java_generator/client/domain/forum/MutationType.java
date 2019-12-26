@@ -118,9 +118,9 @@ public class MutationType {
 	 */
 	public Builder getCreateBoardResponseBuilder() throws GraphQLRequestPreparationException {
 		Builder builder = new Builder(getClass(), "createBoard");
-		builder.withInputParameter(InputParameter.newBindParameter("name", "mutationTypeCreateBoard"));
+		builder.withInputParameter(InputParameter.newBindParameter("name", "mutationTypeCreateBoard", true));
 		builder.withInputParameter(
-				InputParameter.newBindParameter("publiclyAvailable", "mutationTypePubliclyAvailable"));
+				InputParameter.newBindParameter("publiclyAvailable", "mutationTypePubliclyAvailable", true));
 		return builder;
 	}
 
