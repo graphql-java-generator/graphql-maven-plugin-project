@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsInteger_enum() throws GraphQLRequestExecutionException {
+	void test_getValueAsString_int() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		Integer value = 666;
 		InputParameter param = InputParameter.newHardCodedParameter(name, value);
@@ -60,6 +61,29 @@ class InputParameterTest {
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
 		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()), "escaped value");
+	}
+
+	@Test
+	void test_getValueAsString_Float() throws GraphQLRequestExecutionException {
+		String name = "aName";
+		Float value = (float) 666.666;
+		InputParameter param = InputParameter.newHardCodedParameter(name, value);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(value, param.getValue(), "value");
+		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()), "escaped value");
+	}
+
+	@Test
+	void test_getValueAsString_UUID() throws GraphQLRequestExecutionException {
+		String name = "aName";
+		UUID id = UUID.fromString("00000000-0000-0000-0000-000000000012");
+		InputParameter param = InputParameter.newHardCodedParameter(name, id);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(id, param.getValue(), "value");
+		assertEquals("\\\"00000000-0000-0000-0000-000000000012\\\"", param.getValueForGraphqlQuery(new HashMap<>()),
+				"escaped value");
 	}
 
 	@Test

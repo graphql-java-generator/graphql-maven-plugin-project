@@ -5,6 +5,7 @@ schema {
 
 type QueryType {
     boards: [Board]
+    nbBoards: Int
     topics(boardName: String!): [Topic]!
     findTopics(boardName: String!, keyword: [String!]): [Topic]
 }
@@ -23,7 +24,7 @@ enum MemberType {
 
 type Member {
     id: ID!
-    name: String!
+    name(uppercase: Boolean): String!
     alias: String
     email: String!
     type: MemberType

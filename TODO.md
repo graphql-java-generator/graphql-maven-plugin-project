@@ -1,4 +1,10 @@
 Here are the next tasks listed, as a TODO list:
+* Check enum parameters (including hard coded value and bind variables)
+* Finish the samples in the client doc page
+* Have a non fixed number of argument in the query/mutation/subscription generated client method, so that it is not necessary for the caller to generate the map. These argument would be: "paramName1", "paramValue1", "paramName2", "paramValue2"...  (then simplify the Forum client sample)
+* Check query method returning a scalar (forum schema is ready for that)
+* Check scalar field of regular Type, having input parameters (forum schema is ready for that)
+* Manage default values for input parameters
 * Parsing the Query request for Query Preparation should directly call the Builder (instead of creating the QueryField array, then calling the Builder)
 * Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 * Add a gradle plugin (work in progress)
@@ -7,3 +13,4 @@ Here are the next tasks listed, as a TODO list:
 * Allow definition of specific Scalars (for instance Date, DateTime, Time)
 * Fragment in graphql queries
 * The plugin currently manages only one GraphQL schema file. It would be nice to allow several graphqls files, with a pattern like /*.graphqls
+* [minor] The InputParameters for the query/mutation/subscription are all optional. If a mandatory parameter is missing at execution time, the request is sent to the server, which returns an error. It's fine. An enhancement is that GraphQL mandatory parameters would be marked as a mandatory InputParameter

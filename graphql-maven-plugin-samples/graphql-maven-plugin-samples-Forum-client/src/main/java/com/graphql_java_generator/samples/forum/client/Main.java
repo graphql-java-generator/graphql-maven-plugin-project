@@ -1,10 +1,12 @@
 package com.graphql_java_generator.samples.forum.client;
 
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import java.util.Calendar;
+
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.DirectQueries;
-import com.graphql_java_generator.samples.forum.client.graphql.WithBuilder;
 import com.graphql_java_generator.samples.forum.client.graphql.PreparedQueries;
+import com.graphql_java_generator.samples.forum.client.graphql.WithBuilder;
 
 /**
  * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
@@ -16,7 +18,7 @@ public class Main {
 
 	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
 
-	public static void main(String[] args) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public static void main(String[] args) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 
 		System.out.println("");
 		System.out.println("============================================================================");
@@ -43,7 +45,8 @@ public class Main {
 		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
-	static void exec(Queries client, String name) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	static void exec(Queries client, String name)
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		try {
 
 			System.out.println("----------------------------------------------------------------------------");
@@ -52,7 +55,9 @@ public class Main {
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  topicAuthorPostAuthor  -----------------------------------");
-			System.out.println(client.topicAuthorPostAuthor());
+			Calendar cal = Calendar.getInstance();
+			cal.set(2018, 12, 20);
+			System.out.println(client.topicAuthorPostAuthor("Board name 2", cal.getTime()));
 
 			System.out.println("----------------------------------------------------------------------------");
 			System.out.println("----------------  createBoard  ---------------------------------------------");

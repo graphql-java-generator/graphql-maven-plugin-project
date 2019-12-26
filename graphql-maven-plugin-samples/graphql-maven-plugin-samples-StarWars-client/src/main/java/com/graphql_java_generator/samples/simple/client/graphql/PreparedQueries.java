@@ -13,7 +13,7 @@ import com.generated.graphql.Human;
 import com.generated.graphql.MutationType;
 import com.generated.graphql.QueryType;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.Queries;
 
@@ -123,64 +123,64 @@ public class PreparedQueries implements Queries {
 	}
 
 	@Override
-	public Character heroFull() throws GraphQLExecutionException {
+	public Character heroFull() throws GraphQLRequestExecutionException {
 		return queryType.hero(heroFullResponse, null);
 	}
 
 	@Override
-	public Character heroPartial(Episode episode) throws GraphQLExecutionException {
+	public Character heroPartial(Episode episode) throws GraphQLRequestExecutionException {
 		return queryType.hero(heroPartialResponse, episode);
 	}
 
 	@Override
-	public Character heroFriendsFriendsFriends(Episode episode) throws GraphQLExecutionException {
+	public Character heroFriendsFriendsFriends(Episode episode) throws GraphQLRequestExecutionException {
 		return queryType.hero(heroFriendsFriendsFriendsResponse, episode);
 	}
 
 	@Override
-	public Human humanFull(String id) throws GraphQLExecutionException {
+	public Human humanFull(String id) throws GraphQLRequestExecutionException {
 		return queryType.human(humanFullResponse, id);
 	}
 
 	@Override
-	public Human humanPartial(String id) throws GraphQLExecutionException {
+	public Human humanPartial(String id) throws GraphQLRequestExecutionException {
 		return queryType.human(humanPartialResponse, id);
 	}
 
 	@Override
-	public Human humanFriendsFriendsFriends(String id) throws GraphQLExecutionException {
+	public Human humanFriendsFriendsFriends(String id) throws GraphQLRequestExecutionException {
 		return queryType.human(humanFriendsFriendsFriendsResponse, id);
 	}
 
 	@Override
-	public Droid droidFull(String id) throws GraphQLExecutionException {
+	public Droid droidFull(String id) throws GraphQLRequestExecutionException {
 		return queryType.droid(droidFullResponse, id);
 	}
 
 	@Override
-	public Droid droidPartial(String id) throws GraphQLExecutionException {
+	public Droid droidPartial(String id) throws GraphQLRequestExecutionException {
 		return queryType.droid(droidPartialResponse, id);
 	}
 
 	@Override
-	public Droid droidFriendsFriendsFriends(String id) throws GraphQLExecutionException {
+	public Droid droidFriendsFriendsFriends(String id) throws GraphQLRequestExecutionException {
 		return queryType.droid(droidFriendsFriendsFriendsResponse, id);
 	}
 
 	@Override
-	public Droid droidDoesNotExist() throws GraphQLExecutionException {
+	public Droid droidDoesNotExist() throws GraphQLRequestExecutionException {
 		return queryType.droid(droidFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000001111");
 	}
 
 	@Override
 	public Human createHuman(String name, String homePlanet)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createHuman(createHuman, name, homePlanet);
 	}
 
 	@Override
 	public Character addFriend(String idCharacter, String idNewFriend)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.addFriend(addFriend, idCharacter, idNewFriend);
 	}
 }

@@ -14,7 +14,7 @@ import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
 import com.generated.graphql.QueryType;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.Queries;
 
@@ -30,7 +30,7 @@ abstract class AbstractIT {
 	Queries queries;
 
 	@Test
-	void test_heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_heroFull() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
 		Character c = queries.heroFull();
 
@@ -38,7 +38,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_heroPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_heroPartial() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn name}", Episode.NEWHOPE);
 		Character c = queries.heroPartial(Episode.NEWHOPE);
 
@@ -46,7 +46,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_heroFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_heroFriendsFriendsFriends() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// return queryType.hero("{id appearsIn friends {name friends {friends{id name
 		// appearsIn}}}}", Episode.NEWHOPE);
 		Character c = queries.heroFriendsFriendsFriends(Episode.NEWHOPE);
@@ -83,7 +83,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_humanFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_humanFull() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn homePlanet name}", "45");
 		Human h = queries.humanFull("00000000-0000-0000-0000-000000000045");
 
@@ -93,7 +93,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_humanPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_humanPartial() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{appearsIn homePlanet name}", "45");
 		Human h = queries.humanPartial("00000000-0000-0000-0000-000000000045");
 
@@ -102,7 +102,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_humanFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_humanFriendsFriendsFriends() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// queryType.human("{id appearsIn name friends {name friends {friends{id name
 		// appearsIn}}}}", "180");
 		Human h = queries.humanFriendsFriendsFriends("00000000-0000-0000-0000-000000000180");
@@ -131,7 +131,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_droidFull() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidFull() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// queryType.droid("{id appearsIn primaryFunction name}", "3");
 		Droid d = queries.droidFull("00000000-0000-0000-0000-000000000003");
 
@@ -140,7 +140,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_droidPartial() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidPartial() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// queryType.droid("{id appearsIn primaryFunction name}", "3");
 		Droid d = queries.droidPartial("00000000-0000-0000-0000-000000000003");
 
@@ -149,7 +149,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_droidFriendsFriendsFriends() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidFriendsFriendsFriends() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// droid("{id appearsIn name friends {name friends {friends{id name appearsIn}}}
 		// primaryFunction }", "2");
 		Droid d = queries.droidFriendsFriendsFriends("00000000-0000-0000-0000-000000000002");
@@ -166,12 +166,12 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_droidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_droidDoesNotExist() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		assertNull(queries.droidDoesNotExist());
 	}
 
 	@Test
-	void test_createHuman() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_createHuman() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		List<Character> charactersBefore = queryType.characters("{id name}", null);
 
@@ -192,7 +192,7 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_addFriend() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_addFriend() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		int idCharacter = (int) (Math.random() * 200);
 		Character characterBefore = queryType.characters("{id name friends{id name}}", null).get(idCharacter);

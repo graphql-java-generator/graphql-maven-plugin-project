@@ -1,8 +1,10 @@
 package com.graphql_java_generator.samples.forum.client;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
@@ -17,16 +19,21 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  */
 public interface Queries {
 
-	List<Board> boardsSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	static final String DATE_FORMAT = "yyyy-MM-dd";
+	static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-	List<Board> boardsAndTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	List<Board> boardsSimple() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
 
-	List<Topic> topicAuthorPostAuthor() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	List<Board> boardsAndTopicsWithFieldParameter(Date since)
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
+
+	List<Topic> topicAuthorPostAuthor(String boardName, Date since)
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
 
 	List<Topic> findTopics(String boardName, List<String> keyword)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException;
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
 
 	Board createBoard(String name, boolean publiclyAvailable)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException;
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
 
 }

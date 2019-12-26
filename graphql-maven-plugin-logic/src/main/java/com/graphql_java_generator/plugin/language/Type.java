@@ -47,6 +47,14 @@ public interface Type {
 	public String getClassSimpleName();
 
 	/**
+	 * Returns the camel case String, based on the object's name. For instance: <I>bigFoot</I> for a type named
+	 * <I>BigFoot</I>
+	 * 
+	 * @return
+	 */
+	public String getCamelCaseName();
+
+	/**
 	 * The java class full name for this type. It may be and interface or a concrete class. <BR/>
 	 * 
 	 * @return The java classname is usually the name of the type. But in some case, collision my occur with the Java

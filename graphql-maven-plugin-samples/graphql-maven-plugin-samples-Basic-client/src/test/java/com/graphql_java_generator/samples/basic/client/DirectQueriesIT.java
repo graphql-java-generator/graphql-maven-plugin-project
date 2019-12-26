@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.generated.graphql.Query;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**
@@ -27,13 +27,14 @@ class DirectQueriesIT {
 	}
 
 	@Test
-	void test_hello() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_hello() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		assertEquals("Hello World", query.hello("", "World"));
 	}
 
 	@Test
 	void test_error() {
-		GraphQLExecutionException e = assertThrows(GraphQLExecutionException.class, () -> query.error(""));
+		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+				() -> query.error(""));
 		assertTrue(e.getMessage().contains("This is an expected error"));
 	}
 

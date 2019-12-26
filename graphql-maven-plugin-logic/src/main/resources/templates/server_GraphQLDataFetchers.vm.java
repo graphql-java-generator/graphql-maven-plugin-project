@@ -51,7 +51,7 @@ public class GraphQLDataFetchers {
 				${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
 #end
 #elseif (${argument.type.classSimpleName} == "UUID")
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = (dataFetchingEnvironment.getArgument("${argument.name}") == null) ? null : UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
 #else
 			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end

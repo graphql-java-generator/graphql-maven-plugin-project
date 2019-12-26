@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.samples.forum.server.specific_code;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -33,10 +34,13 @@ import graphql.schema.DataFetchingEnvironment;
  * @author EtienneSF
  */
 @Component
-public class TopicDataFetchersDelegateImpl implements DataFetchersDelegateTopic {
+public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic {
 
 	/** The logger for this instance */
 	protected Logger logger = LogManager.getLogger();
+
+	static final String DATE_FORMAT = "yyyy-MM-dd";
+	static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
 	@Resource
 	MemberRepository memberRepository;
@@ -55,11 +59,34 @@ public class TopicDataFetchersDelegateImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
-	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, String since) {
-		if (since == null)
-			return graphQLUtil.iterableToList(postRepository.findByTopicId(source.getId()));
-		else
-			return graphQLUtil.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, UUID memberId,
+			String memberName, String since) {
+
+		if (since == null) {
+			// This should not happen, as since is mandatory
+			throw new NullPointerException("since may not be null");
+		} else {
+
+			// The memberId and memberName are Optional. The since param is mandatory.
+			// So there are 4 combinations for the request:
+
+			// since
+			if (memberId == null && memberName == null)
+				return graphQLUtil.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+			// memberId, since
+			else if (memberName == null)
+				return graphQLUtil.iterableToList(
+						postRepository.findByTopicIdAndMemberIdAndSince(source.getId(), memberId, since));
+			// memberName,since
+			else if (memberId == null)
+				return graphQLUtil.iterableToList(
+						postRepository.findByTopicIdAndMemberNameAndSince(source.getId(), memberName, since));
+			// memberId, memberName, since
+			else
+				return graphQLUtil.iterableToList(postRepository
+						.findByTopicIdAndMemberIdAndMemberNameAndSince(source.getId(), memberId, memberName, since));
+
+		}
 	}
 
 	@Override
@@ -67,4 +94,5 @@ public class TopicDataFetchersDelegateImpl implements DataFetchersDelegateTopic 
 		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
 	}
+
 }

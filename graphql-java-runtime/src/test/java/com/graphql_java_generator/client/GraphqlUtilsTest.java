@@ -4,15 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.GraphqlUtils;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
+import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.domain.starwars.ScalarTest;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 class GraphqlUtilsTest {
@@ -218,5 +221,22 @@ class GraphqlUtilsTest {
 				"hero : scalar OK");
 		assertEquals(Character.class, graphqlUtils.checkFieldOfGraphQLType("hero", false, QueryType.class),
 				"hero : scalar OK");
+	}
+
+	@Test
+	void test_generatesBindVariableValuesMap() throws GraphQLRequestExecutionException {
+
+		assertThrows(GraphQLRequestExecutionException.class,
+				() -> graphqlUtils.generatesBindVariableValuesMap("1", "2", "3"),
+				"There must be an even number of parameters");
+		assertThrows(ClassCastException.class,
+				() -> graphqlUtils.generatesBindVariableValuesMap("param1", 2, "param2", Episode.JEDI, 3, "a String"));
+
+		Map<String, Object> map = graphqlUtils.generatesBindVariableValuesMap("param1", 2, "param2", Episode.JEDI,
+				"param3", "a String");
+		assertEquals(3, map.size());
+		assertEquals(2, map.get("param1"));
+		assertEquals(Episode.JEDI, map.get("param2"));
+		assertEquals("a String", map.get("param3"));
 	}
 }

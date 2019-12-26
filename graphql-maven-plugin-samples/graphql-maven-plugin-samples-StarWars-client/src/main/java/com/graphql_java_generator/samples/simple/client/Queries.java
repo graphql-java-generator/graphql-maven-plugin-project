@@ -4,11 +4,11 @@ import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
-import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
 import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
+import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
 
 /**
  * These are samples of queries that can be used with GraphQL against the Star Wars GraphQL schema. There are
@@ -22,32 +22,34 @@ public interface Queries {
 
 	// First part: queries
 
-	Character heroFull() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Character heroFull() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Character heroPartial(Episode episode) throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Character heroPartial(Episode episode) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	Character heroFriendsFriendsFriends(Episode episode)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException;
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Human humanFull(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Human humanFull(String id) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Human humanPartial(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Human humanPartial(String id) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Human humanFriendsFriendsFriends(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Human humanFriendsFriendsFriends(String id)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Droid droidFull(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Droid droidFull(String id) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Droid droidPartial(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Droid droidPartial(String id) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Droid droidFriendsFriendsFriends(String id) throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Droid droidFriendsFriendsFriends(String id)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	Droid droidDoesNotExist() throws GraphQLExecutionException, GraphQLRequestPreparationException;
+	Droid droidDoesNotExist() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	// Second part: mutations
 
 	Human createHuman(String name, String homePlanet)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException;
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	Character addFriend(String idCharacter, String idNewFriend)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException;
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 }

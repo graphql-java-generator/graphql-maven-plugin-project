@@ -135,7 +135,7 @@ class DocumentParserTest_Forum_Server {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
-		assertEquals(10, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(11, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		//
@@ -143,6 +143,8 @@ class DocumentParserTest_Forum_Server {
 		//
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, list of input parameters
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, false,
+				null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "QueryType", "nbBoards", "Int", false, false,
 				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, false,
 				null, "boardName");
@@ -164,7 +166,7 @@ class DocumentParserTest_Forum_Server {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", false, true,
 				"Topic");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", true, false, "Topic",
-				"since");
+				"memberId", "memberName", "since");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, true,
 				"Post");
 
@@ -178,13 +180,15 @@ class DocumentParserTest_Forum_Server {
 		// Delegate for QueryType
 		assertEquals("DataFetchersDelegateQueryType", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(3, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
+		assertEquals(4, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("boards", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(0).getName(),
+		assertEquals("boards", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
-		assertEquals("topics", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(1).getName(),
+		assertEquals("nbBoards", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
-		assertEquals("findTopics", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(2).getName(),
+		assertEquals("topics", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
+				"Name of DataFetcher " + j++ + " for delegate " + i);
+		assertEquals("findTopics", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		//
 		// Delegate for Board

@@ -17,10 +17,34 @@ import com.graphql_java_generator.samples.forum.server.Post;
 public interface PostRepository extends CrudRepository<Post, UUID> {
 
 	@Query(value = "select p from Post p where p.topicId= ?1")
-	Iterable<Post> findByTopicId(UUID topicId);
+	List<Post> findByTopicId(UUID topicId);
 
 	@Query(value = "select p from Post p where p.topicId= ?1 and p.date >= ?2")
-	Iterable<Post> findByTopicIdAndSince(UUID id, String since);
+	List<Post> findByTopicIdAndSince(UUID id, String since);
+
+	@Query(value = "select p from Post p where p.topicId= ?1 and p.authorId =?2 and p.date >= ?3")
+	List<Post> findByTopicIdAndMemberIdAndSince(UUID id, UUID memberId, String since);
+
+	@Query(value = "" //
+			+ " select p "//
+			+ " from Post p "//
+			+ " join Member m on m.id=p.authorId" //
+			+ " where p.topicId= ?1 "//
+			+ " and m.name =?2 "//
+			+ " and p.date >= ?3")
+	List<Post> findByTopicIdAndMemberNameAndSince(UUID id, String memberName, String since);
+
+	// It's actually a non sense request, as if you provide author_id, it's useless to provide his/her name. But, as
+	// it's a technical possibility, the query must be defined
+	@Query(value = "" //
+			+ " select p "//
+			+ " from Post p "//
+			+ " join Member m on m.id=p.authorId" //
+			+ " where p.topicId= ?1 "//
+			+ " and p.authorId =?2 "//
+			+ " and m.name = ?3 "//
+			+ " and p.date >= ?4")
+	List<Post> findByTopicIdAndMemberIdAndMemberNameAndSince(UUID id, UUID memberId, String memberName, String since);
 
 	/** The query for the BatchLoader */
 	@Query(value = "select p from Post p where id in ?1")

@@ -38,6 +38,11 @@ public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQu
 	}
 
 	@Override
+	public Integer nbBoards(DataFetchingEnvironment dataFetchingEnvironment) {
+		return (int) boardRepository.count();
+	}
+
+	@Override
 	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
 		return topicRepository.findByBoardName(boardName);
 	}

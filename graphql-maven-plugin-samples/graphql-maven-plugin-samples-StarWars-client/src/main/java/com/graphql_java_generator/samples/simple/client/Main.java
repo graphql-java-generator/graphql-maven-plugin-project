@@ -13,7 +13,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import com.generated.graphql.Episode;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
 import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
@@ -59,7 +59,7 @@ public class Main {
 		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
-	public void execOne(Queries client) throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	public void execOne(Queries client) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// A random value, to variabilize mutations
 		int i = (int) (Math.random() * Integer.MAX_VALUE);
 

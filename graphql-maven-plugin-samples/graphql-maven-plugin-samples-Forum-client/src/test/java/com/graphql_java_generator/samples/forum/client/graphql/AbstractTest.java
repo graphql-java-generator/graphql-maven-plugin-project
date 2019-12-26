@@ -7,11 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
@@ -31,7 +32,7 @@ abstract class AbstractTest {
 	Queries queries;
 
 	@Test
-	void testBoardsSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_boardsSimple() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// return queryType.boards("{id name publiclyAvailable}");
 		List<Board> boards = queries.boardsSimple();
@@ -53,13 +54,42 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testTopicAuthorPostAuthor() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void test_boardsAndTopicsWithFieldParameter()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2018, 11, 20);// Month is 0-based, so this date is 2018, December the 20th
+
+		List<Board> boards = queries.boardsAndTopicsWithFieldParameter(cal.getTime());
+
+		// Verification
+		assertTrue(boards.size() >= 10, "10 boards at startup, then new ones are created by the tests");
+
+		Board board2 = boards.get(1); // Board names start by 1, not 0 as a lists
+		assertEquals("00000000-0000-0000-0000-000000000002", board2.getId());
+		assertEquals("Board name 2", board2.getName());
+		assertEquals(false, board2.getPubliclyAvailable());
+		assertEquals(2, board2.getTopics().size());
+
+		Board board10 = boards.get(9); // Board names start by 1, not 0 as a lists
+		assertEquals("00000000-0000-0000-0000-000000000010", board10.getId());
+		assertEquals("Board name 10", board10.getName());
+		assertEquals(true, board10.getPubliclyAvailable());
+		assertEquals(1, board10.getTopics().size());
+	}
+
+	@Test
+	void testTopicAuthorPostAuthor() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// return queryType.topics(
 		// "{id date author{name email alias id type} nbPosts title content posts{id date author{name email alias} title
 		// content}}",
 		// "Board name 2");
-		List<Topic> topics = queries.topicAuthorPostAuthor();
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2009, 11, 20);// Month is 0-based, so this date is 2009, December the 20th
+		List<Topic> topics = queries.topicAuthorPostAuthor("Board name 2", cal.getTime());
 
 		assertEquals(5, topics.size());
 
@@ -100,7 +130,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testFindTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void testFindTopics() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		String boardName = "Board name 3";
 		List<String> keyword = new ArrayList<>(Arrays.asList("3", "content"));
@@ -116,17 +146,21 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testCreateBoards() throws GraphQLExecutionException, GraphQLRequestPreparationException {
+	void testCreateBoards() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		List<Board> before = queries.boardsSimple();
 		String name = this.getClass().getSimpleName() + Float.floatToIntBits((float) Math.random() * Integer.MAX_VALUE);
 		boolean publiclyAvailable = Math.random() > 0.5;
 
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2009, 11, 20);// Month is 0-based, so this date is 2009, December the 20th
+
 		// Go, go, go
 		Board board = queries.createBoard(name, publiclyAvailable);
 
 		// Verification
-		List<Board> after = queries.boardsAndTopics();
+		List<Board> after = queries.boardsAndTopicsWithFieldParameter(cal.getTime());
 		assertEquals(before.size() + 1, after.size());
 		assertNull(contains(before, board.getId()));
 		Board boardVerif = contains(after, board.getId());

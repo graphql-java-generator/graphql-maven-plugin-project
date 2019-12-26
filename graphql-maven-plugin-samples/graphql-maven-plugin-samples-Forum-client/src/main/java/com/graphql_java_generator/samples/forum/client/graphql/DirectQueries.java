@@ -1,8 +1,9 @@
 package com.graphql_java_generator.samples.forum.client.graphql;
 
+import java.util.Date;
 import java.util.List;
 
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
@@ -22,33 +23,35 @@ public class DirectQueries implements Queries {
 	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
 
 	@Override
-	public List<Board> boardsSimple() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		// No field specified: all known scalar fields of the root type will be queried
+	public List<Board> boardsSimple() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		return queryType.boards("");
 	}
 
 	@Override
-	public List<Board> boardsAndTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		// Used to check that a newly created Board has no topic
-		return queryType.boards("{id name publiclyAvailable topics{id}}");
+	public List<Board> boardsAndTopicsWithFieldParameter(Date since)
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		String formatedDate = dateFormat.format(since);
+		return queryType.boards("{id name publiclyAvailable topics(since: \"" + formatedDate + "\"){id}}");
 	}
 
 	@Override
-	public List<Topic> topicAuthorPostAuthor() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		return queryType.topics(
-				"{id date author{name email alias id type} nbPosts title content posts{id date author{name email alias} title content}}",
-				"Board name 2");
+	public List<Topic> topicAuthorPostAuthor(String boardName, Date since)
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		String formatedDate = dateFormat.format(since);
+		return queryType.topics("{id date author{name email alias id type} nbPosts title content posts(since:\""
+				+ formatedDate + "\"){id date author{name email alias} title content}}", boardName);
+
 	}
 
 	@Override
 	public List<Topic> findTopics(String boardName, List<String> keyword)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		return queryType.findTopics("{id date title content}", boardName, keyword);
 	}
 
 	@Override
 	public Board createBoard(String name, boolean publiclyAvailable)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		return mutationType.createBoard("{id name publiclyAvailable}", name, publiclyAvailable);
 	}
 

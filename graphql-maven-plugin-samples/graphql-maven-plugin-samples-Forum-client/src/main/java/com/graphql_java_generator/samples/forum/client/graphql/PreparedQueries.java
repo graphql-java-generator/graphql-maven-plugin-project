@@ -1,9 +1,12 @@
 package com.graphql_java_generator.samples.forum.client.graphql;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
@@ -42,10 +45,11 @@ public class PreparedQueries implements Queries {
 		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 
 		boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
-				.withQueryResponseDef("{id name publiclyAvailable topics{id}}").build();
+				.withQueryResponseDef("{id name publiclyAvailable topics(since:?since){id}}").build();
 
-		topicAuthorPostAuthorResponse = queryType.getTopicsResponseBuilder().withQueryResponseDef(
-				"{id date author{name email alias id type} nbPosts title content posts{id date author{name email alias} title content}}")
+		topicAuthorPostAuthorResponse = queryType.getTopicsResponseBuilder()
+				.withQueryResponseDef("{id date author{name email alias id type} nbPosts title content " //
+						+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias} title content}}")
 				.build();
 
 		findTopicIdDateTitleContent = queryType.getFindTopicsResponseBuilder()
@@ -56,30 +60,36 @@ public class PreparedQueries implements Queries {
 	}
 
 	@Override
-	public List<Board> boardsSimple() throws GraphQLExecutionException {
+	public List<Board> boardsSimple() throws GraphQLRequestExecutionException {
 		return queryType.boards(boardsSimpleResponse);
 	}
 
 	@Override
-	public List<Board> boardsAndTopics() throws GraphQLExecutionException, GraphQLRequestPreparationException {
-		// Used to check that a newly created Board has no topic
-		return queryType.boards(boardsAndTopicsResponse);
+	public List<Board> boardsAndTopicsWithFieldParameter(Date since)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("since", dateFormat.format(since));
+
+		return queryType.boards(boardsAndTopicsResponse, map);
 	}
 
 	@Override
-	public List<Topic> topicAuthorPostAuthor() throws GraphQLExecutionException {
-		return queryType.topics(topicAuthorPostAuthorResponse, "Board name 2");
+	public List<Topic> topicAuthorPostAuthor(String boardName, Date since) throws GraphQLRequestExecutionException {
+		Map<String, Object> map = new HashMap<>();
+		map.put("sinceParam", dateFormat.format(since));
+		return queryType.topics(topicAuthorPostAuthorResponse, boardName, map);
 	}
 
 	@Override
 	public List<Topic> findTopics(String boardName, List<String> keyword)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.findTopics(findTopicIdDateTitleContent, boardName, keyword);
 	}
 
 	@Override
 	public Board createBoard(String name, boolean publiclyAvailable)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createBoard(createBoardResponse, name, publiclyAvailable);
 	}
 }

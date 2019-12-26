@@ -7,18 +7,24 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**
  * @author EtienneSF
  */
+@Component
 public class GraphqlUtils {
 
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
@@ -273,4 +279,34 @@ public class GraphqlUtils {
 		}
 	}
 
+	/**
+	 * This method retrieves the couple of name and values given in these parameters, stores them in a map where the key
+	 * is the param name, and the value is the value of the {@link Map}.<BR/>
+	 * It expects an even number of parameters.
+	 * 
+	 * @param paramsAndValues
+	 *            a series of name and values : (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @return The map with paramName1, paramName2 (...) are the keys, and paramValue1, paramValue2 (...) are the
+	 *         associated content.
+	 * @throws GraphQLRequestExecutionException
+	 *             When a non-even number of parameters is sent to this method
+	 * @throws ClassCastException
+	 *             When a parameter name is not a String
+	 */
+	public Map<String, Object> generatesBindVariableValuesMap(Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, ClassCastException {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		if (paramsAndValues.length % 2 != 0) {
+			throw new GraphQLRequestExecutionException("An even number of parameters is expected, but "
+					+ paramsAndValues.length
+					+ " parameters where sent. This method expects a series of name and values : (paramName1, paramValue1, paramName2, paramValue2...)");
+		}
+
+		for (int i = 0; i < paramsAndValues.length; i += 2) {
+			map.put((String) paramsAndValues[i], paramsAndValues[i + 1]);
+		}
+
+		return map;
+	}
 }

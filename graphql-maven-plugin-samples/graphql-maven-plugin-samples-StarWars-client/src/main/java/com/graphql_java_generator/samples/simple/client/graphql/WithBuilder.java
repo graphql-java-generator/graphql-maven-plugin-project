@@ -12,8 +12,9 @@ import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
 import com.generated.graphql.MutationType;
 import com.generated.graphql.QueryType;
+import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.Queries;
 
@@ -80,14 +81,13 @@ public class WithBuilder implements Queries {
 
 		// Of course, you can precise the fields you want
 		// {id appearsIn friends {name friends {friends{id name appearsIn}}}}
-		ObjectResponse friends3 = ObjectResponse.newSubObjectBuilder(Character.class).withField("id").withField("name")
+		ObjectResponse friends3 = new Builder(Character.class, "friends").withField("id").withField("name")
 				.withField("appearsIn").build();
-		ObjectResponse friends2 = ObjectResponse.newSubObjectBuilder(Character.class).withSubObject("friends", friends3)
-				.build();
-		ObjectResponse friends1 = ObjectResponse.newSubObjectBuilder(Character.class).withField("name")
-				.withSubObject("friends", friends2).build();
+		ObjectResponse friends2 = new Builder(Character.class, "friends").withSubObject(friends3).build();
+		ObjectResponse characterFriends1 = new Builder(Character.class, "friends").withField("name")
+				.withSubObject(friends2).build();
 		heroFriendsFriendsFriendsResponse = queryType.getHeroResponseBuilder().withField("id").withField("appearsIn")
-				.withSubObject("friends", friends1).build();
+				.withSubObject(characterFriends1).build();
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 		// Human
@@ -102,8 +102,10 @@ public class WithBuilder implements Queries {
 
 		// Of course, you can precise the fields you want
 		// {id appearsIn name friends{name friends{friends{id name appearsIn}}}}
+		ObjectResponse humanFriends1 = new Builder(Human.class, "friends").withField("name").withSubObject(friends2)
+				.build();
 		humanFriendsFriendsFriendsResponse = queryType.getHumanResponseBuilder().withField("id").withField("appearsIn")
-				.withField("name").withSubObject("friends", friends1).build();
+				.withField("name").withSubObject(humanFriends1).build();
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 		// Droid
@@ -118,8 +120,10 @@ public class WithBuilder implements Queries {
 
 		// Of course, you can precise the fields you want
 		// {id appearsIn name friends{name friends{friends{id name appearsIn}}}primaryFunction}
+		ObjectResponse droidFriends1 = new Builder(Droid.class, "friends").withField("name").withSubObject(friends2)
+				.build();
 		droidFriendsFriendsFriendsResponse = queryType.getDroidResponseBuilder().withField("id").withField("appearsIn")
-				.withField("name").withSubObject("friends", friends1).withField("primaryFunction").build();
+				.withField("name").withSubObject(droidFriends1).withField("primaryFunction").build();
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 		// A demo of a wrong query. The preparation below should fail.
@@ -128,7 +132,7 @@ public class WithBuilder implements Queries {
 		// it.
 		try {
 			queryType.getDroidResponseBuilder().withField("id").withField("appearsIn").withField("NON_EXISTING_FIELD")
-					.withSubObject("friends", friends1).withField("primaryFunction").build();
+					.withSubObject(droidFriends1).withField("primaryFunction").build();
 
 			// Oups, if we got there, the expected exception was not thrown. Which means that the sample failed.
 			// Let's throw an exception to block the execution (as the Maven build executes this sample, this will hang
@@ -143,68 +147,68 @@ public class WithBuilder implements Queries {
 		// Mutations
 		createHuman = mutationType.getCreateHumanResponseBuilder().build();
 		addFriend = mutationType.getAddFriendResponseBuilder().withField("id").withField("name").withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).build()).build();
+				.withSubObject(new Builder(Character.class, "friends").build()).build();
 	}
 
 	@Override
-	public Character heroFull() throws GraphQLExecutionException {
+	public Character heroFull() throws GraphQLRequestExecutionException {
 		return queryType.hero(heroFullResponse, null);
 	}
 
 	@Override
-	public Character heroPartial(Episode episode) throws GraphQLExecutionException {
+	public Character heroPartial(Episode episode) throws GraphQLRequestExecutionException {
 		return queryType.hero(heroPartialResponse, episode);
 	}
 
 	@Override
-	public Character heroFriendsFriendsFriends(Episode episode) throws GraphQLExecutionException {
+	public Character heroFriendsFriendsFriends(Episode episode) throws GraphQLRequestExecutionException {
 		return queryType.hero(heroFriendsFriendsFriendsResponse, episode);
 	}
 
 	@Override
-	public Human humanFull(String id) throws GraphQLExecutionException {
+	public Human humanFull(String id) throws GraphQLRequestExecutionException {
 		return queryType.human(humanFullResponse, id);
 	}
 
 	@Override
-	public Human humanPartial(String id) throws GraphQLExecutionException {
+	public Human humanPartial(String id) throws GraphQLRequestExecutionException {
 		return queryType.human(humanPartialResponse, id);
 	}
 
 	@Override
-	public Human humanFriendsFriendsFriends(String id) throws GraphQLExecutionException {
+	public Human humanFriendsFriendsFriends(String id) throws GraphQLRequestExecutionException {
 		return queryType.human(humanFriendsFriendsFriendsResponse, id);
 	}
 
 	@Override
-	public Droid droidFull(String id) throws GraphQLExecutionException {
+	public Droid droidFull(String id) throws GraphQLRequestExecutionException {
 		return queryType.droid(droidFullResponse, id);
 	}
 
 	@Override
-	public Droid droidPartial(String id) throws GraphQLExecutionException {
+	public Droid droidPartial(String id) throws GraphQLRequestExecutionException {
 		return queryType.droid(droidPartialResponse, id);
 	}
 
 	@Override
-	public Droid droidFriendsFriendsFriends(String id) throws GraphQLExecutionException {
+	public Droid droidFriendsFriendsFriends(String id) throws GraphQLRequestExecutionException {
 		return queryType.droid(droidFriendsFriendsFriendsResponse, id);
 	}
 
 	@Override
-	public Droid droidDoesNotExist() throws GraphQLExecutionException {
+	public Droid droidDoesNotExist() throws GraphQLRequestExecutionException {
 		return queryType.droid(droidFriendsFriendsFriendsResponse, "00000000-0000-0000-0000-000000001111");
 	}
 
 	@Override
 	public Human createHuman(String name, String homePlanet)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createHuman(createHuman, name, homePlanet);
 	}
 
 	@Override
 	public Character addFriend(String idCharacter, String idNewFriend)
-			throws GraphQLExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.addFriend(addFriend, idCharacter, idNewFriend);
 	}
 

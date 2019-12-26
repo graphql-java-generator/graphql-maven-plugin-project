@@ -5,6 +5,7 @@ package com.graphql_java_generator.client.request;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
@@ -142,6 +143,8 @@ public class InputParameter {
 			return null;
 		} else if (val instanceof String) {
 			return getStringValue((String) val);
+		} else if (val instanceof UUID) {
+			return getStringValue(((UUID) val).toString());
 		} else if (val instanceof java.util.List) {
 			return getListValue((List<?>) val);
 		} else {

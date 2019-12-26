@@ -32,6 +32,7 @@ public abstract class AbstractType implements Type {
 		this.graphQlType = graphQlType;
 	}
 
+	@Override
 	public GraphQlType getGraphQlType() {
 		return graphQlType;
 	}
@@ -40,6 +41,12 @@ public abstract class AbstractType implements Type {
 	@Override
 	public String getClassSimpleName() {
 		return name;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getCamelCaseName() {
+		return TypeUtil.getCamelCase(getClassSimpleName());
 	}
 
 	/** {@inheritDoc} */
