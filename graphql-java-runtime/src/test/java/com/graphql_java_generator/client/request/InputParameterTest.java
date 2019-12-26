@@ -51,7 +51,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals("EMPIRE", param.getValueForGraphqlQuery(new HashMap<>()), "escaped value");
+		assertEquals("EMPIRE", param.getValueForGraphqlQuery(new HashMap<>()));
 	}
 
 	@Test
@@ -62,7 +62,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()), "escaped value");
+		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()));
 	}
 
 	@Test
@@ -73,7 +73,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()), "escaped value");
+		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()));
 	}
 
 	@Test
@@ -86,6 +86,17 @@ class InputParameterTest {
 		assertEquals(id, param.getValue(), "value");
 		assertEquals("\\\"00000000-0000-0000-0000-000000000012\\\"", param.getValueForGraphqlQuery(new HashMap<>()),
 				"escaped value");
+	}
+
+	@Test
+	void test_getValueAsString_ListEmptyString() throws GraphQLRequestExecutionException {
+		String name = "anotherName";
+		List<String> values = new ArrayList<>();
+		InputParameter param = InputParameter.newHardCodedParameter(name, values);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(values, param.getValue(), "value");
+		assertEquals("[]", param.getValueForGraphqlQuery(new HashMap<>()));
 	}
 
 	@Test
@@ -103,7 +114,24 @@ class InputParameterTest {
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
 		assertEquals("[\\\"" + value1 + "\\\",\\\"" + value2 + "\\\",\\\"" + value3 + "\\\"]",
-				param.getValueForGraphqlQuery(new HashMap<>()), "escaped value");
+				param.getValueForGraphqlQuery(new HashMap<>()));
+	}
+
+	@Test
+	void test_getValueAsString_ListEpisode() throws GraphQLRequestExecutionException {
+		String name = "anotherName";
+		Episode value1 = Episode.EMPIRE;
+		Episode value2 = Episode.JEDI;
+		Episode value3 = Episode.NEWHOPE;
+		List<Episode> values = new ArrayList<>();
+		values.add(value1);
+		values.add(value2);
+		values.add(value3);
+		InputParameter param = InputParameter.newHardCodedParameter(name, values);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(values, param.getValue(), "value");
+		assertEquals("[EMPIRE,JEDI,NEWHOPE]", param.getValueForGraphqlQuery(new HashMap<>()));
 	}
 
 	@Test
