@@ -382,12 +382,7 @@ public class WithQueries implements Queries {
 		ObjectResponse response = queryType.getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 ...
 		// Request execution
-		// 1) Definition of the bind variable values for THIS execution
-		Map<String, Object> map = new HashMap<>();
-		map.put("memberName", "a member Name");
-		map.put("sinceParam", "1900/10/24");
-		// 2) Request execution
-		List<Board> boards = queryType.boards(response, map);
+		List<Board> boards = queryType.boards(response, "memberName", "a member Name", "sinceParam", "1900/10/24");
 +--------------------------------------------------------------------------------------------
 
     * You can see here that you can have three kind of input parameters (here for the posts field of the Topic GraphQL object):

@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.client.GraphqlUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
@@ -33,6 +34,8 @@ public class ${object.name} {
 
 	/** Logger for this class */
 	private static Logger logger = LogManager.getLogger();
+
+	final GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	final QueryExecutor executor;
 
@@ -95,7 +98,7 @@ public class ${object.name} {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return ${field.name}(objectResponse#inputValues(), null);
+		return ${field.name}WithBindValues(objectResponse#inputValues(), null);
 	}
 
 	/**
@@ -124,7 +127,7 @@ public class ${object.name} {
 	 */
 	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(String queryResponseDef#inputParams(), Map<String, Object> parameters)
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -152,7 +155,7 @@ public class ${object.name} {
 	@GraphQLQuery
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(ObjectResponse objectResponse#inputParams())
 			throws GraphQLRequestExecutionException  {
-		return ${field.name}(objectResponse#inputValues(), null);
+		return ${field.name}WithBindValues(objectResponse#inputValues(), null);
 	}
 
 	/**
@@ -174,7 +177,7 @@ public class ${object.name} {
 	 */
 	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of $type '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.name}#end);
@@ -194,6 +197,60 @@ public class ${object.name} {
 		}
 
 		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute("${object.requestType}", objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
+		
+		return ret.${field.name};
+	}
+
+	/**
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+#foreach ($inputParameter in $field.inputParameters)
+	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @throws IOException
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
+	@GraphQLQuery
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(ObjectResponse objectResponse#inputParams(), Object... paramsAndValues)
+			throws GraphQLRequestExecutionException  {
+		if (logger.isTraceEnabled()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("Executing of query '${field.name}' with bind variables: ");
+			boolean addComma = false;
+			for (Object o : paramsAndValues) {
+				sb.append(o.toString());
+				if (addComma)
+					sb.append(", ");
+				addComma = true;
+			}
+			logger.trace(sb.toString());
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of query '${field.name}' (with bind variables)");
+		}
+
+		if (!${field.type.classSimpleName}.class.equals(objectResponse.getFieldClass())) {
+			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
+					+ ${field.type.classSimpleName}.class + ", but is an instance of " + objectResponse.getClass().getName());
+		}
+
+		Map<String, Object> bindVariableValues = graphqlUtils.generatesBindVariableValuesMap(paramsAndValues);
+#foreach ($inputParameter in $field.inputParameters)
+		bindVariableValues.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.name});
+#end
+		
+		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute("${object.requestType}", objectResponse, bindVariableValues, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
 		
 		return ret.${field.name};
 	}

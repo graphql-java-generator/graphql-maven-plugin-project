@@ -281,11 +281,13 @@ public class GraphqlUtils {
 
 	/**
 	 * This method retrieves the couple of name and values given in these parameters, stores them in a map where the key
-	 * is the param name, and the value is the value of the {@link Map}.<BR/>
-	 * It expects an even number of parameters.
+	 * is the param name, and the value is the value of the {@link Map}.
 	 * 
 	 * @param paramsAndValues
-	 *            a series of name and values : (paramName1, paramValue1, paramName2, paramValue2...)
+	 *            A series of name and values : (paramName1, paramValue1, paramName2, paramValue2...). So there must be
+	 *            an even number of items in this array. Empty arrays are allowed (that is no parameter name and
+	 *            value).<BR/>
+	 *            This series is sent by the developer's code, when it calls the request methods.
 	 * @return The map with paramName1, paramName2 (...) are the keys, and paramValue1, paramValue2 (...) are the
 	 *         associated content.
 	 * @throws GraphQLRequestExecutionException
@@ -293,18 +295,20 @@ public class GraphqlUtils {
 	 * @throws ClassCastException
 	 *             When a parameter name is not a String
 	 */
-	public Map<String, Object> generatesBindVariableValuesMap(Object... paramsAndValues)
+	public Map<String, Object> generatesBindVariableValuesMap(Object[] paramsAndValues)
 			throws GraphQLRequestExecutionException, ClassCastException {
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		if (paramsAndValues.length % 2 != 0) {
-			throw new GraphQLRequestExecutionException("An even number of parameters is expected, but "
-					+ paramsAndValues.length
-					+ " parameters where sent. This method expects a series of name and values : (paramName1, paramValue1, paramName2, paramValue2...)");
-		}
-
-		for (int i = 0; i < paramsAndValues.length; i += 2) {
-			map.put((String) paramsAndValues[i], paramsAndValues[i + 1]);
+		// If we get parameters and values, let's put them into the map
+		if (paramsAndValues != null) {
+			if (paramsAndValues.length % 2 != 0) {
+				throw new GraphQLRequestExecutionException("An even number of parameters is expected, but "
+						+ paramsAndValues.length
+						+ " parameters where sent. This method expects a series of name and values : (paramName1, paramValue1, paramName2, paramValue2...)");
+			}
+			for (int i = 0; i < paramsAndValues.length; i += 2) {
+				map.put((String) paramsAndValues[i], paramsAndValues[i + 1]);
+			}
 		}
 
 		return map;

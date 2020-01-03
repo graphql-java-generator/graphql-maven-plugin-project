@@ -1,9 +1,7 @@
 package com.graphql_java_generator.samples.forum.client.graphql;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
@@ -81,18 +79,12 @@ public class WithBuilder implements Queries {
 	@Override
 	public List<Board> boardsAndTopicsWithFieldParameter(Date since)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-
-		Map<String, Object> map = new HashMap<>();
-		map.put("since", dateFormat.format(since));
-
-		return queryType.boards(boardsAndTopicsResponse, map);
+		return queryType.boards(boardsAndTopicsResponse, "since", dateFormat.format(since));
 	}
 
 	@Override
 	public List<Topic> topicAuthorPostAuthor(String boardName, Date since) throws GraphQLRequestExecutionException {
-		Map<String, Object> map = new HashMap<>();
-		map.put("since", dateFormat.format(since));
-		return queryType.topics(topicAuthorPostAuthorResponse, "Board name 2", map);
+		return queryType.topics(topicAuthorPostAuthorResponse, "Board name 2", "since", dateFormat.format(since));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -225,15 +226,25 @@ class GraphqlUtilsTest {
 
 	@Test
 	void test_generatesBindVariableValuesMap() throws GraphQLRequestExecutionException {
+		Object[] objects = { "1", "2", "3" };
+		Map<String, Object> map;
 
-		assertThrows(GraphQLRequestExecutionException.class,
-				() -> graphqlUtils.generatesBindVariableValuesMap("1", "2", "3"),
-				"There must be an even number of parameters");
-		assertThrows(ClassCastException.class,
-				() -> graphqlUtils.generatesBindVariableValuesMap("param1", 2, "param2", Episode.JEDI, 3, "a String"));
+		map = graphqlUtils.generatesBindVariableValuesMap(null);
+		assertNotNull(map);
+		assertEquals(0, map.size(), "The map is empty");
 
-		Map<String, Object> map = graphqlUtils.generatesBindVariableValuesMap("param1", 2, "param2", Episode.JEDI,
-				"param3", "a String");
+		// Check that there is an even number of parameters
+		assertThrows(GraphQLRequestExecutionException.class, () -> graphqlUtils.generatesBindVariableValuesMap(objects),
+				"There must be an even number of parameters, in series 1");
+
+		// Check ClassCastException
+		Object[] objects2 = { "param1", 2, "param2", Episode.JEDI, 3, "a String" };
+		assertThrows(ClassCastException.class, () -> graphqlUtils.generatesBindVariableValuesMap(objects2));
+
+		// Check normal behavior
+		Object[] objects3 = { "param1", 2, "param2", Episode.JEDI, "param3", "a String" };
+		map = graphqlUtils.generatesBindVariableValuesMap(objects3);
+		//
 		assertEquals(3, map.size());
 		assertEquals(2, map.get("param1"));
 		assertEquals(Episode.JEDI, map.get("param2"));

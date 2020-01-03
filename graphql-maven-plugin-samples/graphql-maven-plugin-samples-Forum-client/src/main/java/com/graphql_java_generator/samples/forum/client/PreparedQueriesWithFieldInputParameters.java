@@ -3,10 +3,8 @@ package com.graphql_java_generator.samples.forum.client;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import com.graphql_java_generator.client.GraphqlUtils;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
@@ -22,9 +20,6 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  *
  */
 public class PreparedQueriesWithFieldInputParameters {
-
-	/** Various utilities */
-	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	final QueryType queryType;
 	final ObjectResponse topicAuthorPostAuthorResponse;
@@ -47,9 +42,8 @@ public class PreparedQueriesWithFieldInputParameters {
 	 */
 	List<Topic> boardsWithPostSince(String boardName, UUID memberId, String memberName, Date since)
 			throws GraphQLRequestExecutionException {
-		Map<String, Object> map = graphqlUtils.generatesBindVariableValuesMap("memberId", memberId, "memberName",
+		return queryType.topics(topicAuthorPostAuthorResponse, boardName, "memberId", memberId, "memberName",
 				memberName, "since", dateFormat.format(since));
-		return queryType.topics(topicAuthorPostAuthorResponse, boardName, map);
 	}
 
 }
