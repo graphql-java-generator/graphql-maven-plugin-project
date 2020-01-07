@@ -2,6 +2,10 @@
 
 1.x
 
+
+Any mode, client or server:
+- The released plugin would not work (due to a bad dependency version on graphql-java-spring-boot-starter-webmvc) 
+
 Client mode:
 - Connection to https is made simpler (just declare the https URL)
 - Input parameters are properly managed for queries, mutations and regular GraphQL type's field

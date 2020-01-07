@@ -1,9 +1,8 @@
 Here are the next tasks listed, as a TODO list:
-* Have a non fixed number of arguments in the query/mutation/subscription generated client method, so that it is not necessary for the caller to generate the map. These argument would be: "paramName1", "paramValue1", "paramName2", "paramValue2"...  (then simplify the Forum client sample)
+* Manage default values for input parameters
 * Finish the samples in the client doc page
 * Check query method returning a scalar (forum schema is ready for that)
 * Check scalar field of regular Type, having input parameters (forum schema is ready for that)
-* Manage default values for input parameters
 * Parsing the Query request for Query Preparation should directly call the Builder (instead of creating the QueryField array, then calling the Builder)
 * Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 * Add a gradle plugin (work in progress)
