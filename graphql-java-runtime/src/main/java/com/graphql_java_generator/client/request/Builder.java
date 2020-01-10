@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.client.GraphqlUtils;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**

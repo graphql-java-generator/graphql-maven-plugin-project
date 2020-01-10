@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 
-import com.graphql_java_generator.client.GraphqlUtils;
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
