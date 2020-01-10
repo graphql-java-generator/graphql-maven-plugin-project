@@ -330,18 +330,25 @@ public class GraphqlUtils {
 	 *            value in the map
 	 * @return An instance of the expected class. If the map is null or empty, all the fields are left empty
 	 */
-	<T> T getInputObject(Map<String, Object> map, T t) {
+	public <T> T getInputObject(Map<String, Object> map, Class<T> clazz) {
+		T t;
 		Field field;
+
+		try {
+			t = clazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException("Error while creating a new instance of  '" + clazz.getName() + " class", e);
+		}
 
 		for (String key : map.keySet()) {
 			try {
-				field = t.getClass().getDeclaredField(key);
+				field = clazz.getDeclaredField(key);
 			} catch (NoSuchFieldException | SecurityException e) {
 				throw new RuntimeException(
-						"Error while reading '" + key + "' field for the " + t.getClass().getName() + " class", e);
+						"Error while reading '" + key + "' field for the " + clazz.getName() + " class", e);
 			}
 
-			Method setter = getSetter(t, field);
+			Method setter = getSetter(clazz, field);
 
 			GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
 			GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
@@ -363,25 +370,37 @@ public class GraphqlUtils {
 				// field.
 				if (!(map.get(key) instanceof Map<?, ?>)) {
 					throw new RuntimeException(
-							"The value for the field '" + t.getClass().getName() + "." + key + " should be a map");
+							"The value for the field '" + clazz.getName() + "." + key + " should be a map");
 				}
 				@SuppressWarnings("unchecked")
 				Map<String, Object> subMap = (Map<String, Object>) map.get(key);
-
-				Object value;
-				try {
-					value = graphQLNonScalar.graphqlType().newInstance();
-				} catch (InstantiationException | IllegalAccessException e) {
-					throw new RuntimeException("Error when trying to create an instance of '"
-							+ graphQLNonScalar.graphqlType().getName() + "'");
-				}
-				invokeMethod(setter, t, getInputObject(subMap, value));
+				invokeMethod(setter, t, getInputObject(subMap, graphQLNonScalar.graphqlType()));
 			} else {
-				throw new RuntimeException("Internal error: the field '" + t.getClass().getName() + "." + key
+				throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
 						+ "' should have one of these annotations: GraphQLScalar or GraphQLScalar");
 			}
 		}
 		return t;
+	}
+
+	/**
+	 * This method returns a list of instances of the given class, from a list of {@link Map}. This is used on
+	 * server-side, to map the input read from the JSON into the InputType that have been declared in the GraphQL
+	 * schema.
+	 * 
+	 * @param <T>
+	 * @param list
+	 * @param clazz
+	 * @return
+	 */
+	public <T> List<T> getListInputObjects(List<Map<String, Object>> list, Class<T> clazz) {
+		List<T> ret = new ArrayList<>(list.size());
+
+		for (Map<String, Object> map : list) {
+			ret.add(getInputObject(map, clazz));
+		}
+
+		return ret;
 	}
 
 	/**
@@ -392,16 +411,17 @@ public class GraphqlUtils {
 	 * @param field
 	 * @return
 	 */
-	<T> Method getSetter(T t, Field field) {
+	<T> Method getSetter(Class<T> clazz, Field field) {
 		String setterMethodName = "set" + getPascalCase(field.getName());
 		try {
-			return t.getClass().getDeclaredMethod(setterMethodName, field.getType());
+			return clazz.getDeclaredMethod(setterMethodName, field.getType());
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(
-					"The setter '" + setterMethodName + "' is missing in " + t.getClass().getName() + " class", e);
+					"The setter '" + setterMethodName + "' is missing in " + clazz.getName() + " class", e);
 		} catch (SecurityException e) {
-			throw new RuntimeException("Error while accessing to the setter '" + setterMethodName + "' in "
-					+ t.getClass().getName() + " class", e);
+			throw new RuntimeException(
+					"Error while accessing to the setter '" + setterMethodName + "' in " + clazz.getName() + " class",
+					e);
 		}
 	}
 
