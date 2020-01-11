@@ -708,11 +708,6 @@ public class DocumentParser {
 	void addTypeAnnotationForClientMode(Type o) {
 		// No specific annotation for objects and interfaces when in client mode.
 
-		if (o.getName().startsWith("Character")) {
-			int breakpoint = 1;
-			System.out.print(breakpoint);
-		}
-
 		// Let's add the annotations, that are common to both the client and the server mode
 		addTypeAnnotationForBothClientAndServerMode(o);
 	}
@@ -755,14 +750,6 @@ public class DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForClientMode(Field field) {
-		if (field.getOwningType().getName().equals("CharacterImpl") && field.getName().equals("id")) {
-			int breakpoint = 1;
-			System.out.print(breakpoint);
-		}
-		if (field.getOwningType().getName().equals("Character") && field.getName().equals("id")) {
-			int breakpoint = 1;
-			System.out.print(breakpoint);
-		}
 		if (field.isList()) {
 			((FieldImpl) field).addAnnotation(
 					"@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName() + ".class)");
