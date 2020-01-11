@@ -29,9 +29,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.CodeGenerator;
-import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
@@ -110,7 +107,8 @@ class CodeGeneratorTest {
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
 		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
-		assertEquals(pluginConfiguration.getPackageName(), argumentContext.getValue().get("package"),
+		assertEquals(pluginConfiguration.getPackageName(),
+				((PluginConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
@@ -160,7 +158,8 @@ class CodeGeneratorTest {
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
 		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
-		assertEquals(pluginConfiguration.getPackageName(), argumentContext.getValue().get("package"),
+		assertEquals(pluginConfiguration.getPackageName(),
+				((PluginConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");

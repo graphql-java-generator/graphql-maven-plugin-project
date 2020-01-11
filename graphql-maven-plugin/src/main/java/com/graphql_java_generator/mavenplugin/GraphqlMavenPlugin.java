@@ -27,6 +27,10 @@ import com.graphql_java_generator.plugin.PluginMode;
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 public class GraphqlMavenPlugin extends AbstractMojo {
 
+	/** Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode. */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = "false")
+	boolean generateJPAAnnotation;
+
 	/** The packageName in which the generated classes will be created */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = PluginConfiguration.DEFAULT_PACKAGE_NAME)
 	String packageName;

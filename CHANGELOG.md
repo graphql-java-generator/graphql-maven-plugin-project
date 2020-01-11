@@ -17,3 +17,4 @@ Client mode:
 Server mode:
 - XxxDataFetchersDelegate interfaces renamed as DataFetchersDelegateXxxx (code is easier to read, as the DataFetchersDelegates are grouped together in the classes list)
 - Input parameters are accepted for queries, mutations and object's field.  
+- Add of the generateJPAAnnotation plugin parameter (default to false)

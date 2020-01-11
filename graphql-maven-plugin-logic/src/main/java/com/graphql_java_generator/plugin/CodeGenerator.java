@@ -168,10 +168,9 @@ public class CodeGenerator {
 			File targetFile = getJavaFile((String) exec("getName", object));
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 			VelocityContext context = new VelocityContext();
-			context.put("package", pluginConfiguration.getPackageName());
+			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("object", object);
 			context.put("type", type);
-			context.put("mode", pluginConfiguration.getMode());
 
 			i += generateOneFile(targetFile, msg, context, templateFilename);
 		} // for
@@ -196,7 +195,7 @@ public class CodeGenerator {
 				String msg = "Generating target for query " + query.getName() + " '" + objectName + "' into "
 						+ targetFile.getAbsolutePath();
 				VelocityContext context = new VelocityContext();
-				context.put("package", pluginConfiguration.getPackageName());
+				context.put("pluginConfiguration", pluginConfiguration);
 				context.put("objectName", objectName);
 				context.put("query", query);
 
@@ -215,8 +214,7 @@ public class CodeGenerator {
 	int generateServerFiles() throws IOException {
 
 		VelocityContext context = new VelocityContext();
-		context.put("package", pluginConfiguration.getPackageName());
-		context.put("packaging", pluginConfiguration.getPackaging());
+		context.put("pluginConfiguration", pluginConfiguration);
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
 

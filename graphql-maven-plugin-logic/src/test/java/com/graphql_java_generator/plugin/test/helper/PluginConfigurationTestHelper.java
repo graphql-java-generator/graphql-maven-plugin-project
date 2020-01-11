@@ -35,4 +35,9 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public PluginConfigurationTestHelper(Object caller) {
 		log = new Log4jLogger(caller);
 	}
+
+	@Override
+	public boolean getGenerateJPAAnnotation() {
+		return true;
+	}
 }

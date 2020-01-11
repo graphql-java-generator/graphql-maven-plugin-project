@@ -33,6 +33,11 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
+	public boolean getGenerateJPAAnnotation() {
+		return mojo.generateJPAAnnotation;
+	}
+
+	@Override
 	public Logger getLog() {
 		return log;
 	}

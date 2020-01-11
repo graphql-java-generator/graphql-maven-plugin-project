@@ -1,8 +1,8 @@
-package ${package};
+package ${pluginConfiguration.packageName};
 
 import java.util.List;
 
-#if ($mode == "server")
+#if (${pluginConfiguration.mode} == "server")
 import java.util.UUID;
 
 import javax.persistence.GeneratedValue;
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 #end
 
-#if ($mode == "client")
+#if (${pluginConfiguration.mode} == "client")
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 #end
 

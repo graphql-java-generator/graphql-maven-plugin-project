@@ -27,6 +27,12 @@ public interface PluginConfiguration {
 	public final static String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
 
 	/**
+	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
+	 * Default value is false
+	 */
+	public boolean getGenerateJPAAnnotation();
+
+	/**
 	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
 	 * can use log4j2, by adding the 'Log4j JDK Logging Adapter' (JUL)
 	 */

@@ -3,6 +3,8 @@ Here are the next tasks listed, as a TODO list:
 * Check InputObjectType with fields that are lists
 * Manage directives (https://www.apollographql.com/docs/graphql-tools/schema-directives/)
 * Finish the samples in the client doc page
+* Document generateJPAAnnotation 
+* Link with the maven generated plugin documentation
 * Check query method returning a scalar (forum schema is ready for that)
 * Check scalar field of regular Type, having input parameters (forum schema is ready for that)
 * Parsing the Query request for Query Preparation should directly call the Builder (instead of creating the QueryField array, then calling the Builder)

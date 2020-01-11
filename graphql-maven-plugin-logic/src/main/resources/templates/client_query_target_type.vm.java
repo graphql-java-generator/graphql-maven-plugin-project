@@ -1,4 +1,4 @@
-package ${package};
+package ${pluginConfiguration.packageName};
 
 import java.util.List;
 
