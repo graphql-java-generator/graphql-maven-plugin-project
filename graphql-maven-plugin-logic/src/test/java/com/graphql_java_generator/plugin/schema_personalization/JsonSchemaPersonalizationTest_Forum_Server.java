@@ -19,7 +19,6 @@ import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
-import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPersonalization;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
 
@@ -57,7 +56,7 @@ class JsonSchemaPersonalizationTest_Forum_Server {
 
 		// Verification
 		ObjectType member = jsonSchemaPersonalization.findObjectTypeFromName("Member");
-		assertEquals("@Entity\n@MyAdditionalAnnotation", member.getAnnotation(), "member annotation");
+		assertEquals("@Entity\n\t\t@MyAdditionalAnnotation", member.getAnnotation(), "member annotation");
 		//
 		Field age = jsonSchemaPersonalization.findFieldFromName(member, "age");
 		assertEquals("int", age.getTypeName(), "age type");
@@ -80,7 +79,8 @@ class JsonSchemaPersonalizationTest_Forum_Server {
 		assertEquals("@NotId\n\t@AnotherAnnotation", id.getAnnotation(), "board.id annotation");
 		//
 		Field name = jsonSchemaPersonalization.findFieldFromName(board, "name");
-		assertEquals("@Column(name=\"column_name\")", name.getAnnotation(), "board.name annotation");
+		assertEquals("@GraphQLScalar(graphqlType = String.class)\n\t\t@Column(name=\"column_name\")",
+				name.getAnnotation(), "board.name annotation");
 	}
 
 	@Test

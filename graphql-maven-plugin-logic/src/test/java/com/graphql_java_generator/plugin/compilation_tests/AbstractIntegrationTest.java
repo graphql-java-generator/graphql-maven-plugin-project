@@ -48,22 +48,8 @@ abstract class AbstractIntegrationTest {
 	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 	void testGenerateCode() throws IOException {
 		// Preparation
-		// documentParser = new DocumentParser();
-		// documentParser.packageName = packageName;
-		// documentParser.log = new SystemStreamLog();
-		// Resource resource = ctx.getResource(graphqlsResourceLocation);
-		// documentParser.documents = new ArrayList<>();
-		// documentParser.documents.add(new Parser().parseDocument(graphqlTestHelper.readSchema(resource)));
 		int i = documentParser.parseDocuments();
-		//
-		// codeGenerator = new CodeGenerator();
-		// codeGenerator.documentParser = documentParser;
-		// codeGenerator.packageName = packageName;
-		// codeGenerator.log = documentParser.log;
-		// codeGenerator.encoding = encoding;
-		// codeGenerator.targetSourceFolder = targetSourceFolder;
 
-		// codeGenerator = spy(codeGenerator);
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetSourceFolder());
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetClassFolder());
 

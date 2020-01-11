@@ -14,6 +14,8 @@ import javax.persistence.Transient;
 #if ($mode == "client")
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 #end
+
+import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 

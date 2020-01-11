@@ -31,12 +31,12 @@ class ObjectTypeTest {
 		mode = PluginMode.server;
 		objectType = new ObjectType(name, packageName, mode);
 
-		FieldImpl f = new FieldImpl(null);
+		FieldImpl f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field1");
 		f.setTypeName("ID");
 		objectType.getFields().add(f);
 
-		f = new FieldImpl(null);
+		f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field2");
 		f.setTypeName("String");
 		objectType.getFields().add(f);
@@ -59,7 +59,7 @@ class ObjectTypeTest {
 
 	@Test
 	void test_getIdentifier_TwoId() {
-		FieldImpl f = new FieldImpl(null);
+		FieldImpl f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field3");
 		f.setTypeName("ID");
 		objectType.getFields().add(f);

@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.persistence.Entity;
 
 import org.springframework.stereotype.Component;
 
@@ -444,7 +445,7 @@ public class DocumentParser {
 	 * @return
 	 */
 	FieldImpl readFieldTypeDefinition(AbstractNode<?> fieldDef) {
-		FieldImpl field = new FieldImpl(this);
+		FieldImpl field = FieldImpl.builder().documentParser(this).build();
 
 		field.setName((String) exec("getName", fieldDef));
 
@@ -588,7 +589,13 @@ public class DocumentParser {
 			List<String> interfaces = new ArrayList<>();
 			interfaces.add(i.getName());
 			o.setImplementz(interfaces);
-			o.setFields(i.getFields());
+			// We need to properly clone the fields, to attach them to the correct owning class
+			for (Field sourceField : i.getFields()) {
+				// We use the Lombok toBuilder facility to clone the source field and only change the owning type.
+				Field targetField = ((FieldImpl) sourceField).toBuilder().owningType(o).build();
+				// Then, we attach the 'new' field to the new object
+				o.getFields().add(targetField);
+			}
 			o.setDefaultImplementationForInterface(i);
 			objectTypes.add(o);
 			nbGeneratedClasses += 1;
@@ -694,32 +701,50 @@ public class DocumentParser {
 	}
 
 	/**
-	 * This method add the needed annotation(s) to the given type. It should be called when the maven plugin is in
-	 * client mode
+	 * This method add the needed annotation(s) to the given type, when in client mode
 	 * 
 	 * @param o
 	 */
 	void addTypeAnnotationForClientMode(Type o) {
-		// No annotation for objects and interfaces when in client mode.
-		((ObjectType) o).setAnnotation("");
+		// No specific annotation for objects and interfaces when in client mode.
+
+		if (o.getName().startsWith("Character")) {
+			int breakpoint = 1;
+			System.out.print(breakpoint);
+		}
+
+		// Let's add the annotations, that are common to both the client and the server mode
+		addTypeAnnotationForBothClientAndServerMode(o);
 	}
 
 	/**
-	 * This method add the needed annotation(s) to the given type. It should be called when the maven plugin is in
-	 * server mode. This typically add the JPA @Entity annotation.
+	 * This method add the needed annotation(s) to the given type when in server mode. This typically add the
+	 * JPA @{@link Entity} annotation.
 	 * 
 	 * @param o
 	 */
 	void addTypeAnnotationForServerMode(Type o) {
-		String annotation = "";
 
 		if (!o.isInputType()) {
 			if (o instanceof ObjectType && !(o instanceof InterfaceType)) {
-				annotation = "@Entity";
+				((AbstractType) o).addAnnotation("@Entity");
 			}
 		}
 
-		((AbstractType) o).setAnnotation(annotation);
+		// Let's add the annotations, that are common to both the client and the server mode
+		addTypeAnnotationForBothClientAndServerMode(o);
+	}
+
+	/**
+	 * This method add the needed annotation(s) to the given type when in server mode. This typically add
+	 * the @{@link GraphQLInputType} annotation.
+	 * 
+	 * @param o
+	 */
+	private void addTypeAnnotationForBothClientAndServerMode(Type o) {
+		if (o.isInputType()) {
+			((AbstractType) o).addAnnotation("@GraphQLInputType");
+		}
 	}
 
 	/**
@@ -730,16 +755,18 @@ public class DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForClientMode(Field field) {
-		String annotation = "";
-
-		if (field.isList()) {
-			annotation = "@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName() + ".class)";
+		if (field.getOwningType().getName().equals("CharacterImpl") && field.getName().equals("id")) {
+			int breakpoint = 1;
+			System.out.print(breakpoint);
 		}
-
-		pluginConfiguration.getLog()
-				.debug(field.getType().getName() + "." + field.getName() + " annotation for client mode set to <"
-						+ annotation + "> (the GraphQL maven plugin is in client mode)");
-		((FieldImpl) field).setAnnotation(annotation);
+		if (field.getOwningType().getName().equals("Character") && field.getName().equals("id")) {
+			int breakpoint = 1;
+			System.out.print(breakpoint);
+		}
+		if (field.isList()) {
+			((FieldImpl) field).addAnnotation(
+					"@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName() + ".class)");
+		}
 
 		addFieldAnnotationForBothClientAndServerMode(field);
 	}
@@ -752,20 +779,14 @@ public class DocumentParser {
 	 */
 	void addFieldAnnotationForServerMode(Field field) {
 		if (!field.getOwningType().isInputType()) {
-			String annotation = "";
-
 			if (field.isId()) {
 				// We have found the identifier
-				annotation = "@Id\n\t\t@GeneratedValue";
+				((FieldImpl) field).addAnnotation("@Id");
+				((FieldImpl) field).addAnnotation("@GeneratedValue");
 			} else if (field.getRelation() != null || field.isList()) {
 				// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
-				annotation = "@Transient";
+				((FieldImpl) field).addAnnotation("@Transient");
 			}
-
-			pluginConfiguration.getLog()
-					.debug(field.getType().getName() + "." + field.getName() + " annotation for server mode set to <"
-							+ annotation + "> (the GraphQL maven plugin is in server mode)");
-			((FieldImpl) field).setAnnotation(annotation);
 		}
 
 		addFieldAnnotationForBothClientAndServerMode(field);
@@ -779,23 +800,13 @@ public class DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
-		String annotation = field.getAnnotation();
-
-		if (annotation == null) {
-			annotation = "";
-		} else if (!annotation.equals("")) {
-			annotation += "\n\t\t";
-		}
-
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
-			annotation += "@GraphQLScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
+			((FieldImpl) field)
+					.addAnnotation("@GraphQLScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)");
 		} else {
-			annotation += "@GraphQLNonScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
+			((FieldImpl) field).addAnnotation(
+					"@GraphQLNonScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)");
 		}
-
-		pluginConfiguration.getLog().debug(field.getType().getName() + "." + field.getName() + " annotation set to <"
-				+ annotation + "> (the GraphQL maven plugin is in client mode)");
-		((FieldImpl) field).setAnnotation(annotation);
 	}
 
 	/**
@@ -847,15 +858,14 @@ public class DocumentParser {
 					// important to limit the number of subqueries, when subobjects are queried.
 					// In these case, we need to create a new field that add the object ID as a parameter of the Data
 					// Fetcher
-					FieldImpl newField = new FieldImpl(this);
-					newField.setName(field.getName());
-					newField.setList(field.isList());
-					newField.setOwningType(field.getOwningType());
-					newField.setTypeName(field.getTypeName());
+					FieldImpl newField = FieldImpl.builder().documentParser(this).name(field.getName())
+							.list(field.isList()).owningType(field.getOwningType()).typeName(field.getTypeName())
+							.build();
 
 					// Let's add the id for the owning type of the field, then all its input parameters
 					for (Field inputParameter : field.getInputParameters()) {
-						newField.getInputParameters().add(inputParameter);
+						List<Field> list = newField.getInputParameters();
+						list.add(inputParameter);
 					}
 
 					// We'll use a Batch Loader if:

@@ -68,16 +68,12 @@ public class JsonSchemaPersonalization {
 
 					// Should we add an annotation ?
 					if (objectPers.getAddAnnotation() != null) {
-						if (objectType.getAnnotation() == null) {
-							objectType.setAnnotation(objectPers.getAddAnnotation());
-						} else {
-							objectType.setAnnotation(objectType.getAnnotation() + "\n" + objectPers.getAddAnnotation());
-						}
+						objectType.addAnnotation(objectPers.getAddAnnotation());
 					}
 
 					// Should we replace the annotation ?
 					if (objectPers.getReplaceAnnotation() != null) {
-						objectType.setAnnotation(objectPers.getReplaceAnnotation());
+						objectType.addAnnotation(objectPers.getReplaceAnnotation(), true);
 					}
 
 					// Let's add all new fields
@@ -89,7 +85,7 @@ public class JsonSchemaPersonalization {
 									+ " already has a field of name " + field.getName());
 						}
 						// Ok, we can add this new field
-						FieldImpl newField = new FieldImpl(documentParser);
+						FieldImpl newField = FieldImpl.builder().documentParser(documentParser).build();
 						newField.setName(field.getName());
 						newField.setOwningType(objectType);
 						newField.setTypeName(field.getType());
@@ -103,11 +99,11 @@ public class JsonSchemaPersonalization {
 							newField.setMandatory(field.getMandatory());
 						}
 						if (field.getAddAnnotation() != null) {
-							newField.setAnnotation(field.getAddAnnotation());
+							newField.addAnnotation(field.getAddAnnotation());
 						}
 						if (field.getReplaceAnnotation() != null) {
 							// We replace the annotation, even if there was an addAnnotation in the json file
-							newField.setAnnotation(field.getReplaceAnnotation());
+							newField.addAnnotation(field.getReplaceAnnotation(), true);
 						}
 						objectType.getFields().add(newField);
 					} // for newFields
@@ -132,11 +128,11 @@ public class JsonSchemaPersonalization {
 							existingField.setMandatory(field.getMandatory());
 						}
 						if (field.getAddAnnotation() != null) {
-							existingField.setAnnotation(field.getAddAnnotation());
+							existingField.addAnnotation(field.getAddAnnotation());
 						}
 						if (field.getReplaceAnnotation() != null) {
 							// We replace the annotation, even if there was an addAnnotation in the json file
-							existingField.setAnnotation(field.getReplaceAnnotation());
+							existingField.addAnnotation(field.getReplaceAnnotation(), true);
 						}
 					} // for personalize existing fields
 				}

@@ -12,12 +12,14 @@ import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.Type;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
  * @author EtienneSF
  */
 @Data
+@Builder(toBuilder = true)
 public class FieldImpl implements Field {
 
 	/**
@@ -46,6 +48,7 @@ public class FieldImpl implements Field {
 	private boolean id = false;
 
 	/** All fields in an object may have parameters. A parameter is actually a field. */
+	@Builder.Default // Allows the default value to be used with the Lombok @Builder annotation on the class
 	private List<Field> inputParameters = new ArrayList<>();
 
 	/** Is this field a list? */
@@ -72,15 +75,6 @@ public class FieldImpl implements Field {
 	 */
 	private String annotation = "";
 
-	/**
-	 * To construct such a class, you need ro provide the current DocumentParser
-	 * 
-	 * @param documentParser
-	 */
-	public FieldImpl(DocumentParser documentParser) {
-		this.documentParser = documentParser;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public Type getType() {
@@ -98,4 +92,50 @@ public class FieldImpl implements Field {
 		}
 	}
 
+	@Override
+	public String getAnnotation() {
+		return (this.annotation == null) ? "" : this.annotation;
+	}
+
+	/**
+	 * The annotation setter should be used. Please use the {@link #addAnnotation(String))} instead
+	 * 
+	 * @param annotation
+	 *            The annotation, that will replace the current one
+	 */
+	@Deprecated
+	public void setAnnotation(String annotation) {
+		this.annotation = annotation;
+	}
+
+	/**
+	 * The annotation setter should be added. This method allows to properly manage indentation in the generated source
+	 * code
+	 * 
+	 * @param annotationToAdd
+	 *            The annotation, that will be added to the current one
+	 */
+	public void addAnnotation(String annotationToAdd) {
+		if (this.annotation == null || this.annotation.contentEquals("")) {
+			this.annotation = annotationToAdd;
+		} else {
+			// We add this annotation on a next line.
+			this.annotation = this.annotation + "\n\t\t" + annotationToAdd;
+		}
+	}
+
+	/**
+	 * The annotation setter should be added. This method allows to properly manage indentation in the generated source
+	 * code
+	 * 
+	 * @param annotationToAdd
+	 *            The annotation, that will be added to the current one
+	 * @parma replace if true, any existing annotation is first removed
+	 */
+	public void addAnnotation(String annotationToAdd, boolean replace) {
+		if (replace)
+			this.annotation = "";
+
+		addAnnotation(annotationToAdd);
+	}
 }

@@ -65,4 +65,52 @@ public abstract class AbstractType implements Type {
 		return name;
 	}
 
+	@Override
+	public String getAnnotation() {
+		return (this.annotation == null) ? "" : this.annotation;
+	}
+
+	/**
+	 * The annotation setter should be used. Please use the {@link #addAnnotation(String)} instead
+	 * 
+	 * @param annotation
+	 *            The annotation, that will replace the current one
+	 */
+	@Deprecated
+	public void setAnnotation(String annotation) {
+		this.annotation = annotation;
+	}
+
+	/**
+	 * The annotation setter should be added. This method allows to properly manage indentation in the generated source
+	 * code
+	 * 
+	 * @param annotationToAdd
+	 *            The annotation, that will be added to the current one
+	 */
+	public void addAnnotation(String annotationToAdd) {
+		if (this.annotation == null || this.annotation.contentEquals("")) {
+			this.annotation = annotationToAdd;
+		} else {
+			// We add this annotation on a next line.
+			this.annotation = this.annotation + "\n\t\t" + annotationToAdd;
+		}
+
+	}
+
+	/**
+	 * The annotation setter should be added. This method allows to properly manage indentation in the generated source
+	 * code
+	 * 
+	 * @param annotationToAdd
+	 *            The annotation, that will be added to the current one
+	 * @parma replace if true, any existing annotation is first removed
+	 */
+	public void addAnnotation(String annotationToAdd, boolean replace) {
+		if (replace)
+			this.annotation = "";
+
+		addAnnotation(annotationToAdd);
+	}
+
 }

@@ -146,7 +146,8 @@ class DocumentParserTest {
 
 		String[] fields = { "Object1", "GraphQLScalar", "Interface0", "Enum0", "Object2" };
 		for (int i = 0; i < 5; i += 1) {
-			FieldImpl f = new FieldImpl(documentParser); // Necessary to manage the FieldImpl.getType() method
+			FieldImpl f = FieldImpl.builder().documentParser(documentParser).build(); // Necessary to manage the
+																						// FieldImpl.getType() method
 			type.getFields().add(f);
 
 			f.setName("field" + i);
@@ -157,7 +158,7 @@ class DocumentParserTest {
 			// Let's create its argument list
 			List<Field> args = new ArrayList<>();
 			for (int j = 0; j < i; j += 1) {// means: the first field has
-				FieldImpl arg = new FieldImpl(documentParser);
+				FieldImpl arg = FieldImpl.builder().documentParser(documentParser).build();
 				arg.setName("arg" + j);
 				arg.setList((j % 2) == 0);
 				args.add(arg);

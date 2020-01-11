@@ -324,14 +324,14 @@ class DocumentParserTest_Forum_Server {
 
 	@Test
 	@DirtiesContext
-	void test_inputTypesShouldHaveNoAnnotationInServerMode() {
+	void test_inputTypesAnnotationInServerMode() {
 		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("TopicPostInput"));
 		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("PostInput"));
 		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("TopicInput"));
 	}
 
 	void checkObjectHasNoAnnotation(ObjectType o) {
-		assertEquals("", o.getAnnotation());
+		assertEquals("@GraphQLInputType", o.getAnnotation());
 		for (Field f : o.getFields()) {
 			assertTrue(f.getAnnotation().contains("@GraphQL"));
 		}
