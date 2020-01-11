@@ -13,6 +13,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.client.domain.forum.AvailabilityType;
+import com.graphql_java_generator.client.domain.forum.PostInput;
+import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 
@@ -32,7 +35,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_str() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_str() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String value = "This is a string with two \"\" to be escaped";
 		InputParameter param = InputParameter.newHardCodedParameter(name, value);
@@ -44,7 +47,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_enum() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_enum() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		Episode value = Episode.EMPIRE;
 		InputParameter param = InputParameter.newHardCodedParameter(name, value);
@@ -55,7 +58,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_int() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_int() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		Integer value = 666;
 		InputParameter param = InputParameter.newHardCodedParameter(name, value);
@@ -66,7 +69,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_Float() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_Float() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		Float value = (float) 666.666;
 		InputParameter param = InputParameter.newHardCodedParameter(name, value);
@@ -77,7 +80,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_UUID() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_UUID() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		UUID id = UUID.fromString("00000000-0000-0000-0000-000000000012");
 		InputParameter param = InputParameter.newHardCodedParameter(name, id);
@@ -89,7 +92,35 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_ListEmptyString() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_recursive_InputType() {
+		// Preparation
+		TopicPostInput topicPostInput = new TopicPostInput();
+		topicPostInput.setAuthorId(UUID.fromString("00000000-0000-0000-0000-000000000012"));
+		topicPostInput.setContent("Some other content");
+		topicPostInput.setDate("2009-11-21");
+		topicPostInput.setPubliclyAvailable(false);
+		topicPostInput.setTitle("The good title for a post");
+
+		PostInput postInput = new PostInput();
+		postInput.setTopicId(UUID.fromString("00000000-0000-0000-0000-000000000022"));
+		postInput.setInput(topicPostInput);
+
+		String name = "anotherName";
+		InputParameter param = InputParameter.newHardCodedParameter(name, postInput);
+
+		// Verification
+		assertEquals(
+				"{topicId: \\\"00000000-0000-0000-0000-000000000022\\\", input: {authorId: \\\"00000000-0000-0000-0000-000000000012\\\", date: \\\"2009-11-21\\\", publiclyAvailable: false, title: \\\"The good title for a post\\\", content: \\\"Some other content\\\"}}",
+				param.getValueForGraphqlQuery(postInput));
+
+		postInput.getInput().setAvailabilityType(AvailabilityType.SEMI_PRIVATE);
+		assertEquals(
+				"{topicId: \\\"00000000-0000-0000-0000-000000000022\\\", input: {authorId: \\\"00000000-0000-0000-0000-000000000012\\\", date: \\\"2009-11-21\\\", publiclyAvailable: false, title: \\\"The good title for a post\\\", content: \\\"Some other content\\\", availabilityType: SEMI_PRIVATE}}",
+				param.getValueForGraphqlQuery(postInput));
+	}
+
+	@Test
+	void test_getValueForGraphqlQuery_ListEmptyString() throws GraphQLRequestExecutionException {
 		String name = "anotherName";
 		List<String> values = new ArrayList<>();
 		InputParameter param = InputParameter.newHardCodedParameter(name, values);
@@ -100,7 +131,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_ListString() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_ListString() throws GraphQLRequestExecutionException {
 		String name = "anotherName";
 		String value1 = "first value";
 		String value2 = "second value";
@@ -118,7 +149,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueAsString_ListEpisode() throws GraphQLRequestExecutionException {
+	void test_getValueForGraphqlQuery_ListEpisode() throws GraphQLRequestExecutionException {
 		String name = "anotherName";
 		Episode value1 = Episode.EMPIRE;
 		Episode value2 = Episode.JEDI;

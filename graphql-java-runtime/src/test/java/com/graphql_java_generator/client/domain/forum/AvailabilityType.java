@@ -8,7 +8,7 @@ package com.graphql_java_generator.client.domain.forum;
  * 
  * @author EtienneSF
  */
-public enum AvailibilityType {
+public enum AvailabilityType {
 
 	PUBLIC, PRIVATE, SEMI_PRIVATE
 

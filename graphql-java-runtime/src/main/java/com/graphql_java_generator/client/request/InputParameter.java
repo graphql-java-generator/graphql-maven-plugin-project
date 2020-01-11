@@ -3,10 +3,13 @@
  */
 package com.graphql_java_generator.client.request;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 
@@ -23,6 +26,9 @@ import com.graphql_java_generator.client.response.GraphQLRequestExecutionExcepti
  * @author EtienneSF
  */
 public class InputParameter {
+
+	/** A utility class, that's used here */
+	private static GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	/** The parameter name, as defined in the GraphQL schema */
 	final String name;
@@ -136,9 +142,11 @@ public class InputParameter {
 	 * as a string.
 	 * 
 	 * @param val
+	 *            This value of the parameter. It can be the {@link #value} if it is not null, or the binding from the
+	 *            bind parameters. It's up to the caller to map the bind parameter into this method argument.
 	 * @return
 	 */
-	public String getValueForGraphqlQuery(Object val) {
+	String getValueForGraphqlQuery(Object val) {
 		if (val == null) {
 			return null;
 		} else if (val instanceof String) {
@@ -147,6 +155,8 @@ public class InputParameter {
 			return getStringValue(((UUID) val).toString());
 		} else if (val instanceof java.util.List) {
 			return getListValue((List<?>) val);
+		} else if (val.getClass().getAnnotation(GraphQLInputType.class) != null) {
+			return getInputTypeStringValue(val);
 		} else {
 			return val.toString();
 		}
@@ -160,23 +170,55 @@ public class InputParameter {
 	}
 
 	/**
-	 * @param lst
+	 * This method returns the JSON string that represents the given list, according to GraphQL standard. This method is
+	 * used to write a part of the GraphQL client query that will be sent to the server.
+	 * 
+	 * @param list
+	 *            a non null List
 	 * @return
+	 * @throws NullPointerException
+	 *             If lst is null
 	 */
-	private String getListValue(List<?> lst) {
-		if (lst == null) {
-			return null;
-		} else {
-			StringBuilder result = new StringBuilder("[");
-			for (int index = 0; index < lst.size(); index++) {
-				Object obj = lst.get(index);
-				result.append(this.getValueForGraphqlQuery(obj));
-				if (index < lst.size() - 1) {
-					result.append(",");
-				}
+	private String getListValue(List<?> list) {
+		StringBuilder result = new StringBuilder("[");
+		for (int index = 0; index < list.size(); index++) {
+			Object obj = list.get(index);
+			result.append(this.getValueForGraphqlQuery(obj));
+			if (index < list.size() - 1) {
+				result.append(",");
 			}
-			return result.append("]").toString();
 		}
+		return result.append("]").toString();
+	}
+
+	/**
+	 * This method returns the JSON string that represents the given object, according to GraphQL standard. This method
+	 * is used to write a part of the GraphQL client query that will be sent to the server.
+	 * 
+	 * @param object
+	 *            An object which class is an InputType as defined in the GraphQL schema
+	 * @return The String that represents this object, according to GraphQL standard representation, as expected in the
+	 *         query to be sent to the server
+	 */
+	private String getInputTypeStringValue(Object object) {
+		StringBuilder result = new StringBuilder("{");
+		String separator = "";
+
+		for (Field field : object.getClass().getDeclaredFields()) {
+			Object val = graphqlUtils.invokeGetter(object, field.getName());
+
+			if (val != null) {
+				result.append(separator);
+
+				result.append(field.getName());
+				result.append(": ");
+				result.append(getValueForGraphqlQuery(val));
+
+				separator = ", ";
+			}
+		} // for
+
+		return result.append("}").toString();
 	}
 
 }

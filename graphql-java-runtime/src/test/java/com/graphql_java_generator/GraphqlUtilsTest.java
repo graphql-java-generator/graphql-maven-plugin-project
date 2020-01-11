@@ -1,7 +1,11 @@
 package com.graphql_java_generator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,8 +15,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.domain.forum.AvailibilityType;
+import com.graphql_java_generator.client.domain.forum.AvailabilityType;
 import com.graphql_java_generator.client.domain.forum.TopicInput;
+import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 
 class GraphqlUtilsTest {
 
@@ -30,6 +35,47 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	void test_getSetter() throws NoSuchFieldException, SecurityException {
+		// Preparation
+		Field field = TopicInput.class.getDeclaredField("input");
+
+		// Go, go, go
+		Method setter = graphqlUtils.getSetter(TopicInput.class, field);
+
+		// Verification
+		assertEquals("setInput", setter.getName());
+	}
+
+	@Test
+	void test_getGetter() throws NoSuchFieldException, SecurityException {
+		// Preparation
+		Field field = TopicInput.class.getDeclaredField("input");
+
+		// Go, go, go
+		Method getter = graphqlUtils.getGetter(TopicInput.class, field);
+
+		// Verification
+		assertEquals("getInput", getter.getName());
+	}
+
+	@Test
+	void test_getInvokeGetter() throws NoSuchFieldException, SecurityException {
+		// Preparation
+		TopicPostInput topicPostInput = new TopicPostInput();
+
+		TopicInput topicInput = new TopicInput();
+		topicInput.setInput(topicPostInput);
+
+		// Go, go, go
+		assertEquals(null, graphqlUtils.invokeGetter(topicInput, "boardId"));
+		assertEquals(topicPostInput, graphqlUtils.invokeGetter(topicInput, "input"));
+		RuntimeException e = assertThrows(RuntimeException.class,
+				() -> graphqlUtils.invokeGetter(topicInput, "nonExistingField"));
+		assertTrue(e.getMessage().contains("nonExistingField"));
+		assertTrue(e.getMessage().contains(TopicInput.class.getName()));
+	}
+
+	@Test
 	void test_getInputObject() {
 		// Preparation
 		Map<String, Object> input = new LinkedHashMap<>();
@@ -38,7 +84,7 @@ class GraphqlUtilsTest {
 		input.put("publiclyAvailable", true);
 		input.put("title", "The good title");
 		input.put("content", "Some content");
-		input.put("availibilityType", AvailibilityType.SEMI_PRIVATE);
+		input.put("availibilityType", AvailabilityType.SEMI_PRIVATE);
 
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("boardId", "00000000-0000-0000-0000-000000000004");
@@ -54,7 +100,7 @@ class GraphqlUtilsTest {
 		assertEquals("2009-11-20", topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
-		assertEquals(AvailibilityType.SEMI_PRIVATE, topicInput.getInput().getAvailibilityType());
+		assertEquals(AvailabilityType.SEMI_PRIVATE, topicInput.getInput().getAvailabilityType());
 	}
 
 	@Test
@@ -66,7 +112,7 @@ class GraphqlUtilsTest {
 		input1.put("publiclyAvailable", true);
 		input1.put("title", "The good title");
 		input1.put("content", "Some content");
-		input1.put("availibilityType", AvailibilityType.SEMI_PRIVATE);
+		input1.put("availibilityType", AvailabilityType.SEMI_PRIVATE);
 		Map<String, Object> map1 = new LinkedHashMap<>();
 		map1.put("boardId", "00000000-0000-0000-0000-000000000004");
 		map1.put("input", input1);
@@ -77,7 +123,7 @@ class GraphqlUtilsTest {
 		input2.put("publiclyAvailable", false);
 		input2.put("title", "The good title (2)");
 		input2.put("content", "Some content (2)");
-		input2.put("availibilityType", AvailibilityType.PRIVATE);
+		input2.put("availibilityType", AvailabilityType.PRIVATE);
 		Map<String, Object> map2 = new LinkedHashMap<>();
 		map2.put("boardId", "00000000-0000-0000-0000-000000000005");
 		map2.put("input", input2);
@@ -97,7 +143,7 @@ class GraphqlUtilsTest {
 		assertEquals("2009-11-20", topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
-		assertEquals(AvailibilityType.SEMI_PRIVATE, topicInput.getInput().getAvailibilityType());
+		assertEquals(AvailabilityType.SEMI_PRIVATE, topicInput.getInput().getAvailabilityType());
 
 		topicInput = result.get(1);
 		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000005"), topicInput.getBoardId());
@@ -106,7 +152,7 @@ class GraphqlUtilsTest {
 		assertEquals("2009-11-25", topicInput.getInput().getDate());
 		assertEquals(false, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title (2)", topicInput.getInput().getTitle());
-		assertEquals(AvailibilityType.PRIVATE, topicInput.getInput().getAvailibilityType());
+		assertEquals(AvailabilityType.PRIVATE, topicInput.getInput().getAvailabilityType());
 	}
 
 }

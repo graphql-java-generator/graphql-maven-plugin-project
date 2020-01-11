@@ -147,7 +147,7 @@ public class GraphqlUtils {
 	 * @param field
 	 * @return
 	 */
-	<T> Method getSetter(Class<T> clazz, Field field) {
+	public <T> Method getSetter(Class<T> clazz, Field field) {
 		String setterMethodName = "set" + getPascalCase(field.getName());
 		try {
 			return clazz.getDeclaredMethod(setterMethodName, field.getType());
@@ -158,6 +158,58 @@ public class GraphqlUtils {
 			throw new RuntimeException(
 					"Error while accessing to the setter '" + setterMethodName + "' in " + clazz.getName() + " class",
 					e);
+		}
+	}
+
+	/**
+	 * Retrieves the getter for the given field on the given field
+	 * 
+	 * @param <T>
+	 * @param t
+	 * @param field
+	 * @return
+	 */
+	public <T> Method getGetter(Class<T> clazz, Field field) {
+		String setterMethodName = "get" + getPascalCase(field.getName());
+		try {
+			Method method = clazz.getDeclaredMethod(setterMethodName);
+
+			// The return type must be the same as the field's class
+			if (field.getType() != method.getReturnType()) {
+				throw new RuntimeException("The getter '" + setterMethodName + "' and the field '" + field.getName()
+						+ "' of the class " + clazz.getName() + " should be of the same type");
+			}
+
+			return method;
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(
+					"The getter '" + setterMethodName + "' is missing in " + clazz.getName() + " class", e);
+		} catch (SecurityException e) {
+			throw new RuntimeException(
+					"Error while accessing to the getter '" + setterMethodName + "' in " + clazz.getName() + " class",
+					e);
+		}
+	}
+
+	/**
+	 * Invoke the getter for the given field name, on the given object. All check exceptions are hidden in a
+	 * {@link RuntimeException}
+	 * 
+	 * @param object
+	 * @param fieldName
+	 * @return the field's value for the given object
+	 * @throws RuntimeException
+	 *             If any exception occurs
+	 */
+	public Object invokeGetter(Object object, String fieldName) {
+		try {
+			Field field = object.getClass().getDeclaredField(fieldName);
+			Method method = getGetter(object.getClass(), field);
+			return method.invoke(object);
+		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new RuntimeException("Error while invoking to the getter for the field '" + fieldName
+					+ "' in the class " + object.getClass().getName() + " class", e);
 		}
 	}
 

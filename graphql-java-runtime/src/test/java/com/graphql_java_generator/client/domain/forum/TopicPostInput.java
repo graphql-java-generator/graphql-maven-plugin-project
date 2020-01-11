@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.forum;
 
 import java.util.UUID;
 
+import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
 /**
@@ -9,7 +10,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * @see <a href=
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
-
+@GraphQLInputType
 public class TopicPostInput {
 
 	@GraphQLScalar(graphqlType = UUID.class)
@@ -27,8 +28,8 @@ public class TopicPostInput {
 	@GraphQLScalar(graphqlType = String.class)
 	String content;
 
-	@GraphQLScalar(graphqlType = AvailibilityType.class)
-	AvailibilityType availibilityType;
+	@GraphQLScalar(graphqlType = AvailabilityType.class)
+	AvailabilityType availabilityType;
 
 	public void setAuthorId(UUID authorId) {
 		this.authorId = authorId;
@@ -70,12 +71,12 @@ public class TopicPostInput {
 		return content;
 	}
 
-	public AvailibilityType getAvailibilityType() {
-		return availibilityType;
+	public AvailabilityType getAvailabilityType() {
+		return availabilityType;
 	}
 
-	public void setAvailibilityType(AvailibilityType availibilityType) {
-		this.availibilityType = availibilityType;
+	public void setAvailabilityType(AvailabilityType availibilityType) {
+		this.availabilityType = availibilityType;
 	}
 
 	@Override
