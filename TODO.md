@@ -1,7 +1,7 @@
 Here are the next tasks listed, as a TODO list:
 * Manage default values for input parameters
-* Check InputObjectType with fields that are enums
 * Check InputObjectType with fields that are lists
+* Manage directives (https://www.apollographql.com/docs/graphql-tools/schema-directives/)
 * Finish the samples in the client doc page
 * Check query method returning a scalar (forum schema is ready for that)
 * Check scalar field of regular Type, having input parameters (forum schema is ready for that)
