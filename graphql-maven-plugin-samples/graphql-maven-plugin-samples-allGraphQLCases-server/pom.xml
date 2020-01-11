@@ -8,18 +8,11 @@
 		<version>1.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
-
+	<artifactId>graphql-maven-plugin-samples-allGraphQLCases-server</artifactId>
 
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Needed to properly package the jar or war, so that spring can link all resources together -->
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<!-- This is core of graphql-java-generator: it generates the boilerplate code for you -->
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
@@ -31,10 +24,12 @@
 				</executions>
 				<configuration>
 					<mode>server</mode>
-					<generateJPAAnnotation>true</generateJPAAnnotation>
-					<packageName>com.graphql_java_generator.samples.forum.server</packageName>
-					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
+					<packageName>org.allGraphQLCases.server</packageName>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->
@@ -47,17 +42,13 @@
 	</build>
 
 	<dependencies>
-		<!-- Dependencies for tests -->
+		<!-- Dependencies for the generated code -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-server-dependencies</artifactId>
+			<type>pom</type>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 
 		<!-- Generates at runtime a GUI to execute GraphQL requests. -->
 		<!-- Very useful for tests, but take care for production ! -->
@@ -66,21 +57,13 @@
 			<artifactId>graphiql-spring-boot-starter</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-		<!-- Dependencies for the generated code -->
 		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-server-dependencies</artifactId>
-			<type>pom</type>
-		</dependency>
-
-		<!-- Dependencies that are specific to this project -->
-		<dependency>
-			<!-- Only here for the tests, to load the data in an in-memory database -->
+			<!-- Hibernate automatically starts with Spring Boot JPA: it needs a JDBC driver -->
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
 	</dependencies>
 
 </project>

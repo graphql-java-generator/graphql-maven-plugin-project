@@ -1,0 +1,81 @@
+schema {
+	#A comment on the query
+    query: MyQueryType
+    mutation: AnotherMutationType
+    subscription: TheSubscriptionType
+}
+
+type MyQueryType {
+	withoutParameters: [Character]!
+    withOneOptionalParam(character: Character): Character
+    withOneMandatoryParam(character: Character!): Character
+    withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
+    withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
+    withEnum(episode: Episode!): Character
+    withList(name: String!, friends: [Character]!): [Character]
+}
+
+type AnotherMutationType {
+	createHuman(human: Human!): Human!
+}
+
+type TheSubscriptionType {
+	# Will be notified for each Human added to this Episode
+	subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
+}
+
+
+enum Episode {
+    NEWHOPE
+    EMPIRE
+    JEDI
+}
+
+interface WithID {
+    id: ID!
+}
+
+interface Character {
+    id: ID!
+    name: String!
+    friends: [Character]
+    appearsIn: [Episode]!
+}
+
+interface Commented {
+	nbComments: int
+    comments: [String]
+}
+
+type allFieldCases {
+    id: ID!
+    name: String!
+    forname: String
+    age: int!
+    nbComments: int
+    comments: [String]
+    booleans: [boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    friends: [Human!]
+}
+
+type Human implements Character, Commented {
+    id: ID!
+    name: String!
+    bestFriend: Character
+    friends: [Character]
+	nbComments: int
+    comments: [String]
+    appearsIn: [Episode]!
+    homePlanet: String
+}
+
+type Droid implements Character {
+    id: ID!
+    name: String!
+    friends: [Character]
+    appearsIn: [Episode]!
+    primaryFunction: String
+}
+
