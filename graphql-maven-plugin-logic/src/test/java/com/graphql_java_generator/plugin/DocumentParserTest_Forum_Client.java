@@ -12,7 +12,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
@@ -92,7 +91,7 @@ class DocumentParserTest_Forum_Client {
 		checkFieldAnnotation(topic.getFields().get(i++), "title", "@GraphQLScalar(graphqlType = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content", "@GraphQLScalar(graphqlType = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@GraphQLNonScalar(graphqlType = Post.class)\n\t@JsonDeserialize(contentAs = Post.class)");
+				"@JsonDeserialize(contentAs = Post.class)\n\t\t@GraphQLNonScalar(graphqlType = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {

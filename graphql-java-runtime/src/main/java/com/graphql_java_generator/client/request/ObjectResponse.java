@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
@@ -56,7 +57,8 @@ public class ObjectResponse {
 	/** Logger for this class */
 	private static Logger logger = LogManager.getLogger();
 
-	static GraphqlUtils graphqlUtils = new GraphqlUtils();
+	static private GraphqlUtils graphqlUtils = new GraphqlUtils();
+	static private GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	/**
 	 * Internal class represents a field of a GraphQL Object, that should appear in the response from the GraphQL
@@ -71,9 +73,9 @@ public class ObjectResponse {
 
 		Field(String name, String alias, Class<?> owningClass, Class<?> clazz)
 				throws GraphQLRequestPreparationException {
-			graphqlUtils.checkName(name);
+			graphqlClientUtils.checkName(name);
 			if (alias != null) {
-				graphqlUtils.checkName(alias);
+				graphqlClientUtils.checkName(alias);
 			}
 			this.name = name;
 			this.alias = alias;
@@ -134,7 +136,7 @@ public class ObjectResponse {
 	ObjectResponse(Class<?> owningClass, String fieldName, String fieldAlias)
 			throws GraphQLRequestPreparationException {
 		this.field = new Field(fieldName, fieldAlias, owningClass,
-				graphqlUtils.checkFieldOfGraphQLType(fieldName, false, owningClass));
+				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, false, owningClass));
 	}
 
 	/**

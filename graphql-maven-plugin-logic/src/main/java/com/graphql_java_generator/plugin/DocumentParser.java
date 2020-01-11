@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.annotation.GraphQLNonScalar;
+import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -27,8 +29,8 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.Type.GraphQlType;
 import com.graphql_java_generator.plugin.language.impl.AbstractType;
 import com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl;
-import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
+import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
@@ -44,6 +46,7 @@ import graphql.language.EnumTypeDefinition;
 import graphql.language.EnumValue;
 import graphql.language.EnumValueDefinition;
 import graphql.language.FieldDefinition;
+import graphql.language.InputObjectTypeDefinition;
 import graphql.language.InputValueDefinition;
 import graphql.language.InterfaceTypeDefinition;
 import graphql.language.ListType;
@@ -60,7 +63,7 @@ import lombok.Getter;
 /**
  * This class generates the Java classes, from the documents. These documents are read from the
  * graphql-spring-boot-starter code, in injected here thanks to spring's magic.<BR/>
- * There is no validity check: we trust the information in the Document, as it is read by the graphql {@link Parser}.
+ * There is no validity check: we trust the information in the Document, as it is read by the GraphQL {@link Parser}.
  * <BR/>
  * The graphQL-java library maps both FieldDefinition and InputValueDefinition in very similar structures, which are
  * actually trees. These structures are too hard too read in a Velocity template, and we need to parse down to a
@@ -96,21 +99,21 @@ public class DocumentParser {
 	JsonSchemaPersonalization jsonSchemaPersonalization;
 
 	/**
-	 * All the Query Types for this Document. There may be several ones, if more than one graphqls files have been
+	 * All the Query Types for this Document. There may be several ones, if more than one GraphQLs files have been
 	 * merged
 	 */
 	@Getter
 	List<ObjectType> queryTypes = new ArrayList<>();
 
 	/**
-	 * All the Subscription Types for this Document. There may be several ones, if more than one graphqls files have
+	 * All the Subscription Types for this Document. There may be several ones, if more than one GraphQLs files have
 	 * been merged
 	 */
 	@Getter
 	List<ObjectType> subscriptionTypes = new ArrayList<>();
 
 	/**
-	 * All the Mutation Types for this Document. There may be several ones, if more than one graphqls files have been
+	 * All the Mutation Types for this Document. There may be several ones, if more than one GraphQLs files have been
 	 * merged
 	 */
 	@Getter
@@ -181,7 +184,7 @@ public class DocumentParser {
 	 * The main method of the class: it executes the generation of the given documents
 	 * 
 	 * @param documents
-	 *            The graphql definition schema, from which the code is to be generated
+	 *            The GraphQL definition schema, from which the code is to be generated
 	 * @return
 	 */
 	public int parseDocuments() {
@@ -213,7 +216,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Generates the target classes for the given graphql schema definition
+	 * Generates the target classes for the given GraphQL schema definition
 	 * 
 	 * @param document
 	 */
@@ -256,6 +259,8 @@ public class DocumentParser {
 				} else {
 					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
 				}
+			} else if (node instanceof InputObjectTypeDefinition) {
+				objectTypes.add(readInputObjectType((InputObjectTypeDefinition) node));
 			} else if (node instanceof EnumTypeDefinition) {
 				enumTypes.add(readEnumType((EnumTypeDefinition) node));
 			} else if (node instanceof InterfaceTypeDefinition) {
@@ -313,7 +318,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Read an object type from it graphql definition
+	 * Read an object type from it GraphQL definition
 	 * 
 	 * @param node
 	 * @return
@@ -347,7 +352,31 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Read an object type from it graphql definition
+	 * Read an input object type from it GraphQL definition
+	 * 
+	 * @param node
+	 * @return
+	 */
+	ObjectType readInputObjectType(InputObjectTypeDefinition node) {
+
+		ObjectType objectType = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
+		objectType.setInputType(true);
+
+		objectType.setName(node.getName());
+
+		// Let's read all its fields
+		for (InputValueDefinition def : node.getInputValueDefinitions()) {
+			FieldImpl field = readFieldTypeDefinition(def);
+			field.setOwningType(objectType);
+
+			objectType.getFields().add(field);
+		}
+
+		return objectType;
+	}
+
+	/**
+	 * Read an object type from it GraphQL definition
 	 * 
 	 * @param node
 	 * @return
@@ -384,7 +413,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Reads one graphql {@link FieldDefinition}, and maps it into a {@link Field}.
+	 * Reads one GraphQL {@link FieldDefinition}, and maps it into a {@link Field}.
 	 * 
 	 * @param fieldDef
 	 * @param owningType
@@ -405,17 +434,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Reads an {@link InputValueDefinition}, and returns the {@link Field} field created from this definition
-	 * 
-	 * @param inputValueDef
-	 * @return
-	 */
-	Field readInputValueDefinition(InputValueDefinition inputValueDef) {
-		throw new RuntimeException("not yet implemented");
-	}
-
-	/**
-	 * Reads a field, which can be either agraphql {@link FieldDefinition} or an {@link InputValueDefinition}, and maps
+	 * Reads a field, which can be either a GraphQL {@link FieldDefinition} or an {@link InputValueDefinition}, and maps
 	 * it into a {@link Field}. The graphQL-java library maps both FieldDefinition and InputValueDefinition in very
 	 * similar structures, which are actually trees. These structures are too hard too read in a Velocity template, and
 	 * we need to parse down to a properly structures way for that.
@@ -627,19 +646,22 @@ public class DocumentParser {
 
 	/**
 	 * Reads all the GraphQl objects, interfaces, union... that have been read from the GraphQL schema, and list all the
-	 * relations between objects. The found relations are stored, to be reused during the code generation.<BR/>
+	 * relations between Server objects (that is: all objects out of the Query/Mutation/Subscription types and the input
+	 * types). The found relations are stored, to be reused during the code generation.<BR/>
 	 * These relations are important for the server mode of the plugin, to generate the proper JPA annotations.
 	 */
 	void initRelations() {
 		for (Type type : getObjectTypes()) {
-			for (Field field : type.getFields()) {
-				if (field.getType() instanceof ObjectType) {
-					RelationType relType = field.isList() ? RelationType.OneToMany : RelationType.ManyToOne;
-					RelationImpl relation = new RelationImpl(type, field, relType);
-					//
-					((FieldImpl) field).setRelation(relation);
-					relations.add(relation);
-				} // if (instanceof ObjectType)
+			if (!type.isInputType()) {
+				for (Field field : type.getFields()) {
+					if (field.getType() instanceof ObjectType) {
+						RelationType relType = field.isList() ? RelationType.OneToMany : RelationType.ManyToOne;
+						RelationImpl relation = new RelationImpl(type, field, relType);
+						//
+						((FieldImpl) field).setRelation(relation);
+						relations.add(relation);
+					} // if (instanceof ObjectType)
+				} // if (!type.isInputType())
 			} // for (field)
 		} // for (type)
 	}
@@ -665,7 +687,7 @@ public class DocumentParser {
 			Stream.concat(objectTypes.stream(), interfaceTypes.stream())
 					.forEach(o -> addTypeAnnotationForServerMode(o));
 			Stream.concat(objectTypes.stream(), interfaceTypes.stream()).flatMap(o -> o.getFields().stream())
-					.forEach(f -> addTypeAnnotationForServerMode(f));
+					.forEach(f -> addFieldAnnotationForServerMode(f));
 			break;
 		}
 
@@ -691,8 +713,10 @@ public class DocumentParser {
 	void addTypeAnnotationForServerMode(Type o) {
 		String annotation = "";
 
-		if (o instanceof ObjectType && !(o instanceof InterfaceType)) {
-			annotation = "@Entity";
+		if (!o.isInputType()) {
+			if (o instanceof ObjectType && !(o instanceof InterfaceType)) {
+				annotation = "@Entity";
+			}
 		}
 
 		((AbstractType) o).setAnnotation(annotation);
@@ -708,20 +732,16 @@ public class DocumentParser {
 	void addFieldAnnotationForClientMode(Field field) {
 		String annotation = "";
 
-		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
-			annotation = "@GraphQLScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
-		} else {
-			annotation = "@GraphQLNonScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
-		}
-
 		if (field.isList()) {
-			annotation += "\n\t@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName()
-					+ ".class)";
+			annotation = "@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName() + ".class)";
 		}
 
-		pluginConfiguration.getLog().debug(field.getType().getName() + "." + field.getName() + " annotation set to <"
-				+ annotation + "> (the GraphQL maven plugin is in client mode)");
+		pluginConfiguration.getLog()
+				.debug(field.getType().getName() + "." + field.getName() + " annotation for client mode set to <"
+						+ annotation + "> (the GraphQL maven plugin is in client mode)");
 		((FieldImpl) field).setAnnotation(annotation);
+
+		addFieldAnnotationForBothClientAndServerMode(field);
 	}
 
 	/**
@@ -730,19 +750,51 @@ public class DocumentParser {
 	 * 
 	 * @param field
 	 */
-	void addTypeAnnotationForServerMode(Field field) {
-		String annotation = "";
+	void addFieldAnnotationForServerMode(Field field) {
+		if (!field.getOwningType().isInputType()) {
+			String annotation = "";
 
-		if (field.isId()) {
-			// We have found the identifier
-			annotation = "@Id\n	@GeneratedValue";
-		} else if (field.getRelation() != null || field.isList()) {
-			// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
-			annotation = "@Transient";
+			if (field.isId()) {
+				// We have found the identifier
+				annotation = "@Id\n\t\t@GeneratedValue";
+			} else if (field.getRelation() != null || field.isList()) {
+				// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
+				annotation = "@Transient";
+			}
+
+			pluginConfiguration.getLog()
+					.debug(field.getType().getName() + "." + field.getName() + " annotation for server mode set to <"
+							+ annotation + "> (the GraphQL maven plugin is in server mode)");
+			((FieldImpl) field).setAnnotation(annotation);
+		}
+
+		addFieldAnnotationForBothClientAndServerMode(field);
+	}
+
+	/**
+	 * This method add the annotation(s) that are common to the server and the client mode, to the given field. It
+	 * typically adds the {@link GraphQLScalar} and {@link GraphQLNonScalar} annotations, to allow runtime management of
+	 * the generated code.
+	 * 
+	 * @param field
+	 */
+	void addFieldAnnotationForBothClientAndServerMode(Field field) {
+		String annotation = field.getAnnotation();
+
+		if (annotation == null) {
+			annotation = "";
+		} else if (!annotation.equals("")) {
+			annotation += "\n\t\t";
+		}
+
+		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
+			annotation += "@GraphQLScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
+		} else {
+			annotation += "@GraphQLNonScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)";
 		}
 
 		pluginConfiguration.getLog().debug(field.getType().getName() + "." + field.getName() + " annotation set to <"
-				+ annotation + "> (the GraphQL maven plugin is in server mode)");
+				+ annotation + "> (the GraphQL maven plugin is in client mode)");
 		((FieldImpl) field).setAnnotation(annotation);
 	}
 
@@ -767,10 +819,12 @@ public class DocumentParser {
 	 */
 	void initDataFetcherForOneObject(ObjectType type, boolean isQueryOrMutationType) {
 
-		// No DataFetcher for the "artificial" Object Type created to instanciate an Interface. This "artificial" Object
+		// No DataFetcher for :
+		// 1) the "artificial" Object Type created to instanciate an Interface. This "artificial" Object
 		// Type is for internal usage only, and to be used in Client mode to allow instanciation of the server response
 		// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no DataFetchersDelegate.
-		if (type.getDefaultImplementationForInterface() == null) {
+		// 2) the input type
+		if (type.getDefaultImplementationForInterface() == null && !type.isInputType()) {
 
 			// Creation of the DataFetchersDelegate. It will be added to the list only if it contains at least one
 			// DataFetcher.
@@ -832,8 +886,8 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Identify each BatchLoader to generate, and attach its {@link DataFetcher} to its {@link DataFetchersDelegate}. The
-	 * whole stuff is stored into {@link #batchLoaders}
+	 * Identify each BatchLoader to generate, and attach its {@link DataFetcher} to its {@link DataFetchersDelegate}.
+	 * The whole stuff is stored into {@link #batchLoaders}
 	 */
 	private void initBatchLoaders() {
 		if (pluginConfiguration.getMode().equals(PluginMode.server)) {
@@ -841,7 +895,7 @@ public class DocumentParser {
 			// interfaces, along with Enums...
 
 			// We fetch only the objects, here. The interfaces are managed just after
-			objectTypes.stream().filter(o -> o.getGraphQlType() == GraphQlType.OBJECT)
+			objectTypes.stream().filter(o -> (o.getGraphQlType() == GraphQlType.OBJECT && !o.isInputType()))
 					.forEach(o -> initOneBatchLoader(o));
 
 			// Let's go through all interfaces.

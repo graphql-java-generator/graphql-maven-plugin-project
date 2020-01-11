@@ -15,7 +15,7 @@ import lombok.ToString;
 
 /**
  * This class describes one object type, as found in a graphql schema. It aims to be simple enough, so that the Velocity
- * template can easily generated ths fields from it.<BR/>
+ * template can easily generated the fields from it.<BR/>
  * An ObjectType would for instance describe:
  * 
  * <PRE>
@@ -51,6 +51,9 @@ public class ObjectType extends AbstractType {
 	 * string to put in the JSON query toward the GraphQL server
 	 */
 	String requestType;
+
+	/** Indicated whether this type is an InputObjectType or not. Default value is false */
+	private boolean inputType = false;
 
 	/**
 	 * 

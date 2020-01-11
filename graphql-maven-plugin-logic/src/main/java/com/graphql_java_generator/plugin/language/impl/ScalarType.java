@@ -58,4 +58,9 @@ public class ScalarType extends AbstractType {
 		return null;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean isInputType() {
+		return false;
+	}
 }

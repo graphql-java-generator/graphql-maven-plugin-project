@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
-import com.graphql_java_generator.client.GraphqlUtils;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
@@ -35,7 +35,7 @@ public class ${object.name} {
 	/** Logger for this class */
 	private static Logger logger = LogManager.getLogger();
 
-	final GraphqlUtils graphqlUtils = new GraphqlUtils();
+	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	final QueryExecutor executor;
 
@@ -245,7 +245,7 @@ public class ${object.name} {
 					+ ${field.type.classSimpleName}.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
-		Map<String, Object> bindVariableValues = graphqlUtils.generatesBindVariableValuesMap(paramsAndValues);
+		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 #foreach ($inputParameter in $field.inputParameters)
 		bindVariableValues.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.name});
 #end

@@ -68,4 +68,10 @@ public class EnumType extends AbstractType {
 		return null;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean isInputType() {
+		return false;
+	}
+
 }

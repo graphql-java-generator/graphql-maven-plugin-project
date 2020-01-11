@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 
 /**
@@ -23,7 +23,7 @@ public class Builder {
 	 */
 	private static final String STRING_TOKENIZER_DELIMITER = " {},:()";
 
-	GraphqlUtils graphqlUtils = new GraphqlUtils();
+	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	final ObjectResponse objectResponse;
 
@@ -284,7 +284,7 @@ public class Builder {
 	 */
 	public Builder withField(String fieldName, String alias) throws GraphQLRequestPreparationException {
 		// We check that this field exist, and is a scaler
-		graphqlUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz);
+		graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz);
 
 		// Let's check that this field is not already in the list
 		for (ObjectResponse.Field field : objectResponse.scalarFields) {
@@ -296,7 +296,7 @@ public class Builder {
 
 		// This will check that the alias is null or a valid GraphQL identifier
 		objectResponse.scalarFields.add(new ObjectResponse.Field(fieldName, alias, objectResponse.field.clazz,
-				graphqlUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz)));
+				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz)));
 		return this;
 	}
 

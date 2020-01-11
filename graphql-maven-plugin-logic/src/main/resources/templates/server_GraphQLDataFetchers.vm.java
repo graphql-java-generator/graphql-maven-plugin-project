@@ -1,6 +1,7 @@
 package ${package};
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -13,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import org.dataloader.BatchLoader;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
+
+import com.graphql_java_generator.GraphqlUtils;
 
 import graphql.schema.DataFetcher;
 
@@ -31,6 +34,8 @@ public class GraphQLDataFetchers {
 	${dataFetchersDelegate.pascalCaseName} ${dataFetchersDelegate.camelCaseName};
 
 #end
+	@Resource
+	GraphqlUtils graphqlUtils;
 
 #foreach ($dataFetchersDelegate in $dataFetchersDelegates)
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +54,12 @@ public class GraphQLDataFetchers {
 			${argument.type.classSimpleName} ${argument.camelCaseName} = null;
 			if (dataFetchingEnvironment.getArgument("${argument.name}") != null)
 				${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+#end
+#elseif (${argument.type.inputType})
+#if(${argument.list})
+			List<${argument.type.classSimpleName}> ${argument.camelCaseName} = graphqlUtils.getListInputObjects((List<Map<String, Object>>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
+#else
+			${argument.type.classSimpleName} ${argument.camelCaseName} = graphqlUtils.getInputObject((Map<String, Object>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
 #end
 #elseif (${argument.type.classSimpleName} == "UUID")
 			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = (dataFetchingEnvironment.getArgument("${argument.name}") == null) ? null : UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));

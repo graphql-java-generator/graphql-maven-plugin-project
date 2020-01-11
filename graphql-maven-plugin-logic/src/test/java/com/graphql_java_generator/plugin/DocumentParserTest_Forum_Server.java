@@ -95,14 +95,18 @@ class DocumentParserTest_Forum_Server {
 		// Verification
 		assertEquals("@Entity", topic.getAnnotation(), "Entity annotation");
 		int i = 0;
-		checkFieldAnnotation(topic.getFields().get(i++), "id", "@Id\n	@GeneratedValue");
-		checkFieldAnnotation(topic.getFields().get(i++), "date", "");
-		checkFieldAnnotation(topic.getFields().get(i++), "author", "@Transient");
-		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable", "");
-		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts", "");
-		checkFieldAnnotation(topic.getFields().get(i++), "title", "");
-		checkFieldAnnotation(topic.getFields().get(i++), "content", "");
-		checkFieldAnnotation(topic.getFields().get(i++), "posts", "@Transient");
+		checkFieldAnnotation(topic.getFields().get(i++), "id",
+				"@Id\n\t\t@GeneratedValue\n\t\t@GraphQLScalar(graphqlType = UUID.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "date", "@GraphQLScalar(graphqlType = String.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "author",
+				"@Transient\n\t\t@GraphQLNonScalar(graphqlType = Member.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
+				"@GraphQLScalar(graphqlType = Boolean.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts", "@GraphQLScalar(graphqlType = Integer.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "title", "@GraphQLScalar(graphqlType = String.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "content", "@GraphQLScalar(graphqlType = String.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "posts",
+				"@Transient\n\t\t@GraphQLNonScalar(graphqlType = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {
@@ -135,13 +139,14 @@ class DocumentParserTest_Forum_Server {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
-		assertEquals(11, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(12, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		//
 		// Verification of the data fetchers
 		//
-		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, list of input parameters
+		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, completableFuture, sourceName,
+		// list of input parameters
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, false,
 				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "QueryType", "nbBoards", "Int", false, false,
@@ -157,9 +162,11 @@ class DocumentParserTest_Forum_Server {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
 				false, false, null, "name", "publiclyAvailable");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic",
-				false, false, null, "authorId", "publiclyAvailable", "title", "content");
+				false, false, null, "topic");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post",
-				false, false, null, "authorId", "publiclyAvailable", "title", "content");
+				false, false, null, "post");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post",
+				true, false, null, "spam");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, false,
 				"Board", "since");
@@ -314,4 +321,20 @@ class DocumentParserTest_Forum_Server {
 	void test_initListOfImplementations() {
 		assertEquals(0, documentParser.interfaceTypes.size(), "No interface");
 	}
+
+	@Test
+	@DirtiesContext
+	void test_inputTypesShouldHaveNoAnnotationInServerMode() {
+		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("TopicPostInput"));
+		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("PostInput"));
+		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("TopicInput"));
+	}
+
+	void checkObjectHasNoAnnotation(ObjectType o) {
+		assertEquals("", o.getAnnotation());
+		for (Field f : o.getFields()) {
+			assertTrue(f.getAnnotation().contains("@GraphQL"));
+		}
+	}
+
 }
