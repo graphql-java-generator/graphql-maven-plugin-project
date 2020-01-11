@@ -84,7 +84,7 @@ class GraphqlUtilsTest {
 		input.put("publiclyAvailable", true);
 		input.put("title", "The good title");
 		input.put("content", "Some content");
-		input.put("availibilityType", AvailabilityType.SEMI_PRIVATE);
+		input.put("availabilityType", AvailabilityType.SEMI_PRIVATE);
 
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("boardId", "00000000-0000-0000-0000-000000000004");
@@ -112,7 +112,7 @@ class GraphqlUtilsTest {
 		input1.put("publiclyAvailable", true);
 		input1.put("title", "The good title");
 		input1.put("content", "Some content");
-		input1.put("availibilityType", AvailabilityType.SEMI_PRIVATE);
+		input1.put("availabilityType", AvailabilityType.SEMI_PRIVATE);
 		Map<String, Object> map1 = new LinkedHashMap<>();
 		map1.put("boardId", "00000000-0000-0000-0000-000000000004");
 		map1.put("input", input1);
@@ -123,7 +123,7 @@ class GraphqlUtilsTest {
 		input2.put("publiclyAvailable", false);
 		input2.put("title", "The good title (2)");
 		input2.put("content", "Some content (2)");
-		input2.put("availibilityType", AvailabilityType.PRIVATE);
+		input2.put("availabilityType", AvailabilityType.PRIVATE);
 		Map<String, Object> map2 = new LinkedHashMap<>();
 		map2.put("boardId", "00000000-0000-0000-0000-000000000005");
 		map2.put("input", input2);
