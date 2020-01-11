@@ -16,8 +16,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
@@ -59,8 +57,8 @@ class DocumentParserTest_allGraphQLCases {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(13, i, "Nb classes are generated");
-		assertEquals(6, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(16, i, "Nb classes are generated");
+		assertEquals(9, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(1, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
@@ -107,13 +105,13 @@ class DocumentParserTest_allGraphQLCases {
 		// forname: String
 		checkField(type, j++, "forname", false, false, null, "String", String.class.getName());
 		// age: int!
-		checkField(type, j++, "age", false, true, null, "int", Integer.class.getName());
+		checkField(type, j++, "age", false, true, null, "Int", Integer.class.getName());
 		// nbComments: int
-		checkField(type, j++, "nbComments", false, false, null, "int", Integer.class.getName());
+		checkField(type, j++, "nbComments", false, false, null, "Int", Integer.class.getName());
 		// comments: [String]
 		checkField(type, j++, "comments", true, false, false, "String", String.class.getName());
 		// booleans: [boolean!]
-		checkField(type, j++, "booleans", true, false, true, "boolean", Boolean.class.getName());
+		checkField(type, j++, "booleans", true, false, true, "Boolean", Boolean.class.getName());
 		// aliases: [String]!
 		checkField(type, j++, "aliases", true, true, false, "String", String.class.getName());
 		// planets: [String!]!
@@ -168,7 +166,7 @@ class DocumentParserTest_allGraphQLCases {
 		checkField(type, j++, "friends", true, false, false, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
 		// nbComments: int
-		checkField(type, j++, "nbComments", false, false, null, "int", Integer.class.getName());
+		checkField(type, j++, "nbComments", false, false, null, "Int", Integer.class.getName());
 		// comments: [String]
 		checkField(type, j++, "comments", true, false, false, "String", String.class.getName());
 		// appearsIn: [Episode]!
@@ -247,28 +245,27 @@ class DocumentParserTest_allGraphQLCases {
 		// withOneOptionalParam(character: Character): Character
 		checkField(type, j, "withOneOptionalParam", false, false, null, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
-		checkInputParameter(type, j, 0, "character", false, false, null, "Character",
-				pluginConfiguration.getPackageName() + ".Character", null);
+		checkInputParameter(type, j, 0, "character", false, false, null, "CharacterInput",
+				pluginConfiguration.getPackageName() + ".CharacterInput", null);
 		j += 1;
 		// withOneMandatoryParam(character: Character!): Character
 		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character",
-				pluginConfiguration.getPackageName() + ".Character", null);
+		checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput",
+				pluginConfiguration.getPackageName() + ".CharacterInput", null);
 		j += 1;
 		// withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
 		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "Character",
-				pluginConfiguration.getPackageName() + ".Character", "no one");
+		checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput",
+				pluginConfiguration.getPackageName() + ".CharacterInput", null);
 		j += 1;
 		// withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
 		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid",
 				pluginConfiguration.getPackageName() + ".Droid");
-		checkInputParameter(type, j, 0, "theHero", false, true, null, "Droid",
-				pluginConfiguration.getPackageName() + ".Droid", "A droid");
-		checkInputParameter(type, j, 1, "index", false, false, null, "int", "java.lang.Integer",
-				"Not a number, but ok !!");
+		checkInputParameter(type, j, 0, "theHero", false, true, null, "DroidInput",
+				pluginConfiguration.getPackageName() + ".DroidInput", null);
+		checkInputParameter(type, j, 1, "index", false, false, null, "Int", "java.lang.Integer", null);
 		j += 1;
 		// withEnum(episode: Episode!): Character
 		checkField(type, j, "withEnum", false, false, null, "Character",
@@ -280,8 +277,8 @@ class DocumentParserTest_allGraphQLCases {
 		checkField(type, j, "withList", true, false, false, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
 		checkInputParameter(type, j, 0, "name", false, true, null, "String", String.class.getName(), null);
-		checkInputParameter(type, j, 1, "friends", true, true, false, "Character",
-				pluginConfiguration.getPackageName() + ".Character", null);
+		checkInputParameter(type, j, 1, "friends", true, true, false, "CharacterInput",
+				pluginConfiguration.getPackageName() + ".CharacterInput", null);
 		j += 1;
 	}
 
@@ -345,8 +342,8 @@ class DocumentParserTest_allGraphQLCases {
 		//
 		// createHuman(human: Human!): Human!
 		checkField(type, j, "createHuman", false, true, null, "Human", pluginConfiguration.getPackageName() + ".Human");
-		checkInputParameter(type, j, 0, "human", false, true, null, "Human",
-				pluginConfiguration.getPackageName() + ".Human", null);
+		checkInputParameter(type, j, 0, "human", false, true, null, "HumanInput",
+				pluginConfiguration.getPackageName() + ".HumanInput", null);
 		j += 1;
 	}
 

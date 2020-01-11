@@ -7,16 +7,16 @@ schema {
 
 type MyQueryType {
 	withoutParameters: [Character]!
-    withOneOptionalParam(character: Character): Character
-    withOneMandatoryParam(character: Character!): Character
-    withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
-    withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
+    withOneOptionalParam(character: CharacterInput): Character
+    withOneMandatoryParam(character: CharacterInput!): Character
+    withOneMandatoryParamDefaultValue(character: CharacterInput!): Character!
+    withTwoMandatoryParamDefaultVal(theHero: DroidInput!, index: Int): Droid!
     withEnum(episode: Episode!): Character
-    withList(name: String!, friends: [Character]!): [Character]
+    withList(name: String!, friends: [CharacterInput]!): [Character]
 }
 
 type AnotherMutationType {
-	createHuman(human: Human!): Human!
+	createHuman(human: HumanInput!): Human!
 }
 
 type TheSubscriptionType {
@@ -42,8 +42,15 @@ interface Character {
     appearsIn: [Episode]!
 }
 
+input CharacterInput {
+    id: ID!
+    name: String!
+    friends: [CharacterInput]
+    appearsIn: [Episode]!
+}
+
 interface Commented {
-	nbComments: int
+	nbComments: Int
     comments: [String]
 }
 
@@ -51,10 +58,10 @@ type allFieldCases {
     id: ID!
     name: String!
     forname: String
-    age: int!
-    nbComments: int
+    age: Int!
+    nbComments: Int
     comments: [String]
-    booleans: [boolean!]
+    booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
     friends: [Human!]
@@ -65,7 +72,18 @@ type Human implements Character, Commented {
     name: String!
     bestFriend: Character
     friends: [Character]
-	nbComments: int
+	nbComments: Int
+    comments: [String]
+    appearsIn: [Episode]!
+    homePlanet: String
+}
+
+
+input HumanInput {
+    name: String!
+    bestFriend: CharacterInput
+    friends: [CharacterInput]
+	nbComments: Int
     comments: [String]
     appearsIn: [Episode]!
     homePlanet: String
@@ -75,6 +93,13 @@ type Droid implements Character {
     id: ID!
     name: String!
     friends: [Character]
+    appearsIn: [Episode]!
+    primaryFunction: String
+}
+
+input DroidInput {
+    name: String!
+    friends: [CharacterInput]
     appearsIn: [Episode]!
     primaryFunction: String
 }

@@ -4,11 +4,13 @@ import java.util.List;
 #if (${pluginConfiguration.mode} == "server")
 import java.util.UUID;
 
+#if (${pluginConfiguration.generateJPAAnnotation})
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+#end
 #end
 
 #if (${pluginConfiguration.mode} == "client")
