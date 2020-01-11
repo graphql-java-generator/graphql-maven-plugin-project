@@ -7,7 +7,12 @@ import java.util.List;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
 
 /**
  * This interface contains the queries that will be defined in this sample. The queries are defined in the package
@@ -35,5 +40,43 @@ public interface Queries {
 
 	Board createBoard(String name, boolean publiclyAvailable)
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
+
+	Topic createTopic(TopicInput topicInput)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+
+	public Post createPost(PostInput input) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+
+	public List<Post> createPosts(List<PostInput> input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+
+	/** A utility method to create the TopicPostInput Type, from its values */
+	default TopicPostInput getTopicPostInput(Member author, String date, boolean publiclyAvailable, String title,
+			String content) {
+		TopicPostInput input = new TopicPostInput();
+		input.setAuthorId(author.getId());
+		input.setDate(date);
+		input.setPubliclyAvailable(publiclyAvailable);
+		input.setTitle(title);
+		input.setContent(content);
+		return input;
+	}
+
+	/** A utility method to create the TopicInput Type, from its values */
+	default TopicInput getTopicInput(Board board, Member author, String date, boolean publiclyAvailable, String title,
+			String content) {
+		TopicInput input = new TopicInput();
+		input.setBoardId(board.getId());
+		input.setInput(getTopicPostInput(author, date, publiclyAvailable, title, content));
+		return input;
+	}
+
+	/** A utility method to create the PostInput Type, from its values */
+	default PostInput getPostInput(Topic topic, Member author, String date, boolean publiclyAvailable, String title,
+			String content) {
+		PostInput input = new PostInput();
+		input.setTopicId(topic.getId());
+		input.setInput(getTopicPostInput(author, date, publiclyAvailable, title, content));
+		return input;
+	}
 
 }

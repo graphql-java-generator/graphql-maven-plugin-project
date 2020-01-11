@@ -3,6 +3,7 @@ package com.graphql_java_generator.samples.forum.client.graphql;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -19,7 +20,10 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Boar
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
@@ -91,7 +95,7 @@ abstract class AbstractTest {
 		cal.set(2009, 11, 20);// Month is 0-based, so this date is 2009, December the 20th
 		List<Topic> topics = queries.topicAuthorPostAuthor("Board name 2", cal.getTime());
 
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 
 		Topic topic12 = topics.get(1);
 		//
@@ -146,7 +150,7 @@ abstract class AbstractTest {
 	}
 
 	@Test
-	void testCreateBoards() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	void testCreateBoard() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		List<Board> before = queries.boardsSimple();
 		String name = this.getClass().getSimpleName() + Float.floatToIntBits((float) Math.random() * Integer.MAX_VALUE);
@@ -169,6 +173,117 @@ abstract class AbstractTest {
 		assertEquals(board.getPubliclyAvailable(), boardVerif.getPubliclyAvailable());
 		assertEquals(0, boardVerif.getTopics().size());
 
+	}
+
+	@Test
+	void testCreateTopicThenPostThenPosts()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2009, 11, 20);// Month is 0-based, so this date is 2009, December the 20th
+		List<Topic> before = queries.topicAuthorPostAuthor("Board name 3", cal.getTime());
+
+		TopicInput topicInput = new TopicInput();
+		topicInput.setBoardId(before.get(0).getId());
+		topicInput.setInput(
+				getTopicPostInput(before.get(0).getAuthor(), "Some content", "2009-11-20", true, "The good title"));
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////// CHECK OF TOPIC CREATION
+		Topic topic = queries.createTopic(topicInput);
+
+		// Verification
+		assertNotNull(topic.getId());
+		assertEquals("Some content", topic.getContent());
+		assertEquals("2009-11-20", topic.getDate());
+		assertEquals(true, topic.getPubliclyAvailable());
+		assertEquals("The good title", topic.getTitle());
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////// CHECK OF POST CREATION
+		// Preparation
+		PostInput postInput = new PostInput();
+		postInput.setTopicId(topic.getId());
+		postInput.setInput(getTopicPostInput(before.get(0).getAuthor(), "Some other content", "2009-11-21", false,
+				"The good title for a post"));
+
+		// Go, go, go
+		Post post = queries.createPost(postInput);
+
+		// Verification
+		assertNotNull(post.getId());
+		assertEquals("Some other content", post.getContent());
+		assertEquals("2009-11-21", post.getDate());
+		assertEquals(false, post.getPubliclyAvailable());
+		assertEquals("The good title for a post", post.getTitle());
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////// CHECK OF POSTS (check the plural!) CREATION
+		// Preparation
+		List<PostInput> list = new ArrayList<>();
+		list.add(postInput);
+
+		// Go, go, go (the server always response with an exception: we'll check that this is the expected one)
+		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+				() -> queries.createPosts(list));
+
+		// Verification
+		assertTrue(e.getMessage().contains("Spamming is forbidden"));
+	}
+
+	@Test
+	void test_createPost() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// Preparation
+		Member author = new Member();
+		author.setId("00000000-0000-0000-0000-000000000012");
+		PostInput postInput = new PostInput();
+		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
+		postInput.setInput(
+				getTopicPostInput(author, "Some other content", "2009-11-21", false, "The good title for a post"));
+
+		// Go, go, go
+		Post post = queries.createPost(postInput);
+
+		// Verification
+		assertNotNull(post.getId());
+		assertEquals("Some other content", post.getContent());
+		assertEquals("2009-11-21", post.getDate());
+		assertEquals(false, post.getPubliclyAvailable());
+		assertEquals("The good title for a post", post.getTitle());
+	}
+
+	@Test
+	void test_createPosts() {
+		// Preparation
+		Member author = new Member();
+		author.setId("00000000-0000-0000-0000-000000000012");
+		PostInput postInput = new PostInput();
+		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
+		postInput.setInput(
+				getTopicPostInput(author, "Some other content", "2009-11-21", false, "The good title for a post"));
+
+		List<PostInput> list = new ArrayList<>();
+		list.add(postInput);
+
+		// Go, go, go (the server always response with an exception: we'll check that this is the expected one)
+		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+				() -> queries.createPosts(list));
+
+		// Verification
+		assertTrue(e.getMessage().contains("Spamming is forbidden"));
+	}
+
+	private TopicPostInput getTopicPostInput(Member author, String content, String date, boolean publiclyAvailable,
+			String title) {
+		TopicPostInput input = new TopicPostInput();
+		input.setAuthorId(author.getId());
+		input.setContent(content);
+		input.setDate(date);
+		input.setPubliclyAvailable(publiclyAvailable);
+		input.setTitle(title);
+
+		return input;
 	}
 
 	public Board contains(List<Board> boards, String id) {

@@ -1,6 +1,7 @@
 package com.graphql_java_generator.samples.forum.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -50,7 +51,7 @@ public class DirectQueriesWithFieldInputParametersIT {
 		List<Topic> topics = directQueriesWithFieldInputParameters.topics_since(boardName, since);
 
 		// Verifications
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 		assertEquals(2, topics.get(0).getPosts().size());
 	}
 
@@ -64,7 +65,8 @@ public class DirectQueriesWithFieldInputParametersIT {
 		List<Topic> topics = directQueriesWithFieldInputParameters.topics_memberId_since(boardName, uuid, since);
 
 		// Verifications
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 		assertEquals(0, topics.get(0).getPosts().size());
 	}
+
 }

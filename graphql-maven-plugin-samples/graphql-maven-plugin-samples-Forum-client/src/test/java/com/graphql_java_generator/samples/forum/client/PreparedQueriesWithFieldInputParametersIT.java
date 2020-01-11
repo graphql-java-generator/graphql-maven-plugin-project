@@ -1,6 +1,7 @@
 package com.graphql_java_generator.samples.forum.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -54,7 +55,7 @@ public class PreparedQueriesWithFieldInputParametersIT {
 		List<Topic> topics = preparedQueriesWithFieldInputParameters.boardsWithPostSince(boardName, null, null, since);
 
 		// Verification
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 		assertEquals(2, topics.get(0).getPosts().size(), "First topic has two posts since 2018-10-20");
 		assertEquals(2, topics.get(1).getPosts().size(), "Second topic has two posts since 2018-10-20");
 	}
@@ -72,7 +73,7 @@ public class PreparedQueriesWithFieldInputParametersIT {
 				UUID.fromString("00000000-0000-0000-0000-00000000002"), null, since);
 
 		// Verification
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 		assertEquals(2, topics.get(0).getPosts().size(),
 				"First topic has two posts since 2018-10-20 for member '00000000-0000-0000-0000-00000000002'");
 		assertEquals(0, topics.get(1).getPosts().size(),
@@ -92,7 +93,7 @@ public class PreparedQueriesWithFieldInputParametersIT {
 				since);
 
 		// Verification
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 		assertEquals(0, topics.get(0).getPosts().size(),
 				"First topic has no posts since 2018-10-20 for member 'Name 12'");
 		assertEquals(2, topics.get(1).getPosts().size(),
@@ -112,7 +113,7 @@ public class PreparedQueriesWithFieldInputParametersIT {
 				UUID.fromString("00000000-0000-0000-0000-00000000002"), "Name 2", since);
 
 		// Verification
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 		assertEquals(2, topics.get(0).getPosts().size(),
 				"First topic has two posts since 2018-10-20 for member '00000000-0000-0000-0000-00000000002'");
 		assertEquals(0, topics.get(1).getPosts().size(),
@@ -131,7 +132,7 @@ public class PreparedQueriesWithFieldInputParametersIT {
 				UUID.fromString("00000000-0000-0000-0000-00000000002"), "Bad Name", since);
 
 		// Verification
-		assertEquals(5, topics.size());
+		assertTrue(topics.size() >= 5);
 		assertEquals(0, topics.get(0).getPosts().size(),
 				"First topic has two posts since 2018-10-20 for member '00000000-0000-0000-0000-00000000002'");
 		assertEquals(0, topics.get(1).getPosts().size(),

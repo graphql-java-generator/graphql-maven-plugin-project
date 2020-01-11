@@ -9,8 +9,11 @@ import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
 
 /**
  * This class implements the simplest way to call GraphQl queries, with the GraphQL Java Generator
@@ -53,6 +56,26 @@ public class DirectQueries implements Queries {
 	public Board createBoard(String name, boolean publiclyAvailable)
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		return mutationType.createBoard("{id name publiclyAvailable}", name, publiclyAvailable);
+	}
+
+	@Override
+	public Topic createTopic(TopicInput input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createTopic(
+				"{id date author{id} nbPosts title content posts(since: \"1900-01-01\"){id}  publiclyAvailable}",
+				input);
+	}
+
+	@Override
+	public Post createPost(PostInput input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createPost("{id date author{id} title content publiclyAvailable}", input);
+	}
+
+	@Override
+	public List<Post> createPosts(List<PostInput> input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createPosts("{id date author{id} title content publiclyAvailable}", input);
 	}
 
 }

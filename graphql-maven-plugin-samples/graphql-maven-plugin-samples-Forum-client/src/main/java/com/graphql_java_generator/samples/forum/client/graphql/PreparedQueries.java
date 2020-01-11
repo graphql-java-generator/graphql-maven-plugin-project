@@ -10,8 +10,11 @@ import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
 
 /**
  * This class implements the away to call GraphQl queries, where all queries are prepared before execution.<BR/>
@@ -37,6 +40,9 @@ public class PreparedQueries implements Queries {
 	ObjectResponse topicAuthorPostAuthorResponse;
 	ObjectResponse findTopicIdDateTitleContent;
 	ObjectResponse createBoardResponse;
+	ObjectResponse createTopicResponse;
+	ObjectResponse createPostResponse;
+	ObjectResponse createPostsResponse;
 
 	public PreparedQueries() throws GraphQLRequestPreparationException {
 		// No field specified: all known scalar fields of the root type will be queried
@@ -53,8 +59,16 @@ public class PreparedQueries implements Queries {
 		findTopicIdDateTitleContent = queryType.getFindTopicsResponseBuilder()
 				.withQueryResponseDef(" {id date title content} ").build();
 
+		// No field defined, so all field are returned
 		createBoardResponse = mutationType.getCreateBoardResponseBuilder().build();
-
+		// No field defined, so all field are returned
+		createTopicResponse = mutationType.getCreateTopicResponseBuilder().build();
+		// "{id date author{id} title content publiclyAvailable}"
+		createPostResponse = mutationType.getCreatePostResponseBuilder()
+				.withQueryResponseDef("{id date author{id} title content publiclyAvailable}").build();
+		// "{id date author{id} title content publiclyAvailable}"
+		createPostsResponse = mutationType.getCreatePostsResponseBuilder()
+				.withQueryResponseDef("{id date author{id} title content publiclyAvailable}").build();
 	}
 
 	@Override
@@ -85,5 +99,23 @@ public class PreparedQueries implements Queries {
 	public Board createBoard(String name, boolean publiclyAvailable)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createBoard(createBoardResponse, name, publiclyAvailable);
+	}
+
+	@Override
+	public Topic createTopic(TopicInput input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createTopic(createTopicResponse, input);
+	}
+
+	@Override
+	public Post createPost(PostInput input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createPost(createPostResponse, input);
+	}
+
+	@Override
+	public List<Post> createPosts(List<PostInput> input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createPosts(createPostsResponse, input);
 	}
 }
