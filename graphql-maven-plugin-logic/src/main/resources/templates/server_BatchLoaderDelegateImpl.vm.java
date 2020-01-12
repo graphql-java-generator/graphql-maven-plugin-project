@@ -24,12 +24,11 @@ import org.springframework.stereotype.Component;
  * It can be used in a DataFetcherDelegate implementation in this way : 
  * <PRE>
  * &#64;Override
- * public CompletableFuture<List<${batchLoader.type.classSimpleName}>> friends(DataFetchingEnvironment environment,
+ * public CompletableFuture<List<${batchLoader.type.classSimpleName}>> friends(DataFetchingEnvironment environment, DataLoader<UUID, ${batchLoader.type.classSimpleName}> dataLoader,
  * 		${batchLoader.type.classSimpleName} source) {
  * 	logger.debug("Executing characterImpl.friends, with this character: {}", source.getId().toString());
  * 	List<UUID> friendIds = graphQLUtil
  * 			.convertListByteArrayToListUUID(characterRepository.findFriendsId(source.getId()));
- * 	DataLoader<UUID, ${batchLoader.type.classSimpleName}> dataLoader = environment.getDataLoader("${batchLoader.type.classSimpleName}");
  * 	return dataLoader.loadMany(friendIds);
  * }
  *
