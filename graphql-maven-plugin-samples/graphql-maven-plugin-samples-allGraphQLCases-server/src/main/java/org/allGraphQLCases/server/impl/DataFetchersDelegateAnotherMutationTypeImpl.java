@@ -1,8 +1,11 @@
 /**
  * 
  */
-package org.allGraphQLCases.server;
+package org.allGraphQLCases.server.impl;
 
+import org.allGraphQLCases.server.DataFetchersDelegateAnotherMutationType;
+import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.HumanInput;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

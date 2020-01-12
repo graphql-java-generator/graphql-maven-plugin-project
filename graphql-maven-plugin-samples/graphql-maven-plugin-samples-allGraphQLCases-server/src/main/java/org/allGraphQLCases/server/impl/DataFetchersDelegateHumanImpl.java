@@ -1,9 +1,13 @@
-package org.allGraphQLCases.server;
+package org.allGraphQLCases.server.impl;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.allGraphQLCases.server.Character;
+import org.allGraphQLCases.server.DataFetchersDelegateHuman;
+import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.Human;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

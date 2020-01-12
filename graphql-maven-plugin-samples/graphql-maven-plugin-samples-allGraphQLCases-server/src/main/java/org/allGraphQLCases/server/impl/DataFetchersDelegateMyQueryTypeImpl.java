@@ -1,7 +1,13 @@
-package org.allGraphQLCases.server;
+package org.allGraphQLCases.server.impl;
 
 import java.util.List;
 
+import org.allGraphQLCases.server.Character;
+import org.allGraphQLCases.server.CharacterInput;
+import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
+import org.allGraphQLCases.server.Droid;
+import org.allGraphQLCases.server.DroidInput;
+import org.allGraphQLCases.server.Episode;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

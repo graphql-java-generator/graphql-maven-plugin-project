@@ -1,11 +1,13 @@
 /**
  * 
  */
-package org.allGraphQLCases.server;
+package org.allGraphQLCases.server.impl;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.allGraphQLCases.server.DataFetchersDelegateWithID;
+import org.allGraphQLCases.server.WithID;
 import org.springframework.stereotype.Component;
 
 /**

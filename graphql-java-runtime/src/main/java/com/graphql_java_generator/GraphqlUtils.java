@@ -214,8 +214,28 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Invoke the setter for the given field name, on the given object. All check exceptions are hidden in a
+	 * Invoke the setter for the given field, on the given object. All check exceptions are hidden in a
 	 * {@link RuntimeException}
+	 *
+	 * @param object
+	 * @param field
+	 * @param value
+	 * @throws RuntimeException
+	 *             If any exception occurs
+	 */
+	public void invokeSetter(Object object, Field field, Object value) {
+		try {
+			Method setter = getSetter(object.getClass(), field);
+			setter.invoke(object, value);
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException("Error while invoking to the setter for the field '" + field.getName()
+					+ "' in the class " + object.getClass().getName() + " class", e);
+		}
+	}
+
+	/**
+	 * Invoke the setter for the {@link Field} of the given name, on the given object. All check exceptions are hidden
+	 * in a {@link RuntimeException}
 	 *
 	 * @param object
 	 * @param fieldName
@@ -226,11 +246,9 @@ public class GraphqlUtils {
 	public void invokeSetter(Object object, String fieldName, Object value) {
 		try {
 			Field field = object.getClass().getDeclaredField(fieldName);
-			Method setter = getSetter(object.getClass(), field);
-			setter.invoke(object, value);
-		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			throw new RuntimeException("Error while invoking to the getter for the field '" + fieldName
+			invokeSetter(object, field.getName(), value);
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException e) {
+			throw new RuntimeException("Error while invoking to the setter for the field '" + fieldName
 					+ "' in the class " + object.getClass().getName() + " class", e);
 		}
 	}

@@ -1,11 +1,15 @@
 /**
  * 
  */
-package org.allGraphQLCases.server;
+package org.allGraphQLCases.server.impl;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.allGraphQLCases.server.Character;
+import org.allGraphQLCases.server.DataFetchersDelegateDroid;
+import org.allGraphQLCases.server.Droid;
+import org.allGraphQLCases.server.Episode;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
