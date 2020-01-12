@@ -27,17 +27,17 @@ public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCh
 
 	@Override
 	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Character source) {
-		return generator.generateInstanceList(Character.class, 3, 30);
+		return generator.generateInstanceList(Character.class, 2, 4);
 	}
 
 	@Override
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Character source) {
-		return generator.generateInstanceList(Episode.class, 3, 30);
+		return generator.generateInstanceList(Episode.class, 2, 2);
 	}
 
 	@Override
 	public List<Character> batchLoader(List<UUID> keys) {
-		return generator.generateInstanceList(Character.class, 3, keys.size());
+		return generator.generateInstanceList(Character.class, 2, keys.size());
 	}
 
 }

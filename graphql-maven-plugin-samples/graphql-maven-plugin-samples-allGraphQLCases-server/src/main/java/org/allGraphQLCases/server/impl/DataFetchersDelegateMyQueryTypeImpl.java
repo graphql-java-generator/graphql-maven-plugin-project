@@ -27,40 +27,40 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public List<Character> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
-		return generator.generateInstanceList(Character.class, 3, 30);
+		return generator.generateInstanceList(Character.class, 2, 10);
 	}
 
 	@Override
 	public Character withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
-		return generator.generateInstance(CharacterImpl.class, 3);
+		return generator.generateInstance(CharacterImpl.class, 2);
 	}
 
 	@Override
 	public Character withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
-		return generator.generateInstance(CharacterImpl.class, 3);
+		return generator.generateInstance(CharacterImpl.class, 2);
 	}
 
 	@Override
 	public Character withOneMandatoryParamDefaultValue(DataFetchingEnvironment dataFetchingEnvironment,
 			CharacterInput character) {
-		return generator.generateInstance(CharacterImpl.class, 3);
+		return generator.generateInstance(CharacterImpl.class, 2);
 	}
 
 	@Override
 	public Droid withTwoMandatoryParamDefaultVal(DataFetchingEnvironment dataFetchingEnvironment, DroidInput theHero,
 			Integer index) {
-		return generator.generateInstance(Droid.class, 3);
+		return generator.generateInstance(Droid.class, 2);
 	}
 
 	@Override
 	public Character withEnum(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		return generator.generateInstance(CharacterImpl.class, 3);
+		return generator.generateInstance(CharacterImpl.class, 2);
 	}
 
 	@Override
 	public List<Character> withList(DataFetchingEnvironment dataFetchingEnvironment, String name,
 			List<CharacterInput> friends) {
-		return generator.generateInstanceList(Character.class, 3, 30);
+		return generator.generateInstanceList(Character.class, 2, 10);
 	}
 
 }
