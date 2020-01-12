@@ -19,7 +19,6 @@ import org.allGraphQLCases.server.CharacterImpl;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
 /**
@@ -36,6 +35,7 @@ public class DataGenerator {
 	GraphqlUtils graphqlUtils;
 
 	private static final Random RANDOM = new Random();
+	private static final int NB_ITEM_PER_LIST = 0;
 
 	/**
 	 * Contains for each java interface that has to be instanciate by {@link #generateInstance(Class)}, the concrete
@@ -65,7 +65,7 @@ public class DataGenerator {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	<T> T generateInstance(Class<T> clazzToReturn, int maxSubLevels) {
+	public <T> T generateInstance(Class<T> clazzToReturn, int maxSubLevels) {
 		Class<? extends T> clazzToInstanciate = (interfaceImplementations.containsKey(clazzToReturn))
 				? (Class<? extends T>) interfaceImplementations.get(clazzToReturn)
 				: clazzToReturn;
@@ -78,21 +78,25 @@ public class DataGenerator {
 		}
 
 		for (Field f : clazzToInstanciate.getDeclaredFields()) {
-			Object val;
 
-			Class<?>[] interfaces = f.getType().getInterfaces();
-			if (f.getType() == List.class || (interfaces != null && Arrays.asList(interfaces).contains(List.class))) {
-				// Hum, it's a list. Let's generate a list of ten items
-				List<Object> list = new ArrayList<>(10);
-				for (int i = 0; i < 10; i += 1) {
-					list.add(generateFieldValue(f, maxSubLevels));
+			// We fill only Scalar fields.
+			if (f.getAnnotation(GraphQLScalar.class) != null) {
+				Object val;
+				Class<?>[] interfaces = f.getType().getInterfaces();
+				if (f.getType() == List.class
+						|| (interfaces != null && Arrays.asList(interfaces).contains(List.class))) {
+					// Hum, it's a list. Let's generate a list of ten items
+					List<Object> list = new ArrayList<>(NB_ITEM_PER_LIST);
+					for (int i = 0; i < NB_ITEM_PER_LIST; i += 1) {
+						list.add(generateValue(f.getType()));
+					}
+					val = list;
+				} else {
+					val = generateValue(f.getType());
 				}
-				val = list;
-			} else {
-				val = generateFieldValue(f, maxSubLevels);
-			}
 
-			graphqlUtils.invokeSetter(t, f, val);
+				graphqlUtils.invokeSetter(t, f, val);
+			}
 		}
 		return t;
 	}
@@ -112,7 +116,7 @@ public class DataGenerator {
 	 *            The number of items expected in the returned list
 	 * @return
 	 */
-	<T> List<T> generateInstanceList(Class<T> clazz, int maxSubLevels, int nbItems) {
+	public <T> List<T> generateInstanceList(Class<T> clazz, int maxSubLevels, int nbItems) {
 		List<T> list = new ArrayList<T>();
 
 		for (int i = 0; i <= nbItems; i += 1) {
@@ -120,44 +124,6 @@ public class DataGenerator {
 		} // for
 
 		return list;
-	}
-
-	/**
-	 * Returns a value valid for the given field. The type of value is indicated by the [@link GraphQLScalar} or
-	 * {@link GraphQLNonScalar} annotation that MUST be on the field. It's up to the caller to manage field that are
-	 * lists (by calling these method once for each item to be created in the list).. If this value is a GraphQL type
-	 * (input type or standard type), then all its fields are also filled.
-	 * 
-	 * @param f
-	 * @param maxSubLevels
-	 *            The maximum number of items to embed. For instance if 0, not subobject will be created (only scalar
-	 *            fields will be filled). With maxSubLevels set to 1, all field that are GraphQL type are created. But
-	 *            if this GraphQL types contain themselves subobjects (field that are GraphQL type and not scalar), then
-	 *            these fields are left empty.
-	 * @return
-	 */
-	private Object generateFieldValue(Field f, int maxSubLevels) {
-
-		if (f.getAnnotation(GraphQLScalar.class) != null) {
-
-			// This is a scalar. Let's create a new value for it.
-			return generateValue(f.getAnnotation(GraphQLScalar.class).graphqlType());
-
-		} else if (f.getAnnotation(GraphQLNonScalar.class) != null) {
-
-			if (maxSubLevels == 0) {
-				return null;
-			} else {
-				// This is a non scalar object. And at least one level of subojects is expected. We need to create a new
-				// instance, and fill its fields.
-				// Let's recurse once:
-				return generateInstance(f.getAnnotation(GraphQLNonScalar.class).graphqlType(), maxSubLevels - 1);
-			}
-
-		} else {
-			throw new RuntimeException("Non managed type, when generating data: " + f.getType().getName()
-					+ ". It's not a Scalar, nor a non Scalar (missing both GraphQLScalar and GraphQLNonScalar annotation)");
-		}
 	}
 
 	private Object generateValue(Class<?> type) {
