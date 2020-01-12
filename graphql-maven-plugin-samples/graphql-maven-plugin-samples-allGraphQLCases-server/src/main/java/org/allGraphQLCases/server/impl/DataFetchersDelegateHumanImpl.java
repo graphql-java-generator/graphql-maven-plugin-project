@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import javax.annotation.Resource;
+
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.DataFetchersDelegateHuman;
 import org.allGraphQLCases.server.Episode;
@@ -20,35 +22,35 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman {
 
+	@Resource
+	DataGenerator generator;
+
 	@Override
 	public CompletableFuture<Character> bestFriend(DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<UUID, Character> dataLoader, Human source) {
-		// TODO Auto-generated method stub
-		return null;
+		UUID key = generator.generateInstance(UUID.class, 3);
+		return dataLoader.load(key);
 	}
 
 	@Override
 	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
-		// TODO Auto-generated method stub
-		return null;
+		return generator.generateInstanceList(Character.class, 3, 30);
 	}
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
-		// TODO Auto-generated method stub
-		return null;
+		return generator.generateInstanceList(String.class, 3, 30);
+
 	}
 
 	@Override
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
-		// TODO Auto-generated method stub
-		return null;
+		return generator.generateInstanceList(Episode.class, 3, 30);
 	}
 
 	@Override
 	public List<Human> batchLoader(List<UUID> keys) {
-		// TODO Auto-generated method stub
-		return null;
+		return generator.generateInstanceList(Human.class, 3, keys.size());
 	}
 
 }

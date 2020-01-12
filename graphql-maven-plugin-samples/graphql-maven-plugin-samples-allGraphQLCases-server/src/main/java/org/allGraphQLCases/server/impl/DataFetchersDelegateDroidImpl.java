@@ -6,6 +6,8 @@ package org.allGraphQLCases.server.impl;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.DataFetchersDelegateDroid;
 import org.allGraphQLCases.server.Droid;
@@ -21,22 +23,22 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid {
 
+	@Resource
+	DataGenerator generator;
+
 	@Override
 	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Droid source) {
-		// TODO Auto-generated method stub
-		return null;
+		return generator.generateInstanceList(Character.class, 3, 30);
 	}
 
 	@Override
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Droid source) {
-		// TODO Auto-generated method stub
-		return null;
+		return generator.generateInstanceList(Episode.class, 3, 30);
 	}
 
 	@Override
 	public List<Droid> batchLoader(List<UUID> keys) {
-		// TODO Auto-generated method stub
-		return null;
+		return generator.generateInstanceList(Droid.class, 3, keys.size());
 	}
 
 }
