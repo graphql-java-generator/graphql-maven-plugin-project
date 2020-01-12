@@ -59,7 +59,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
-	void test_getInvokeGetter() throws NoSuchFieldException, SecurityException {
+	void test_invokeGetter() throws NoSuchFieldException, SecurityException {
 		// Preparation
 		TopicPostInput topicPostInput = new TopicPostInput();
 
@@ -73,6 +73,20 @@ class GraphqlUtilsTest {
 				() -> graphqlUtils.invokeGetter(topicInput, "nonExistingField"));
 		assertTrue(e.getMessage().contains("nonExistingField"));
 		assertTrue(e.getMessage().contains(TopicInput.class.getName()));
+	}
+
+	@Test
+	void test_invokeSetter() {
+		TopicPostInput topicPostInput = new TopicPostInput();
+
+		graphqlUtils.invokeSetter(topicPostInput, "date", "A date");
+		assertEquals("A date", topicPostInput.getDate());
+
+		graphqlUtils.invokeSetter(topicPostInput, "publiclyAvailable", true);
+		assertEquals(true, topicPostInput.getPubliclyAvailable());
+
+		graphqlUtils.invokeSetter(topicPostInput, "availabilityType", AvailabilityType.SEMI_PRIVATE);
+		assertEquals(AvailabilityType.SEMI_PRIVATE, topicPostInput.getAvailabilityType());
 	}
 
 	@Test

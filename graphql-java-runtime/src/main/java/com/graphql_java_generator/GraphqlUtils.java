@@ -204,8 +204,30 @@ public class GraphqlUtils {
 	public Object invokeGetter(Object object, String fieldName) {
 		try {
 			Field field = object.getClass().getDeclaredField(fieldName);
-			Method method = getGetter(object.getClass(), field);
-			return method.invoke(object);
+			Method getter = getGetter(object.getClass(), field);
+			return getter.invoke(object);
+		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			throw new RuntimeException("Error while invoking to the getter for the field '" + fieldName
+					+ "' in the class " + object.getClass().getName() + " class", e);
+		}
+	}
+
+	/**
+	 * Invoke the setter for the given field name, on the given object. All check exceptions are hidden in a
+	 * {@link RuntimeException}
+	 *
+	 * @param object
+	 * @param fieldName
+	 * @param value
+	 * @throws RuntimeException
+	 *             If any exception occurs
+	 */
+	public void invokeSetter(Object object, String fieldName, Object value) {
+		try {
+			Field field = object.getClass().getDeclaredField(fieldName);
+			Method setter = getSetter(object.getClass(), field);
+			setter.invoke(object, value);
 		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			throw new RuntimeException("Error while invoking to the getter for the field '" + fieldName
