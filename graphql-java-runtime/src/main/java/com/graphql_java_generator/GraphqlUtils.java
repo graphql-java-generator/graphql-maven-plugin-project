@@ -246,7 +246,7 @@ public class GraphqlUtils {
 	public void invokeSetter(Object object, String fieldName, Object value) {
 		try {
 			Field field = object.getClass().getDeclaredField(fieldName);
-			invokeSetter(object, field.getName(), value);
+			invokeSetter(object, field, value);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException e) {
 			throw new RuntimeException("Error while invoking to the setter for the field '" + fieldName
 					+ "' in the class " + object.getClass().getName() + " class", e);

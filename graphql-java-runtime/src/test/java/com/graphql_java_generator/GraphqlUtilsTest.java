@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.client.domain.forum.AvailabilityType;
@@ -76,7 +75,6 @@ class GraphqlUtilsTest {
 		assertTrue(e.getMessage().contains(TopicInput.class.getName()));
 	}
 
-	@Disabled
 	@Test
 	void test_invokeSetter() {
 		TopicPostInput topicPostInput = new TopicPostInput();
