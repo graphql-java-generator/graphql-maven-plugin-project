@@ -14,7 +14,7 @@ import com.graphql_java_generator.GraphqlUtils;
  */
 @SpringBootApplication(scanBasePackageClasses = { GraphQLServerMain.class, GraphqlUtils.class })
 @EnableConfigurationProperties
-public class GraphQLServerMain#if($packaging=="war") extends SpringBootServletInitializer#end {
+public class GraphQLServerMain#if(${pluginConfiguration.packaging}=="war") extends SpringBootServletInitializer#end {
 
 #if($packaging=="war")
 	@Override
