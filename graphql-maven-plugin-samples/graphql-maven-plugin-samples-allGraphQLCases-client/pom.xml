@@ -23,7 +23,7 @@
 				</executions>
 				<configuration>
 					<mode>client</mode>
-					<package>org.allGraphQLCases.client</package>
+					<packageName>org.allGraphQLCases.client</packageName>
 				</configuration>
 			</plugin>
 			<plugin>
