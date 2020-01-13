@@ -8,8 +8,6 @@ import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.CharacterImpl;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
-import org.allGraphQLCases.server.Droid;
-import org.allGraphQLCases.server.DroidInput;
 import org.allGraphQLCases.server.Episode;
 import org.springframework.stereotype.Component;
 
@@ -41,18 +39,6 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Character withOneMandatoryParamDefaultValue(DataFetchingEnvironment dataFetchingEnvironment,
-			CharacterInput character) {
-		return generator.generateInstance(CharacterImpl.class, 2);
-	}
-
-	@Override
-	public Droid withTwoMandatoryParamDefaultVal(DataFetchingEnvironment dataFetchingEnvironment, DroidInput theHero,
-			Integer index) {
-		return generator.generateInstance(Droid.class, 2);
-	}
-
-	@Override
 	public Character withEnum(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
 		return generator.generateInstance(CharacterImpl.class, 2);
 	}
@@ -61,6 +47,12 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	public List<Character> withList(DataFetchingEnvironment dataFetchingEnvironment, String name,
 			List<CharacterInput> friends) {
 		return generator.generateInstanceList(Character.class, 2, 10);
+	}
+
+	@Override
+	public String error(DataFetchingEnvironment dataFetchingEnvironment, String errorLabel) {
+		// This method is here only to test the error behavior.
+		throw new RuntimeException("This is an error: " + errorLabel);
 	}
 
 }

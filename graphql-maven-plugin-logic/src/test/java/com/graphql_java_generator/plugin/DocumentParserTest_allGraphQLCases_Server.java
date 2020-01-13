@@ -34,7 +34,7 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
-class DocumentParserTest_allGraphQLCases {
+class DocumentParserTest_allGraphQLCases_Server {
 
 	@Resource
 	private DocumentParser documentParser;
@@ -231,7 +231,7 @@ class DocumentParserTest_allGraphQLCases {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(7, type.getFields().size());
+		assertEquals(6, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -254,24 +254,25 @@ class DocumentParserTest_allGraphQLCases {
 		checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput",
 				pluginConfiguration.getPackageName() + ".CharacterInput", null);
 		j += 1;
-		// withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
-		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
-				pluginConfiguration.getPackageName() + ".Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput",
-				pluginConfiguration.getPackageName() + ".CharacterInput", null);
-		j += 1;
-		// withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"): Droid!
-		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid",
-				pluginConfiguration.getPackageName() + ".Droid");
-		checkInputParameter(type, j, 0, "theHero", false, true, null, "DroidInput",
-				pluginConfiguration.getPackageName() + ".DroidInput", null);
-		checkInputParameter(type, j, 1, "index", false, false, null, "Int", "java.lang.Integer", null);
-		j += 1;
+		// // withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
+		// checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
+		// pluginConfiguration.getPackageName() + ".Character");
+		// checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput",
+		// pluginConfiguration.getPackageName() + ".CharacterInput", null);
+		// j += 1;
+		// // withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"):
+		// Droid!
+		// checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid",
+		// pluginConfiguration.getPackageName() + ".Droid");
+		// checkInputParameter(type, j, 0, "theHero", false, true, null, "DroidInput",
+		// pluginConfiguration.getPackageName() + ".DroidInput", null);
+		// checkInputParameter(type, j, 1, "index", false, false, null, "Int", "java.lang.Integer", null);
+		// j += 1;
 		// withEnum(episode: Episode!): Character
 		checkField(type, j, "withEnum", false, false, null, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
 		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode",
-				pluginConfiguration.getPackageName() + ".Episode", null);
+				pluginConfiguration.getPackageName() + ".Episode", "NEWHOPE");
 		j += 1;
 		// withList(name: String!, friends: [Character]!): [Characters]
 		checkField(type, j, "withList", true, false, false, "Character",
@@ -381,7 +382,7 @@ class DocumentParserTest_allGraphQLCases {
 		checkField(type, j, "subscribeNewHumanForEpisode", false, true, null, "Human",
 				pluginConfiguration.getPackageName() + ".Human");
 		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode",
-				pluginConfiguration.getPackageName() + ".Episode", "NEWHOPE");
+				pluginConfiguration.getPackageName() + ".Episode", null);
 		j += 1;
 	}
 

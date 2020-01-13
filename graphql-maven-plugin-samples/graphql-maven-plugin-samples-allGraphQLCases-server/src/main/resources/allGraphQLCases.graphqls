@@ -9,10 +9,11 @@ type MyQueryType {
 	withoutParameters: [Character]!
     withOneOptionalParam(character: CharacterInput): Character
     withOneMandatoryParam(character: CharacterInput!): Character
-    withOneMandatoryParamDefaultValue(character: CharacterInput!): Character!
-    withTwoMandatoryParamDefaultVal(theHero: DroidInput!, index: Int): Droid!
-    withEnum(episode: Episode!): Character
+    #withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
+    #withTwoMandatoryParamDefaultVal(theHero: DroidInput!, num: Int = 45): Droid!
+    withEnum(episode: Episode! = NEWHOPE): Character
     withList(name: String!, friends: [CharacterInput]!): [Character]
+    error(errorLabel: String!): String!
 }
 
 type AnotherMutationType {
@@ -21,7 +22,7 @@ type AnotherMutationType {
 
 type TheSubscriptionType {
 	# Will be notified for each Human added to this Episode
-	subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
+	subscribeNewHumanForEpisode(episode: Episode!): Human!
 }
 
 
