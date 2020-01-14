@@ -358,6 +358,11 @@
 				<version>2.6</version>
 			</dependency>
 			<dependency>
+				<groupId>net.sf.dozer</groupId>
+				<artifactId>dozer</artifactId>
+				<version>5.5.1</version>
+			</dependency>
+			<dependency>
 				<groupId>com.opencsv</groupId>
 				<artifactId>opencsv</artifactId>
 				<version>4.6</version>

@@ -25,7 +25,7 @@ public class DataFetchersDelegateCommentedImpl implements DataFetchersDelegateCo
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, Commented source) {
-		return generator.generateInstanceList(String.class, 2, 10);
+		return generator.generateInstanceList(String.class, 10);
 	}
 
 }

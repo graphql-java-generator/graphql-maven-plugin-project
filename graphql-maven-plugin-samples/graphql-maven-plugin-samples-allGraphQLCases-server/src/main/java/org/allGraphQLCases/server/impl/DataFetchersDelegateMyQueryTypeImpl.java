@@ -1,6 +1,8 @@
 package org.allGraphQLCases.server.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -9,6 +11,8 @@ import org.allGraphQLCases.server.CharacterImpl;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.Episode;
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -23,34 +27,53 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Resource
 	DataGenerator generator;
 
+	Mapper mapper = new DozerBeanMapper();
+
 	@Override
 	public List<Character> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
-		return generator.generateInstanceList(Character.class, 2, 10);
+		return generator.generateInstanceList(Character.class, 10);
 	}
 
 	@Override
 	public Character withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
-		return generator.generateInstance(CharacterImpl.class, 2);
+		if (character == null) {
+			return generator.generateInstance(CharacterImpl.class);
+		} else {
+			Character c = mapper.map(character, Character.class);
+			c.setId(UUID.randomUUID());
+			return c;
+		}
 	}
 
 	@Override
 	public Character withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
-		return generator.generateInstance(CharacterImpl.class, 2);
+		Character c = mapper.map(character, Character.class);
+		c.setId(UUID.randomUUID());
+		return c;
 	}
 
 	@Override
 	public Character withEnum(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		return generator.generateInstance(CharacterImpl.class, 2);
+		Character c = generator.generateInstance(CharacterImpl.class);
+		c.getAppearsIn().clear();
+		c.getAppearsIn().add(episode);
+		return c;
 	}
 
 	@Override
 	public List<Character> withList(DataFetchingEnvironment dataFetchingEnvironment, String name,
-			List<CharacterInput> friends) {
-		return generator.generateInstanceList(Character.class, 2, 10);
+			List<CharacterInput> characters) {
+		List<Character> list = new ArrayList<Character>(characters.size());
+		for (CharacterInput input : characters) {
+			Character c = mapper.map(input, Character.class);
+			c.setName(name);
+			list.add(c);
+		}
+		return list;
 	}
 
 	@Override
-	public String error(DataFetchingEnvironment dataFetchingEnvironment, String errorLabel) {
+	public Character error(DataFetchingEnvironment dataFetchingEnvironment, String errorLabel) {
 		// This method is here only to test the error behavior.
 		throw new RuntimeException("This is an error: " + errorLabel);
 	}

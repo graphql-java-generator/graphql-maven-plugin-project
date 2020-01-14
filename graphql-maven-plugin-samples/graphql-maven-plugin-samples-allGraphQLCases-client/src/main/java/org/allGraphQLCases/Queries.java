@@ -48,4 +48,6 @@ public interface Queries {
 
 	Human createHuman(HumanInput human) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
+	Character error(String errorLabel) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+
 }

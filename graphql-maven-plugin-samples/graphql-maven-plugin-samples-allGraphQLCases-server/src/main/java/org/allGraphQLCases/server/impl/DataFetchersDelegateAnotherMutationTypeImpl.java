@@ -24,7 +24,7 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 
 	@Override
 	public Human createHuman(DataFetchingEnvironment dataFetchingEnvironment, HumanInput human) {
-		return generator.generateInstance(Human.class, 2);
+		return generator.generateInstance(Human.class);
 	}
 
 }

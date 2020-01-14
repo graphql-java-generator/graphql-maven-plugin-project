@@ -28,17 +28,17 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 
 	@Override
 	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Droid source) {
-		return generator.generateInstanceList(Character.class, 2, 5);
+		return generator.generateInstanceList(Character.class, 5);
 	}
 
 	@Override
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Droid source) {
-		return generator.generateInstanceList(Episode.class, 2, 2);
+		return generator.generateInstanceList(Episode.class, 2);
 	}
 
 	@Override
 	public List<Droid> batchLoader(List<UUID> keys) {
-		return generator.generateInstanceList(Droid.class, 2, keys.size());
+		return generator.generateInstanceList(Droid.class, keys.size());
 	}
 
 }

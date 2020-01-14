@@ -57,70 +57,71 @@ public class DataGenerator {
 	 *            Any GraphQL type (scalar or not)
 	 * @param clazz
 	 *            A class of a Scalar GraphQL type, or a class of a GraphQL type, as defined in a GraphQL schema.
-	 * @param maxSubLevels
-	 *            The maximum number of items to embed. For instance if 0, not subobject will be created (only scalar
-	 *            fields will be filled). With maxSubLevels set to 1, all field that are GraphQL type are created. But
-	 *            if this GraphQL types contain themselves subobjects (field that are GraphQL type and not scalar), then
-	 *            these fields are left empty.
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T generateInstance(Class<T> clazzToReturn, int maxSubLevels) {
+	public <T> T generateInstance(Class<T> clazzToReturn) {
 		Class<? extends T> clazzToInstanciate = (interfaceImplementations.containsKey(clazzToReturn))
 				? (Class<? extends T>) interfaceImplementations.get(clazzToReturn)
 				: clazzToReturn;
-		T t;
 
-		try {
-			t = clazzToInstanciate.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Could not create a new instance of " + clazzToInstanciate.getName());
-		}
+		if (clazzToReturn.isEnum()) {
 
-		for (Field f : clazzToInstanciate.getDeclaredFields()) {
+			// enum are a special case
+			int x = RANDOM.nextInt(clazzToReturn.getEnumConstants().length);
+			return clazzToReturn.getEnumConstants()[x];
 
-			// We fill only Scalar fields.
-			if (f.getAnnotation(GraphQLScalar.class) != null) {
-				Object val;
-				Class<?>[] interfaces = f.getType().getInterfaces();
-				if (f.getType() == List.class
-						|| (interfaces != null && Arrays.asList(interfaces).contains(List.class))) {
-					// Hum, it's a list. Let's generate a list of ten items
-					List<Object> list = new ArrayList<>(NB_ITEM_PER_LIST);
-					for (int i = 0; i < NB_ITEM_PER_LIST; i += 1) {
-						list.add(generateValue(f.getType()));
-					}
-					val = list;
-				} else {
-					val = generateValue(f.getType());
-				}
+		} else {
 
-				graphqlUtils.invokeSetter(t, f, val);
+			// Standard case
+			T t;
+
+			try {
+				t = clazzToInstanciate.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException("Could not create a new instance of " + clazzToInstanciate.getName());
 			}
+
+			for (Field f : clazzToInstanciate.getDeclaredFields()) {
+
+				// We fill only Scalar fields.
+				if (f.getAnnotation(GraphQLScalar.class) != null) {
+					Object val;
+					Class<?>[] interfaces = f.getType().getInterfaces();
+					if (f.getType() == List.class
+							|| (interfaces != null && Arrays.asList(interfaces).contains(List.class))) {
+						// Hum, it's a list. Let's generate a list of ten items
+						List<Object> list = new ArrayList<>(NB_ITEM_PER_LIST);
+						for (int i = 0; i < NB_ITEM_PER_LIST; i += 1) {
+							list.add(generateValue(f.getType()));
+						}
+						val = list;
+					} else {
+						val = generateValue(f.getType());
+					}
+
+					graphqlUtils.invokeSetter(t, f, val);
+				}
+			}
+			return t;
 		}
-		return t;
 	}
 
 	/**
-	 * Returns a list of instances of the given type.
+	 * Returns a list of instances of the given type. The instances are filled by {@link #generateInstance(Class)}
 	 * 
 	 * @param <T>
 	 *            Any GraphQL type (scalar or not)
 	 * @param clazz
-	 * @param maxSubLevels
-	 *            The maximum number of items to embed. For instance if 0, not subobject will be created (only scalar
-	 *            fields will be filled). With maxSubLevels set to 1, all field that are GraphQL type are created. But
-	 *            if this GraphQL types contain themselves subobjects (field that are GraphQL type and not scalar), then
-	 *            these fields are left empty.
 	 * @param nbItems
 	 *            The number of items expected in the returned list
 	 * @return
 	 */
-	public <T> List<T> generateInstanceList(Class<T> clazz, int maxSubLevels, int nbItems) {
+	public <T> List<T> generateInstanceList(Class<T> clazz, int nbItems) {
 		List<T> list = new ArrayList<T>();
 
 		for (int i = 0; i <= nbItems; i += 1) {
-			list.add(generateInstance(clazz, maxSubLevels));
+			list.add(generateInstance(clazz));
 		} // for
 
 		return list;

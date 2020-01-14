@@ -28,29 +28,29 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	@Override
 	public CompletableFuture<Character> bestFriend(DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<UUID, Character> dataLoader, Human source) {
-		UUID key = generator.generateInstance(UUID.class, 2);
+		UUID key = generator.generateInstance(UUID.class);
 		return dataLoader.load(key);
 	}
 
 	@Override
 	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
-		return generator.generateInstanceList(Character.class, 2, 6);
+		return generator.generateInstanceList(Character.class, 6);
 	}
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
-		return generator.generateInstanceList(String.class, 2, 10);
+		return generator.generateInstanceList(String.class, 10);
 
 	}
 
 	@Override
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
-		return generator.generateInstanceList(Episode.class, 2, 2);
+		return generator.generateInstanceList(Episode.class, 2);
 	}
 
 	@Override
 	public List<Human> batchLoader(List<UUID> keys) {
-		return generator.generateInstanceList(Human.class, 2, keys.size());
+		return generator.generateInstanceList(Human.class, keys.size());
 	}
 
 }

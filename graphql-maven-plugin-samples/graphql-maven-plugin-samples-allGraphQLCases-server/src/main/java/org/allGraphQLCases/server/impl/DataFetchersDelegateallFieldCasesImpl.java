@@ -27,32 +27,32 @@ public class DataFetchersDelegateallFieldCasesImpl implements DataFetchersDelega
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, allFieldCases source) {
-		return generator.generateInstanceList(String.class, 2, 10);
+		return generator.generateInstanceList(String.class, 10);
 	}
 
 	@Override
 	public List<Boolean> booleans(DataFetchingEnvironment dataFetchingEnvironment, allFieldCases source) {
-		return generator.generateInstanceList(Boolean.class, 2, 10);
+		return generator.generateInstanceList(Boolean.class, 10);
 	}
 
 	@Override
 	public List<String> aliases(DataFetchingEnvironment dataFetchingEnvironment, allFieldCases source) {
-		return generator.generateInstanceList(String.class, 2, 10);
+		return generator.generateInstanceList(String.class, 10);
 	}
 
 	@Override
 	public List<String> planets(DataFetchingEnvironment dataFetchingEnvironment, allFieldCases source) {
-		return generator.generateInstanceList(String.class, 2, 10);
+		return generator.generateInstanceList(String.class, 10);
 	}
 
 	@Override
 	public List<Human> friends(DataFetchingEnvironment dataFetchingEnvironment, allFieldCases source) {
-		return generator.generateInstanceList(Human.class, 2, 10);
+		return generator.generateInstanceList(Human.class, 10);
 	}
 
 	@Override
 	public List<allFieldCases> batchLoader(List<UUID> keys) {
-		return generator.generateInstanceList(allFieldCases.class, 2, keys.size());
+		return generator.generateInstanceList(allFieldCases.class, keys.size());
 	}
 
 }

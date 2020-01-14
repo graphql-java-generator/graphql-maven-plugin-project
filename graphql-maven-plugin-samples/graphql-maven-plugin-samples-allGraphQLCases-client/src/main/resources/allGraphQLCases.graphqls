@@ -11,19 +11,25 @@ type MyQueryType {
     withOneMandatoryParam(character: CharacterInput!): Character
     #withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
     #withTwoMandatoryParamDefaultVal(theHero: DroidInput!, num: Int = 45): Droid!
-    withEnum(episode: Episode!): Character
-    withList(name: String!, friends: [CharacterInput]!): [Character]
+    withEnum(episode: Episode! = NEWHOPE): Character
+    
+    # withList return a list of Characters, matching the given list of CharacterInput.
+    # The name of the first Character returned is replaced by the given firstName.
+    # All ids are generated  
+    withList(firstName: String!, characters: [CharacterInput]!): [Character]
+    
+    # error always returns an error!  (used to check the error management)
+    error(errorLabel: String!): Character!
 }
 
 type AnotherMutationType {
 	createHuman(human: HumanInput!): Human!
 }
 
-# Not managed yet
-#type TheSubscriptionType {
-#	# Will be notified for each Human added to this Episode
-#	subscribeNewHumanForEpisode(episode: Episode!): Human!
-#}
+type TheSubscriptionType {
+	# Will be notified for each Human added to this Episode
+	subscribeNewHumanForEpisode(episode: Episode!): Human!
+}
 
 
 enum Episode {
@@ -44,7 +50,6 @@ interface Character {
 }
 
 input CharacterInput {
-    id: ID!
     name: String!
     friends: [CharacterInput]
     appearsIn: [Episode]!

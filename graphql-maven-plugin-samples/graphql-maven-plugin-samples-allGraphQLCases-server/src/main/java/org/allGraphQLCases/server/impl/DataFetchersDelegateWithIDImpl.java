@@ -24,7 +24,7 @@ public class DataFetchersDelegateWithIDImpl implements DataFetchersDelegateWithI
 
 	@Override
 	public List<WithID> batchLoader(List<UUID> keys) {
-		return generator.generateInstanceList(WithID.class, 2, keys.size());
+		return generator.generateInstanceList(WithID.class, keys.size());
 	}
 
 }

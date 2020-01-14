@@ -44,6 +44,7 @@ public class PreparedQueries implements Queries {
 	ObjectResponse withTwoMandatoryParamDefaultValResponse;
 	ObjectResponse withEnumResponse;
 	ObjectResponse withListResponse;
+	ObjectResponse errorResponse;
 
 	// Mutations
 	ObjectResponse createHumanResponse;
@@ -64,7 +65,7 @@ public class PreparedQueries implements Queries {
 		mutationType = new AnotherMutationType(graphqlEndpoint);
 
 		withoutParametersResponse = queryType.getWithoutParametersResponseBuilder()
-				.withQueryResponseDef("{appearsIn homePlanet name}").build();
+				.withQueryResponseDef("{appearsIn name}").build();
 		withOneOptionalParamResponse = queryType.getWithOneOptionalParamResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		withOneMandatoryParamResponse = queryType.getWithOneMandatoryParamResponseBuilder()
@@ -76,6 +77,8 @@ public class PreparedQueries implements Queries {
 		withEnumResponse = queryType.getWithEnumResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		withListResponse = queryType.getWithListResponseBuilder()
+				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
+		errorResponse = queryType.getErrorResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 	}
 
@@ -110,8 +113,15 @@ public class PreparedQueries implements Queries {
 	}
 
 	@Override
+	public Character error(String errorLabel)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return queryType.error(errorResponse, errorLabel);
+	}
+
+	@Override
 	public Human createHuman(HumanInput human)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createHuman(createHumanResponse, human);
 	}
+
 }

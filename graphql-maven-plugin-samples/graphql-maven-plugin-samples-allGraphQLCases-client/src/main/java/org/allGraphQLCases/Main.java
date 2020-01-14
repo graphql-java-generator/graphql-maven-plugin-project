@@ -15,7 +15,7 @@ import com.graphql_java_generator.client.response.GraphQLRequestPreparationExcep
  */
 public class Main {
 
-	public static String graphqlEndpoint = "https://localhost:8443/starwars/graphql";
+	public static final String GRAPHQL_ENDPOINT = "http://localhost:8180/graphql";
 
 	public static void main(String[] args) throws Exception {
 		new Main().execAll();
@@ -28,17 +28,17 @@ public class Main {
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		execOne(new DirectQueries(graphqlEndpoint));
+		execOne(new DirectQueries(GRAPHQL_ENDPOINT));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new PreparedQueries(graphqlEndpoint));
+		execOne(new PreparedQueries(GRAPHQL_ENDPOINT));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new WithBuilder(graphqlEndpoint));
+		execOne(new WithBuilder(GRAPHQL_ENDPOINT));
 
 		System.out.println("");
 		System.out.println("");

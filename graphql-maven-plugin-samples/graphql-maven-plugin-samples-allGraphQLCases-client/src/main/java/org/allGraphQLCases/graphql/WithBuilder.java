@@ -45,6 +45,7 @@ public class WithBuilder implements Queries {
 	ObjectResponse withTwoMandatoryParamDefaultValResponse;
 	ObjectResponse withEnumResponse;
 	ObjectResponse withListResponse;
+	ObjectResponse errorResponse;
 
 	// Mutations
 	ObjectResponse createHumanResponse;
@@ -68,7 +69,7 @@ public class WithBuilder implements Queries {
 				.build();
 
 		withoutParametersResponse = queryType.getWithoutParametersResponseBuilder().withField("appearsIn")
-				.withField("homePlanet").withField("name").build();
+				.withField("name").build();
 		withOneOptionalParamResponse = queryType.getWithOneOptionalParamResponseBuilder().withField("id")
 				.withField("name").withField("appearsIn").withSubObject(characterFriends).build();
 		withOneMandatoryParamResponse = queryType.getWithOneMandatoryParamResponseBuilder().withField("id")
@@ -81,6 +82,8 @@ public class WithBuilder implements Queries {
 				.withField("appearsIn").withSubObject(characterFriends).build();
 		withListResponse = queryType.getWithListResponseBuilder().withField("id").withField("name")
 				.withField("appearsIn").withSubObject(characterFriends).build();
+		errorResponse = queryType.getWithListResponseBuilder().withField("id").withField("name").withField("appearsIn")
+				.withSubObject(characterFriends).build();
 	}
 
 	@Override
@@ -119,4 +122,9 @@ public class WithBuilder implements Queries {
 		return mutationType.createHuman(createHumanResponse, human);
 	}
 
+	@Override
+	public Character error(String errorLabel)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return queryType.error(errorResponse, errorLabel);
+	}
 }
