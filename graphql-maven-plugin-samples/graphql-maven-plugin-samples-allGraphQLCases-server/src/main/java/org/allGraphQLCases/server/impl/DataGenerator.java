@@ -120,7 +120,7 @@ public class DataGenerator {
 	public <T> List<T> generateInstanceList(Class<T> clazz, int nbItems) {
 		List<T> list = new ArrayList<T>();
 
-		for (int i = 0; i <= nbItems; i += 1) {
+		for (int i = 0; i < nbItems; i += 1) {
 			list.add(generateInstance(clazz));
 		} // for
 

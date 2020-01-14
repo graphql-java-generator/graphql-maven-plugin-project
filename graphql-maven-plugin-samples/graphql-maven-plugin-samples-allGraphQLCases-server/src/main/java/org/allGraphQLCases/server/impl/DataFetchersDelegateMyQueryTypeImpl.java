@@ -39,7 +39,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		if (character == null) {
 			return generator.generateInstance(CharacterImpl.class);
 		} else {
-			Character c = mapper.map(character, Character.class);
+			Character c = mapper.map(character, CharacterImpl.class);
 			c.setId(UUID.randomUUID());
 			return c;
 		}
@@ -47,7 +47,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public Character withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
-		Character c = mapper.map(character, Character.class);
+		Character c = mapper.map(character, CharacterImpl.class);
 		c.setId(UUID.randomUUID());
 		return c;
 	}
@@ -55,8 +55,11 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public Character withEnum(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
 		Character c = generator.generateInstance(CharacterImpl.class);
-		c.getAppearsIn().clear();
-		c.getAppearsIn().add(episode);
+
+		// The episode list (appearsIn) will be filled by another call (the graphql manages the joins).
+		// To check the given parameter, we put the episode name in the returned character's name
+		c.setName(episode.name());
+
 		return c;
 	}
 
@@ -65,10 +68,13 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			List<CharacterInput> characters) {
 		List<Character> list = new ArrayList<Character>(characters.size());
 		for (CharacterInput input : characters) {
-			Character c = mapper.map(input, Character.class);
-			c.setName(name);
+			Character c = mapper.map(input, CharacterImpl.class);
+			c.setId(UUID.randomUUID());
 			list.add(c);
 		}
+
+		list.get(0).setName(name);
+
 		return list;
 	}
 

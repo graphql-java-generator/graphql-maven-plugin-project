@@ -37,7 +37,7 @@ abstract class AbstractIT {
 		assertNotNull(list);
 		assertEquals(10, list.size());
 		for (Character c : list) {
-			checkCharacter(c, "withoutParameters", null, "Random String (", 4, 0);
+			checkCharacter(c, "withoutParameters", true, "Random String (", 0, 0);
 		}
 	}
 
@@ -46,38 +46,54 @@ abstract class AbstractIT {
 
 		// Without parameter
 		Character c = queries.withOneOptionalParam(null);
-		checkCharacter(c, "test_withOneOptionalParam(null)", null, "Random String (", 0, 0);
+		checkCharacter(c, "test_withOneOptionalParam(null)", false, "Random String (", 0, 0);
 
 		// With a parameter
 		CharacterInput input = new CharacterInput();
 		input.setName("A name");
+		input.setAppearsIn(new ArrayList<Episode>());
+
 		// Go, go, go
 		c = queries.withOneOptionalParam(input);
 		// Verification
 		assertNotNull(c.getId());
 		assertEquals("A name", c.getName());
-		assertNull(c.getAppearsIn());
-		assertNull(c.getFriends());
+
+		// appearsIn and friends is generated on server side.
+		assertNotNull(c.getAppearsIn());
+		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateCharacterImpl.appearsIn
+		assertNotNull(c.getFriends());
+		assertEquals(4, c.getFriends().size());// See DataFetchersDelegateCharacterImpl.friends
 	}
 
 	@Test
-	void test_withOneMandatoryParam() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-
+	void test_withOneMandatoryParam_nullParameter()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// With null parameter
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
 				() -> queries.withOneMandatoryParam(null));
 		assertTrue(e.getMessage().contains("character"));
+	}
 
+	@Test
+	void test_withOneMandatoryParam_OK() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// With a non null parameter
 		CharacterInput input = new CharacterInput();
 		input.setName("A name");
+		input.setAppearsIn(new ArrayList<Episode>());
+
 		// Go, go, go
-		Character c = queries.withOneMandatoryParam(null);
+		Character c = queries.withOneMandatoryParam(input);
+
 		// Verification
 		assertNotNull(c.getId());
 		assertEquals("A name", c.getName());
-		assertNull(c.getAppearsIn());
-		assertNull(c.getFriends());
+
+		// appearsIn and friends is generated on server side.
+		assertNotNull(c.getAppearsIn());
+		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateCharacterImpl.appearsIn
+		assertNotNull(c.getFriends());
+		assertEquals(4, c.getFriends().size());// See DataFetchersDelegateCharacterImpl.friends
 	}
 
 	@Test
@@ -85,13 +101,11 @@ abstract class AbstractIT {
 
 		// With null parameter: NEWHOPE is the default value
 		Character c = queries.withEnum(null);
-		assertEquals(1, c.getAppearsIn().size());
-		assertEquals(Episode.NEWHOPE, c.getAppearsIn().get(0));
+		assertEquals(Episode.NEWHOPE.name(), c.getName());// See server code for more info
 
 		// With a non null parameter
 		c = queries.withEnum(Episode.JEDI);
-		assertEquals(1, c.getAppearsIn().size());
-		assertEquals(Episode.JEDI, c.getAppearsIn().get(0));
+		assertEquals(Episode.JEDI.name(), c.getName()); // See server code for more info
 	}
 
 	@Test
@@ -99,8 +113,11 @@ abstract class AbstractIT {
 		// Preparation
 		CharacterInput ci1 = new CharacterInput();
 		ci1.setName("A name");
+		ci1.setAppearsIn(new ArrayList<Episode>());
+		//
 		CharacterInput ci2 = new CharacterInput();
 		ci2.setName("Another name");
+		ci2.setAppearsIn(new ArrayList<Episode>());
 		//
 		List<CharacterInput> list = new ArrayList<CharacterInput>();
 		list.add(ci1);
@@ -127,13 +144,19 @@ abstract class AbstractIT {
 	@Test
 	void test_error() {
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> queries.error(""));
-		assertTrue(e.getMessage().contains("This is an expected error"));
+				() -> queries.error("This is an expected error"));
+		assertTrue(e.getMessage().contains("This is an expected error"),
+				"'" + e.getMessage() + "' should contain 'This is an expected error'");
 	}
 
-	private void checkCharacter(Character c, String testDecription, String id, String nameStartsWith, int nbFriends,
-			int nbAppearsIn) {
-		assertEquals(id, c.getId(), testDecription + " (id)");
+	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
+			int nbFriends, int nbAppearsIn) {
+
+		if (idShouldBeNull)
+			assertNull(c.getId(), testDecription + " (id)");
+		else
+			assertNotNull(c.getId(), testDecription + " (id)");
+
 		assertTrue(c.getName().startsWith(nameStartsWith),
 				testDecription + " (name starts with " + nameStartsWith + ")");
 

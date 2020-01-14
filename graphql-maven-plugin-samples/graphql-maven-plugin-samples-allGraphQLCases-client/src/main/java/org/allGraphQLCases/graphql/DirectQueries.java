@@ -40,7 +40,7 @@ public class DirectQueries implements Queries {
 	@Override
 	public List<Character> withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.withoutParameters("{appearsIn name}");
+		return queryType.withoutParameters("{appearsIn name }");
 	}
 
 	@Override
@@ -84,13 +84,13 @@ public class DirectQueries implements Queries {
 	@Override
 	public Human createHuman(HumanInput human)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return mutationType.createHuman("{id name appearsIn friends}", human);
+		return mutationType.createHuman("{id name appearsIn friends {id name}}", human);
 	}
 
 	@Override
 	public Character error(String errorLabel)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.error("{id name appearsIn friends}", errorLabel);
+		return queryType.error("{id name appearsIn friends {id name}}", errorLabel);
 	}
 
 }
