@@ -1,7 +1,10 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +19,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.graphql_java_generator.plugin.language.DataFetcher;
+import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
+import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
@@ -57,8 +64,8 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(16, i, "Nb classes are generated");
-		assertEquals(9, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(21, i, "Nb classes are generated");
+		assertEquals(14, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(1, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
@@ -68,13 +75,27 @@ class DocumentParserTest_allGraphQLCases_Server {
 		assertEquals("query", documentParser.queryTypes.get(0).getRequestType());
 		assertEquals("mutation", documentParser.mutationTypes.get(0).getRequestType());
 		assertEquals("subscription", documentParser.subscriptionTypes.get(0).getRequestType());
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Checks if the boolean completableFuture is set correctly
+		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType");
+		assertTrue(dataFetcher.isCompletableFuture(), "oneWithIdSubType");
+		//
+		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithIdSubTypes");
+		assertFalse(dataFetcher.isCompletableFuture(), "listWithIdSubTypes");
+		//
+		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithoutIdSubType");
+		assertFalse(dataFetcher.isCompletableFuture(), "oneWithoutIdSubType");
+		//
+		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithoutIdSubTypes");
+		assertFalse(dataFetcher.isCompletableFuture(), "listWithoutIdSubTypes");
 	}
 
 	@Test
 	@DirtiesContext
 	void test_addObjectType_noImplement() {
 		// Preparation
-		String objectName = "allFieldCases";
+		String objectName = "AllFieldCases";
 		ObjectTypeDefinition def = null;
 		for (Definition<?> node : documents.get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
@@ -93,11 +114,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// Verification
 		assertEquals(objectName, type.getName(), "Checks the name");
 		assertEquals(0, type.getImplementz().size(), "No implementation");
-		assertEquals(10, type.getFields().size(), "Number of fields");
+		assertEquals(14, type.getFields().size(), "Number of fields");
 
 		int j = 0; // The first field is 0, see ++j below
 
-		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// id: ID!
 		checkField(type, j++, "id", false, true, null, "UUID", UUID.class.getName());
 		// name: String!
@@ -118,6 +139,21 @@ class DocumentParserTest_allGraphQLCases_Server {
 		checkField(type, j++, "planets", true, true, true, "String", String.class.getName());
 		// friends: [Human!]
 		checkField(type, j++, "friends", true, false, true, "Human", pluginConfiguration.getPackageName() + ".Human");
+		// oneWithIdSubType: AllFieldCasesWithIdSubtype
+		checkField(type, j++, "oneWithIdSubType", false, false, null, "AllFieldCasesWithIdSubtype",
+				pluginConfiguration.getPackageName() + ".AllFieldCasesWithIdSubtype");
+		// listWithIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String):
+		// [AllFieldCasesWithIdSubtype]
+		checkField(type, j++, "listWithIdSubTypes", true, false, false, "AllFieldCasesWithIdSubtype",
+				pluginConfiguration.getPackageName() + ".AllFieldCasesWithIdSubtype");
+		// oneWithoutIdSubType: AllFieldCasesWithoutIdSubtype
+		checkField(type, j++, "oneWithoutIdSubType", false, false, null, "AllFieldCasesWithoutIdSubtype",
+				pluginConfiguration.getPackageName() + ".AllFieldCasesWithoutIdSubtype");
+		// listWithoutIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String):
+		// [AllFieldCasesWithoutIdSubtype]
+		checkField(type, j++, "listWithoutIdSubTypes", true, false, false, "AllFieldCasesWithoutIdSubtype",
+				pluginConfiguration.getPackageName() + ".AllFieldCasesWithoutIdSubtype");
+
 	}
 
 	@Test
@@ -154,7 +190,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		int j = 0; // The first field is 0, see ++j below
 
-		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// id: ID!
 		checkField(type, j++, "id", false, true, null, "UUID", UUID.class.getName());
 		// name: String!
@@ -236,7 +272,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int j = 0; // The first query is 0, see ++j below
 
 		// Each query is actually a field. So we use :
-		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		//
 		// withoutParameters: [Character]!
 		checkField(type, j, "withoutParameters", true, true, false, "Character",
@@ -277,8 +313,8 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// withList(name: String!, friends: [Character]!): [Characters]
 		checkField(type, j, "withList", true, false, false, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
-		checkInputParameter(type, j, 0, "name", false, true, null, "String", String.class.getName(), null);
-		checkInputParameter(type, j, 1, "friends", true, true, false, "CharacterInput",
+		checkInputParameter(type, j, 0, "firstName", false, true, null, "String", String.class.getName(), null);
+		checkInputParameter(type, j, 1, "characters", true, true, false, "CharacterInput",
 				pluginConfiguration.getPackageName() + ".CharacterInput", null);
 		j += 1;
 	}
@@ -333,11 +369,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(1, type.getFields().size());
+		assertEquals(2, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
-		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// checkInputParameter(type, j, numParam, name, list, mandatory, itemMandatory, typeName, classname,
 		// defaultValue)
 		//
@@ -345,7 +381,12 @@ class DocumentParserTest_allGraphQLCases_Server {
 		checkField(type, j, "createHuman", false, true, null, "Human", pluginConfiguration.getPackageName() + ".Human");
 		checkInputParameter(type, j, 0, "human", false, true, null, "HumanInput",
 				pluginConfiguration.getPackageName() + ".HumanInput", null);
+		//
 		j += 1;
+		checkField(type, j, "createAllFieldCases", false, true, null, "AllFieldCases",
+				pluginConfiguration.getPackageName() + ".AllFieldCases");
+		checkInputParameter(type, j, 0, "input", false, true, null, "AllFieldCasesInput",
+				pluginConfiguration.getPackageName() + ".AllFieldCasesInput", null);
 	}
 
 	@Test
@@ -374,7 +415,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
-		// checkField(field, fieldDescForJUnitMessage, name, list, mandatory, itemMandatory, typeName, clazz)
+		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// checkInputParameter(type, j, numParam, name, list, mandatory, itemMandatory, typeName, classname,
 		// defaultValue)
 		//
@@ -387,6 +428,25 @@ class DocumentParserTest_allGraphQLCases_Server {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private DataFetcherImpl findDataFetcher(String delegateName, String name) {
+		DataFetchersDelegateImpl delegate = findDataFetcherDelegate(delegateName);
+		for (DataFetcher fetcher : delegate.getDataFetchers()) {
+			if (fetcher.getName().equals(name))
+				return (DataFetcherImpl) fetcher;
+		}
+		fail("DataFetcherImpl '" + delegateName + "." + name + "' not found");
+		return null;
+	}
+
+	private DataFetchersDelegateImpl findDataFetcherDelegate(String name) {
+		for (DataFetchersDelegate delegate : documentParser.dataFetchersDelegates) {
+			if (delegate.getName().equals(name))
+				return (DataFetchersDelegateImpl) delegate;
+		}
+		fail("DataFetchersDelegateImpl '" + name + "' not found");
+		return null;
+	}
 
 	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
 			String typeName, String classname) {
@@ -415,13 +475,15 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		String intputParamDescForJUnitMessage = "Field n°" + j + " / input param n°" + numParam;
 
-		assertEquals(name, inputValue.getName(), "name is " + name + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(list, inputValue.isList(), "list is " + list + " (for " + intputParamDescForJUnitMessage + ")");
+		assertEquals(name, inputValue.getName(),
+				type.getName() + " - name is " + name + " (for " + intputParamDescForJUnitMessage + ")");
+		assertEquals(list, inputValue.isList(),
+				type.getName() + " - list is " + list + " (for " + intputParamDescForJUnitMessage + ")");
 		assertEquals(mandatory, inputValue.isMandatory(),
-				"mandatory is " + mandatory + " (for " + intputParamDescForJUnitMessage + ")");
+				type.getName() + " - mandatory is " + mandatory + " (for " + intputParamDescForJUnitMessage + ")");
 		if (itemMandatory != null) {
-			assertEquals(itemMandatory, inputValue.isItemMandatory(),
-					"itemMandatory is " + itemMandatory + " (for " + intputParamDescForJUnitMessage + ")");
+			assertEquals(itemMandatory, inputValue.isItemMandatory(), type.getName() + " - itemMandatory is "
+					+ itemMandatory + " (for " + intputParamDescForJUnitMessage + ")");
 		}
 
 		Type fieldType = inputValue.getType();
