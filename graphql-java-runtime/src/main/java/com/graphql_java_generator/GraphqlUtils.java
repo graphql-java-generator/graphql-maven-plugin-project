@@ -64,59 +64,65 @@ public class GraphqlUtils {
 	 * @param t
 	 *            An empty instance of the expected type. This instance's fields will be set by this method, from the
 	 *            value in the map
-	 * @return An instance of the expected class. If the map is null or empty, all the fields are left empty
+	 * @return An instance of the expected class. If the map is null, null is returned. Of the map is empty, anew
+	 *         instance is returned, with all its fields are left empty
 	 */
 	public <T> T getInputObject(Map<String, Object> map, Class<T> clazz) {
-		T t;
-		Field field;
+		if (map == null) {
+			return null;
+		} else {
+			T t;
+			Field field;
 
-		try {
-			t = clazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Error while creating a new instance of  '" + clazz.getName() + " class", e);
-		}
-
-		for (String key : map.keySet()) {
 			try {
-				field = clazz.getDeclaredField(key);
-			} catch (NoSuchFieldException | SecurityException e) {
-				throw new RuntimeException(
-						"Error while reading '" + key + "' field for the " + clazz.getName() + " class", e);
+				t = clazz.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				throw new RuntimeException("Error while creating a new instance of  '" + clazz.getName() + " class", e);
 			}
 
-			Method setter = getSetter(clazz, field);
+			for (String key : map.keySet()) {
+				try {
+					field = clazz.getDeclaredField(key);
+				} catch (NoSuchFieldException | SecurityException e) {
+					throw new RuntimeException(
+							"Error while reading '" + key + "' field for the " + clazz.getName() + " class", e);
+				}
 
-			GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
-			GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+				Method setter = getSetter(clazz, field);
 
-			if (graphQLScalar != null) {
-				// We have a Scalar, here. Let's look at all known scalars
-				if (graphQLScalar.graphqlType() == UUID.class) {
-					invokeMethod(setter, t, UUID.fromString((String) map.get(key)));
-				} else if (graphQLScalar.graphqlType() == String.class || graphQLScalar.graphqlType() == Boolean.class
-						|| graphQLScalar.graphqlType() == Integer.class || graphQLScalar.graphqlType() == Float.class
-						|| graphQLScalar.graphqlType().isEnum()) {
-					invokeMethod(setter, t, map.get(key));
+				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+
+				if (graphQLScalar != null) {
+					// We have a Scalar, here. Let's look at all known scalars
+					if (graphQLScalar.graphqlType() == UUID.class) {
+						invokeMethod(setter, t, UUID.fromString((String) map.get(key)));
+					} else if (graphQLScalar.graphqlType() == String.class
+							|| graphQLScalar.graphqlType() == Boolean.class
+							|| graphQLScalar.graphqlType() == Integer.class
+							|| graphQLScalar.graphqlType() == Float.class || graphQLScalar.graphqlType().isEnum()) {
+						invokeMethod(setter, t, map.get(key));
+					} else {
+						throw new RuntimeException("Non managed type when reading the input map: '"
+								+ graphQLScalar.graphqlType().getName());
+					}
+				} else if (graphQLNonScalar != null) {
+					// We got a non scalar field. So we expect a map, which content will map to the fields of the target
+					// field.
+					if (!(map.get(key) instanceof Map<?, ?>)) {
+						throw new RuntimeException(
+								"The value for the field '" + clazz.getName() + "." + key + " should be a map");
+					}
+					@SuppressWarnings("unchecked")
+					Map<String, Object> subMap = (Map<String, Object>) map.get(key);
+					invokeMethod(setter, t, getInputObject(subMap, graphQLNonScalar.graphqlType()));
 				} else {
-					throw new RuntimeException(
-							"Non managed type when reading the input map: '" + graphQLScalar.graphqlType().getName());
+					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
+							+ "' should have one of these annotations: GraphQLScalar or GraphQLScalar");
 				}
-			} else if (graphQLNonScalar != null) {
-				// We got a non scalar field. So we expect a map, which content will map to the fields of the target
-				// field.
-				if (!(map.get(key) instanceof Map<?, ?>)) {
-					throw new RuntimeException(
-							"The value for the field '" + clazz.getName() + "." + key + " should be a map");
-				}
-				@SuppressWarnings("unchecked")
-				Map<String, Object> subMap = (Map<String, Object>) map.get(key);
-				invokeMethod(setter, t, getInputObject(subMap, graphQLNonScalar.graphqlType()));
-			} else {
-				throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
-						+ "' should have one of these annotations: GraphQLScalar or GraphQLScalar");
 			}
+			return t;
 		}
-		return t;
 	}
 
 	/**

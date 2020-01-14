@@ -1,6 +1,7 @@
 package com.graphql_java_generator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -115,6 +116,24 @@ class GraphqlUtilsTest {
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
 		assertEquals(AvailabilityType.SEMI_PRIVATE, topicInput.getInput().getAvailabilityType());
+	}
+
+	@Test
+	void test_getInput_emptyMap() {
+		// Preparation
+		Map<String, Object> map = new LinkedHashMap<>();
+
+		// Go, go, go
+		TopicInput topicInput = graphqlUtils.getInputObject(map, TopicInput.class);
+
+		// Verification
+		assertNull(topicInput.getBoardId());
+		assertNull(topicInput.getInput());
+	}
+
+	@Test
+	void test_getInputObject_nullMap() {
+		assertNull(graphqlUtils.getInputObject(null, TopicInput.class), "A null map return a null object");
 	}
 
 	@Test
