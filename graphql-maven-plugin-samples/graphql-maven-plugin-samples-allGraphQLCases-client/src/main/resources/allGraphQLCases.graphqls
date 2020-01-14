@@ -18,12 +18,15 @@ type MyQueryType {
     # All ids are generated  
     withList(firstName: String!, characters: [CharacterInput]!): [Character]
     
+    
+    
     # error always returns an error!  (used to check the error management)
     error(errorLabel: String!): Character!
 }
 
 type AnotherMutationType {
 	createHuman(human: HumanInput!): Human!
+	createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
 }
 
 type TheSubscriptionType {
@@ -60,7 +63,7 @@ interface Commented {
     comments: [String]
 }
 
-type allFieldCases {
+input AllFieldCasesInput {
     id: ID!
     name: String!
     forname: String
@@ -70,7 +73,43 @@ type allFieldCases {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
+    withIdSubtype: [AllFieldCasesWithIdSubtypeInput!]
+    withoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]
+}
+
+input AllFieldCasesWithIdSubtypeInput {
+    id: ID!
+    name: String!
+}
+
+input AllFieldCasesWithoutIdSubtypeInput {
+    name: String!
+}
+
+type AllFieldCases {
+    id: ID!
+    name: String!
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    age: Int!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
     friends: [Human!]
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType: AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Int!,uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+type AllFieldCasesWithIdSubtype {
+    id: ID!
+    name: String!
+}
+
+type AllFieldCasesWithoutIdSubtype {
+    name: String!
 }
 
 type Human implements Character, Commented {

@@ -73,22 +73,23 @@ input AllFieldCasesInput {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
-    friends: [Human!]
+    withIdSubtype: [AllFieldCasesWithIdSubtypeInput!]
+    withoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]
 }
 
-input AllFieldCasesWithIdSubtype {
+input AllFieldCasesWithIdSubtypeInput {
     id: ID!
     name: String!
 }
 
-input AllFieldCasesWithoutIdSubtype {
+input AllFieldCasesWithoutIdSubtypeInput {
     name: String!
 }
 
 type AllFieldCases {
     id: ID!
     name: String!
-    forname(uppercase: Boolean = True, textToAppendToTheForname: String): String
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
     age: Int!
     nbComments: Int
     comments: [String]
@@ -97,9 +98,9 @@ type AllFieldCases {
     planets: [String!]!
     friends: [Human!]
     oneWithIdSubType: AllFieldCasesWithIdSubtype
-    listWithIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType: AllFieldCasesWithoutIdSubtype
-    listWithoutIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+    listWithoutIdSubTypes(nbItems: Int!,uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
 }
 
 type AllFieldCasesWithIdSubtype {
