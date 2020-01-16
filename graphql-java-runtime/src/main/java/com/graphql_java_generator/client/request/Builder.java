@@ -168,6 +168,11 @@ public class Builder {
 			while (st.hasMoreTokens()) {
 				String token = st.nextToken();
 				switch (token) {
+				case "{":
+					throw new GraphQLRequestPreparationException(
+							"Encountered a '{' while reading parameters for the field '" + name
+									+ "' : if you're using DirectQueries with field's parameter, please note that input parameters are not managed in Direct Queries. Please use Prepared Queries. "
+									+ "If you're not using field's parameter, please correct the query syntax");
 				case ":":
 				case " ":
 					break;
@@ -202,16 +207,19 @@ public class Builder {
 						} else if (token.startsWith("&")) {
 							inputParameters
 									.add(InputParameter.newBindParameter(parameterName, token.substring(1), true));
-						} else {
-							// The inputParameter should start and end by "
-							if (!token.startsWith("\"") || !token.endsWith("\"")) {
-								throw new GraphQLRequestPreparationException(
-										"Bad parameter value: parameter values should start and finish by \". But it's not the case for the value <"
-												+ token + "> of parameter <" + parameterName
-												+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
-							}
+						} else if (token.startsWith("\"") && token.endsWith("\"")) {
+							// The inputParameter starts and ends by "
+							// It's a regular String.
 							String value = token.substring(1, token.length() - 1);
 							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, value));
+						} else if (token.startsWith("\"") || token.endsWith("\"")) {
+							// Too bad, there is a " only at the end or only at the beginning
+							throw new GraphQLRequestPreparationException(
+									"Bad parameter value: parameter values should start and finish by \", or not having any \" at the beginning and end.. But it's not the case for the value <"
+											+ token + "> of parameter <" + parameterName
+											+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
+						} else {
+							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, token));
 						}
 						step = InputParameterStep.NAME;
 						break;
@@ -222,6 +230,7 @@ public class Builder {
 			throw new GraphQLRequestPreparationException(
 					"The list of parameters for the field '" + name + "' is not finished (no closing parenthesis)");
 		}
+
 	}// class QueryField
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
