@@ -57,7 +57,7 @@ public interface Queries {
 			String textToAppendToTheForname, int nbItemsWithId, Boolean uppercaseNameList,
 			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
 			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
-			throws GraphQLRequestExecutionException;
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Third part: mutations

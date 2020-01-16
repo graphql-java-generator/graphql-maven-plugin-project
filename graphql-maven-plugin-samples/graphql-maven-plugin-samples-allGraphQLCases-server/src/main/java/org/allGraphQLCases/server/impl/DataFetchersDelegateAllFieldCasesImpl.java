@@ -86,10 +86,12 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	@Override
 	public AllFieldCasesWithoutIdSubtype oneWithoutIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCases source, FieldParameterInput input) {
-		AllFieldCasesWithoutIdSubtype ret = source.getOneWithoutIdSubType();
+		AllFieldCasesWithoutIdSubtype ret = generator.generateInstance(AllFieldCasesWithoutIdSubtype.class);
 
 		if (input != null && input.getUppercase() != null && input.getUppercase()) {
-			ret.setName(ret.getName().toUpperCase());
+			if (ret.getName() != null) {
+				ret.setName(ret.getName().toUpperCase());
+			}
 		}
 
 		return ret;

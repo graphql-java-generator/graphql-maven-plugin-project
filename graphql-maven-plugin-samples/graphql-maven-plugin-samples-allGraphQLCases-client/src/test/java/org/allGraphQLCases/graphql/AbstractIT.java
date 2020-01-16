@@ -145,9 +145,19 @@ abstract class AbstractIT {
 	}
 
 	@Test
-	void test_allFieldCases() throws GraphQLRequestExecutionException {
+	void test_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Not implemented in direct queries
-		if (!this.getClass().getSimpleName().equals("DirectQueriesIT")) {
+		if (this.getClass().getSimpleName().equals("DirectQueriesIT")) {
+
+			// Go, go, go
+			// bind variables are not used in DirectQueries
+			GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
+					() -> queries.allFieldCases(null, null, null, 1, null, null, null, 2, null, null));
+
+			assertTrue(e.getMessage().contains("listWithIdSubTypes"));
+			assertTrue(e.getMessage().contains("input parameters are not managed in Direct Queries"));
+
+		} else {
 
 			// Preparation
 			AllFieldCasesInput allFieldCasesInput = null;
@@ -156,7 +166,8 @@ abstract class AbstractIT {
 			int nbItemsWithId = 3;
 			Boolean uppercaseNameList = null;
 			String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
-			FieldParameterInput input = null;
+			FieldParameterInput input = new FieldParameterInput();
+			input.setUppercase(true);
 			int nbItemsWithoutId = 6;
 			FieldParameterInput inputList = null;
 			String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
