@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
+import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.MyQueryType;
 import org.junit.jupiter.api.Test;
 
@@ -139,6 +142,41 @@ abstract class AbstractIT {
 		assertNotNull(ret.get(i).getId());
 		assertEquals("Another name", ret.get(i).getName());
 
+	}
+
+	@Test
+	void test_allFieldCases() throws GraphQLRequestExecutionException {
+		// Not implemented in direct queries
+		if (!this.getClass().getSimpleName().equals("DirectQueriesIT")) {
+
+			// Preparation
+			AllFieldCasesInput allFieldCasesInput = null;
+			Boolean uppercase = true;
+			String textToAppendToTheForname = "textToAppendToTheForname";
+			int nbItemsWithId = 3;
+			Boolean uppercaseNameList = null;
+			String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
+			FieldParameterInput input = null;
+			int nbItemsWithoutId = 6;
+			FieldParameterInput inputList = null;
+			String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
+
+			// Go, go, go
+			AllFieldCases allFieldCases = queries.allFieldCases(allFieldCasesInput, uppercase, textToAppendToTheForname,
+					nbItemsWithId, uppercaseNameList, textToAppendToTheFornameWithId, input, nbItemsWithoutId,
+					inputList, textToAppendToTheFornameWithoutId);
+
+			// Verification
+			assertNotNull(allFieldCases);
+
+			// listWithIdSubTypes
+			assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());
+			assertTrue(allFieldCases.getListWithIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithId));
+			// listWithoutIdSubTypes
+			assertEquals(nbItemsWithoutId, allFieldCases.getListWithoutIdSubTypes().size());
+			assertTrue(allFieldCases.getListWithoutIdSubTypes().get(0).getName()
+					.endsWith(textToAppendToTheFornameWithoutId));
+		}
 	}
 
 	@Test

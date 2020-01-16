@@ -6,15 +6,19 @@ package org.allGraphQLCases.graphql;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
+import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
 
 import com.graphql_java_generator.client.request.Builder;
+import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
@@ -46,6 +50,7 @@ public class WithBuilder implements Queries {
 	ObjectResponse withEnumResponse;
 	ObjectResponse withListResponse;
 	ObjectResponse errorResponse;
+	ObjectResponse allFieldCasesResponse;
 
 	// Mutations
 	ObjectResponse createHumanResponse;
@@ -82,8 +87,35 @@ public class WithBuilder implements Queries {
 				.withField("appearsIn").withSubObject(characterFriends).build();
 		withListResponse = queryType.getWithListResponseBuilder().withField("id").withField("name")
 				.withField("appearsIn").withSubObject(characterFriends).build();
-		errorResponse = queryType.getWithListResponseBuilder().withField("id").withField("name").withField("appearsIn")
-				.withSubObject(characterFriends).build();
+		errorResponse = queryType.getErrorResponseBuilder().build();
+
+		// allFieldCasesResponse
+		ObjectResponse oneWithIdSubTypeResponse = new Builder(AllFieldCases.class, "oneWithIdSubType").withField("id")
+				.withField("name").build();
+		ObjectResponse listWithIdSubTypesResponse = new Builder(AllFieldCases.class, "listWithIdSubTypes")
+				.withInputParameter(InputParameter.newBindParameter("nbItems", "nbItemsWithId", false))
+				.withInputParameter(InputParameter.newBindParameter("uppercaseName", "uppercaseNameList", false))
+				.withInputParameter(InputParameter.newBindParameter("textToAppendToTheForname",
+						"textToAppendToTheFornameWithId", false))
+				.withField("id").withField("name").build();
+		ObjectResponse oneWithoutIdSubTypeResponse = new Builder(AllFieldCases.class, "oneWithoutIdSubType")
+				.withInputParameter(InputParameter.newBindParameter("input", "input", false)).withField("name").build();
+		ObjectResponse listWithoutIdSubTypesResponse = new Builder(AllFieldCases.class, "listWithoutIdSubTypes")
+				.withInputParameter(InputParameter.newBindParameter("nbItems", "nbItemsWithoutId", false))
+				.withInputParameter(InputParameter.newBindParameter("input", "inputList", false)).withField("name")
+				.withInputParameter(InputParameter.newBindParameter("textToAppendToTheForname",
+						"textToAppendToTheFornameWithoutId", false))
+				.build();
+		ObjectResponse simpleFriendsResponse = new Builder(AllFieldCases.class, "friends").withField("id").build();
+		//
+		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withField("id").withField("name")
+				// Parameter for fields are not managed yet)
+				// .withField("forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname)")
+				.withField("forname")//
+				.withField("age").withField("nbComments").withField("comments").withField("booleans")
+				.withField("aliases").withField("planets").withSubObject(simpleFriendsResponse)
+				.withSubObject(oneWithIdSubTypeResponse).withSubObject(listWithIdSubTypesResponse)
+				.withSubObject(oneWithoutIdSubTypeResponse).withSubObject(listWithoutIdSubTypesResponse).build();
 	}
 
 	@Override
@@ -120,6 +152,24 @@ public class WithBuilder implements Queries {
 	public Human createHuman(HumanInput human)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createHuman(createHumanResponse, human);
+	}
+
+	@Override
+	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
+			String textToAppendToTheForname, int nbItemsWithId, Boolean uppercaseNameList,
+			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
+			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
+			throws GraphQLRequestExecutionException {
+
+		return queryType.allFieldCases(allFieldCasesResponse, allFieldCasesInput, //
+				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
+				"nbItemsWithId", nbItemsWithId, //
+				"uppercaseNameList", uppercaseNameList, //
+				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //
+				"input", input, //
+				"nbItemsWithoutId", nbItemsWithoutId, //
+				"inputList", inputList, //
+				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
 	}
 
 	@Override

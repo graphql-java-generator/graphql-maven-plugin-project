@@ -19,7 +19,7 @@ class WithBuilderIT extends AbstractIT {
 		queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new DirectQueries(Main.GRAPHQL_ENDPOINT);
+		queries = new WithBuilder(Main.GRAPHQL_ENDPOINT);
 	}
 
 }

@@ -6,10 +6,13 @@ package org.allGraphQLCases.graphql;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
+import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
@@ -45,6 +48,7 @@ public class PreparedQueries implements Queries {
 	ObjectResponse withEnumResponse;
 	ObjectResponse withListResponse;
 	ObjectResponse errorResponse;
+	ObjectResponse allFieldCasesResponse;
 
 	// Mutations
 	ObjectResponse createHumanResponse;
@@ -80,6 +84,16 @@ public class PreparedQueries implements Queries {
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		errorResponse = queryType.getErrorResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
+		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withQueryResponseDef("{id name " //
+				// Parameter for fields are not managed yet)
+				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
+				+ " forname"//
+				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
+				+ " oneWithIdSubType {id name} "//
+				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+				+ " oneWithoutIdSubType(input: ?input) {name}"//
+				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+				+ "}").build();
 	}
 
 	@Override
@@ -119,9 +133,25 @@ public class PreparedQueries implements Queries {
 	}
 
 	@Override
+	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
+			String textToAppendToTheForname, int nbItemsWithId, Boolean uppercaseNameList,
+			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
+			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
+			throws GraphQLRequestExecutionException {
+		return queryType.allFieldCases(allFieldCasesResponse, allFieldCasesInput, //
+				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
+				"nbItemsWithId", nbItemsWithId, //
+				"uppercaseNameList", uppercaseNameList, //
+				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //
+				"input", input, //
+				"nbItemsWithoutId", nbItemsWithoutId, //
+				"inputList", inputList, //
+				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
+	}
+
+	@Override
 	public Human createHuman(HumanInput human)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.createHuman(createHumanResponse, human);
 	}
-
 }

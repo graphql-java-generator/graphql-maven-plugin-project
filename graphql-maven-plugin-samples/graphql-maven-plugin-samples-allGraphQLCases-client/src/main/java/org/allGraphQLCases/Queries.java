@@ -2,9 +2,12 @@ package org.allGraphQLCases;
 
 import java.util.List;
 
+import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
+import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.graphql.DirectQueries;
@@ -24,7 +27,8 @@ import com.graphql_java_generator.client.response.GraphQLRequestPreparationExcep
  */
 public interface Queries {
 
-	// First part: queries
+	////////////////////////////////////////////////////////////////////////////
+	// First part: queries (based on the Star Wars use case)
 	List<Character> withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	Character withOneOptionalParam(CharacterInput character)
@@ -44,10 +48,20 @@ public interface Queries {
 	List<Character> withList(String name, List<CharacterInput> friends)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
-	// Second part: mutations
+	Character error(String errorLabel) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+
+	////////////////////////////////////////////////////////////////////////////
+	// Second part: queries (based on the allGraphQLCases use case)
+
+	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
+			String textToAppendToTheForname, int nbItemsWithId, Boolean uppercaseNameList,
+			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
+			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
+			throws GraphQLRequestExecutionException;
+
+	////////////////////////////////////////////////////////////////////////////
+	// Third part: mutations
 
 	Human createHuman(HumanInput human) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
-
-	Character error(String errorLabel) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 }

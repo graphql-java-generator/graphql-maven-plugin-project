@@ -1,5 +1,6 @@
 Here are the next tasks listed, as a TODO list:
 * Check InputObjectType with fields that are lists
+* Manage parameters for Scalar Fields
 * Check input parameters in the allGraphQLCases sample 
 * Manage directives (https://www.apollographql.com/docs/graphql-tools/schema-directives/)
 * Finish the samples in the client doc page

@@ -13,6 +13,7 @@ import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
 import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCases;
+import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
@@ -84,18 +85,24 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	@Override
 	public AllFieldCasesWithoutIdSubtype oneWithoutIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCases source) {
-		return source.getOneWithoutIdSubType();
+			AllFieldCases source, FieldParameterInput input) {
+		AllFieldCasesWithoutIdSubtype ret = source.getOneWithoutIdSubType();
+
+		if (input != null && input.getUppercase() != null && input.getUppercase()) {
+			ret.setName(ret.getName().toUpperCase());
+		}
+
+		return ret;
 	}
 
 	@Override
 	public List<AllFieldCasesWithoutIdSubtype> listWithoutIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCases source, Integer nbItems, Boolean uppercaseName, String textToAppendToTheForname) {
+			AllFieldCases source, Integer nbItems, FieldParameterInput input, String textToAppendToTheForname) {
 		List<AllFieldCasesWithoutIdSubtype> list = generator.generateInstanceList(AllFieldCasesWithoutIdSubtype.class,
 				nbItems);
 
 		for (AllFieldCasesWithoutIdSubtype item : list) {
-			if (uppercaseName != null && uppercaseName) {
+			if (input != null && input.getUppercase() != null && input.getUppercase()) {
 				item.setName(item.getName().toUpperCase());
 			}
 			item.setName(item.getName() + textToAppendToTheForname);

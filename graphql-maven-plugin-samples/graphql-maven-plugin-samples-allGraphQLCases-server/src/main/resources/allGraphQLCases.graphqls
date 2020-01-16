@@ -17,7 +17,10 @@ type MyQueryType {
     # The name of the first Character returned is replaced by the given firstName.
     # All ids are generated  
     withList(firstName: String!, characters: [CharacterInput]!): [Character]
-    
+
+
+	# Complementary tests with the AllFieldCases Object
+	allFieldCases(input: AllFieldCasesInput): AllFieldCases    
     
     
     # error always returns an error!  (used to check the error management)
@@ -82,6 +85,10 @@ input AllFieldCasesWithIdSubtypeInput {
     name: String!
 }
 
+input FieldParameterInput {
+	uppercase: Boolean
+}
+
 input AllFieldCasesWithoutIdSubtypeInput {
     name: String!
 }
@@ -99,8 +106,8 @@ type AllFieldCases {
     friends: [Human!]
     oneWithIdSubType: AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
-    oneWithoutIdSubType: AllFieldCasesWithoutIdSubtype
-    listWithoutIdSubTypes(nbItems: Int!,uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
 }
 
 type AllFieldCasesWithIdSubtype {

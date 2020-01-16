@@ -3,10 +3,13 @@ package org.allGraphQLCases.graphql;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
+import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
@@ -82,15 +85,24 @@ public class DirectQueries implements Queries {
 	}
 
 	@Override
-	public Human createHuman(HumanInput human)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return mutationType.createHuman("{id name appearsIn friends {id name}}", human);
+	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
+			String textToAppendToTheForname, int nbItemsWithId, Boolean uppercaseNameList,
+			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
+			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
+			throws GraphQLRequestExecutionException {
+		throw new RuntimeException("Not implemented: writing json from the input object is too complex");
 	}
 
 	@Override
 	public Character error(String errorLabel)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.error("{id name appearsIn friends {id name}}", errorLabel);
+	}
+
+	@Override
+	public Human createHuman(HumanInput human)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createHuman("{id name appearsIn friends {id name}}", human);
 	}
 
 }

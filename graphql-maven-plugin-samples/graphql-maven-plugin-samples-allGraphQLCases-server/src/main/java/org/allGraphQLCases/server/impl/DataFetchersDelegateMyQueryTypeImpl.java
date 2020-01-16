@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.allGraphQLCases.server.AllFieldCases;
+import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.CharacterImpl;
 import org.allGraphQLCases.server.CharacterInput;
@@ -82,6 +84,17 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	public Character error(DataFetchingEnvironment dataFetchingEnvironment, String errorLabel) {
 		// This method is here only to test the error behavior.
 		throw new RuntimeException("This is an error: " + errorLabel);
+	}
+
+	@Override
+	public AllFieldCases allFieldCases(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInput input) {
+		AllFieldCases ret;
+		if (input != null) {
+			ret = mapper.map(input, AllFieldCases.class);
+		} else {
+			ret = generator.generateInstance(AllFieldCases.class);
+		}
+		return ret;
 	}
 
 }

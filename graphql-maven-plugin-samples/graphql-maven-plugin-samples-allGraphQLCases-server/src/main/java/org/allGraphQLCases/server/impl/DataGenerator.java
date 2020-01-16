@@ -66,10 +66,12 @@ public class DataGenerator {
 				: clazzToReturn;
 
 		if (clazzToReturn.isEnum()) {
-
 			// enum are a special case
 			int x = RANDOM.nextInt(clazzToReturn.getEnumConstants().length);
 			return clazzToReturn.getEnumConstants()[x];
+
+		} else if (clazzToReturn.equals(Boolean.class)) {
+			return (T) (Boolean) (RANDOM.nextBoolean());
 
 		} else {
 
@@ -79,7 +81,7 @@ public class DataGenerator {
 			try {
 				t = clazzToInstanciate.newInstance();
 			} catch (InstantiationException | IllegalAccessException e) {
-				throw new RuntimeException("Could not create a new instance of " + clazzToInstanciate.getName());
+				throw new RuntimeException("Could not create a new instance of " + clazzToInstanciate.getName(), e);
 			}
 
 			for (Field f : clazzToInstanciate.getDeclaredFields()) {
