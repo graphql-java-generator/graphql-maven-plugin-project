@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.graphql_java_generator.client.domain.forum.MutationType;
+import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
 import com.graphql_java_generator.client.domain.starwars.Episode;
@@ -223,11 +226,14 @@ class QueryExecutorImplTest {
 		// Preparation
 		ObjectResponse objectResponse = new Builder(com.graphql_java_generator.client.domain.forum.QueryType.class,
 				"boards").withQueryResponseDef(
-						"{id name publiclyAvailable topics(since: ?sinceParam, memberName: ?memberName) {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
+						"{id name publiclyAvailable topics(since: ?sinceParam, maxNbItems: ?maxNbItems, memberName: ?memberName) {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
 						.build();
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("queryTypeHeroEpisode", Episode.NEWHOPE);
-		parameters.put("sinceParam", "2019-12-21");
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2019, 12, 21);
+		parameters.put("sinceParam", date);
+		parameters.put("maxNbItems", Long.MAX_VALUE);
 		parameters.put("memberName", "a member name");
 
 		// Go, go, go
@@ -373,4 +379,22 @@ class QueryExecutorImplTest {
 		assertEquals("name381495", character.getFriends().get(1).getName(), "Second friend's name");
 	}
 
+	@Test
+	void parseResponse_OK_Topics_withCustomScalar()
+			throws GraphQLRequestPreparationException, GraphQLResponseParseException, IOException {
+		// Preparation
+		ObjectResponse createPostResponse = new Builder(MutationType.class, "createPost")
+				.withQueryResponseDef("{id date author{id} title content publiclyAvailable}").build();
+		String rawResponse = "{\"id\":\"d87c5c05-7cca-4302-adc8-627a282b1f1b\"," + "\"date\":\"2009-11-21\","
+				+ "\"title\":\"The good title for a post\"," + "\"content\":\"Some other content\","
+				+ "\"publiclyAvailable\":false," + "\"author\":{\"id\":\"00000000-0000-0000-0000-000000000012\"}}";
+
+		// Go, go, go
+		Post post = queryExecutorImpl.parseResponse(rawResponse, createPostResponse, Post.class);
+
+		// Verification
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2009, 11, 21);
+		assertEquals(date, post.getDate(), "The Custom Scalar date should have been properly deserialized");
+	}
 }
