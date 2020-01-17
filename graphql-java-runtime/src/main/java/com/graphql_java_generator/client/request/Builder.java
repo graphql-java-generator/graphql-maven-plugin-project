@@ -197,6 +197,9 @@ public class Builder {
 					switch (step) {
 					case NAME:
 						parameterName = token;
+						Il faut vérifier la liste des paramètres, pour en récupérer le type GraphQL, tel que défini dans le schéma
+						Les InputParameters sont lus. Il faut les enregistrer dans une annotation pour les récupérer en runtime
+						;
 						step = InputParameterStep.VALUE;
 						break;
 					case VALUE:
