@@ -64,8 +64,8 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(21, i, "Nb classes are generated");
-		assertEquals(14, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(22, i, "Nb classes are generated");
+		assertEquals(15, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(1, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
@@ -89,11 +89,48 @@ class DocumentParserTest_allGraphQLCases_Server {
 		//
 		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithoutIdSubTypes");
 		assertFalse(dataFetcher.isCompletableFuture(), "listWithoutIdSubTypes");
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Checks if input types for the AllFieldCases object are correctly read
+		//
+		ObjectType type = (ObjectType) documentParser.getType("AllFieldCases");
+		int j = 0;
+		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
+		// checkInputParameter(type, j, numParam, name, list, mandatory, itemMandatory, typeName, classname,
+		// defaultValue)
+		//
+		// id: ID!
+		checkField(type, j, "id", false, true, null, "UUID", "java.util.UUID");
+		checkNbInputParameter(type, j, 0);
+		j += 1;
+		// name: String!
+		checkField(type, j, "name", false, true, null, "String", "java.lang.String");
+		checkNbInputParameter(type, j, 0);
+		j += 1;
+		// forname(uppercase: Boolean, textToAppendToTheForname: String): String
+		checkField(type, j, "forname", false, false, null, "String", "java.lang.String");
+		checkNbInputParameter(type, j, 2);
+		checkInputParameter(type, j, 0, "uppercase", false, false, null, "Boolean", "java.lang.Boolean", null);
+		checkInputParameter(type, j, 1, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
+				null);
+		j += 1;
+		// age: Int!
+		fail("not finished");
+		// nbComments: Int
+		// comments: [String]
+		// booleans: [Boolean!]
+		// aliases: [String]!
+		// planets: [String!]!
+		// friends: [Human!]
+		// oneWithIdSubType: AllFieldCasesWithIdSubtype
+		// listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String):
+		// oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+		// listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String):
 	}
 
 	@Test
 	@DirtiesContext
-	void test_addObjectType_noImplement() {
+	private void test_addObjectType_noImplement() {
 		// Preparation
 		String objectName = "AllFieldCases";
 		ObjectTypeDefinition def = null;
@@ -267,7 +304,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(6, type.getFields().size());
+		assertEquals(7, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -379,12 +416,14 @@ class DocumentParserTest_allGraphQLCases_Server {
 		//
 		// createHuman(human: Human!): Human!
 		checkField(type, j, "createHuman", false, true, null, "Human", pluginConfiguration.getPackageName() + ".Human");
+		checkNbInputParameter(type, j, 1);
 		checkInputParameter(type, j, 0, "human", false, true, null, "HumanInput",
 				pluginConfiguration.getPackageName() + ".HumanInput", null);
 		//
 		j += 1;
 		checkField(type, j, "createAllFieldCases", false, true, null, "AllFieldCases",
 				pluginConfiguration.getPackageName() + ".AllFieldCases");
+		checkNbInputParameter(type, j, 1);
 		checkInputParameter(type, j, 0, "input", false, true, null, "AllFieldCasesInput",
 				pluginConfiguration.getPackageName() + ".AllFieldCasesInput", null);
 	}
@@ -422,6 +461,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
 		checkField(type, j, "subscribeNewHumanForEpisode", false, true, null, "Human",
 				pluginConfiguration.getPackageName() + ".Human");
+		checkNbInputParameter(type, j, 1);
 		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode",
 				pluginConfiguration.getPackageName() + ".Episode", null);
 		j += 1;
@@ -467,6 +507,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 				"type name is " + typeName + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(classname, fieldType.getClassFullName(),
 				"Class for field type is " + classname + " (for " + fieldDescForJUnitMessage + ")");
+	}
+
+	private void checkNbInputParameter(ObjectType type, int j, int nbInputParameters) {
+		assertEquals(nbInputParameters, type.getFields().get(j).getInputParameters().size(),
+				"field " + type.getFields().get(j).getName() + " should have " + nbInputParameters + " parameter");
 	}
 
 	private void checkInputParameter(ObjectType type, int j, int numParam, String name, boolean list, boolean mandatory,
