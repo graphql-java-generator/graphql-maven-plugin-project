@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 #end
 
+import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
@@ -29,6 +30,9 @@ ${object.annotation}
 public class ${object.name} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
 
 #foreach ($field in $object.fields)
+#if (${field.inputParameters.size()} > 0)
+	@GraphQLInputParameters(names = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.name}"#if($foreach.hasNext), #end#end}, types = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.type.name}"#if($foreach.hasNext), #end#end})
+#end
 	${field.annotation}
 	#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name};
 
