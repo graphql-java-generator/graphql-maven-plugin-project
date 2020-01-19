@@ -120,7 +120,7 @@ public class FieldImpl implements Field {
 			this.annotation = annotationToAdd;
 		} else {
 			// We add this annotation on a next line.
-			this.annotation = this.annotation + "\n\t\t" + annotationToAdd;
+			this.annotation = this.annotation + "\n\t" + annotationToAdd;
 		}
 	}
 

@@ -91,7 +91,7 @@ class DocumentParserTest_Forum_Client {
 		checkFieldAnnotation(topic.getFields().get(i++), "title", "@GraphQLScalar(graphqlType = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content", "@GraphQLScalar(graphqlType = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@JsonDeserialize(contentAs = Post.class)\n\t\t@GraphQLNonScalar(graphqlType = Post.class)");
+				"@JsonDeserialize(contentAs = Post.class)\n\t@GraphQLNonScalar(graphqlType = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {

@@ -96,17 +96,17 @@ class DocumentParserTest_Forum_Server {
 		assertEquals("@Entity", topic.getAnnotation(), "Entity annotation");
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@Id\n\t\t@GeneratedValue\n\t\t@GraphQLScalar(graphqlType = UUID.class)");
+				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(graphqlType = UUID.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date", "@GraphQLScalar(graphqlType = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@Transient\n\t\t@GraphQLNonScalar(graphqlType = Member.class)");
+				"@Transient\n\t@GraphQLNonScalar(graphqlType = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
 				"@GraphQLScalar(graphqlType = Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts", "@GraphQLScalar(graphqlType = Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title", "@GraphQLScalar(graphqlType = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content", "@GraphQLScalar(graphqlType = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@Transient\n\t\t@GraphQLNonScalar(graphqlType = Post.class)");
+				"@Transient\n\t@GraphQLNonScalar(graphqlType = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {

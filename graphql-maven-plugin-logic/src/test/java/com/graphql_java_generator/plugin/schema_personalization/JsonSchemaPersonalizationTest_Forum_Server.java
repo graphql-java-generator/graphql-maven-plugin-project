@@ -79,7 +79,7 @@ class JsonSchemaPersonalizationTest_Forum_Server {
 		assertEquals("@NotId\n\t@AnotherAnnotation", id.getAnnotation(), "board.id annotation");
 		//
 		Field name = jsonSchemaPersonalization.findFieldFromName(board, "name");
-		assertEquals("@GraphQLScalar(graphqlType = String.class)\n\t\t@Column(name=\"column_name\")",
+		assertEquals("@GraphQLScalar(graphqlType = String.class)\n\t@Column(name=\"column_name\")",
 				name.getAnnotation(), "board.name annotation");
 	}
 
