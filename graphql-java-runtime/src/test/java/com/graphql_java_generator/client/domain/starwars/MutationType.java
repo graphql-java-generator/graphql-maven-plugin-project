@@ -58,7 +58,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Human.class)
+	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
 	@GraphQLQuery
 	public Human createHuman(String queryResponseDef, String name, String homePlanet, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -79,7 +79,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Human.class)
+	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
 	@GraphQLQuery
 	public Human createHuman(ObjectResponse objectResponse, String name, String homePlanet,
 			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
@@ -135,7 +135,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Character.class)
+	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
 	@GraphQLQuery
 	public Character addFriend(String queryResponseDef, String idCharacter, String idNewFriend,
 			Map<String, Object> parameters)
@@ -157,7 +157,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Character.class)
+	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
 	@GraphQLQuery
 	public Character addFriend(ObjectResponse objectResponse, String idCharacter, String idNewFriend,
 			Map<String, Object> parameters) throws GraphQLRequestExecutionException {

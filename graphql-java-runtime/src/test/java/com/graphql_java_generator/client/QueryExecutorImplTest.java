@@ -73,7 +73,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
-				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false))//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -100,8 +100,8 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
-				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -128,7 +128,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -155,7 +155,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -180,7 +180,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -205,7 +205,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", true))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", true, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 

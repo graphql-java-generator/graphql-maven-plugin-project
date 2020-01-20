@@ -3,6 +3,7 @@ package com.graphql_java_generator.client.domain.forum;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
@@ -11,25 +12,21 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * @See https://github.com/graphql-java-generator/graphql-java-generator
  */
 
-public class Board  {
+public class Board {
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
-
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
-
-	@GraphQLScalar(graphqlType = Boolean.class)
+	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
-
-	@GraphQLNonScalar(graphqlType = Topic.class)
+	@GraphQLInputParameters(names = { "since" }, types = { "Date" })
+	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
 	@JsonDeserialize(contentAs = Topic.class)
 	List<Topic> topics;
-
-
 
 	public void setId(String id) {
 		this.id = id;
@@ -63,15 +60,9 @@ public class Board  {
 		return topics;
 	}
 
-    public String toString() {
-        return "Board {"
-				+ "id: " + id
-				+ ", "
-				+ "name: " + name
-				+ ", "
-				+ "publiclyAvailable: " + publiclyAvailable
-				+ ", "
-				+ "topics: " + topics
-        		+ "}";
-    }
+	@Override
+	public String toString() {
+		return "Board {" + "id: " + id + ", " + "name: " + name + ", " + "publiclyAvailable: " + publiclyAvailable
+				+ ", " + "topics: " + topics + "}";
+	}
 }

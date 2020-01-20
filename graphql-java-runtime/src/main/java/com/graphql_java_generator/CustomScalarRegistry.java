@@ -26,4 +26,12 @@ public interface CustomScalarRegistry {
 	 */
 	public void registerOneCustomScalarConverter(CustomScalarConverter<?> converter);
 
+	/**
+	 * Retrieves the registered {@link CustomScalarConverter} for this GraphQL CustomScalar.
+	 * 
+	 * @param graphQLTypeName
+	 * @return the Custom Scalar Converter, or null if no converter has been registered for the given name
+	 */
+	public CustomScalarConverter<?> getCustomScalarConverter(String graphQLTypeName);
+
 }

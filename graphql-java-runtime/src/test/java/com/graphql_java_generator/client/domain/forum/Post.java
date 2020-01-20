@@ -1,8 +1,9 @@
 package com.graphql_java_generator.client.domain.forum;
 
-import java.util.List;
+import java.util.Date;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
@@ -11,32 +12,26 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * @See https://github.com/graphql-java-generator/graphql-java-generator
  */
 
-public class Post  {
+public class Post {
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
+	@JsonDeserialize(using = CustomDateDeserializer.class)
+	@GraphQLCustomScalar(graphQLTypeName = "Date", javaClass = Date.class)
+	Date date;
 
-	@GraphQLScalar(graphqlType = String.class)
-	String date;
-
-
-	@GraphQLNonScalar(graphqlType = Member.class)
+	@GraphQLNonScalar(graphQLTypeName = "Member", javaClass = Member.class)
 	Member author;
 
-
-	@GraphQLScalar(graphqlType = Boolean.class)
+	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
-
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String title;
 
-
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String content;
-
-
 
 	public void setId(String id) {
 		this.id = id;
@@ -46,11 +41,11 @@ public class Post  {
 		return id;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 
@@ -86,19 +81,10 @@ public class Post  {
 		return content;
 	}
 
-    public String toString() {
-        return "Post {"
-				+ "id: " + id
-				+ ", "
-				+ "date: " + date
-				+ ", "
-				+ "author: " + author
-				+ ", "
-				+ "publiclyAvailable: " + publiclyAvailable
-				+ ", "
-				+ "title: " + title
-				+ ", "
-				+ "content: " + content
-        		+ "}";
-    }
+	@Override
+	public String toString() {
+		return "Post {" + "id: " + id + ", " + "date: " + date + ", " + "author: " + author + ", "
+				+ "publiclyAvailable: " + publiclyAvailable + ", " + "title: " + title + ", " + "content: " + content
+				+ "}";
+	}
 }

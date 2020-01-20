@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.QueryExecutorImpl;
@@ -43,7 +44,9 @@ public class InputParameter {
 	final Object value;
 
 	/** Indicates whether this parameter is mandatory or not */
-	boolean mandatory;
+	final boolean mandatory;
+
+	final CustomScalarConverter<?> customScalarConverter;
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
@@ -57,11 +60,18 @@ public class InputParameter {
 	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
 	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
 	 *            the server
+	 * @param customScalarConverter
+	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
+	 *            null. <BR/>
+	 *            customScalarConverter contains the {@link CustomScalarConverter} that allows to convert the value to a
+	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
+	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
-	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory) {
-		return new InputParameter(name, bindParameterName, null, mandatory);
+	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory,
+			CustomScalarConverter<?> customScalarConverter) {
+		return new InputParameter(name, bindParameterName, null, mandatory, customScalarConverter);
 	}
 
 	/**
@@ -73,7 +83,7 @@ public class InputParameter {
 	 * @return
 	 */
 	public static InputParameter newHardCodedParameter(String name, Object value) {
-		return new InputParameter(name, null, value, true);
+		return new InputParameter(name, null, value, true, null);
 	}
 
 	/**
@@ -88,12 +98,26 @@ public class InputParameter {
 	 * @param value
 	 *            The value to send, for this input parameter. If null, it's a bind parameter. The bindParameterName is
 	 *            then mandatory.
+	 * @param mandatory
+	 *            true if the parameter's value must be defined during request/mutation/subscription execution. <BR/>
+	 *            If mandatory is true and the parameter's value is not provided, a
+	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
+	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
+	 *            the server
+	 * @param customScalarConverter
+	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
+	 *            null. <BR/>
+	 *            customScalarConverter contains the {@link CustomScalarConverter} that allows to convert the value to a
+	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
+	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 */
-	private InputParameter(String name, String bindParameterName, Object value, boolean mandatory) {
+	private InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
+			CustomScalarConverter<?> customScalarConverter) {
 		this.name = name;
 		this.bindParameterName = bindParameterName;
 		this.value = value;
 		this.mandatory = mandatory;
+		this.customScalarConverter = customScalarConverter;
 	}
 
 	public String getName() {
@@ -145,10 +169,16 @@ public class InputParameter {
 	 *            This value of the parameter. It can be the {@link #value} if it is not null, or the binding from the
 	 *            bind parameters. It's up to the caller to map the bind parameter into this method argument.
 	 * @return
+	 * @throws GraphQLRequestExecutionException
 	 */
-	String getValueForGraphqlQuery(Object val) {
+	String getValueForGraphqlQuery(Object val) throws GraphQLRequestExecutionException {
 		if (val == null) {
 			return null;
+		} else if (customScalarConverter != null) {
+			if (customScalarConverter.isStringValue())
+				return "\\\"" + customScalarConverter.convertToString(val) + "\\\"";
+			else
+				return customScalarConverter.convertToString(val);
 		} else if (val instanceof String) {
 			return getStringValue((String) val);
 		} else if (val instanceof UUID) {
@@ -176,10 +206,11 @@ public class InputParameter {
 	 * @param list
 	 *            a non null List
 	 * @return
+	 * @throws GraphQLRequestExecutionException
 	 * @throws NullPointerException
 	 *             If lst is null
 	 */
-	private String getListValue(List<?> list) {
+	private String getListValue(List<?> list) throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("[");
 		for (int index = 0; index < list.size(); index++) {
 			Object obj = list.get(index);
@@ -200,7 +231,7 @@ public class InputParameter {
 	 * @return The String that represents this object, according to GraphQL standard representation, as expected in the
 	 *         query to be sent to the server
 	 */
-	private String getInputTypeStringValue(Object object) {
+	private String getInputTypeStringValue(Object object) throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("{");
 		String separator = "";
 

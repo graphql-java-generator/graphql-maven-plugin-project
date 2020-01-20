@@ -13,22 +13,22 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 @GraphQLInputType
 public class TopicPostInput {
 
-	@GraphQLScalar(graphqlType = UUID.class)
+	@GraphQLScalar(graphQLTypeName = "ID", javaClass = UUID.class)
 	UUID authorId;
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String date;
 
-	@GraphQLScalar(graphqlType = Boolean.class)
+	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String title;
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String content;
 
-	@GraphQLScalar(graphqlType = AvailabilityType.class)
+	@GraphQLScalar(graphQLTypeName = "AvailabilityType", javaClass = AvailabilityType.class)
 	AvailabilityType availabilityType;
 
 	public void setAuthorId(UUID authorId) {

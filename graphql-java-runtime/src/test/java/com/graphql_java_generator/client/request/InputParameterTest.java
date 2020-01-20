@@ -3,8 +3,10 @@ package com.graphql_java_generator.client.request;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.client.domain.forum.AvailabilityType;
+import com.graphql_java_generator.client.domain.forum.CustomScalarConverterDate;
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.domain.starwars.Episode;
@@ -92,7 +95,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueForGraphqlQuery_recursive_InputType() {
+	void test_getValueForGraphqlQuery_recursive_InputType() throws GraphQLRequestExecutionException {
 		// Preparation
 		TopicPostInput topicPostInput = new TopicPostInput();
 		topicPostInput.setAuthorId(UUID.fromString("00000000-0000-0000-0000-000000000012"));
@@ -169,7 +172,7 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_MandatoryBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, true);
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, true, null);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
@@ -190,7 +193,7 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_OptionalBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, false);
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, false, null);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
@@ -203,6 +206,27 @@ class InputParameterTest {
 		bindVariablesValues.put(bindParameterName, 666);
 		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(bindVariablesValues),
 				"escaped value (correct map)");
+	}
+
+	@Test
+	void getValueForGraphqlQuery_BindParameter_CustomScalar_OK() throws GraphQLRequestExecutionException {
+		CustomScalarConverterDate dateConverter = new CustomScalarConverterDate();
+		String name = "aName";
+		String bindParameterName = "variableName";
+		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName, false,
+				dateConverter);
+
+		Map<String, Object> badValues = new HashMap<>();
+		badValues.put("variableName", "A bad date");
+		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+				() -> customScalarInputParameter.getValueForGraphqlQuery(badValues));
+		assertTrue(e.getMessage().contains("A bad date"));
+
+		Map<String, Object> goodValues = new HashMap<>();
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2020, 01, 19);
+		goodValues.put("variableName", date);
+		assertEquals("\\\"2020-01-19\\\"", customScalarInputParameter.getValueForGraphqlQuery(goodValues));
 	}
 
 }

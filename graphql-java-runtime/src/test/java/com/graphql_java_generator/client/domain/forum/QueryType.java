@@ -61,7 +61,7 @@ public class QueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Board.class)
+	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
 	@GraphQLQuery
 	public List<Board> boards(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -70,7 +70,7 @@ public class QueryType {
 		return boards(objectResponse, parameters);
 	}
 
-	@GraphQLNonScalar(graphqlType = Board.class)
+	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
 	@GraphQLQuery
 	public List<Board> boards(String queryResponseDef)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -89,7 +89,7 @@ public class QueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Board.class)
+	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
 	@GraphQLQuery
 	public List<Board> boards(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -112,7 +112,7 @@ public class QueryType {
 		return ret.boards;
 	}
 
-	@GraphQLNonScalar(graphqlType = Board.class)
+	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
 	@GraphQLQuery
 	public List<Board> boards(ObjectResponse objectResponse) throws GraphQLRequestExecutionException {
 		return boards(objectResponse, null);
@@ -148,7 +148,7 @@ public class QueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Topic.class)
+	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
 	@GraphQLQuery
 	public List<Topic> topics(String queryResponseDef, String boardName, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -157,7 +157,7 @@ public class QueryType {
 		return topics(objectResponse, boardName, parameters);
 	}
 
-	@GraphQLNonScalar(graphqlType = Topic.class)
+	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
 	@GraphQLQuery
 	public List<Topic> topics(String queryResponseDef, String boardName) {
 		return topics(queryResponseDef, null);
@@ -175,7 +175,7 @@ public class QueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = Topic.class)
+	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
 	@GraphQLQuery
 	public List<Topic> topics(ObjectResponse objectResponse, String boardName, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -199,7 +199,7 @@ public class QueryType {
 		return ret.topics;
 	}
 
-	@GraphQLNonScalar(graphqlType = Topic.class)
+	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
 	@GraphQLQuery
 	public List<Topic> topics(ObjectResponse objectResponse, String boardName) {
 		return topics(objectResponse, null);

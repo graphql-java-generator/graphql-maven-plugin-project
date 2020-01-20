@@ -1,8 +1,11 @@
 package com.graphql_java_generator.client.domain.forum;
 
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.graphql_java_generator.annotation.GraphQLCustomScalar;
+import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
@@ -11,41 +14,34 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * @See https://github.com/graphql-java-generator/graphql-java-generator
  */
 
-public class Topic  {
+public class Topic {
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
+	@JsonDeserialize(using = CustomDateDeserializer.class)
+	@GraphQLCustomScalar(graphQLTypeName = "Date", javaClass = Date.class)
+	Date date;
 
-	@GraphQLScalar(graphqlType = String.class)
-	String date;
-
-
-	@GraphQLNonScalar(graphqlType = Member.class)
+	@GraphQLNonScalar(graphQLTypeName = "Member", javaClass = Member.class)
 	Member author;
 
-
-	@GraphQLScalar(graphqlType = Boolean.class)
+	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
-
-	@GraphQLScalar(graphqlType = Integer.class)
+	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbPosts;
 
-
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String title;
 
-
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String content;
 
-
-	@GraphQLNonScalar(graphqlType = Post.class)
+	@GraphQLInputParameters(names = { "memberId", "memberName", "since" }, types = { "ID", "String", "Date" })
+	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
 	@JsonDeserialize(contentAs = Post.class)
 	List<Post> posts;
-
-
 
 	public void setId(String id) {
 		this.id = id;
@@ -55,11 +51,11 @@ public class Topic  {
 		return id;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 
@@ -111,23 +107,10 @@ public class Topic  {
 		return posts;
 	}
 
-    public String toString() {
-        return "Topic {"
-				+ "id: " + id
-				+ ", "
-				+ "date: " + date
-				+ ", "
-				+ "author: " + author
-				+ ", "
-				+ "publiclyAvailable: " + publiclyAvailable
-				+ ", "
-				+ "nbPosts: " + nbPosts
-				+ ", "
-				+ "title: " + title
-				+ ", "
-				+ "content: " + content
-				+ ", "
-				+ "posts: " + posts
-        		+ "}";
-    }
+	@Override
+	public String toString() {
+		return "Topic {" + "id: " + id + ", " + "date: " + date + ", " + "author: " + author + ", "
+				+ "publiclyAvailable: " + publiclyAvailable + ", " + "nbPosts: " + nbPosts + ", " + "title: " + title
+				+ ", " + "content: " + content + ", " + "posts: " + posts + "}";
+	}
 }

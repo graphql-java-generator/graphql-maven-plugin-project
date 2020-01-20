@@ -327,8 +327,8 @@ class BuilderTest {
 	public void test_withQueryResponseDef_withHardCodedParameters_Forum()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		String queryResponseDef = "{id name publiclyAvailable topics{id date author{id name email type} nbPosts "
-				+ "posts(memberName: \"Me!\", since: ?sinceParam) {date author{name email type}}}}";
+		String queryResponseDef = "{id name publiclyAvailable "
+				+ " topics{id date author{id name email type} nbPosts posts(memberName: \"Me!\", since: ?sinceParam) {date author{name email type}}}}";
 		ObjectResponse response = new com.graphql_java_generator.client.domain.forum.QueryType(
 				"http://localhost:8180/graphql").getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef)
 						.build();

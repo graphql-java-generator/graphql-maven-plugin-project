@@ -14,10 +14,10 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 @GraphQLInputType
 public class TopicInput {
 
-	@GraphQLScalar(graphqlType = UUID.class)
+	@GraphQLScalar(graphQLTypeName = "ID", javaClass = UUID.class)
 	UUID boardId;
 
-	@GraphQLNonScalar(graphqlType = TopicPostInput.class)
+	@GraphQLNonScalar(graphQLTypeName = "TopicPostInput", javaClass = TopicPostInput.class)
 	TopicPostInput input;
 
 	public void setBoardId(UUID boardId) {

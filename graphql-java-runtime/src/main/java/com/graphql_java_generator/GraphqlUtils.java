@@ -95,16 +95,15 @@ public class GraphqlUtils {
 
 				if (graphQLScalar != null) {
 					// We have a Scalar, here. Let's look at all known scalars
-					if (graphQLScalar.graphqlType() == UUID.class) {
+					if (graphQLScalar.javaClass() == UUID.class) {
 						invokeMethod(setter, t, UUID.fromString((String) map.get(key)));
-					} else if (graphQLScalar.graphqlType() == String.class
-							|| graphQLScalar.graphqlType() == Boolean.class
-							|| graphQLScalar.graphqlType() == Integer.class
-							|| graphQLScalar.graphqlType() == Float.class || graphQLScalar.graphqlType().isEnum()) {
+					} else if (graphQLScalar.javaClass() == String.class || graphQLScalar.javaClass() == Boolean.class
+							|| graphQLScalar.javaClass() == Integer.class || graphQLScalar.javaClass() == Float.class
+							|| graphQLScalar.javaClass().isEnum()) {
 						invokeMethod(setter, t, map.get(key));
 					} else {
-						throw new RuntimeException("Non managed type when reading the input map: '"
-								+ graphQLScalar.graphqlType().getName());
+						throw new RuntimeException(
+								"Non managed type when reading the input map: '" + graphQLScalar.javaClass().getName());
 					}
 				} else if (graphQLNonScalar != null) {
 					// We got a non scalar field. So we expect a map, which content will map to the fields of the target
@@ -115,7 +114,7 @@ public class GraphqlUtils {
 					}
 					@SuppressWarnings("unchecked")
 					Map<String, Object> subMap = (Map<String, Object>) map.get(key);
-					invokeMethod(setter, t, getInputObject(subMap, graphQLNonScalar.graphqlType()));
+					invokeMethod(setter, t, getInputObject(subMap, graphQLNonScalar.javaClass()));
 				} else {
 					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
 							+ "' should have one of these annotations: GraphQLScalar or GraphQLScalar");

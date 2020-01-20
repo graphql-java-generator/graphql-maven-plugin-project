@@ -13,66 +13,63 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 
 public class CharacterImpl implements Character {
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
-
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
-
-	@GraphQLNonScalar(graphqlType = Character.class)
+	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
 	@JsonDeserialize(contentAs = CharacterImpl.class)
 	List<Character> friends;
 
-
-	@GraphQLScalar(graphqlType = Episode.class)
+	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
 	@JsonDeserialize(contentAs = Episode.class)
 	List<Episode> appearsIn;
 
-
-
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setFriends(List<Character> friends) {
 		this.friends = friends;
 	}
 
+	@Override
 	public List<Character> getFriends() {
 		return friends;
 	}
 
+	@Override
 	public void setAppearsIn(List<Episode> appearsIn) {
 		this.appearsIn = appearsIn;
 	}
 
+	@Override
 	public List<Episode> getAppearsIn() {
 		return appearsIn;
 	}
 
-    public String toString() {
-        return "CharacterImpl {"
-				+ "id: " + id
-				+ ", "
-				+ "name: " + name
-				+ ", "
-				+ "friends: " + friends
-				+ ", "
-				+ "appearsIn: " + appearsIn
-        		+ "}";
-    }
+	@Override
+	public String toString() {
+		return "CharacterImpl {" + "id: " + id + ", " + "name: " + name + ", " + "friends: " + friends + ", "
+				+ "appearsIn: " + appearsIn + "}";
+	}
 }
