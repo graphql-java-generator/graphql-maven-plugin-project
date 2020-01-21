@@ -4,6 +4,7 @@
 package com.graphql_java_generator;
 
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 
 /**
  * This abstract class MUST be implemented by the project for each Custom Scalar managed by its GraphQL schema. It's
@@ -45,9 +46,10 @@ public abstract class AbstractCustomScalarConverter<T> extends StdSerializer<T> 
 	 * @param str
 	 *            The string to transform
 	 * @return The str value, instanciated with the corresponding java value
+	 * @throws GraphQLRequestExecutionException
 	 */
 	@Override
-	abstract public T convertFromString(String str);
+	abstract public T convertFromString(String str) throws GraphQLRequestExecutionException;
 
 	/**
 	 * Convert a Java value for this CustomScalar, as a String that can be written in a message coming from or going to
@@ -55,9 +57,10 @@ public abstract class AbstractCustomScalarConverter<T> extends StdSerializer<T> 
 	 * 
 	 * @param o
 	 * @return
+	 * @throws GraphQLRequestExecutionException
 	 */
 	@Override
-	abstract public String convertToString(Object o);
+	abstract public String convertToString(Object o) throws GraphQLRequestExecutionException;
 
 	/**
 	 * Retrieves the name for the GraphQL Custom Scalar type, that this converter can manage. This MUST be exactly the

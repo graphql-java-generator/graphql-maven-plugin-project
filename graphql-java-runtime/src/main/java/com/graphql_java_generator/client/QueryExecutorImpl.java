@@ -18,11 +18,9 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLResponseParseException;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 
 /**
@@ -179,40 +177,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 		sb.append("}");
 
 		return "{\"query\":\"" + sb.toString() + "\",\"variables\":null,\"operationName\":null}";
-	}
-
-	/**
-	 * Parse the GraphQL server response, and map it to the objects, generated from the GraphQL schema.
-	 * 
-	 * @param <T>
-	 * 
-	 * @param rawResponse
-	 * @param objectResponse
-	 * @return
-	 * @throws GraphQLResponseParseException
-	 * @throws IOException
-	 */
-	<T> T parseResponse(String rawResponse, ObjectResponse objectResponse, Class<T> valueType)
-			throws GraphQLResponseParseException, IOException {
-
-		// Let's read this response with Jackson
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode node = mapper.readTree(rawResponse);
-
-		// The main node should be unique, named data, and be a container
-		if (node.size() != 1)
-			throw new GraphQLResponseParseException(
-					"The response should contain one root element, but it contains " + node.size() + " elements");
-
-		JsonNode data = node.get("data");
-		if (data == null)
-			throw new GraphQLResponseParseException("Could not retrieve the 'data' node");
-
-		JsonNode hero = data.get("hero");
-		if (hero == null)
-			throw new GraphQLResponseParseException("Could not retrieve the 'hero' node");
-
-		return mapper.treeToValue(hero, valueType);
 	}
 
 }

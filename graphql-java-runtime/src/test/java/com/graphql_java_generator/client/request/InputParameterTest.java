@@ -222,10 +222,11 @@ class InputParameterTest {
 				() -> customScalarInputParameter.getValueForGraphqlQuery(badValues));
 		assertTrue(e.getMessage().contains("A bad date"));
 
-		Map<String, Object> goodValues = new HashMap<>();
 		@SuppressWarnings("deprecation")
-		Date date = new Date(2020, 01, 19);
+		Date date = new Date(2020 - 1900, 01 - 1, 19); // Years starts at 1900. Month is between 0 and 11
+		Map<String, Object> goodValues = new HashMap<>();
 		goodValues.put("variableName", date);
+
 		assertEquals("\\\"2020-01-19\\\"", customScalarInputParameter.getValueForGraphqlQuery(goodValues));
 	}
 
