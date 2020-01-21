@@ -35,10 +35,10 @@ public class FieldImpl implements Field {
 	private Type owningType;
 
 	/**
-	 * The type of this field. This type is either the type of the field (if it's not a list), or the type of the items
-	 * in the list (if it's a list)
+	 * The type of this field, as defined in the GraphQL schema. This type is either the type of the field (if it's not
+	 * a list), or the type of the items in the list (if it's a list)
 	 */
-	private String typeName;
+	private String graphQLTypeName;
 
 	/**
 	 * Indicates whether this field is an id or not. It's used in {@link PluginMode#SERVER} mode to add the
@@ -66,7 +66,7 @@ public class FieldImpl implements Field {
 	/** Contains the default value.. Only used if this field is a list. */
 	private String defaultValue = null;
 
-	/** Contans the description of the relation that this field holds */
+	/** Contains the description of the relation that this field holds */
 	private Relation relation = null;
 
 	/**
@@ -78,16 +78,16 @@ public class FieldImpl implements Field {
 	/** {@inheritDoc} */
 	@Override
 	public Type getType() {
-		Type type = documentParser.getType(typeName);
+		Type type = documentParser.getType(graphQLTypeName);
 		if (type == null) {
-			throw new NullPointerException("Could not find any Type of name '" + typeName + "'");
+			throw new NullPointerException("Could not find any Type of name '" + graphQLTypeName + "'");
 		}
 		return type;
 	}
 
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
-		if (typeName.equals("ID")) {
+	public void setTypeName(String graphQLTypeName) {
+		this.graphQLTypeName = graphQLTypeName;
+		if (graphQLTypeName.equals("ID")) {
 			setId(true);
 		}
 	}

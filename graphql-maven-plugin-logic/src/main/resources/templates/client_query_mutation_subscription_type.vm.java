@@ -92,7 +92,7 @@ public class ${object.name} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
+	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(String queryResponseDef#inputParams())
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -125,7 +125,7 @@ public class ${object.name} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
+	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -151,7 +151,7 @@ public class ${object.name} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
+	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(ObjectResponse objectResponse#inputParams())
 			throws GraphQLRequestExecutionException  {
@@ -175,7 +175,7 @@ public class ${object.name} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
+	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
@@ -221,7 +221,7 @@ public class ${object.name} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphqlType = ${field.type.classSimpleName}.class)
+	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(ObjectResponse objectResponse#inputParams(), Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
@@ -264,7 +264,7 @@ public class ${object.name} {
 	public Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
 		Builder builder = new Builder(getClass(), "${field.name}");
 #foreach ($inputParameter in $field.inputParameters)
-		builder.withInputParameter(InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", false));
+		builder.withInputParameter(InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", false, null));
 #end
 		return builder;
 	}

@@ -789,11 +789,11 @@ public class DocumentParser {
 	 */
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
-			((FieldImpl) field)
-					.addAnnotation("@GraphQLScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLScalar(graphQLTypeName = \"" + field.getGraphQLTypeName()
+					+ "\", javaClass = " + field.getType().getClassSimpleName() + ".class)");
 		} else {
-			((FieldImpl) field).addAnnotation(
-					"@GraphQLNonScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(graphQLTypeName = \"" + field.getGraphQLTypeName()
+					+ "\", javaClass = " + field.getType().getClassSimpleName() + ".class)");
 		}
 	}
 
@@ -847,8 +847,8 @@ public class DocumentParser {
 					// In these case, we need to create a new field that add the object ID as a parameter of the Data
 					// Fetcher
 					FieldImpl newField = FieldImpl.builder().documentParser(this).name(field.getName())
-							.list(field.isList()).owningType(field.getOwningType()).typeName(field.getTypeName())
-							.build();
+							.list(field.isList()).owningType(field.getOwningType())
+							.graphQLTypeName(field.getGraphQLTypeName()).build();
 
 					// Let's add the id for the owning type of the field, then all its input parameters
 					for (Field inputParameter : field.getInputParameters()) {
