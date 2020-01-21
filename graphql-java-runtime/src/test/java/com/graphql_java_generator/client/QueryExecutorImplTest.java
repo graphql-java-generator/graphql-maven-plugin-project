@@ -390,6 +390,9 @@ class QueryExecutorImplTest {
 				+ "\"date\":\"2009-11-21\"," + "\"title\":\"The good title for a post\","
 				+ "\"content\":\"Some other content\"," + "\"publiclyAvailable\":false,"
 				+ "\"author\":{\"id\":\"00000000-0000-0000-0000-000000000012\"}}}}";
+
+		// We must register the CustomScalarConverterDate for this tests, and unregister it at the end (to not pollute
+		// the context)
 		CustomScalarRegistryImpl.customScalarRegistry.registerOneCustomScalarConverter(new CustomScalarConverterDate());
 
 		// Go, go, go
@@ -399,6 +402,9 @@ class QueryExecutorImplTest {
 		@SuppressWarnings("deprecation")
 		Date date = new Date(2009 - 1900, 11 - 1, 21);// Years starts at 1900. Month is between 0 and 11
 		assertEquals(date, post.getDate(), "The Custom Scalar date should have been properly deserialized");
+
+		// Clearing
+		CustomScalarRegistryImpl.customScalarRegistry = new CustomScalarRegistryImpl();
 	}
 
 	/**
