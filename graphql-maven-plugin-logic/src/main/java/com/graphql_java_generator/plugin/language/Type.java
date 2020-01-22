@@ -87,11 +87,9 @@ public interface Type {
 	 */
 	public Field getIdentifier();
 
-	/**
-	 * Returns true if this type is a GraphQL InputObjectType, false otherwise
-	 * 
-	 * @return
-	 */
+	/** Returns true if this type is a GraphQL InputObjectType, false otherwise */
 	public boolean isInputType();
 
+	/** Returns true if this type is a GraphQL Custom Scalar, false otherwise */
+	public boolean isCustomScalar();
 }

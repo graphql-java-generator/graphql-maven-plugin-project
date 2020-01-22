@@ -55,6 +55,7 @@ class CodeGeneratorTest {
 		targetSourceFolder = mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
 
 		codeGenerator = context.getBean(CodeGenerator.class);
+		codeGenerator.documentParser = new DocumentParser();
 	}
 
 	@Test

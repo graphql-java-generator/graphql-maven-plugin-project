@@ -74,4 +74,9 @@ public class EnumType extends AbstractType {
 		return false;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean isCustomScalar() {
+		return false;
+	}
 }

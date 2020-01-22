@@ -41,6 +41,10 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 
+#foreach($import in $imports)
+import $import;
+#end
+
 /**
  * This class is responsible for providing all the GraphQL Beans to the graphql-java Spring Boot integration.
  * <BR/><BR/>

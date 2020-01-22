@@ -1,3 +1,6 @@
+scalar Date
+scalar Long
+
 schema {
 	#A comment on the query
     query: MyQueryType
@@ -70,7 +73,7 @@ input AllFieldCasesInput {
     id: ID!
     name: String!
     forname: String
-    age: Int!
+    age: Long!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]
@@ -87,6 +90,7 @@ input AllFieldCasesWithIdSubtypeInput {
 
 input FieldParameterInput {
 	uppercase: Boolean
+	date: Date
 }
 
 input AllFieldCasesWithoutIdSubtypeInput {
@@ -99,7 +103,9 @@ type AllFieldCases {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
-    age: Int!
+    age: Long!
+    date: Date
+    dates: [Date]!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]
@@ -107,9 +113,9 @@ type AllFieldCases {
     planets: [String!]!
     friends: [Human!]
     oneWithIdSubType: AllFieldCasesWithIdSubtype
-    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
-    listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+    listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
 }
 
 # This interface is a clone of the AllFieldCases type. 

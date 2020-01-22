@@ -26,6 +26,11 @@
 				<configuration>
 					<mode>server</mode>
 					<packageName>org.allGraphQLCases.server</packageName>
+					<customScalars>
+						<graphQLTypeName>Date</graphQLTypeName>
+						<javaType>graphQLTypeName</javaType>
+						<customScalarConverter>org.allGraphQLCases.server.impl.CustomScalarConverterDate</customScalarConverter>
+					</customScalars>
 				</configuration>
 			</plugin>
 			<plugin>

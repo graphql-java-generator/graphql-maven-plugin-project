@@ -105,4 +105,9 @@ public class ObjectType extends AbstractType {
 		return identifiers.size() == 1 ? identifiers.get(0) : null;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean isCustomScalar() {
+		return false;
+	}
 }

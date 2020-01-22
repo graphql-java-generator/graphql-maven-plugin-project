@@ -4,6 +4,7 @@
 package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -16,7 +17,9 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.plugin.CodeGenerator;
+import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
@@ -26,6 +29,16 @@ import com.graphql_java_generator.plugin.PluginMode;
  */
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 public class GraphqlMavenPlugin extends AbstractMojo {
+
+	/**
+	 * List of custom scalars implemented by the project for its GraphQL schema. It's a map, where the key is the scalar
+	 * name, as defined in the GraphQL schema, and the value is the full class name of the implementation of
+	 * {@link CustomScalarConverter}. Please note that, for each custom scalar defined in the GraphQL schema, the
+	 * project must implement one {@link CustomScalarConverter}, and provide its implementation in the maven pom, with
+	 * this parameter.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars", defaultValue = "false")
+	List<CustomScalarDefinition> customScalars;
 
 	/** Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode. */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = "false")

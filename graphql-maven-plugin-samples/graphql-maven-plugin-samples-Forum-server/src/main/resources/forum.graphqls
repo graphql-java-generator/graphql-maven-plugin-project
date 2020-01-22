@@ -1,3 +1,4 @@
+scalar Date
 
 schema {
     query: QueryType

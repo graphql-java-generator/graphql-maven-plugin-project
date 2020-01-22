@@ -4,9 +4,12 @@
 package com.graphql_java_generator.plugin;
 
 import java.io.File;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.graphql_java_generator.CustomScalarConverter;
 
 /**
  * This interface contains all the configuration parameters for the plugin, as an interface.<BR/>
@@ -25,6 +28,15 @@ public interface PluginConfiguration {
 	public final static String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 																				// Dummy Java issue... :(
 	public final static String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
+
+	/**
+	 * List of custom scalars implemented by the project for its GraphQL schema. It's a map, where the key is the scalar
+	 * name, as defined in the GraphQL schema, and the value is the full class name of the implementation of
+	 * {@link CustomScalarConverter}. Please note that, for each custom scalar defined in the GraphQL schema, the
+	 * project must implement one {@link CustomScalarConverter}, and provide its implementation in the maven pom, with
+	 * this parameter.
+	 */
+	public List<CustomScalarDefinition> getCustomScalars();
 
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.

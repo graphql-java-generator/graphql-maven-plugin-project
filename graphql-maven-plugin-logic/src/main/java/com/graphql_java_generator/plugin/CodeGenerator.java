@@ -30,10 +30,12 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
 /**
@@ -171,6 +173,7 @@ public class CodeGenerator {
 			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("object", object);
 			context.put("type", type);
+			context.put("imports", getImportList());
 
 			i += generateOneFile(targetFile, msg, context, templateFilename);
 		} // for
@@ -217,6 +220,7 @@ public class CodeGenerator {
 		context.put("pluginConfiguration", pluginConfiguration);
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
+		context.put("imports", getImportList());
 
 		// List of found schemas
 		List<String> schemaFiles = new ArrayList<>();
@@ -330,5 +334,21 @@ public class CodeGenerator {
 			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
 					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Retrieves all the class that must be imported. This list is based on the list of Custom Scalars, that may need
+	 * specific import, for specific {@link CustomScalarConverter}.
+	 */
+	List<String> getImportList() {
+		List<String> ret = new ArrayList<>();
+		if (documentParser.customScalars != null) {
+			for (CustomScalarType customScalar : documentParser.customScalars) {
+				if (!customScalar.getPackageName().contentEquals("java.lang")) {
+					ret.add(customScalar.getClassFullName());
+				}
+			}
+		}
+		return ret;
 	}
 }

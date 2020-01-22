@@ -66,6 +66,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// Verification
 		assertEquals(25, i, "Nb classes are generated");
 		assertEquals(17, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(2, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(1, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
@@ -114,8 +115,16 @@ class DocumentParserTest_allGraphQLCases_Server {
 		checkInputParameter(type, j, 1, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
 				null);
 		j += 1;
-		// age: Int!
-		checkField(type, j, "age", false, true, null, "Int", "java.lang.Integer");
+		// age: Long!
+		checkField(type, j, "age", false, true, null, "Long", "java.lang.Long");
+		checkNbInputParameter(type, j, 0);
+		j += 1;
+		// date: Date
+		checkField(type, j, "date", false, false, null, "Date", "java.util.Date");
+		checkNbInputParameter(type, j, 0);
+		j += 1;
+		// dates: [Date]!
+		checkField(type, j, "dates", true, true, false, "Date", "java.util.Date");
 		checkNbInputParameter(type, j, 0);
 		j += 1;
 		// nbComments: Int
@@ -147,14 +156,16 @@ class DocumentParserTest_allGraphQLCases_Server {
 				pluginConfiguration.getPackageName() + ".AllFieldCasesWithIdSubtype");
 		checkNbInputParameter(type, j, 0);
 		j += 1;
-		// listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String):
-		// [AllFieldCasesWithIdSubtype]
+		// listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean,
+		// textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
 		checkField(type, j, "listWithIdSubTypes", true, false, false, "AllFieldCasesWithIdSubtype",
 				pluginConfiguration.getPackageName() + ".AllFieldCasesWithIdSubtype");
-		checkNbInputParameter(type, j, 3);
-		checkInputParameter(type, j, 0, "nbItems", false, true, null, "Int", "java.lang.Integer", null);
-		checkInputParameter(type, j, 1, "uppercaseName", false, false, null, "Boolean", "java.lang.Boolean", null);
-		checkInputParameter(type, j, 2, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
+		checkNbInputParameter(type, j, 5);
+		checkInputParameter(type, j, 0, "nbItems", false, true, null, "Long", "java.lang.Long", null);
+		checkInputParameter(type, j, 1, "date", false, false, null, "Date", "java.util.Date", null);
+		checkInputParameter(type, j, 2, "dates", true, true, false, "Date", "java.util.Date", null);
+		checkInputParameter(type, j, 3, "uppercaseName", false, false, null, "Boolean", "java.lang.Boolean", null);
+		checkInputParameter(type, j, 4, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
 				null);
 		j += 1;
 		// oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
@@ -169,7 +180,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		checkField(type, j, "listWithoutIdSubTypes", true, false, false, "AllFieldCasesWithoutIdSubtype",
 				pluginConfiguration.getPackageName() + ".AllFieldCasesWithoutIdSubtype");
 		checkNbInputParameter(type, j, 3);
-		checkInputParameter(type, j, 0, "nbItems", false, true, null, "Int", "java.lang.Integer", null);
+		checkInputParameter(type, j, 0, "nbItems", false, true, null, "Long", "java.lang.Long", null);
 		checkInputParameter(type, j, 1, "input", false, false, null, "FieldParameterInput",
 				pluginConfiguration.getPackageName() + ".FieldParameterInput", null);
 		checkInputParameter(type, j, 2, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
