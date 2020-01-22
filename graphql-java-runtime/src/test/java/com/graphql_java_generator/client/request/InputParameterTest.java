@@ -20,7 +20,7 @@ import com.graphql_java_generator.client.domain.forum.CustomScalarConverterDate;
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.domain.starwars.Episode;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 class InputParameterTest {
 

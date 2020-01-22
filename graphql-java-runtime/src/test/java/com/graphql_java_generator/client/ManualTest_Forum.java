@@ -10,8 +10,8 @@ import com.graphql_java_generator.client.domain.forum.QueryType;
 import com.graphql_java_generator.client.domain.forum.Topic;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * Manual test for query execution. Not a JUnit test. This allows to execute checks<BR/>

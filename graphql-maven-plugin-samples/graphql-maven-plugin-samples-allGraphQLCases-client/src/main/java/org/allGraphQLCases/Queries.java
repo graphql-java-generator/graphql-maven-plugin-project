@@ -14,8 +14,8 @@ import org.allGraphQLCases.graphql.DirectQueries;
 import org.allGraphQLCases.graphql.PreparedQueries;
 import org.allGraphQLCases.graphql.WithBuilder;
 
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * These are samples of queries that can be used with GraphQL against the Star Wars GraphQL schema. There are

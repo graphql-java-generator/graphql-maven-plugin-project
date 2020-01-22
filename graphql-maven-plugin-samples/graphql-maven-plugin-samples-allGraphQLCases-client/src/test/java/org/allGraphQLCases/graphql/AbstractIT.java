@@ -19,8 +19,8 @@ import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.MyQueryType;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see

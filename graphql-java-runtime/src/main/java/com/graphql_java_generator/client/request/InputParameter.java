@@ -12,7 +12,7 @@ import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.QueryExecutorImpl;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
  * Contains an input parameter, to be sent to a query (mutation...). It can be either:
@@ -47,6 +47,25 @@ public class InputParameter {
 	final boolean mandatory;
 
 	final CustomScalarConverter<?> customScalarConverter;
+
+	/**
+	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
+	 * this bind variable must be provided, when calling the request execution.
+	 * 
+	 * @param name
+	 * @param bindParameterName
+	 * @param mandatory
+	 *            true if the parameter's value must be defined during request/mutation/subscription execution. <BR/>
+	 *            If mandatory is true and the parameter's value is not provided, a
+	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
+	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
+	 *            the server
+	 * @return
+	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
+	 */
+	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory) {
+		return InputParameter.newBindParameter(name, bindParameterName, mandatory, null);
+	}
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for

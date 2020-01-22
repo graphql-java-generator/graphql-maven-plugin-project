@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.response;
+package com.graphql_java_generator.exception;
 
 /**
  * Thrown when the client could not parse the GraphQL response. This response is sent when the client can't understand

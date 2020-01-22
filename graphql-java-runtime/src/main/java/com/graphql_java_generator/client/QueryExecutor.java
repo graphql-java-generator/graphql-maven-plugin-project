@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, and return its

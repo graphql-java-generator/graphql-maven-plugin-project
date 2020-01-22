@@ -152,7 +152,7 @@ class DocumentParserTest {
 
 			f.setName("field" + i);
 			f.setList((i % 2) == 0);
-			f.setTypeName(documentParser.getType(fields[i]).getName());
+			f.setGraphQLTypeName(documentParser.getType(fields[i]).getName());
 			f.setOwningType(type);
 
 			// Let's create its argument list

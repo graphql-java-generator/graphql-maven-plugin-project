@@ -3,7 +3,7 @@
  */
 package com.graphql_java_generator;
 
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
  * This abstract class MUST be implemented by the project for each Custom Scalar managed by its GraphQL schema. It's

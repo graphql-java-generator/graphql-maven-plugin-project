@@ -20,8 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, for query, mutation

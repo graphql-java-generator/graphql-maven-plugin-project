@@ -14,8 +14,8 @@ import org.apache.logging.log4j.Marker;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * This class describes what response is expected from the GraphQL server. That is: the fields and sub-objects that the

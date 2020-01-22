@@ -55,6 +55,7 @@ import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.OperationTypeDefinition;
+import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
@@ -168,8 +169,13 @@ public class DocumentParser {
 	@PostConstruct
 	public void postConstruct() {
 		// Add of all predefined scalars
-		scalars.add(new ScalarType("ID", "java.lang", "String", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("UUID", "java.util", "UUID", pluginConfiguration.getMode()));
+
+		// In client mode, ID type is managed as a String
+		if (pluginConfiguration.getMode().equals(PluginMode.server))
+			scalars.add(new ScalarType("ID", "java.util", "UUID", pluginConfiguration.getMode()));
+		else
+			scalars.add(new ScalarType("ID", "java.lang", "String", pluginConfiguration.getMode()));
+
 		scalars.add(new ScalarType("String", "java.lang", "String", pluginConfiguration.getMode()));
 
 		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
@@ -266,6 +272,8 @@ public class DocumentParser {
 				enumTypes.add(readEnumType((EnumTypeDefinition) node));
 			} else if (node instanceof InterfaceTypeDefinition) {
 				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
+			} else if (node instanceof ScalarTypeDefinition) {
+				throw new RuntimeException("CustomScalar are not yet implemented");
 			} else if (node instanceof SchemaDefinition) {
 				// No action, we already parsed it
 			} else {
@@ -495,16 +503,7 @@ public class DocumentParser {
 		// We have the type. But we may not have parsed it yet. So we just write its
 		// name. And will get the
 		// com.graphql_java_generator.plugin.language.Type when generating the code.
-		field.setTypeName(typeName.getName());
-		if (typeName.getName().equals("ID")) {
-			field.setId(true);
-
-			// In server mode, we use the UUID type.
-			// For client, we keep complying to the GraphQL schema
-			if (pluginConfiguration.getMode().equals(PluginMode.server)) {
-				field.setTypeName("UUID");
-			}
-		}
+		field.setGraphQLTypeName(typeName.getName());
 
 		// For InputValueDefinition, we may have a defaut value
 		if (fieldDef instanceof InputValueDefinition) {

@@ -100,7 +100,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// defaultValue)
 		//
 		// id: ID!
-		checkField(type, j, "id", false, true, null, "UUID", "java.util.UUID");
+		checkField(type, j, "id", false, true, null, "ID", "java.util.UUID");
 		checkNbInputParameter(type, j, 0);
 		j += 1;
 		// name: String!
@@ -278,7 +278,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// id: ID!
-		checkField(type, j++, "id", false, true, null, "UUID", UUID.class.getName());
+		checkField(type, j++, "id", false, true, null, "ID", UUID.class.getName());
 		// name: String!
 		checkField(type, j++, "name", false, true, null, "String", String.class.getName());
 		// bestFriend: Character

@@ -70,7 +70,7 @@ public class FieldImpl implements Field {
 	private Relation relation = null;
 
 	/**
-	 * Tha Java annotationto add to this type, ready to be added by the Velocity template. That is: one annotation per
+	 * The Java annotation to add to this type, ready to be added by the Velocity template. That is: one annotation per
 	 * line, each line starting at the beginning of the line
 	 */
 	private String annotation = "";
@@ -85,8 +85,11 @@ public class FieldImpl implements Field {
 		return type;
 	}
 
-	public void setTypeName(String graphQLTypeName) {
+	public void setGraphQLTypeName(String graphQLTypeName) {
 		this.graphQLTypeName = graphQLTypeName;
+		if (graphQLTypeName.equals("UUID")) {
+			boolean breakpoint = true;
+		}
 		if (graphQLTypeName.equals("ID")) {
 			setId(true);
 		}

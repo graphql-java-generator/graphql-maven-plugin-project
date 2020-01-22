@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.graphql_java_generator.AbstractCustomScalarConverter;
 import com.graphql_java_generator.CustomScalarConverter;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 @Component
 public class CustomScalarConverterDate extends AbstractCustomScalarConverter<Date> {

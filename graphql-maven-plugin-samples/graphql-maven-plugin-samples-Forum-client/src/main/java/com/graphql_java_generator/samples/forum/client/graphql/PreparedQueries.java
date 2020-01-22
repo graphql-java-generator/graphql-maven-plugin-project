@@ -38,14 +38,14 @@ public class PreparedQueries implements Queries {
 	ObjectResponse boardsSimpleResponse;
 	ObjectResponse boardsAndTopicsResponse;
 	ObjectResponse topicAuthorPostAuthorResponse;
-	ObjectResponse findTopicIdDateTitleContent;
+	ObjectResponse findTopicIdDateTitleContentResponse;
 	ObjectResponse createBoardResponse;
 	ObjectResponse createTopicResponse;
 	ObjectResponse createPostResponse;
 	ObjectResponse createPostsResponse;
 
 	public PreparedQueries() throws GraphQLRequestPreparationException {
-		// No field specified: all known scalar fields of the root type will be queried
+		// No field specified: all scalar fields of the root type will be queried
 		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 
 		boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
@@ -56,12 +56,12 @@ public class PreparedQueries implements Queries {
 						+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias} title content}}")
 				.build();
 
-		findTopicIdDateTitleContent = queryType.getFindTopicsResponseBuilder()
+		findTopicIdDateTitleContentResponse = queryType.getFindTopicsResponseBuilder()
 				.withQueryResponseDef(" {id date title content} ").build();
 
-		// No field defined, so all field are returned
+		// No field defined, so all scalar fields are returned
 		createBoardResponse = mutationType.getCreateBoardResponseBuilder().build();
-		// No field defined, so all field are returned
+		// No field defined, so all scalar fields are returned
 		createTopicResponse = mutationType.getCreateTopicResponseBuilder().build();
 		// "{id date author{id} title content publiclyAvailable}"
 		createPostResponse = mutationType.getCreatePostResponseBuilder()
@@ -73,49 +73,67 @@ public class PreparedQueries implements Queries {
 
 	@Override
 	public List<Board> boardsSimple() throws GraphQLRequestExecutionException {
+		// boardsAndTopicsResponse has been create with this query string:
+		// (empty) which means that all scalars are returned
 		return queryType.boards(boardsSimpleResponse);
 	}
 
 	@Override
 	public List<Board> boardsAndTopicsWithFieldParameter(Date since)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-
+		// boardsAndTopicsResponse has been create with this query string:
+		// {id name publiclyAvailable topics(since:?since){id}}
 		return queryType.boards(boardsAndTopicsResponse, "since", dateFormat.format(since));
 	}
 
 	@Override
 	public List<Topic> topicAuthorPostAuthor(String boardName, Date since) throws GraphQLRequestExecutionException {
-
+		// topicAuthorPostAuthorResponse has been create with this query string:
+		// {id date author{name email alias id type} nbPosts title content posts(memberId:?memberId, memberName:
+		// ?memberName, since: &sinceParam){id date author{name email alias} title content}}
+		//
+		// Here, the memberId and memberName are not used in the below method call: these parameters are not sent to the
+		// GraphQL server
 		return queryType.topics(topicAuthorPostAuthorResponse, boardName, "sinceParam", dateFormat.format(since));
 	}
 
 	@Override
 	public List<Topic> findTopics(String boardName, List<String> keyword)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.findTopics(findTopicIdDateTitleContent, boardName, keyword);
+		// findTopicIdDateTitleContentResponse has been create with this query string:
+		// {id date title content}
+		return queryType.findTopics(findTopicIdDateTitleContentResponse, boardName, keyword);
 	}
 
 	@Override
 	public Board createBoard(String name, boolean publiclyAvailable)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// createBoardResponse has been create with this query string:
+		// (empty) which means that all scalars are returned
 		return mutationType.createBoard(createBoardResponse, name, publiclyAvailable);
 	}
 
 	@Override
 	public Topic createTopic(TopicInput input)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// createTopicResponse has been create with this query string:
+		// (empty) which means that all scalars are returned
 		return mutationType.createTopic(createTopicResponse, input);
 	}
 
 	@Override
 	public Post createPost(PostInput input)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// createPostResponse has been create with this query string:
+		// "{id date author{id} title content publiclyAvailable}"
 		return mutationType.createPost(createPostResponse, input);
 	}
 
 	@Override
 	public List<Post> createPosts(List<PostInput> input)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// createPostsResponse has been create with this query string:
+		// {id date author{id} title content publiclyAvailable}
 		return mutationType.createPosts(createPostsResponse, input);
 	}
 }
