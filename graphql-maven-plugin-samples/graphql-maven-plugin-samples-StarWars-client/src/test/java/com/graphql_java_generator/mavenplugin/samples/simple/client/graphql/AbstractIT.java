@@ -14,8 +14,8 @@ import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
 import com.generated.graphql.QueryType;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.Queries;
 
 /**

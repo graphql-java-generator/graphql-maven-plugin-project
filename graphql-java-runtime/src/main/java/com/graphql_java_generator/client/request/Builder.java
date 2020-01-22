@@ -575,7 +575,8 @@ public class Builder {
 				throw new GraphQLRequestPreparationException("The queryResponseDef should start with '{'");
 			}
 
-			QueryField queryField = new QueryField(null, objectResponse.field.clazz, objectResponse.field.name);
+			QueryField queryField = new QueryField(objectResponse.field.owningClass, objectResponse.field.clazz,
+					objectResponse.field.name);
 			try {
 				queryField.readTokenizerForResponseDefinition(st);
 			} catch (GraphQLRequestPreparationException e) {

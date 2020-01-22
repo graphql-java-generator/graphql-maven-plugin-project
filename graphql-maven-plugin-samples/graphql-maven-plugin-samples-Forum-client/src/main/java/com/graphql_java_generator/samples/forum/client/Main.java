@@ -2,8 +2,8 @@ package com.graphql_java_generator.samples.forum.client;
 
 import java.util.Calendar;
 
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.DirectQueries;
 import com.graphql_java_generator.samples.forum.client.graphql.PreparedQueries;
 import com.graphql_java_generator.samples.forum.client.graphql.WithBuilder;

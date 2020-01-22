@@ -140,7 +140,8 @@ public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 			item.setId(key);
 			item.setName("Name for " + key.toString());
 			item.setAge((int) (Math.random() * Integer.MAX_VALUE));
-			suite
+			item.setAliases(new ArrayList<String>());
+			item.setPlanets(new ArrayList<String>());
 		}
 
 		return ret;

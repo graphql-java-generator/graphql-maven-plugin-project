@@ -230,10 +230,12 @@ public class ${object.name} {
 			sb.append("Executing of query '${field.name}' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
-				sb.append(o.toString());
-				if (addComma)
-					sb.append(", ");
-				addComma = true;
+				if (o != null) {
+					sb.append(o.toString());
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
 			}
 			logger.trace(sb.toString());
 		} else if (logger.isDebugEnabled()) {

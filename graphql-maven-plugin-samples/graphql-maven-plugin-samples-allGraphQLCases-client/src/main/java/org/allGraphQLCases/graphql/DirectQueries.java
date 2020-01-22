@@ -90,11 +90,10 @@ public class DirectQueries implements Queries {
 			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
 			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.allFieldCases(
-				"{allFieldCases{id name forname age nbComments comments booleans aliases planets friends{id} "
-						+ " oneWithIdSubType{id name} listWithIdSubTypes(nbItems:3, textToAppendToTheForname:\"textToAppendToTheFornameWithId\"){name id} "
-						+ " oneWithoutIdSubType(input:{uppercase: true}){name} "
-						+ " listWithoutIdSubTypes(nbItems:6, textToAppendToTheForname:\"textToAppendToTheFornameWithoutId\"){name}}}",
+		return queryType.allFieldCases("{id name forname age nbComments comments booleans aliases planets friends{id} "
+				+ " oneWithIdSubType{id name} listWithIdSubTypes(nbItems:3, textToAppendToTheForname:\"textToAppendToTheFornameWithId\"){name id} "
+				+ " oneWithoutIdSubType(input:{uppercase: true}){name} "
+				+ " listWithoutIdSubTypes(nbItems:6, textToAppendToTheForname:\"textToAppendToTheFornameWithoutId\"){name}}",
 				allFieldCasesInput);
 	}
 

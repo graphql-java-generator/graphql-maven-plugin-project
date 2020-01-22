@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 
