@@ -96,15 +96,15 @@ public interface PluginConfiguration {
 	/** Logs all the configuration parameters, in the debug level */
 	default public void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
-			getLog().debug("The Plugin Configuration is:");
+			getLog().debug("The graphql-java-generator Plugin Configuration is:");
 			getLog().debug("  Mode: " + getMode());
-			getLog().debug("  PackageName" + getPackageName());
+			getLog().debug("  PackageName: " + getPackageName());
 			getLog().debug("  Packaging: " + getPackaging());
 			getLog().debug("  MainResourcesFolder: " + getMainResourcesFolder());
 			getLog().debug("  SchemaFilePattern: " + getSchemaFilePattern());
 			getLog().debug("  SchemaPersonalizationFile: " + getSchemaPersonalizationFile());
 			getLog().debug("  SourceEncoding: " + getMode());
-			getLog().debug("  TargetClassFolder" + getTargetClassFolder());
+			getLog().debug("  TargetClassFolder: " + getTargetClassFolder());
 			getLog().debug("  TargetSourceFolder: " + getTargetSourceFolder());
 		}
 	}
