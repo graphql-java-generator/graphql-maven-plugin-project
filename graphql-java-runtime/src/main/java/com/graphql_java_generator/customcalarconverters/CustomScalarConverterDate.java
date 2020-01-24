@@ -1,4 +1,4 @@
-package com.graphql_java_generator.client.domain.forum;
+package com.graphql_java_generator.customcalarconverters;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

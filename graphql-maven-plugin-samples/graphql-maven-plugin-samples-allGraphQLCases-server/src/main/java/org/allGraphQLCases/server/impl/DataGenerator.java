@@ -6,6 +6,7 @@ package org.allGraphQLCases.server.impl;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,10 +137,14 @@ public class DataGenerator {
 			return UUID.randomUUID();
 		} else if (type == Integer.class) {
 			return RANDOM.nextInt();
+		} else if (type == Long.class) {
+			return RANDOM.nextLong();
 		} else if (type == Float.class) {
 			return (float) (Math.random() * Float.MAX_VALUE);
 		} else if (type == Boolean.class) {
 			return RANDOM.nextBoolean();
+		} else if (type == Date.class) {
+			return new Date(RANDOM.nextInt(3000), RANDOM.nextInt(12), RANDOM.nextInt(29));
 		} else if (type.isEnum()) {
 			int x = RANDOM.nextInt(type.getEnumConstants().length);
 			return type.getEnumConstants()[x];

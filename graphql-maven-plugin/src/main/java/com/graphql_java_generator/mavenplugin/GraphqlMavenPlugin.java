@@ -37,8 +37,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * project must implement one {@link CustomScalarConverter}, and provide its implementation in the maven pom, with
 	 * this parameter.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars", defaultValue = "false")
-	List<CustomScalarDefinition> customScalars;
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars")
+	List<CustomScalarDefinition> customScalars = null;
 
 	/** Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode. */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = "false")

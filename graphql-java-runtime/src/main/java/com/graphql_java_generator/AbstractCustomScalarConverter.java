@@ -3,7 +3,6 @@
  */
 package com.graphql_java_generator;
 
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
@@ -12,9 +11,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * 
  * @author EtienneSF
  */
-public abstract class AbstractCustomScalarConverter<T> extends StdSerializer<T> implements CustomScalarConverter<T> {
-
-	private static final long serialVersionUID = 1L;
+public abstract class AbstractCustomScalarConverter<T> implements CustomScalarConverter<T> {
 
 	/**
 	 * The name for the GraphQL Custom Scalar type, that this converter can manage. This MUST be exactly the name
@@ -33,8 +30,7 @@ public abstract class AbstractCustomScalarConverter<T> extends StdSerializer<T> 
 	 */
 	final boolean stringValue;
 
-	protected AbstractCustomScalarConverter(Class<T> t, String typeName, boolean stringValue) {
-		super(t);
+	protected AbstractCustomScalarConverter(String typeName, boolean stringValue) {
 		this.typeName = typeName;
 		this.stringValue = stringValue;
 	}

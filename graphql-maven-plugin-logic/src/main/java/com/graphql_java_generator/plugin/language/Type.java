@@ -23,6 +23,11 @@ public interface Type {
 	 */
 	public String getName();
 
+	/** Get the filename where this type must be created. Default is to return the name for the Type */
+	default public String getTargetFileName(String fileType) {
+		return getName();
+	}
+
 	/**
 	 * Returns the annotation or annotations that must be added to this type.
 	 * 

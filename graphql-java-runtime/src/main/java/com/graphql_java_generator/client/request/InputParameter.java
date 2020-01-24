@@ -193,6 +193,8 @@ public class InputParameter {
 	String getValueForGraphqlQuery(Object val) throws GraphQLRequestExecutionException {
 		if (val == null) {
 			return null;
+		} else if (val instanceof java.util.List) {
+			return getListValue((List<?>) val);
 		} else if (customScalarConverter != null) {
 			if (customScalarConverter.isStringValue())
 				return "\\\"" + customScalarConverter.convertToString(val) + "\\\"";
@@ -202,8 +204,6 @@ public class InputParameter {
 			return getStringValue((String) val);
 		} else if (val instanceof UUID) {
 			return getStringValue(((UUID) val).toString());
-		} else if (val instanceof java.util.List) {
-			return getListValue((List<?>) val);
 		} else if (val.getClass().getAnnotation(GraphQLInputType.class) != null) {
 			return getInputTypeStringValue(val);
 		} else {

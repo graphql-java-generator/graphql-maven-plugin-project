@@ -3,6 +3,7 @@
  */
 package org.allGraphQLCases.server.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -69,9 +70,9 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	@Override
 	public List<AllFieldCasesWithIdSubtype> listWithIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCases source, Integer nbItems, Boolean uppercaseName, String textToAppendToTheForname) {
-		List<AllFieldCasesWithIdSubtype> list = generator.generateInstanceList(AllFieldCasesWithIdSubtype.class,
-				nbItems);
+			AllFieldCases source, Long nbItems, Date date, List<Date> dates, Boolean uppercaseName,
+			String textToAppendToTheForname) {
+		List<AllFieldCasesWithIdSubtype> list = generator.generateInstanceList(AllFieldCasesWithIdSubtype.class, 3);
 
 		for (AllFieldCasesWithIdSubtype item : list) {
 			if (uppercaseName != null && uppercaseName) {
@@ -99,9 +100,9 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	@Override
 	public List<AllFieldCasesWithoutIdSubtype> listWithoutIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCases source, Integer nbItems, FieldParameterInput input, String textToAppendToTheForname) {
+			AllFieldCases source, Long nbItems, FieldParameterInput input, String textToAppendToTheForname) {
 		List<AllFieldCasesWithoutIdSubtype> list = generator.generateInstanceList(AllFieldCasesWithoutIdSubtype.class,
-				nbItems);
+				4);
 
 		for (AllFieldCasesWithoutIdSubtype item : list) {
 			if (input != null && input.getUppercase() != null && input.getUppercase()) {
@@ -111,6 +112,11 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		}
 
 		return list;
+	}
+
+	@Override
+	public List<Date> dates(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
+		return generator.generateInstanceList(Date.class, 5);
 	}
 
 }

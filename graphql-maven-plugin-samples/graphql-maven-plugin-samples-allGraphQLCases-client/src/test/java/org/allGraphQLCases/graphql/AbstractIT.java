@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
@@ -152,7 +153,7 @@ abstract class AbstractIT {
 			// Go, go, go
 			// bind variables are not used in DirectQueries
 			GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-					() -> queries.allFieldCases(null, null, null, 1, null, null, null, 2, null, null));
+					() -> queries.allFieldCases(null, null, null, 3, null, null, null, null, null, 2, null, null));
 
 			assertTrue(e.getMessage().contains("listWithIdSubTypes"));
 			assertTrue(e.getMessage().contains("input parameters are not managed in Direct Queries"));
@@ -163,7 +164,12 @@ abstract class AbstractIT {
 			AllFieldCasesInput allFieldCasesInput = null;
 			Boolean uppercase = true;
 			String textToAppendToTheForname = "textToAppendToTheForname";
-			int nbItemsWithId = 3;
+			long nbItemsWithId = 3;
+			Date date = new Date(2000 - 1900, 12 - 1, 20);
+			Date date2 = new Date(2000 - 1900, 12 - 1, 21);
+			List<Date> dates = new ArrayList<>();
+			dates.add(date);
+			dates.add(date2);
 			Boolean uppercaseNameList = null;
 			String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
 			FieldParameterInput input = new FieldParameterInput();
@@ -174,8 +180,8 @@ abstract class AbstractIT {
 
 			// Go, go, go
 			AllFieldCases allFieldCases = queries.allFieldCases(allFieldCasesInput, uppercase, textToAppendToTheForname,
-					nbItemsWithId, uppercaseNameList, textToAppendToTheFornameWithId, input, nbItemsWithoutId,
-					inputList, textToAppendToTheFornameWithoutId);
+					nbItemsWithId, date, dates, uppercaseNameList, textToAppendToTheFornameWithId, input,
+					nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
 
 			// Verification
 			assertNotNull(allFieldCases);

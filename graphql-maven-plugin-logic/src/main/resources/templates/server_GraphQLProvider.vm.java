@@ -133,6 +133,9 @@ public class GraphQLProvider {
 		// Also see sample :
 		// https://github.com/graphql-java/graphql-java-examples/tree/master/http-example
 		return RuntimeWiring.newRuntimeWiring()
+#foreach ($customScalar in $customScalars)
+			.scalar(CustomScalars.${customScalar.name}())
+#end
 #foreach ($dataFetchersDelegate in $dataFetchersDelegates)
 			// Data fetchers for ${dataFetchersDelegate.name}
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)

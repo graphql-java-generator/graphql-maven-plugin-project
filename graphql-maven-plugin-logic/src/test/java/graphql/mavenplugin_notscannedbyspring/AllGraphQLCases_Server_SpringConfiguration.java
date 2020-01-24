@@ -24,10 +24,10 @@ public class AllGraphQLCases_Server_SpringConfiguration extends AbstractSpringCo
 	static List<CustomScalarDefinition> customScalars;
 	static {
 		customScalars = new ArrayList<>();
-		customScalars.add(
-				new CustomScalarDefinition("Date", "java.util.Date", "com.myimplementation.CustomScalarConverterDate"));
-		customScalars.add(
-				new CustomScalarDefinition("Long", "java.lang.Long", "com.myimplementation.CustomScalarConverterLong"));
+		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date",
+				"com.graphql_java_generator.customcalarconverters.CustomScalarConverterDate"));
+		customScalars.add(new CustomScalarDefinition("Long", "java.lang.Long",
+				"com.graphql_java_generator.customcalarconverters.CustomScalarConverterLong"));
 	}
 
 	public AllGraphQLCases_Server_SpringConfiguration() {

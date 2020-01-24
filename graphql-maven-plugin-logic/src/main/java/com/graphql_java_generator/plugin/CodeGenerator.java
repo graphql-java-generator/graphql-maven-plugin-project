@@ -54,14 +54,18 @@ public class CodeGenerator {
 	// Templates for client generation only
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/jackson_deserialize.vm.java";
 	// Templates for server generation only
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE = "templates/server_BatchLoaderDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL = "templates/server_BatchLoaderDelegateImpl.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS = "templates/server_GraphQLScalarType.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL = "templates/server_GraphQLUtil.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServerMain.vm.java";
+
+	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
 
 	@Resource
 	DocumentParser documentParser;
@@ -112,6 +116,8 @@ public class CodeGenerator {
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
 			i += generateTargetFile(documentParser.getSubscriptionTypes(), "subscription",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+			i += generateTargetFile(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
+					PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER);
 			i += generateQueryTargetType();
 			break;
 		}
@@ -167,7 +173,7 @@ public class CodeGenerator {
 	int generateTargetFile(List<? extends Type> objects, String type, String templateFilename) throws RuntimeException {
 		int i = 0;
 		for (Type object : objects) {
-			File targetFile = getJavaFile((String) exec("getName", object));
+			File targetFile = getJavaFile((String) execWithOneStringParam("getTargetFileName", object, type));
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 			VelocityContext context = new VelocityContext();
 			context.put("pluginConfiguration", pluginConfiguration);
@@ -221,6 +227,7 @@ public class CodeGenerator {
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
 		context.put("imports", getImportList());
+		context.put("customScalars", documentParser.customScalars);
 
 		// List of found schemas
 		List<String> schemaFiles = new ArrayList<>();
@@ -238,6 +245,8 @@ public class CodeGenerator {
 				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
 		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
 				PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL);
+		ret += generateOneFile(getJavaFile("CustomScalars"), "generating CustomScalars", context,
+				PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS);
 
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
@@ -332,6 +341,26 @@ public class CodeGenerator {
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
 			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Calls the 'methodName' method on the given object
+	 * 
+	 * @param methodName
+	 *            The name of the method name
+	 * @param object
+	 *            The given node, on which the 'methodName' method is to be called
+	 * @return
+	 */
+	Object execWithOneStringParam(String methodName, Object object, String param) {
+		try {
+			Method getType = object.getClass().getMethod(methodName, String.class);
+			return getType.invoke(object, param);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' (with a String param) on '"
 					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
 	}

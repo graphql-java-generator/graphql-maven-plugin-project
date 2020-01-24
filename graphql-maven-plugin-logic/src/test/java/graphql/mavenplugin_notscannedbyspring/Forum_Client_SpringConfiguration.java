@@ -24,8 +24,8 @@ public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguratio
 	static List<CustomScalarDefinition> customScalars;
 	static {
 		customScalars = new ArrayList<>();
-		customScalars.add(
-				new CustomScalarDefinition("Date", "java.util.Date", "com.myimplementation.CustomScalarConverterDate"));
+		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date",
+				"com.graphql_java_generator.customcalarconverters.CustomScalarConverterDate"));
 	}
 
 	public Forum_Client_SpringConfiguration() {
