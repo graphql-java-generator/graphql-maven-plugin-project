@@ -413,7 +413,7 @@
 			<build>
 				<plugins>
 					<!-- mvn release:clean release:prepare -->
-					<!-- mvn release:perform -->
+					<!-- mvn release:perform -PskipSamples -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-release-plugin</artifactId>
@@ -469,10 +469,10 @@
 		<profile>
 			<!-- This profile is activated, when the "release" profile is not active. It embeds all samples. -->
 			<!-- This prevents the sample to pollute the maven central repository -->
-			<id>not_release</id>
+			<id>withSamples</id>
 			<activation>
 				<property>
-					<name>!releaseMode</name>
+					<name>!skipSamples</name>
 				</property>
 			</activation>
 			<modules>
