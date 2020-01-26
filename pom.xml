@@ -413,7 +413,7 @@
 			<build>
 				<plugins>
 					<!-- mvn release:clean release:prepare -->
-					<!-- mvn release:perform -PskipSamples -->
+					<!-- mvn release:perform -DskipSamples=true -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-release-plugin</artifactId>
