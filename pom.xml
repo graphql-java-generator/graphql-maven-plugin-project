@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -59,9 +60,10 @@
 	</distributionManagement>
 
 	<modules>
+		<!-- Below are the module that are always in the build -->
+		<!-- The samples (within graphql-maven-plugin-samples module) are activated only when not in release mode (see profiles) -->
 		<module>graphql-java-runtime</module>
 		<module>graphql-maven-plugin</module>
-		<module>graphql-maven-plugin-samples</module>
 		<module>graphql-java-client-dependencies</module>
 		<module>graphql-java-server-dependencies</module>
 		<module>graphql-maven-plugin-logic</module>
@@ -397,11 +399,30 @@
 
 	<profiles>
 		<profile>
+			<!-- This profile is activated, when the "release" profile is not active. It embeds all samples. -->
+			<!-- This prevents the sample to pollute the maven central repository -->
+			<id>not_release</id>
+			<activation>
+				<property>
+					<name>!releaseMode</name>
+				</property>
+			</activation>
+			<modules>
+				<module>graphql-maven-plugin-samples</module>
+			</modules>
+		</profile>
+		
+		<profile>
 			<!-- Activate this release, to generate releases, and deploy them to the central repository -->
 			<!-- https://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment -->
 			<!-- mvn com.github.github:site-maven-plugin:site -Prelease -->
 			<!-- Issue raised: https://github.com/github/maven-plugins/issues/139 -->
 			<id>release</id>
+
+			<properties>
+				<releaseMode>true</releaseMode>
+			</properties>
+
 			<build>
 				<plugins>
 					<!-- mvn release:clean release:prepare -->
