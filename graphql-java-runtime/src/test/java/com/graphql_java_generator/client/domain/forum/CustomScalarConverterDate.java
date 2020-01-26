@@ -10,6 +10,7 @@ import com.graphql_java_generator.AbstractCustomScalarConverter;
 import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
+@Deprecated
 @Component
 public class CustomScalarConverterDate extends AbstractCustomScalarConverter<Date> {
 

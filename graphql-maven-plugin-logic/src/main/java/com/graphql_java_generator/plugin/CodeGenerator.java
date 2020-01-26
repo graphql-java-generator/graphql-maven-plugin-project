@@ -58,7 +58,8 @@ public class CodeGenerator {
 	// Templates for server generation only
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE = "templates/server_BatchLoaderDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL = "templates/server_BatchLoaderDelegateImpl.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS = "templates/server_GraphQLScalarType.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_DESERIALIZER = "templates/server_CustomScalarDeserializerDate.vm.java";
+	// private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS = "templates/server_GraphQLScalarType.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL = "templates/server_GraphQLUtil.vm.java";
@@ -245,8 +246,8 @@ public class CodeGenerator {
 				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
 		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
 				PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL);
-		ret += generateOneFile(getJavaFile("CustomScalars"), "generating CustomScalars", context,
-				PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS);
+		ret += generateOneFile(getJavaFile("CustomScalarDeserializer"), "generating CustomScalarDeserializers", context,
+				PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_DESERIALIZER);
 
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);

@@ -1,4 +1,4 @@
-package com.graphql_java_generator.customcalarconverters;
+package com.graphql_java_generator.customcalars;
 
 import java.text.SimpleDateFormat;
 
@@ -8,10 +8,9 @@ import com.graphql_java_generator.AbstractCustomScalarConverter;
 import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
+@Deprecated
 @Component
 public class CustomScalarConverterLong extends AbstractCustomScalarConverter<Long> {
-
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The date pattern, used when exchanging date with this {@link CustomScalarConverter} from and to the GrahQL Server

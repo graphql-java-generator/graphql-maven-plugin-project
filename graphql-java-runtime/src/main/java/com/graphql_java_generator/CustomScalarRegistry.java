@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
  * 
  * @author EtienneSF
  */
+@Deprecated
 public interface CustomScalarRegistry {
 
 	/**

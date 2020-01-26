@@ -1,7 +1,5 @@
 package com.graphql_java_generator.client.domain.starwars;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -20,8 +18,9 @@ public class QueryTypeHero {
 	public Character getHero() {
 		return hero;
 	}
-	
-    public String toString() {
-        return "QueryTypeHero {hero: " + hero + "}";
-    }
+
+	@Override
+	public String toString() {
+		return "QueryTypeHero {hero: " + hero + "}";
+	}
 }

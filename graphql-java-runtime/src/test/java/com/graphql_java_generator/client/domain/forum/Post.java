@@ -17,7 +17,7 @@ public class Post {
 	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
-	@JsonDeserialize(using = CustomDateDeserializer.class)
+	@JsonDeserialize(using = CustomScalarDeserializerDate.class)
 	@GraphQLCustomScalar(graphQLTypeName = "Date", javaClass = Date.class)
 	Date date;
 

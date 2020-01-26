@@ -47,7 +47,7 @@ public class CustomScalarType extends ScalarType {
 	@Override
 	public String getTargetFileName(String fileType) {
 		if (CodeGenerator.FILE_TYPE_JACKSON_DESERIALIZER.equals(fileType)) {
-			return "JacksonDeserializer" + getName();
+			return "CustomScalarDeserializer" + getName();
 		} else {
 			throw new RuntimeException("Unknown file type: '" + fileType + "'");
 		}

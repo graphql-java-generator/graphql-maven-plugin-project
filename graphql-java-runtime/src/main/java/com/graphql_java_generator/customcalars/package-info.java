@@ -3,4 +3,4 @@
  * copy and adapt them.
  */
 
-package com.graphql_java_generator.customcalarconverters;
+package com.graphql_java_generator.customcalars;

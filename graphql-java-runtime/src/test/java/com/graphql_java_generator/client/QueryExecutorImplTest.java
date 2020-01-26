@@ -233,9 +233,6 @@ class QueryExecutorImplTest {
 						"{id name publiclyAvailable topics(since: \"2019-12-21\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
 						.build();
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("queryTypeHeroEpisode", Episode.NEWHOPE);
-		@SuppressWarnings("deprecation")
-		Date date = new Date(2019 - 1900, 12 - 1, 21);// Years starts at 1900. Month is between 0 and 11
 
 		// Go, go, go
 		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);

@@ -35,7 +35,4 @@ public interface CustomScalar extends Type {
 	/** The kind of values that is written in the GraphQL request and response */
 	KindOfValue getKindOfValue();
 
-	default String getSerializedClassName() {
-
-	}
 }
