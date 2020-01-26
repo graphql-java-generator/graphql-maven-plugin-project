@@ -408,6 +408,7 @@
 
 			<properties>
 				<releaseMode>true</releaseMode>
+				<skipSamples>true</skipSamples>
 			</properties>
 
 			<build>
