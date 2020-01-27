@@ -6,8 +6,8 @@ import java.util.List;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
@@ -48,10 +48,8 @@ public class WithBuilder implements Queries {
 		// No field specified: all known scalar fields of the root type will be queried
 		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 
-		boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
-
-				.withField("id").withField("name").withField("publiclyAvailable")
-				.withSubObject(new Builder(Board.class, "topics")
+		boardsAndTopicsResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
+				.withField("publiclyAvailable").withSubObject(new Builder(Board.class, "topics")
 						.withInputParameter(InputParameter.newBindParameter("since", "since", true)).build())
 				.build();
 
