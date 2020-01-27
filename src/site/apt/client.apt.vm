@@ -141,7 +141,7 @@ import my.target.package.QueryType; // my.target.package is the package name def
   Here is a sample, taken from the StarWars sample project:
 
 +--------------------------------------------------------------------------------------------
-    mutationType.addFriend("{id name appearsIn friends {id name}}", idCharacter, idNewFriend);
+    List<Board> boards = queryType.boards("{id name publiclyAvailable topics(since: \"2020-01-15\"){id}}");
 +--------------------------------------------------------------------------------------------
 
   This is the simplest way to execute a GraphQL query. But:
@@ -149,30 +149,18 @@ import my.target.package.QueryType; // my.target.package is the package name def
   * There are some checks at each execution (to check that your parameters are valid). 
     It is more efficient to prepare the request first (see below).
 
+  * This kind of queries <<can not manage field parameters that are Input Types (only scalars)>>
+  
+  * It's up to your to format the value for the field parameters
+
   * And you'll know if the request is valid only when you execute it 
 
   []
 
-  <<Note about field parameters:>> In direct queries, it's up to you to generate the query string that will be sent to the server. So it's up to you to properly format this string, with
-  any input parameter that is needed for the field in them.
-  
-  For instance, in the :
-
-  <<TODO: Update this sample>>
-
-+--------------------------------------------------------------------------------------------
-	public List<Topic> topicAuthorPostAuthor(String boardName, Date since)
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		return queryType.topics("{id date author{name email alias id type} nbPosts title content posts(since:\""
-				+ dateFormat.format(since) + "\"){id date author{name email alias} title content}}", boardName);
-
-	}
-+--------------------------------------------------------------------------------------------
-
 ** Prepared Query (or Mutation) call
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  In this second method call, you have to prepare the response of the query/mutation first. 
+  In this second <<and recommanded>> method, you prepare the response of the query/mutation first. 
   The idea is to build an <ObjectResponse> once, that you'll reuse for every call of this type to the server. 
   An <ObjectResponse> is actually the graphql-java-generator object created to match a query string  
   <\{id name appearsIn homePlanet friends\{name\}\}>.
@@ -189,32 +177,62 @@ import my.target.package.QueryType; // my.target.package is the package name def
 
   There are two ways to prepare the query/mutation response:
 
-  [[1]] The builder way:
-  
-  []
-  
-+--------------------------------------------------------------------------------------------
-ObjectResponse addFriendResponse = mutationType.getAddFriendResponseBuilder().withField("id").withField("name").withField("appearsIn")
-				.withSubObject("friends", ObjectResponse.newSubObjectBuilder(Character.class).build()).build();
-+--------------------------------------------------------------------------------------------
-
-  [[2]] The GraphQL way:
+  [[1]] The GraphQL way:
   
   []
 
 +--------------------------------------------------------------------------------------------
-ObjectResponse addFriendResponse = mutationType.getAddFriendResponseBuilder().withQueryResponseDef("{id name appearsIn friends {id name}}").build();
+(init)
+		ObjectResponse boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
+				.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
 +--------------------------------------------------------------------------------------------
 
-  Then, you can call to the method itself:
+  Note: you can also prefix sinceParam by &, if this parameter is mandatory from a client side point of view:
+		
++--------------------------------------------------------------------------------------------
+(init)
+		ObjectResponse boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
+				.withQueryResponseDef("{id name publiclyAvailable topics(since:&sinceParam){id}}").build();
++--------------------------------------------------------------------------------------------
+
+  Then, later in the code, you can use this prepared query:
 
 +--------------------------------------------------------------------------------------------
-    mutationType.addFriend(addFriendResponse, idCharacter, idNewFriend);
+		// This will set the value sinceValue to the sinceParam field parameter 
+		List<Board> boards = queryType.boards(boardsAndTopicsResponse, "sinceParam", sinceValue);
 +--------------------------------------------------------------------------------------------
 
+  If your query has more than one parameter, just add the couples of name and value:
 
-  You
-  <<TODO: Add a sample with field input parameters>>
++--------------------------------------------------------------------------------------------
+		List<Board> boards = queryType.boards(boardsAndTopicsResponse, "sinceParam", sinceValue, "param2", value2, "param3", value3 [...] );
++--------------------------------------------------------------------------------------------
+  
+
+  [[2]] The builder way:
+  
+  []
+  
++--------------------------------------------------------------------------------------------
+(init)
+		boardsAndTopicsResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
+				.withField("publiclyAvailable").withSubObject(new Builder(Board.class, "topics")
+						.withInputParameter(InputParameter.newBindParameter("since", "sinceParam", true)).build())
+				.build();
++--------------------------------------------------------------------------------------------
+
+  Here above, the sinceParam is mandatory, as the third parameter for newBindParameter is true. If you want it is not mandatory, from a client point of view,
+  just change true by false when adding the InputParameter.
+
+  Then, you can call to the method exactly as in the previous case:
+
++--------------------------------------------------------------------------------------------
+		// This will set the value sinceValue to the sinceParam field parameter 
+		List<Board> boards = queryType.boards(boardsAndTopicsResponse, "sinceParam", sinceValue);
+		
+		//With more than one parameter:
+		List<Board> boards = queryType.boards(boardsAndTopicsResponse, "sinceParam", sinceValue, "param2", value2, "param3", value3 [...] );
++--------------------------------------------------------------------------------------------
 
 * {Prepare your GraphQL queries}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -317,7 +335,7 @@ public class WithQueries implements Queries {
 ** {How to use Query/Mutation/Subscription input parameters}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  See samples :
+  See the sample, here above (prepared queries) and these samples :
   
   * In the <graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client project>, 
    in the <com.graphql_java_generator.samples.forum.client.graphql.PreparedQueries> class,
@@ -340,14 +358,12 @@ public class WithQueries implements Queries {
     
   []
 
-  <<TODO : to be completed, with a sample in this doc>>
-
 
 
 ** {How to use Field input parameters, for standard GraphQL Types}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  See samples :
+  See the sample, here above (prepared queries) and these samples :
   
   * In the graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client project:
 
