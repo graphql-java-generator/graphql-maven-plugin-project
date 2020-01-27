@@ -20,7 +20,9 @@ REM We need the correct release number
 set /p version="Enter the last released version (e.g.: 1.0): "
 
 REM The next command is long to execute
+@echo on
 call mvn site -Prelease -DlastReleasedVersion=%version%
+@echo off
 pause
 
 call mvn site:stage
