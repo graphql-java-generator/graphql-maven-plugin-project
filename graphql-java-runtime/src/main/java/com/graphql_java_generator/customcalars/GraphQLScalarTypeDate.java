@@ -40,8 +40,8 @@ public class GraphQLScalarTypeDate extends GraphQLScalarType {
 				new Coercing<Date, String>() {
 
 					/**
-					 * The date pattern, used when exchanging date with this {@link CustomScalarConverter} from and to
-					 * the GrahQL Server
+					 * The date pattern, used when exchanging date with this {@link GraphQLScalarType} from and to the
+					 * GrahQL Server
 					 */
 					final static String DATE_PATTERN = "yyyy-MM-dd";
 					SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN);

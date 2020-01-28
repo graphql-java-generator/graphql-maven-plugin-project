@@ -200,7 +200,9 @@ public class DocumentParser {
 				String simpleClassName = className.substring(lstPointPosition + 1);
 
 				CustomScalarType type = new CustomScalarType(customScalarDef.getGraphQLTypeName(), packageName,
-						simpleClassName, customScalarDef.getCustomScalarConverter(), pluginConfiguration.getMode());
+						simpleClassName, customScalarDef.getGraphQLScalarTypeClass(),
+						customScalarDef.getGraphQLScalarTypeStaticField(), customScalarDef.getGraphQLScalarTypeGetter(),
+						pluginConfiguration.getMode());
 				customScalars.add(type);
 				types.put(type.getName(), type);
 			}

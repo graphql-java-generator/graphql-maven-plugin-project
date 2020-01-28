@@ -21,7 +21,7 @@ import org.allGraphQLCases.client.MyQueryType;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.customcalarconverters.CustomScalarConverterDate;
+import com.graphql_java_generator.customcalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -43,7 +43,7 @@ public class WithBuilder implements Queries {
 	final MyQueryType queryType;
 	final AnotherMutationType mutationType;
 
-	CustomScalarConverterDate customScalarConverterDate = new CustomScalarConverterDate();
+	GraphQLScalarTypeDate graphQLScalarTypeDate = new GraphQLScalarTypeDate();
 
 	// Queries
 	ObjectResponse withoutParametersResponse;
@@ -98,8 +98,8 @@ public class WithBuilder implements Queries {
 				.withField("name").build();
 		ObjectResponse listWithIdSubTypesResponse = new Builder(AllFieldCases.class, "listWithIdSubTypes")
 				.withInputParameter(InputParameter.newBindParameter("nbItems", "nbItemsWithId", false))
-				.withInputParameter(InputParameter.newBindParameter("date", "date", false, customScalarConverterDate))
-				.withInputParameter(InputParameter.newBindParameter("dates", "dates", false, customScalarConverterDate))
+				.withInputParameter(InputParameter.newBindParameter("date", "date", false, graphQLScalarTypeDate))
+				.withInputParameter(InputParameter.newBindParameter("dates", "dates", false, graphQLScalarTypeDate))
 				.withInputParameter(InputParameter.newBindParameter("uppercaseName", "uppercaseNameList", false))
 				.withInputParameter(InputParameter.newBindParameter("textToAppendToTheForname",
 						"textToAppendToTheFornameWithId", false))

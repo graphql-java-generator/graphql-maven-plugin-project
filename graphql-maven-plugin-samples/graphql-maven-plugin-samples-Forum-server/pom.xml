@@ -35,6 +35,13 @@
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<packageName>com.graphql_java_generator.samples.forum.server</packageName>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
+					<customScalars>
+						<customScalar>
+							<graphQLTypeName>Date</graphQLTypeName>
+							<javaType>java.util.Date</javaType>
+							<graphQLScalarTypeClass>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
+						</customScalar>
+					</customScalars>
 				</configuration>
 			</plugin>
 			<plugin>

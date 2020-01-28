@@ -30,13 +30,14 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+
+import graphql.schema.GraphQLScalarType;
 
 /**
  * This class generates the code, from the classes coming from the com.graphql_java_generator.plugin.language package.
@@ -54,11 +55,10 @@ public class CodeGenerator {
 	// Templates for client generation only
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/jackson_deserialize.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/client_jackson_deserialize.vm.java";
 	// Templates for server generation only
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE = "templates/server_BatchLoaderDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL = "templates/server_BatchLoaderDelegateImpl.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_DESERIALIZER = "templates/server_CustomScalarDeserializerDate.vm.java";
 	// private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS = "templates/server_GraphQLScalarType.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
@@ -246,8 +246,6 @@ public class CodeGenerator {
 				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
 		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
 				PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL);
-		ret += generateOneFile(getJavaFile("CustomScalarDeserializer"), "generating CustomScalarDeserializers", context,
-				PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_DESERIALIZER);
 
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
@@ -368,7 +366,7 @@ public class CodeGenerator {
 
 	/**
 	 * Retrieves all the class that must be imported. This list is based on the list of Custom Scalars, that may need
-	 * specific import, for specific {@link CustomScalarConverter}.
+	 * specific import, for specific {@link GraphQLScalarType}.
 	 */
 	List<String> getImportList() {
 		List<String> ret = new ArrayList<>();

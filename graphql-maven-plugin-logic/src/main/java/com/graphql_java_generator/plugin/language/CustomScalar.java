@@ -29,9 +29,6 @@ public interface CustomScalar extends Type {
 		STRING
 	};
 
-	/** The full class name for this custom scalar converter */
-	String getCustomScalarConvertClassName();
-
 	/** The kind of values that is written in the GraphQL request and response */
 	KindOfValue getKindOfValue();
 

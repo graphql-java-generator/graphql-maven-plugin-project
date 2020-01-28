@@ -83,9 +83,9 @@ public class InputParameter {
 	 * @param graphQLScalarType
 	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
 	 *            null. <BR/>
-	 *            customScalarConverter contains the {@link CustomScalarConverter} that allows to convert the value to a
-	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
-	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
+	 *            graphQLScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String
+	 *            that can be written in the GraphQL request, or convert from a String that is found in the GraphQL
+	 *            response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
@@ -127,9 +127,9 @@ public class InputParameter {
 	 * @param graphQLScalarType
 	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
 	 *            null. <BR/>
-	 *            customScalarConverter contains the {@link CustomScalarConverter} that allows to convert the value to a
-	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
-	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
+	 *            graphQLScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String
+	 *            that can be written in the GraphQL request, or convert from a String that is found in the GraphQL
+	 *            response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 */
 	private InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
 			GraphQLScalarType graphQLScalarType) {

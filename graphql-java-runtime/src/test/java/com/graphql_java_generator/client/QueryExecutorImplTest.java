@@ -388,9 +388,9 @@ class QueryExecutorImplTest {
 				+ "\"content\":\"Some other content\"," + "\"publiclyAvailable\":false,"
 				+ "\"author\":{\"id\":\"00000000-0000-0000-0000-000000000012\"}}}}";
 
-		// We must register the CustomScalarConverterDate for this tests, and unregister it at the end (to not pollute
+		// We must register the GraphQLScalarTypeDate for this tests, and unregister it at the end (to not pollute
 		// the context)
-		CustomScalarRegistryImpl.customScalarRegistry.registerOneCustomScalarConverter(new GraphQLScalarTypeDate());
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(new GraphQLScalarTypeDate());
 
 		// Go, go, go
 		Post post = parseResponseForForumSchema(rawResponse, createPostResponse, Post.class);

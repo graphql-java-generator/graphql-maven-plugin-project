@@ -25,9 +25,9 @@ public class AllGraphQLCases_Server_SpringConfiguration extends AbstractSpringCo
 	static {
 		customScalars = new ArrayList<>();
 		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date",
-				"com.graphql_java_generator.customcalarconverters.CustomScalarConverterDate"));
-		customScalars.add(new CustomScalarDefinition("Long", "java.lang.Long",
-				"com.graphql_java_generator.customcalarconverters.CustomScalarConverterLong"));
+				"com.graphql_java_generator.customcalars.GraphQLScalarTypeDate", null, null));
+		customScalars
+				.add(new CustomScalarDefinition("Long", "java.lang.Long", null, "graphql.Scalars.GraphQLLong", null));
 	}
 
 	public AllGraphQLCases_Server_SpringConfiguration() {

@@ -4,6 +4,7 @@
 package com.graphql_java_generator.plugin.language.impl;
 
 import com.graphql_java_generator.plugin.CodeGenerator;
+import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.PluginMode;
 
 import lombok.Data;
@@ -17,8 +18,26 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class CustomScalarType extends ScalarType {
 
-	/** The full class name for this custom scalar converter */
-	String customScalarConverterClassName;
+	/**
+	 * The full class name for this GraphQLScalarType. Optional.
+	 * 
+	 * @see CustomScalarDefinition
+	 */
+	String graphQLScalarTypeClass;
+
+	/**
+	 * The full path for the static field name that contains this GraphQLScalarType. Optional.
+	 * 
+	 * @see CustomScalarDefinition
+	 */
+	String graphQLScalarTypeStaticField;
+
+	/**
+	 * The full path for the static method name that returns this GraphQLScalarType. Optional.
+	 * 
+	 * @see CustomScalarDefinition
+	 */
+	String graphQLScalarTypeGetter;
 
 	/**
 	 * 
@@ -28,13 +47,22 @@ public class CustomScalarType extends ScalarType {
 	 *            The package where the Java type for this class is stored
 	 * @param classSimpleName
 	 *            The simple name for this class
+	 * @param graphQLScalarTypeClass
+	 *            The full class name for this GraphQLScalarType. Optional.
+	 * @param graphQLScalarTypeStaticField
+	 *            The full path for the static field name that contains this GraphQLScalarType. Optional.
+	 * @param graphQLScalarTypeGetter
+	 *            The full path for the static method name that returns this GraphQLScalarType. Optional.
 	 * @param mode
 	 *            The current plugin mode
+	 * @see CustomScalarDefinition
 	 */
-	public CustomScalarType(String name, String packageName, String classSimpleName,
-			String customScalarConverterClassName, PluginMode mode) {
+	public CustomScalarType(String name, String packageName, String classSimpleName, String graphQLScalarTypeClass,
+			String graphQLScalarTypeStaticField, String graphQLScalarTypeGetter, PluginMode mode) {
 		super(name, packageName, classSimpleName, mode);
-		this.customScalarConverterClassName = customScalarConverterClassName;
+		this.graphQLScalarTypeClass = graphQLScalarTypeClass;
+		this.graphQLScalarTypeStaticField = graphQLScalarTypeStaticField;
+		this.graphQLScalarTypeGetter = graphQLScalarTypeGetter;
 	}
 
 	/** {@inheritDoc} */

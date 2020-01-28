@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.graphql_java_generator.CustomScalarConverter;
+import graphql.schema.GraphQLScalarType;
 
 /**
  * This interface contains all the configuration parameters for the plugin, as an interface.<BR/>
@@ -32,9 +32,9 @@ public interface PluginConfiguration {
 	/**
 	 * List of custom scalars implemented by the project for its GraphQL schema. It's a map, where the key is the scalar
 	 * name, as defined in the GraphQL schema, and the value is the full class name of the implementation of
-	 * {@link CustomScalarConverter}. Please note that, for each custom scalar defined in the GraphQL schema, the
-	 * project must implement one {@link CustomScalarConverter}, and provide its implementation in the maven pom, with
-	 * this parameter.
+	 * {@link GraphQLScalarType}. Please note that, for each custom scalar defined in the GraphQL schema, the project
+	 * must implement one {@link GraphQLScalarType}, and provide its implementation in the maven pom, with this
+	 * parameter.
 	 */
 	public List<CustomScalarDefinition> getCustomScalars();
 

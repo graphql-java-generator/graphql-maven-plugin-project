@@ -17,12 +17,13 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
+
+import graphql.schema.GraphQLScalarType;
 
 /**
  * @author EtienneSF
@@ -33,9 +34,36 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	/**
 	 * List of custom scalars implemented by the project for its GraphQL schema. It's a map, where the key is the scalar
 	 * name, as defined in the GraphQL schema, and the value is the full class name of the implementation of
-	 * {@link CustomScalarConverter}. Please note that, for each custom scalar defined in the GraphQL schema, the
-	 * project must implement one {@link CustomScalarConverter}, and provide its implementation in the maven pom, with
-	 * this parameter.
+	 * {@link GraphQLScalarType}. <BR/>
+	 * Please note that:
+	 * <UL>
+	 * <LI>for each custom scalar defined in the GraphQL schema, the project must provide one
+	 * {@link GraphQLScalarType}</LI>
+	 * <LI>The GraphQLScalarType must be describe in this parameter of the maven pom</LI>
+	 * <LI></LI>
+	 * <UL>
+	 * This parameter is a list of customScalars. Each customScalar has these fields:
+	 * <UL>
+	 * <LI>graphQLTypeName: The type name, as defined in the GraphQL schema, for instance "Date"</LI>
+	 * <LI>javaType: The full class name for the java type that contains the data for this type, once in the Java
+	 * code</LI>
+	 * <LI>graphQLScalarTypeClass: The full class name for the {@link GraphQLScalarType} that will manage this Custom
+	 * Scalar. For instance: <I>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</I>.<BR/>
+	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
+	 * graphQLScalarTypeGetter.</LI>
+	 * <LI>graphQLScalarTypeStaticField: The full class name followed by the static field name that contains the
+	 * {@link GraphQLScalarType} that will manage this Custom Scalar. For instance:
+	 * <I>graphql.Scalars.GraphQLLong</I>.<BR/>
+	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
+	 * graphQLScalarTypeGetter.</LI>
+	 * <LI>graphQLScalarTypeGetter: The full class name followed by the static method name that returns the
+	 * {@link GraphQLScalarType} that will manage this Custom Scalar. For instance:
+	 * <I>org.mycompany.MyScalars.getGraphQLLong()</I>. This call may contain parameters. Provided that this a valid
+	 * java command<BR/>
+	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
+	 * graphQLScalarTypeGetter.</LI>
+	 * <UL>
+	 * Please have a look at the allGraphQLCases (both client and server) samples
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars")
 	List<CustomScalarDefinition> customScalars = null;

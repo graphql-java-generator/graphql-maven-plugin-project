@@ -348,7 +348,7 @@ public class Builder {
 		}
 
 		/**
-		 * Retrieves the {@link CustomScalarConverter} from the provided input parameter
+		 * Retrieves the {@link GraphQLScalarType} from the provided input parameter
 		 * 
 		 * @param owningClass
 		 *            The class that contains this field
@@ -381,7 +381,7 @@ public class Builder {
 				if (inputParams.names()[i].equals(parameterName)) {
 					// We've found the expected parameter
 					String typeName = inputParams.types()[i];
-					return CustomScalarRegistryImpl.customScalarRegistry.getCustomScalarConverter(typeName);
+					return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
 				}
 			}
 

@@ -14,13 +14,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.CustomScalarConverter;
-
 import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_KO;
+import graphql.schema.GraphQLScalarType;
 
 /**
- * Test of the allGraphQLCases without defining the necessary {@link CustomScalarConverter}
+ * Test of the allGraphQLCases without defining the necessary {@link GraphQLScalarType}
  * 
  * @author EtienneSF
  */

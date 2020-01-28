@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin;
 
+import graphql.schema.GraphQLScalarType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,29 @@ public class CustomScalarDefinition {
 	/** The full class name for the java type that contains the data for this type, once in the Java code */
 	String javaType;
 
-	/** The full class name for the CustomScalarConverter that will convert date from String, and to String */
-	String customScalarConverter;
+	/**
+	 * The full class name for the {@link GraphQLScalarType} that will manage this Custom Scalar. For instance:
+	 * <I>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</I>.<BR/>
+	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
+	 * graphQLScalarTypeGetter.
+	 */
+	String graphQLScalarTypeClass;
+
+	/**
+	 * The full class name followed by the static field name that contains the {@link GraphQLScalarType} that will
+	 * manage this Custom Scalar. For instance: <I>graphql.Scalars.GraphQLLong</I>.<BR/>
+	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
+	 * graphQLScalarTypeGetter.
+	 */
+	String graphQLScalarTypeStaticField;
+
+	/**
+	 * The full class name followed by the static method name that returns the {@link GraphQLScalarType} that will
+	 * manage this Custom Scalar. For instance: <I>org.mycompany.MyScalars.getGraphQLLong()</I>. This call may contain
+	 * parameters. Provided that this a valid java command<BR/>
+	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
+	 * graphQLScalarTypeGetter.
+	 */
+	String graphQLScalarTypeGetter;
 
 }

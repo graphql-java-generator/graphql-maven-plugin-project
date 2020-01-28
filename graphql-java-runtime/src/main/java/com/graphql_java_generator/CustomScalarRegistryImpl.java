@@ -39,21 +39,21 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 	 * This implementation works only if this class has been loaded as a Spring Component.
 	 */
 	@Override
-	public void registerAllCustomScalarConverters() {
+	public void registerAllGraphQLScalarType() {
 		for (GraphQLScalarType type : ctx.getBeansOfType(GraphQLScalarType.class).values()) {
-			registerOneCustomScalarConverter(type);
+			registerGraphQLScalarType(type);
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerOneCustomScalarConverter(GraphQLScalarType type) {
+	public void registerGraphQLScalarType(GraphQLScalarType type) {
 		customScalarTypes.put(type.getName(), type);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public GraphQLScalarType getCustomScalarConverter(String graphQLTypeName) {
+	public GraphQLScalarType getGraphQLScalarType(String graphQLTypeName) {
 		return customScalarTypes.get(graphQLTypeName);
 	}
 

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -24,6 +25,13 @@
 				<configuration>
 					<mode>client</mode>
 					<packageName>com.graphql_java_generator.samples.forum.client.graphql.forum.client</packageName>
+					<customScalars>
+						<customScalar>
+							<graphQLTypeName>Date</graphQLTypeName>
+							<javaType>java.util.Date</javaType>
+							<graphQLScalarTypeClass>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
+						</customScalar>
+					</customScalars>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -40,8 +48,7 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot Forum-server in the background 
-					during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot Forum-server in the background during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
