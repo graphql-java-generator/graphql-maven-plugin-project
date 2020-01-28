@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.graphql_java_generator.CustomScalarConverter;
 import com.graphql_java_generator.CustomScalarRegistryImpl;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLCustomScalar;
@@ -15,6 +14,8 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import graphql.schema.GraphQLType;
 
 /**
  * This class is a Builder that'll help to build a {@link ObjectResponse}, which defines what should appear in the
@@ -241,10 +242,10 @@ public class Builder {
 						// We've read the parameter value. Let's add this parameter.
 						if (token.startsWith("?")) {
 							inputParameters.add(InputParameter.newBindParameter(parameterName, token.substring(1),
-									false, getCustomScalarConverter(owningClazz, name, parameterName)));
+									false, getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("&")) {
 							inputParameters.add(InputParameter.newBindParameter(parameterName, token.substring(1), true,
-									getCustomScalarConverter(owningClazz, name, parameterName)));
+									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("\"") && token.endsWith("\"")) {
 							// The inputParameter starts and ends by "
 							// It's a regular String.
@@ -359,8 +360,8 @@ public class Builder {
 		 * @return
 		 * @throws GraphQLRequestPreparationException
 		 */
-		private CustomScalarConverter<?> getCustomScalarConverter(Class<?> owningClass, String fieldName,
-				String parameterName) throws GraphQLRequestPreparationException {
+		private GraphQLType getCustomScalarGraphQLType(Class<?> owningClass, String fieldName, String parameterName)
+				throws GraphQLRequestPreparationException {
 
 			Field field;
 			try {

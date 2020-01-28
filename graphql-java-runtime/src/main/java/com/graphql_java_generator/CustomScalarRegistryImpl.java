@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import graphql.schema.GraphQLType;
+
 /**
  * @author EtienneSF
  *
@@ -30,7 +32,7 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 	 * Map of all registered Custom Scalars. The key is the type name or the Custom Scalar, as defined in the GraphQL
 	 * schema.
 	 */
-	Map<String, CustomScalarConverter<?>> converters = new HashMap<>();
+	Map<String, GraphQLType> customScalarTypes = new HashMap<>();
 
 	/**
 	 * {@inheritDoc}<BR/>
@@ -38,21 +40,21 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 	 */
 	@Override
 	public void registerAllCustomScalarConverters() {
-		for (CustomScalarConverter<?> converter : ctx.getBeansOfType(CustomScalarConverter.class).values()) {
-			registerOneCustomScalarConverter(converter);
+		for (GraphQLType type : ctx.getBeansOfType(GraphQLType.class).values()) {
+			registerOneCustomScalarConverter(type);
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerOneCustomScalarConverter(CustomScalarConverter<?> converter) {
-		converters.put(converter.getTypeName(), converter);
+	public void registerOneCustomScalarConverter(GraphQLType type) {
+		customScalarTypes.put(type.getName(), type);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public CustomScalarConverter<?> getCustomScalarConverter(String graphQLTypeName) {
-		return converters.get(graphQLTypeName);
+	public GraphQLType getCustomScalarConverter(String graphQLTypeName) {
+		return customScalarTypes.get(graphQLTypeName);
 	}
 
 }
