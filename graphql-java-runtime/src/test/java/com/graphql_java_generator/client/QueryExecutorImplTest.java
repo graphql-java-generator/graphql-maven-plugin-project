@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.graphql_java_generator.CustomScalarRegistryImpl;
-import com.graphql_java_generator.client.domain.forum.CustomScalarConverterDate;
 import com.graphql_java_generator.client.domain.forum.MutationType;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.starwars.Character;
@@ -34,6 +33,7 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.customcalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.exception.GraphQLResponseParseException;
@@ -390,7 +390,7 @@ class QueryExecutorImplTest {
 
 		// We must register the CustomScalarConverterDate for this tests, and unregister it at the end (to not pollute
 		// the context)
-		CustomScalarRegistryImpl.customScalarRegistry.registerOneCustomScalarConverter(new CustomScalarConverterDate());
+		CustomScalarRegistryImpl.customScalarRegistry.registerOneCustomScalarConverter(new GraphQLScalarTypeDate());
 
 		// Go, go, go
 		Post post = parseResponseForForumSchema(rawResponse, createPostResponse, Post.class);

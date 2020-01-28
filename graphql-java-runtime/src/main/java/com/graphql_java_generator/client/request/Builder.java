@@ -15,7 +15,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-import graphql.schema.GraphQLType;
+import graphql.schema.GraphQLScalarType;
 
 /**
  * This class is a Builder that'll help to build a {@link ObjectResponse}, which defines what should appear in the
@@ -360,8 +360,8 @@ public class Builder {
 		 * @return
 		 * @throws GraphQLRequestPreparationException
 		 */
-		private GraphQLType getCustomScalarGraphQLType(Class<?> owningClass, String fieldName, String parameterName)
-				throws GraphQLRequestPreparationException {
+		private GraphQLScalarType getCustomScalarGraphQLType(Class<?> owningClass, String fieldName,
+				String parameterName) throws GraphQLRequestPreparationException {
 
 			Field field;
 			try {

@@ -64,16 +64,12 @@ public class GraphQLScalarTypeDate extends GraphQLScalarType {
 					 *             if value input can't be serialized
 					 */
 					@Override
-					public Date parseLiteral(Object o) throws CoercingParseLiteralException {
-						if (!(o instanceof String)) {
-							throw new CoercingParseValueException(
-									"Can't parse the '" + o.toString() + "' string to a Date");
+					public String serialize(Object input) throws CoercingSerializeException {
+						if (!(input instanceof Date)) {
+							throw new CoercingSerializeException(
+									"Can't parse the '" + input.toString() + "' string to a Date");
 						} else {
-							try {
-								return formater.parse((String) o);
-							} catch (ParseException e) {
-								throw new CoercingParseValueException(e.getMessage(), e);
-							}
+							return formater.format((Date) input);
 						}
 					}
 
@@ -123,12 +119,16 @@ public class GraphQLScalarTypeDate extends GraphQLScalarType {
 					 *             if input literal can't be parsed
 					 */
 					@Override
-					public String serialize(Object input) throws CoercingSerializeException {
-						if (!(input instanceof Date)) {
-							throw new CoercingSerializeException(
-									"Can't parse the '" + input.toString() + "' string to a Date");
+					public Date parseLiteral(Object o) throws CoercingParseLiteralException {
+						if (!(o instanceof String)) {
+							throw new CoercingParseValueException(
+									"Can't parse the '" + o.toString() + "' string to a Date");
 						} else {
-							return formater.format((Date) input);
+							try {
+								return formater.parse((String) o);
+							} catch (ParseException e) {
+								throw new CoercingParseValueException(e.getMessage(), e);
+							}
 						}
 					}
 				});

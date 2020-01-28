@@ -13,7 +13,7 @@ import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
-import graphql.schema.GraphQLType;
+import graphql.schema.GraphQLScalarType;
 
 /**
  * Contains an input parameter, to be sent to a query (mutation...). It can be either:
@@ -47,7 +47,7 @@ public class InputParameter {
 	/** Indicates whether this parameter is mandatory or not */
 	final boolean mandatory;
 
-	final GraphQLType graphQLType;
+	final GraphQLScalarType graphQLScalarType;
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
@@ -80,7 +80,7 @@ public class InputParameter {
 	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
 	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
 	 *            the server
-	 * @param graphQLType
+	 * @param graphQLScalarType
 	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
 	 *            null. <BR/>
 	 *            customScalarConverter contains the {@link CustomScalarConverter} that allows to convert the value to a
@@ -90,8 +90,8 @@ public class InputParameter {
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory,
-			GraphQLType graphQLType) {
-		return new InputParameter(name, bindParameterName, null, mandatory, graphQLType);
+			GraphQLScalarType graphQLScalarType) {
+		return new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class InputParameter {
 	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
 	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
 	 *            the server
-	 * @param graphQLType
+	 * @param graphQLScalarType
 	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
 	 *            null. <BR/>
 	 *            customScalarConverter contains the {@link CustomScalarConverter} that allows to convert the value to a
@@ -132,12 +132,12 @@ public class InputParameter {
 	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 */
 	private InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
-			GraphQLType graphQLType) {
+			GraphQLScalarType graphQLScalarType) {
 		this.name = name;
 		this.bindParameterName = bindParameterName;
 		this.value = value;
 		this.mandatory = mandatory;
-		this.graphQLType = graphQLType;
+		this.graphQLScalarType = graphQLScalarType;
 	}
 
 	public String getName() {
@@ -196,11 +196,12 @@ public class InputParameter {
 			return null;
 		} else if (val instanceof java.util.List) {
 			return getListValue((List<?>) val);
-		} else if (graphQLType != null) {
-			if (graphQLType.isStringValue())
-				return "\\\"" + graphQLType.convertToString(val) + "\\\"";
+		} else if (graphQLScalarType != null) {
+			Object ret = graphQLScalarType.getCoercing().serialize(val);
+			if (ret instanceof String)
+				return getStringValue((String) ret);
 			else
-				return graphQLType.convertToString(val);
+				return ret.toString();
 		} else if (val instanceof String) {
 			return getStringValue((String) val);
 		} else if (val instanceof UUID) {

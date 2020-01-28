@@ -5,7 +5,7 @@ package com.graphql_java_generator;
 
 import org.springframework.stereotype.Component;
 
-import graphql.schema.GraphQLType;
+import graphql.schema.GraphQLScalarType;
 
 /**
  * Registry for all {@link CustomScalarConverter} available.
@@ -26,7 +26,7 @@ public interface CustomScalarRegistry {
 	 * 
 	 * @param converter
 	 */
-	public void registerOneCustomScalarConverter(GraphQLType graphQLType);
+	public void registerOneCustomScalarConverter(GraphQLScalarType graphQLType);
 
 	/**
 	 * Retrieves the registered {@link CustomScalarConverter} for this GraphQL CustomScalar.
@@ -34,6 +34,6 @@ public interface CustomScalarRegistry {
 	 * @param graphQLTypeName
 	 * @return the Custom Scalar Converter, or null if no converter has been registered for the given name
 	 */
-	public GraphQLType getCustomScalarConverter(String graphQLTypeName);
+	public GraphQLScalarType getCustomScalarConverter(String graphQLTypeName);
 
 }
