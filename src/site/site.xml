@@ -22,11 +22,11 @@
 		</menu>
 
 		<menu name="Client mode">
-			<item name="How to use the plugin" href="client.html" />
+			<item name="Plugin usage" href="client.html" />
 		</menu>
 
 		<menu name="Server mode">
-			<item name="How to use the plugin" href="server.html" />
+			<item name="Plugin usage" href="server.html" />
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 
