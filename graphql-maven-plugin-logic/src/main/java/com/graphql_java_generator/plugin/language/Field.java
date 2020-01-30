@@ -5,10 +5,11 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.List;
 
-import com.graphql_java_generator.plugin.PluginMode;
-import com.graphql_java_generator.plugin.language.impl.TypeUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
+import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.language.impl.TypeUtil;
 
 /**
  * This interface describes one field of one objet type (or interface...). It aims to be simple enough, so that the
@@ -106,19 +107,14 @@ public interface Field {
 	 * @return
 	 */
 	public default String getPascalCaseName() {
-		String propertyName = getName();
-		String typeName = getTypeName();
-		if ("Boolean".equals(typeName)) {
-			String[] camelSplittedProperty = propertyName.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+		String name = getName();
+		if ("Boolean".equals(name)) {
+			String[] camelSplittedProperty = name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
 			if ("is".equals(camelSplittedProperty[0]) && camelSplittedProperty.length > 1) {
-				propertyName = TypeUtil.getCamelCase(
-						StringUtils.join(
-								ArrayUtils.remove(camelSplittedProperty, 0)
-						)
-				);
+				name = TypeUtil.getCamelCase(StringUtils.join(ArrayUtils.remove(camelSplittedProperty, 0)));
 			}
 		}
-		return TypeUtil.getPascalCase(propertyName);
+		return TypeUtil.getPascalCase(name);
 	}
 
 	/**
