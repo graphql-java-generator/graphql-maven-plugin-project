@@ -130,6 +130,7 @@ public class DataGenerator {
 		return list;
 	}
 
+	@SuppressWarnings("deprecation")
 	private Object generateValue(Class<?> type) {
 		if (type == String.class) {
 			return "Random String (" + RANDOM.nextInt(99999999) + ")";

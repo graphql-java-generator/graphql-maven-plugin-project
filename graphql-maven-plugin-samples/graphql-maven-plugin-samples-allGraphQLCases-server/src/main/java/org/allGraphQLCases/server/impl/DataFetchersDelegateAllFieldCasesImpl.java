@@ -102,7 +102,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	public List<AllFieldCasesWithoutIdSubtype> listWithoutIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCases source, Long nbItems, FieldParameterInput input, String textToAppendToTheForname) {
 		List<AllFieldCasesWithoutIdSubtype> list = generator.generateInstanceList(AllFieldCasesWithoutIdSubtype.class,
-				4);
+				nbItems.intValue());
 
 		for (AllFieldCasesWithoutIdSubtype item : list) {
 			if (input != null && input.getUppercase() != null && input.getUppercase()) {

@@ -1,4 +1,5 @@
 Here are the next tasks listed, as a TODO list:
+* Add a sample with graphQLScalarTypeGetter
 * Check InputObjectType with fields that are lists
 * Manage parameters for Scalar Fields
 * Builder.withInputParameter(InputParameter) to be replaced by Builder.withInputParameter(String, String, boolean)  
