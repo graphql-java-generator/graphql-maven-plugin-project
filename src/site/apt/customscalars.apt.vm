@@ -1,0 +1,154 @@
+               ------------------------------------------
+               GraphQL Maven Plugin (Custom Scalars)
+               ------------------------------------------
+               ------------------------------------------
+               ------------------------------------------
+
+
+Custom Scalars
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%{toc}
+	
+* {Presentation}
+~~~~~~~~~~~~~~~~~~~
+
+  The graphql-maven-plugin accepts any GraphQL Custom Scalars.
+   
+  To add a Custom Scalar, you need to:
+
+  * Declare it in your GraphQL schema (see [https://graphql.org/learn/schema/](https://graphql.org/learn/schema/))
+  
+  * Provide a class that extends <[graphql.schema.GraphQLScalarType](https://www.javadoc.io/doc/com.graphql-java/graphql-java/2019-05-14T05-01-24-4fd3721/graphql/schema/GraphQLScalarType.html)>. 
+  graphql-java respects the specification of [graphql scalars](https://graphql.org/graphql-js/type/)
+  
+  * Describe in the pom.xml file the list of Custom Scalars for your project
+
+  []
+
+* {Declare the Custom Scalar in your GraphQl schema}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Very simple. And well documented in [https://graphql.org/learn/schema/](https://graphql.org/learn/schema/).
+  
+  It's just a matter of adding a line in your GraphQL schema, like the one below:
+
++--------------------------------------------------------------------------------------------
+scalar Date
++--------------------------------------------------------------------------------------------
+
+
+* {Provide a class that extends GraphQLScalarType}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  This is, of course, the complex part. But you can use a Custom Scalar implementation coming from graphql-java, or from external libraries.
+  
+  There are three ways to provide a Custom Scalar implementation:
+  
+** {Use a Custom Scalar implemented by graphql-java}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  It's of course the easiest.
+  
+  graphql-java provide Custom Scalar implementation in the <graphql.Scalars> class. As graphql-java doesn't provide javadoc, you can either checkout the 
+  graphql-java project, or check [this link](https://www.javadoc.io/static/com.graphql-java/graphql-java/2019-05-14T05-01-24-4fd3721/graphql/Scalars.html), 
+  as long as this link remains valid.
+
+  You'll then just have to declare it in your pom (see below).
+  
+  
+** {Use a Custom Scalar implemented by an external library}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  You can also use external libraries, provided that they provide an implementation that is a class, that extends <graphql.schema.GraphQLScalarType>.
+  
+  Just add the dependency in your pom, and declare it (see below).
+
+  
+** {Implement a <graphql.schema.GraphQLScalarType>}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  You can create your own implementation of any GraphQL Custom Scalar.
+  
+  The main issue here, is that the <graphql.schema.GraphQLScalarType> isn't very documented, especially the <graphql.schema.Coercing> interface that 
+  you'll use to implement the serialization and deserialization methods.
+  
+  To help you implement a <graphql.schema.GraphQLScalarType>, we provided you a good sample, that you can copy/paste/change: the 
+  <[com.graphql_java_generator.customcalars.GraphQLScalarTypeDate](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-java-runtime/src/main/java/com/graphql_java_generator/customcalars/GraphQLScalarTypeDate.java)>.
+  We pasted the javadoc for the <graphql.schema.Coercing> interface, so that you properly understand what's expected.
+  
+
+* {Configure the pom, to indicate your Custom Scalar(s)}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Of course, in your project you can mix Custom Scalars implemented by you, provided by graphql-java or by external libraries.
+  
+  To declare a Custom Scalar implementation, you'll have to provide three informations:
+  
+  * The name of the GraphQL Custom Scalar Type. It must be exactly the same name as declared in the GraphQL schema, for instance <Date> in the above sample.
+  
+  * The full name of the java class that will contain values for this Scalar type, once in the java code. For instance <java.util.Date> in the above sample.
+  
+  * The implementation. It may be declared by one of the three ways below. Of course, you must use one and only one of these parameter, for each Custom Scalar :
+  
+    * graphQLScalarTypeClass: The full class name for the <graphql.schema.GraphQLScalarType> that will manage this Custom Scalar. For instance: 
+    <com.graphql_java_generator.customcalars.GraphQLScalarTypeDate>.
+	
+	* graphQLScalarTypeStaticField: The full class name followed by the static field name that contains the <graphql.schema.GraphQLScalarType> that will manage 
+	this Custom Scalar. For instance: <graphql.Scalars.GraphQLLong>.
+	
+	* graphQLScalarTypeGetter: The full class name followed by the static method name that returns the <graphql.schema.GraphQLScalarType> that will manage 
+	this Custom Scalar. For instance: <org.mycompany.MyScalars.getGraphQLLong()>. This call may contain parameters. Provided that this a valid java statement.
+	
+  []
+  
+  You can find the up-to-date value for this Custom Scalar definition [in github](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/CustomScalarDefinition.java)
+  
+  Please find below a sample of the declaration in the pom. It's extracted from the allGraphQLCases samples. 
+  [Find here](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/pom.xml) 
+  the full pom.xml file
+
+
++--------------------------------------------------------------------------------------------
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+...
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-maven-plugin</artifactId>
+				<version>${lastReleasedVersion}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>graphql</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mode>client</mode>
+					<packageName>org.allGraphQLCases.client</packageName>
+					<customScalars>
+						<customScalar>
+							<graphQLTypeName>Date</graphQLTypeName>
+							<javaType>java.util.Date</javaType>
+							<graphQLScalarTypeClass>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
+						</customScalar>
+						<customScalar>
+							<graphQLTypeName>Long</graphQLTypeName>
+							<javaType>java.lang.Long</javaType>
+							<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
+						</customScalar>
+					</customScalars>
+				</configuration>
+			</plugin>
+...
+	</build>
+
+...
+
+</project>
++--------------------------------------------------------------------------------------------

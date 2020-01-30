@@ -20,6 +20,7 @@
 			<item name="Introduction" href="index.html" />
 			<item name="Create a GraphQL Client" href="client.html" />
 			<item name="Create a GraphQL Server" href="server.html" />
+			<item name="Custom Scalars" href="customscalars.html" />
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 
