@@ -18,9 +18,15 @@
 
 		<menu name="Maven Plugin Usage">
 			<item name="Introduction" href="index.html" />
-			<item name="Client mode" href="client.html" />
-			<item name="Server mode" href="server.html" />
 			<item name="Custom Scalars" href="customscalars.html" />
+		</menu>
+
+		<menu name="Client mode">
+			<item name="How to use the plugin" href="client.html" />
+		</menu>
+
+		<menu name="Server mode">
+			<item name="How to use the plugin" href="server.html" />
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 
