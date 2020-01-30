@@ -15,7 +15,7 @@ import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
 
 /**
- * A proposed Date scalar, that stores dates in String, formatted as: YYYY-MM-DD?<BR/>
+ * A proposed Date scalar, that stores dates in String, formatted as: YYYY-MM-DD<BR/>
  * This Scalar is proposed to be used, for integration testing (checks that the plugin correctly manages Custom Scalars,
  * see samples) and with more documentation to help people to create their own Custom Scalar implementations.
  * 
@@ -33,6 +33,7 @@ public class GraphQLScalarTypeDate extends GraphQLScalarType {
 	 * @param coercing
 	 * @see GraphQLScalarType#GraphQLScalarType(String, String, Coercing)
 	 */
+	@SuppressWarnings("deprecation")
 	public GraphQLScalarTypeDate() {
 		super("Date", "Custom Scalar for Date management. It serializes dates in String, formatted as: YYYY-MM-DD.",
 				// Note:
