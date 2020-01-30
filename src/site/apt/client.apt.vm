@@ -34,7 +34,7 @@ Client mode usage description
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   First, you'll have to create or get your GraphQL schema. The GraphQL plugin expects a <.graphqls> file. 
-  See the [GraphQL schema doc](https://graphql.org/learn/schema/) for all the details.
+  See the {{{https://graphql.org/learn/schema/}GraphQL schema doc}} for all the details.
 
   Then, add the plugin to your Maven POM file:
 
