@@ -53,6 +53,7 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_INTERFACE = "templates/interface_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";
 	// Templates for client generation only
+	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER = "templates/client_CustomScalarRegistryInitializer.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/client_jackson_deserialize.vm.java";
@@ -102,22 +103,31 @@ public class CodeGenerator {
 	public int generateCode() throws IOException {
 
 		int i = 0;
-		i += generateTargetFile(documentParser.getObjectTypes(), "object", PATH_VELOCITY_TEMPLATE_OBJECT);
-		i += generateTargetFile(documentParser.getInterfaceTypes(), "interface", PATH_VELOCITY_TEMPLATE_INTERFACE);
-		i += generateTargetFile(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
+		i += generateTargetFiles(documentParser.getObjectTypes(), "object", PATH_VELOCITY_TEMPLATE_OBJECT);
+		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface", PATH_VELOCITY_TEMPLATE_INTERFACE);
+		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
 
 		switch (pluginConfiguration.getMode()) {
 		case server:
 			i += generateServerFiles();
 			break;
 		case client:
-			i += generateTargetFile(documentParser.getQueryTypes(), "query",
+			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
-			i += generateTargetFile(documentParser.getMutationTypes(), "mutation",
+			i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
-			i += generateTargetFile(documentParser.getSubscriptionTypes(), "subscription",
+			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
-			i += generateTargetFile(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
+
+			// Files for Custom Scalars
+			VelocityContext context = new VelocityContext();
+			context.put("pluginConfiguration", pluginConfiguration);
+			context.put("customScalars", documentParser.customScalars);
+			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
+					"Generating CustomScalarRegistryInitializer", context,
+					PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER);
+			//
+			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER);
 			i += generateQueryTargetType();
 			break;
@@ -171,7 +181,8 @@ public class CodeGenerator {
 	 *            The absolute path for the template (or relative to the current path)
 	 * @throws IOException
 	 */
-	int generateTargetFile(List<? extends Type> objects, String type, String templateFilename) throws RuntimeException {
+	int generateTargetFiles(List<? extends Type> objects, String type, String templateFilename)
+			throws RuntimeException {
 		int i = 0;
 		for (Type object : objects) {
 			File targetFile = getJavaFile((String) execWithOneStringParam("getTargetFileName", object, type));

@@ -33,7 +33,7 @@ public class CustomScalarDeserializer${object.name}  extends AbstractCustomScala
 #elseif (${object.graphQLScalarTypeStaticField})
 				${object.graphQLScalarTypeStaticField}
 #elseif (${object.graphQLScalarTypeGetter})
-				${object.graphQLScalarTypeGetter}
+				${object.graphQLScalarTypeGetter}()
 #else
 			${object.name} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end

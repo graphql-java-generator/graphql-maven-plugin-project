@@ -139,7 +139,7 @@ public class GraphQLProvider {
 #elseif (${customScalar.graphQLScalarTypeStaticField})
 			.scalar(${customScalar.graphQLScalarTypeStaticField})
 #elseif (${customScalar.graphQLScalarTypeGetter})
-			.scalar(${customScalar.graphQLScalarTypeGetter})
+			.scalar(${customScalar.graphQLScalarTypeGetter}())
 #else
 		.scalar(): ${customScalar.name} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end

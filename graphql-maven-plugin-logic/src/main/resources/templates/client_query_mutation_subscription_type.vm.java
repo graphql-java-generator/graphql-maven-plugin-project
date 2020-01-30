@@ -53,6 +53,7 @@ public class ${object.name} {
 	 */
 	public ${object.name}(String graphqlEndpoint) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint);
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 	}
 
 	/**

@@ -90,7 +90,7 @@ class CodeGeneratorTest {
 		String templateFilename = "folder/a_template_for_test.vm";
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFile(objects, type, templateFilename);
+		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
@@ -141,7 +141,7 @@ class CodeGeneratorTest {
 		String templateFilename = "folder/a_template_for_test.vm";
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFile(objects, type, templateFilename);
+		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
