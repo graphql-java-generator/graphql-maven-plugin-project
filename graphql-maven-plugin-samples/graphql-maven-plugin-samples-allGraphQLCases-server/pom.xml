@@ -25,6 +25,18 @@
 				<configuration>
 					<mode>server</mode>
 					<packageName>org.allGraphQLCases.server</packageName>
+					<customScalars>
+						<customScalar>
+							<graphQLTypeName>Date</graphQLTypeName>
+							<javaType>java.util.Date</javaType>
+							<graphQLScalarTypeClass>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
+						</customScalar>
+						<customScalar>
+							<graphQLTypeName>Long</graphQLTypeName>
+							<javaType>java.lang.Long</javaType>
+							<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
+						</customScalar>
+					</customScalars>
 				</configuration>
 			</plugin>
 			<plugin>

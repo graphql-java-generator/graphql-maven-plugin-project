@@ -12,8 +12,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 
 /**

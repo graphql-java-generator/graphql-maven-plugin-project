@@ -13,8 +13,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import com.generated.graphql.Episode;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
 import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
 import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;

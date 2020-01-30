@@ -1,3 +1,6 @@
+scalar Date
+scalar Long
+
 schema {
 	#A comment on the query
     query: MyQueryType
@@ -70,7 +73,7 @@ input AllFieldCasesInput {
     id: ID!
     name: String!
     forname: String
-    age: Int!
+    age: Long!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]
@@ -87,13 +90,55 @@ input AllFieldCasesWithIdSubtypeInput {
 
 input FieldParameterInput {
 	uppercase: Boolean
+	date: Date
 }
 
 input AllFieldCasesWithoutIdSubtypeInput {
     name: String!
 }
 
+# This type is a clone of the InterfaceAllFieldCases interface. 
+# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
 type AllFieldCases {
+    id: ID!
+    name: String!
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    age: Long!
+    date: Date
+    dates: [Date]!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    friends: [Human!]
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+# This interface is a clone of the AllFieldCases type. 
+# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+interface AllFieldCasesInterface {
+    id: ID!
+    name: String!
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    age: Int!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    friends: [Human!]
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+# A concrete class that just implements the above interface
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String

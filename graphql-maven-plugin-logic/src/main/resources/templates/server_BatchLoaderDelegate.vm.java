@@ -11,6 +11,10 @@ import org.dataloader.BatchLoader;
 import org.dataloader.DataLoaderRegistry;
 import org.springframework.stereotype.Component;
 
+#foreach($import in $imports)
+import $import;
+#end
+
 /**
  * BatchLoaderDelegate is the interface that identifies Spring Beans that help using
  * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A>. All the

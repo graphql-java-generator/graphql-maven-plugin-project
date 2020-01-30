@@ -4,7 +4,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 
 public class ScalarTest {
 
-	@GraphQLScalar(graphqlType = Episode.class)
+	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
 	Episode episode;
 
 }

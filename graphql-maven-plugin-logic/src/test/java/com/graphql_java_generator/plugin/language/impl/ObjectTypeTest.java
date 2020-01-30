@@ -33,12 +33,12 @@ class ObjectTypeTest {
 
 		FieldImpl f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field1");
-		f.setTypeName("ID");
+		f.setGraphQLTypeName("ID");
 		objectType.getFields().add(f);
 
 		f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field2");
-		f.setTypeName("String");
+		f.setGraphQLTypeName("String");
 		objectType.getFields().add(f);
 
 	}
@@ -61,7 +61,7 @@ class ObjectTypeTest {
 	void test_getIdentifier_TwoId() {
 		FieldImpl f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field3");
-		f.setTypeName("ID");
+		f.setGraphQLTypeName("ID");
 		objectType.getFields().add(f);
 
 		assertNull(objectType.getIdentifier(),

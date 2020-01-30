@@ -29,8 +29,8 @@ public class ScalarType extends AbstractType {
 	 *            The package where the Java type for this class is stored
 	 * @param classSimpleName
 	 *            The simple name for this class
-	 * @param The
-	 *            current plugin mode
+	 * @param mode
+	 *            The current plugin mode
 	 */
 	public ScalarType(String name, String packageName, String classSimpleName, PluginMode mode) {
 		super(packageName, mode, GraphQlType.SCALAR);
@@ -61,6 +61,12 @@ public class ScalarType extends AbstractType {
 	/** {@inheritDoc} */
 	@Override
 	public boolean isInputType() {
+		return false;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isCustomScalar() {
 		return false;
 	}
 }

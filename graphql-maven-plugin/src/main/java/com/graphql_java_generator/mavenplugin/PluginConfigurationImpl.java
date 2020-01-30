@@ -4,7 +4,9 @@
 package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
+import java.util.List;
 
+import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
 import com.graphql_java_generator.plugin.PluginConfiguration;
@@ -30,6 +32,11 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 			throw new RuntimeException("The project packaging is <" + mojo.project.getPackaging()
 					+ ">. This is not accepted by this plugin", e);
 		}
+	}
+
+	@Override
+	public List<CustomScalarDefinition> getCustomScalars() {
+		return mojo.customScalars;
 	}
 
 	@Override

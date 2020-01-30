@@ -1,5 +1,6 @@
 package com.graphql_java_generator.client.domain.forum;
 
+import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
 /**
@@ -9,19 +10,20 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 
 public class Member {
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLInputParameters(names = { "uppercase" }, types = { "Boolean" })
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String alias;
 
-	@GraphQLScalar(graphqlType = String.class)
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String email;
 
-	@GraphQLScalar(graphqlType = MemberType.class)
+	@GraphQLScalar(graphQLTypeName = "MemberType", javaClass = MemberType.class)
 	MemberType type;
 
 	public void setId(String id) {
@@ -64,6 +66,7 @@ public class Member {
 		return type;
 	}
 
+	@Override
 	public String toString() {
 		return "Member {" + "id: " + id + ", " + "name: " + name + ", " + "alias: " + alias + ", " + "email: " + email
 				+ ", " + "type: " + type + "}";

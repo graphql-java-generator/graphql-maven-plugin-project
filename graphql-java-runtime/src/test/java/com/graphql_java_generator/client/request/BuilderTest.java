@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +19,8 @@ import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.Droid;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 class BuilderTest {
 
@@ -327,8 +328,8 @@ class BuilderTest {
 	public void test_withQueryResponseDef_withHardCodedParameters_Forum()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		String queryResponseDef = "{id name publiclyAvailable topics{id date author{id name email type} nbPosts "
-				+ "posts(memberName: \"Me!\", since: ?sinceParam) {date author{name email type}}}}";
+		String queryResponseDef = "{id name publiclyAvailable "
+				+ " topics{id date author{id name email type} nbPosts posts(memberName: \"Me!\", since: ?sinceParam) {date author{name email type}}}}";
 		ObjectResponse response = new com.graphql_java_generator.client.domain.forum.QueryType(
 				"http://localhost:8180/graphql").getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef)
 						.build();
@@ -365,10 +366,10 @@ class BuilderTest {
 		i = 1;
 		// The second parameter is a bind variable
 		Map<String, Object> bindParameterValues = new HashMap<>();
-		bindParameterValues.put("sinceParam", "01/02/1903");
+		bindParameterValues.put("sinceParam", new Date(1903 - 1900, 02 - 1, 1));
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\\\"01/02/1903\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(bindParameterValues));
+		assertEquals("\\\"1903-02-01\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(bindParameterValues));
 		assertEquals("sinceParam", postsInputParameters.get(i).bindParameterName);
 		assertFalse(postsInputParameters.get(i).mandatory);
 	}
@@ -420,10 +421,10 @@ class BuilderTest {
 		i = 1;
 		// The second parameter is a bind variable
 		Map<String, Object> bindParameterValues = new HashMap<>();
-		bindParameterValues.put("sinceParam", "01/02/1903");
+		bindParameterValues.put("sinceParam", new Date(2020 - 1900, 5 - 1, 3));
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\\\"1900/10/24\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(map));
+		assertEquals("\\\"2020-05-03\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(bindParameterValues));
 		assertEquals("sinceParam", postsInputParameters.get(i).bindParameterName);
 		assertTrue(postsInputParameters.get(i).mandatory);
 	}

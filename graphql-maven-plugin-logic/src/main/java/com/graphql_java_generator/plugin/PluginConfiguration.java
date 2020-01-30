@@ -4,9 +4,12 @@
 package com.graphql_java_generator.plugin;
 
 import java.io.File;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import graphql.schema.GraphQLScalarType;
 
 /**
  * This interface contains all the configuration parameters for the plugin, as an interface.<BR/>
@@ -25,6 +28,15 @@ public interface PluginConfiguration {
 	public final static String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 																				// Dummy Java issue... :(
 	public final static String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
+
+	/**
+	 * List of custom scalars implemented by the project for its GraphQL schema. It's a map, where the key is the scalar
+	 * name, as defined in the GraphQL schema, and the value is the full class name of the implementation of
+	 * {@link GraphQLScalarType}. Please note that, for each custom scalar defined in the GraphQL schema, the project
+	 * must implement one {@link GraphQLScalarType}, and provide its implementation in the maven pom, with this
+	 * parameter.
+	 */
+	public List<CustomScalarDefinition> getCustomScalars();
 
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
@@ -96,15 +108,15 @@ public interface PluginConfiguration {
 	/** Logs all the configuration parameters, in the debug level */
 	default public void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
-			getLog().debug("The Plugin Configuration is:");
+			getLog().debug("The graphql-java-generator Plugin Configuration is:");
 			getLog().debug("  Mode: " + getMode());
-			getLog().debug("  PackageName" + getPackageName());
+			getLog().debug("  PackageName: " + getPackageName());
 			getLog().debug("  Packaging: " + getPackaging());
 			getLog().debug("  MainResourcesFolder: " + getMainResourcesFolder());
 			getLog().debug("  SchemaFilePattern: " + getSchemaFilePattern());
 			getLog().debug("  SchemaPersonalizationFile: " + getSchemaPersonalizationFile());
 			getLog().debug("  SourceEncoding: " + getMode());
-			getLog().debug("  TargetClassFolder" + getTargetClassFolder());
+			getLog().debug("  TargetClassFolder: " + getTargetClassFolder());
 			getLog().debug("  TargetSourceFolder: " + getTargetSourceFolder());
 		}
 	}

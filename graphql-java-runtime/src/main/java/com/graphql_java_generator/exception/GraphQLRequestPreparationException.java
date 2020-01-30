@@ -1,15 +1,12 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.response;
-
-import com.graphql_java_generator.client.request.Builder;
-import com.graphql_java_generator.client.request.ObjectResponse;
+package com.graphql_java_generator.exception;
 
 /**
  * Thrown when an error occurs during the request preparation. This is typically, when the {@link Builder} is called
  * with invalid values (non existing fields, field from other objects...) or when a call to a query is attempted with a
- * {@link ObjectResponse} build for another GraphQL type<BR/>
+ * ObjectResponse build for another GraphQL type (for client mode)<BR/>
  * 
  * @author EtienneSF
  */

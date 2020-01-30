@@ -6,7 +6,7 @@
 Any mode, client or server:
 - Corrected a bad dependency version, which prevents the released plugin to work
 - Input object types are now accepted
-
+- All GraphQL exceptions have been moved into the com.graphql_java_generator.exception package
 
 Client mode:
 - Connection to https is made simpler (just declare the https URL)

@@ -3,8 +3,10 @@ package com.graphql_java_generator.client.request;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,12 @@ import com.graphql_java_generator.client.domain.forum.AvailabilityType;
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.domain.starwars.Episode;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.customcalars.GraphQLScalarTypeDate;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+
+import graphql.Scalars;
+import graphql.schema.CoercingSerializeException;
+import graphql.schema.GraphQLScalarType;
 
 class InputParameterTest {
 
@@ -92,7 +99,7 @@ class InputParameterTest {
 	}
 
 	@Test
-	void test_getValueForGraphqlQuery_recursive_InputType() {
+	void test_getValueForGraphqlQuery_recursive_InputType() throws GraphQLRequestExecutionException {
 		// Preparation
 		TopicPostInput topicPostInput = new TopicPostInput();
 		topicPostInput.setAuthorId(UUID.fromString("00000000-0000-0000-0000-000000000012"));
@@ -169,7 +176,7 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_MandatoryBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, true);
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, true, null);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
@@ -190,7 +197,7 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_OptionalBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, false);
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, false, null);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
@@ -203,6 +210,50 @@ class InputParameterTest {
 		bindVariablesValues.put(bindParameterName, 666);
 		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(bindVariablesValues),
 				"escaped value (correct map)");
+	}
+
+	@Test
+	void getValueForGraphqlQuery_BindParameter_CustomScalar_Date_OK() throws GraphQLRequestExecutionException {
+		GraphQLScalarTypeDate graphQLScalarTypeDate = new GraphQLScalarTypeDate();
+		String name = "aName";
+		String bindParameterName = "variableName";
+		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName, false,
+				graphQLScalarTypeDate);
+
+		Map<String, Object> badValues = new HashMap<>();
+		badValues.put("variableName", "A bad date");
+		CoercingSerializeException e = assertThrows(CoercingSerializeException.class,
+				() -> customScalarInputParameter.getValueForGraphqlQuery(badValues));
+		assertTrue(e.getMessage().contains("A bad date"));
+
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2020 - 1900, 01 - 1, 19); // Years starts at 1900. Month is between 0 and 11
+		Map<String, Object> goodValues = new HashMap<>();
+		goodValues.put("variableName", date);
+
+		assertEquals("\\\"2020-01-19\\\"", customScalarInputParameter.getValueForGraphqlQuery(goodValues));
+	}
+
+	@Test
+	void getValueForGraphqlQuery_BindParameter_CustomScalar_Long_OK() throws GraphQLRequestExecutionException {
+		GraphQLScalarType graphQLScalarTypeLong = Scalars.GraphQLLong;
+		String name = "aName";
+		String bindParameterName = "variableName";
+		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName, false,
+				graphQLScalarTypeLong);
+
+		Map<String, Object> badValues = new HashMap<>();
+		badValues.put("variableName", "A bad long");
+		CoercingSerializeException e = assertThrows(CoercingSerializeException.class,
+				() -> customScalarInputParameter.getValueForGraphqlQuery(badValues));
+		assertTrue(e.getMessage().contains("Long"));
+
+		Long l = Long.MAX_VALUE;
+		String ls = ((Long) Long.MAX_VALUE).toString();
+		Map<String, Object> goodValues = new HashMap<>();
+		goodValues.put("variableName", l);
+
+		assertEquals(ls, customScalarInputParameter.getValueForGraphqlQuery(goodValues));
 	}
 
 }

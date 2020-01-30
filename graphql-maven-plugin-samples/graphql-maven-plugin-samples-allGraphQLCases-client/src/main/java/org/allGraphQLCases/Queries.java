@@ -1,5 +1,6 @@
 package org.allGraphQLCases;
 
+import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.client.AllFieldCases;
@@ -14,8 +15,8 @@ import org.allGraphQLCases.graphql.DirectQueries;
 import org.allGraphQLCases.graphql.PreparedQueries;
 import org.allGraphQLCases.graphql.WithBuilder;
 
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * These are samples of queries that can be used with GraphQL against the Star Wars GraphQL schema. There are
@@ -54,7 +55,7 @@ public interface Queries {
 	// Second part: queries (based on the allGraphQLCases use case)
 
 	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
-			String textToAppendToTheForname, int nbItemsWithId, Boolean uppercaseNameList,
+			String textToAppendToTheForname, long nbItemsWithId, Date date, List<Date> dates, Boolean uppercaseNameList,
 			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
 			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;

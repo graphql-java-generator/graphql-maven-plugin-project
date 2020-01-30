@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.response;
+package com.graphql_java_generator.exception;
 
 /**
  * Thrown when an internal error of the GraphQL generator occurs

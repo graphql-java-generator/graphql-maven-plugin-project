@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +19,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.graphql_java_generator.client.domain.forum.MutationType;
+import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
 import com.graphql_java_generator.client.domain.starwars.Episode;
@@ -27,9 +32,9 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
-import com.graphql_java_generator.client.response.GraphQLResponseParseException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLResponseParseException;
 
 /**
  * 
@@ -70,7 +75,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")//
-				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false))//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -97,8 +102,8 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
-				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
+				.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null))//
 				.withField("id").withField("name").build();
 
 		// Go, go, go
@@ -125,7 +130,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -152,7 +157,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -177,7 +182,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -202,7 +207,7 @@ class QueryExecutorImplTest {
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = new Builder(QueryType.class, "hero")
-				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", true))//
+				.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", true, null))//
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
@@ -223,19 +228,16 @@ class QueryExecutorImplTest {
 		// Preparation
 		ObjectResponse objectResponse = new Builder(com.graphql_java_generator.client.domain.forum.QueryType.class,
 				"boards").withQueryResponseDef(
-						"{id name publiclyAvailable topics(since: ?sinceParam, memberName: ?memberName) {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
+						"{id name publiclyAvailable topics(since: \"2019-12-21\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
 						.build();
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("queryTypeHeroEpisode", Episode.NEWHOPE);
-		parameters.put("sinceParam", "2019-12-21");
-		parameters.put("memberName", "a member name");
 
 		// Go, go, go
 		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2019-12-21\\\", memberName:\\\"a member name\\\"){id date nbPosts author{id name email type} posts{date author{name email type}}}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2019-12-21\\\"){id date nbPosts author{id name email type} posts{date author{name email type}}}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -269,28 +271,28 @@ class QueryExecutorImplTest {
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
 		assertThrows(NullPointerException.class,
-				() -> queryExecutorImpl.parseResponse(null, objectResponse, Character.class));
+				() -> parseResponseForStarWarsSchema(null, objectResponse, Character.class));
 
 		exception = assertThrows(JsonParseException.class,
-				() -> queryExecutorImpl.parseResponse("invalid JSON", objectResponse, Character.class));
+				() -> parseResponseForStarWarsSchema("invalid JSON", objectResponse, Character.class));
 		assertTrue(exception.getMessage().contains("invalid"));
 
-		exception = assertThrows(GraphQLResponseParseException.class, () -> queryExecutorImpl.parseResponse(
+		exception = assertThrows(GraphQLResponseParseException.class, () -> parseResponseForStarWarsSchema(
 				"{\"wrongTag\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
 				objectResponse, Character.class));
 		assertTrue(exception.getMessage().contains("'data'"));
 
-		exception = assertThrows(GraphQLResponseParseException.class, () -> queryExecutorImpl.parseResponse(
+		exception = assertThrows(GraphQLResponseParseException.class, () -> parseResponseForStarWarsSchema(
 				"{\"data\":{\"wrongAlias\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
 				objectResponse, Character.class));
 		assertTrue(exception.getMessage().contains("'hero'"));
 
-		exception = assertThrows(UnrecognizedPropertyException.class, () -> queryExecutorImpl.parseResponse(
+		exception = assertThrows(UnrecognizedPropertyException.class, () -> parseResponseForStarWarsSchema(
 				"{\"data\":{\"hero\":{\"wrongTag\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
 				objectResponse, CharacterImpl.class));
 		assertTrue(exception.getMessage().contains("wrongTag"));
 
-		exception = assertThrows(InvalidFormatException.class, () -> queryExecutorImpl.parseResponse(
+		exception = assertThrows(InvalidFormatException.class, () -> parseResponseForStarWarsSchema(
 				"{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"WRONG_EPISODE\",\"JEDI\"],\"friends\":null}}}",
 				objectResponse, CharacterImpl.class));
 		assertTrue(exception.getMessage().contains("WRONG_EPISODE"));
@@ -311,7 +313,7 @@ class QueryExecutorImplTest {
 		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}";
 
 		// Go, go, go
-		Object response = queryExecutorImpl.parseResponse(rawResponse, objectResponse, CharacterImpl.class);
+		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
 
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
@@ -340,7 +342,7 @@ class QueryExecutorImplTest {
 		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[]}}}";
 
 		// Go, go, go
-		Object response = queryExecutorImpl.parseResponse(rawResponse, objectResponse, CharacterImpl.class);
+		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
 
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
@@ -362,7 +364,7 @@ class QueryExecutorImplTest {
 		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[{\"name\":\"name350518\"},{\"name\":\"name381495\"}]}}}";
 
 		// Go, go, go
-		Object response = queryExecutorImpl.parseResponse(rawResponse, objectResponse, CharacterImpl.class);
+		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
 
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
@@ -373,4 +375,80 @@ class QueryExecutorImplTest {
 		assertEquals("name381495", character.getFriends().get(1).getName(), "Second friend's name");
 	}
 
+	@Test
+	void parseResponse_OK_Topics_withCustomScalar()
+			throws GraphQLRequestPreparationException, GraphQLResponseParseException, IOException {
+		// Preparation
+		ObjectResponse createPostResponse = new Builder(MutationType.class, "createPost")
+				.withQueryResponseDef("{id date author{id} title content publiclyAvailable}").build();
+		String rawResponse = "{\"data\":{\"post\":{\"id\":\"d87c5c05-7cca-4302-adc8-627a282b1f1b\","
+				+ "\"date\":\"2009-11-21\"," + "\"title\":\"The good title for a post\","
+				+ "\"content\":\"Some other content\"," + "\"publiclyAvailable\":false,"
+				+ "\"author\":{\"id\":\"00000000-0000-0000-0000-000000000012\"}}}}";
+
+		// Go, go, go
+		Post post = parseResponseForForumSchema(rawResponse, createPostResponse, Post.class);
+
+		// Verification
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2009 - 1900, 11 - 1, 21);// Years starts at 1900. Month is between 0 and 11
+		assertEquals(date, post.getDate(), "The Custom Scalar date should have been properly deserialized");
+	}
+
+	/**
+	 * Parse the GraphQL server response, and map it to the objects, generated from the GraphQL schema.
+	 * 
+	 * @param <T>
+	 * 
+	 * @param rawResponse
+	 * @param objectResponse
+	 * @return
+	 * @throws GraphQLResponseParseException
+	 * @throws IOException
+	 */
+	<T> T parseResponseForStarWarsSchema(String rawResponse, ObjectResponse objectResponse, Class<T> valueType)
+			throws GraphQLResponseParseException, IOException {
+
+		// Let's read this response with Jackson
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node = mapper.readTree(rawResponse);
+
+		// The main node should be unique, named data, and be a container
+		if (node.size() != 1)
+			throw new GraphQLResponseParseException(
+					"The response should contain one root element, but it contains " + node.size() + " elements");
+
+		JsonNode data = node.get("data");
+		if (data == null)
+			throw new GraphQLResponseParseException("Could not retrieve the 'data' node");
+
+		JsonNode hero = data.get("hero");
+		if (hero == null)
+			throw new GraphQLResponseParseException("Could not retrieve the 'hero' node");
+
+		return mapper.treeToValue(hero, valueType);
+	}
+
+	<T> T parseResponseForForumSchema(String rawResponse, ObjectResponse createPostResponse, Class<T> valueType)
+			throws IOException, GraphQLResponseParseException {
+
+		// Let's read this response with Jackson
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node = mapper.readTree(rawResponse);
+
+		// The main node should be unique, named data, and be a container
+		if (node.size() != 1)
+			throw new GraphQLResponseParseException(
+					"The response should contain one root element, but it contains " + node.size() + " elements");
+
+		JsonNode data = node.get("data");
+		if (data == null)
+			throw new GraphQLResponseParseException("Could not retrieve the 'data' node");
+
+		JsonNode post = data.get("post");
+		if (post == null)
+			throw new GraphQLResponseParseException("Could not retrieve the 'post' node");
+
+		return mapper.treeToValue(post, valueType);
+	}
 }

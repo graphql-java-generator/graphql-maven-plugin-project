@@ -11,11 +11,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * This class describes what response is expected from the GraphQL server. That is: the fields and sub-objects that the
@@ -57,7 +56,6 @@ public class ObjectResponse {
 	/** Logger for this class */
 	private static Logger logger = LogManager.getLogger();
 
-	static private GraphqlUtils graphqlUtils = new GraphqlUtils();
 	static private GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	/**

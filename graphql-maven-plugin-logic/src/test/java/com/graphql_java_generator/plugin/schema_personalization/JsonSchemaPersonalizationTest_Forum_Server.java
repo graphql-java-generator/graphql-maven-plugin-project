@@ -59,14 +59,14 @@ class JsonSchemaPersonalizationTest_Forum_Server {
 		assertEquals("@Entity\n\t\t@MyAdditionalAnnotation", member.getAnnotation(), "member annotation");
 		//
 		Field age = jsonSchemaPersonalization.findFieldFromName(member, "age");
-		assertEquals("int", age.getTypeName(), "age type");
+		assertEquals("int", age.getGraphQLTypeName(), "age type");
 		assertFalse(age.isId(), "age id");
 		assertFalse(age.isList(), "age list");
 		assertFalse(age.isMandatory(), "age mandatory");
 		assertEquals("@Annotation1", age.getAnnotation(), "age annotation");
 		//
 		Field age2 = jsonSchemaPersonalization.findFieldFromName(member, "age2");
-		assertEquals("int", age2.getTypeName(), "age2 type");
+		assertEquals("int", age2.getGraphQLTypeName(), "age2 type");
 		assertTrue(age2.isId(), "age2 id");
 		assertTrue(age2.isList(), "age2 list");
 		assertTrue(age2.isMandatory(), "age2 mandatory");
@@ -79,7 +79,8 @@ class JsonSchemaPersonalizationTest_Forum_Server {
 		assertEquals("@NotId\n\t@AnotherAnnotation", id.getAnnotation(), "board.id annotation");
 		//
 		Field name = jsonSchemaPersonalization.findFieldFromName(board, "name");
-		assertEquals("@GraphQLScalar(graphqlType = String.class)\n\t\t@Column(name=\"column_name\")",
+		assertEquals(
+				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)\n\t@Column(name=\"column_name\")",
 				name.getAnnotation(), "board.name annotation");
 	}
 

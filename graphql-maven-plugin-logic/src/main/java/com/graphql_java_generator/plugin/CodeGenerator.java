@@ -34,7 +34,10 @@ import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+
+import graphql.schema.GraphQLScalarType;
 
 /**
  * This class generates the code, from the classes coming from the com.graphql_java_generator.plugin.language package.
@@ -50,16 +53,21 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_INTERFACE = "templates/interface_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";
 	// Templates for client generation only
+	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER = "templates/client_CustomScalarRegistryInitializer.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/client_jackson_deserialize.vm.java";
 	// Templates for server generation only
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE = "templates/server_BatchLoaderDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL = "templates/server_BatchLoaderDelegateImpl.vm.java";
+	// private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS = "templates/server_GraphQLScalarType.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL = "templates/server_GraphQLUtil.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServerMain.vm.java";
+
+	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
 
 	@Resource
 	DocumentParser documentParser;
@@ -95,21 +103,32 @@ public class CodeGenerator {
 	public int generateCode() throws IOException {
 
 		int i = 0;
-		i += generateTargetFile(documentParser.getObjectTypes(), "object", PATH_VELOCITY_TEMPLATE_OBJECT);
-		i += generateTargetFile(documentParser.getInterfaceTypes(), "interface", PATH_VELOCITY_TEMPLATE_INTERFACE);
-		i += generateTargetFile(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
+		i += generateTargetFiles(documentParser.getObjectTypes(), "object", PATH_VELOCITY_TEMPLATE_OBJECT);
+		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface", PATH_VELOCITY_TEMPLATE_INTERFACE);
+		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
 
 		switch (pluginConfiguration.getMode()) {
 		case server:
 			i += generateServerFiles();
 			break;
 		case client:
-			i += generateTargetFile(documentParser.getQueryTypes(), "query",
+			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
-			i += generateTargetFile(documentParser.getMutationTypes(), "mutation",
+			i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
-			i += generateTargetFile(documentParser.getSubscriptionTypes(), "subscription",
+			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
 					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+
+			// Files for Custom Scalars
+			VelocityContext context = new VelocityContext();
+			context.put("pluginConfiguration", pluginConfiguration);
+			context.put("customScalars", documentParser.customScalars);
+			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
+					"Generating CustomScalarRegistryInitializer", context,
+					PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER);
+			//
+			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
+					PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER);
 			i += generateQueryTargetType();
 			break;
 		}
@@ -162,15 +181,17 @@ public class CodeGenerator {
 	 *            The absolute path for the template (or relative to the current path)
 	 * @throws IOException
 	 */
-	int generateTargetFile(List<? extends Type> objects, String type, String templateFilename) throws RuntimeException {
+	int generateTargetFiles(List<? extends Type> objects, String type, String templateFilename)
+			throws RuntimeException {
 		int i = 0;
 		for (Type object : objects) {
-			File targetFile = getJavaFile((String) exec("getName", object));
+			File targetFile = getJavaFile((String) execWithOneStringParam("getTargetFileName", object, type));
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 			VelocityContext context = new VelocityContext();
 			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("object", object);
 			context.put("type", type);
+			context.put("imports", getImportList());
 
 			i += generateOneFile(targetFile, msg, context, templateFilename);
 		} // for
@@ -217,6 +238,8 @@ public class CodeGenerator {
 		context.put("pluginConfiguration", pluginConfiguration);
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
+		context.put("imports", getImportList());
+		context.put("customScalars", documentParser.customScalars);
 
 		// List of found schemas
 		List<String> schemaFiles = new ArrayList<>();
@@ -330,5 +353,41 @@ public class CodeGenerator {
 			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
 					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * Calls the 'methodName' method on the given object
+	 * 
+	 * @param methodName
+	 *            The name of the method name
+	 * @param object
+	 *            The given node, on which the 'methodName' method is to be called
+	 * @return
+	 */
+	Object execWithOneStringParam(String methodName, Object object, String param) {
+		try {
+			Method getType = object.getClass().getMethod(methodName, String.class);
+			return getType.invoke(object, param);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' (with a String param) on '"
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Retrieves all the class that must be imported. This list is based on the list of Custom Scalars, that may need
+	 * specific import, for specific {@link GraphQLScalarType}.
+	 */
+	List<String> getImportList() {
+		List<String> ret = new ArrayList<>();
+		if (documentParser.customScalars != null) {
+			for (CustomScalarType customScalar : documentParser.customScalars) {
+				if (!customScalar.getPackageName().contentEquals("java.lang")) {
+					ret.add(customScalar.getClassFullName());
+				}
+			}
+		}
+		return ret;
 	}
 }

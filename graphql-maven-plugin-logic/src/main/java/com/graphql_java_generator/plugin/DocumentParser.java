@@ -30,6 +30,7 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.Type.GraphQlType;
 import com.graphql_java_generator.plugin.language.impl.AbstractType;
 import com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl;
+import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
@@ -55,6 +56,7 @@ import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.OperationTypeDefinition;
+import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
@@ -132,11 +134,18 @@ public class DocumentParser {
 	@Getter
 	List<InterfaceType> interfaceTypes = new ArrayList<>();
 
-	/**
-	 * All the {@link ObjectType} which have been read during the reading of the documents
-	 */
+	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
 	List<EnumType> enumTypes = new ArrayList<>();
+
+	/**
+	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
+	 * java code
+	 */
+	List<ScalarType> scalarTypes = new ArrayList<>();
+
+	/** All the {@link CustomScalarType} which have been read during the reading of the documents */
+	List<CustomScalarType> customScalars = new ArrayList<>();
 
 	/** All the {@link Type}s that have been parsed, added by the default scalars */
 	Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
@@ -159,26 +168,45 @@ public class DocumentParser {
 	 */
 	List<BatchLoader> batchLoaders = new ArrayList<>();
 
-	/**
-	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
-	 * java code
-	 */
-	List<ScalarType> scalars = new ArrayList<>();
-
 	@PostConstruct
 	public void postConstruct() {
-		// Add of all predefined scalars
-		scalars.add(new ScalarType("ID", "java.lang", "String", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("UUID", "java.util", "UUID", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("String", "java.lang", "String", pluginConfiguration.getMode()));
+
+		//////////////////////////////////////////////////////////////////////////////////////////
+		// Add of all GraphQL standard scalars
+
+		// In client mode, ID type is managed as a String
+		if (pluginConfiguration.getMode().equals(PluginMode.server))
+			scalarTypes.add(new ScalarType("ID", "java.util", "UUID", pluginConfiguration.getMode()));
+		else
+			scalarTypes.add(new ScalarType("ID", "java.lang", "String", pluginConfiguration.getMode()));
+
+		scalarTypes.add(new ScalarType("String", "java.lang", "String", pluginConfiguration.getMode()));
 
 		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
-		scalars.add(new ScalarType("boolean", "java.lang", "Boolean", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("Boolean", "java.lang", "Boolean", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("int", "java.lang", "Integer", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("Int", "java.lang", "Integer", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration.getMode()));
-		scalars.add(new ScalarType("float", "java.lang", "Float", pluginConfiguration.getMode()));
+		scalarTypes.add(new ScalarType("boolean", "java.lang", "Boolean", pluginConfiguration.getMode()));
+		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", pluginConfiguration.getMode()));
+		scalarTypes.add(new ScalarType("int", "java.lang", "Integer", pluginConfiguration.getMode()));
+		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", pluginConfiguration.getMode()));
+		scalarTypes.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration.getMode()));
+		scalarTypes.add(new ScalarType("float", "java.lang", "Float", pluginConfiguration.getMode()));
+
+		//////////////////////////////////////////////////////////////////////////////////////////
+		// Add of all GraphQL custom scalar implementations must be provided by the plugin configuration
+		if (pluginConfiguration.getCustomScalars() != null) {
+			for (CustomScalarDefinition customScalarDef : pluginConfiguration.getCustomScalars()) {
+				String className = customScalarDef.getJavaType();
+				int lstPointPosition = className.lastIndexOf('.');
+				String packageName = className.substring(0, lstPointPosition);
+				String simpleClassName = className.substring(lstPointPosition + 1);
+
+				CustomScalarType type = new CustomScalarType(customScalarDef.getGraphQLTypeName(), packageName,
+						simpleClassName, customScalarDef.getGraphQLScalarTypeClass(),
+						customScalarDef.getGraphQLScalarTypeStaticField(), customScalarDef.getGraphQLScalarTypeGetter(),
+						pluginConfiguration.getMode());
+				customScalars.add(type);
+				types.put(type.getName(), type);
+			}
+		}
 	}
 
 	/**
@@ -266,6 +294,9 @@ public class DocumentParser {
 				enumTypes.add(readEnumType((EnumTypeDefinition) node));
 			} else if (node instanceof InterfaceTypeDefinition) {
 				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
+			} else if (node instanceof ScalarTypeDefinition) {
+				// Custom scalars implementation must be provided by the configuration. We just check that it's OK.
+				checkCustomScalarType((ScalarTypeDefinition) node);
 			} else if (node instanceof SchemaDefinition) {
 				// No action, we already parsed it
 			} else {
@@ -283,7 +314,7 @@ public class DocumentParser {
 	 * schema.
 	 */
 	void fillTypesMap() {
-		scalars.stream().forEach(s -> types.put(s.getName(), s));
+		scalarTypes.stream().forEach(s -> types.put(s.getName(), s));
 		objectTypes.stream().forEach(o -> types.put(o.getName(), o));
 		interfaceTypes.stream().forEach(i -> types.put(i.getName(), i));
 		enumTypes.stream().forEach(e -> types.put(e.getName(), e));
@@ -399,6 +430,27 @@ public class DocumentParser {
 	}
 
 	/**
+	 * Reads a GraphQL Custom Scalar, from its definition. This method just checks that the CustomScalar has already
+	 * been defined, in the plugin configuration.
+	 * 
+	 * @param node
+	 *            The {@link CustomScalarType} that represents this Custom Scalar
+	 * @return
+	 */
+	CustomScalarType checkCustomScalarType(ScalarTypeDefinition node) {
+		String name = node.getName();
+
+		for (CustomScalarType customScalarType : customScalars) {
+			if (customScalarType.getName().equals(name)) {
+				return customScalarType;
+			}
+		}
+
+		throw new RuntimeException(
+				"The plugin configuration must provide an implementation for the Custom Scalar '" + name + "'.");
+	}
+
+	/**
 	 * Reads an enum definition, and create the relevant {@link EnumType}
 	 * 
 	 * @param node
@@ -495,16 +547,7 @@ public class DocumentParser {
 		// We have the type. But we may not have parsed it yet. So we just write its
 		// name. And will get the
 		// com.graphql_java_generator.plugin.language.Type when generating the code.
-		field.setTypeName(typeName.getName());
-		if (typeName.getName().equals("ID")) {
-			field.setId(true);
-
-			// In server mode, we use the UUID type.
-			// For client, we keep complying to the GraphQL schema
-			if (pluginConfiguration.getMode().equals(PluginMode.server)) {
-				field.setTypeName("UUID");
-			}
-		}
+		field.setGraphQLTypeName(typeName.getName());
 
 		// For InputValueDefinition, we may have a defaut value
 		if (fieldDef instanceof InputValueDefinition) {
@@ -789,11 +832,11 @@ public class DocumentParser {
 	 */
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
-			((FieldImpl) field)
-					.addAnnotation("@GraphQLScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLScalar(graphQLTypeName = \"" + field.getGraphQLTypeName()
+					+ "\", javaClass = " + field.getType().getClassSimpleName() + ".class)");
 		} else {
-			((FieldImpl) field).addAnnotation(
-					"@GraphQLNonScalar(graphqlType = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(graphQLTypeName = \"" + field.getGraphQLTypeName()
+					+ "\", javaClass = " + field.getType().getClassSimpleName() + ".class)");
 		}
 	}
 
@@ -847,8 +890,8 @@ public class DocumentParser {
 					// In these case, we need to create a new field that add the object ID as a parameter of the Data
 					// Fetcher
 					FieldImpl newField = FieldImpl.builder().documentParser(this).name(field.getName())
-							.list(field.isList()).owningType(field.getOwningType()).typeName(field.getTypeName())
-							.build();
+							.list(field.isList()).owningType(field.getOwningType())
+							.graphQLTypeName(field.getGraphQLTypeName()).build();
 
 					// Let's add the id for the owning type of the field, then all its input parameters
 					for (Field inputParameter : field.getInputParameters()) {

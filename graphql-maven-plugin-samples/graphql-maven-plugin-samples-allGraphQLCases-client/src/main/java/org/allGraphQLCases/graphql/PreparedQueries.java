@@ -3,6 +3,7 @@
  */
 package org.allGraphQLCases.graphql;
 
+import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
@@ -18,8 +19,8 @@ import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * This class implements the away to call GraphQl queries, where all queries are prepared before execution.<BR/>
@@ -90,7 +91,7 @@ public class PreparedQueries implements Queries {
 				+ " forname"//
 				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
 				+ " oneWithIdSubType {id name} "//
-				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
 				+ " oneWithoutIdSubType(input: ?input) {name}"//
 				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
 				+ "}").build();
@@ -134,13 +135,15 @@ public class PreparedQueries implements Queries {
 
 	@Override
 	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
-			String textToAppendToTheForname, int nbItemsWithId, Boolean uppercaseNameList,
+			String textToAppendToTheForname, long nbItemsWithId, Date date, List<Date> dates, Boolean uppercaseNameList,
 			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
 			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
-			throws GraphQLRequestExecutionException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.allFieldCases(allFieldCasesResponse, allFieldCasesInput, //
 				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
 				"nbItemsWithId", nbItemsWithId, //
+				"date", date, //
+				"dates", dates, //
 				"uppercaseNameList", uppercaseNameList, //
 				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //
 				"input", input, //

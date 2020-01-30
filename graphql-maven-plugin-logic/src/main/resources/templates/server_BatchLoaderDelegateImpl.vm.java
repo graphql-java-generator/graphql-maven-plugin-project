@@ -18,6 +18,10 @@ import javax.annotation.Resource;
 import org.dataloader.DataLoaderRegistry;
 import org.springframework.stereotype.Component;
 
+#foreach($import in $imports)
+import $import;
+#end
+
 /**
  * This is the default implementation for BathLoaderDelegate. It is implemented for each object of the GraphQL model
  * that has a field of type ID, which is identified as an identifier. <BR/>

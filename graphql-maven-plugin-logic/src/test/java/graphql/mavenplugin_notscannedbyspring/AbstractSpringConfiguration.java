@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
@@ -45,6 +46,7 @@ public abstract class AbstractSpringConfiguration {
 
 	private PluginMode mode;
 	private String schemaPersonalizationFilename = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
+	private List<CustomScalarDefinition> customScalars = null;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -55,10 +57,18 @@ public abstract class AbstractSpringConfiguration {
 	}
 
 	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode,
-			String schemaPersonalizationFilename) {
+			String schemaPersonalizationFilename, List<CustomScalarDefinition> customScalars) {
 		this.schemaFilePattern = schemaFilePattern;
 		this.mode = mode;
 		this.schemaPersonalizationFilename = schemaPersonalizationFilename;
+		this.customScalars = customScalars;
+	}
+
+	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode,
+			List<CustomScalarDefinition> customScalars) {
+		this.schemaFilePattern = schemaFilePattern;
+		this.mode = mode;
+		this.customScalars = customScalars;
 	}
 
 	@Bean
@@ -72,12 +82,13 @@ public abstract class AbstractSpringConfiguration {
 		pluginConfigurationTestHelper.packageName = BASE_PACKAGE + "."
 				+ classname.substring(0, firstDollar).toLowerCase();
 
-		pluginConfigurationTestHelper.sourceEncoding = ENCODING;
+		pluginConfigurationTestHelper.customScalars = customScalars;
 		pluginConfigurationTestHelper.mode = mode;
 		pluginConfigurationTestHelper.schemaFilePattern = schemaFilePattern;
 		pluginConfigurationTestHelper.schemaPersonalizationFile = (PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE
 				.equals(schemaPersonalizationFilename)) ? null
 						: new File(mavenTestHelper.getModulePathFile(), schemaPersonalizationFilename);
+		pluginConfigurationTestHelper.sourceEncoding = ENCODING;
 		pluginConfigurationTestHelper.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
 				(classname.contains("$")) ? classname = classname.substring(0, classname.indexOf('$')) : classname);
 		pluginConfigurationTestHelper.targetClassFolder = new File(

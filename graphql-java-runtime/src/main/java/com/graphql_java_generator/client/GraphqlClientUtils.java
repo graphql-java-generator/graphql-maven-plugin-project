@@ -16,11 +16,12 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * @author EtienneSF
@@ -156,22 +157,24 @@ public class GraphqlClientUtils {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public boolean isScalar(AccessibleObject fieldOrMethod) throws GraphQLRequestPreparationException {
-		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null
+		if (fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null
+				|| fieldOrMethod.getAnnotation(GraphQLScalar.class) != null
 				|| fieldOrMethod.getAnnotation(GraphQLNonScalar.class) != null) {
 			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
-			return fieldOrMethod.getAnnotation(GraphQLScalar.class) != null;
+			return fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null
+					|| fieldOrMethod.getAnnotation(GraphQLScalar.class) != null;
 		} else {
 			// No GraphQLScalar or GraphQLNonScalar annotation: let's thrown an internal error.
 			if (fieldOrMethod instanceof Field) {
 				Field field = (Field) fieldOrMethod;
-				throw new GraphQLRequestPreparationException(
-						"The field <" + field.getName() + "> of the class <" + field.getDeclaringClass().getName()
-								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
+				throw new GraphQLRequestPreparationException("The field <" + field.getName() + "> of the class <"
+						+ field.getDeclaringClass().getName()
+						+ "> has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
 			} else {
 				Method method = (Method) fieldOrMethod;
-				throw new GraphQLRequestPreparationException(
-						"The method <" + method.getName() + "> of the class <" + method.getDeclaringClass().getName()
-								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
+				throw new GraphQLRequestPreparationException("The method <" + method.getName() + "> of the class <"
+						+ method.getDeclaringClass().getName()
+						+ "> has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
 			}
 		}
 	}
@@ -185,24 +188,24 @@ public class GraphqlClientUtils {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Class<?> getGraphQLType(AccessibleObject fieldOrMethod) throws GraphQLRequestPreparationException {
-		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
-			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
-			return fieldOrMethod.getAnnotation(GraphQLScalar.class).graphqlType();
+		if (fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null) {
+			return fieldOrMethod.getAnnotation(GraphQLCustomScalar.class).javaClass();
+		} else if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
+			return fieldOrMethod.getAnnotation(GraphQLScalar.class).javaClass();
 		} else if (fieldOrMethod.getAnnotation(GraphQLNonScalar.class) != null) {
-			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
-			return fieldOrMethod.getAnnotation(GraphQLNonScalar.class).graphqlType();
+			return fieldOrMethod.getAnnotation(GraphQLNonScalar.class).javaClass();
 		} else {
 			// No GraphQLScalar or GraphQLNonScalar annotation: let's thrown an internal error.
 			if (fieldOrMethod instanceof Field) {
 				Field field = (Field) fieldOrMethod;
-				throw new GraphQLRequestPreparationException(
-						"The field <" + field.getName() + "> of the class <" + field.getDeclaringClass().getName()
-								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
+				throw new GraphQLRequestPreparationException("The field <" + field.getName() + "> of the class <"
+						+ field.getDeclaringClass().getName()
+						+ "> has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
 			} else {
 				Method method = (Method) fieldOrMethod;
-				throw new GraphQLRequestPreparationException(
-						"The method <" + method.getName() + "> of the class <" + method.getDeclaringClass().getName()
-								+ "> has none of the GraphQLScalar and GraphQLNonScalar annotation");
+				throw new GraphQLRequestPreparationException("The method <" + method.getName() + "> of the class <"
+						+ method.getDeclaringClass().getName()
+						+ "> has none of the GraphQLCustomScalar, GraphQLScalar or GraphQLNonScalar annotation");
 			}
 		}
 	}

@@ -23,6 +23,11 @@ public interface Type {
 	 */
 	public String getName();
 
+	/** Get the filename where this type must be created. Default is to return the name for the Type */
+	default public String getTargetFileName(String fileType) {
+		return getName();
+	}
+
 	/**
 	 * Returns the annotation or annotations that must be added to this type.
 	 * 
@@ -87,11 +92,9 @@ public interface Type {
 	 */
 	public Field getIdentifier();
 
-	/**
-	 * Returns true if this type is a GraphQL InputObjectType, false otherwise
-	 * 
-	 * @return
-	 */
+	/** Returns true if this type is a GraphQL InputObjectType, false otherwise */
 	public boolean isInputType();
 
+	/** Returns true if this type is a GraphQL Custom Scalar, false otherwise */
+	public boolean isCustomScalar();
 }

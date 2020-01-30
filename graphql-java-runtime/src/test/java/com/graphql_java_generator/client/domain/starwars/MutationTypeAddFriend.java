@@ -1,7 +1,5 @@
 package com.graphql_java_generator.client.domain.starwars;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -20,8 +18,9 @@ public class MutationTypeAddFriend {
 	public Character getAddFriend() {
 		return addFriend;
 	}
-	
-    public String toString() {
-        return "MutationTypeAddFriend {addFriend: " + addFriend + "}";
-    }
+
+	@Override
+	public String toString() {
+		return "MutationTypeAddFriend {addFriend: " + addFriend + "}";
+	}
 }

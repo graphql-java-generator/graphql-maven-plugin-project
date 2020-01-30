@@ -51,10 +51,10 @@ public interface Field {
 	public Type getType();
 
 	/**
-	 * The type of this field. This type is either the type of the field (if it's not a list), or the type of the items
-	 * in the list (if it's a list)
+	 * The type of this field, as defined in the GraphQL schema. This type is either the type of the field (if it's not
+	 * a list), or the type of the items in the list (if it's a list)
 	 */
-	public String getTypeName();
+	public String getGraphQLTypeName();
 
 	/**
 	 * Indicates whether this field is an id or not. It's used in {@link PluginMode#SERVER} mode to add the

@@ -1,13 +1,22 @@
 package com.graphql_java_generator.client.request;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.graphql_java_generator.CustomScalarRegistryImpl;
+import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.annotation.GraphQLCustomScalar;
+import com.graphql_java_generator.annotation.GraphQLInputParameters;
+import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
-import com.graphql_java_generator.client.response.GraphQLRequestPreparationException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import graphql.schema.GraphQLScalarType;
 
 /**
  * This class is a Builder that'll help to build a {@link ObjectResponse}, which defines what should appear in the
@@ -23,6 +32,7 @@ public class Builder {
 	 */
 	private static final String STRING_TOKENIZER_DELIMITER = " {},:()";
 
+	GraphqlUtils graphqlUtils = new GraphqlUtils();
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	final ObjectResponse objectResponse;
@@ -44,10 +54,17 @@ public class Builder {
 	 * @author EtienneSF
 	 */
 	class QueryField {
+		/** The class that contains this field */
+		Class<?> owningClazz;
+		/**
+		 * The GraphQL class of the type, that is: the type of the field if it's not a List. And the type of the items
+		 * of the list, if the field's type is a list
+		 */
+		Class<?> clazz;
 		/** The name of this field */
 		String name;
 		/** The alias of this field */
-		String alias;
+		String alias = null;
 
 		/** The list of input parameters for this QueryFields */
 		List<InputParameter> inputParameters = new ArrayList<>();
@@ -58,7 +75,20 @@ public class Builder {
 		 */
 		List<QueryField> fields = new ArrayList<>();
 
-		QueryField(String name) {
+		/**
+		 * The constructor, when created by the {@link Builder}: it must provide the owningClass
+		 * 
+		 * @param owningClazz
+		 *            The {@link Class} that owns the field
+		 * @param clazz
+		 *            The {@link Class} of the field
+		 * @param name
+		 *            The name of the field
+		 * @throws GraphQLRequestPreparationException
+		 */
+		QueryField(Class<?> owningClazz, Class<?> clazz, String name) throws GraphQLRequestPreparationException {
+			this.owningClazz = owningClazz;
+			this.clazz = clazz;
 			this.name = name;
 		}
 
@@ -103,6 +133,11 @@ public class Builder {
 					while (lastReadField.name.equals(" ")) {
 						lastReadField.name = st.nextToken();
 					}
+
+					// We try to get the class of this field
+					lastReadField.owningClazz = clazz;
+					lastReadField.clazz = getFieldType(clazz, lastReadField.name, true);
+
 					break;
 				case "(":
 					// We're starting the reading of field parameters
@@ -121,6 +156,10 @@ public class Builder {
 						throw new GraphQLRequestPreparationException(
 								"The given query has two '{', one after another (error while reading field <" + name
 										+ ">)");
+					} else if (lastReadField.clazz == null) {
+						throw new GraphQLRequestPreparationException(
+								"Starting reading definition of field '" + lastReadField.name + "' of class '"
+										+ owningClazz.getName() + "', but the owningClass is not set");
 					} else if (lastReadField.fields.size() > 0) {
 						throw new GraphQLRequestPreparationException(
 								"The given query contains a '{' not preceded by a fieldname, after field <"
@@ -139,7 +178,8 @@ public class Builder {
 				default:
 					// It's a field. Scalar or not ? That is the question. We don't care yet. If the next token is a
 					// '{', we'll read its content and fill its fields list.
-					lastReadField = new QueryField(token);
+					lastReadField = new QueryField(clazz, getFieldType(clazz, token, false), token);
+
 					fields.add(lastReadField);
 				}// switch
 			} // while
@@ -202,16 +242,16 @@ public class Builder {
 					case VALUE:
 						// We've read the parameter value. Let's add this parameter.
 						if (token.startsWith("?")) {
-							inputParameters
-									.add(InputParameter.newBindParameter(parameterName, token.substring(1), false));
+							inputParameters.add(new InputParameter(parameterName, token.substring(1), null, false,
+									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("&")) {
-							inputParameters
-									.add(InputParameter.newBindParameter(parameterName, token.substring(1), true));
+							inputParameters.add(new InputParameter(parameterName, token.substring(1), null, true,
+									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("\"") && token.endsWith("\"")) {
 							// The inputParameter starts and ends by "
 							// It's a regular String.
 							String value = token.substring(1, token.length() - 1);
-							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, value));
+							inputParameters.add(new InputParameter(parameterName, null, value, true, null));
 						} else if (token.startsWith("\"") || token.endsWith("\"")) {
 							// Too bad, there is a " only at the end or only at the beginning
 							throw new GraphQLRequestPreparationException(
@@ -219,7 +259,7 @@ public class Builder {
 											+ token + "> of parameter <" + parameterName
 											+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 						} else {
-							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, token));
+							inputParameters.add(new InputParameter(parameterName, null, token, true, null));
 						}
 						step = InputParameterStep.NAME;
 						break;
@@ -229,6 +269,83 @@ public class Builder {
 
 			throw new GraphQLRequestPreparationException(
 					"The list of parameters for the field '" + name + "' is not finished (no closing parenthesis)");
+		}
+
+		/**
+		 * Retrieves the class of the fieldName field of the owningClass class.
+		 * 
+		 * @param owningClass
+		 * @param fieldName
+		 * @param returnIdMandatory
+		 *            If true, a {@link GraphQLRequestPreparationException} is thrown if the field is not found.
+		 * @return The class of the field. Or null of the field doesn't exist, and returnIdMandatory is false
+		 * @throws GraphQLRequestPreparationException
+		 */
+		private Class<?> getFieldType(Class<?> owningClass, String fieldName, boolean returnIdMandatory)
+				throws GraphQLRequestPreparationException {
+			if (owningClass.isInterface()) {
+				// We try to get the class of this getter of the field
+				try {
+					Method method = owningClass.getDeclaredMethod("get" + graphqlUtils.getPascalCase(fieldName));
+
+					// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
+					GraphQLNonScalar graphQLNonScalar = method.getAnnotation(GraphQLNonScalar.class);
+					GraphQLScalar graphQLScalar = method.getAnnotation(GraphQLScalar.class);
+
+					if (graphQLNonScalar != null)
+						return graphQLNonScalar.javaClass();
+					else if (graphQLScalar != null)
+						return graphQLScalar.javaClass();
+					else
+						throw new GraphQLRequestPreparationException(
+								"Error while looking for the getter for the field '" + fieldName
+										+ "' in the interface '" + owningClass.getName()
+										+ "': this method should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
+				} catch (NoSuchMethodException e) {
+					// Hum, the field doesn't exist.
+					if (!returnIdMandatory)
+						return null;
+					else
+						throw new GraphQLRequestPreparationException(
+								"Error while looking for the getter for the field '" + fieldName + "' in the class '"
+										+ owningClass.getName() + "'",
+								e);
+				} catch (SecurityException e) {
+					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
+							+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
+				}
+			} else {
+				// We try to get the class of this field
+				try {
+					Field field = owningClass.getDeclaredField(fieldName);
+
+					// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
+					GraphQLCustomScalar graphQLCustomScalar = field.getAnnotation(GraphQLCustomScalar.class);
+					GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+					GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+
+					if (graphQLCustomScalar != null)
+						return graphQLCustomScalar.javaClass();
+					else if (graphQLNonScalar != null)
+						return graphQLNonScalar.javaClass();
+					else if (graphQLScalar != null)
+						return graphQLScalar.javaClass();
+					else
+						throw new GraphQLRequestPreparationException("Error while looking for the the field '"
+								+ fieldName + "' in the class '" + owningClass.getName()
+								+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
+				} catch (NoSuchFieldException e) {
+					// Hum, the field doesn't exist.
+					if (!returnIdMandatory)
+						return null;
+					else
+						throw new GraphQLRequestPreparationException("Error while looking for the the field '"
+								+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
+				} catch (SecurityException e) {
+					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+							+ "' in the class '" + owningClass.getName() + "'", e);
+				}
+			}
 		}
 
 	}// class QueryField
@@ -315,8 +432,50 @@ public class Builder {
 	 * @param inputParameter
 	 * @return The current {@link Builder}
 	 */
+	@Deprecated
 	public Builder withInputParameter(InputParameter inputParameter) {
 		objectResponse.addInputParameter(inputParameter);
+		return this;
+	}
+
+	/**
+	 * Add an {@link InputParameter} to the current Object Response definition.
+	 * 
+	 * @param name
+	 *            name of the field parameter, as defined in the GraphQL schema
+	 * @param value
+	 *            The value to be sent to the server. If a String, it will be surroundered by double quotes, to be JSON
+	 *            compatible. Otherwise, the toString() method is called to write the result in the GraphQL query.
+	 * @return The current {@link Builder}
+	 */
+	public Builder withInputParameterHardCoded(String name, Object value) {
+		objectResponse.addInputParameter(new InputParameter(name, null, value, true, null));
+		return this;
+	}
+
+	/**
+	 * Add an {@link InputParameter} to the current Object Response definition.
+	 * 
+	 * @param name
+	 *            name of the field parameter, as defined in the GraphQL schema
+	 * @param bindParameterName
+	 *            The name of the parameter, as it will be provided later for the request execution: it's up to the
+	 *            client application to provide (or not) a value associated with this parameterName.
+	 * @param mandatory
+	 *            true if this parameter must be provided for request execution. If mandatory is true, and no value is
+	 *            provided for request execution, a {@link GraphQLRequestExecutionException} exception will be thrown,
+	 *            instead of sending the request to the GraphQL server. Of course, parameter that are mandatory in the
+	 *            GraphQL schema should be declared as mandatory here. But, depending on your client use case, you may
+	 *            declare other parameter to be mandatory.
+	 * @return The current {@link Builder}
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder withInputParameter(String name, String bindParameterName, boolean mandatory)
+			throws GraphQLRequestPreparationException {
+		GraphQLScalarType graphQLScalarType = getCustomScalarGraphQLType(objectResponse.getOwningClass(),
+				objectResponse.getFieldName(), name);
+		objectResponse
+				.addInputParameter(new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType));
 		return this;
 	}
 
@@ -416,7 +575,8 @@ public class Builder {
 				throw new GraphQLRequestPreparationException("The queryResponseDef should start with '{'");
 			}
 
-			QueryField queryField = new QueryField(objectResponse.field.name);
+			QueryField queryField = new QueryField(objectResponse.field.owningClass, objectResponse.field.clazz,
+					objectResponse.field.name);
 			try {
 				queryField.readTokenizerForResponseDefinition(st);
 			} catch (GraphQLRequestPreparationException e) {
@@ -512,5 +672,48 @@ public class Builder {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Retrieves the {@link GraphQLScalarType} from this input parameter, if this parameter is a Custom Scalar
+	 * 
+	 * @param owningClass
+	 *            The class that contains this field
+	 * @param fieldName
+	 *            The field name
+	 * @param parameterName
+	 *            The parameter name, which must be the name for an input parameter for this field in the GraphQL schema
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private GraphQLScalarType getCustomScalarGraphQLType(Class<?> owningClass, String fieldName, String parameterName)
+			throws GraphQLRequestPreparationException {
+
+		Field field;
+		try {
+			field = owningClass.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e) {
+			throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+					+ "' in the class '" + owningClass.getName() + "'", e);
+		}
+
+		GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
+		if (inputParams == null)
+			throw new GraphQLRequestPreparationException("The field '" + fieldName + "' of the class '"
+					+ owningClass.getName() + "' has no input parameters. Error while looking for its '" + parameterName
+					+ "' input parameter");
+
+		for (int i = 0; i < inputParams.names().length; i += 1) {
+			if (inputParams.names()[i].equals(parameterName)) {
+				// We've found the expected parameter
+				String typeName = inputParams.types()[i];
+				return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
+			}
+		}
+
+		throw new GraphQLRequestPreparationException(
+				"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
+						+ "' of the class '" + owningClass.getName() + "'");
+
 	}
 }

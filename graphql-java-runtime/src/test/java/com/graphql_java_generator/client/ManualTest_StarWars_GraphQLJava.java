@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
-import com.graphql_java_generator.client.response.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;

@@ -88,7 +88,7 @@ public class JsonSchemaPersonalization {
 						FieldImpl newField = FieldImpl.builder().documentParser(documentParser).build();
 						newField.setName(field.getName());
 						newField.setOwningType(objectType);
-						newField.setTypeName(field.getType());
+						newField.setGraphQLTypeName(field.getType());
 						if (field.getId() != null) {
 							newField.setId(field.getId());
 						}
@@ -116,7 +116,7 @@ public class JsonSchemaPersonalization {
 
 						existingField.setName(field.getName());
 						if (field.getType() != null) {
-							existingField.setTypeName(field.getType());
+							existingField.setGraphQLTypeName(field.getType());
 						}
 						if (field.getId() != null) {
 							existingField.setId(field.getId());

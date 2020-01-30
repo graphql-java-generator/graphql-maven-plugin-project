@@ -1,7 +1,10 @@
 package com.graphql_java_generator.plugin.test.helper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
 import com.graphql_java_generator.plugin.PluginConfiguration;
@@ -18,6 +21,8 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	final Logger log;
+
+	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
 	public PluginMode mode = null;
 	public String packageName = null;
 	public Packaging packaging = null;
@@ -40,4 +45,5 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public boolean getGenerateJPAAnnotation() {
 		return true;
 	}
+
 }
