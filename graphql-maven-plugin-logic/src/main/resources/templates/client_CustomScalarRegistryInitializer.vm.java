@@ -14,13 +14,13 @@ public class CustomScalarRegistryInitializer {
 
 #foreach ($customScalar in $customScalars)
 #if (${customScalar.graphQLScalarTypeClass})
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(new ${customScalar.graphQLScalarTypeClass}());
+		customScalarRegistry.registerGraphQLScalarType(new ${customScalar.graphQLScalarTypeClass}());
 #elseif (${customScalar.graphQLScalarTypeStaticField})
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeStaticField});
+		customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeStaticField});
 #elseif (${customScalar.graphQLScalarTypeGetter})
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeGetter}());
+		customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeGetter}());
 #else
-		.scalar(): ${customScalar.name} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
+		customScalarRegistry.registerGraphQLScalarType: ${customScalar.name} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end
 #end
 
