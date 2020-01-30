@@ -36,6 +36,7 @@ public class QueryType {
 	 */
 	public QueryType(String graphqlEndpoint) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint);
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 	}
 
 	/**

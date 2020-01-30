@@ -36,6 +36,7 @@ public class MutationType {
 	 */
 	public MutationType(String graphqlEndpoint) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint);
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 	}
 
 	/**

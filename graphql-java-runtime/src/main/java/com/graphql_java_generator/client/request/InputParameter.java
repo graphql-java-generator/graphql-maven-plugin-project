@@ -47,6 +47,14 @@ public class InputParameter {
 	/** Indicates whether this parameter is mandatory or not */
 	final boolean mandatory;
 
+	/**
+	 * If this input parameter's type is a GraphQL Custom Scalar, it is initialized in the constructor. Otherwise, it is
+	 * null. <BR/>
+	 * graphQLScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String that can be
+	 * written in the GraphQL request, or convert from a String that is found in the GraphQL response. If this type is
+	 * not a GraphQL Custom Scalar, it must be null.
+	 * 
+	 */
 	final GraphQLScalarType graphQLScalarType;
 
 	/**
@@ -64,6 +72,7 @@ public class InputParameter {
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
+	@Deprecated
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory) {
 		return InputParameter.newBindParameter(name, bindParameterName, mandatory, null);
 	}
@@ -89,6 +98,7 @@ public class InputParameter {
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
+	@Deprecated
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory,
 			GraphQLScalarType graphQLScalarType) {
 		return new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType);
@@ -102,6 +112,7 @@ public class InputParameter {
 	 * @param value
 	 * @return
 	 */
+	@Deprecated
 	public static InputParameter newHardCodedParameter(String name, Object value) {
 		return new InputParameter(name, null, value, true, null);
 	}
@@ -131,7 +142,7 @@ public class InputParameter {
 	 *            that can be written in the GraphQL request, or convert from a String that is found in the GraphQL
 	 *            response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 */
-	private InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
+	InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
 			GraphQLScalarType graphQLScalarType) {
 		this.name = name;
 		this.bindParameterName = bindParameterName;

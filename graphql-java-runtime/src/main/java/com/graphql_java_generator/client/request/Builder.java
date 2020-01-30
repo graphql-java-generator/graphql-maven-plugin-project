@@ -13,6 +13,7 @@ import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.schema.GraphQLScalarType;
@@ -241,16 +242,16 @@ public class Builder {
 					case VALUE:
 						// We've read the parameter value. Let's add this parameter.
 						if (token.startsWith("?")) {
-							inputParameters.add(InputParameter.newBindParameter(parameterName, token.substring(1),
-									false, getCustomScalarGraphQLType(owningClazz, name, parameterName)));
+							inputParameters.add(new InputParameter(parameterName, token.substring(1), null, false,
+									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("&")) {
-							inputParameters.add(InputParameter.newBindParameter(parameterName, token.substring(1), true,
+							inputParameters.add(new InputParameter(parameterName, token.substring(1), null, true,
 									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("\"") && token.endsWith("\"")) {
 							// The inputParameter starts and ends by "
 							// It's a regular String.
 							String value = token.substring(1, token.length() - 1);
-							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, value));
+							inputParameters.add(new InputParameter(parameterName, null, value, true, null));
 						} else if (token.startsWith("\"") || token.endsWith("\"")) {
 							// Too bad, there is a " only at the end or only at the beginning
 							throw new GraphQLRequestPreparationException(
@@ -258,7 +259,7 @@ public class Builder {
 											+ token + "> of parameter <" + parameterName
 											+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 						} else {
-							inputParameters.add(InputParameter.newHardCodedParameter(parameterName, token));
+							inputParameters.add(new InputParameter(parameterName, null, token, true, null));
 						}
 						step = InputParameterStep.NAME;
 						break;
@@ -347,50 +348,6 @@ public class Builder {
 			}
 		}
 
-		/**
-		 * Retrieves the {@link GraphQLScalarType} from the provided input parameter
-		 * 
-		 * @param owningClass
-		 *            The class that contains this field
-		 * @param fieldName
-		 *            The field name
-		 * @param parameterName
-		 *            The parameter name, which must be the name for an input parameter for this field in the GraphQL
-		 *            schema
-		 * @return
-		 * @throws GraphQLRequestPreparationException
-		 */
-		private GraphQLScalarType getCustomScalarGraphQLType(Class<?> owningClass, String fieldName,
-				String parameterName) throws GraphQLRequestPreparationException {
-
-			Field field;
-			try {
-				field = owningClass.getDeclaredField(fieldName);
-			} catch (NoSuchFieldException | SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-						+ "' in the class '" + owningClass.getName() + "'", e);
-			}
-
-			GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
-			if (inputParams == null)
-				throw new GraphQLRequestPreparationException("The field '" + fieldName + "' of the class '"
-						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
-						+ parameterName + "' input parameter");
-
-			for (int i = 0; i < inputParams.names().length; i += 1) {
-				if (inputParams.names()[i].equals(parameterName)) {
-					// We've found the expected parameter
-					String typeName = inputParams.types()[i];
-					return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
-				}
-			}
-
-			throw new GraphQLRequestPreparationException(
-					"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
-							+ "' of the class '" + owningClass.getName() + "'");
-
-		}
-
 	}// class QueryField
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,8 +432,50 @@ public class Builder {
 	 * @param inputParameter
 	 * @return The current {@link Builder}
 	 */
+	@Deprecated
 	public Builder withInputParameter(InputParameter inputParameter) {
 		objectResponse.addInputParameter(inputParameter);
+		return this;
+	}
+
+	/**
+	 * Add an {@link InputParameter} to the current Object Response definition.
+	 * 
+	 * @param name
+	 *            name of the field parameter, as defined in the GraphQL schema
+	 * @param value
+	 *            The value to be sent to the server. If a String, it will be surroundered by double quotes, to be JSON
+	 *            compatible. Otherwise, the toString() method is called to write the result in the GraphQL query.
+	 * @return The current {@link Builder}
+	 */
+	public Builder withInputParameterHardCoded(String name, Object value) {
+		objectResponse.addInputParameter(new InputParameter(name, null, value, true, null));
+		return this;
+	}
+
+	/**
+	 * Add an {@link InputParameter} to the current Object Response definition.
+	 * 
+	 * @param name
+	 *            name of the field parameter, as defined in the GraphQL schema
+	 * @param bindParameterName
+	 *            The name of the parameter, as it will be provided later for the request execution: it's up to the
+	 *            client application to provide (or not) a value associated with this parameterName.
+	 * @param mandatory
+	 *            true if this parameter must be provided for request execution. If mandatory is true, and no value is
+	 *            provided for request execution, a {@link GraphQLRequestExecutionException} exception will be thrown,
+	 *            instead of sending the request to the GraphQL server. Of course, parameter that are mandatory in the
+	 *            GraphQL schema should be declared as mandatory here. But, depending on your client use case, you may
+	 *            declare other parameter to be mandatory.
+	 * @return The current {@link Builder}
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder withInputParameter(String name, String bindParameterName, boolean mandatory)
+			throws GraphQLRequestPreparationException {
+		GraphQLScalarType graphQLScalarType = getCustomScalarGraphQLType(objectResponse.getOwningClass(),
+				objectResponse.getFieldName(), name);
+		objectResponse
+				.addInputParameter(new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType));
 		return this;
 	}
 
@@ -673,5 +672,48 @@ public class Builder {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Retrieves the {@link GraphQLScalarType} from this input parameter, if this parameter is a Custom Scalar
+	 * 
+	 * @param owningClass
+	 *            The class that contains this field
+	 * @param fieldName
+	 *            The field name
+	 * @param parameterName
+	 *            The parameter name, which must be the name for an input parameter for this field in the GraphQL schema
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private GraphQLScalarType getCustomScalarGraphQLType(Class<?> owningClass, String fieldName, String parameterName)
+			throws GraphQLRequestPreparationException {
+
+		Field field;
+		try {
+			field = owningClass.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e) {
+			throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+					+ "' in the class '" + owningClass.getName() + "'", e);
+		}
+
+		GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
+		if (inputParams == null)
+			throw new GraphQLRequestPreparationException("The field '" + fieldName + "' of the class '"
+					+ owningClass.getName() + "' has no input parameters. Error while looking for its '" + parameterName
+					+ "' input parameter");
+
+		for (int i = 0; i < inputParams.names().length; i += 1) {
+			if (inputParams.names()[i].equals(parameterName)) {
+				// We've found the expected parameter
+				String typeName = inputParams.types()[i];
+				return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
+			}
+		}
+
+		throw new GraphQLRequestPreparationException(
+				"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
+						+ "' of the class '" + owningClass.getName() + "'");
+
 	}
 }

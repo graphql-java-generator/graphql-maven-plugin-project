@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.graphql_java_generator.CustomScalarRegistryImpl;
 import com.graphql_java_generator.client.domain.forum.MutationType;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.starwars.Character;
@@ -33,7 +32,6 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.customcalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.exception.GraphQLResponseParseException;
@@ -388,10 +386,6 @@ class QueryExecutorImplTest {
 				+ "\"content\":\"Some other content\"," + "\"publiclyAvailable\":false,"
 				+ "\"author\":{\"id\":\"00000000-0000-0000-0000-000000000012\"}}}}";
 
-		// We must register the GraphQLScalarTypeDate for this tests, and unregister it at the end (to not pollute
-		// the context)
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(new GraphQLScalarTypeDate());
-
 		// Go, go, go
 		Post post = parseResponseForForumSchema(rawResponse, createPostResponse, Post.class);
 
@@ -399,9 +393,6 @@ class QueryExecutorImplTest {
 		@SuppressWarnings("deprecation")
 		Date date = new Date(2009 - 1900, 11 - 1, 21);// Years starts at 1900. Month is between 0 and 11
 		assertEquals(date, post.getDate(), "The Custom Scalar date should have been properly deserialized");
-
-		// Clearing
-		CustomScalarRegistryImpl.customScalarRegistry = new CustomScalarRegistryImpl();
 	}
 
 	/**
