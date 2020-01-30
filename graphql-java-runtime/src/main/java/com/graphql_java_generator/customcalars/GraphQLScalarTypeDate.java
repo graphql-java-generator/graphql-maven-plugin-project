@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import graphql.language.StringValue;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -120,12 +121,13 @@ public class GraphQLScalarTypeDate extends GraphQLScalarType {
 					 */
 					@Override
 					public Date parseLiteral(Object o) throws CoercingParseLiteralException {
-						if (!(o instanceof String)) {
+						// o is an AST, that is: an instance of a class that implements graphql.language.Value
+						if (!(o instanceof StringValue)) {
 							throw new CoercingParseValueException(
 									"Can't parse the '" + o.toString() + "' string to a Date");
 						} else {
 							try {
-								return formater.parse((String) o);
+								return formater.parse(((StringValue) o).getValue());
 							} catch (ParseException e) {
 								throw new CoercingParseValueException(e.getMessage(), e);
 							}
