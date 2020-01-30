@@ -43,6 +43,10 @@ You'll find the following samples in the project. For all of these samples, ther
     * It also contains an "error" query, which always returns an error. This allows you to check how to manage errors returned when executing a GraphQL query.
     * The server is packaged as a Spring Boot application
     * The GraphQL server exposes http
+* allGraphQLCases
+    * This project is a compilation of GraphQL capabilities ... that are managed by this plugin. Its main objective is for integration testing.
+    * The server is packaged as a Spring Boot application
+    * The GraphQL server exposes http
 *  Forum
     * The server is packaged as a Spring Boot application
     * The GraphQL server exposes http
@@ -139,12 +143,16 @@ You'll find all the info on the [server](server.html) page.
 # Main evolutions for the near future
 
 You'll find below the main changes, that are planned in the near future:
-- (work in progress) Allow definition of specific Scalars (for instance Date, DateTime, Time)
+- Fragment in graphql queries
 - Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 - Add a gradle plugin (work in progress)
 - Manage properties which name are java keyword, like: public, private, class... Currently, it would generate a compilation error.
 - Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
-- Fragment in graphql queries
+
+
+# Change log
+
+The [Change Log](CHANGELOG.md) is avaible [here](CHANGELOG.md)
 
 
 # Note for contributors
