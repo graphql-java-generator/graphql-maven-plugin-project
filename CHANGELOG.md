@@ -1,12 +1,18 @@
 
+1.1
 
-1.x
+Any mode, client or server:
+- Custom Scalars are now properly managed. You can provide your own Custom Scalars, or used the ones defined by graphql-java
+- Fixed issue 8: Problem when using Boolean Type with property prefix "is"
+
+
+1.2
 
 
 Any mode, client or server:
 - Corrected a bad dependency version, which prevents the released plugin to work
 - Input object types are now accepted
-- All GraphQL exceptions have been moved into the com.graphql_java_generator.exception package
+- [CAUTION, code impact] All GraphQL exceptions have been moved into the com.graphql_java_generator.exception package
 
 Client mode:
 - Connection to https is made simpler (just declare the https URL)
