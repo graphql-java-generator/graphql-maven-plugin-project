@@ -1,0 +1,4 @@
+com.graphql_java_generator.plugin
+com.graphql_java_generator.plugin.language
+com.graphql_java_generator.plugin.language.impl
+com.graphql_java_generator.plugin.schema_personalization
