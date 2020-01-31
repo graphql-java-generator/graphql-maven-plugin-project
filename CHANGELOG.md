@@ -1,5 +1,11 @@
 
-# commited but not released
+# Commited but not released
+
+Nothing yet...
+
+
+# 1.3
+
 
 Any mode, client or server:
 - Custom Scalars are now properly managed. You can provide your own Custom Scalars, or used the ones defined by graphql-java
