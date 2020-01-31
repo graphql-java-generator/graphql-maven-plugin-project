@@ -4,6 +4,19 @@ This page is more an internal howto, to remind of the step to publish the projec
 
 And of course, if it can be useful for anyone to publish a site, then, it's nice! :)
 
+## Check list
+
+Before publishing:
+
+* Check that the user has access on the owner of the git repository, as the last step works only if connected on githib with the owner of the repository.
+
+* Check the TODO list: some done work may still be on the TODO list.
+
+* Update the CHANGELOG.md:
+    * Check the version for the updates being released
+    * Check that all the done job is described 
+
+
 ## Configuring the domain name
 
 The standard way of publishing a web site on github, is to push the site on the gh-pages branch of the project. Then, check the settings of the project. At this stage, the project site is available at this URL: [https://graphql-java-generator.github.io/graphql-maven-plugin-project/](https://graphql-java-generator.github.io/graphql-maven-plugin-project/).
