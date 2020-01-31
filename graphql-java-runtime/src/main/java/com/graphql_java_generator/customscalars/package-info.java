@@ -3,4 +3,4 @@
  * them.
  */
 
-package com.graphql_java_generator.customcalars;
+package com.graphql_java_generator.customscalars;

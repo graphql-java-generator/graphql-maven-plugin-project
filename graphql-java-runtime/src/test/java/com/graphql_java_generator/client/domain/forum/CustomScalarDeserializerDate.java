@@ -4,7 +4,7 @@
 package com.graphql_java_generator.client.domain.forum;
 
 import com.graphql_java_generator.client.response.AbstractCustomScalarDeserializer;
-import com.graphql_java_generator.customcalars.GraphQLScalarTypeDate;
+import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 
 /**
  * @author EtienneSF

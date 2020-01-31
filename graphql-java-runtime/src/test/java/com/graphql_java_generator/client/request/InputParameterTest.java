@@ -19,7 +19,7 @@ import com.graphql_java_generator.client.domain.forum.AvailabilityType;
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.domain.starwars.Episode;
-import com.graphql_java_generator.customcalars.GraphQLScalarTypeDate;
+import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 import graphql.Scalars;

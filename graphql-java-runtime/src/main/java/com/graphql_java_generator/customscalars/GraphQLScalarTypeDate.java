@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.customcalars;
+package com.graphql_java_generator.customscalars;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

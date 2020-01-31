@@ -48,7 +48,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * <LI>javaType: The full class name for the java type that contains the data for this type, once in the Java
 	 * code</LI>
 	 * <LI>graphQLScalarTypeClass: The full class name for the {@link GraphQLScalarType} that will manage this Custom
-	 * Scalar. For instance: <I>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</I>.<BR/>
+	 * Scalar. For instance: <I>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</I>.<BR/>
 	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
 	 * graphQLScalarTypeGetter.</LI>
 	 * <LI>graphQLScalarTypeStaticField: The full class name followed by the static field name that contains the

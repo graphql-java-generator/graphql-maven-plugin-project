@@ -26,7 +26,7 @@ public class CustomScalarDefinition {
 
 	/**
 	 * The full class name for the {@link GraphQLScalarType} that will manage this Custom Scalar. For instance:
-	 * <I>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</I>.<BR/>
+	 * <I>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</I>.<BR/>
 	 * You must provide exactly one of: graphQLScalarTypeClass, graphQLScalarTypeStaticField and
 	 * graphQLScalarTypeGetter.
 	 */

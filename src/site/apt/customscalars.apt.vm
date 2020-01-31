@@ -57,7 +57,7 @@ scalar Date
   you'll use to implement the serialization and deserialization methods.
   
   To help you implement a <graphql.schema.GraphQLScalarType>, we provided you a good sample, that you can copy/paste/change: the 
-  <{{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-java-runtime/src/main/java/com/graphql_java_generator/customcalars/GraphQLScalarTypeDate.java}com.graphql_java_generator.customcalars.GraphQLScalarTypeDate}}>.
+  <{{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-java-runtime/src/main/java/com/graphql_java_generator/customscalars/GraphQLScalarTypeDate.java}com.graphql_java_generator.customscalars.GraphQLScalarTypeDate}}>.
   We pasted the javadoc for the <graphql.schema.Coercing> interface, so that you properly understand what's expected.
 
 ** {Use a Custom Scalar implemented by graphql-java}
@@ -93,7 +93,7 @@ scalar Date
   * The implementation. It may be declared by one of the three ways below. Of course, you must use one and only one of these parameter, for each Custom Scalar :
   
     * graphQLScalarTypeClass: The full class name for the <graphql.schema.GraphQLScalarType> that will manage this Custom Scalar. For instance: 
-    <com.graphql_java_generator.customcalars.GraphQLScalarTypeDate>.
+    <com.graphql_java_generator.customscalars.GraphQLScalarTypeDate>.
 	
 	* graphQLScalarTypeStaticField: The full class name followed by the static field name that contains the <graphql.schema.GraphQLScalarType> that will manage 
 	this Custom Scalar. For instance: <graphql.Scalars.GraphQLLong>.
@@ -136,7 +136,7 @@ scalar Date
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>
 							<javaType>java.util.Date</javaType>
-							<graphQLScalarTypeClass>com.graphql_java_generator.customcalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
+							<graphQLScalarTypeClass>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
 						</customScalar>
 						<customScalar>
 							<graphQLTypeName>Long</graphQLTypeName>
