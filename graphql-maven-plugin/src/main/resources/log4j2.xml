@@ -13,8 +13,8 @@
 	</Appenders>
 
 	<Loggers>
-		<Logger name="com.graphql_java_generator" level="debug" />
-		<Logger name="org.springframework" level="debug" />
+		<Logger name="com.graphql_java_generator" level="info" />
+		<Logger name="org.springframework" level="info" />
 		<Root level="info">
 			<AppenderRef ref="Console" />
 			<!-- AppenderRef ref="File" /-->
