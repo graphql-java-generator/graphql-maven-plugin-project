@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -27,6 +25,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -69,17 +68,17 @@ public class CodeGenerator {
 
 	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
 
-	@Resource
+	@Autowired
 	DocumentParser documentParser;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
-	@Resource
+	@Autowired
 	PluginConfiguration pluginConfiguration;
 
 	/** The component that reads the GraphQL schema from the file system */
-	@Resource
+	@Autowired
 	ResourceSchemaStringProvider resourceSchemaStringProvider;
 
 	/** The Velocity engine used to generate the target file */

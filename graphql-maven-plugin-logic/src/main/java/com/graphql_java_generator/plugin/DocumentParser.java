@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.persistence.Entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
@@ -85,20 +86,20 @@ public class DocumentParser {
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
-	@Resource
+	@Autowired
 	PluginConfiguration pluginConfiguration;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
 
-	@Resource
+	@Autowired
 	List<Document> documents;
 
 	/**
 	 * The {@link JsonSchemaPersonalization} allows the user to update what the plugin would have generate, through a
 	 * json configuration file
 	 */
-	@Resource
+	@Autowired
 	JsonSchemaPersonalization jsonSchemaPersonalization;
 
 	/**
