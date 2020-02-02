@@ -270,7 +270,7 @@ class QueryExecutorImplTest {
 				.withField("id").withField("name").withField("appearsIn")
 				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
 
-		assertThrows(NullPointerException.class,
+		assertThrows(IllegalArgumentException.class,
 				() -> parseResponseForStarWarsSchema(null, objectResponse, Character.class));
 
 		exception = assertThrows(JsonParseException.class,
