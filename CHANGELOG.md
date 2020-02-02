@@ -1,7 +1,8 @@
 
 # Commited but not released
 
-Nothing yet...
+- Adding extension in the pom, to prevent a NoSuchMethodError (java.lang.String javax.annotation.Resource.lookup()) with JDK from 9 and above
+ 
 
 
 # 1.3
