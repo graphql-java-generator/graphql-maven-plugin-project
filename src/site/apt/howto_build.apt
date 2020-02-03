@@ -37,15 +37,17 @@ How-to build the project
   
   * graphql-maven-plugin-samples-allGraphQLCases-server. This project is more used as integration test than a real sample, as there is no real 
   functionality. It contains various combinations that allow to validate the generated code, especially the AllGraphQLCases type. It also contains some
-  Custom Scalars. The server is package as a Spring Boot application, and is executed on a http URL.
+  <<Custom Scalars>>. The server is package as a Spring Boot application, and is executed on a http URL.
   
-  * graphql-maven-plugin-samples-allGraphQLCases-client. This project allows to test complex behaviors on client side, especially the AllGraphQLCases type.   
+  * graphql-maven-plugin-samples-allGraphQLCases-client. This project allows to test complex behaviors on client side, especially the AllGraphQLCases type.
+  It contains integration testing that starts the associated server, then connect to it.   
   
   * graphql-maven-plugin-samples-Forum-server. This project is a GraphQL API to manage a simple forum. It embeds an in memory database, that is filled at
-  startup time with simulated data. This data is used in the integration tests in the client, see below.
+  startup time with simulated data. This data is also used in the integration tests in the client, see below. It contains a sample for <<Custom Scalar>>
+  and for <<Schema personalization>> (you can change the generated objects through a personalization file).
   The server is package as a Spring Boot application, and is executed on a http URL.
   
-  * graphql-maven-plugin-samples-Forum-client
+  * graphql-maven-plugin-samples-Forum-client. Demonstration for <<Custom Scalar>>
   
   * graphql-maven-plugin-samples-StarWars-server.
   The server is package as a WAR application, and is executed on a https URL.
