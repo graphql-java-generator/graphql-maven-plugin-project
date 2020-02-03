@@ -10,7 +10,7 @@
 
 	<artifactId>graphql-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<name>Graphql Java Maven Plugin</name>
+	<name>graphql-maven-plugin</name>
 	<description>Maven plugin to generate the graphql code, based on graphqs files</description>
 
 
