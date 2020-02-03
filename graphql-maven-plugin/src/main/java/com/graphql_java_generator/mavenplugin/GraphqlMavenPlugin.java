@@ -68,7 +68,9 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars")
 	List<CustomScalarDefinition> customScalars = null;
 
-	/** Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode. */
+	/**
+	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
+	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = "false")
 	boolean generateJPAAnnotation;
 
@@ -117,7 +119,9 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = PluginConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	String targetSourceFolder;
 
-	/** Not available to the user: the {@link MavenProject} in which the plugin executes */
+	/**
+	 * Not available to the user: the {@link MavenProject} in which the plugin executes
+	 */
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	MavenProject project;
 
@@ -132,7 +136,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			SpringConfiguration.mojo = this;
 			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
-			// Let's log the current configuration (this will do something only when in debug mode)
+			// Let's log the current configuration (this will do something only when in
+			// debug mode)
 			ctx.getBean(PluginConfiguration.class).logConfiguration();
 
 			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
@@ -146,8 +151,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			File targetDir = new File(project.getBasedir(), "target");
 			project.addCompileSourceRoot(new File(targetDir, targetSourceFolder).getAbsolutePath());
 
-			getLog().info(nbGeneratedClasses + " java classes have been generated the schema(s) '" + schemaFilePattern
-					+ "' in the package '" + packageName + "'");
+			getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
+					+ schemaFilePattern + "' in the package '" + packageName + "'");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
