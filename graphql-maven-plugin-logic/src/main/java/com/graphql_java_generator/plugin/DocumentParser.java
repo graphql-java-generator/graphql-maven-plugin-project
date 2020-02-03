@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.persistence.Entity;
 
 import org.springframework.beans.factory.annotation.Autowired;
