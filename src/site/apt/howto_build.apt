@@ -1,0 +1,114 @@
+               ------------------------------------------
+               GraphQL Maven Plugin (HowTo Build the project)
+               ------------------------------------------
+               ------------------------------------------
+               ------------------------------------------
+
+
+How-to build the project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%{toc}
+	
+* {Project organization}
+~~~~~~~~~~~~~~~~~~~
+
+  This a muti-module projects. The modules are (in build order)
+  
+  * graphql-maven-plugin-project: The root pom. 
+  It contains the pages for the site, and its pom contains the declaration for every dependency and plugin version.
+  
+  * graphql-java-client-dependencies: This project is just a pom, that contains the dependencies for the client mode.
+
+  * graphql-java-server-dependencies: This project is just a pom, that contains the dependencies for the server mode.
+  
+  * graphql-java-runtime: This project contains the code that is necessary at runtime. Its source is copied along with the generated source,
+  so that no dependency from graphql-java-generator is necessary at runtime. And this insures that the runtime is of the good version,
+  as expected by the generated code.  
+  
+  * graphql-maven-plugin-logic: The heart of the plugin. This project contains the code that parses the GraphQL schema, then generates the code.
+  It's reused for the Maven plugin and the Gradle plugin.
+  
+  * graphql-maven-plugin: This project embeds the graphql-maven-plugin-logic into a Maven plugin.   
+  
+  * graphql-maven-plugin-samples: Just a container for all the samples for this project. All these projects are both samples and integration tests.
+  For each sample, there is a server and a client. The client project depends on the server one: the integration tests are in the client project.
+  The client project starts the server, then execute integration tests against it.   
+  
+  * graphql-maven-plugin-samples-allGraphQLCases-server. This project is more used as integration test than a real sample, as there is no real 
+  functionality. It contains various combinations that allow to validate the generated code, especially the AllGraphQLCases type. It also contains some
+  Custom Scalars. The server is package as a Spring Boot application, and is executed on a http URL.
+  
+  * graphql-maven-plugin-samples-allGraphQLCases-client. This project allows to test complex behaviors on client side, especially the AllGraphQLCases type.   
+  
+  * graphql-maven-plugin-samples-Forum-server. This project is a GraphQL API to manage a simple forum. It embeds an in memory database, that is filled at
+  startup time with simulated data. This data is used in the integration tests in the client, see below.
+  The server is package as a Spring Boot application, and is executed on a http URL.
+  
+  * graphql-maven-plugin-samples-Forum-client
+  
+  * graphql-maven-plugin-samples-StarWars-server.
+  The server is package as a WAR application, and is executed on a https URL.
+  
+  * graphql-maven-plugin-samples-StarWars-client.
+  For integration tests, the WAR server is started into a tomcat, and exposed as an https URL.
+  
+  []
+
+	
+* {HowTo compile}
+~~~~~~~~~~~~~~~~~~~
+
+** {Lombok}
+~~~~~~~~~~~~~~~~~~~
+
+  {{{https://projectlombok.org/}Lombok}} is an excellent tool that generated getters, setters, construtors (and mode) from one annotation.
+  
+  The plugin uses it a lot, to make the code lighter and easier to read. 
+  
+  You need to install lombok, for your favorite IDE:
+  
+  * Download the last version: {{https://projectlombok.org/downloads/lombok.jar}}
+  
+  * Execute this jar, once downloaded and follow the instructions
+  
+    ** For instance: <java -jar Downloads/lombok.jar>
+  
+  * Restart your IDE
+  
+  * It should be enough. If not, the {{{https://projectlombok.org/}Lombok site}} is every clear.
+  
+  []
+  
+  
+  <<Note:>> The generated code doesn't use Lombok.
+
+
+** {Compile the samples}
+~~~~~~~~~~~~~~~~~~~
+
+  The project should have been imported into your IDE.
+  
+  If not, check why your IDE didn't properly import a multi-module Maven project. 
+  
+  If you properly configured Lombok (see here above), everything should compile, out of the samples.
+  
+  To compile the samples (at least with eclipse), you need to add the generated code in the build path, as the project code uses it.
+
+  * Start with a full build (<mvn clean install>), to be sure all modules are Ok, then:  
+
+  * For eclipse: 
+  
+    * Open the <Project explorer> view,
+    
+    * Navigate to the target folder of the sample you want to compile,
+    
+    * right click on the target/generated-sources/graphql-maven-plugin folder,
+    
+    * Choose <Build Path / USe to Source Folder>.
+    
+    * Alternatively, you can open the project properties, and update directly the Build Path there.
+    
+  * For other IDE: please fork the project on github, and provide a Pull Request with the relevant doc.
+  
+  []
