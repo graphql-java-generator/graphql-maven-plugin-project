@@ -1,6 +1,7 @@
 scalar Date
 scalar Long
 
+# directives are currently ignored
 directive @deprecated(
   reason: String = "No longer supported"
 ) on FIELD_DEFINITION | ENUM_VALUE
@@ -102,13 +103,20 @@ input AllFieldCasesWithoutIdSubtypeInput {
     name: String!
 }
 
+enum Unit {
+    YEAR
+    MONTH
+    MINUTE
+}
+
+
 # This type is a clone of the InterfaceAllFieldCases interface. 
 # Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
 type AllFieldCases {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
-    age: Long!   @deprecated(reason: "This is a test")
+    age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
     date: Date
     dates: [Date]!
     nbComments: Int

@@ -64,11 +64,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(25, i, "Nb classes are generated");
+		assertEquals(26, i, "Nb classes are generated");
 		assertEquals(17, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(2, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
-		assertEquals(1, documentParser.enumTypes.size(), "Nb enums");
+		assertEquals(2, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
 		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
 		assertEquals(1, documentParser.subscriptionTypes.size(), "Nb subscriptions");
@@ -117,7 +117,9 @@ class DocumentParserTest_allGraphQLCases_Server {
 		j += 1;
 		// age: Long!
 		checkField(type, j, "age", false, true, null, "Long", "java.lang.Long");
-		checkNbInputParameter(type, j, 0);
+		checkNbInputParameter(type, j, 1);
+		checkInputParameter(type, j, 0, "unit", false, false, null, "Unit",
+				pluginConfiguration.getPackageName() + ".Unit", "YEAR");
 		j += 1;
 		// date: Date
 		checkField(type, j, "date", false, false, null, "Date", "java.util.Date");
