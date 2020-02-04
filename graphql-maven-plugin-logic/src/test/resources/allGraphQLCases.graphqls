@@ -1,6 +1,10 @@
 scalar Date
 scalar Long
 
+directive @deprecated(
+  reason: String = "No longer supported"
+) on FIELD_DEFINITION | ENUM_VALUE
+
 schema {
 	#A comment on the query
     query: MyQueryType
@@ -45,6 +49,7 @@ enum Episode {
     NEWHOPE
     EMPIRE
     JEDI
+    DOES_NOT_EXIST @deprecated(reason: "This is not an existing episode!")
 }
 
 interface WithID {
@@ -103,7 +108,7 @@ type AllFieldCases {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
-    age: Long!
+    age: Long!   @deprecated(reason: "This is a test")
     date: Date
     dates: [Date]!
     nbComments: Int

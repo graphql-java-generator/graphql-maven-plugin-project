@@ -1,7 +1,8 @@
 
 # Commited but not released
 
-- Adding extension in the pom, to prevent a NoSuchMethodError (java.lang.String javax.annotation.Resource.lookup()) with JDK from 9 and above
+- The project now compiles up to JDK 13 (the generated code is still compatible with java 8 and higher)
+- Unknown GraphQL concept are now ignored (instead of blocking the plugin work by throwing an error)
  
 
 

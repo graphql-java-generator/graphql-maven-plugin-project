@@ -300,7 +300,7 @@ public class DocumentParser {
 			} else if (node instanceof SchemaDefinition) {
 				// No action, we already parsed it
 			} else {
-				throw new RuntimeException("Unknown node type: " + node.getClass().getName());
+				pluginConfiguration.getLog().warn("Non managed node type: " + node.getClass().getName());
 			}
 		} // for
 

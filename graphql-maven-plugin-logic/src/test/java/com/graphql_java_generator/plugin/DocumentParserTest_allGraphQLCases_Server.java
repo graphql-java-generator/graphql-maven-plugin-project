@@ -436,12 +436,13 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals(objectName, type.getName(), "The name is " + objectName);
-		assertEquals(3, type.getValues().size(), "Number of values");
+		assertEquals(4, type.getValues().size(), "Number of values");
 
 		int i = 0;
 		assertEquals("NEWHOPE", type.getValues().get(i++));
 		assertEquals("EMPIRE", type.getValues().get(i++));
 		assertEquals("JEDI", type.getValues().get(i++));
+		assertEquals("DOES_NOT_EXIST", type.getValues().get(i++));
 	}
 
 	@Test
