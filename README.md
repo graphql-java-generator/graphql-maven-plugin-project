@@ -152,7 +152,7 @@ You'll find below the main changes, that are planned in the near future:
 
 # Change log
 
-The [Change Log](CHANGELOG.md) is avaible [here](CHANGELOG.md)
+The Change Log is avaible [here](CHANGELOG.md)
 
 
 # Note for contributors
