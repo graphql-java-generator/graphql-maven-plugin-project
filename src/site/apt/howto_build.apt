@@ -111,6 +111,11 @@ How-to build the project
     
     * Alternatively, you can open the project properties, and update directly the Build Path there.
     
+    * <Note: if you compile the project from a terminal window (outside eclipse), and eclipse is configure to refresh the project "with native hooks",
+    it can happen that eclipse interferes with the build. This generates strange bugs when building the plugin-logic module. You'll then have to deactivate
+    the automatic build (menu Project / Build Automaticaly) during the external build> 
+     
+    
   * For other IDE: please fork the project on github, and provide a Pull Request with the relevant doc.
   
   []
