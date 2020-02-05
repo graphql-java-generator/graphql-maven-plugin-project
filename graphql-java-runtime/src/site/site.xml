@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="GraphQL Java Generator - Maven Plugin">
+
+	<publishDate position="right" />
+
+	<!-- bannerLeft> <name>GraphQL Java Generator - Maven Plugin</name> <src>http://maven.apache.org/images/apache-maven-project.png</src> 
+		<href>http://maven.apache.org/</href> </bannerLeft> <bannerRight> <src>http://maven.apache.org/images/maven-small.gif</src> 
+		</bannerRight -->
+
+	<poweredBy>
+		<logo name="Maven" href="https://maven.apache.org/" img="https://maven.apache.org/images/logos/maven-feather.png" />
+	</poweredBy>
+
+	<body>
+		<links>
+			<item name="Project on Github" href="project.html" />
+		</links>
+
+		<menu ref="modules" />
+
+		<menu ref="reports" />
+
+	</body>
+</project>
