@@ -1,5 +1,6 @@
 Here are the next tasks listed, as a TODO list:
-* Builder.withInputParameter(InputParameter) to be replaced by Builder.withInputParameter(String, String, boolean)  
+* Builder.withInputParameter(InputParameter) to be replaced by Builder.withInputParameter(String, String, boolean)
+* Check support for introspection  
 * Add a sample with graphQLScalarTypeGetter
 * Check InputObjectType with fields that are lists
 * Manage directives (https://www.apollographql.com/docs/graphql-tools/schema-directives/)
