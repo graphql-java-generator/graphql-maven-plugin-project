@@ -1,6 +1,7 @@
 
-# Commited but not released
+# 1.3.1
 
+Any mode, client or server:
 - The project now compiles up to JDK 13 (the generated code is still compatible with java 8 and higher)
 - Unknown GraphQL concept are now ignored (instead of blocking the plugin work by throwing an error)
  
