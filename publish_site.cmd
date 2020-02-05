@@ -21,14 +21,14 @@ set /p version="Enter the last released version (e.g.: 1.0): "
 
 REM The next command is long to execute
 @echo on
-call mvn site -Prelease "-DlastReleasedVersion=%version%" -DskipSamples=true
+call mvn site -Prelease "-DlastReleasedVersion=%version%"
 @echo off
 pause
 
-call mvn site:stage  -DskipSamples=true
+call mvn site:stage
 pause
 
-call mvn antrun:run -Prelease  -DskipSamples=true
+call mvn antrun:run -Prelease
 pause
 
 cd target\gh-pages_branch\graphql-maven-plugin-project
