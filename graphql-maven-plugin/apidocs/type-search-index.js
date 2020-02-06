@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"com.graphql_java_generator.mavenplugin","l":"GraphqlMavenPlugin"},{"p":"com.graphql_java_generator.mavenplugin","l":"MavenLogger"},{"p":"com.graphql_java_generator.mavenplugin","l":"PluginConfigurationImpl"},{"p":"com.graphql_java_generator.mavenplugin","l":"SpringConfiguration"}]

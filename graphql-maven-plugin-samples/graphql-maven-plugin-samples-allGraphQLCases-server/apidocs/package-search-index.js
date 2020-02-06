@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.graphql_java_generator"},{"l":"com.graphql_java_generator.annotation"},{"l":"com.graphql_java_generator.customscalars"},{"l":"com.graphql_java_generator.exception"},{"l":"org.allGraphQLCases.server"},{"l":"org.allGraphQLCases.server.impl"}]

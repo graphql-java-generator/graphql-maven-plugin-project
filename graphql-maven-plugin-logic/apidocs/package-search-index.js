@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.graphql_java_generator.plugin"},{"l":"com.graphql_java_generator.plugin.language"},{"l":"com.graphql_java_generator.plugin.language.impl"},{"l":"com.graphql_java_generator.plugin.schema_personalization"}]

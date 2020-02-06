@@ -1,6 +1,0 @@
-com.graphql_java_generator.client
-com.graphql_java_generator.client.domain.forum
-com.graphql_java_generator.client.domain.starwars
-com.graphql_java_generator.plugin.test.compiler
-com.graphql_java_generator.plugin.test.helper
-graphql.mavenplugin_notscannedbyspring
