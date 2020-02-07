@@ -1,4 +1,5 @@
 Here are the next tasks listed, as a TODO list:
+* Manage Deprecation on the constructor for GraphQLScalarType 
 * Builder.withInputParameter(InputParameter) to be replaced by Builder.withInputParameter(String, String, boolean)
 * Check support for introspection  
 * Add a sample with graphQLScalarTypeGetter
