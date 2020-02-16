@@ -63,8 +63,11 @@ public class FieldImpl implements Field {
 	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
 	private boolean itemMandatory = false;
 
-	/** Contains the default value.. Only used if this field is a list. */
-	private String defaultValue = null;
+	/**
+	 * Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum, not
+	 * the value of the enum.
+	 */
+	private Object defaultValue = null;
 
 	/** Contains the description of the relation that this field holds */
 	private Relation relation = null;

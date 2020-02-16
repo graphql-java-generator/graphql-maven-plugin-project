@@ -42,14 +42,17 @@ import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPersonalization;
 
 import graphql.language.AbstractNode;
+import graphql.language.BooleanValue;
 import graphql.language.Definition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.EnumValue;
 import graphql.language.EnumValueDefinition;
 import graphql.language.FieldDefinition;
+import graphql.language.FloatValue;
 import graphql.language.InputObjectTypeDefinition;
 import graphql.language.InputValueDefinition;
+import graphql.language.IntValue;
 import graphql.language.InterfaceTypeDefinition;
 import graphql.language.ListType;
 import graphql.language.Node;
@@ -555,6 +558,12 @@ public class DocumentParser {
 			if (defaultValue != null) {
 				if (defaultValue instanceof StringValue) {
 					field.setDefaultValue(((StringValue) defaultValue).getValue());
+				} else if (defaultValue instanceof BooleanValue) {
+					field.setDefaultValue(((BooleanValue) defaultValue).isValue());
+				} else if (defaultValue instanceof IntValue) {
+					field.setDefaultValue(((IntValue) defaultValue).getValue());
+				} else if (defaultValue instanceof FloatValue) {
+					field.setDefaultValue(((FloatValue) defaultValue).getValue());
 				} else if (defaultValue instanceof EnumValue) {
 					field.setDefaultValue(((EnumValue) defaultValue).getName());
 				} else {

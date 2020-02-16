@@ -81,8 +81,11 @@ public interface Field {
 	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
 	public boolean isItemMandatory();
 
-	/** Contains the default value.. Only used if this field is an input parameter. */
-	public String getDefaultValue();
+	/**
+	 * Contains the default value.. Only used if this field is an input parameter. For enums, it contains the label of
+	 * the enum, not the value of the enum.
+	 */
+	public Object getDefaultValue();
 
 	/**
 	 * Returns the {@link Relation} description for this field.
