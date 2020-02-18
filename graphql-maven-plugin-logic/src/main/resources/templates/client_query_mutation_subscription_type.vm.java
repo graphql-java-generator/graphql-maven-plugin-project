@@ -11,9 +11,12 @@ import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.ws.rs.client.Client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
@@ -72,7 +75,24 @@ public class ${object.name} {
 	public ${object.name}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint, sslContext, hostnameVerifier);
 	}
-	
+
+	/**
+	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
+	 * that gives the opportunity to customise the REST request<BR/>
+	 * For example: http://my.server.com/graphql
+	 *
+	 * @param graphqlEndpoint
+	 *            the http URI for the GraphQL endpoint
+	 * @param client
+	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
+	 * @param objectMapper
+	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
+	 */
+	public ${object.name}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+	}
+
 #foreach ($field in $object.fields)
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
