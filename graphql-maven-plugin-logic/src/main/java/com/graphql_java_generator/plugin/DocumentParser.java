@@ -39,6 +39,7 @@ import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.language.impl.RelationImpl;
 import com.graphql_java_generator.plugin.language.impl.ScalarType;
+import com.graphql_java_generator.plugin.language.impl.UnionType;
 import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPersonalization;
 
 import graphql.language.AbstractNode;
@@ -63,6 +64,7 @@ import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
+import graphql.language.UnionTypeDefinition;
 import graphql.parser.Parser;
 import lombok.Getter;
 
@@ -136,6 +138,12 @@ public class DocumentParser {
 	 */
 	@Getter
 	List<InterfaceType> interfaceTypes = new ArrayList<>();
+
+	/**
+	 * All the {@link UnionTypeDefinition} which have been read during the reading of the documents
+	 */
+	@Getter
+	List<UnionType> unionTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
@@ -227,8 +235,9 @@ public class DocumentParser {
 		// Each interface should have an implementation class, for JSON deserialization,
 		// or to map to a JPA Entity
 		nbClasses += defineDefaultInterfaceImplementationClassName();
-		// init the list of the object implementing each interface.
-		initListOfImplementations();
+		// Init the list of the object implementing each interface. This is done last, when all objects has been read by
+		// the plugin.
+		initListOfInterfaceImplementations();
 		// The types Map allows to retrieve easily a Type from its name
 		fillTypesMap();
 		// Let's identify every relation between objects, interface or union in the
@@ -297,6 +306,8 @@ public class DocumentParser {
 				enumTypes.add(readEnumType((EnumTypeDefinition) node));
 			} else if (node instanceof InterfaceTypeDefinition) {
 				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
+			} else if (node instanceof UnionTypeDefinition) {
+				// Unions are read latter, once all GraphQL types have been parsed
 			} else if (node instanceof ScalarTypeDefinition) {
 				// Custom scalars implementation must be provided by the configuration. We just check that it's OK.
 				checkCustomScalarType((ScalarTypeDefinition) node);
@@ -304,6 +315,14 @@ public class DocumentParser {
 				// No action, we already parsed it
 			} else {
 				pluginConfiguration.getLog().warn("Non managed node type: " + node.getClass().getName());
+			}
+		} // for
+
+		// Once all Types have been properly read, we can read the union types
+		for (Definition<?> node : document.getDefinitions()) {
+			if (node instanceof UnionTypeDefinition) {
+				// Unions are read latter, once all GraphQL types have been parsed
+				unionTypes.add(readUnionType((UnionTypeDefinition) node));
 			}
 		} // for
 
@@ -317,9 +336,13 @@ public class DocumentParser {
 	 * schema.
 	 */
 	void fillTypesMap() {
+		queryTypes.stream().forEach(q -> types.put(q.getName(), q));
+		mutationTypes.stream().forEach(m -> types.put(m.getName(), m));
+		subscriptionTypes.stream().forEach(s -> types.put(s.getName(), s));
 		scalarTypes.stream().forEach(s -> types.put(s.getName(), s));
 		objectTypes.stream().forEach(o -> types.put(o.getName(), o));
 		interfaceTypes.stream().forEach(i -> types.put(i.getName(), i));
+		unionTypes.stream().forEach(u -> types.put(u.getName(), u));
 		enumTypes.stream().forEach(e -> types.put(e.getName(), e));
 	}
 
@@ -353,7 +376,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Read an object type from it GraphQL definition
+	 * Read an object type from its GraphQL definition
 	 * 
 	 * @param node
 	 * @return
@@ -387,7 +410,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Read an input object type from it GraphQL definition
+	 * Read an input object type from its GraphQL definition
 	 * 
 	 * @param node
 	 * @return
@@ -411,7 +434,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Read an object type from it GraphQL definition
+	 * Read an interface type from its GraphQL definition
 	 * 
 	 * @param node
 	 * @return
@@ -430,6 +453,42 @@ public class DocumentParser {
 				.collect(Collectors.toList()));
 
 		return interfaceType;
+	}
+
+	/**
+	 * Read an union type from its GraphQL definition
+	 * 
+	 * @param node
+	 * @return
+	 */
+	UnionType readUnionType(UnionTypeDefinition node) {
+		// Let's check if it's a real object, or part of a schema (query, subscription,
+		// mutation) definition
+
+		UnionType unionType = new UnionType(node.getName(), pluginConfiguration.getPackageName(),
+				pluginConfiguration.getMode());
+
+		for (graphql.language.Type<?> memberType : node.getMemberTypes()) {
+			String memberTypeName = (String) exec("getName", memberType);
+
+			// We can not use getType yet, as the type list is not filled.
+			ObjectType type = null;
+			for (ObjectType ot : objectTypes) {
+				if (ot.getName().equals(memberTypeName)) {
+					type = ot;
+					break;
+				}
+			}
+			if (type == null) {
+				throw new RuntimeException("Could not find the ObjectType named '" + memberTypeName + "'");
+			}
+
+			type.getMemberOfUnions().add(unionType);
+			type.getImplementz().add(unionType.getName());
+			unionType.getMemberTypes().add(type);
+		}
+
+		return unionType;
 	}
 
 	/**
@@ -972,11 +1031,12 @@ public class DocumentParser {
 	}
 
 	/**
-	 * For each interface, identify the list of object types which implements it.
+	 * For each interface, identify the list of object types which implements it. This is done last, when all objects
+	 * has been read by the plugin.
 	 * 
 	 * @see InterfaceType#getImplementingTypes()
 	 */
-	void initListOfImplementations() {
+	void initListOfInterfaceImplementations() {
 		for (InterfaceType interfaceType : interfaceTypes) {
 			for (ObjectType objectType : objectTypes) {
 				if (objectType.getImplementz().contains(interfaceType.getName())) {

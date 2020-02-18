@@ -51,6 +51,7 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_OBJECT = "templates/object_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_INTERFACE = "templates/interface_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_UNION = "templates/union_type.vm.java";
 	// Templates for client generation only
 	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER = "templates/client_CustomScalarRegistryInitializer.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
@@ -104,6 +105,7 @@ public class CodeGenerator {
 		int i = 0;
 		i += generateTargetFiles(documentParser.getObjectTypes(), "object", PATH_VELOCITY_TEMPLATE_OBJECT);
 		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface", PATH_VELOCITY_TEMPLATE_INTERFACE);
+		i += generateTargetFiles(documentParser.getUnionTypes(), "union", PATH_VELOCITY_TEMPLATE_UNION);
 		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
 
 		switch (pluginConfiguration.getMode()) {

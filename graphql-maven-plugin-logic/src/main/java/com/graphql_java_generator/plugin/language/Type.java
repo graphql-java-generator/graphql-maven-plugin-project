@@ -13,7 +13,7 @@ import java.util.List;
 public interface Type {
 
 	public enum GraphQlType {
-		OBJECT, INTERFACE, SCALAR, ENUM
+		OBJECT, SCALAR, ENUM, INTERFACE, UNION
 	}
 
 	/**

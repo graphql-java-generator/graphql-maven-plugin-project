@@ -31,8 +31,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class ObjectType extends AbstractType {
 
-	/** List of the names of the ObjetType, that are implemented by this object */
+	/** List of the names of GraphQL types (interface or enum or unions), that are implemented by this object */
 	private List<String> implementz = new ArrayList<>();
+
+	/** List of the names of unions, that are this object is member of */
+	private List<UnionType> memberOfUnions = new ArrayList<>();
 
 	/** The fields for this object type */
 	@ToString.Exclude
