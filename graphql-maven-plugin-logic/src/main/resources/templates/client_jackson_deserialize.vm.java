@@ -22,7 +22,7 @@ import $import;
 /**
  * This class is a standard Deserializer for Jackson. It uses the {@link GraphQLScalarType} that is implemented by the project for this scalar
  */
-public class CustomScalarDeserializer${object.name}  extends AbstractCustomScalarDeserializer<${object.name}> {
+public class CustomScalarDeserializer${object.name}  extends AbstractCustomScalarDeserializer<${object.classFullName}> {
 
 	private static final long serialVersionUID = 1L;
 
