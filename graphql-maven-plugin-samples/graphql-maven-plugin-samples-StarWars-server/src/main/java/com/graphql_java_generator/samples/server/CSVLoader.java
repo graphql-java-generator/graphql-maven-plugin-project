@@ -9,8 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -39,7 +39,7 @@ public class CSVLoader {
 	private static final String VALUES_REGEX = "\\$\\{values\\}";
 
 	/** The logger for this class */
-	Logger logger = LogManager.getLogger();
+	Logger logger = LoggerFactory.getLogger(CSVLoader.class);
 
 	final private Connection connection;
 

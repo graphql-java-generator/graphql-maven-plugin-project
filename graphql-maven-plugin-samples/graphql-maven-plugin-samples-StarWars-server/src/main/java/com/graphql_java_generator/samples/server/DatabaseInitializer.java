@@ -12,8 +12,8 @@ import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class DatabaseInitializer {
 
 	/** The logger for this class */
-	Logger logger = LogManager.getLogger();
+	Logger logger = LoggerFactory.getLogger(DatabaseInitializer.class);
 
 	final String FILE_PREFIX = "StarWars-server-data";
 

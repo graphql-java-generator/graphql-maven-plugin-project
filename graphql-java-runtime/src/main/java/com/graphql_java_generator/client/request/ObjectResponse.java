@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
@@ -54,7 +54,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ObjectResponse {
 
 	/** Logger for this class */
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LoggerFactory.getLogger(ObjectResponse.class);
 
 	static private GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 

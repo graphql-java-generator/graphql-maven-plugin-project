@@ -1,7 +1,7 @@
 package graphql.java_client.examples.hello_world.domain;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import graphql.java.client.ID;
 import graphql.java.client.request.ResponseDefinition;
@@ -9,7 +9,7 @@ import graphql.java.client.request.ResponseDefinition;
 public class QueryType {
 
 	/** Logger for this class */
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LoggerFactory.getLogger(QueryType.class);
 
 	public Character hero(Episode episode, ResponseDefinition query) {
 		executeQuery()
