@@ -37,6 +37,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** The Jersey {@link Client}, used to execute the request toward the GraphQL server */
 	Client client;
+	/** Jackson {@link ObjectMapper}, used for serialisation / de-serialisation */
+	ObjectMapper objectMapper;
 	/** The Jersey {@link WebTarget}, used to execute the request toward the GraphQL server */
 	WebTarget webTarget;
 
@@ -48,8 +50,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public QueryExecutorImpl(String graphqlEndpoint) {
-		client = ClientBuilder.newClient();
-		webTarget = client.target(graphqlEndpoint);
+		this(graphqlEndpoint, ClientBuilder.newClient(), new ObjectMapper());
 	}
 
 	/**
@@ -70,7 +71,26 @@ public class QueryExecutorImpl implements QueryExecutor {
 					"This GraphQL endpoint is an http one. Please use the relevant Query/Mutation/Subscription constructor (without the SSLContext and HostnameVerifier parameters)");
 		}
 		client = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(hostnameVerifier).build();
+		objectMapper = new ObjectMapper();
 		webTarget = client.target(graphqlEndpoint);
+	}
+
+	/**
+	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
+	 * that gives the opportunity to customise the REST request<BR/>
+	 * For example: http://my.server.com/graphql
+	 *
+	 * @param graphqlEndpoint
+	 *            the http URI for the GraphQL endpoint
+	 * @param client
+	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
+	 * @param objectMapper
+	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
+	 */
+	public QueryExecutorImpl(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+		this.client = client;
+		this.objectMapper = objectMapper;
+		this.webTarget = client.target(graphqlEndpoint);
 	}
 
 	/** {@inheritDoc} */
@@ -118,15 +138,13 @@ public class QueryExecutorImpl implements QueryExecutor {
 				JsonResponseWrapper.class);
 
 		if (logger.isTraceEnabled()) {
-			ObjectMapper objectMapper = new ObjectMapper();
 			logger.trace("Parsed response data: {}", objectMapper.writeValueAsString(response.data));
 			logger.trace("Parsed response errors: {}", objectMapper.writeValueAsString(response.errors));
 		}
 
 		if (response.errors == null || response.errors.size() == 0) {
 			// No errors. Let's parse the data
-			ObjectMapper mapper = new ObjectMapper();
-			return mapper.treeToValue(response.data, valueType);
+			return objectMapper.treeToValue(response.data, valueType);
 		} else {
 			int nbErrors = 0;
 			String agregatedMessage = null;
