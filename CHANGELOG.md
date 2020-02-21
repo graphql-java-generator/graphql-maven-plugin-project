@@ -1,7 +1,7 @@
 # Not released yet
 
 Any mode, client or server:
-- the GraphQL schema may now use java keywords (if the GraphQL schema uses identifier that are java keyword, these identifier are prefixed by an underscore in the generated code)
+- the GraphQL schema may now use java keywords (if the GraphQL schema uses identifier that are java keyword, these identifier are prefixed by a dollar in the generated code)
 - Input parameters are now managed for scalar fields 
 
 
