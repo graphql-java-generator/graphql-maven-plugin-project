@@ -23,6 +23,9 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 @Component
 public class GraphqlUtils {
 
+	/** This singleton is usable in default method, within interfaces */
+	public static GraphqlUtils graphqlUtils = new GraphqlUtils();
+
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 
 	/**
@@ -30,6 +33,13 @@ public class GraphqlUtils {
 	 * java code
 	 */
 	List<Class<?>> scalars = new ArrayList<>();
+
+	/**
+	 * The list of Java keywords. This keyword may not be used as java identifier, within java code (for instance for
+	 * class name, field name...).<BR/>
+	 * If a GraphQL identifier is one of these keyword, it will be prefixed by an underscode in the generated code.
+	 */
+	private List<String> javaKeywords = new ArrayList<>();
 
 	public GraphqlUtils() {
 		// Add of all predefined scalars
@@ -40,6 +50,58 @@ public class GraphqlUtils {
 		scalars.add(Float.class);
 		scalars.add(boolean.class);
 		scalars.add(Boolean.class);
+
+		// List all java reserved keywords.
+		javaKeywords.add("abstract");
+		javaKeywords.add("assert");
+		javaKeywords.add("boolean");
+		javaKeywords.add("break");
+		javaKeywords.add("byte");
+		javaKeywords.add("case");
+		javaKeywords.add("catch");
+		javaKeywords.add("char");
+		javaKeywords.add("class");
+		javaKeywords.add("const");
+		javaKeywords.add("continue");
+		javaKeywords.add("default");
+		javaKeywords.add("do");
+		javaKeywords.add("double");
+		javaKeywords.add("else");
+		javaKeywords.add("enum");
+		javaKeywords.add("extends");
+		javaKeywords.add("final");
+		javaKeywords.add("finally");
+		javaKeywords.add("float");
+		javaKeywords.add("for");
+		javaKeywords.add("goto");
+		javaKeywords.add("if");
+		javaKeywords.add("implements");
+		javaKeywords.add("import");
+		javaKeywords.add("instanceof");
+		javaKeywords.add("int");
+		javaKeywords.add("interface");
+		javaKeywords.add("long");
+		javaKeywords.add("native");
+		javaKeywords.add("new");
+		javaKeywords.add("package");
+		javaKeywords.add("private");
+		javaKeywords.add("protected");
+		javaKeywords.add("public");
+		javaKeywords.add("return");
+		javaKeywords.add("short");
+		javaKeywords.add("static");
+		javaKeywords.add("strictfp");
+		javaKeywords.add("super");
+		javaKeywords.add("switch");
+		javaKeywords.add("synchronized");
+		javaKeywords.add("this");
+		javaKeywords.add("throw");
+		javaKeywords.add("throws");
+		javaKeywords.add("transient");
+		javaKeywords.add("try");
+		javaKeywords.add("void");
+		javaKeywords.add("volatile");
+		javaKeywords.add("while");
 	}
 
 	/**
@@ -296,4 +358,27 @@ public class GraphqlUtils {
 					+ o.getClass().getName() + " class", e);
 		}
 	}
+
+	/**
+	 * Returns a valid java identifier for the given name.
+	 * 
+	 * @param name
+	 * @return If name is a default java keyword (so it is not a valid java identifier), then the return is the "_name"
+	 *         (prefixed by an underscore). Otherwise (which is generally the case), the name is valid, and returned as
+	 *         is
+	 */
+	public String getJavaName(String name) {
+		return isJavaReservedWords(name) ? "_" + name : name;
+	}
+
+	/**
+	 * Returns true if name is a reserved java keyword
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean isJavaReservedWords(String name) {
+		return javaKeywords.contains(name);
+	}
+
 }

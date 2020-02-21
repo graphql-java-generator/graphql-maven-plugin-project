@@ -237,7 +237,7 @@ public class GraphqlClientUtils {
 		// Let's check that this fieldName is either a method name or a field of the class for this ObjectResponse.
 		Class<?> fieldClass = null;
 		for (java.lang.reflect.Field field : owningClass.getDeclaredFields()) {
-			if (field.getName().equals(name)) {
+			if (field.getName().equals(graphqlUtils.getJavaName(name))) {
 				// If we need to check that this field is (or is not) a scalar
 				fieldClass = checkIsScalar(field, shouldBeScalar);
 				break;

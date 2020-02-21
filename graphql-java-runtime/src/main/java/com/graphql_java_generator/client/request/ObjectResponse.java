@@ -69,7 +69,7 @@ public class ObjectResponse {
 		final Class<?> clazz;
 		final List<InputParameter> inputParameters;
 
-		Field(String name, String alias, Class<?> owningClass, Class<?> clazz)
+		Field(String name, String alias, Class<?> owningClass, Class<?> clazz, List<InputParameter> inputParameters)
 				throws GraphQLRequestPreparationException {
 			graphqlClientUtils.checkName(name);
 			if (alias != null) {
@@ -79,7 +79,7 @@ public class ObjectResponse {
 			this.alias = alias;
 			this.owningClass = owningClass;
 			this.clazz = clazz;
-			this.inputParameters = new ArrayList<>();
+			this.inputParameters = (inputParameters == null) ? new ArrayList<>() : inputParameters;
 		}
 	}
 
@@ -134,7 +134,7 @@ public class ObjectResponse {
 	ObjectResponse(Class<?> owningClass, String fieldName, String fieldAlias)
 			throws GraphQLRequestPreparationException {
 		this.field = new Field(fieldName, fieldAlias, owningClass,
-				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, false, owningClass));
+				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, false, owningClass), null);
 	}
 
 	/**

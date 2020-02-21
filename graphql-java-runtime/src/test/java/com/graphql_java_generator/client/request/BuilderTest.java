@@ -14,11 +14,13 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.client.domain.forum.Board;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.Droid;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
+import com.graphql_java_generator.client.request.ObjectResponse.Field;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -506,5 +508,22 @@ class BuilderTest {
 
 		// No non scalar
 		assertEquals(0, resp.subObjects.size(), "no non scalar fields");
+	}
+
+	@Test
+	void testBuild_scalarInputParameters() throws GraphQLRequestPreparationException {
+		// Go, go, go
+		MyQueryType queryType = new MyQueryType("http://localhost");
+		ObjectResponse objectResponse = queryType.getABreakResponseBuilder()
+				.withQueryResponseDef("{case(test: DOUBLE)}").build();
+
+		// Verification
+		assertEquals(1, objectResponse.scalarFields.size());
+
+		Field field = objectResponse.scalarFields.get(0);
+		assertEquals("case", field.name);
+		assertEquals(1, field.inputParameters.size());
+		assertEquals("test", field.inputParameters.get(0).getName());
+		assertEquals("DOUBLE", field.inputParameters.get(0).getValue());
 	}
 }

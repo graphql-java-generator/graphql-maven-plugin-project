@@ -398,7 +398,8 @@ public class Builder {
 	}
 
 	/**
-	 * Adds a scalar field with an alias, to the {@link ObjectResponse} we are building
+	 * Adds a scalar field with an alias, to the {@link ObjectResponse} we are building. This field has no input
+	 * parameters. To add a field with Input parameters, please use
 	 * 
 	 * @param fieldName
 	 * @param alias
@@ -409,6 +410,24 @@ public class Builder {
 	 *             If the fieldName or the fieldAlias is not valid
 	 */
 	public Builder withField(String fieldName, String alias) throws GraphQLRequestPreparationException {
+		return withField(fieldName, alias, null);
+	}
+
+	/**
+	 * Adds a scalar field with an alias, to the {@link ObjectResponse} we are building. This field has no input
+	 * parameters. To add a field with Input parameters, please use
+	 * 
+	 * @param fieldName
+	 * @param alias
+	 * @return The current builder, to allow the standard builder construction chain
+	 * @throws NullPointerException
+	 *             If the fieldName is null
+	 * @throws GraphQLRequestPreparationException
+	 *             If the fieldName or the fieldAlias is not valid
+	 */
+	public Builder withField(String fieldName, String alias, List<InputParameter> inputParameters)
+			throws GraphQLRequestPreparationException {
+
 		// We check that this field exist, and is a scaler
 		graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz);
 
@@ -420,9 +439,13 @@ public class Builder {
 			}
 		}
 
+		ObjectResponse.Field field = new ObjectResponse.Field(fieldName, alias, objectResponse.field.clazz,
+				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz),
+				inputParameters);
+
 		// This will check that the alias is null or a valid GraphQL identifier
-		objectResponse.scalarFields.add(new ObjectResponse.Field(fieldName, alias, objectResponse.field.clazz,
-				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz)));
+		objectResponse.scalarFields.add(field);
+
 		return this;
 	}
 
@@ -662,7 +685,7 @@ public class Builder {
 		for (QueryField field : queryField.fields) {
 			if (field.fields.size() == 0) {
 				// It's a Scalar
-				withField(field.name, field.alias);
+				withField(field.name, field.alias, field.inputParameters);
 			} else {
 				// It's a non Scalar field : we'll recurse down one level, by calling withQueryField again.
 				Builder subobjectResponseDef = new Builder(objectResponse.field.clazz, field.name, field.alias)
