@@ -27,7 +27,7 @@ public class CustomScalarDeserializer${object.name}  extends AbstractCustomScala
 	private static final long serialVersionUID = 1L;
 
 	protected CustomScalarDeserializer${object.name}() {
-		super(${object.packageName}.${object.classSimpleName}.class,
+		super(${object.classFullName}.class,
 #if (${object.graphQLScalarTypeClass})
 				new ${object.graphQLScalarTypeClass}()
 #elseif (${object.graphQLScalarTypeStaticField})
