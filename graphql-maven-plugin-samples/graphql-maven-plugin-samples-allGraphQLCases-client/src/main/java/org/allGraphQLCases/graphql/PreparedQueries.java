@@ -88,8 +88,8 @@ public class PreparedQueries implements Queries {
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		errorResponse = queryType.getErrorResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		aBreakResponse = queryType.getABreakResponseBuilder()
-				.withQueryResponseDef("{anotherCase(test: &test, if: ?if)}").build();
+		aBreakResponse = queryType.getABreakResponseBuilder().withQueryResponseDef("{case(test: &test, if: ?if)}")
+				.build();
 		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withQueryResponseDef("{id name " //
 				// Parameter for fields are not managed yet)
 				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "

@@ -109,7 +109,7 @@ public class DirectQueries implements Queries {
 	@Override
 	public $break aBreak($extends test, String $if)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.aBreak("{anotherCase(test: " + test.toString() + ")}");
+		return queryType.aBreak("{case(test: " + test.toString() + ")}");
 	}
 
 	@Override

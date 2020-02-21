@@ -232,5 +232,5 @@ input class {
 }
 
 type break {
-	anotherCase(test: extends!, if: else): extends
+	case(test: extends!, if: else): extends
 }

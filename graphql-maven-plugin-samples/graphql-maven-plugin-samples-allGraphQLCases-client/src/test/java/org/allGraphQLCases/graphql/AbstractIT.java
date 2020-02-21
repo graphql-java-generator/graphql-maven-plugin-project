@@ -209,8 +209,8 @@ abstract class AbstractIT {
 
 	@Test
 	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals($extends.FLOAT, queries.aBreak($extends.FLOAT, null).getAnotherCase());
-		assertEquals($extends.DOUBLE, queries.aBreak($extends.DOUBLE, null).getAnotherCase());
+		assertEquals($extends.FLOAT, queries.aBreak($extends.FLOAT, null).getCase());
+		assertEquals($extends.DOUBLE, queries.aBreak($extends.DOUBLE, null).getCase());
 	}
 
 	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,

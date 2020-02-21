@@ -790,7 +790,7 @@ public class Builder {
 
 		Field field;
 		try {
-			field = owningClass.getDeclaredField(fieldName);
+			field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 		} catch (NoSuchFieldException | SecurityException e) {
 			throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
 					+ "' in the class '" + owningClass.getName() + "'", e);

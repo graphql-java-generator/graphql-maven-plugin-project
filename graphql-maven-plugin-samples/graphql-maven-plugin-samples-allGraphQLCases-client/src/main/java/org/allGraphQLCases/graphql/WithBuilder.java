@@ -131,7 +131,7 @@ public class WithBuilder implements Queries {
 		List<InputParameter> inputParams = new ArrayList<InputParameter>();
 		inputParams.add(InputParameter.newBindParameter("test", "test", true));
 		inputParams.add(InputParameter.newBindParameter("if", "if", false));
-		aBreakResponse = queryType.getABreakResponseBuilder().withField("anotherCase", null, inputParams).build();
+		aBreakResponse = queryType.getABreakResponseBuilder().withField("case", null, inputParams).build();
 	}
 
 	@Override

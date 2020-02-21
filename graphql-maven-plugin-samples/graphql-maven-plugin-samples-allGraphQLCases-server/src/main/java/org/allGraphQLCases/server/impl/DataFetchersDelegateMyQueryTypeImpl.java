@@ -112,7 +112,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		EnumValue enumValue = (EnumValue) aCase.getArguments().get(0).getValue();
 		$extends value = $extends.valueOf(enumValue.getName());
 
-		ret.setAnotherCase(value);
+		ret.setCase(value);
 		return ret;
 	}
 
