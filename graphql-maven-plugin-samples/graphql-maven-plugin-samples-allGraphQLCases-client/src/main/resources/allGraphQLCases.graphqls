@@ -218,7 +218,7 @@ input DroidInput {
 }
 
 
-scalar elsee
+scalar else
 
 enum extends {
 	INT
@@ -232,5 +232,5 @@ input class {
 }
 
 type MyBreak {
-	anotherCase(test: extends!, if: elsee): extends
+	anotherCase(test: extends!, if: else): extends
 }

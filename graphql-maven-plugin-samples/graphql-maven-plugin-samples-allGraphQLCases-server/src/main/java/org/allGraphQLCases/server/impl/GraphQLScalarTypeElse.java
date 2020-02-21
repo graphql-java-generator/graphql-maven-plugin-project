@@ -33,7 +33,7 @@ public class GraphQLScalarTypeElse extends GraphQLScalarType {
 	 */
 	@SuppressWarnings("deprecation")
 	public GraphQLScalarTypeElse() {
-		super("elsee", "Custom Scalar for String management. ",
+		super("else", "Custom Scalar for String management. ",
 				// Note:
 				// String is the way the data is stored in GraphQL queries
 				// Date is the type while in the java code, either in the client and in the server

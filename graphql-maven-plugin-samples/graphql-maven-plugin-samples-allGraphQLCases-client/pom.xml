@@ -32,7 +32,7 @@
 							<graphQLScalarTypeClass>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
 						</customScalar>
 						<customScalar>
-							<graphQLTypeName>elsee</graphQLTypeName>
+							<graphQLTypeName>else</graphQLTypeName>
 							<javaType>java.lang.String</javaType>
 							<graphQLScalarTypeClass>com.graphql_java_generator.customscalars.GraphQLScalarTypeString</graphQLScalarTypeClass>
 						</customScalar>
