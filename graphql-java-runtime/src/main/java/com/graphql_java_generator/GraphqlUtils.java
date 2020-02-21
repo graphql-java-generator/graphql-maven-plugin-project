@@ -331,7 +331,7 @@ public class GraphqlUtils {
 	 * @throws RuntimeException
 	 *             When an exception occurs while getting the method
 	 */
-	Method getMethod(String methodName, Class<?> clazz, Class<?>... parameterTypes) {
+	public Method getMethod(String methodName, Class<?> clazz, Class<?>... parameterTypes) {
 		try {
 			return clazz.getDeclaredMethod(methodName, parameterTypes);
 		} catch (NoSuchMethodException e) {
@@ -350,7 +350,7 @@ public class GraphqlUtils {
 	 * @throws RuntimeException
 	 *             When an exception occurs while accessing the setter
 	 */
-	Object invokeMethod(Method method, Object o, Object... args) {
+	public Object invokeMethod(Method method, Object o, Object... args) {
 		try {
 			return method.invoke(o, args);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
