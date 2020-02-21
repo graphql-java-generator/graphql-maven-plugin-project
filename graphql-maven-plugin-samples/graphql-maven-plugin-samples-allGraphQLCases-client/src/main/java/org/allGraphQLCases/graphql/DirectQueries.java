@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AaaaExtends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -13,6 +14,7 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.MyBreak;
 import org.allGraphQLCases.client.MyQueryType;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -102,6 +104,12 @@ public class DirectQueries implements Queries {
 	public Character error(String errorLabel)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.error("{id name appearsIn friends {id name}}", errorLabel);
+	}
+
+	@Override
+	public MyBreak aBreak(AaaaExtends test, String $if)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return queryType.theBreak("{anotherCase(test: " + test.toString() + ")}");
 	}
 
 	@Override

@@ -14,8 +14,9 @@
 
 	<Loggers>
 		<Logger name="com.graphql_java_generator" level="trace" />
+		<Logger name="org.allGraphQLCases" level="trace" />
 		<Root level="info">
-			<!-- AppenderRef ref="Console" / -->
+			<AppenderRef ref="Console"/>
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>

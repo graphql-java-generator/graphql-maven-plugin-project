@@ -32,6 +32,11 @@
 							<graphQLScalarTypeClass>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
 						</customScalar>
 						<customScalar>
+							<graphQLTypeName>elsee</graphQLTypeName>
+							<javaType>java.lang.String</javaType>
+							<graphQLScalarTypeClass>org.allGraphQLCases.server.impl.GraphQLScalarTypeElse</graphQLScalarTypeClass>
+						</customScalar>
+						<customScalar>
 							<graphQLTypeName>Long</graphQLTypeName>
 							<javaType>java.lang.Long</javaType>
 							<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>

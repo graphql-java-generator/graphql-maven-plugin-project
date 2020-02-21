@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.allGraphQLCases.server.AaaaExtends;
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.Character;
@@ -13,10 +14,13 @@ import org.allGraphQLCases.server.CharacterImpl;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.MyBreak;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
 
+import graphql.language.EnumValue;
+import graphql.language.Field;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -94,6 +98,21 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		} else {
 			ret = generator.generateInstance(AllFieldCases.class);
 		}
+		return ret;
+	}
+
+	@Override
+	public MyBreak theBreak(DataFetchingEnvironment dataFetchingEnvironment) {
+		MyBreak ret = new MyBreak();
+
+		// Let's retrieve the input parameter test, that contains the expected value to return
+		Field aBreak = (Field) dataFetchingEnvironment.getOperationDefinition().getSelectionSet().getSelections()
+				.get(0);
+		Field aCase = (Field) aBreak.getSelectionSet().getSelections().get(0);
+		EnumValue enumValue = (EnumValue) aCase.getArguments().get(0).getValue();
+		AaaaExtends value = AaaaExtends.valueOf(enumValue.getName());
+
+		ret.setAnotherCase(value);
 		return ret;
 	}
 

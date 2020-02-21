@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AaaaExtends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -16,6 +17,7 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.MyBreak;
 import org.allGraphQLCases.client.MyQueryType;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -49,6 +51,7 @@ public class PreparedQueries implements Queries {
 	ObjectResponse withEnumResponse;
 	ObjectResponse withListResponse;
 	ObjectResponse errorResponse;
+	ObjectResponse aBreakResponse;
 	ObjectResponse allFieldCasesResponse;
 
 	// Mutations
@@ -85,6 +88,8 @@ public class PreparedQueries implements Queries {
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		errorResponse = queryType.getErrorResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
+		aBreakResponse = queryType.getTheBreakResponseBuilder().withQueryResponseDef("{case(test: &test, if: ?if)}")
+				.build();
 		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withQueryResponseDef("{id name " //
 				// Parameter for fields are not managed yet)
 				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
@@ -150,6 +155,13 @@ public class PreparedQueries implements Queries {
 				"nbItemsWithoutId", nbItemsWithoutId, //
 				"inputList", inputList, //
 				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
+	}
+
+	@Override
+	public MyBreak aBreak(AaaaExtends test, String $if)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// aBreak {case(test: &test, if: ?if)}
+		return queryType.theBreak(aBreakResponse, "test", test, "if", $if);
 	}
 
 	@Override

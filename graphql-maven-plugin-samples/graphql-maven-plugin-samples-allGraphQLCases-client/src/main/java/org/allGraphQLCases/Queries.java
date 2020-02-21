@@ -3,6 +3,7 @@ package org.allGraphQLCases;
 import java.util.Date;
 import java.util.List;
 
+import org.allGraphQLCases.client.AaaaExtends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -11,6 +12,7 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.MyBreak;
 import org.allGraphQLCases.graphql.DirectQueries;
 import org.allGraphQLCases.graphql.PreparedQueries;
 import org.allGraphQLCases.graphql.WithBuilder;
@@ -61,7 +63,13 @@ public interface Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	////////////////////////////////////////////////////////////////////////////
-	// Third part: mutations
+	// Third part: check of GraphQL types that are java keywords
+
+	public MyBreak aBreak(AaaaExtends test, String $if)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+
+	////////////////////////////////////////////////////////////////////////////
+	// Fourth part: mutations
 
 	Human createHuman(HumanInput human) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 

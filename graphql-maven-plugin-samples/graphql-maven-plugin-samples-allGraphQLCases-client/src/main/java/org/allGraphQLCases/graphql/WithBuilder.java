@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AaaaExtends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -16,6 +17,7 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.MyBreak;
 import org.allGraphQLCases.client.MyQueryType;
 
 import com.graphql_java_generator.client.request.Builder;
@@ -54,6 +56,7 @@ public class WithBuilder implements Queries {
 	ObjectResponse withEnumResponse;
 	ObjectResponse withListResponse;
 	ObjectResponse errorResponse;
+	ObjectResponse aBreakResponse;
 	ObjectResponse allFieldCasesResponse;
 
 	// Mutations
@@ -122,6 +125,12 @@ public class WithBuilder implements Queries {
 				.withField("aliases").withField("planets").withSubObject(simpleFriendsResponse)
 				.withSubObject(oneWithIdSubTypeResponse).withSubObject(listWithIdSubTypesResponse)
 				.withSubObject(oneWithoutIdSubTypeResponse).withSubObject(listWithoutIdSubTypesResponse).build();
+
+		// aBreak {case(test: &test, if: ?if)}
+		ObjectResponse caseResponse = new Builder(MyBreak.class, "case").withInputParameter("test", "test", true)
+				.withInputParameter("if", "if", false).build();
+		aBreakResponse = queryType.getTheBreakResponseBuilder().withSubObject(caseResponse).build();
+		//
 	}
 
 	@Override
@@ -177,6 +186,13 @@ public class WithBuilder implements Queries {
 				"nbItemsWithoutId", nbItemsWithoutId, //
 				"inputList", inputList, //
 				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
+	}
+
+	@Override
+	public MyBreak aBreak(AaaaExtends test, String $if)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// aBreak {case(test: &test, if: ?if)}
+		return queryType.theBreak(aBreakResponse, "test", test, "if", $if);
 	}
 
 	@Override

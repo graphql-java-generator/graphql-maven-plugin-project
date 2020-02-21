@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.AaaaExtends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -202,6 +203,12 @@ abstract class AbstractIT {
 				() -> queries.error("This is an expected error"));
 		assertTrue(e.getMessage().contains("This is an expected error"),
 				"'" + e.getMessage() + "' should contain 'This is an expected error'");
+	}
+
+	@Test
+	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		assertEquals(AaaaExtends.FLOAT, queries.aBreak(AaaaExtends.FLOAT, null).getAnotherCase());
+		assertEquals(AaaaExtends.DOUBLE, queries.aBreak(AaaaExtends.DOUBLE, null).getAnotherCase());
 	}
 
 	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
