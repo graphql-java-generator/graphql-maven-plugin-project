@@ -317,7 +317,7 @@ public class Builder {
 			} else {
 				// We try to get the class of this field
 				try {
-					Field field = owningClass.getDeclaredField(fieldName);
+					Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 
 					// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
 					GraphQLCustomScalar graphQLCustomScalar = field.getAnnotation(GraphQLCustomScalar.class);
