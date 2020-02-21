@@ -259,7 +259,8 @@ public class Builder {
 											+ token + "> of parameter <" + parameterName
 											+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 						} else {
-							inputParameters.add(new InputParameter(parameterName, null, token, true, null));
+							Object parameterValue = getParameterValue(owningClazz, name, parameterName, token);
+							inputParameters.add(new InputParameter(parameterName, null, parameterValue, true, null));
 						}
 						step = InputParameterStep.NAME;
 						break;
@@ -269,6 +270,69 @@ public class Builder {
 
 			throw new GraphQLRequestPreparationException(
 					"The list of parameters for the field '" + name + "' is not finished (no closing parenthesis)");
+		}
+
+		private Object getParameterValue(Class<?> owningClass, String fieldName, String parameterName,
+				String parameterValue) throws GraphQLRequestPreparationException {
+			Object ret = null;
+
+			Field field;
+			try {
+				field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
+			} catch (NoSuchFieldException | SecurityException e) {
+				throw new GraphQLRequestPreparationException("Couldn't parse the value for the parameter '"
+						+ parameterName + "' of the field '" + fieldName + "'", e);
+			}
+
+			GraphQLInputParameters graphQLInputParameters = field.getDeclaredAnnotation(GraphQLInputParameters.class);
+			if (graphQLInputParameters == null) {
+				throw new GraphQLRequestPreparationException("[Internal error] The field '" + fieldName
+						+ "' is lacking the GraphQLInputParameters annotation");
+			}
+
+			String parameterType = null;
+			for (int i = 0; i < graphQLInputParameters.names().length; i += 1) {
+				if (graphQLInputParameters.names()[i].equals(parameterName)) {
+					parameterType = graphQLInputParameters.types()[i];
+				}
+			}
+			if (parameterType == null) {
+				throw new GraphQLRequestPreparationException("[Internal error] Can't find the type for the parameter '"
+						+ parameterName + "' of the field '" + fieldName + "'");
+			}
+
+			String parameterClassname = owningClass.getPackageName() + "." + graphqlUtils.getJavaName(parameterType);
+			Class<?> parameterClass;
+			try {
+				parameterClass = Class.forName(parameterClassname);
+			} catch (ClassNotFoundException e) {
+				throw new GraphQLRequestPreparationException("Couldn't find the class (" + parameterClassname
+						+ ") of the parameter '" + parameterName + "' of the field '" + fieldName + "'", e);
+			}
+
+			if (parameterClass.isEnum()) {
+				// This parameter is an enum. The parameterValue is one of its elements
+				Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
+				ret = graphqlUtils.invokeMethod(valueOf, null, parameterValue);
+			} else if (parameterClass.isAssignableFrom(Boolean.class)) {
+				// This parameter is a boolean. Only true and false are valid boolean.
+				if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
+					throw new GraphQLRequestPreparationException(
+							"Only true and false are allowed values for booleans. But the parameter '" + parameterName
+									+ "' of the field '" + fieldName + "' has the '" + parameterValue + "'");
+				}
+				ret = "true".equals(parameterValue);
+			} else if (parameterClass.isAssignableFrom(Integer.class)) {
+				ret = Integer.parseInt(parameterValue);
+			} else if (parameterClass.isAssignableFrom(Float.class)) {
+				ret = Float.parseFloat(parameterValue);
+			}
+
+			if (ret != null)
+				return ret;
+			else
+				throw new GraphQLRequestPreparationException("Couldn't parse the value for the parameter '"
+						+ parameterName + "' of the field '" + fieldName + "'. The value is '" + parameterValue + "'");
 		}
 
 		/**
