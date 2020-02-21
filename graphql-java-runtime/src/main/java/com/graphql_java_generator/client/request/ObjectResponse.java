@@ -203,27 +203,7 @@ public class ObjectResponse {
 
 		//////////////////////////////////////////////////////////
 		// Then the input parameters
-
-		// Let's list the non null parameters ...
-		List<String> params = new ArrayList<String>();
-		for (InputParameter param : getInputParameters()) {
-			String stringValue = param.getValueForGraphqlQuery(parameters);
-			if (stringValue != null) {
-				params.add(param.getName() + ":" + stringValue);
-			}
-		}
-		// ... in order to generate the list of parameters to send to the server
-		if (params.size() > 0) {
-			sb.append("(");
-			boolean writeComma = false;
-			for (String param : params) {
-				if (writeComma)
-					sb.append(", ");
-				writeComma = true;
-				sb.append(param);
-			} // for
-			sb.append(")");
-		}
+		appendInputParameters(sb, getInputParameters(), parameters);
 
 		//////////////////////////////////////////////////////////
 		// Then field list (if any)
@@ -236,6 +216,7 @@ public class ObjectResponse {
 			// We first loop through the field of the current ObjectResponse
 			for (Field f : scalarFields) {
 				appendFieldName(sb, appendSpaceLocal, f.name, f.alias);
+				appendInputParameters(sb, f.inputParameters, parameters);
 				appendSpaceLocal = true;
 			}
 
@@ -246,6 +227,32 @@ public class ObjectResponse {
 			} // for
 
 			sb.append("}");
+		}
+	}
+
+	private void appendInputParameters(StringBuilder sb, List<InputParameter> inputParameters,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+		if (inputParameters != null && inputParameters.size() > 0) {
+			// Let's list the non null parameters ...
+			List<String> params = new ArrayList<String>();
+			for (InputParameter param : inputParameters) {
+				String stringValue = param.getValueForGraphqlQuery(parameters);
+				if (stringValue != null) {
+					params.add(param.getName() + ":" + stringValue);
+				}
+			}
+			// ... in order to generate the list of parameters to send to the server
+			if (params.size() > 0) {
+				sb.append("(");
+				boolean writeComma = false;
+				for (String param : params) {
+					if (writeComma)
+						sb.append(", ");
+					writeComma = true;
+					sb.append(param);
+				} // for
+				sb.append(")");
+			}
 		}
 	}
 
