@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.client.$break;
 import org.allGraphQLCases.client.$extends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
@@ -17,7 +18,6 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyBreak;
 import org.allGraphQLCases.client.MyQueryType;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -88,7 +88,7 @@ public class PreparedQueries implements Queries {
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
 		errorResponse = queryType.getErrorResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		aBreakResponse = queryType.getTheBreakResponseBuilder()
+		aBreakResponse = queryType.getABreakResponseBuilder()
 				.withQueryResponseDef("{anotherCase(test: &test, if: ?if)}").build();
 		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withQueryResponseDef("{id name " //
 				// Parameter for fields are not managed yet)
@@ -158,10 +158,10 @@ public class PreparedQueries implements Queries {
 	}
 
 	@Override
-	public MyBreak aBreak($extends test, String $if)
+	public $break aBreak($extends test, String $if)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// aBreak {case(test: &test, if: ?if)}
-		return queryType.theBreak(aBreakResponse, "test", test, "if", $if);
+		return queryType.aBreak(aBreakResponse, "test", test, "if", $if);
 	}
 
 	@Override

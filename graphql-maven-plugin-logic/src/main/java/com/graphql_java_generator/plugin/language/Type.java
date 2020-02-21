@@ -5,6 +5,8 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.List;
 
+import com.graphql_java_generator.GraphqlUtils;
+
 /**
  * All types found in the GraphQL schema(s), and discovered during the GraphQL parsing, are instance of {@link Type}.
  * 
@@ -23,9 +25,19 @@ public interface Type {
 	 */
 	public String getName();
 
+	/**
+	 * The name of the field, as it can be used in the Java code. If the name is a java keyword (class, default,
+	 * break...), the java name it prefixed by an underscore.
+	 * 
+	 * @return The name of the type, as it can be used in Java code
+	 */
+	default public String getJavaName() {
+		return GraphqlUtils.graphqlUtils.getJavaName(getName());
+	}
+
 	/** Get the filename where this type must be created. Default is to return the name for the Type */
 	default public String getTargetFileName(String fileType) {
-		return getName();
+		return getJavaName();
 	}
 
 	/**

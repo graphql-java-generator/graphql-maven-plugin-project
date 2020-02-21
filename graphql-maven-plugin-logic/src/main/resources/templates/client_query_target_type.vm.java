@@ -2,6 +2,7 @@ package ${pluginConfiguration.packageName};
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 #foreach($import in $imports)
@@ -21,17 +22,18 @@ public class ${objectName} {
 #elseif ($query.type.class.simpleName == "InterfaceType")
 	@JsonDeserialize(as = ${query.type.concreteClassSimpleName}.class)
 #end
-	#if(${query.list})List<#end${query.type.classSimpleName}#if(${query.list})>#end ${query.name};
+	@JsonProperty("${query.name}")
+	#if(${query.list})List<#end${query.type.classSimpleName}#if(${query.list})>#end ${query.javaName};
 
-	public void set${query.pascalCaseName}(#if(${query.list})List<#end${query.type.classSimpleName}#if(${query.list})>#end ${query.name}) {
-		this.${query.name} = ${query.name};
+	public void set${query.pascalCaseName}(#if(${query.list})List<#end${query.type.classSimpleName}#if(${query.list})>#end ${query.javaName}) {
+		this.${query.javaName} = ${query.javaName};
 	}
 
 	public #if(${query.list})List<#end${query.type.classSimpleName}#if(${query.list})>#end get${query.pascalCaseName}() {
-		return ${query.name};
+		return ${query.javaName};
 	}
 	
     public String toString() {
-        return "${objectName} {${query.name}: " + ${query.name} + "}";
+        return "${objectName} {${query.name}: " + ${query.javaName} + "}";
     }
 }

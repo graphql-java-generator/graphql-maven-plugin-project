@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.language.impl.TypeUtil;
 
@@ -38,6 +39,16 @@ public interface Field {
 	 * @return The name of the field
 	 */
 	public String getName();
+
+	/**
+	 * The name of the field, as it can be used in the Java code. If the name is a java keyword (class, default,
+	 * break...), the java name it prefixed by an underscore.
+	 * 
+	 * @return The name of the field, as it can be used in Java code
+	 */
+	default public String getJavaName() {
+		return GraphqlUtils.graphqlUtils.getJavaName(getName());
+	}
 
 	/**
 	 * Retrieves the {@link Type} which contains this field

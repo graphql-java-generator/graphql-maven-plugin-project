@@ -141,15 +141,15 @@ public class GraphQLProvider {
 #elseif (${customScalar.graphQLScalarTypeGetter})
 			.scalar(${customScalar.graphQLScalarTypeGetter}())
 #else
-		.scalar(): ${customScalar.name} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
+		.scalar(): ${customScalar.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end
 #end
 #foreach ($dataFetchersDelegate in $dataFetchersDelegates)
 			// Data fetchers for ${dataFetchersDelegate.name}
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
-			.type(newTypeWiring("${dataFetcher.field.owningType.name}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}()))
+			.type(newTypeWiring("${dataFetcher.field.owningType.javaName}").dataFetcher("${dataFetcher.field.javaName}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}()))
 #if ($dataFetcher.field.owningType.class.simpleName == "InterfaceType")
-			.type(newTypeWiring("${dataFetcher.field.owningType.concreteClassSimpleName}").dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}()))
+			.type(newTypeWiring("${dataFetcher.field.owningType.concreteClassSimpleName}").dataFetcher("${dataFetcher.field.javaName}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}()))
 #end
 #end
 #end
@@ -158,7 +158,7 @@ public class GraphQLProvider {
 			// Let's link the interface types to the concrete types
 #end
 #foreach ($interface in $interfaces)
-			.type("${interface.name}", typeWiring -> typeWiring.typeResolver(get${interface.name}Resolver()))
+			.type("${interface.javaName}", typeWiring -> typeWiring.typeResolver(get${interface.javaName}Resolver()))
 #end
 			.build();
 	}
@@ -181,7 +181,7 @@ public class GraphQLProvider {
 
 	
 #foreach ($interface in $interfaces)
-	private TypeResolver get${interface.name}Resolver() {
+	private TypeResolver get${interface.javaName}Resolver() {
 		return new TypeResolver() {
 			@Override
 			public GraphQLObjectType getType(TypeResolutionEnvironment env) {
@@ -189,8 +189,8 @@ public class GraphQLProvider {
 				String ret = null;
 
 #foreach ($implementingType in ${interface.implementingTypes})
-				if (javaObject instanceof ${implementingType.name}) {
-					ret = "${implementingType.name}";
+				if (javaObject instanceof ${implementingType.javaName}) {
+					ret = "${implementingType.javaName}";
 				} else
 #end
 				{

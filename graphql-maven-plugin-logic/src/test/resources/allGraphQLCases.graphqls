@@ -33,6 +33,9 @@ type MyQueryType {
     
     # error always returns an error!  (used to check the error management)
     error(errorLabel: String!): Character!
+    
+    # Check for GraphQL identifier that are java keywords
+    aBreak: break
 }
 
 type AnotherMutationType {
@@ -214,3 +217,20 @@ input DroidInput {
     primaryFunction: String
 }
 
+
+scalar else
+
+enum extends {
+	INT
+	DOUBLE
+	FLOAT
+	LONG
+}
+
+input class {
+	default: String
+}
+
+type break {
+	case(test: extends!, if: else): extends
+}

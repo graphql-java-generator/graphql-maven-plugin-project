@@ -53,7 +53,7 @@ public class GraphQLDataFetchers {
 ## $argument is an instance of Field
 #if ($argument.type.class.simpleName == "EnumType")
 #if ($argument.mandatory)
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.javaName}"));
 #else
 			${argument.type.classSimpleName} ${argument.camelCaseName} = null;
 			if (dataFetchingEnvironment.getArgument("${argument.name}") != null)

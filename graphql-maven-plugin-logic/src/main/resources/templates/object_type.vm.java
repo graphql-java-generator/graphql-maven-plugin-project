@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 #end
 
 #if (${pluginConfiguration.mode} == "client")
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 #end
 
@@ -31,32 +32,35 @@ import $import;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 ${object.annotation}
-public class ${object.name} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
+public class ${object.javaName} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
 
 #foreach ($field in $object.fields)
 #if (${field.inputParameters.size()} > 0)
 	@GraphQLInputParameters(names = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.name}"#if($foreach.hasNext), #end#end}, types = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.type.name}"#if($foreach.hasNext), #end#end})
 #end
+#if (${pluginConfiguration.mode} == "client")
+	@JsonProperty("${field.name}")
+#end
 	${field.annotation}
-	#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name};
+	#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
 
 
 #end
 
 #foreach ($field in $object.fields)
-	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}) {
-		this.${field.name} = ${field.name};
+	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}) {
+		this.${field.javaName} = ${field.javaName};
 	}
 
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end get${field.pascalCaseName}() {
-		return ${field.name};
+		return ${field.javaName};
 	}
 
 #end
     public String toString() {
-        return "${object.name} {"
+        return "${object.javaName} {"
 #foreach ($field in $object.fields)
-				+ "${field.name}: " + ${field.name}
+				+ "${field.javaName}: " + ${field.javaName}
 #if($foreach.hasNext)
 				+ ", "
 #end 

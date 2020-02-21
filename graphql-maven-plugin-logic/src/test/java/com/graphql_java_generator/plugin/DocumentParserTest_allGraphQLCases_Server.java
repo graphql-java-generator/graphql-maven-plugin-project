@@ -64,11 +64,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(26, i, "Nb classes are generated");
-		assertEquals(17, documentParser.objectTypes.size(), "Nb objects");
-		assertEquals(2, documentParser.customScalars.size(), "Nb custom scalars");
+		assertEquals(29, i, "Nb classes are generated");
+		assertEquals(19, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(3, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
-		assertEquals(2, documentParser.enumTypes.size(), "Nb enums");
+		assertEquals(3, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
 		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
 		assertEquals(1, documentParser.subscriptionTypes.size(), "Nb subscriptions");
@@ -366,7 +366,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(7, type.getFields().size());
+		assertEquals(8, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 

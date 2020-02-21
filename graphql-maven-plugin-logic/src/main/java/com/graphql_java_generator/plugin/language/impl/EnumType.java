@@ -6,6 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.language.Field;
 
@@ -78,5 +79,20 @@ public class EnumType extends AbstractType {
 	@Override
 	public boolean isCustomScalar() {
 		return false;
+	}
+
+	/**
+	 * Returns the values, with each value that are java keywords prefixed by an underscore
+	 * 
+	 * @return
+	 */
+	public List<String> getJavaValues() {
+		List<String> ret = new ArrayList<String>(values.size());
+
+		for (String value : values) {
+			ret.add(GraphqlUtils.graphqlUtils.getJavaName(value));
+		}
+
+		return ret;
 	}
 }

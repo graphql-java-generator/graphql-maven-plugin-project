@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.allGraphQLCases.server.$break;
 import org.allGraphQLCases.server.$extends;
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
@@ -14,7 +15,6 @@ import org.allGraphQLCases.server.CharacterImpl;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.Episode;
-import org.allGraphQLCases.server.MyBreak;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
@@ -102,8 +102,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public MyBreak theBreak(DataFetchingEnvironment dataFetchingEnvironment) {
-		MyBreak ret = new MyBreak();
+	public $break aBreak(DataFetchingEnvironment dataFetchingEnvironment) {
+		$break ret = new $break();
 
 		// Let's retrieve the input parameter test, that contains the expected value to return
 		Field aBreak = (Field) dataFetchingEnvironment.getOperationDefinition().getSelectionSet().getSelections()

@@ -40,7 +40,7 @@ public abstract class AbstractType implements Type {
 	/** {@inheritDoc} */
 	@Override
 	public String getClassSimpleName() {
-		return name;
+		return getJavaName();
 	}
 
 	/** {@inheritDoc} */

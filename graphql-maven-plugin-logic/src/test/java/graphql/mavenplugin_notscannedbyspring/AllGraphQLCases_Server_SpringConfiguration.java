@@ -28,6 +28,8 @@ public class AllGraphQLCases_Server_SpringConfiguration extends AbstractSpringCo
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate", null, null));
 		customScalars
 				.add(new CustomScalarDefinition("Long", "java.lang.Long", null, "graphql.Scalars.GraphQLLong", null));
+		customScalars.add(new CustomScalarDefinition("else", "java.lang.String",
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
 	}
 
 	public AllGraphQLCases_Server_SpringConfiguration() {
