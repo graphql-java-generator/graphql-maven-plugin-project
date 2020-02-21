@@ -211,8 +211,8 @@ public class Builder {
 				case "{":
 					throw new GraphQLRequestPreparationException(
 							"Encountered a '{' while reading parameters for the field '" + name
-									+ "' : if you're using DirectQueries with field's parameter, please note that input parameters are not managed in Direct Queries. Please use Prepared Queries. "
-									+ "If you're not using field's parameter, please correct the query syntax");
+									+ "' : if you're using DirectQueries with field's parameter that are Input Types, please consider using Prepared Queries. "
+									+ "Otherwise, please correct the query syntax");
 				case ":":
 				case " ":
 					break;
@@ -301,32 +301,44 @@ public class Builder {
 						+ parameterName + "' of the field '" + fieldName + "'");
 			}
 
-			String parameterClassname = owningClass.getPackageName() + "." + graphqlUtils.getJavaName(parameterType);
-			Class<?> parameterClass;
-			try {
-				parameterClass = Class.forName(parameterClassname);
-			} catch (ClassNotFoundException e) {
-				throw new GraphQLRequestPreparationException("Couldn't find the class (" + parameterClassname
-						+ ") of the parameter '" + parameterName + "' of the field '" + fieldName + "'", e);
-			}
+			// Let's check if this type is a Custom Scalar
+			GraphQLScalarType scalarType = CustomScalarRegistryImpl.customScalarRegistry
+					.getGraphQLScalarType(parameterType);
 
-			if (parameterClass.isEnum()) {
-				// This parameter is an enum. The parameterValue is one of its elements
-				Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
-				ret = graphqlUtils.invokeMethod(valueOf, null, parameterValue);
-			} else if (parameterClass.isAssignableFrom(Boolean.class)) {
-				// This parameter is a boolean. Only true and false are valid boolean.
-				if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
-					throw new GraphQLRequestPreparationException(
-							"Only true and false are allowed values for booleans. But the parameter '" + parameterName
-									+ "' of the field '" + fieldName + "' has the '" + parameterValue + "'");
+			if (scalarType != null) {
+				// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
+				ret = scalarType.getCoercing().parseValue(parameterValue);
+			} else {
+				// This type is not a Custom Scalar, so it must be a standard Scalar. Let's manage it
+				String parameterClassname = owningClass.getPackageName() + "."
+						+ graphqlUtils.getJavaName(parameterType);
+				Class<?> parameterClass;
+				try {
+					parameterClass = Class.forName(parameterClassname);
+				} catch (ClassNotFoundException e) {
+					throw new GraphQLRequestPreparationException("Couldn't find the class (" + parameterClassname
+							+ ") of the parameter '" + parameterName + "' of the field '" + fieldName + "'", e);
 				}
-				ret = "true".equals(parameterValue);
-			} else if (parameterClass.isAssignableFrom(Integer.class)) {
-				ret = Integer.parseInt(parameterValue);
-			} else if (parameterClass.isAssignableFrom(Float.class)) {
-				ret = Float.parseFloat(parameterValue);
-			}
+
+				if (parameterClass.isEnum()) {
+					// This parameter is an enum. The parameterValue is one of its elements
+					Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
+					ret = graphqlUtils.invokeMethod(valueOf, null, parameterValue);
+				} else if (parameterClass.isAssignableFrom(Boolean.class)) {
+					// This parameter is a boolean. Only true and false are valid boolean.
+					if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
+						throw new GraphQLRequestPreparationException(
+								"Only true and false are allowed values for booleans. But the parameter '"
+										+ parameterName + "' of the field '" + fieldName + "' has the '"
+										+ parameterValue + "'");
+					}
+					ret = "true".equals(parameterValue);
+				} else if (parameterClass.isAssignableFrom(Integer.class)) {
+					ret = Integer.parseInt(parameterValue);
+				} else if (parameterClass.isAssignableFrom(Float.class)) {
+					ret = Float.parseFloat(parameterValue);
+				}
+			} // else (scalarType != null)
 
 			if (ret != null)
 				return ret;

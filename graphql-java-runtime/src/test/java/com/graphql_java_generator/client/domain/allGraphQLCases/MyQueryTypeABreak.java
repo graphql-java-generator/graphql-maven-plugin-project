@@ -11,13 +11,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MyQueryTypeABreak {
 
-	_break aBreak;
+	$break aBreak;
 
-	public void setABreak(_break aBreak) {
+	public void setABreak($break aBreak) {
 		this.aBreak = aBreak;
 	}
 
-	public _break getABreak() {
+	public $break getABreak() {
 		return aBreak;
 	}
 	

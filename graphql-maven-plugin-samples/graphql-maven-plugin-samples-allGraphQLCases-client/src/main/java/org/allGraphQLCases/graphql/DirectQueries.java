@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
-import org.allGraphQLCases.client.AaaaExtends;
+import org.allGraphQLCases.client.$extends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -107,7 +107,7 @@ public class DirectQueries implements Queries {
 	}
 
 	@Override
-	public MyBreak aBreak(AaaaExtends test, String $if)
+	public MyBreak aBreak($extends test, String $if)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.theBreak("{anotherCase(test: " + test.toString() + ")}");
 	}

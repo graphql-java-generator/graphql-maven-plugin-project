@@ -220,7 +220,7 @@ input DroidInput {
 
 scalar elsee
 
-enum AaaaExtends {
+enum extends {
 	INT
 	DOUBLE
 	FLOAT
@@ -232,5 +232,5 @@ input class {
 }
 
 type MyBreak {
-	anotherCase(test: AaaaExtends!, if: elsee): AaaaExtends
+	anotherCase(test: extends!, if: elsee): extends
 }

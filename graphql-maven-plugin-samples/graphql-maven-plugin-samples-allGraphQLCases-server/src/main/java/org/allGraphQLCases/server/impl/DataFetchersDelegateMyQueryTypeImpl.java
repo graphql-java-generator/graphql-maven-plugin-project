@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.AaaaExtends;
+import org.allGraphQLCases.server.$extends;
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.Character;
@@ -110,7 +110,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 				.get(0);
 		Field aCase = (Field) aBreak.getSelectionSet().getSelections().get(0);
 		EnumValue enumValue = (EnumValue) aCase.getArguments().get(0).getValue();
-		AaaaExtends value = AaaaExtends.valueOf(enumValue.getName());
+		$extends value = $extends.valueOf(enumValue.getName());
 
 		ret.setAnotherCase(value);
 		return ret;

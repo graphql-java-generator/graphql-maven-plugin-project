@@ -3,11 +3,12 @@
  */
 package org.allGraphQLCases.graphql;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
-import org.allGraphQLCases.client.AaaaExtends;
+import org.allGraphQLCases.client.$extends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -127,10 +128,10 @@ public class WithBuilder implements Queries {
 				.withSubObject(oneWithoutIdSubTypeResponse).withSubObject(listWithoutIdSubTypesResponse).build();
 
 		// aBreak {case(test: &test, if: ?if)}
-		ObjectResponse caseResponse = new Builder(MyBreak.class, "case").withInputParameter("test", "test", true)
-				.withInputParameter("if", "if", false).build();
-		aBreakResponse = queryType.getTheBreakResponseBuilder().withSubObject(caseResponse).build();
-		//
+		List<InputParameter> inputParams = new ArrayList<InputParameter>();
+		inputParams.add(InputParameter.newBindParameter("test", "test", true));
+		inputParams.add(InputParameter.newBindParameter("if", "if", false));
+		aBreakResponse = queryType.getTheBreakResponseBuilder().withField("anotherCase", null, inputParams).build();
 	}
 
 	@Override
@@ -189,7 +190,7 @@ public class WithBuilder implements Queries {
 	}
 
 	@Override
-	public MyBreak aBreak(AaaaExtends test, String $if)
+	public MyBreak aBreak($extends test, String $if)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// aBreak {case(test: &test, if: ?if)}
 		return queryType.theBreak(aBreakResponse, "test", test, "if", $if);

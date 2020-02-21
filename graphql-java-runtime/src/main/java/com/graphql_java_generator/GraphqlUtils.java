@@ -37,9 +37,12 @@ public class GraphqlUtils {
 	/**
 	 * The list of Java keywords. This keyword may not be used as java identifier, within java code (for instance for
 	 * class name, field name...).<BR/>
-	 * If a GraphQL identifier is one of these keyword, it will be prefixed by an underscode in the generated code.
+	 * If a GraphQL identifier is one of these keyword, it will be prefixed by {@link #JAVA_KEYWORD_PREFIX} in the
+	 * generated code.
 	 */
 	private List<String> javaKeywords = new ArrayList<>();
+
+	public static Character JAVA_KEYWORD_PREFIX = '$';
 
 	public GraphqlUtils() {
 		// Add of all predefined scalars
@@ -363,12 +366,12 @@ public class GraphqlUtils {
 	 * Returns a valid java identifier for the given name.
 	 * 
 	 * @param name
-	 * @return If name is a default java keyword (so it is not a valid java identifier), then the return is the "_name"
-	 *         (prefixed by an underscore). Otherwise (which is generally the case), the name is valid, and returned as
-	 *         is
+	 * @return If name is a default java keyword (so it is not a valid java identifier), then the return prefixed by a
+	 *         {@link #JAVA_KEYWORD_PREFIX}. Otherwise (which is generally the case), the name is valid, and returned as
+	 *         is the given name
 	 */
 	public String getJavaName(String name) {
-		return isJavaReservedWords(name) ? "_" + name : name;
+		return isJavaReservedWords(name) ? JAVA_KEYWORD_PREFIX + name : name;
 	}
 
 	/**

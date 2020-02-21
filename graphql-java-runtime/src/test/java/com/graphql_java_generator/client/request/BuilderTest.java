@@ -14,6 +14,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.client.domain.allGraphQLCases.$extends;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.client.domain.forum.Board;
 import com.graphql_java_generator.client.domain.starwars.Character;
@@ -524,6 +525,6 @@ class BuilderTest {
 		assertEquals("case", field.name);
 		assertEquals(1, field.inputParameters.size());
 		assertEquals("test", field.inputParameters.get(0).getName());
-		assertEquals("DOUBLE", field.inputParameters.get(0).getValue());
+		assertEquals($extends.DOUBLE, field.inputParameters.get(0).getValue());
 	}
 }

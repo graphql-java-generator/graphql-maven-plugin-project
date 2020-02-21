@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
-import org.allGraphQLCases.client.AaaaExtends;
+import org.allGraphQLCases.client.$extends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -157,16 +157,18 @@ abstract class AbstractIT {
 					() -> queries.allFieldCases(null, null, null, 3, null, null, null, null, null, 2, null, null));
 
 			assertTrue(e.getMessage().contains("listWithIdSubTypes"));
-			assertTrue(e.getMessage().contains("input parameters are not managed in Direct Queries"));
+			assertTrue(e.getMessage().contains(
+					"DirectQueries with field's parameter that are Input Types, please consider using Prepared Queries."));
 
 		} else {
-
 			// Preparation
 			AllFieldCasesInput allFieldCasesInput = null;
 			Boolean uppercase = true;
 			String textToAppendToTheForname = "textToAppendToTheForname";
 			long nbItemsWithId = 3;
+			@SuppressWarnings("deprecation")
 			Date date = new Date(2000 - 1900, 12 - 1, 20);
+			@SuppressWarnings("deprecation")
 			Date date2 = new Date(2000 - 1900, 12 - 1, 21);
 			List<Date> dates = new ArrayList<>();
 			dates.add(date);
@@ -207,8 +209,8 @@ abstract class AbstractIT {
 
 	@Test
 	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals(AaaaExtends.FLOAT, queries.aBreak(AaaaExtends.FLOAT, null).getAnotherCase());
-		assertEquals(AaaaExtends.DOUBLE, queries.aBreak(AaaaExtends.DOUBLE, null).getAnotherCase());
+		assertEquals($extends.FLOAT, queries.aBreak($extends.FLOAT, null).getAnotherCase());
+		assertEquals($extends.DOUBLE, queries.aBreak($extends.DOUBLE, null).getAnotherCase());
 	}
 
 	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
