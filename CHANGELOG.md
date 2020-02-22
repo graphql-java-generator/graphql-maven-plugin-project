@@ -1,4 +1,4 @@
-# Not released yet
+# 1.3.2
 
 Any mode, client or server:
 - Input parameters are now managed for scalar fields (custom or not)
