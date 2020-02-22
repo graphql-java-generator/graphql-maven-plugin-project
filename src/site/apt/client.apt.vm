@@ -104,12 +104,24 @@ import my.target.package.QueryType; // my.target.package is the package name def
 
 ...
 
-	QueryType queryType = new QueryType();
+	QueryType queryType = new QueryType("http://my.server.com/graphql");
 	Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", "180");
 +--------------------------------------------------------------------------------------------
 
   Where human is a POJO, that you can manipulate as any java object. This POJOs and the QueryType(s) have been generated at build time, 
-  thanks to the plugin configured in your pom.  
+  thanks to the plugin configured in your pom.
+  
+  The generated QueryType has also these constructors:
+
++--------------------------------------------------------------------------------------------
+    public QueryType(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)
++--------------------------------------------------------------------------------------------  
+
+  and, with a preconfigured Jersey client instance to support customization of the rest request:
+
++--------------------------------------------------------------------------------------------
+    public QueryType(String graphqlEndpoint, Client client, ObjectMapper objectMapper)
++--------------------------------------------------------------------------------------------  
 
 * {GraphQL query (and mutation) calls}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

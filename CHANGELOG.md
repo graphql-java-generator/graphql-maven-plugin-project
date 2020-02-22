@@ -2,8 +2,11 @@
 
 Any mode, client or server:
 - Input parameters are now managed for scalar fields (custom or not)
+- Removed the dependency to log4j, replaced by slf4j
 - the GraphQL schema may now use java keywords (if the GraphQL schema uses identifiers that are java keywords, these identifiers are prefixed by an underscore in the generated code)
 
+Client mode:
+- Added a constructor in the generated query/mutation/subscription with a preconfigured Jersey client instance to support customization of the rest request
 
 # 1.3.1
 
