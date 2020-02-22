@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -18,20 +19,24 @@ import java.util.Date;
 @GraphQLInputType
 public class DroidInput  {
 
+	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
+	@JsonProperty("friends")
 	@JsonDeserialize(contentAs = CharacterInput.class)
 	@GraphQLNonScalar(graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
 	List<CharacterInput> friends;
 
 
+	@JsonProperty("appearsIn")
 	@JsonDeserialize(contentAs = Episode.class)
 	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
+	@JsonProperty("primaryFunction")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String primaryFunction;
 

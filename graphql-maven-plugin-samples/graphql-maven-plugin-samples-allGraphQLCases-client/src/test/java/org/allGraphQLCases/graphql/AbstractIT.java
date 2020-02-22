@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
-import org.allGraphQLCases.client.$extends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -19,6 +18,7 @@ import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client._extends;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -209,8 +209,8 @@ abstract class AbstractIT {
 
 	@Test
 	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals($extends.FLOAT, queries.aBreak($extends.FLOAT, null).getCase());
-		assertEquals($extends.DOUBLE, queries.aBreak($extends.DOUBLE, null).getCase());
+		assertEquals(_extends.FLOAT, queries.aBreak(_extends.FLOAT, null).getCase());
+		assertEquals(_extends.DOUBLE, queries.aBreak(_extends.DOUBLE, null).getCase());
 	}
 
 	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,

@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.Queries;
-import org.allGraphQLCases.client.$break;
-import org.allGraphQLCases.client.$extends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -20,6 +18,8 @@ import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client._break;
+import org.allGraphQLCases.client._extends;
 
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
@@ -190,7 +190,7 @@ public class WithBuilder implements Queries {
 	}
 
 	@Override
-	public $break aBreak($extends test, String $if)
+	public _break aBreak(_extends test, String $if)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// aBreak {case(test: &test, if: ?if)}
 		return queryType.aBreak(aBreakResponse, "test", test, "if", $if);

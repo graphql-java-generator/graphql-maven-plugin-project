@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class MyQueryTypeWithEnum {
 
 	@JsonDeserialize(as = CharacterImpl.class)
+	@JsonProperty("withEnum")
 	Character withEnum;
 
 	public void setWithEnum(Character withEnum) {

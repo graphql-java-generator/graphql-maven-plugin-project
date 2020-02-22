@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -18,10 +19,12 @@ import java.util.Date;
 @GraphQLInputType
 public class FieldParameterInput  {
 
+	@JsonProperty("uppercase")
 	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean uppercase;
 
 
+	@JsonProperty("date")
 	@GraphQLScalar(graphQLTypeName = "Date", javaClass = Date.class)
 	Date date;
 

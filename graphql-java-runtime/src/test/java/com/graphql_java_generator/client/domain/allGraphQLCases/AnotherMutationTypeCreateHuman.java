@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class AnotherMutationTypeCreateHuman {
 
+	@JsonProperty("createHuman")
 	Human createHuman;
 
 	public void setCreateHuman(Human createHuman) {

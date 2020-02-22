@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -18,37 +19,45 @@ import java.util.Date;
 
 public class Human implements Character, Commented {
 
+	@JsonProperty("id")
 	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
+	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
+	@JsonProperty("bestFriend")
 	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
 	Character bestFriend;
 
 
+	@JsonProperty("friends")
 	@JsonDeserialize(contentAs = CharacterImpl.class)
 	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
 	List<Character> friends;
 
 
+	@JsonProperty("nbComments")
 	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbComments;
 
 
+	@JsonProperty("comments")
 	@JsonDeserialize(contentAs = String.class)
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	List<String> comments;
 
 
+	@JsonProperty("appearsIn")
 	@JsonDeserialize(contentAs = Episode.class)
 	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
+	@JsonProperty("homePlanet")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String homePlanet;
 

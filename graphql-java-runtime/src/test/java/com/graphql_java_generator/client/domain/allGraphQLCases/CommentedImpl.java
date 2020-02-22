@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -18,10 +19,12 @@ import java.util.Date;
 
 public class CommentedImpl implements Commented {
 
+	@JsonProperty("nbComments")
 	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbComments;
 
 
+	@JsonProperty("comments")
 	@JsonDeserialize(contentAs = String.class)
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	List<String> comments;

@@ -42,7 +42,7 @@ public class GraphqlUtils {
 	 */
 	private List<String> javaKeywords = new ArrayList<>();
 
-	public static Character JAVA_KEYWORD_PREFIX = '$';
+	public static Character JAVA_KEYWORD_PREFIX = '_';
 
 	public GraphqlUtils() {
 		// Add of all predefined scalars

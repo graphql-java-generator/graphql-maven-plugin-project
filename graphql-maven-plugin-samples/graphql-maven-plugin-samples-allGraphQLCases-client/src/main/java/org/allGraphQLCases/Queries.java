@@ -3,8 +3,6 @@ package org.allGraphQLCases;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.$break;
-import org.allGraphQLCases.client.$extends;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -13,6 +11,8 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client._break;
+import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.graphql.DirectQueries;
 import org.allGraphQLCases.graphql.PreparedQueries;
 import org.allGraphQLCases.graphql.WithBuilder;
@@ -65,7 +65,7 @@ public interface Queries {
 	////////////////////////////////////////////////////////////////////////////
 	// Third part: check of GraphQL types that are java keywords
 
-	public $break aBreak($extends test, String $if)
+	public _break aBreak(_extends test, String $if)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	////////////////////////////////////////////////////////////////////////////

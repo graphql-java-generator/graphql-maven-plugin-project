@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.$break;
-import org.allGraphQLCases.server.$extends;
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.Character;
@@ -15,6 +13,8 @@ import org.allGraphQLCases.server.CharacterImpl;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server._break;
+import org.allGraphQLCases.server._extends;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
@@ -102,15 +102,15 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public $break aBreak(DataFetchingEnvironment dataFetchingEnvironment) {
-		$break ret = new $break();
+	public _break aBreak(DataFetchingEnvironment dataFetchingEnvironment) {
+		_break ret = new _break();
 
 		// Let's retrieve the input parameter test, that contains the expected value to return
 		Field aBreak = (Field) dataFetchingEnvironment.getOperationDefinition().getSelectionSet().getSelections()
 				.get(0);
 		Field aCase = (Field) aBreak.getSelectionSet().getSelections().get(0);
 		EnumValue enumValue = (EnumValue) aCase.getArguments().get(0).getValue();
-		$extends value = $extends.valueOf(enumValue.getName());
+		_extends value = _extends.valueOf(enumValue.getName());
 
 		ret.setCase(value);
 		return ret;

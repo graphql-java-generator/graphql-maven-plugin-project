@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
@@ -11,13 +12,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MyQueryTypeABreak {
 
-	$break aBreak;
+	@JsonProperty("aBreak")
+	_break aBreak;
 
-	public void setABreak($break aBreak) {
+	public void setABreak(_break aBreak) {
 		this.aBreak = aBreak;
 	}
 
-	public $break getABreak() {
+	public _break getABreak() {
 		return aBreak;
 	}
 	

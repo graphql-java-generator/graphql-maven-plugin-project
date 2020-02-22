@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -18,51 +19,62 @@ import java.util.Date;
 @GraphQLInputType
 public class AllFieldCasesInput  {
 
+	@JsonProperty("id")
 	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
+	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
+	@JsonProperty("forname")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String forname;
 
 
+	@JsonProperty("age")
 	@GraphQLScalar(graphQLTypeName = "Long", javaClass = Long.class)
 	Long age;
 
 
+	@JsonProperty("nbComments")
 	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbComments;
 
 
+	@JsonProperty("comments")
 	@JsonDeserialize(contentAs = String.class)
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	List<String> comments;
 
 
+	@JsonProperty("booleans")
 	@JsonDeserialize(contentAs = Boolean.class)
 	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	List<Boolean> booleans;
 
 
+	@JsonProperty("aliases")
 	@JsonDeserialize(contentAs = String.class)
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	List<String> aliases;
 
 
+	@JsonProperty("planets")
 	@JsonDeserialize(contentAs = String.class)
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	List<String> planets;
 
 
+	@JsonProperty("withIdSubtype")
 	@JsonDeserialize(contentAs = AllFieldCasesWithIdSubtypeInput.class)
 	@GraphQLNonScalar(graphQLTypeName = "AllFieldCasesWithIdSubtypeInput", javaClass = AllFieldCasesWithIdSubtypeInput.class)
 	List<AllFieldCasesWithIdSubtypeInput> withIdSubtype;
 
 
+	@JsonProperty("withoutIdSubtype")
 	@JsonDeserialize(contentAs = AllFieldCasesWithoutIdSubtypeInput.class)
 	@GraphQLNonScalar(graphQLTypeName = "AllFieldCasesWithoutIdSubtypeInput", javaClass = AllFieldCasesWithoutIdSubtypeInput.class)
 	List<AllFieldCasesWithoutIdSubtypeInput> withoutIdSubtype;

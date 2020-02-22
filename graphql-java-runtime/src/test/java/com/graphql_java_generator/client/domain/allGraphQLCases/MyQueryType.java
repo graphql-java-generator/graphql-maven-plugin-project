@@ -9,9 +9,12 @@ import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.ws.rs.client.Client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
@@ -68,7 +71,24 @@ public class MyQueryType {
 	public MyQueryType(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint, sslContext, hostnameVerifier);
 	}
-	
+
+	/**
+	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
+	 * that gives the opportunity to customise the REST request<BR/>
+	 * For example: http://my.server.com/graphql
+	 *
+	 * @param graphqlEndpoint
+	 *            the http URI for the GraphQL endpoint
+	 * @param client
+	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
+	 * @param objectMapper
+	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
+	 */
+	public MyQueryType(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+	}
+
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
@@ -1375,7 +1395,7 @@ public class MyQueryType {
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
-	 * describes the format of the response of the server response, that is the expected fields of the {@link $break}
+	 * describes the format of the response of the server response, that is the expected fields of the {@link _break}
 	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
 	 * the StarWars, Forum and other samples for more complex queries.<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no 
@@ -1391,9 +1411,9 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = $break.class)
+	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
 	@GraphQLQuery
-	public $break aBreak(String queryResponseDef)
+	public _break aBreak(String queryResponseDef)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'aBreak' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getABreakResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -1404,7 +1424,7 @@ public class MyQueryType {
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
-	 * describes the format of the response of the server response, that is the expected fields of the {@link $break}
+	 * describes the format of the response of the server response, that is the expected fields of the {@link _break}
 	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
 	 * the StarWars, Forum and other samples for more complex queries.
 	 * 
@@ -1421,9 +1441,9 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = $break.class)
+	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
 	@GraphQLQuery
-	public $break aBreakWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+	public _break aBreakWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'aBreak' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = getABreakResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -1444,9 +1464,9 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = $break.class)
+	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
 	@GraphQLQuery
-	public $break aBreak(ObjectResponse objectResponse)
+	public _break aBreak(ObjectResponse objectResponse)
 			throws GraphQLRequestExecutionException  {
 		return aBreakWithBindValues(objectResponse, null);
 	}
@@ -1465,9 +1485,9 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = $break.class)
+	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
 	@GraphQLQuery
-	public $break aBreakWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+	public _break aBreakWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of query 'aBreak' with parameters: ");
@@ -1478,9 +1498,9 @@ public class MyQueryType {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		if (!$break.class.equals(objectResponse.getFieldClass())) {
+		if (!_break.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ $break.class + ", but is an instance of " + objectResponse.getClass().getName());
+					+ _break.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
 		MyQueryTypeABreak ret = executor.execute("query", objectResponse, parameters, MyQueryTypeABreak.class);
@@ -1505,9 +1525,9 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = $break.class)
+	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
 	@GraphQLQuery
-	public $break aBreak(ObjectResponse objectResponse, Object... paramsAndValues)
+	public _break aBreak(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
@@ -1526,9 +1546,9 @@ public class MyQueryType {
 			logger.debug("Executing of query 'aBreak' (with bind variables)");
 		}
 
-		if (!$break.class.equals(objectResponse.getFieldClass())) {
+		if (!_break.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ $break.class + ", but is an instance of " + objectResponse.getClass().getName());
+					+ _break.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);

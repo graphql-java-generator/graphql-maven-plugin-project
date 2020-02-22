@@ -17,25 +17,26 @@ import java.util.Date;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 
-public class WithIDImpl implements WithID {
+public class _break  {
 
-	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
-	String id;
+	@GraphQLInputParameters(names = {"test", "if"}, types = {"extends", "else"})
+	@JsonProperty("case")
+	@GraphQLScalar(graphQLTypeName = "extends", javaClass = _extends.class)
+	_extends _case;
 
 
 
-	public void setId(String id) {
-		this.id = id;
+	public void setCase(_extends _case) {
+		this._case = _case;
 	}
 
-	public String getId() {
-		return id;
+	public _extends getCase() {
+		return _case;
 	}
 
     public String toString() {
-        return "WithIDImpl {"
-				+ "id: " + id
+        return "_break {"
+				+ "_case: " + _case
         		+ "}";
     }
 }

@@ -9,9 +9,12 @@ import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.ws.rs.client.Client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
@@ -68,7 +71,24 @@ public class AnotherMutationType {
 	public AnotherMutationType(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint, sslContext, hostnameVerifier);
 	}
-	
+
+	/**
+	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
+	 * that gives the opportunity to customise the REST request<BR/>
+	 * For example: http://my.server.com/graphql
+	 *
+	 * @param graphqlEndpoint
+	 *            the http URI for the GraphQL endpoint
+	 * @param client
+	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
+	 * @param objectMapper
+	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
+	 */
+	public AnotherMutationType(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+	}
+
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
