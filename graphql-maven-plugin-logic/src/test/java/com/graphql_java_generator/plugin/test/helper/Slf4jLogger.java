@@ -3,15 +3,15 @@
  */
 package com.graphql_java_generator.plugin.test.helper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simulate a
  * 
  * @author Etienne
  */
-public class Log4jLogger implements com.graphql_java_generator.plugin.Logger {
+public class Slf4jLogger implements com.graphql_java_generator.plugin.Logger {
 
 	/** The logger, to which all log calls will be delegated */
 	Logger logger = null;
@@ -21,8 +21,8 @@ public class Log4jLogger implements com.graphql_java_generator.plugin.Logger {
 	 * @param caller
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
-	public Log4jLogger(Object caller) {
-		logger = LogManager.getLogger(caller.getClass());
+	public Slf4jLogger(Object caller) {
+		logger = LoggerFactory.getLogger(caller.getClass());
 	}
 
 	@Override

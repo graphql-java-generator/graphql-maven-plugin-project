@@ -14,8 +14,8 @@ import java.nio.charset.Charset;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dataloader.DataLoader;
 import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ import $import;
 public class GraphQLProvider {
 
 	/** The logger for this instance */
-	protected Logger logger = LogManager.getLogger();
+	protected Logger logger = LoggerFactory.getLogger(GraphQLProvider.class);
 
 	@Autowired
 	ApplicationContext applicationContext;

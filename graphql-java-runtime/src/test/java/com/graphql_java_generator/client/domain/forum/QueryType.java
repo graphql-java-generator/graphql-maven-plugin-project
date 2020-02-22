@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
@@ -24,7 +24,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class QueryType {
 
 	/** Logger for this class */
-	private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LoggerFactory.getLogger(QueryType.class);
 
 	final QueryExecutor executor;
 

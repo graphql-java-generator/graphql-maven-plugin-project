@@ -3,14 +3,13 @@
  */
 package com.graphql_java_generator.client;
 
-import java.io.IOException;
-import java.util.Map;
-
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, and return its
@@ -20,13 +19,10 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  */
 public interface QueryExecutor {
 
-	public static final Marker GRAPHQL_MARKER = MarkerManager.getMarker("GRAPHQL");
-	public static final Marker GRAPHQL_QUERY_MARKER = MarkerManager.getMarker("GRAPHQL_QUERY")
-			.setParents(GRAPHQL_MARKER);
-	public static final Marker GRAPHQL_MUTATION_MARKER = MarkerManager.getMarker("GRAPHQL_MUTATION")
-			.setParents(GRAPHQL_MARKER);
-	public static final Marker GRAPHQL_SUBSCRIPTION_MARKER = MarkerManager.getMarker("GRAPHQL_SUBSCRIPTION")
-			.setParents(GRAPHQL_MARKER);
+	Marker GRAPHQL_MARKER = MarkerFactory.getMarker("GRAPHQL");
+	Marker GRAPHQL_QUERY_MARKER = MarkerFactory.getMarker("GRAPHQL_QUERY");
+	Marker GRAPHQL_MUTATION_MARKER = MarkerFactory.getMarker("GRAPHQL_MUTATION");
+	Marker GRAPHQL_SUBSCRIPTION_MARKER = MarkerFactory.getMarker("GRAPHQL_SUBSCRIPTION");
 
 	/**
 	 * Execution of the given simple GraphQL query, and return its response mapped in the relevant POJO. This method

@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +39,6 @@ public abstract class AbstractSpringConfiguration {
 	private final static String ENCODING = "UTF-8";
 
 	/** Logger pour cette classe */
-	protected Logger logger = LogManager.getLogger();
 	private final String schemaFilePattern;
 
 	private PluginMode mode;

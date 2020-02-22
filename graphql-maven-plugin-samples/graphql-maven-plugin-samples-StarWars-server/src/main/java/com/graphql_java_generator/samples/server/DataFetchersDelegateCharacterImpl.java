@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
@@ -18,7 +18,7 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCharacter {
 
 	/** The logger for this instance */
-	protected Logger logger = LogManager.getLogger();
+	protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateCharacterImpl.class);
 
 	@Resource
 	CharacterRepository characterRepository;

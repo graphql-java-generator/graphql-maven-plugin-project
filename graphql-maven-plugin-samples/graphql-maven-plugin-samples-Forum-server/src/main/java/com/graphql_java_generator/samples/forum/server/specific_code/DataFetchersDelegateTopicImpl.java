@@ -10,8 +10,8 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +37,7 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic {
 
 	/** The logger for this instance */
-	protected Logger logger = LogManager.getLogger();
+	protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateTopicImpl.class);
 
 	static final String DATE_FORMAT = "yyyy-MM-dd";
 	static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

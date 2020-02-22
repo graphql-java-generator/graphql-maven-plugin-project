@@ -5,8 +5,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateMember;
@@ -17,7 +17,7 @@ import com.graphql_java_generator.samples.forum.server.jpa.MemberRepository;
 public class DataFetchersDelegateMemberImpl implements DataFetchersDelegateMember {
 
 	/** The logger for this instance */
-	protected Logger logger = LogManager.getLogger();
+	protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateMemberImpl.class);
 
 	@Resource
 	MemberRepository memberRepository;

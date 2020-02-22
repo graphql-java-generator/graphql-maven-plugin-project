@@ -38,7 +38,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
 	public PluginConfigurationTestHelper(Object caller) {
-		log = new Log4jLogger(caller);
+		log = new Slf4jLogger(caller);
 	}
 
 	@Override
