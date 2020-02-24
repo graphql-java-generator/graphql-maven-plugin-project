@@ -31,58 +31,18 @@ pause
 call mvn site:stage
 pause
 
-
-
-##################################################################
-# Replacement of the ant script: START
-
-# Below, the previous ant script, but it doesn't like the long filename generated on the site
-#call mvn antrun:run -Prelease
-#pause
-
-SET GH_BRANCH=target\gh-pages_branch
-SET GH_BRANCH2=target\gh-pages_branch2
-
-rmdir %GH_BRANCH% /S /Q
-rmdir %GH_BRANCH2% /S /Q
-pause
-
-mkdir %GH_BRANCH%
-mkdir %GH_BRANCH2%
-pause
-
-subst w: /d
-subst w: %GH_BRANCH%
-pause
-
+REM For git on Windows, there is an issue with (too) long filenames. The git command below takes care of that 
 git config --system core.longpaths true
+
+call mvn antrun:run -Prelease
 pause
 
-git clone https://github.com/graphql-java-generator/graphql-maven-plugin-project --branch gh-pages --single-branch %GH_BRANCH%
-pause
+cd target\gh-pages_branch\graphql-maven-plugin-project
+git push
+cd ..\..\..
 
-mkdir %GH_BRANCH2%\.git
-xcopy %GH_BRANCH%\.git %GH_BRANCH2%\.git /E /C /Q /H
-pause
-
-copy %GH_BRANCH%\CNAME %GH_BRANCH2%
-pause
-
-xcopy target\staging %GH_BRANCH2% /E /C /Q /H
-pause
-
-cd %GH_BRANCH2%
-git add *
-pause
-
-git commit 
-
-# Replacement of the ant script: START
-##################################################################
-
-
-cd ..\..
-
-
+echo Go to https://github.com/graphql-java-generator/graphql-maven-plugin-project/settings
+echo Put graphql-maven-plugin-project.graphql-java-generator.com
+echo into the "Custom domain" parameter
 
 
