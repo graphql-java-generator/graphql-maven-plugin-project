@@ -1,5 +1,7 @@
 package com.graphql_java_generator.client.domain.forum;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import com.graphql_java_generator.annotation.GraphQLInputType;
@@ -20,6 +22,12 @@ public class PostInput {
 	@GraphQLNonScalar(graphQLTypeName = "TopicPostInput", javaClass = TopicPostInput.class)
 	TopicPostInput input;
 
+	@GraphQLScalar(graphQLTypeName = "Date", javaClass = Date.class)
+	Date from;
+
+	@GraphQLScalar(graphQLTypeName = "Date", javaClass = Date.class)
+	List<Date> in;
+
 	public void setTopicId(UUID topicId) {
 		this.topicId = topicId;
 	}
@@ -36,8 +44,24 @@ public class PostInput {
 		return input;
 	}
 
+	public Date getFrom() {
+		return from;
+	}
+
+	public void setFrom( Date from ) {
+		this.from = from;
+	}
+
+	public List<Date> getIn() {
+		return in;
+	}
+
+	public void setIn( List<Date> in ) {
+		this.in = in;
+	}
+
 	@Override
 	public String toString() {
-		return "PostInput {" + "topicId: " + topicId + ", " + "input: " + input + "}";
+		return "PostInput {" + "topicId: " + topicId + ", " + "input: " + input + ", " + "from: " + from + ", " + "in: " + in + "}";
 	}
 }
