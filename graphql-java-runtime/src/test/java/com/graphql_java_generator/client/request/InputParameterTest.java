@@ -1,10 +1,13 @@
 package com.graphql_java_generator.client.request;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.client.domain.forum.AvailabilityType;
+import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.domain.starwars.Episode;
@@ -118,12 +123,12 @@ class InputParameterTest {
 		// Verification
 		assertEquals(
 				"{topicId: \\\"00000000-0000-0000-0000-000000000022\\\", input: {authorId: \\\"00000000-0000-0000-0000-000000000012\\\", date: \\\"2009-11-21\\\", publiclyAvailable: false, title: \\\"The good title for a post\\\", content: \\\"Some other content\\\"}}",
-				param.getValueForGraphqlQuery(postInput));
+				param.getValueForGraphqlQuery(postInput, null));
 
 		postInput.getInput().setAvailabilityType(AvailabilityType.SEMI_PRIVATE);
 		assertEquals(
 				"{topicId: \\\"00000000-0000-0000-0000-000000000022\\\", input: {authorId: \\\"00000000-0000-0000-0000-000000000012\\\", date: \\\"2009-11-21\\\", publiclyAvailable: false, title: \\\"The good title for a post\\\", content: \\\"Some other content\\\", availabilityType: SEMI_PRIVATE}}",
-				param.getValueForGraphqlQuery(postInput));
+				param.getValueForGraphqlQuery(postInput, null));
 	}
 
 	@Test
@@ -255,5 +260,37 @@ class InputParameterTest {
 
 		assertEquals(ls, customScalarInputParameter.getValueForGraphqlQuery(goodValues));
 	}
+
+	@Test
+	void getValueForGraphqlQuery_BindParameter_InputType_CustomScalar_Date_OK() throws GraphQLRequestExecutionException {
+		// Given
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+
+		String name = "aName";
+		String bindParameterName = "variableName";
+
+		PostInput postInput = new PostInput();
+		postInput.setFrom( getDateFromDifferentFormat("01-01-2020") );
+		postInput.setIn( asList( getDateFromDifferentFormat("01-02-2020"), getDateFromDifferentFormat("01-03-2020")) );
+
+		InputParameter inputTypeInputParameter = InputParameter.newBindParameter(  name, bindParameterName, false);
+
+		Map<String,Object> parameters = new HashMap<>();
+		parameters.put(bindParameterName, postInput);
+
+		// When
+		assertEquals("{from: \\\"2020-01-01\\\", in: [\\\"2020-02-01\\\",\\\"2020-03-01\\\"]}", inputTypeInputParameter.getValueForGraphqlQuery(parameters));
+	}
+
+	private Date getDateFromDifferentFormat( String dateInString ) {
+		SimpleDateFormat formatter = new SimpleDateFormat( "dd-MM-yyyy" );
+		try {
+			return formatter.parse( dateInString );
+		} catch ( ParseException e ) {
+			Assertions.fail( "Invalid date format.");
+			return null;
+		}
+	}
+
 
 }

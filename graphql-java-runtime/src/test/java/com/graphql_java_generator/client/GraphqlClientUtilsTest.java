@@ -5,11 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
+import com.graphql_java_generator.client.domain.forum.Post;
+import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
 import com.graphql_java_generator.client.domain.starwars.Episode;
@@ -18,6 +22,8 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.domain.starwars.ScalarTest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import graphql.schema.GraphQLScalarType;
 
 class GraphqlClientUtilsTest {
 
@@ -253,4 +259,33 @@ class GraphqlClientUtilsTest {
 		assertEquals(Episode.JEDI, map.get("param2"));
 		assertEquals("a String", map.get("param3"));
 	}
+
+	@Test
+	void test_getGraphQLScalarType() throws Exception {
+		// Given
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+
+		// When
+		Field field =  Post.class.getDeclaredField( "date" );
+
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType( field );
+
+		// Then
+		assertNotNull( graphQlScalarType );
+	}
+
+	@Test
+	void test_getGraphQLScalarTypeGivenInputPojo() throws Exception {
+		// Given
+		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+
+		// When
+		Field field =  PostInput.class.getDeclaredField( "from" );
+
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType( field );
+
+		// Then
+		assertNotNull( graphQlScalarType );
+	}
+
 }
