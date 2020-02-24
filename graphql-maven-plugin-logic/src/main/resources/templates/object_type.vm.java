@@ -67,4 +67,25 @@ public class ${object.javaName} #if($object.implementz.size()>0)implements #fore
 #end
         		+ "}";
     }
+
+    /**
+	 * Enum of field names
+	 */
+	 public static enum Field {
+#foreach ($field in $object.fields)
+		${field.pascalCaseName}("${field.name}")#if($foreach.hasNext),
+#end
+#end;
+
+		private String fieldName;
+
+		Field(String fieldName) {
+			this.fieldName = fieldName;
+		}
+
+		public String getFieldName() {
+			return fieldName;
+		}
+
+	}
 }

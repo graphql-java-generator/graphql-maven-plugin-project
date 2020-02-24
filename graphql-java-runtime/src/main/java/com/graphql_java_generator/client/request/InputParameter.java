@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputType;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -31,6 +32,9 @@ public class InputParameter {
 
 	/** A utility class, that's used here */
 	private static GraphqlUtils graphqlUtils = new GraphqlUtils();
+
+	/** A utility class, that's used here */
+	private static GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	/** The parameter name, as defined in the GraphQL schema */
 	final String name;
@@ -186,9 +190,9 @@ public class InputParameter {
 			if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
 				return null;
 			else
-				return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName));
+				return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName), graphQLScalarType);
 		} else
-			return this.getValueForGraphqlQuery(this.value);
+			return this.getValueForGraphqlQuery(this.value, graphQLScalarType);
 
 	}
 
@@ -202,11 +206,11 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	String getValueForGraphqlQuery(Object val) throws GraphQLRequestExecutionException {
+	String getValueForGraphqlQuery(Object val, GraphQLScalarType graphQLScalarType) throws GraphQLRequestExecutionException {
 		if (val == null) {
 			return null;
 		} else if (val instanceof java.util.List) {
-			return getListValue((List<?>) val);
+			return getListValue((List<?>) val, graphQLScalarType);
 		} else if (graphQLScalarType != null) {
 			Object ret = graphQLScalarType.getCoercing().serialize(val);
 			if (ret instanceof String)
@@ -242,11 +246,11 @@ public class InputParameter {
 	 * @throws NullPointerException
 	 *             If lst is null
 	 */
-	private String getListValue(List<?> list) throws GraphQLRequestExecutionException {
+	private String getListValue(List<?> list, GraphQLScalarType graphQLScalarType) throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("[");
 		for (int index = 0; index < list.size(); index++) {
 			Object obj = list.get(index);
-			result.append(this.getValueForGraphqlQuery(obj));
+			result.append(this.getValueForGraphqlQuery(obj, graphQLScalarType));
 			if (index < list.size() - 1) {
 				result.append(",");
 			}
@@ -275,7 +279,7 @@ public class InputParameter {
 
 				result.append(field.getName());
 				result.append(": ");
-				result.append(getValueForGraphqlQuery(val));
+				result.append(getValueForGraphqlQuery(val, graphqlClientUtils.getGraphQLCustomScalarType(field)));
 
 				separator = ", ";
 			}

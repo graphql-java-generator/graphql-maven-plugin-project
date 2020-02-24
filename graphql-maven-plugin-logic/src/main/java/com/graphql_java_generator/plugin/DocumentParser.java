@@ -862,9 +862,16 @@ public class DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForClientMode(Field field) {
+		String contentAs = null;
+		String using = null;
 		if (field.isList()) {
-			((FieldImpl) field).addAnnotation(
-					"@JsonDeserialize(contentAs = " + field.getType().getConcreteClassSimpleName() + ".class)");
+			contentAs = field.getType().getConcreteClassSimpleName() + ".class";
+		}
+		if (field.getType().isCustomScalar()) {
+				using = "CustomScalarDeserializer" + field.getType().getConcreteClassSimpleName() + ".class";
+		}
+		if (contentAs != null || using != null) {
+			( (FieldImpl) field ).addAnnotation( buildJsonDeserializeAnnotation(contentAs, using) );
 		}
 
 		addFieldAnnotationForBothClientAndServerMode(field);
@@ -1045,6 +1052,35 @@ public class DocumentParser {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Build an @JsonDeserialize annotation with one or more attributes
+	 * @param contentAs contentAs class name
+	 * @param using using class name
+	 * @return annotation string
+	 */
+	private String buildJsonDeserializeAnnotation( String contentAs, String using) {
+		StringBuffer annotationBuf = new StringBuffer(  );
+		annotationBuf.append( "@JsonDeserialize(" );
+		boolean addComma = false;
+		if (contentAs != null) {
+			annotationBuf
+				 .append( "contentAs = " )
+				 .append( contentAs );
+			addComma = true;
+		}
+
+		if (using != null) {
+			if (addComma) {
+				annotationBuf.append( ", " );
+			}
+			annotationBuf
+				 .append( "using = " )
+				 .append( using );
+		}
+		annotationBuf.append( ")" );
+		return annotationBuf.toString();
 	}
 
 }
