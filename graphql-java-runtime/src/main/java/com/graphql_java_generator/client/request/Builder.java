@@ -310,7 +310,7 @@ public class Builder {
 				ret = scalarType.getCoercing().parseValue(parameterValue);
 			} else {
 				// This type is not a Custom Scalar, so it must be a standard Scalar. Let's manage it
-				String parameterClassname = owningClass.getPackageName() + "."
+				String parameterClassname = owningClass.getPackage().getName() + "."
 						+ graphqlUtils.getJavaName(parameterType);
 				Class<?> parameterClass;
 				try {
