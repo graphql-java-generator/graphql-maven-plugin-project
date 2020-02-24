@@ -1,3 +1,10 @@
+# Not released yet
+
+Any mode, client or server:
+- The provided Date and DateTime scalars are now provided as a static field (instead of the class itself), due to a graphql-java change) 
+
+
+
 # 1.3.2
 
 Any mode, client or server:

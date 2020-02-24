@@ -38,7 +38,7 @@
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>
 							<javaType>java.util.Date</javaType>
-							<graphQLScalarTypeClass>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
+							<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
 						</customScalar>
 					</customScalars>
 				</configuration>

@@ -51,6 +51,8 @@ scalar Date
 ** {Implement a <graphql.schema.GraphQLScalarType>}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  _Deprecated_: graphql-java will remove support for this way of creating Custom Scalars.
+
   You can create your own implementation of any GraphQL Custom Scalar.
   
   The main issue here, is that the <graphql.schema.GraphQLScalarType> isn't very documented, especially the <graphql.schema.Coercing> interface that 
@@ -99,7 +101,7 @@ scalar Date
 	this Custom Scalar. For instance: <graphql.Scalars.GraphQLLong>.
 	
 	* graphQLScalarTypeGetter: The full class name followed by the static method name that returns the <graphql.schema.GraphQLScalarType> that will manage 
-	this Custom Scalar. For instance: <org.mycompany.MyScalars.getGraphQLLong()>. This call may contain parameters. Provided that this a valid java statement.
+	this Custom Scalar. For instance: <org.mycompany.MyScalars.getGraphQLLong()>. This call may contain parameters, provided that it is a valid java statement.
 	
   []
   
