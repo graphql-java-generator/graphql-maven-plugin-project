@@ -3,7 +3,6 @@ package com.graphql_java_generator.client.domain.forum;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
@@ -18,7 +17,7 @@ public class Post {
 	String id;
 
 	@JsonDeserialize(using = CustomScalarDeserializerDate.class)
-	@GraphQLCustomScalar(graphQLTypeName = "Date", javaClass = Date.class)
+	@GraphQLScalar(graphQLTypeName = "Date", javaClass = Date.class)
 	Date date;
 
 	@GraphQLNonScalar(graphQLTypeName = "Member", javaClass = Member.class)
