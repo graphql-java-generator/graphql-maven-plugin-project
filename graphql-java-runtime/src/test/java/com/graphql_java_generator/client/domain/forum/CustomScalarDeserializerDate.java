@@ -14,7 +14,7 @@ public class CustomScalarDeserializerDate extends AbstractCustomScalarDeserializ
 	private static final long serialVersionUID = 1L;
 
 	protected CustomScalarDeserializerDate() {
-		super(java.util.Date.class, new GraphQLScalarTypeDate());
+		super(java.util.Date.class, GraphQLScalarTypeDate.Date);
 	}
 
 }

@@ -223,7 +223,7 @@ class InputParameterTest {
 		String name = "aName";
 		String bindParameterName = "variableName";
 		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName, false,
-				graphQLScalarTypeDate);
+				GraphQLScalarTypeDate.Date);
 
 		Map<String, Object> badValues = new HashMap<>();
 		badValues.put("variableName", "A bad date");

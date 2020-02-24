@@ -18,7 +18,7 @@ public class CustomScalarRegistryInitializer {
 #elseif (${customScalar.graphQLScalarTypeStaticField})
 		customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeStaticField});
 #elseif (${customScalar.graphQLScalarTypeGetter})
-		customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeGetter}());
+		customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeGetter});
 #else
 		customScalarRegistry.registerGraphQLScalarType: ${customScalar.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end

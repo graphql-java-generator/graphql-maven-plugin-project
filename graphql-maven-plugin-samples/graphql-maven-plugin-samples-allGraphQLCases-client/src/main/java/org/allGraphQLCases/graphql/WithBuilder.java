@@ -102,8 +102,9 @@ public class WithBuilder implements Queries {
 				.withField("name").build();
 		ObjectResponse listWithIdSubTypesResponse = new Builder(AllFieldCases.class, "listWithIdSubTypes")
 				.withInputParameter(InputParameter.newBindParameter("nbItems", "nbItemsWithId", false))
-				.withInputParameter(InputParameter.newBindParameter("date", "date", false, graphQLScalarTypeDate))
-				.withInputParameter(InputParameter.newBindParameter("dates", "dates", false, graphQLScalarTypeDate))
+				.withInputParameter(InputParameter.newBindParameter("date", "date", false, graphQLScalarTypeDate.Date))
+				.withInputParameter(
+						InputParameter.newBindParameter("dates", "dates", false, graphQLScalarTypeDate.Date))
 				.withInputParameter(InputParameter.newBindParameter("uppercaseName", "uppercaseNameList", false))
 				.withInputParameter(InputParameter.newBindParameter("textToAppendToTheForname",
 						"textToAppendToTheFornameWithId", false))

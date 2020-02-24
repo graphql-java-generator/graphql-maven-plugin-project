@@ -13,7 +13,7 @@ public class CustomScalarDeserializer${customScalar.name} extends AbstractCustom
 	private static final long serialVersionUID = 1L;
 
 	protected CustomScalarDeserializerDate() {
-		super(${customScalar.classFullName}.class, new ${customScalar.customScalarConvertClassName}());
+		super(${customScalar.classFullName}.class, new ${customScalar.customScalarConvertClassName});
 	}
 
 }

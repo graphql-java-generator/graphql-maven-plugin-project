@@ -28,12 +28,12 @@
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>
 							<javaType>java.util.Date</javaType>
-							<graphQLScalarTypeClass>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</graphQLScalarTypeClass>
+							<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
 						</customScalar>
 						<customScalar>
 							<graphQLTypeName>else</graphQLTypeName>
 							<javaType>java.lang.String</javaType>
-							<graphQLScalarTypeClass>com.graphql_java_generator.customscalars.GraphQLScalarTypeString</graphQLScalarTypeClass>
+							<graphQLScalarTypeGetter>org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
 						</customScalar>
 						<customScalar>
 							<graphQLTypeName>Long</graphQLTypeName>

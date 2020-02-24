@@ -1,7 +1,6 @@
 Here are the next tasks listed, as a TODO list:
 * enum values may currently not be a java keyword (seems to be a graphql-java limitation). issue to raise in the graphql-java project
 * Check support for introspection  
-* Check input parameters that are scalars (including default value)
 * Add tests for unions
 * Generate the plugin doc in the generated site
 * Manage Deprecation on the constructor for GraphQLScalarType 
