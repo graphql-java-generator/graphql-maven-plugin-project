@@ -3,7 +3,8 @@
 Any mode, client or server:
 - The provided Date and DateTime scalars are now provided as a static field (instead of the class itself), due to a graphql-java change) 
 
-
+Client mode:
+- Can now invoke GraphQL introspection queries  (it was already the case on server side, thanks to graphql-java)
 
 # 1.3.2
 

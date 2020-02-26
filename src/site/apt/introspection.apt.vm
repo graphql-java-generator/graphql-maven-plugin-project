@@ -1,0 +1,67 @@
+               ------------------------------------------
+               GraphQL Maven Plugin (introspection)
+               ------------------------------------------
+               ------------------------------------------
+               ------------------------------------------
+
+
+Use GraphQL introspection with the GraphQL client mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%{toc}
+	
+* {What about the server mode?}
+~~~~~~~~~~~~~~~~~~~
+
+  On server side, the introspection is directly managed by graphql-java. There is no additional work to do, to make it work.
+
+* {What does introspection on client side?}
+~~~~~~~~~~~~~~~~~~~
+
+  On client side, graphql-java-generator makes it easy to execute GraphQL introspection queries. And the query's response is stored with java classes 
+  that match the GraphQL introspection schema.
+  
+  As specified in the GraphQL specification, there are two main queries: __schema and __type.
+  
+  You can access to the introspection GraphQL capabilities through the _org.allGraphQLCases.introspection.IntrospectionQuery_ class :
+  
+  
++--------------------------------------------------------------------------------------------
+import com.graphql_java_generator.client.introspection.IntrospectionQuery;
+import com.graphql_java_generator.client.introspection.__Schema;
+import com.graphql_java_generator.client.introspection.__Type;
+
+...
+
+	void myIntrospection() {
+		IntrospectionQuery introspectionQuery = new IntrospectionQuery("https://my.graphql.endpoint/path");
+		__Schema schema = introspectionQuery.__schema("{types {name fields {name type {name}}}}");
+	}
++--------------------------------------------------------------------------------------------
+
+	Or  
+
++--------------------------------------------------------------------------------------------
+import com.graphql_java_generator.client.introspection.IntrospectionQuery;
+import com.graphql_java_generator.client.introspection.__Schema;
+import com.graphql_java_generator.client.introspection.__Type;
+
+...
+
+	void myIntrospection() {
+		IntrospectionQuery introspectionQuery = new IntrospectionQuery("https://my.graphql.endpoint/path");
+		__Type type = introspectionQuery.__type("{name fields {name type {name}}}", "MyGraphQLType");
+	}
++--------------------------------------------------------------------------------------------
+
+
+* {How does it work?}
+~~~~~~~~~~~~~~~~~~~
+
+  This is done by appling the GraphQL plugin against the GraphQL introspection schema. This generates the _com.graphql_java_generator.client.introspection_
+  package. This generation is done in the graphql-inspector-for-graphql-plugin project, that you can find on github :
+  {{https://github.com/graphql-java-generator/graphql-inspector-for-graphql-plugin}}.
+  
+  The generated _com.graphql_java_generator.introspection_ package has been added to the client runtime, in the _graphql-java-runtime_ module.
+  
+  If the generated code changes too often, its generation will be add into the main build.
