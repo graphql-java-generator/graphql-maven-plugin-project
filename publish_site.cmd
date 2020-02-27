@@ -20,7 +20,8 @@ REM We need the correct release number
 set /p version="Enter the last released version (e.g.: 1.0): "
 
 REM To be sure we have that all artefacts are built, we rebuild them (publishing a release won't install the samples)
-mvn install -Dmaven.test.skip=true
+call mvn install -Dmaven.test.skip=true
+pause
 
 REM The next command is long to execute
 @echo on

@@ -5,9 +5,9 @@
 		commited back to github.
 	</description>
 	<!-- set global properties for this build -->
-	<property name="sourceFolder" location="Y:/staging" />
-	<property name="targetFolder" location="Y:/gh-pages_branch" />
-	<property name="targetProjectFolder" location="${targetFolder}" />
+	<property name="sourceFolder" location="target/staging" />
+	<property name="targetFolder" location="target/gh-pages_branch" />
+	<property name="targetProjectFolder" location="target/gh-pages_branch/graphql-maven-plugin-project" />
 
 	<target name="deploy">
 
@@ -34,7 +34,6 @@
 			<arg value="--branch" />
 			<arg value="gh-pages" />
 			<arg value="--single-branch" />
-			<arg value="${targetProjectFolder}" />
 		</exec>
 
 		<!-- Synchronize the target gh-pages folder, with the staged site -->
