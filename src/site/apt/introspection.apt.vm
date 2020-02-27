@@ -58,17 +58,15 @@ import com.graphql_java_generator.client.introspection.__Type;
 * {How does it work?}
 ~~~~~~~~~~~~~~~~~~~
 
-  This is done by appling the GraphQL plugin against the GraphQL introspection schema. This generates the _com.graphql_java_generator.client.introspection_
-  package. This generation is done in the graphql-inspector-for-graphql-plugin project, that you can find on github :
-  {{https://github.com/graphql-java-generator/graphql-inspector-for-graphql-plugin}}.
+  This is done by applying the GraphQL plugin against the GraphQL introspection schema. This generates the _com.graphql_java_generator.client.introspection_
+  package. 
   
-  The generated _com.graphql_java_generator.introspection_ package has been added to the client runtime, in the _graphql-java-runtime_ module.
+  This generation is done at each plugin execution.
   
-  If the generated code changes too often, its generation will be add into the main build.
-  
+    
 * {How the code is generated}
 ~~~~~~~~~~~~~~~~~~~
 
   When the plugin is in client mode, the introspection capabilities is generated in the _org.allGraphQLCases.introspection_ package.
   
-  The source is the _src/main/resources/introspection.graphqls_ GraphQL schema.
+  The source schema is in the _src/main/resources/introspection.graphqls_ GraphQL schema.
