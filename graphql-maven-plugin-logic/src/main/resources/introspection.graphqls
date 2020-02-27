@@ -1,4 +1,8 @@
-type query{
+schema {
+    query: IntrospectionQuery
+}
+
+type IntrospectionQuery {
   __schema: __Schema!
   __type(name: String!): __Type
 }

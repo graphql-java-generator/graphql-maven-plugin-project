@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class DocumentParser {
 	// Internal attributes for this class
 
 	@Autowired
-	List<Document> documents;
+	ResourceSchemaStringProvider schemaStringProvider;
 
 	/**
 	 * The {@link JsonSchemaPersonalization} allows the user to update what the plugin would have generate, through a
@@ -111,76 +112,104 @@ public class DocumentParser {
 	 * merged
 	 */
 	@Getter
-	List<ObjectType> queryTypes = new ArrayList<>();
+	List<ObjectType> queryTypes = null;
 
 	/**
 	 * All the Subscription Types for this Document. There may be several ones, if more than one GraphQLs files have
 	 * been merged
 	 */
 	@Getter
-	List<ObjectType> subscriptionTypes = new ArrayList<>();
+	List<ObjectType> subscriptionTypes = null;
 
 	/**
 	 * All the Mutation Types for this Document. There may be several ones, if more than one GraphQLs files have been
 	 * merged
 	 */
 	@Getter
-	List<ObjectType> mutationTypes = new ArrayList<>();
+	List<ObjectType> mutationTypes = null;
 
 	/**
 	 * All the {@link ObjectType} which have been read during the reading of the documents
 	 */
 	@Getter
-	List<ObjectType> objectTypes = new ArrayList<>();
+	List<ObjectType> objectTypes = null;
 
 	/**
 	 * All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents
 	 */
 	@Getter
-	List<InterfaceType> interfaceTypes = new ArrayList<>();
+	List<InterfaceType> interfaceTypes = null;
 
 	/**
 	 * All the {@link UnionTypeDefinition} which have been read during the reading of the documents
 	 */
 	@Getter
-	List<UnionType> unionTypes = new ArrayList<>();
+	List<UnionType> unionTypes = null;
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
-	List<EnumType> enumTypes = new ArrayList<>();
+	List<EnumType> enumTypes = null;
+
+	/** The list of documents that represents the GraphQL schema to parse */
+	List<Document> documents;
 
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	List<ScalarType> scalarTypes = new ArrayList<>();
+	List<ScalarType> scalarTypes = null;
 
 	/** All the {@link CustomScalarType} which have been read during the reading of the documents */
-	List<CustomScalarType> customScalars = new ArrayList<>();
+	List<CustomScalarType> customScalars = null;
 
 	/** All the {@link Type}s that have been parsed, added by the default scalars */
-	Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
+	Map<String, com.graphql_java_generator.plugin.language.Type> types = null;
 
 	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
-	List<Relation> relations = new ArrayList<>();
+	List<Relation> relations = null;
 
 	/**
 	 * All {@link DataFetcher}s that need to be implemented for this/these schema/schemas
 	 */
-	List<DataFetcher> dataFetchers = new ArrayList<>();
+	List<DataFetcher> dataFetchers = null;
 
 	/**
 	 * All {@link DataFetchersDelegate}s that need to be implemented for this/these schema/schemas
 	 */
-	List<DataFetchersDelegate> dataFetchersDelegates = new ArrayList<>();
+	List<DataFetchersDelegate> dataFetchersDelegates = null;
 
 	/**
 	 * All {@link BatchLoader}s that need to be implemented for this/these schema/schemas
 	 */
-	List<BatchLoader> batchLoaders = new ArrayList<>();
+	List<BatchLoader> batchLoaders = null;
 
 	@PostConstruct
-	public void postConstruct() {
+	public void postConstruct() throws IOException {
+		initialize();
+	}
+
+	/**
+	 * This method initializes/cleans all stored values about he GraphQL schema. It is used before two code generation.
+	 * 
+	 * @throws IOException
+	 * 
+	 * @See {@link PluginEntryPoint#execute()}
+	 */
+	public void initialize() throws IOException {
+		queryTypes = new ArrayList<>();
+		subscriptionTypes = new ArrayList<>();
+		mutationTypes = new ArrayList<>();
+		objectTypes = new ArrayList<>();
+		interfaceTypes = new ArrayList<>();
+		unionTypes = new ArrayList<>();
+		enumTypes = new ArrayList<>();
+		scalarTypes = new ArrayList<>();
+		customScalars = new ArrayList<>();
+		types = new HashMap<>();
+		relations = new ArrayList<>();
+		dataFetchers = new ArrayList<>();
+		dataFetchersDelegates = new ArrayList<>();
+		batchLoaders = new ArrayList<>();
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL standard scalars
@@ -218,6 +247,12 @@ public class DocumentParser {
 				types.put(type.getName(), type);
 			}
 		}
+
+		// Loads the schema from the graphqls files. This method uses the {@link GraphQLJavaToolsAutoConfiguration} from
+		// the project, to load the schema from the graphqls files
+		Parser parser = new Parser();
+		documents = schemaStringProvider.schemaStrings().stream().map(parser::parseDocument)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -868,10 +903,10 @@ public class DocumentParser {
 			contentAs = field.getType().getConcreteClassSimpleName() + ".class";
 		}
 		if (field.getType().isCustomScalar()) {
-				using = "CustomScalarDeserializer" + field.getType().getConcreteClassSimpleName() + ".class";
+			using = "CustomScalarDeserializer" + field.getType().getConcreteClassSimpleName() + ".class";
 		}
 		if (contentAs != null || using != null) {
-			( (FieldImpl) field ).addAnnotation( buildJsonDeserializeAnnotation(contentAs, using) );
+			((FieldImpl) field).addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
 		}
 
 		addFieldAnnotationForBothClientAndServerMode(field);
@@ -1056,30 +1091,29 @@ public class DocumentParser {
 
 	/**
 	 * Build an @JsonDeserialize annotation with one or more attributes
-	 * @param contentAs contentAs class name
-	 * @param using using class name
+	 * 
+	 * @param contentAs
+	 *            contentAs class name
+	 * @param using
+	 *            using class name
 	 * @return annotation string
 	 */
-	private String buildJsonDeserializeAnnotation( String contentAs, String using) {
-		StringBuffer annotationBuf = new StringBuffer(  );
-		annotationBuf.append( "@JsonDeserialize(" );
+	private String buildJsonDeserializeAnnotation(String contentAs, String using) {
+		StringBuffer annotationBuf = new StringBuffer();
+		annotationBuf.append("@JsonDeserialize(");
 		boolean addComma = false;
 		if (contentAs != null) {
-			annotationBuf
-				 .append( "contentAs = " )
-				 .append( contentAs );
+			annotationBuf.append("contentAs = ").append(contentAs);
 			addComma = true;
 		}
 
 		if (using != null) {
 			if (addComma) {
-				annotationBuf.append( ", " );
+				annotationBuf.append(", ");
 			}
-			annotationBuf
-				 .append( "using = " )
-				 .append( using );
+			annotationBuf.append("using = ").append(using);
 		}
-		annotationBuf.append( ")" );
+		annotationBuf.append(")");
 		return annotationBuf.toString();
 	}
 

@@ -60,6 +60,11 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
+	public void setPackageName(String packageName) {
+		mojo.packageName = packageName;
+	}
+
+	@Override
 	public Packaging getPackaging() {
 		return Packaging.valueOf(mojo.project.getPackaging());
 	}
@@ -72,6 +77,11 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	@Override
 	public String getSchemaFilePattern() {
 		return mojo.schemaFilePattern;
+	}
+
+	@Override
+	public void setSchemaFilePattern(String schemaFilePattern) {
+		mojo.schemaFilePattern = schemaFilePattern;
 	}
 
 	@Override

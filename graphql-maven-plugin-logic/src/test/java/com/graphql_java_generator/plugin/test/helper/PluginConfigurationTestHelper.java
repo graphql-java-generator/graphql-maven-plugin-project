@@ -11,12 +11,14 @@ import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
  * @author EtienneSF
  */
 @Getter
+@Setter
 public class PluginConfigurationTestHelper implements PluginConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation

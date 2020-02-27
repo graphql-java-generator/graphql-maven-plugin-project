@@ -17,10 +17,9 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.PluginEntryPoint;
 import com.graphql_java_generator.plugin.PluginMode;
 
 import graphql.schema.GraphQLScalarType;
@@ -136,23 +135,13 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			SpringConfiguration.mojo = this;
 			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
-			// Let's log the current configuration (this will do something only when in
-			// debug mode)
+			// Let's log the current configuration (this will do something only when in debug mode)
 			ctx.getBean(PluginConfiguration.class).logConfiguration();
-
-			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
-			documentParser.parseDocuments();
-
-			CodeGenerator codeGenerator = ctx.getBean(CodeGenerator.class);
-			int nbGeneratedClasses = codeGenerator.generateCode();
-
+			ctx.getBean(PluginEntryPoint.class).execute();
 			ctx.close();
 
 			File targetDir = new File(project.getBasedir(), "target");
 			project.addCompileSourceRoot(new File(targetDir, targetSourceFolder).getAbsolutePath());
-
-			getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
-					+ schemaFilePattern + "' in the package '" + packageName + "'");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);

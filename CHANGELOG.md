@@ -1,6 +1,7 @@
 # Not released yet
 
 Any mode, client or server:
+- The plugin is now compatible again with java 8
 - The provided Date and DateTime scalars are now provided as a static field (instead of the class itself), due to a graphql-java change) 
 
 Client mode:

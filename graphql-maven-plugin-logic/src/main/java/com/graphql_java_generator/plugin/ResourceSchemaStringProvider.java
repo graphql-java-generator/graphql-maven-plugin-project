@@ -38,10 +38,17 @@ public class ResourceSchemaStringProvider {
 	PluginConfiguration pluginConfiguration;
 
 	public org.springframework.core.io.Resource[] schemas() throws IOException {
-		String fullPathPattern = "file:///" + pluginConfiguration.getMainResourcesFolder().getCanonicalPath()
-				+ ((pluginConfiguration.getSchemaFilePattern().startsWith("/")
-						|| (pluginConfiguration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
-				+ pluginConfiguration.getSchemaFilePattern();
+		String fullPathPattern;
+		if (pluginConfiguration.getSchemaFilePattern().startsWith("classpath:")) {
+			// We take the file pattern as is
+			fullPathPattern = pluginConfiguration.getSchemaFilePattern();
+		} else {
+			fullPathPattern = "file:///" + pluginConfiguration.getMainResourcesFolder().getCanonicalPath()
+					+ ((pluginConfiguration.getSchemaFilePattern().startsWith("/")
+							|| (pluginConfiguration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
+					+ pluginConfiguration.getSchemaFilePattern();
+		}
+
 		return applicationContext.getResources(fullPathPattern);
 	}
 

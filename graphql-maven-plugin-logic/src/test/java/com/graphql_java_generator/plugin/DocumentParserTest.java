@@ -18,6 +18,7 @@ import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.language.impl.ScalarType;
+import com.graphql_java_generator.plugin.test.helper.EmptyResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
 
 /**
@@ -40,7 +41,8 @@ class DocumentParserTest {
 
 		documentParser = new DocumentParser();
 		documentParser.pluginConfiguration = pluginConfiguration;
-
+		documentParser.schemaStringProvider = new EmptyResourceSchemaStringProvider();
+		documentParser.initialize();
 	}
 
 	@Test
