@@ -2,6 +2,8 @@ Here are the next tasks listed, as a TODO list:
 * it seems that @GraphQLCustomScalar annotation is used in the Post hard-coded test POJO to identify a custom scalar; but this annotation is no longer used in the generation of POJOs. I the Post class may need updating to use @GraphQLScalar instead unless I am missing something.
 * enum values may currently not be a java keyword (seems to be a graphql-java limitation). issue to raise in the graphql-java project
 * Add tests for unions
+* Check compatibility with the schema.public.graphqls (available in the plugin logic test resources folder)
+* Check compatibility with the shopify (available in the plugin logic test resources folder)
 * Generate the plugin doc in the generated site
 * Manage Deprecation on the constructor for GraphQLScalarType 
 * Builder.withInputParameter(InputParameter) to be replaced by Builder.withInputParameter(String, String, boolean)
