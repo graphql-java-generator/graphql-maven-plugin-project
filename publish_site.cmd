@@ -42,7 +42,7 @@ git push
 cd ..\..\..
 
 echo Go to https://github.com/graphql-java-generator/graphql-maven-plugin-project/settings
-echo Put graphql-maven-plugin-project.graphql-java-generator.com
-echo into the "Custom domain" parameter
+echo Check that graphql-maven-plugin-project.graphql-java-generator.com
+echo is into the "Custom domain" parameter
 
 
