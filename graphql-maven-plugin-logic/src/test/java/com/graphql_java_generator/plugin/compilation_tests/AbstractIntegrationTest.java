@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 
+import com.graphql_java_generator.plugin.CodeGenerator;
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginConfiguration;
-import com.graphql_java_generator.plugin.PluginEntryPoint;
 import com.graphql_java_generator.plugin.test.compiler.CompilationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
@@ -29,8 +30,11 @@ abstract class AbstractIntegrationTest {
 
 	@Resource
 	PluginConfiguration pluginConfiguration;
-	@Resource
-	PluginEntryPoint pluginEntryPoint;
+
+	@javax.annotation.Resource
+	protected DocumentParser documentParser;
+	@javax.annotation.Resource
+	protected CodeGenerator codeGenerator;
 
 	/**
 	 * This test will be executed for each concrete subclass of this class
@@ -42,11 +46,13 @@ abstract class AbstractIntegrationTest {
 	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 	void testGenerateCode() throws IOException {
 		// Preparation
+		int i = documentParser.parseDocuments();
+
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetSourceFolder());
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetClassFolder());
 
 		// Go, go, go
-		pluginEntryPoint.execute();
+		codeGenerator.generateCode();
 
 		compilationTestHelper.checkCompleteCompilationStatus(null);
 	}

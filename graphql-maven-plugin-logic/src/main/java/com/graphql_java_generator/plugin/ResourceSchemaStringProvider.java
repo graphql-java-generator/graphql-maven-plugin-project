@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,16 +29,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResourceSchemaStringProvider {
 
+	final String INTROSPECTION_SCHEMA = "classpath:/introspection.graphqls";
+
 	@Autowired
 	ApplicationContext applicationContext;
 
 	/**
-	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
+	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...).
+	 * <BR/>
+	 * It adds the introspection GraphQL schema to the list of documents to read
 	 */
 	@Resource
 	PluginConfiguration pluginConfiguration;
 
-	public org.springframework.core.io.Resource[] schemas() throws IOException {
+	public List<org.springframework.core.io.Resource> schemas() throws IOException {
 		String fullPathPattern;
 		if (pluginConfiguration.getSchemaFilePattern().startsWith("classpath:")) {
 			// We take the file pattern as is
@@ -49,17 +54,27 @@ public class ResourceSchemaStringProvider {
 					+ pluginConfiguration.getSchemaFilePattern();
 		}
 
-		return applicationContext.getResources(fullPathPattern);
+		List<org.springframework.core.io.Resource> ret = new ArrayList<>(
+				Arrays.asList(applicationContext.getResources(fullPathPattern)));
+
+		org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
+		if (!introspection.exists()) {
+			throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
+		}
+
+		ret.add(introspection);
+
+		return ret;
 	}
 
 	public List<String> schemaStrings() throws IOException {
-		org.springframework.core.io.Resource[] resources = schemas();
-		if (resources.length <= 0) {
+		List<org.springframework.core.io.Resource> resources = schemas();
+		if (resources.size() == 0) {
 			throw new IllegalStateException("No graphql schema files found on classpath with location pattern '"
 					+ pluginConfiguration.getSchemaFilePattern());
 		}
 
-		return Arrays.stream(resources).map(this::readSchema).collect(Collectors.toList());
+		return resources.stream().map(this::readSchema).collect(Collectors.toList());
 	}
 
 	private String readSchema(org.springframework.core.io.Resource resource) {
