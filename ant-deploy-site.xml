@@ -41,7 +41,7 @@
 			<fileset dir="${sourceFolder}" />
 			<preserveintarget>
 				<include name="/.git/**" />
-				<include name="/CNAME" />
+				<include name="**/CNAME" />
 			</preserveintarget>
 		</sync>
 
