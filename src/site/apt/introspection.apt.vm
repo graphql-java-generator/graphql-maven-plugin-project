@@ -18,7 +18,7 @@ Use GraphQL introspection with the GraphQL client mode
 * {HowTo use introspection ?}
 ~~~~~~~~~~~~~~~~~~~
 
-  On client side, graphql-java-generator makes it easy to execute GraphQL introspection queries. And the query's response is stored with java classes 
+  On client side, graphql-java-generator makes it easy to execute GraphQL introspection queries. And the query's response is stored in java classes 
   that match the GraphQL introspection schema.
   
   As specified in the GraphQL specification, there are two main queries: __schema and __type.
@@ -54,19 +54,15 @@ import com.graphql_java_generator.client.introspection.__Type;
 	}
 +--------------------------------------------------------------------------------------------
 
-
-* {How does it work?}
-~~~~~~~~~~~~~~~~~~~
-
-  This is done by applying the GraphQL plugin against the GraphQL introspection schema. This generates the _com.graphql_java_generator.client.introspection_
-  package. 
-  
-  This generation is done at each plugin execution.
   
     
 * {How the code is generated}
 ~~~~~~~~~~~~~~~~~~~
 
   When the plugin is in client mode, the introspection capabilities is generated in the _org.allGraphQLCases.introspection_ package.
+  This is done by applying the GraphQL plugin against the GraphQL introspection schema. This generates the _com.graphql_java_generator.client.introspection_
+  package. 
   
   The source schema is in the _src/main/resources/introspection.graphqls_ GraphQL schema.
+  
+  This generation is done at each plugin execution.
