@@ -15,7 +15,7 @@ Use GraphQL introspection with the GraphQL client mode
 
   On server side, the introspection is directly managed by graphql-java. There is no additional work to do, to make it work.
 
-* {HowTo use introspection ?}
+* {Introspection in client mode}
 ~~~~~~~~~~~~~~~~~~~
 
   On client side, graphql-java-generator makes it easy to execute GraphQL introspection queries. And the query's response is stored in java classes 
@@ -23,8 +23,24 @@ Use GraphQL introspection with the GraphQL client mode
   
   As specified in the GraphQL specification, there are two main queries: __schema and __type.
   
-  You can access to the introspection GraphQL capabilities through the _org.allGraphQLCases.introspection.IntrospectionQuery_ class :
+  You can access to the introspection GraphQL capabilities through the <IntrospectionQuery> class. This class is generated in the same package as 
+  the other classes (see {{./client.html}} for details).
   
+** {__datatype in GraphQL types}
+~~~~~~~~~~~~~~~~~~~
+
+  In the generated code, a field named __datatype is added into each java class that is actually a GraphQL type. 
+  So you can ask for the GraphQL type name of a response with a query request like this one:   
+  
++--------------------------------------------------------------------------------------------
+		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		AllFieldCases response = queryType.allFieldCases("{id __typename}", null);
++--------------------------------------------------------------------------------------------
+
+** {Introspection queries}
+~~~~~~~~~~~~~~~~~~~
+
+  You can then execute introspection queries like this:  
   
 +--------------------------------------------------------------------------------------------
 import com.graphql_java_generator.client.introspection.IntrospectionQuery;
@@ -59,10 +75,9 @@ import com.graphql_java_generator.client.introspection.__Type;
 * {How the code is generated}
 ~~~~~~~~~~~~~~~~~~~
 
-  When the plugin is in client mode, the introspection capabilities is generated in the _org.allGraphQLCases.introspection_ package.
-  This is done by applying the GraphQL plugin against the GraphQL introspection schema. This generates the _com.graphql_java_generator.client.introspection_
-  package. 
+  When the plugin is in client mode, the introspection capabilities is generated in the same package as the other classes.
+  This is done by applying the GraphQL plugin against the GraphQL introspection schema. 
   
-  The source schema is in the _src/main/resources/introspection.graphqls_ GraphQL schema.
+  Then a specific query class is created: <__IntrospectionQuery>
   
-  This generation is done at each plugin execution.
+  And the String field named <__typename> is added as an additional field into all java classes that represent a GraphQL type.
