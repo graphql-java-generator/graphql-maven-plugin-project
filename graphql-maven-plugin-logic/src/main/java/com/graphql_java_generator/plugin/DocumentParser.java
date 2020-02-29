@@ -83,6 +83,8 @@ import lombok.Getter;
 @Getter
 public class DocumentParser {
 
+	private static final String INTROSPECTION_QUERY = "__IntrospectionQuery";
+
 	final String DEFAULT_QUERY_NAME = "Query";
 	final String DEFAULT_MUTATION_NAME = "Mutation";
 	final String DEFAULT_SUBSCRIPTION_NAME = "Subscription";
@@ -96,7 +98,12 @@ public class DocumentParser {
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
 
-	/** This Spring Bean is created {@link SpringConfiguration} */
+	/**
+	 * This Spring Bean is created by {@link SpringConfiguration}. The {@link ResourceSchemaStringProvider} adds the
+	 * introspection schema into the documents list.<BR/>
+	 * See also the {@link #addIntrospectionCapabilities()} that finalize the introspection capabilities for the
+	 * generated code.
+	 */
 	@Autowired
 	List<Document> documents;
 
@@ -236,13 +243,15 @@ public class DocumentParser {
 		// Each interface should have an implementation class, for JSON deserialization,
 		// or to map to a JPA Entity
 		nbClasses += defineDefaultInterfaceImplementationClassName();
+		// Add introspection capabilities (the introspection schema has already been read, as it is added by
+		// ResourceSchemaStringProvider in the documents list
+		addIntrospectionCapabilities();
 		// Init the list of the object implementing each interface. This is done last, when all objects has been read by
 		// the plugin.
 		initListOfInterfaceImplementations();
 		// The types Map allows to retrieve easily a Type from its name
 		fillTypesMap();
-		// Let's identify every relation between objects, interface or union in the
-		// model
+		// Let's identify every relation between objects, interface or union in the model
 		initRelations();
 		// Some annotations are needed for Jackson or JPA
 		addAnnotations();
@@ -1083,4 +1092,48 @@ public class DocumentParser {
 		return annotationBuf.toString();
 	}
 
+	/**
+	 * Add introspection capabilities: the __schema and __type query into a dedicated __IntrospectionQuery, and the
+	 * __typename into each GraphQL object.<BR/>
+	 * Note: the introspection schema has already been parsed, as it is added by {@link ResourceSchemaStringProvider} in
+	 * the documents list
+	 */
+	void addIntrospectionCapabilities() {
+		// No action in server mode: everything is handled by graphql-java
+		if (pluginConfiguration.getMode().equals(PluginMode.client)) {
+
+			//
+			// First step : add the introspection query
+			//
+
+			ObjectType introspectionQuery = new ObjectType(pluginConfiguration.getPackageName(),
+					pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
+			introspectionQuery.setName(INTROSPECTION_QUERY);
+			introspectionQuery.setRequestType("query");
+
+			FieldImpl __schema = FieldImpl.builder().documentParser(this).name("__schema").graphQLTypeName("__Schema")
+					.owningType(introspectionQuery).mandatory(true).build();
+			//
+			FieldImpl __type = FieldImpl.builder().documentParser(this).name("__type").graphQLTypeName("__Type")
+					.owningType(introspectionQuery).mandatory(true).build();
+			__type.getInputParameters().add(FieldImpl.builder().documentParser(this).name("name")
+					.graphQLTypeName("String").mandatory(true).build());
+			//
+			introspectionQuery.getFields().add(__type);
+			introspectionQuery.getFields().add(__schema);
+
+			queryTypes.add(introspectionQuery);
+
+			//
+			// Second step: add the __datatype field into every GraphQL type (out of input types)
+			//
+
+			for (ObjectType type : objectTypes) {
+				if (!type.isInputType()) {
+					type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
+							.graphQLTypeName("String").owningType(type).mandatory(false).build());
+				}
+			}
+		}
+	}
 }
