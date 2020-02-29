@@ -61,7 +61,7 @@ public class IntrospectionIT {
 
 		// Go, go, go
 		// AllFieldCases ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
-		AllFieldCases ret = queryType.allFieldCases("  {id __typename}", null);
+		AllFieldCases ret = queryType.allFieldCases("{id __typename}", null);
 
 		// Verification
 		assertEquals("AllFieldCases", ret.get__typename());
