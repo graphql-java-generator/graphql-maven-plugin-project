@@ -27,7 +27,9 @@ import com.graphql_java_generator.client.domain.forum.MutationType;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
+import com.graphql_java_generator.client.domain.starwars.Droid;
 import com.graphql_java_generator.client.domain.starwars.Episode;
+import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
@@ -82,7 +84,8 @@ class QueryExecutorImplTest {
 		String request = queryExecutorImpl.buildRequest("mutation", objectResponse, parameters);
 
 		// Verification
-		assertEquals("{\"query\":\"mutation{hero(id:\\\"1\\\"){id name}}\",\"variables\":null,\"operationName\":null}",
+		assertEquals(
+				"{\"query\":\"mutation{hero(id:\\\"1\\\"){id name __datatype}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -111,7 +114,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE, id:\\\"this is an id\\\"){id name}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE, id:\\\"this is an id\\\"){id name __datatype}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -139,7 +142,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn friends{name}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn __datatype friends{name __datatype}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -166,7 +169,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn friends{name}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero{id name appearsIn __datatype friends{name __datatype}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -191,7 +194,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn friends{name}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero{id name appearsIn __datatype friends{name __datatype}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -237,7 +240,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2019-12-21\\\"){id date nbPosts author{id name email type} posts{date author{name email type}}}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{boards{id name publiclyAvailable __datatype topics(since:\\\"2019-12-21\\\"){id date nbPosts __datatype author{id name email type __datatype} posts{date __datatype author{name email type __datatype}}}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -255,7 +258,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2018-12-20\\\"){id date nbPosts author{id name email type} posts{date author{name email type}}}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{boards{id name publiclyAvailable __datatype topics(since:\\\"2018-12-20\\\"){id date nbPosts __datatype author{id name email type __datatype} posts{date __datatype author{name email type __datatype}}}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -310,7 +313,7 @@ class QueryExecutorImplTest {
 				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
-		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}";
+		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null, \"__datatype\": \"Human\"}}}";
 
 		// Go, go, go
 		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
@@ -318,6 +321,7 @@ class QueryExecutorImplTest {
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
 		Character character = (Character) response;
+		assertEquals(Human.class.getName(), character.getClass().getName());
 		assertEquals("An id", character.getId(), "id");
 		assertEquals("A hero's name", character.getName(), "name");
 		List<Episode> episodes = character.getAppearsIn();
@@ -339,7 +343,7 @@ class QueryExecutorImplTest {
 				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
-		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[]}}}";
+		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[], \"__datatype\": \"Droid\"}}}";
 
 		// Go, go, go
 		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
@@ -347,6 +351,7 @@ class QueryExecutorImplTest {
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
 		Character character = (Character) response;
+		assertEquals(Droid.class.getName(), character.getClass().getName());
 		assertNotNull(character.getFriends(), "He has perhaps has friends...");
 		assertEquals(0, character.getFriends().size(), "Oh no! He has no friends!  :(  ");
 	}
@@ -361,7 +366,7 @@ class QueryExecutorImplTest {
 				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
-		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[{\"name\":\"name350518\"},{\"name\":\"name381495\"}]}}}";
+		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[{\"name\":\"name350518\", \"__datatype\": \"Human\"},{\"name\":\"name381495\", \"__datatype\": \"Droid\"}]}, \"__datatype\": \"Droid\"}}";
 
 		// Go, go, go
 		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
@@ -369,10 +374,13 @@ class QueryExecutorImplTest {
 		// Verification
 		assertTrue(response instanceof Character, "response instanceof Character");
 		Character character = (Character) response;
+		assertEquals(Droid.class.getName(), character.getClass().getName());
 		assertNotNull(character.getFriends(), "He has perhaps has friends...");
 		assertEquals(2, character.getFriends().size(), "Cool! He has 2 friends!  :)  ");
 		assertEquals("name350518", character.getFriends().get(0).getName(), "First friend's name");
+		assertEquals(Human.class.getName(), character.getFriends().get(0).getName());
 		assertEquals("name381495", character.getFriends().get(1).getName(), "Second friend's name");
+		assertEquals(Droid.class.getName(), character.getFriends().get(1).getName());
 	}
 
 	@Test
