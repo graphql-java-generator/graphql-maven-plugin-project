@@ -256,9 +256,9 @@ class BuilderTest {
 		int i = 0;
 		assertEquals("id", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
-		assertEquals("__typename", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("__typename", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 
 		// No non scalar
 		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
@@ -279,9 +279,9 @@ class BuilderTest {
 		int i = 0;
 		assertEquals("id", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
-		assertEquals("__typename", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("__typename", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 
 		// No non scalar
 		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
@@ -510,9 +510,9 @@ class BuilderTest {
 		int i = 0;
 		assertEquals("id", resp.scalarFields.get(i++).name);
 		assertEquals("name", resp.scalarFields.get(i++).name);
-		assertEquals("__typename", resp.scalarFields.get(i++).name);
 		assertEquals("appearsIn", resp.scalarFields.get(i++).name);
 		assertEquals("homePlanet", resp.scalarFields.get(i++).name);
+		assertEquals("__typename", resp.scalarFields.get(i++).name);
 
 		// No non scalar
 		assertEquals(0, resp.subObjects.size(), "no non scalar fields");

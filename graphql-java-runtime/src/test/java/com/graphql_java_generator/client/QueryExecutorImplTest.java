@@ -368,7 +368,7 @@ class QueryExecutorImplTest {
 				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
-		String rawResponse = "{\"data\":{\"hero\":{\"__typename\": \"Droid\", \"friends\":[{\"name\":\"name350518\", \"__typename\": \"Human\"},{\"name\":\"name381495\", \"__typename\": \"Droid\"}]}, \"__typename\": \"Droid\"}}";
+		String rawResponse = "{\"data\":{\"hero\":{\"__typename\": \"Droid\", \"friends\":[{\"name\":\"name350518\", \"__typename\": \"Human\"},{\"name\":\"name381495\", \"__typename\": \"Droid\"}]}}}";
 
 		// Go, go, go
 		QueryTypeHero response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryTypeHero.class);

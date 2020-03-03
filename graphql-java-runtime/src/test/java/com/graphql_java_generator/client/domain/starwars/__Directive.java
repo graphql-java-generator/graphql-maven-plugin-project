@@ -16,33 +16,33 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 
-public class Droid implements Character {
-
-	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
-	String id;
-
+public class __Directive  {
 
 	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
-	@JsonProperty("friends")
-	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
-	List<Character> friends;
-
-
-	@JsonProperty("appearsIn")
-	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
-	List<Episode> appearsIn;
-
-
-	@JsonProperty("primaryFunction")
+	@JsonProperty("description")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
-	String primaryFunction;
+	String description;
+
+
+	@JsonProperty("locations")
+	@JsonDeserialize(contentAs = __DirectiveLocation.class)
+	@GraphQLScalar(graphQLTypeName = "__DirectiveLocation", javaClass = __DirectiveLocation.class)
+	List<__DirectiveLocation> locations;
+
+
+	@JsonProperty("args")
+	@JsonDeserialize(contentAs = __InputValue.class)
+	@GraphQLNonScalar(graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
+	List<__InputValue> args;
+
+
+	@JsonProperty("isRepeatable")
+	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	Boolean isRepeatable;
 
 
 	@JsonProperty("__typename")
@@ -50,14 +50,6 @@ public class Droid implements Character {
 	String __typename;
 
 
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
 
 	public void setName(String name) {
 		this.name = name;
@@ -67,28 +59,36 @@ public class Droid implements Character {
 		return name;
 	}
 
-	public void setFriends(List<Character> friends) {
-		this.friends = friends;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public List<Character> getFriends() {
-		return friends;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setAppearsIn(List<Episode> appearsIn) {
-		this.appearsIn = appearsIn;
+	public void setLocations(List<__DirectiveLocation> locations) {
+		this.locations = locations;
 	}
 
-	public List<Episode> getAppearsIn() {
-		return appearsIn;
+	public List<__DirectiveLocation> getLocations() {
+		return locations;
 	}
 
-	public void setPrimaryFunction(String primaryFunction) {
-		this.primaryFunction = primaryFunction;
+	public void setArgs(List<__InputValue> args) {
+		this.args = args;
 	}
 
-	public String getPrimaryFunction() {
-		return primaryFunction;
+	public List<__InputValue> getArgs() {
+		return args;
+	}
+
+	public void setIsRepeatable(Boolean isRepeatable) {
+		this.isRepeatable = isRepeatable;
+	}
+
+	public Boolean getIsRepeatable() {
+		return isRepeatable;
 	}
 
 	public void set__typename(String __typename) {
@@ -100,16 +100,16 @@ public class Droid implements Character {
 	}
 
     public String toString() {
-        return "Droid {"
-				+ "id: " + id
-				+ ", "
+        return "__Directive {"
 				+ "name: " + name
 				+ ", "
-				+ "friends: " + friends
+				+ "description: " + description
 				+ ", "
-				+ "appearsIn: " + appearsIn
+				+ "locations: " + locations
 				+ ", "
-				+ "primaryFunction: " + primaryFunction
+				+ "args: " + args
+				+ ", "
+				+ "isRepeatable: " + isRepeatable
 				+ ", "
 				+ "__typename: " + __typename
         		+ "}";
@@ -119,11 +119,11 @@ public class Droid implements Character {
 	 * Enum of field names
 	 */
 	 public static enum Field {
-		Id("id"),
 		Name("name"),
-		Friends("friends"),
-		AppearsIn("appearsIn"),
-		PrimaryFunction("primaryFunction"),
+		Description("description"),
+		Locations("locations"),
+		Args("args"),
+		IsRepeatable("isRepeatable"),
 		__typename("__typename");
 
 		private String fieldName;

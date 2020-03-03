@@ -16,33 +16,26 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 
-public class Droid implements Character {
-
-	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
-	String id;
-
+public class __InputValue  {
 
 	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
-	@JsonProperty("friends")
-	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
-	List<Character> friends;
-
-
-	@JsonProperty("appearsIn")
-	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
-	List<Episode> appearsIn;
-
-
-	@JsonProperty("primaryFunction")
+	@JsonProperty("description")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
-	String primaryFunction;
+	String description;
+
+
+	@JsonProperty("type")
+	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	__Type type;
+
+
+	@JsonProperty("defaultValue")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String defaultValue;
 
 
 	@JsonProperty("__typename")
@@ -50,14 +43,6 @@ public class Droid implements Character {
 	String __typename;
 
 
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
 
 	public void setName(String name) {
 		this.name = name;
@@ -67,28 +52,28 @@ public class Droid implements Character {
 		return name;
 	}
 
-	public void setFriends(List<Character> friends) {
-		this.friends = friends;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public List<Character> getFriends() {
-		return friends;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setAppearsIn(List<Episode> appearsIn) {
-		this.appearsIn = appearsIn;
+	public void setType(__Type type) {
+		this.type = type;
 	}
 
-	public List<Episode> getAppearsIn() {
-		return appearsIn;
+	public __Type getType() {
+		return type;
 	}
 
-	public void setPrimaryFunction(String primaryFunction) {
-		this.primaryFunction = primaryFunction;
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 
-	public String getPrimaryFunction() {
-		return primaryFunction;
+	public String getDefaultValue() {
+		return defaultValue;
 	}
 
 	public void set__typename(String __typename) {
@@ -100,16 +85,14 @@ public class Droid implements Character {
 	}
 
     public String toString() {
-        return "Droid {"
-				+ "id: " + id
-				+ ", "
+        return "__InputValue {"
 				+ "name: " + name
 				+ ", "
-				+ "friends: " + friends
+				+ "description: " + description
 				+ ", "
-				+ "appearsIn: " + appearsIn
+				+ "type: " + type
 				+ ", "
-				+ "primaryFunction: " + primaryFunction
+				+ "defaultValue: " + defaultValue
 				+ ", "
 				+ "__typename: " + __typename
         		+ "}";
@@ -119,11 +102,10 @@ public class Droid implements Character {
 	 * Enum of field names
 	 */
 	 public static enum Field {
-		Id("id"),
 		Name("name"),
-		Friends("friends"),
-		AppearsIn("appearsIn"),
-		PrimaryFunction("primaryFunction"),
+		Description("description"),
+		Type("type"),
+		DefaultValue("defaultValue"),
 		__typename("__typename");
 
 		private String fieldName;
