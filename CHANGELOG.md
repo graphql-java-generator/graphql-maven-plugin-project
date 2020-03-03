@@ -1,3 +1,11 @@
+# Not released yet
+
+Client mode:
+- interfaces are properly deserialized, thanks to GraphQL introspection. 
+(caution: code impact. Previously, for each interface, the plugin would generated a concrete class that doesn't exist in the GraphQL schema. This is not the case any more, and only GraphQL types are now generated
+- The __typename is added to the list of scalar fields, for every request GraphQL nonscalar type. This allow to properly deserialize interfaces and unions.  
+
+
 # 1.4.0
 
 Any mode, client or server:

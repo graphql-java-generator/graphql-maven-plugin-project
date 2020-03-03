@@ -26,10 +26,10 @@ Use GraphQL introspection with the GraphQL client mode
   You can access to the introspection GraphQL capabilities through the <IntrospectionQuery> class. This class is generated in the same package as 
   the other classes (see {{./client.html}} for details).
   
-** {__datatype in GraphQL types}
+** {__typename in GraphQL types}
 ~~~~~~~~~~~~~~~~~~~
 
-  In the generated code, a field named __datatype is added into each java class that is actually a GraphQL type. 
+  In the generated code, a field named __typename is added into each java class that is actually a GraphQL type. 
   So you can ask for the GraphQL type name of a response with a query request like this one:   
   
 +--------------------------------------------------------------------------------------------
@@ -69,7 +69,6 @@ import com.graphql_java_generator.client.introspection.__Type;
 		__Type type = introspectionQuery.__type("{name fields {name type {name}}}", "MyGraphQLType");
 	}
 +--------------------------------------------------------------------------------------------
-
   
     
 * {How the code is generated}
@@ -80,4 +79,6 @@ import com.graphql_java_generator.client.introspection.__Type;
   
   Then a specific query class is created: <__IntrospectionQuery>
   
-  And the String field named <__typename> is added as an additional field into all java classes that represent a GraphQL type.
+  And the String field named <__typename> is added as a requested scalar field (if not in the original query), 
+  for every java classes that represent a GraphQL type. This <<allows deserialization>> for interfaces and unions: as the typename is known, the
+  json framework knows what is the original type, and can create the proper class during deserialization.
