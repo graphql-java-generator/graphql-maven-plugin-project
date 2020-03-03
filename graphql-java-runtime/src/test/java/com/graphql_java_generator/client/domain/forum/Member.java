@@ -26,6 +26,17 @@ public class Member {
 	@GraphQLScalar(graphQLTypeName = "MemberType", javaClass = MemberType.class)
 	MemberType type;
 
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public String get__typename() {
+		return __typename;
+	}
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}

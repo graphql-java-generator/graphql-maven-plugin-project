@@ -15,8 +15,10 @@ import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
+import org.allGraphQLCases.client.Droid;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
+import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client._extends;
 import org.junit.jupiter.api.Test;
@@ -57,6 +59,7 @@ abstract class AbstractIT {
 		CharacterInput input = new CharacterInput();
 		input.setName("A name");
 		input.setAppearsIn(new ArrayList<Episode>());
+		input.setType("Human");
 
 		// Go, go, go
 		c = queries.withOneOptionalParam(input);
@@ -66,9 +69,9 @@ abstract class AbstractIT {
 
 		// appearsIn and friends is generated on server side.
 		assertNotNull(c.getAppearsIn());
-		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateCharacterImpl.appearsIn
+		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateHumanImpl.appearsIn
 		assertNotNull(c.getFriends());
-		assertEquals(4, c.getFriends().size());// See DataFetchersDelegateCharacterImpl.friends
+		assertEquals(6, c.getFriends().size());// See DataFetchersDelegateHumanImpl.friends
 	}
 
 	@Test
@@ -86,19 +89,21 @@ abstract class AbstractIT {
 		CharacterInput input = new CharacterInput();
 		input.setName("A name");
 		input.setAppearsIn(new ArrayList<Episode>());
+		input.setType("Droid");
 
 		// Go, go, go
 		Character c = queries.withOneMandatoryParam(input);
 
 		// Verification
+		assertEquals("Droid", c.getClass().getSimpleName());
 		assertNotNull(c.getId());
 		assertEquals("A name", c.getName());
 
 		// appearsIn and friends is generated on server side.
 		assertNotNull(c.getAppearsIn());
-		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateCharacterImpl.appearsIn
+		assertEquals(2, c.getAppearsIn().size()); // See DataFetchersDelegateDroidImpl.appearsIn
 		assertNotNull(c.getFriends());
-		assertEquals(4, c.getFriends().size());// See DataFetchersDelegateCharacterImpl.friends
+		assertEquals(5, c.getFriends().size());// See DataFetchersDelegateDroidImpl.friends
 	}
 
 	@Test
@@ -119,10 +124,12 @@ abstract class AbstractIT {
 		CharacterInput ci1 = new CharacterInput();
 		ci1.setName("A name");
 		ci1.setAppearsIn(new ArrayList<Episode>());
+		ci1.setType("Droid");
 		//
 		CharacterInput ci2 = new CharacterInput();
 		ci2.setName("Another name");
 		ci2.setAppearsIn(new ArrayList<Episode>());
+		ci2.setType("Human");
 		//
 		List<CharacterInput> list = new ArrayList<CharacterInput>();
 		list.add(ci1);
@@ -139,11 +146,12 @@ abstract class AbstractIT {
 		int i = 0;
 		assertNotNull(ret.get(i).getId());
 		assertEquals(firstName, ret.get(i).getName());
+		assertTrue(ret.get(i) instanceof Droid);
 		//
 		i += 1;
 		assertNotNull(ret.get(i).getId());
 		assertEquals("Another name", ret.get(i).getName());
-
+		assertTrue(ret.get(i) instanceof Human);
 	}
 
 	@Test

@@ -38,7 +38,8 @@ class DocumentParserTest_StarWars_Server {
 	@DirtiesContext
 	void test_initDataFetchers() {
 
-		// DataFetchers are aggregated into DataFetchersDelegate (one DataFetchersDelegate per type in the graphQL schema
+		// DataFetchers are aggregated into DataFetchersDelegate (one DataFetchersDelegate per type in the graphQL
+		// schema
 		// that needs at least one DataFetcher)
 		assertEquals(5, documentParser.dataFetchersDelegates.size(), "nb of data fetchers Delegate in server mode");
 		assertEquals(12, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
@@ -87,10 +88,9 @@ class DocumentParserTest_StarWars_Server {
 	void test_initListOfImplementations() {
 		assertEquals(1, documentParser.interfaceTypes.size(), "Only one interface");
 		List<ObjectType> implementingTypes = documentParser.interfaceTypes.get(0).getImplementingTypes();
-		assertEquals(3, implementingTypes.size(), "3 types for this interface");
+		assertEquals(2, implementingTypes.size(), "2 types for this interface");
 		assertEquals("Human", implementingTypes.get(0).getName());
 		assertEquals("Droid", implementingTypes.get(1).getName());
-		assertEquals("CharacterImpl", implementingTypes.get(2).getName());
 	}
 
 }

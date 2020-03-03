@@ -240,9 +240,6 @@ public class DocumentParser {
 
 		// Let's finalize some "details":
 
-		// Each interface should have an implementation class, for JSON deserialization,
-		// or to map to a JPA Entity
-		nbClasses += defineDefaultInterfaceImplementationClassName();
 		// Add introspection capabilities (the introspection schema has already been read, as it is added by
 		// ResourceSchemaStringProvider in the documents list
 		addIntrospectionCapabilities();
@@ -444,10 +441,13 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Read an interface type from its GraphQL definition
+	 * Read an interface type from its GraphQL definition.<BR/>
+	 * This method doesn't add the interface annotations, as the client annotations needs to know all types that
+	 * implement this interface. Interface annotations are added in the {@link #addAnnotations()} method.
 	 * 
 	 * @param node
 	 * @return
+	 * @see #initInterfaceAnnotations()
 	 */
 	InterfaceType readInterfaceType(InterfaceTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
@@ -677,58 +677,6 @@ public class DocumentParser {
 	}
 
 	/**
-	 * This method add an {@link ObjectType} for each GraphQL interface, to the list of objects to create. The name of
-	 * the object is typically the name of the interface, suffixed by "Impl". A test is done to insure that there is no
-	 * "name collision", that is: that InterfaceNameImpl doesn't exist. If there is a collision, the method attempts to
-	 * suffix Impl1, then Impl2... until there is no collision.<BR/>
-	 * Note: this is useful only for the client code generation (not for the server one)
-	 */
-	int defineDefaultInterfaceImplementationClassName() {
-		String objectName = "interface name to define";
-		int nbGeneratedClasses = 0;
-
-		for (InterfaceType i : interfaceTypes) {
-			String defaultName = i.getName() + "Impl";
-			boolean nameFound = true;
-			int objectNamePrefix = 0;
-
-			while (nameFound) {
-				objectName = defaultName + (objectNamePrefix == 0 ? "" : objectNamePrefix);
-				objectNamePrefix += 1;
-				nameFound = false;
-				for (Type o : objectTypes) {
-					if (o.getName().equals(objectName)) {
-						nameFound = true;
-						break;
-					}
-				} // for (ObjectType)
-			} // while
-
-			// We've found a non used name for the interface implementation.
-			ObjectType o = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
-			o.setName(objectName);
-			List<String> interfaces = new ArrayList<>();
-			interfaces.add(i.getName());
-			o.setImplementz(interfaces);
-			// We need to properly clone the fields, to attach them to the correct owning class
-			for (Field sourceField : i.getFields()) {
-				// We use the Lombok toBuilder facility to clone the source field and only change the owning type.
-				Field targetField = ((FieldImpl) sourceField).toBuilder().owningType(o).build();
-				// Then, we attach the 'new' field to the new object
-				o.getFields().add(targetField);
-			}
-			o.setDefaultImplementationForInterface(i);
-			objectTypes.add(o);
-			nbGeneratedClasses += 1;
-
-			i.setDefaultImplementation(o);
-
-		} // for
-
-		return nbGeneratedClasses;
-	}
-
-	/**
 	 * Returns the type for the given name
 	 * 
 	 * @param typeName
@@ -828,6 +776,28 @@ public class DocumentParser {
 	 */
 	void addTypeAnnotationForClientMode(Type o) {
 		// No specific annotation for objects and interfaces when in client mode.
+		if (o instanceof InterfaceType) {
+			((InterfaceType) o).addAnnotation(
+					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\")");
+
+			// jsonSubTypes annotation looks like this:
+			// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name = "Human") })
+			StringBuffer jsonSubTypes = new StringBuffer();
+			jsonSubTypes.append("@JsonSubTypes({");
+			boolean addSeparator = false;
+			for (ObjectType type : ((InterfaceType) o).getImplementingTypes()) {
+				// No separator for the first iteration
+				if (addSeparator)
+					jsonSubTypes.append(",");
+				else
+					addSeparator = true;
+				jsonSubTypes.append(" @Type(value = ").append(type.getName()).append(".class, name = \"")
+						.append(type.getName()).append("\")");
+			}
+			jsonSubTypes.append(" })");
+
+			((InterfaceType) o).addAnnotation(jsonSubTypes.toString());
+		} // if (o instanceof InterfaceType) {
 
 		// Let's add the annotations, that are common to both the client and the server mode
 		addTypeAnnotationForBothClientAndServerMode(o);
@@ -872,6 +842,9 @@ public class DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForClientMode(Field field) {
+		// No json field annotation for interfaces or unions. The json annotation is directly on the interface or union
+		// type.
+		// if (!(field.getType() instanceof InterfaceType) && !(field.getType() instanceof UnionType)) {
 		String contentAs = null;
 		String using = null;
 		if (field.isList()) {
@@ -883,6 +856,7 @@ public class DocumentParser {
 		if (contentAs != null || using != null) {
 			((FieldImpl) field).addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
 		}
+		// }
 
 		addFieldAnnotationForBothClientAndServerMode(field);
 	}

@@ -4,6 +4,7 @@ schema {
 }
 
 type QueryType {
+	#hero is the main character of the episode
     hero(episode: Episode): Character
     characters(episode: Episode): [Character]!
     human(id: ID) : Human
@@ -44,4 +45,3 @@ type Droid implements Character {
     appearsIn: [Episode]!
     primaryFunction: String
 }
-

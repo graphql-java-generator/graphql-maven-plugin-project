@@ -32,6 +32,17 @@ public class Post {
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String content;
 
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public String get__typename() {
+		return __typename;
+	}
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}

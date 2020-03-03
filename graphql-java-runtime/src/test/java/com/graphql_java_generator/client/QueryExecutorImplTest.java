@@ -26,11 +26,11 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.graphql_java_generator.client.domain.forum.MutationType;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.starwars.Character;
-import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
 import com.graphql_java_generator.client.domain.starwars.Droid;
 import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
+import com.graphql_java_generator.client.domain.starwars.QueryTypeHero;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -85,7 +85,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"mutation{hero(id:\\\"1\\\"){id name __datatype}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"mutation{hero(id:\\\"1\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -114,7 +114,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE, id:\\\"this is an id\\\"){id name __datatype}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE, id:\\\"this is an id\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -142,7 +142,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn __datatype friends{name __datatype}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn __typename friends{name __typename}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -169,7 +169,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn __datatype friends{name __datatype}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero{id name appearsIn __typename friends{name __typename}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -194,7 +194,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn __datatype friends{name __datatype}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero{id name appearsIn __typename friends{name __typename}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -240,7 +240,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable __datatype topics(since:\\\"2019-12-21\\\"){id date nbPosts __datatype author{id name email type __datatype} posts{date __datatype author{name email type __datatype}}}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{boards{id name publiclyAvailable __typename topics(since:\\\"2019-12-21\\\"){id date nbPosts __typename author{id name email type __typename} posts{date __typename author{name email type __typename}}}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -258,7 +258,7 @@ class QueryExecutorImplTest {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable __datatype topics(since:\\\"2018-12-20\\\"){id date nbPosts __datatype author{id name email type __datatype} posts{date __datatype author{name email type __datatype}}}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{boards{id name publiclyAvailable __typename topics(since:\\\"2018-12-20\\\"){id date nbPosts __typename author{id name email type __typename} posts{date __typename author{name email type __typename}}}}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -282,22 +282,22 @@ class QueryExecutorImplTest {
 
 		exception = assertThrows(GraphQLResponseParseException.class, () -> parseResponseForStarWarsSchema(
 				"{\"wrongTag\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				objectResponse, Character.class));
+				objectResponse, QueryTypeHero.class));
 		assertTrue(exception.getMessage().contains("'data'"));
 
-		exception = assertThrows(GraphQLResponseParseException.class, () -> parseResponseForStarWarsSchema(
+		exception = assertThrows(UnrecognizedPropertyException.class, () -> parseResponseForStarWarsSchema(
 				"{\"data\":{\"wrongAlias\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				objectResponse, Character.class));
-		assertTrue(exception.getMessage().contains("'hero'"));
+				objectResponse, QueryTypeHero.class));
+		assertTrue(exception.getMessage().contains("wrongAlias"));
 
 		exception = assertThrows(UnrecognizedPropertyException.class, () -> parseResponseForStarWarsSchema(
-				"{\"data\":{\"hero\":{\"wrongTag\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				objectResponse, CharacterImpl.class));
+				"{\"data\":{\"hero\":{\"wrongTag\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null,\"__typename\":\"Droid\"}}}",
+				objectResponse, QueryTypeHero.class));
 		assertTrue(exception.getMessage().contains("wrongTag"));
 
 		exception = assertThrows(InvalidFormatException.class, () -> parseResponseForStarWarsSchema(
-				"{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"WRONG_EPISODE\",\"JEDI\"],\"friends\":null}}}",
-				objectResponse, CharacterImpl.class));
+				"{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"WRONG_EPISODE\",\"JEDI\"],\"friends\":null,\"__typename\":\"Droid\"}}}",
+				objectResponse, QueryTypeHero.class));
 		assertTrue(exception.getMessage().contains("WRONG_EPISODE"));
 	}
 
@@ -313,14 +313,15 @@ class QueryExecutorImplTest {
 				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
-		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null, \"__datatype\": \"Human\"}}}";
+		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null, \"__typename\": \"Human\"}}}";
 
 		// Go, go, go
-		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
+		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryTypeHero.class);
 
 		// Verification
-		assertTrue(response instanceof Character, "response instanceof Character");
-		Character character = (Character) response;
+		assertTrue(response instanceof QueryTypeHero, "response instanceof QueryTypeHero");
+		Character character = ((QueryTypeHero) response).getHero();
+		assertTrue(character instanceof Human, "character instanceof QueryTypeHero");
 		assertEquals(Human.class.getName(), character.getClass().getName());
 		assertEquals("An id", character.getId(), "id");
 		assertEquals("A hero's name", character.getName(), "name");
@@ -343,14 +344,15 @@ class QueryExecutorImplTest {
 				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
-		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[], \"__datatype\": \"Droid\"}}}";
+		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[], \"__typename\": \"Droid\"}}}";
 
 		// Go, go, go
-		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
+		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryTypeHero.class);
 
 		// Verification
-		assertTrue(response instanceof Character, "response instanceof Character");
-		Character character = (Character) response;
+		assertTrue(response instanceof QueryTypeHero, "response instanceof QueryTypeHero");
+		Character character = ((QueryTypeHero) response).getHero();
+		assertTrue(character instanceof Droid, "character instanceof Droid");
 		assertEquals(Droid.class.getName(), character.getClass().getName());
 		assertNotNull(character.getFriends(), "He has perhaps has friends...");
 		assertEquals(0, character.getFriends().size(), "Oh no! He has no friends!  :(  ");
@@ -366,21 +368,22 @@ class QueryExecutorImplTest {
 				.withField("id").withField("appearsIn").withSubObject(new Builder(Character.class, "friends").build())//
 				.withField("name").build();
 
-		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[{\"name\":\"name350518\", \"__datatype\": \"Human\"},{\"name\":\"name381495\", \"__datatype\": \"Droid\"}]}, \"__datatype\": \"Droid\"}}";
+		String rawResponse = "{\"data\":{\"hero\":{\"__typename\": \"Droid\", \"friends\":[{\"name\":\"name350518\", \"__typename\": \"Human\"},{\"name\":\"name381495\", \"__typename\": \"Droid\"}]}, \"__typename\": \"Droid\"}}";
 
 		// Go, go, go
-		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, CharacterImpl.class);
+		QueryTypeHero response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryTypeHero.class);
 
 		// Verification
-		assertTrue(response instanceof Character, "response instanceof Character");
-		Character character = (Character) response;
+		Character hero = response.getHero();
+		assertTrue(hero instanceof Character, "response instanceof Character");
+		Character character = hero;
 		assertEquals(Droid.class.getName(), character.getClass().getName());
 		assertNotNull(character.getFriends(), "He has perhaps has friends...");
 		assertEquals(2, character.getFriends().size(), "Cool! He has 2 friends!  :)  ");
 		assertEquals("name350518", character.getFriends().get(0).getName(), "First friend's name");
-		assertEquals(Human.class.getName(), character.getFriends().get(0).getName());
+		assertEquals(Human.class.getName(), character.getFriends().get(0).getClass().getName());
 		assertEquals("name381495", character.getFriends().get(1).getName(), "Second friend's name");
-		assertEquals(Droid.class.getName(), character.getFriends().get(1).getName());
+		assertEquals(Droid.class.getName(), character.getFriends().get(1).getClass().getName());
 	}
 
 	@Test
@@ -430,11 +433,7 @@ class QueryExecutorImplTest {
 		if (data == null)
 			throw new GraphQLResponseParseException("Could not retrieve the 'data' node");
 
-		JsonNode hero = data.get("hero");
-		if (hero == null)
-			throw new GraphQLResponseParseException("Could not retrieve the 'hero' node");
-
-		return mapper.treeToValue(hero, valueType);
+		return mapper.treeToValue(data, valueType);
 	}
 
 	<T> T parseResponseForForumSchema(String rawResponse, ObjectResponse createPostResponse, Class<T> valueType)

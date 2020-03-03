@@ -19,8 +19,19 @@ public class Droid implements Character {
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	@Override
+	public String get__typename() {
+		return __typename;
+	}
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
 	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
-	@JsonDeserialize(contentAs = CharacterImpl.class)
 	List<Character> friends;
 
 	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)

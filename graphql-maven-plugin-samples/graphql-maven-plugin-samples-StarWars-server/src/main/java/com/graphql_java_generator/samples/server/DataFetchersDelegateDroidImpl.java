@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 import com.graphql_java_generator.samples.server.jpa.DroidRepository;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -28,10 +27,9 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 	protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateDroidImpl.class);
 
 	@Resource
-	CharacterRepository characterRepository;
-
-	@Resource
 	DroidRepository droidRepository;
+	@Resource
+	CharacterHelper characterHelper;
 
 	@Resource
 	GraphQLUtil graphQLUtil;
@@ -39,7 +37,7 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 	@Override
 	public List<Character> friends(DataFetchingEnvironment environment, Droid source) {
 		logger.debug("Executing droid.friends, with this droid: {}", source.getId().toString());
-		return new ArrayList<Character>(characterRepository.findFriends(source.getId()));
+		return characterHelper.friends(source.getId());
 	}
 
 	@Override

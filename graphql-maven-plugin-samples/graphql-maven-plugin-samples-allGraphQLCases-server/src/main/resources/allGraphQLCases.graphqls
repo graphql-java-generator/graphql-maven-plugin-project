@@ -56,9 +56,9 @@ enum Episode {
     DOES_NOT_EXIST @deprecated(reason: "This is not an existing episode!")
 }
 
-interface WithID {
-    id: ID!
-}
+# interface WithID {
+#    id: ID!
+# }
 
 interface Character {
     id: ID!
@@ -71,6 +71,8 @@ input CharacterInput {
     name: String!
     friends: [CharacterInput]
     appearsIn: [Episode]!
+    # type should be one of Human or Droid
+    type: String!
 }
 
 interface Commented {

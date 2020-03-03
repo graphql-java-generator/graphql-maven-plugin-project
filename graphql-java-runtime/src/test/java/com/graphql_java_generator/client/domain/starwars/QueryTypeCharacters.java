@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeCharacters {
 
-	@JsonDeserialize(contentAs = CharacterImpl.class)
+	@JsonDeserialize(contentAs = Character.class)
 	List<Character> characters;
 
 	public void setCharacters(List<Character> characters) {
@@ -20,8 +20,9 @@ public class QueryTypeCharacters {
 	public List<Character> getCharacters() {
 		return characters;
 	}
-	
-    public String toString() {
-        return "QueryTypeCharacters {characters: " + characters + "}";
-    }
+
+	@Override
+	public String toString() {
+		return "QueryTypeCharacters {characters: " + characters + "}";
+	}
 }

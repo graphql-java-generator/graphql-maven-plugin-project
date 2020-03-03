@@ -8,8 +8,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeHero {
 
-	@JsonDeserialize(as = CharacterImpl.class)
+	@JsonDeserialize(as = Character.class)
 	Character hero;
+
+	String __typename;
+
+	public String get__typename() {
+		return __typename;
+	}
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
 
 	public void setHero(Character hero) {
 		this.hero = hero;

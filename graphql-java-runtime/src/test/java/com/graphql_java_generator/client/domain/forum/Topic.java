@@ -38,6 +38,17 @@ public class Topic {
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String content;
 
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public String get__typename() {
+		return __typename;
+	}
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
 	@GraphQLInputParameters(names = { "memberId", "memberName", "since" }, types = { "ID", "String", "Date" })
 	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
 	@JsonDeserialize(contentAs = Post.class)

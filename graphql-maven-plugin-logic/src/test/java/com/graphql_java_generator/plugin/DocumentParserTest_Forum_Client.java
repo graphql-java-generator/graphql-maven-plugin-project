@@ -44,7 +44,7 @@ class DocumentParserTest_Forum_Client {
 	void test_initRelations() {
 
 		// Verification
-		assertEquals(4, documentParser.relations.size(), "nb relations found");
+		assertEquals(19, documentParser.relations.size(), "nb relations found");
 
 		// The Relation are found in the order of their declaratioon in the GraphQL schema definition.
 		// Let's check that

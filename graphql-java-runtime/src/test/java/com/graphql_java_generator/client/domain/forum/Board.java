@@ -23,6 +23,17 @@ public class Board {
 	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public String get__typename() {
+		return __typename;
+	}
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
 	@GraphQLInputParameters(names = { "since" }, types = { "Date" })
 	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
 	@JsonDeserialize(contentAs = Topic.class)

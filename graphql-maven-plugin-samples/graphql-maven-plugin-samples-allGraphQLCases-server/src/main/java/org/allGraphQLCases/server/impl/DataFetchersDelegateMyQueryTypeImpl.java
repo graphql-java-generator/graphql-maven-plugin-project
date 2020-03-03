@@ -9,10 +9,11 @@ import javax.annotation.Resource;
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.CharacterImpl;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
+import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server._break;
 import org.allGraphQLCases.server._extends;
 import org.dozer.DozerBeanMapper;
@@ -43,9 +44,9 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public Character withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
 		if (character == null) {
-			return generator.generateInstance(CharacterImpl.class);
+			return generator.generateInstance(Human.class);
 		} else {
-			Character c = mapper.map(character, CharacterImpl.class);
+			Character c = mapper.map(character, getClassFromName(Character.class, character.getType()));
 			c.setId(UUID.randomUUID());
 			return c;
 		}
@@ -53,14 +54,14 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 	@Override
 	public Character withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
-		Character c = mapper.map(character, CharacterImpl.class);
+		Character c = mapper.map(character, getClassFromName(Character.class, character.getType()));
 		c.setId(UUID.randomUUID());
 		return c;
 	}
 
 	@Override
 	public Character withEnum(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		Character c = generator.generateInstance(CharacterImpl.class);
+		Character c = generator.generateInstance(Droid.class);
 
 		// The episode list (appearsIn) will be filled by another call (the graphql manages the joins).
 		// To check the given parameter, we put the episode name in the returned character's name
@@ -69,12 +70,20 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return c;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Character> withList(DataFetchingEnvironment dataFetchingEnvironment, String name,
 			List<CharacterInput> characters) {
 		List<Character> list = new ArrayList<Character>(characters.size());
 		for (CharacterInput input : characters) {
-			Character c = mapper.map(input, CharacterImpl.class);
+			Class<? extends Character> characterClass;
+			try {
+				characterClass = (Class<? extends Character>) getClass().getClassLoader()
+						.loadClass(Character.class.getPackage().getName() + "." + input.getType());
+			} catch (RuntimeException | ClassNotFoundException e) {
+				throw new RuntimeException(e.getClass().getSimpleName() + ": " + e.getMessage(), e);
+			}
+			Character c = mapper.map(input, characterClass);
 			c.setId(UUID.randomUUID());
 			list.add(c);
 		}
@@ -116,4 +125,15 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return ret;
 	}
 
+	@SuppressWarnings("unchecked")
+	private <T> Class<? extends T> getClassFromName(Class<T> t, String simpleClassname) {
+		Class<? extends T> clazz;
+		try {
+			clazz = (Class<? extends T>) getClass().getClassLoader()
+					.loadClass(t.getPackageName() + "." + simpleClassname);
+		} catch (RuntimeException | ClassNotFoundException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+		return clazz;
+	}
 }

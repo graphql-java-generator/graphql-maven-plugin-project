@@ -21,7 +21,7 @@ import com.graphql_java_generator.samples.server.Droid;
 public interface DroidRepository extends CrudRepository<Droid, UUID> {
 
 	@Override
-	@Query(value = "select d.id, d.name from droid d", nativeQuery = true)
+	@Query(value = "select d.id, d.name, d.primary_function from droid d", nativeQuery = true)
 	List<Droid> findAll();
 
 	@Query(value = "" //
@@ -33,7 +33,7 @@ public interface DroidRepository extends CrudRepository<Droid, UUID> {
 	List<String> findAppearsInById(UUID id);
 
 	@Query(value = "" //
-			+ " select d.id, d.name " //
+			+ " select d.id, d.name, d.primary_function " //
 			+ " from droid d, droid_appears_in dai, episode e "//
 			+ " where e.label = ?1 "//
 			+ " and dai.episode_id=e.id"//
@@ -42,7 +42,7 @@ public interface DroidRepository extends CrudRepository<Droid, UUID> {
 	List<Droid> findByAppearsIn(String episode);
 
 	@Query(value = ""//
-			+ " select d.id, d.name "//
+			+ " select d.id, d.name, d.primary_function "//
 			+ " from droid d, character_friends f " //
 			+ " where  f.character_id = ?1 " //
 			+ " and    f.friend_id = d.id " //
