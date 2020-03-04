@@ -56,9 +56,9 @@ enum Episode {
     DOES_NOT_EXIST @deprecated(reason: "This is not an existing episode!")
 }
 
-# interface WithID {
-#    id: ID!
-# }
+interface WithID {
+   id: ID!
+}
 
 interface Character {
     id: ID!
@@ -117,7 +117,7 @@ enum Unit {
 
 # This type is a clone of the InterfaceAllFieldCases interface. 
 # Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
-type AllFieldCases {
+type AllFieldCases implements WithID {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
@@ -182,7 +182,7 @@ type AllFieldCasesWithoutIdSubtype {
     name: String!
 }
 
-type Human implements Character, Commented {
+type Human implements Character & Commented &  WithID {
     id: ID!
     name: String!
     bestFriend: Character
@@ -204,7 +204,7 @@ input HumanInput {
     homePlanet: String
 }
 
-type Droid implements Character {
+type Droid implements Character & WithID{
     id: ID!
     name: String!
     friends: [Character]

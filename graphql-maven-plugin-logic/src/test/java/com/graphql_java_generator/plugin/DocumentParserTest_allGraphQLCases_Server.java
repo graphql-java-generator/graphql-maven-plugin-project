@@ -26,6 +26,7 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
+import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
 import graphql.language.Definition;
@@ -64,10 +65,10 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(24, i, "Nb classes are generated");
+		assertEquals(25, i, "Nb java files are generated");
 		assertEquals(15, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.customScalars.size(), "Nb custom scalars");
-		assertEquals(3, documentParser.interfaceTypes.size(), "Nb interfaces");
+		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(3, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
 		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
@@ -188,6 +189,21 @@ class DocumentParserTest_allGraphQLCases_Server {
 		checkInputParameter(type, j, 2, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
 				null);
 		j += 1;
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Checks of type implementing multiples interfaces
+		type = (ObjectType) documentParser.getType("Human");
+		//
+		assertEquals(3, type.getImplementz().size());
+		assertTrue(type.getImplementz().contains("Character"));
+		assertTrue(type.getImplementz().contains("Commented"));
+		assertTrue(type.getImplementz().contains("WithID"));
+		//
+		InterfaceType interfaceType = (InterfaceType) documentParser.getType("WithID");
+		assertEquals(3, interfaceType.getImplementingTypes().size());
+		assertEquals("AllFieldCases", interfaceType.getImplementingTypes().get(0).getName());
+		assertEquals("Human", interfaceType.getImplementingTypes().get(1).getName());
+		assertEquals("Droid", interfaceType.getImplementingTypes().get(2).getName());
 	}
 
 	@Test
@@ -280,9 +296,10 @@ class DocumentParserTest_allGraphQLCases_Server {
 		assertEquals(objectName, type.getName(), "Checks the name");
 
 		// Implementation
-		assertEquals(2, type.getImplementz().size(), "Two implementations");
+		assertEquals(3, type.getImplementz().size(), "Two implementations");
 		assertEquals("Character", type.getImplementz().get(0), "First implementation");
 		assertEquals("Commented", type.getImplementz().get(1), "Second implementation");
+		assertEquals("WithID", type.getImplementz().get(2), "Second implementation");
 
 		// Field
 		assertEquals(8, type.getFields().size(), "Number of fields");
