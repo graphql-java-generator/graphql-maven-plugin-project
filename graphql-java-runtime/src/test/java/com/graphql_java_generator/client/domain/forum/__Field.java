@@ -17,32 +17,37 @@ import java.util.Date;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 
-public class Member  {
+public class __Field  {
 
-	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
-	String id;
-
-
-	@GraphQLInputParameters(names = {"uppercase"}, types = {"Boolean"})
 	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
-	@JsonProperty("alias")
+	@JsonProperty("description")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
-	String alias;
+	String description;
 
 
-	@JsonProperty("email")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
-	String email;
+	@JsonProperty("args")
+	@JsonDeserialize(contentAs = __InputValue.class)
+	@GraphQLNonScalar(graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
+	List<__InputValue> args;
 
 
 	@JsonProperty("type")
-	@GraphQLScalar(graphQLTypeName = "MemberType", javaClass = MemberType.class)
-	MemberType type;
+	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	__Type type;
+
+
+	@JsonProperty("isDeprecated")
+	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	Boolean isDeprecated;
+
+
+	@JsonProperty("deprecationReason")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String deprecationReason;
 
 
 	@JsonProperty("__typename")
@@ -50,14 +55,6 @@ public class Member  {
 	String __typename;
 
 
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
 
 	public void setName(String name) {
 		this.name = name;
@@ -67,28 +64,44 @@ public class Member  {
 		return name;
 	}
 
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public String getAlias() {
-		return alias;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setArgs(List<__InputValue> args) {
+		this.args = args;
 	}
 
-	public String getEmail() {
-		return email;
+	public List<__InputValue> getArgs() {
+		return args;
 	}
 
-	public void setType(MemberType type) {
+	public void setType(__Type type) {
 		this.type = type;
 	}
 
-	public MemberType getType() {
+	public __Type getType() {
 		return type;
+	}
+
+	public void setIsDeprecated(Boolean isDeprecated) {
+		this.isDeprecated = isDeprecated;
+	}
+
+	public Boolean getIsDeprecated() {
+		return isDeprecated;
+	}
+
+	public void setDeprecationReason(String deprecationReason) {
+		this.deprecationReason = deprecationReason;
+	}
+
+	public String getDeprecationReason() {
+		return deprecationReason;
 	}
 
 	public void set__typename(String __typename) {
@@ -100,16 +113,18 @@ public class Member  {
 	}
 
     public String toString() {
-        return "Member {"
-				+ "id: " + id
-				+ ", "
+        return "__Field {"
 				+ "name: " + name
 				+ ", "
-				+ "alias: " + alias
+				+ "description: " + description
 				+ ", "
-				+ "email: " + email
+				+ "args: " + args
 				+ ", "
 				+ "type: " + type
+				+ ", "
+				+ "isDeprecated: " + isDeprecated
+				+ ", "
+				+ "deprecationReason: " + deprecationReason
 				+ ", "
 				+ "__typename: " + __typename
         		+ "}";
@@ -119,11 +134,12 @@ public class Member  {
 	 * Enum of field names
 	 */
 	 public static enum Field {
-		Id("id"),
 		Name("name"),
-		Alias("alias"),
-		Email("email"),
+		Description("description"),
+		Args("args"),
 		Type("type"),
+		IsDeprecated("isDeprecated"),
+		DeprecationReason("deprecationReason"),
 		__typename("__typename");
 
 		private String fieldName;

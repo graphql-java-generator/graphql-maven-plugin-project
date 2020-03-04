@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.samples.forum.server.jpa;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,10 +21,10 @@ public interface PostRepository extends CrudRepository<Post, UUID> {
 	List<Post> findByTopicId(UUID topicId);
 
 	@Query(value = "select p from Post p where p.topicId= ?1 and p.date >= ?2")
-	List<Post> findByTopicIdAndSince(UUID id, String since);
+	List<Post> findByTopicIdAndSince(UUID id, Date since);
 
 	@Query(value = "select p from Post p where p.topicId= ?1 and p.authorId =?2 and p.date >= ?3")
-	List<Post> findByTopicIdAndMemberIdAndSince(UUID id, UUID memberId, String since);
+	List<Post> findByTopicIdAndMemberIdAndSince(UUID id, UUID memberId, Date since);
 
 	@Query(value = "" //
 			+ " select p "//
@@ -32,7 +33,7 @@ public interface PostRepository extends CrudRepository<Post, UUID> {
 			+ " where p.topicId= ?1 "//
 			+ " and m.name =?2 "//
 			+ " and p.date >= ?3")
-	List<Post> findByTopicIdAndMemberNameAndSince(UUID id, String memberName, String since);
+	List<Post> findByTopicIdAndMemberNameAndSince(UUID id, String memberName, Date since);
 
 	// It's actually a non sense request, as if you provide author_id, it's useless to provide his/her name. But, as
 	// it's a technical possibility, the query must be defined
@@ -44,7 +45,7 @@ public interface PostRepository extends CrudRepository<Post, UUID> {
 			+ " and p.authorId =?2 "//
 			+ " and m.name = ?3 "//
 			+ " and p.date >= ?4")
-	List<Post> findByTopicIdAndMemberIdAndMemberNameAndSince(UUID id, UUID memberId, String memberName, String since);
+	List<Post> findByTopicIdAndMemberIdAndMemberNameAndSince(UUID id, UUID memberId, String memberName, Date since);
 
 	/** The query for the BatchLoader */
 	@Query(value = "select p from Post p where id in ?1")

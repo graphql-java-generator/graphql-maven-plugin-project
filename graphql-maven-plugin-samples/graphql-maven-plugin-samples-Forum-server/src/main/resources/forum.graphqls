@@ -37,23 +37,23 @@ type Board {
     id: ID!
     name: String!
     publiclyAvailable: Boolean
-    topics(since: String): [Topic]!
+    topics(since: Date): [Topic]!
 }
 
 type Topic {
     id: ID!
-    date: String!
+    date: Date!
     author: Member!
     publiclyAvailable: Boolean
     nbPosts: Int
     title: String!
     content: String
-    posts(memberId: ID, memberName: String, since: String!): [Post]!
+    posts(memberId: ID, memberName: String, since: Date!): [Post]!
 }
 
 type Post {
     id: ID!
-    date: String!
+    date: Date!
     author: Member
     publiclyAvailable: Boolean
     title: String!
@@ -62,7 +62,7 @@ type Post {
 
 input TopicPostInput {
     authorId: ID!
-    date: String!
+    date: Date!
     publiclyAvailable: Boolean
     title: String!
     content: String!
@@ -76,4 +76,6 @@ input TopicInput {
 input PostInput {
 	topicId: ID!
 	input: TopicPostInput
+	from: Date
+	in: [Date!]
 }

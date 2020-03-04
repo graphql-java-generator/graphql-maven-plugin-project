@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.samples.forum.server.jpa;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public interface TopicRepository extends CrudRepository<Topic, UUID>, FindTopicR
 	List<Topic> findByBoardId(UUID boardId);
 
 	@Query(value = "select t from Topic t where t.boardId= ?1 and t.date >= ?2")
-	List<Topic> findByBoardIdAndSince(UUID boardId, String since);
+	List<Topic> findByBoardIdAndSince(UUID boardId, Date since);
 
 	/**
 	 * An example of a native query that could be used for some particular case

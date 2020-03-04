@@ -16,7 +16,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.domain.forum.AvailabilityType;
 import com.graphql_java_generator.client.domain.forum.TopicInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 
@@ -85,9 +84,6 @@ class GraphqlUtilsTest {
 
 		graphqlUtils.invokeSetter(topicPostInput, "publiclyAvailable", true);
 		assertEquals(true, topicPostInput.getPubliclyAvailable());
-
-		graphqlUtils.invokeSetter(topicPostInput, "availabilityType", AvailabilityType.SEMI_PRIVATE);
-		assertEquals(AvailabilityType.SEMI_PRIVATE, topicPostInput.getAvailabilityType());
 	}
 
 	@Test
@@ -99,7 +95,6 @@ class GraphqlUtilsTest {
 		input.put("publiclyAvailable", true);
 		input.put("title", "The good title");
 		input.put("content", "Some content");
-		input.put("availabilityType", AvailabilityType.SEMI_PRIVATE);
 
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("boardId", "00000000-0000-0000-0000-000000000004");
@@ -115,7 +110,6 @@ class GraphqlUtilsTest {
 		assertEquals("2009-11-20", topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
-		assertEquals(AvailabilityType.SEMI_PRIVATE, topicInput.getInput().getAvailabilityType());
 	}
 
 	@Test
@@ -145,7 +139,6 @@ class GraphqlUtilsTest {
 		input1.put("publiclyAvailable", true);
 		input1.put("title", "The good title");
 		input1.put("content", "Some content");
-		input1.put("availabilityType", AvailabilityType.SEMI_PRIVATE);
 		Map<String, Object> map1 = new LinkedHashMap<>();
 		map1.put("boardId", "00000000-0000-0000-0000-000000000004");
 		map1.put("input", input1);
@@ -156,7 +149,6 @@ class GraphqlUtilsTest {
 		input2.put("publiclyAvailable", false);
 		input2.put("title", "The good title (2)");
 		input2.put("content", "Some content (2)");
-		input2.put("availabilityType", AvailabilityType.PRIVATE);
 		Map<String, Object> map2 = new LinkedHashMap<>();
 		map2.put("boardId", "00000000-0000-0000-0000-000000000005");
 		map2.put("input", input2);
@@ -170,22 +162,20 @@ class GraphqlUtilsTest {
 
 		// Preparation
 		TopicInput topicInput = result.get(0);
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000004"), topicInput.getBoardId());
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000003"), topicInput.getInput().getAuthorId());
+		assertEquals("00000000-0000-0000-0000-000000000004", topicInput.getBoardId().toString());
+		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getInput().getAuthorId().toString());
 		assertEquals("Some content", topicInput.getInput().getContent());
 		assertEquals("2009-11-20", topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
-		assertEquals(AvailabilityType.SEMI_PRIVATE, topicInput.getInput().getAvailabilityType());
 
 		topicInput = result.get(1);
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000005"), topicInput.getBoardId());
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000006"), topicInput.getInput().getAuthorId());
+		assertEquals("00000000-0000-0000-0000-000000000005", topicInput.getBoardId().toString());
+		assertEquals("00000000-0000-0000-0000-000000000006", topicInput.getInput().getAuthorId().toString());
 		assertEquals("Some content (2)", topicInput.getInput().getContent());
 		assertEquals("2009-11-25", topicInput.getInput().getDate());
 		assertEquals(false, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title (2)", topicInput.getInput().getTitle());
-		assertEquals(AvailabilityType.PRIVATE, topicInput.getInput().getAvailabilityType());
 	}
 
 }

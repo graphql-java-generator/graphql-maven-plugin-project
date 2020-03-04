@@ -162,13 +162,8 @@ public class GraphqlUtils {
 					// We have a Scalar, here. Let's look at all known scalars
 					if (graphQLScalar.javaClass() == UUID.class) {
 						invokeMethod(setter, t, UUID.fromString((String) map.get(key)));
-					} else if (graphQLScalar.javaClass() == String.class || graphQLScalar.javaClass() == Boolean.class
-							|| graphQLScalar.javaClass() == Integer.class || graphQLScalar.javaClass() == Float.class
-							|| graphQLScalar.javaClass().isEnum()) {
-						invokeMethod(setter, t, map.get(key));
 					} else {
-						throw new RuntimeException(
-								"Non managed type when reading the input map: '" + graphQLScalar.javaClass().getName());
+						invokeMethod(setter, t, map.get(key));
 					}
 				} else if (graphQLNonScalar != null) {
 					// We got a non scalar field. So we expect a map, which content will map to the fields of the target

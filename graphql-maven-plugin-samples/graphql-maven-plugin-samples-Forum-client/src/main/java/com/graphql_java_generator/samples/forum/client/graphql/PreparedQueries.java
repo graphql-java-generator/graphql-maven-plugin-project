@@ -83,7 +83,7 @@ public class PreparedQueries implements Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// boardsAndTopicsResponse has been create with this query string:
 		// {id name publiclyAvailable topics(since:?since){id}}
-		return queryType.boards(boardsAndTopicsResponse, "since", dateFormat.format(since));
+		return queryType.boards(boardsAndTopicsResponse, "since", since);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class PreparedQueries implements Queries {
 		//
 		// Here, the memberId and memberName are not used in the below method call: these parameters are not sent to the
 		// GraphQL server
-		return queryType.topics(topicAuthorPostAuthorResponse, boardName, "sinceParam", dateFormat.format(since));
+		return queryType.topics(topicAuthorPostAuthorResponse, boardName, "sinceParam", since);
 	}
 
 	@Override

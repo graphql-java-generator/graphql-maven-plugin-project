@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.samples.forum.server.specific_code;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 	BoardRepository boardRepository;
 
 	@Override
-	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, Board source, String since) {
+	public List<Topic> topics(DataFetchingEnvironment dataFetchingEnvironment, Board source, Date since) {
 		if (since == null)
 			return topicRepository.findByBoardId(source.getId());
 		else

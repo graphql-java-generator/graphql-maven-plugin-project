@@ -17,28 +17,26 @@ import java.util.Date;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 
-public class Board  {
-
-	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
-	String id;
-
+public class __EnumValue  {
 
 	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
-	@JsonProperty("publiclyAvailable")
+	@JsonProperty("description")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String description;
+
+
+	@JsonProperty("isDeprecated")
 	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
-	Boolean publiclyAvailable;
+	Boolean isDeprecated;
 
 
-	@GraphQLInputParameters(names = {"since"}, types = {"String"})
-	@JsonProperty("topics")
-	@JsonDeserialize(contentAs = Topic.class)
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
-	List<Topic> topics;
+	@JsonProperty("deprecationReason")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String deprecationReason;
 
 
 	@JsonProperty("__typename")
@@ -46,14 +44,6 @@ public class Board  {
 	String __typename;
 
 
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
 
 	public void setName(String name) {
 		this.name = name;
@@ -63,20 +53,28 @@ public class Board  {
 		return name;
 	}
 
-	public void setPubliclyAvailable(Boolean publiclyAvailable) {
-		this.publiclyAvailable = publiclyAvailable;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public Boolean getPubliclyAvailable() {
-		return publiclyAvailable;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setTopics(List<Topic> topics) {
-		this.topics = topics;
+	public void setIsDeprecated(Boolean isDeprecated) {
+		this.isDeprecated = isDeprecated;
 	}
 
-	public List<Topic> getTopics() {
-		return topics;
+	public Boolean getIsDeprecated() {
+		return isDeprecated;
+	}
+
+	public void setDeprecationReason(String deprecationReason) {
+		this.deprecationReason = deprecationReason;
+	}
+
+	public String getDeprecationReason() {
+		return deprecationReason;
 	}
 
 	public void set__typename(String __typename) {
@@ -88,14 +86,14 @@ public class Board  {
 	}
 
     public String toString() {
-        return "Board {"
-				+ "id: " + id
-				+ ", "
+        return "__EnumValue {"
 				+ "name: " + name
 				+ ", "
-				+ "publiclyAvailable: " + publiclyAvailable
+				+ "description: " + description
 				+ ", "
-				+ "topics: " + topics
+				+ "isDeprecated: " + isDeprecated
+				+ ", "
+				+ "deprecationReason: " + deprecationReason
 				+ ", "
 				+ "__typename: " + __typename
         		+ "}";
@@ -105,10 +103,10 @@ public class Board  {
 	 * Enum of field names
 	 */
 	 public static enum Field {
-		Id("id"),
 		Name("name"),
-		PubliclyAvailable("publiclyAvailable"),
-		Topics("topics"),
+		Description("description"),
+		IsDeprecated("isDeprecated"),
+		DeprecationReason("deprecationReason"),
 		__typename("__typename");
 
 		private String fieldName;

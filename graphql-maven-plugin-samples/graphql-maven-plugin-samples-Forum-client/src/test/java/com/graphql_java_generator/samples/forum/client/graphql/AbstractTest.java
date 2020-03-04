@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -100,7 +101,7 @@ abstract class AbstractTest {
 		Topic topic12 = topics.get(1);
 		//
 		assertEquals("The content of the topic <12>", topic12.getContent());
-		assertEquals("2018-12-20 00:07:10", topic12.getDate());
+		assertEquals(new Date(2018 - 1900, 12 - 1, 20), topic12.getDate());
 		assertEquals(12, (int) topic12.getNbPosts());
 		assertEquals("The title of <12>", topic12.getTitle());
 		assertEquals("00000000-0000-0000-0000-000000000012", topic12.getId());
@@ -118,7 +119,7 @@ abstract class AbstractTest {
 		assertEquals(8, posts12.size());
 		//
 		Post post232 = posts12.get(5);
-		assertEquals("2018-05-13 13:47:10", post232.getDate());
+		assertEquals(new Date(2018 - 1900, 05 - 1, 13), post232.getDate());
 		assertEquals("00000000-0000-0000-0000-000000000232", post232.getId());
 		assertEquals("The content of the post <232>", post232.getContent());
 		assertEquals(null, post232.getPubliclyAvailable()); // Not queried
@@ -186,8 +187,8 @@ abstract class AbstractTest {
 
 		TopicInput topicInput = new TopicInput();
 		topicInput.setBoardId(before.get(0).getId());
-		topicInput.setInput(
-				getTopicPostInput(before.get(0).getAuthor(), "Some content", "2009-11-20", true, "The good title"));
+		topicInput.setInput(getTopicPostInput(before.get(0).getAuthor(), "Some content",
+				new Date(2009 - 1900, 11 - 1, 20), true, "The good title"));
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		////////////////// CHECK OF TOPIC CREATION
@@ -196,7 +197,7 @@ abstract class AbstractTest {
 		// Verification
 		assertNotNull(topic.getId());
 		assertEquals("Some content", topic.getContent());
-		assertEquals("2009-11-20", topic.getDate());
+		assertEquals(new Date(2009 - 1900, 11 - 1, 20), topic.getDate());
 		assertEquals(true, topic.getPubliclyAvailable());
 		assertEquals("The good title", topic.getTitle());
 
@@ -205,8 +206,8 @@ abstract class AbstractTest {
 		// Preparation
 		PostInput postInput = new PostInput();
 		postInput.setTopicId(topic.getId());
-		postInput.setInput(getTopicPostInput(before.get(0).getAuthor(), "Some other content", "2009-11-21", false,
-				"The good title for a post"));
+		postInput.setInput(getTopicPostInput(before.get(0).getAuthor(), "Some other content",
+				new Date(2009 - 1900, 11 - 1, 21), false, "The good title for a post"));
 
 		// Go, go, go
 		Post post = queries.createPost(postInput);
@@ -214,7 +215,7 @@ abstract class AbstractTest {
 		// Verification
 		assertNotNull(post.getId());
 		assertEquals("Some other content", post.getContent());
-		assertEquals("2009-11-21", post.getDate());
+		assertEquals(new Date(2009 - 1900, 11 - 1, 21), post.getDate());
 		assertEquals(false, post.getPubliclyAvailable());
 		assertEquals("The good title for a post", post.getTitle());
 
@@ -239,8 +240,8 @@ abstract class AbstractTest {
 		author.setId("00000000-0000-0000-0000-000000000012");
 		PostInput postInput = new PostInput();
 		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
-		postInput.setInput(
-				getTopicPostInput(author, "Some other content", "2009-11-21", false, "The good title for a post"));
+		postInput.setInput(getTopicPostInput(author, "Some other content", new Date(2009 - 1900, 11 - 1, 21), false,
+				"The good title for a post"));
 
 		// Go, go, go
 		Post post = queries.createPost(postInput);
@@ -248,7 +249,7 @@ abstract class AbstractTest {
 		// Verification
 		assertNotNull(post.getId());
 		assertEquals("Some other content", post.getContent());
-		assertEquals("2009-11-21", post.getDate());
+		assertEquals(new Date(2009 - 1900, 11 - 1, 21), post.getDate());
 		assertEquals(false, post.getPubliclyAvailable());
 		assertEquals("The good title for a post", post.getTitle());
 	}
@@ -260,8 +261,8 @@ abstract class AbstractTest {
 		author.setId("00000000-0000-0000-0000-000000000012");
 		PostInput postInput = new PostInput();
 		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
-		postInput.setInput(
-				getTopicPostInput(author, "Some other content", "2009-11-21", false, "The good title for a post"));
+		postInput.setInput(getTopicPostInput(author, "Some other content", new Date(2009 - 1900, 11 - 1, 21), false,
+				"The good title for a post"));
 
 		List<PostInput> list = new ArrayList<>();
 		list.add(postInput);
@@ -274,7 +275,7 @@ abstract class AbstractTest {
 		assertTrue(e.getMessage().contains("Spamming is forbidden"));
 	}
 
-	private TopicPostInput getTopicPostInput(Member author, String content, String date, boolean publiclyAvailable,
+	private TopicPostInput getTopicPostInput(Member author, String content, Date date, boolean publiclyAvailable,
 			String title) {
 		TopicPostInput input = new TopicPostInput();
 		input.setAuthorId(author.getId());

@@ -17,28 +17,33 @@ import java.util.Date;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 
-public class Board  {
-
-	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
-	String id;
-
+public class __Directive  {
 
 	@JsonProperty("name")
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
-	@JsonProperty("publiclyAvailable")
+	@JsonProperty("description")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String description;
+
+
+	@JsonProperty("locations")
+	@JsonDeserialize(contentAs = __DirectiveLocation.class)
+	@GraphQLScalar(graphQLTypeName = "__DirectiveLocation", javaClass = __DirectiveLocation.class)
+	List<__DirectiveLocation> locations;
+
+
+	@JsonProperty("args")
+	@JsonDeserialize(contentAs = __InputValue.class)
+	@GraphQLNonScalar(graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
+	List<__InputValue> args;
+
+
+	@JsonProperty("isRepeatable")
 	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
-	Boolean publiclyAvailable;
-
-
-	@GraphQLInputParameters(names = {"since"}, types = {"String"})
-	@JsonProperty("topics")
-	@JsonDeserialize(contentAs = Topic.class)
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
-	List<Topic> topics;
+	Boolean isRepeatable;
 
 
 	@JsonProperty("__typename")
@@ -46,14 +51,6 @@ public class Board  {
 	String __typename;
 
 
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
 
 	public void setName(String name) {
 		this.name = name;
@@ -63,20 +60,36 @@ public class Board  {
 		return name;
 	}
 
-	public void setPubliclyAvailable(Boolean publiclyAvailable) {
-		this.publiclyAvailable = publiclyAvailable;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public Boolean getPubliclyAvailable() {
-		return publiclyAvailable;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setTopics(List<Topic> topics) {
-		this.topics = topics;
+	public void setLocations(List<__DirectiveLocation> locations) {
+		this.locations = locations;
 	}
 
-	public List<Topic> getTopics() {
-		return topics;
+	public List<__DirectiveLocation> getLocations() {
+		return locations;
+	}
+
+	public void setArgs(List<__InputValue> args) {
+		this.args = args;
+	}
+
+	public List<__InputValue> getArgs() {
+		return args;
+	}
+
+	public void setIsRepeatable(Boolean isRepeatable) {
+		this.isRepeatable = isRepeatable;
+	}
+
+	public Boolean getIsRepeatable() {
+		return isRepeatable;
 	}
 
 	public void set__typename(String __typename) {
@@ -88,14 +101,16 @@ public class Board  {
 	}
 
     public String toString() {
-        return "Board {"
-				+ "id: " + id
-				+ ", "
+        return "__Directive {"
 				+ "name: " + name
 				+ ", "
-				+ "publiclyAvailable: " + publiclyAvailable
+				+ "description: " + description
 				+ ", "
-				+ "topics: " + topics
+				+ "locations: " + locations
+				+ ", "
+				+ "args: " + args
+				+ ", "
+				+ "isRepeatable: " + isRepeatable
 				+ ", "
 				+ "__typename: " + __typename
         		+ "}";
@@ -105,10 +120,11 @@ public class Board  {
 	 * Enum of field names
 	 */
 	 public static enum Field {
-		Id("id"),
 		Name("name"),
-		PubliclyAvailable("publiclyAvailable"),
-		Topics("topics"),
+		Description("description"),
+		Locations("locations"),
+		Args("args"),
+		IsRepeatable("isRepeatable"),
 		__typename("__typename");
 
 		private String fieldName;
