@@ -25,8 +25,9 @@ public class Topic  {
 
 
 	@JsonProperty("date")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
-	String date;
+	@JsonDeserialize(using = CustomScalarDeserializerDate.class)
+	@GraphQLScalar(graphQLTypeName = "Date", javaClass = Date.class)
+	Date date;
 
 
 	@JsonProperty("author")
@@ -54,7 +55,7 @@ public class Topic  {
 	String content;
 
 
-	@GraphQLInputParameters(names = {"memberId", "memberName", "since"}, types = {"ID", "String", "String"})
+	@GraphQLInputParameters(names = {"memberId", "memberName", "since"}, types = {"ID", "String", "Date"})
 	@JsonProperty("posts")
 	@JsonDeserialize(contentAs = Post.class)
 	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
@@ -75,11 +76,11 @@ public class Topic  {
 		return id;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 

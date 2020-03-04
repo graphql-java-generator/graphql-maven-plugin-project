@@ -34,7 +34,7 @@ public class Board  {
 	Boolean publiclyAvailable;
 
 
-	@GraphQLInputParameters(names = {"since"}, types = {"String"})
+	@GraphQLInputParameters(names = {"since"}, types = {"Date"})
 	@JsonProperty("topics")
 	@JsonDeserialize(contentAs = Topic.class)
 	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)

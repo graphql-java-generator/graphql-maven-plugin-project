@@ -25,8 +25,9 @@ public class Post  {
 
 
 	@JsonProperty("date")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
-	String date;
+	@JsonDeserialize(using = CustomScalarDeserializerDate.class)
+	@GraphQLScalar(graphQLTypeName = "Date", javaClass = Date.class)
+	Date date;
 
 
 	@JsonProperty("author")
@@ -63,11 +64,11 @@ public class Post  {
 		return id;
 	}
 
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
 

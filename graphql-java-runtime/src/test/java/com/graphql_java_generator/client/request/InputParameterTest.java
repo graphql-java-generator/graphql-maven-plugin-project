@@ -108,7 +108,7 @@ class InputParameterTest {
 		TopicPostInput topicPostInput = new TopicPostInput();
 		topicPostInput.setAuthorId("00000000-0000-0000-0000-000000000012");
 		topicPostInput.setContent("Some other content");
-		topicPostInput.setDate("2009-11-21");
+		topicPostInput.setDate(new Date(2009 - 1900, 11 - 1, 21));
 		topicPostInput.setPubliclyAvailable(false);
 		topicPostInput.setTitle("The good title for a post");
 
