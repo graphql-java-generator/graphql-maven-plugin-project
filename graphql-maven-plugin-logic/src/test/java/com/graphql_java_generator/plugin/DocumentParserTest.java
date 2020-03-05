@@ -52,8 +52,10 @@ class DocumentParserTest {
 
 		type = new InterfaceType("TheName", "the.package.name", PluginMode.client);
 		documentParser.addTypeAnnotationForClientMode(type);
-		assertEquals("@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\")\n"
-				+ "		@JsonSubTypes({ })", type.getAnnotation(), type.getClass().getName());
+		assertEquals(
+				"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)\n"
+						+ "		@JsonSubTypes({ })",
+				type.getAnnotation(), type.getClass().getName());
 		// Ok, that won't compile, as there is no sub types. But the JUnit test is OK ;-)
 	}
 

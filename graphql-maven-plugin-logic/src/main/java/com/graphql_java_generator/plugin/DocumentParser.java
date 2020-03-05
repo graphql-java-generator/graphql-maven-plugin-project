@@ -776,9 +776,9 @@ public class DocumentParser {
 	 */
 	void addTypeAnnotationForClientMode(Type o) {
 		// No specific annotation for objects and interfaces when in client mode.
-		if (o instanceof InterfaceType) {
-			((InterfaceType) o).addAnnotation(
-					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\")");
+		if (o instanceof InterfaceType || o instanceof UnionType) {
+			o.addAnnotation(
+					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)");
 
 			// jsonSubTypes annotation looks like this:
 			// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name = "Human") })
@@ -796,7 +796,7 @@ public class DocumentParser {
 			}
 			jsonSubTypes.append(" })");
 
-			((InterfaceType) o).addAnnotation(jsonSubTypes.toString());
+			o.addAnnotation(jsonSubTypes.toString());
 		} // if (o instanceof InterfaceType) {
 
 		// Let's add the annotations, that are common to both the client and the server mode
