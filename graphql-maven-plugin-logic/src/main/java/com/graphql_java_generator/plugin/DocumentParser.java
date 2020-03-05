@@ -289,6 +289,19 @@ public class DocumentParser {
 		} // for
 
 		for (Definition<?> node : document.getDefinitions()) {
+			// enum
+			if (node instanceof EnumTypeDefinition) {
+				enumTypes.add(readEnumType((EnumTypeDefinition) node));
+			} else
+			// input object
+			if (node instanceof InputObjectTypeDefinition) {
+				objectTypes.add(readInputObjectType((InputObjectTypeDefinition) node));
+			} else
+			// interface
+			if (node instanceof InterfaceTypeDefinition) {
+				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
+			} else
+			// object
 			if (node instanceof ObjectTypeDefinition) {
 				// Let's check what kind of ObjectDefinition we have
 				String name = ((ObjectTypeDefinition) node).getName();
@@ -307,19 +320,19 @@ public class DocumentParser {
 				} else {
 					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
 				}
-			} else if (node instanceof InputObjectTypeDefinition) {
-				objectTypes.add(readInputObjectType((InputObjectTypeDefinition) node));
-			} else if (node instanceof EnumTypeDefinition) {
-				enumTypes.add(readEnumType((EnumTypeDefinition) node));
-			} else if (node instanceof InterfaceTypeDefinition) {
-				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
-			} else if (node instanceof UnionTypeDefinition) {
-				// Unions are read latter, once all GraphQL types have been parsed
-			} else if (node instanceof ScalarTypeDefinition) {
+			} else
+			// scalar
+			if (node instanceof ScalarTypeDefinition) {
 				// Custom scalars implementation must be provided by the configuration. We just check that it's OK.
 				checkCustomScalarType((ScalarTypeDefinition) node);
-			} else if (node instanceof SchemaDefinition) {
+			} else
+			// schema
+			if (node instanceof SchemaDefinition) {
 				// No action, we already parsed it
+			} else
+			// union
+			if (node instanceof UnionTypeDefinition) {
+				// Unions are read latter, once all GraphQL types have been parsed
 			} else {
 				pluginConfiguration.getLog().warn("Non managed node type: " + node.getClass().getName());
 			}
