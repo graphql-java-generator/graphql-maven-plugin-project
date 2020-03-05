@@ -15,9 +15,12 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.Character;
+import org.allGraphQLCases.server.Commented;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.WithID;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
@@ -51,6 +54,10 @@ public class DataGenerator {
 		List<Class<? extends Character>> implementations = new ArrayList<Class<? extends Character>>();
 		interfaceImplementations.put(Character.class, Human.class);
 		interfaceImplementations.put(Character.class, Droid.class);
+		interfaceImplementations.put(Commented.class, Human.class);
+		interfaceImplementations.put(WithID.class, AllFieldCases.class);
+		interfaceImplementations.put(WithID.class, Human.class);
+		interfaceImplementations.put(WithID.class, Droid.class);
 		int i = 1;
 	}
 

@@ -39,7 +39,7 @@ public class IntrospectionIT {
 		__Schema schema = introspectionQuery.__schema("{types {name fields {name type {name}}}}");
 
 		// Verification
-		assertEquals(42, schema.getTypes().size());
+		assertEquals(44, schema.getTypes().size());
 		assertEquals("AllFieldCases", schema.getTypes().get(0).getName());
 		assertEquals("id", schema.getTypes().get(0).getFields().get(0).getName());
 	}
