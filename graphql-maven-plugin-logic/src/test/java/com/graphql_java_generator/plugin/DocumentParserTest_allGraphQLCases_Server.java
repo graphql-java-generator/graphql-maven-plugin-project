@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
+import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
@@ -222,12 +224,12 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// Currently not managed (schema is not stored, and no java classes is generated afteward for the schema)
 
 		// On enum
-		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", 69, true);
+		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", 69, false);
 		checkDirectivesOnType(documentParser.getType("Unit"), false, null, null, false);
 		// On enum item
-		checkDirectivesOnField(documentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", 69, true);
-		checkDirectivesOnField(documentParser.getType("Episode"), "JEDI", false, null, null, false);
-		checkDirectivesOnField(documentParser.getType("Episode"), "EMPIRE", false, null, null, true);
+		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", -1, true);
+		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "JEDI", false, null, null, false);
+		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "EMPIRE", false, null, null, true);
 		// On interface
 		checkDirectivesOnType(documentParser.getType("WithID"), true, "on Interface", 666, false);
 		checkDirectivesOnType(documentParser.getType("Character"), true, "on Character interface", null, true);
@@ -275,7 +277,9 @@ class DocumentParserTest_allGraphQLCases_Server {
 			assertEquals("testDirective", type.getAppliedDirectives().get(0).getDirective().getName());
 			// Check of the arguments
 			assertEquals(value, type.getAppliedDirectives().get(0).getArgumentValues().get("value"));
-			assertEquals(anotherValue, type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+			if (anotherValue != null)
+				assertEquals(BigInteger.valueOf(anotherValue),
+						type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
 		}
 		if (containsAnotherTestDirective) {
 			assertEquals("anotherTestDirective", type.getAppliedDirectives().get(1).getDirective().getName());
@@ -311,13 +315,64 @@ class DocumentParserTest_allGraphQLCases_Server {
 			fail("Could not find the field '" + fieldName + "' on type '" + type.getName() + "'");
 		}
 
-		assertEquals(2, field.getDirectives().size());
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		assertEquals(nbDirectives, field.getAppliedDirectives().size());
 		if (containsTestDirective) {
-			assertEquals("@testDirective", field.getDirectives().get(0).getName());
-			fail("check arguments");
+			assertEquals("testDirective", field.getAppliedDirectives().get(0).getDirective().getName());
+			// check arguments
+			assertEquals(value, field.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			if (anotherValue != null)
+				assertEquals(BigInteger.valueOf(anotherValue),
+						field.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
 		}
 		if (containsAnotherTestDirective) {
-			assertEquals("@anotherTestDirective", field.getDirectives().get(1).getName());
+			int index = containsTestDirective ? 1 : 0;
+			assertEquals("anotherTestDirective", field.getAppliedDirectives().get(index).getDirective().getName());
+		}
+	}
+
+	/**
+	 * Check that a Directive for an object, field, scalar (...) has been properly parsed
+	 * 
+	 * @param type
+	 * @param enumValueName
+	 *            The name of the field, within the given type
+	 * @param containsTestDirective
+	 *            true if this type contains the testDirective
+	 * @param value
+	 *            Value of the 'value' field of the testDirective
+	 * @param anotherValue
+	 *            Value of the 'anotherValue' field of the testDirective
+	 * @param containsAnotherTestDirective
+	 *            true if this type contains the anotherTestDirective
+	 */
+	private void checkDirectivesOnEnumValue(Type type, String enumValueName, boolean containsTestDirective,
+			String value, Integer anotherValue, boolean containsAnotherTestDirective) {
+
+		EnumValue enumValue = null;
+		for (EnumValue f : ((EnumType) type).getValues()) {
+			if (f.getName().equals(enumValueName)) {
+				enumValue = f;
+				break;
+			}
+		}
+		if (enumValue == null) {
+			fail("Could not find the enum value '" + enumValueName + "' on enum '" + type.getName() + "'");
+		}
+
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		assertEquals(nbDirectives, enumValue.getAppliedDirectives().size());
+		if (containsTestDirective) {
+			assertEquals("testDirective", enumValue.getAppliedDirectives().get(0).getDirective().getName());
+			// check arguments
+			assertEquals(value, enumValue.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			if (anotherValue != null)
+				assertEquals(BigInteger.valueOf(anotherValue),
+						enumValue.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+		}
+		if (containsAnotherTestDirective) {
+			int index = containsTestDirective ? 1 : 0;
+			assertEquals("anotherTestDirective", enumValue.getAppliedDirectives().get(index).getDirective().getName());
 		}
 	}
 
@@ -363,13 +418,13 @@ class DocumentParserTest_allGraphQLCases_Server {
 			fail("Could not find the parameter '" + parameterName + "' for the field '" + fieldName + "' on type '"
 					+ type.getName() + "'");
 		}
-		assertEquals(2, parameter.getDirectives().size());
+		assertEquals(2, parameter.getAppliedDirectives().size());
 		if (containsTestDirective) {
-			assertEquals("@testDirective", field.getDirectives().get(0).getName());
+			assertEquals("@testDirective", field.getAppliedDirectives().get(0).getDirective().getName());
 			fail("check arguments");
 		}
 		if (containsAnotherTestDirective) {
-			assertEquals("@anotherTestDirective", field.getDirectives().get(1).getName());
+			assertEquals("@anotherTestDirective", field.getAppliedDirectives().get(1).getDirective().getName());
 		}
 	}
 

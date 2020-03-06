@@ -142,5 +142,5 @@ public interface Field {
 	}
 
 	/** Returns the list of directives that have been defined for this field, in the GraphQL schema */
-	public List<Directive> getDirectives();
+	public List<AppliedDirective> getAppliedDirectives();
 }

@@ -25,6 +25,7 @@ import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Directive;
+import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
@@ -38,6 +39,7 @@ import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.DirectiveImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
+import com.graphql_java_generator.plugin.language.impl.EnumValueImpl;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -53,7 +55,6 @@ import graphql.language.Definition;
 import graphql.language.DirectiveDefinition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
-import graphql.language.EnumValue;
 import graphql.language.EnumValueDefinition;
 import graphql.language.FieldDefinition;
 import graphql.language.FloatValue;
@@ -503,8 +504,8 @@ public class DocumentParser {
 		for (graphql.language.Type type : node.getImplements()) {
 			if (type instanceof TypeName) {
 				objectType.getImplementz().add(((TypeName) type).getName());
-			} else if (type instanceof EnumValue) {
-				objectType.getImplementz().add(((EnumValue) type).getName());
+			} else if (type instanceof graphql.language.EnumValue) {
+				objectType.getImplementz().add(((graphql.language.EnumValue) type).getName());
 			} else {
 				throw new RuntimeException("Non managed object type '" + type.getClass().getName()
 						+ "' when listing implementations for the object '" + node.getName() + "'");
@@ -629,10 +630,16 @@ public class DocumentParser {
 	 */
 	EnumType readEnumType(EnumTypeDefinition node) {
 		EnumType enumType = new EnumType(pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
+
 		enumType.setName(node.getName());
+		enumType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
+
 		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
-			enumType.getValues().add(enumValDef.getName());
+			EnumValue val = EnumValueImpl.builder().name(enumValDef.getName())
+					.appliedDirectives(readAppliedDirectives(enumValDef.getDirectives())).build();
+			enumType.getValues().add(val);
 		} // for
+
 		return enumType;
 	}
 
@@ -732,8 +739,8 @@ public class DocumentParser {
 					field.setDefaultValue(((IntValue) defaultValue).getValue());
 				} else if (defaultValue instanceof FloatValue) {
 					field.setDefaultValue(((FloatValue) defaultValue).getValue());
-				} else if (defaultValue instanceof EnumValue) {
-					field.setDefaultValue(((EnumValue) defaultValue).getName());
+				} else if (defaultValue instanceof graphql.language.EnumValue) {
+					field.setDefaultValue(((graphql.language.EnumValue) defaultValue).getName());
 				} else {
 					throw new RuntimeException("DefaultValue of type " + defaultValue.getClass().getName()
 							+ " is not managed (for field " + field.getName() + ")");

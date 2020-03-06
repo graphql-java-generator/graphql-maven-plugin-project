@@ -58,7 +58,7 @@ enum Episode @testDirective(value: "on Enum", anotherValue: 69) {
     NEWHOPE
     EMPIRE @anotherTestDirective
     JEDI
-    DOES_NOT_EXIST  @testDirective(value:"on Enum") @anotherTestDirective
+    DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: -1) @anotherTestDirective
 }
 
 interface WithID @testDirective(value:"on Interface") {
