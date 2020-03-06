@@ -98,7 +98,7 @@ class DocumentParserTest_Forum_Server {
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
 				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(graphQLTypeName = \"ID\", javaClass = UUID.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(graphQLTypeName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
 				"@Transient\n\t@GraphQLNonScalar(graphQLTypeName = \"Member\", javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",

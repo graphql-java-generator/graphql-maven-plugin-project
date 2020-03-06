@@ -229,14 +229,14 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// Currently not managed (schema is not stored, and no java classes is generated afteward for the schema)
 
 		// On enum
-		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", 69, false);
+		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", "69", false);
 		checkDirectivesOnType(documentParser.getType("Unit"), false, null, null, false);
 		// On enum item
-		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", -1, true);
+		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", "-1", true);
 		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "JEDI", false, null, null, false);
 		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "EMPIRE", false, null, null, true);
 		// On interface
-		checkDirectivesOnType(documentParser.getType("WithID"), true, "on Interface", 666, false);
+		checkDirectivesOnType(documentParser.getType("WithID"), true, "on Interface", "666", false);
 		checkDirectivesOnType(documentParser.getType("Character"), true, "on Character interface", null, true);
 		// On interface field
 		checkDirectivesOnField(documentParser.getType("Character"), "name", true, "on interface field", null, true);
@@ -273,7 +273,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 	 * @param containsAnotherTestDirective
 	 *            true if this type contains the anotherTestDirective
 	 */
-	private void checkDirectivesOnType(Type type, boolean containsTestDirective, String value, Integer anotherValue,
+	private void checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
 			boolean containsAnotherTestDirective) {
 
 		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
@@ -283,8 +283,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 			// Check of the arguments
 			assertEquals(value, type.getAppliedDirectives().get(0).getArgumentValues().get("value"));
 			if (anotherValue != null)
-				assertEquals(BigInteger.valueOf(anotherValue),
-						type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+				assertEquals(anotherValue, type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
 		}
 		if (containsAnotherTestDirective) {
 			assertEquals("anotherTestDirective", type.getAppliedDirectives().get(1).getDirective().getName());
@@ -307,7 +306,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 	 *            true if this type contains the anotherTestDirective
 	 */
 	private void checkDirectivesOnField(Type type, String fieldName, boolean containsTestDirective, String value,
-			Integer anotherValue, boolean containsAnotherTestDirective) {
+			String anotherValue, boolean containsAnotherTestDirective) {
 
 		Field field = null;
 		for (Field f : type.getFields()) {
@@ -327,8 +326,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 			// check arguments
 			assertEquals(value, field.getAppliedDirectives().get(0).getArgumentValues().get("value"));
 			if (anotherValue != null)
-				assertEquals(BigInteger.valueOf(anotherValue),
-						field.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+				assertEquals(anotherValue, field.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
 		}
 		if (containsAnotherTestDirective) {
 			int index = containsTestDirective ? 1 : 0;
@@ -352,7 +350,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 	 *            true if this type contains the anotherTestDirective
 	 */
 	private void checkDirectivesOnEnumValue(Type type, String enumValueName, boolean containsTestDirective,
-			String value, Integer anotherValue, boolean containsAnotherTestDirective) {
+			String value, String anotherValue, boolean containsAnotherTestDirective) {
 
 		EnumValue enumValue = null;
 		for (EnumValue f : ((EnumType) type).getValues()) {
@@ -372,7 +370,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 			// check arguments
 			assertEquals(value, enumValue.getAppliedDirectives().get(0).getArgumentValues().get("value"));
 			if (anotherValue != null)
-				assertEquals(BigInteger.valueOf(anotherValue),
+				assertEquals(anotherValue,
 						enumValue.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
 		}
 		if (containsAnotherTestDirective) {

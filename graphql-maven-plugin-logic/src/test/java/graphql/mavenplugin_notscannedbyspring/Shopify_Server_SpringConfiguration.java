@@ -18,7 +18,7 @@ import com.graphql_java_generator.plugin.PluginMode;
  * @author EtienneSF
  */
 @Configuration
-@ComponentScan(basePackages = "com.graphql_java_generator.plugin")
+@ComponentScan(basePackages = "com.graphql_java_generator")
 public class Shopify_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	static List<CustomScalarDefinition> customScalars;

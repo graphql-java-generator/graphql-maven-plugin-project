@@ -5,5 +5,5 @@ package ${pluginConfiguration.packageName};
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 public enum ${object.javaName} {
-#foreach ($value in $object.javaValues)${value.name}#if($foreach.hasNext), #end#end;
+	#foreach ($value in $object.values)${value.name}#if($foreach.hasNext), #end#end;
 }

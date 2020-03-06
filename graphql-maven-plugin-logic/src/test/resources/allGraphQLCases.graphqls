@@ -4,7 +4,7 @@ scalar Long
 # A test directive, that can be added anywhere
 directive @testDirective(
   value: String! = "A value to test default values"
-  anotherValue: int
+  anotherValue: String
 ) on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
 # Another test directive, to check that two directives can be added
@@ -54,14 +54,14 @@ type TheSubscriptionType {
 }
 
 
-enum Episode @testDirective(value: "on Enum", anotherValue: 69) {
+enum Episode @testDirective(value: "on Enum", anotherValue: "69") {
     NEWHOPE
     EMPIRE @anotherTestDirective
     JEDI
-    DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: -1) @anotherTestDirective
+    DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
 }
 
-interface WithID @testDirective(value:"on Interface", anotherValue: 666) {
+interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
    id: ID!
 }
 
@@ -72,8 +72,8 @@ interface Character @testDirective(value:"on Character interface") @anotherTestD
     appearsIn: [Episode]! @anotherTestDirective
 }
 
-union AnyCharacter @testDirective(value:"on Union")
-= Human | Droid
+#union AnyCharacter @testDirective(value:"on Union")
+#= Human | Droid
 
 input CharacterInput {
     name: String!
