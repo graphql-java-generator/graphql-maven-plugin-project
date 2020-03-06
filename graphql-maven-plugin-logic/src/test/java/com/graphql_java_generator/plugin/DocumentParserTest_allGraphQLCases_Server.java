@@ -690,10 +690,10 @@ class DocumentParserTest_allGraphQLCases_Server {
 		assertEquals(4, type.getValues().size(), "Number of values");
 
 		int i = 0;
-		assertEquals("NEWHOPE", type.getValues().get(i++));
-		assertEquals("EMPIRE", type.getValues().get(i++));
-		assertEquals("JEDI", type.getValues().get(i++));
-		assertEquals("DOES_NOT_EXIST", type.getValues().get(i++));
+		assertEquals("NEWHOPE", type.getValues().get(i++).getName());
+		assertEquals("EMPIRE", type.getValues().get(i++).getName());
+		assertEquals("JEDI", type.getValues().get(i++).getName());
+		assertEquals("DOES_NOT_EXIST", type.getValues().get(i++).getName());
 	}
 
 	@Test

@@ -80,7 +80,7 @@ public class FieldImpl implements Field {
 	private String annotation = "";
 
 	/** All directives that have been defined in the GraphQL schema for this field */
-	private List<AppliedDirective> appliedDirectives;
+	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
 
 	/** {@inheritDoc} */
 	@Override

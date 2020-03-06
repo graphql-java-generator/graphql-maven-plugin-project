@@ -554,11 +554,13 @@ public class DocumentParser {
 		objectType.setInputType(true);
 
 		objectType.setName(node.getName());
+		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's read all its fields
 		for (InputValueDefinition def : node.getInputValueDefinitions()) {
 			FieldImpl field = readFieldTypeDefinition(def);
 			field.setOwningType(objectType);
+			field.setAppliedDirectives(readAppliedDirectives(def.getDirectives()));
 
 			objectType.getFields().add(field);
 		}
