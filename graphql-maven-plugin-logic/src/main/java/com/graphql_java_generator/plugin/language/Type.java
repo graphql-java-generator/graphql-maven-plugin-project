@@ -128,4 +128,7 @@ public interface Type {
 
 	/** Returns true if this type is a GraphQL Custom Scalar, false otherwise */
 	public boolean isCustomScalar();
+
+	/** Returns the list of directives that have been defined for this type, in the GraphQL schema */
+	public List<AppliedDirective> getAppliedDirectives();
 }

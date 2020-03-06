@@ -1,6 +1,8 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +42,12 @@ class DocumentParserTest {
 		documentParser = new DocumentParser();
 		documentParser.pluginConfiguration = pluginConfiguration;
 
+	}
+
+	@Test
+	void test_getType() {
+		RuntimeException e = assertThrows(RuntimeException.class, () -> documentParser.getType("doesn't exist"));
+		assertTrue(e.getMessage().contains("doesn't exist"));
 	}
 
 	@Test

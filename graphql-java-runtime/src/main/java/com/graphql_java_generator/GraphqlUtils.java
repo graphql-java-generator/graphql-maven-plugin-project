@@ -339,6 +339,26 @@ public class GraphqlUtils {
 	}
 
 	/**
+	 * Calls the 'methodName' method on the given object.
+	 * 
+	 * @param methodName
+	 *            The name of the method. This method should have no parameter
+	 * @param object
+	 *            The given node, on which the 'methodName' method is to be called
+	 * @return
+	 */
+	public Object invokeMethod(String methodName, Object object) {
+		try {
+			Method getType = object.getClass().getDeclaredMethod(methodName);
+			return getType.invoke(object);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
+		}
+	}
+
+	/**
 	 * Invoke the given setter on the given object, with the given value. This method hides the exception that could be
 	 * thrown, into a {@link RuntimeException}
 	 * 

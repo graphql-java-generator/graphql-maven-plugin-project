@@ -1,12 +1,17 @@
-scalar Date
+scalar Date @testDirective(value:"on Scalar") @anotherTestDirective
 scalar Long
 
-# directives are currently ignored
-directive @deprecated(
-  reason: String = "No longer supported"
-) on FIELD_DEFINITION | ENUM_VALUE
+# A test directive, that can be added anywhere
+directive @testDirective(
+  value: String! = "A value to test default values"
+  anotherValue: int
+) on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
-schema {
+# Another test directive, to check that two directives can be added
+directive @anotherTestDirective
+ on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+schema @testDirective(value:"on Schema") {
 	#A comment on the query
     query: MyQueryType
     mutation: AnotherMutationType
@@ -49,23 +54,26 @@ type TheSubscriptionType {
 }
 
 
-enum Episode {
+enum Episode @testDirective(value: "on Enum", anotherValue: 69) {
     NEWHOPE
-    EMPIRE
+    EMPIRE @anotherTestDirective
     JEDI
-    DOES_NOT_EXIST @deprecated(reason: "This is not an existing episode!")
+    DOES_NOT_EXIST  @testDirective(value:"on Enum") @anotherTestDirective
 }
 
-interface WithID {
+interface WithID @testDirective(value:"on Interface") {
    id: ID!
 }
 
-interface Character {
+interface Character @testDirective(value:"on Character interface") @anotherTestDirective {
     id: ID!
-    name: String!
+    name: String! @testDirective(value:"on interface field") @anotherTestDirective
     friends: [Character]
-    appearsIn: [Episode]!
+    appearsIn: [Episode]! @anotherTestDirective
 }
+
+union AnyCharacter @testDirective(value:"on Union")
+= Human | Droid
 
 input CharacterInput {
     name: String!
@@ -80,8 +88,8 @@ interface Commented {
     comments: [String]
 }
 
-input AllFieldCasesInput {
-    id: ID!
+input AllFieldCasesInput @testDirective(value:"on Input Type") {
+    id: ID! @testDirective(value:"on Input Field")
     name: String!
     forname: String
     age: Long!
@@ -117,10 +125,10 @@ enum Unit {
 
 # This type is a clone of the InterfaceAllFieldCases interface. 
 # Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
-type AllFieldCases implements WithID {
-    id: ID!
+type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherTestDirective {
+    id: ID! @testDirective(value:"on Field")
     name: String!
-    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    forname(uppercase: Boolean @testDirective(value:"on Argument"), textToAppendToTheForname: String): String
     age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
     date: Date
     dates: [Date]!
@@ -204,7 +212,7 @@ input HumanInput {
     homePlanet: String
 }
 
-type Droid implements Character & WithID{
+type Droid implements Character & WithID {
     id: ID!
     name: String!
     friends: [Character]

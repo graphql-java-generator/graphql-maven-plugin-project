@@ -140,4 +140,7 @@ public interface Field {
 	public default String getCamelCaseName() {
 		return TypeUtil.getCamelCase(getName());
 	}
+
+	/** Returns the list of directives that have been defined for this field, in the GraphQL schema */
+	public List<Directive> getDirectives();
 }

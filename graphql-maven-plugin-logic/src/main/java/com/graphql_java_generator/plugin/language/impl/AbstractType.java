@@ -1,6 +1,10 @@
 package com.graphql_java_generator.plugin.language.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Type;
 
 import lombok.Data;
@@ -18,10 +22,13 @@ public abstract class AbstractType implements Type {
 	private String packageName;
 
 	/**
-	 * Tha Java annotationto add to this type, ready to be added by the Velocity template. That is: one annotation per
-	 * line, each line starting at the beginning of the line
+	 * Tha Java annotation(s) to add to this type, ready to be added by the Velocity template. That is: one annotation
+	 * per line, each line starting at the beginning of the line
 	 */
 	private String annotation;
+
+	/** All directives that have been defined in the GraphQL schema for this type */
+	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
 
 	/** The GraphQL type for this type */
 	final private GraphQlType graphQlType;
@@ -88,6 +95,7 @@ public abstract class AbstractType implements Type {
 	 * @param annotationToAdd
 	 *            The annotation, that will be added to the current one
 	 */
+	@Override
 	public void addAnnotation(String annotationToAdd) {
 		if (this.annotation == null || this.annotation.contentEquals("")) {
 			this.annotation = annotationToAdd;
@@ -106,6 +114,7 @@ public abstract class AbstractType implements Type {
 	 *            The annotation, that will be added to the current one
 	 * @parma replace if true, any existing annotation is first removed
 	 */
+	@Override
 	public void addAnnotation(String annotationToAdd, boolean replace) {
 		if (replace)
 			this.annotation = "";

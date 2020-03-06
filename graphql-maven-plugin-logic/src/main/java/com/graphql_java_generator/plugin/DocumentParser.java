@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.plugin;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,21 +16,27 @@ import javax.persistence.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.annotation.DirectiveLocation;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
+import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.Type.GraphQlType;
 import com.graphql_java_generator.plugin.language.impl.AbstractType;
+import com.graphql_java_generator.plugin.language.impl.AppliedDirectiveImpl;
 import com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl;
 import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
 import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
+import com.graphql_java_generator.plugin.language.impl.DirectiveImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
@@ -43,8 +47,10 @@ import com.graphql_java_generator.plugin.language.impl.UnionType;
 import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPersonalization;
 
 import graphql.language.AbstractNode;
+import graphql.language.Argument;
 import graphql.language.BooleanValue;
 import graphql.language.Definition;
+import graphql.language.DirectiveDefinition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.EnumValue;
@@ -95,6 +101,9 @@ public class DocumentParser {
 	@Autowired
 	PluginConfiguration pluginConfiguration;
 
+	@Autowired
+	GraphqlUtils graphqlUtils;
+
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
 
@@ -113,6 +122,10 @@ public class DocumentParser {
 	 */
 	@Autowired
 	JsonSchemaPersonalization jsonSchemaPersonalization;
+
+	/** List of all the directives that have been read in the GraphQL schema */
+	@Getter
+	List<Directive> directives = new ArrayList<>();
 
 	/**
 	 * All the Query Types for this Document. There may be several ones, if more than one GraphQLs files have been
@@ -229,7 +242,7 @@ public class DocumentParser {
 	}
 
 	/**
-	 * The main method of the class: it executes the generation of the given documents
+	 * The main method of the class: it graphqlUtils.executes the generation of the given documents
 	 * 
 	 * @param documents
 	 *            The GraphQL definition schema, from which the code is to be generated
@@ -279,6 +292,11 @@ public class DocumentParser {
 		// instance if several schema files have been merged)
 		List<String> subscriptionObjectNames = new ArrayList<>();
 
+		// The Directives must be read first, as they may be found on almost any kind of definition in the GraphQL
+		// schema
+		document.getDefinitions().stream().filter(n -> (n instanceof DirectiveDefinition))
+				.forEach(node -> directives.add(readDirectiveDefinition((DirectiveDefinition) node)));
+
 		// Looks for a schema definitions, to list the defined queries, mutations and subscriptions (should be only one
 		// of each), but we're ready for more. (for instance if several schema files have been merged)
 		for (Definition<?> node : document.getDefinitions()) {
@@ -289,6 +307,10 @@ public class DocumentParser {
 		} // for
 
 		for (Definition<?> node : document.getDefinitions()) {
+			// directive
+			if (node instanceof DirectiveDefinition) {
+				// Directives are read latter
+			} else
 			// enum
 			if (node instanceof EnumTypeDefinition) {
 				enumTypes.add(readEnumType((EnumTypeDefinition) node));
@@ -324,7 +346,7 @@ public class DocumentParser {
 			// scalar
 			if (node instanceof ScalarTypeDefinition) {
 				// Custom scalars implementation must be provided by the configuration. We just check that it's OK.
-				checkCustomScalarType((ScalarTypeDefinition) node);
+				readCustomScalarType((ScalarTypeDefinition) node);
 			} else
 			// schema
 			if (node instanceof SchemaDefinition) {
@@ -339,15 +361,13 @@ public class DocumentParser {
 		} // for
 
 		// Once all Types have been properly read, we can read the union types
-		for (Definition<?> node : document.getDefinitions()) {
-			if (node instanceof UnionTypeDefinition) {
-				// Unions are read latter, once all GraphQL types have been parsed
-				unionTypes.add(readUnionType((UnionTypeDefinition) node));
-			}
-		} // for
+		document.getDefinitions().stream().filter(n -> (n instanceof UnionTypeDefinition))
+				.forEach(n -> unionTypes.add(readUnionType((UnionTypeDefinition) n)));
 
+		// We're done
 		return queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size()
 				+ enumTypes.size() + interfaceTypes.size();
+
 	}
 
 	/**
@@ -356,6 +376,8 @@ public class DocumentParser {
 	 * schema.
 	 */
 	void fillTypesMap() {
+		// Directive are directly added to the types map.
+		// TODO remove this method, and add each type in the types map as it is read
 		queryTypes.stream().forEach(q -> types.put(q.getName(), q));
 		mutationTypes.stream().forEach(m -> types.put(m.getName(), m));
 		subscriptionTypes.stream().forEach(s -> types.put(s.getName(), s));
@@ -364,6 +386,69 @@ public class DocumentParser {
 		interfaceTypes.stream().forEach(i -> types.put(i.getName(), i));
 		unionTypes.stream().forEach(u -> types.put(u.getName(), u));
 		enumTypes.stream().forEach(e -> types.put(e.getName(), e));
+	}
+
+	/**
+	 * Reads a directive definition, and stores its informations into the {@link DirectiveImpl} for further processing
+	 * 
+	 * @param node
+	 * @return
+	 */
+	Directive readDirectiveDefinition(DirectiveDefinition node) {
+		DirectiveImpl directive = new DirectiveImpl();
+
+		directive.setName(node.getName());
+
+		// Let's read all its input parameters
+		directive.setArguments(node.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
+				.collect(Collectors.toList()));
+
+		// and all its locations
+		for (graphql.language.DirectiveLocation dl : node.getDirectiveLocations()) {
+			DirectiveLocation dirLoc = DirectiveLocation.valueOf(DirectiveLocation.class, dl.getName());
+			directive.getDirectiveLocations().add(dirLoc);
+		}
+
+		return directive;
+	}
+
+	private Directive getDirectiveDefinition(String name) {
+		for (Directive d : directives) {
+			if (d.getName().equals(name)) {
+				return d;
+			}
+		}
+		// Oups, not found!
+		throw new RuntimeException("The directive named '" + name + "' could not be found");
+
+	}
+
+	/**
+	 * Reads a GraphQL directive that has been applied to an item of the GraphQL schema. The relevant directive
+	 * definition should already have been read before (see {@link #readDirectiveDefinition(DirectiveDefinition)}).
+	 * 
+	 * @param directives
+	 * @return
+	 */
+	List<AppliedDirective> readAppliedDirectives(List<graphql.language.Directive> directives) {
+		List<AppliedDirective> ret = new ArrayList<>();
+
+		if (directives != null) {
+			for (graphql.language.Directive nodeDirective : directives) {
+				AppliedDirectiveImpl d = new AppliedDirectiveImpl();
+				d.setDirective(getDirectiveDefinition(nodeDirective.getName()));
+				// Let's read its arguments
+				if (nodeDirective.getArguments() != null) {
+					for (Argument a : nodeDirective.getArguments()) {
+						Object value = graphqlUtils.invokeMethod("getValue", a.getValue());
+						d.getArgumentValues().put(a.getName(), value);
+					}
+				}
+				ret.add(d);
+			} // for
+		} // if
+
+		return ret;
 	}
 
 	/**
@@ -492,7 +577,7 @@ public class DocumentParser {
 				pluginConfiguration.getMode());
 
 		for (graphql.language.Type<?> memberType : node.getMemberTypes()) {
-			String memberTypeName = (String) exec("getName", memberType);
+			String memberTypeName = (String) graphqlUtils.invokeMethod("getName", memberType);
 
 			// We can not use getType yet, as the type list is not filled.
 			ObjectType type = null;
@@ -515,18 +600,19 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Reads a GraphQL Custom Scalar, from its definition. This method just checks that the CustomScalar has already
-	 * been defined, in the plugin configuration.
+	 * Reads a GraphQL Custom Scalar, from its definition. This method checks that the CustomScalar has already been
+	 * defined, in the plugin configuration.
 	 * 
 	 * @param node
 	 *            The {@link CustomScalarType} that represents this Custom Scalar
 	 * @return
 	 */
-	CustomScalarType checkCustomScalarType(ScalarTypeDefinition node) {
+	CustomScalarType readCustomScalarType(ScalarTypeDefinition node) {
 		String name = node.getName();
 
 		for (CustomScalarType customScalarType : customScalars) {
 			if (customScalarType.getName().equals(name)) {
+				customScalarType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 				return customScalarType;
 			}
 		}
@@ -557,7 +643,7 @@ public class DocumentParser {
 	 * @param owningType
 	 *            The type which contains this field
 	 * @return
-	 * @throws MojoExecutionException
+	 * @throws MojographqlUtils.executionException
 	 */
 	Field readField(FieldDefinition fieldDef, Type owningType) {
 
@@ -584,7 +670,7 @@ public class DocumentParser {
 	FieldImpl readFieldTypeDefinition(AbstractNode<?> fieldDef) {
 		FieldImpl field = FieldImpl.builder().documentParser(this).build();
 
-		field.setName((String) exec("getName", fieldDef));
+		field.setName((String) graphqlUtils.invokeMethod("getName", fieldDef));
 
 		// Let's default value to false
 		field.setMandatory(false);
@@ -592,11 +678,11 @@ public class DocumentParser {
 		field.setItemMandatory(false);
 
 		TypeName typeName = null;
-		if (exec("getType", fieldDef) instanceof TypeName) {
-			typeName = (TypeName) exec("getType", fieldDef);
-		} else if (exec("getType", fieldDef) instanceof NonNullType) {
+		if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof TypeName) {
+			typeName = (TypeName) graphqlUtils.invokeMethod("getType", fieldDef);
+		} else if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof NonNullType) {
 			field.setMandatory(true);
-			Node<?> node = ((NonNullType) exec("getType", fieldDef)).getType();
+			Node<?> node = ((NonNullType) graphqlUtils.invokeMethod("getType", fieldDef)).getType();
 			if (node instanceof TypeName) {
 				typeName = (TypeName) node;
 			} else if (node instanceof ListType) {
@@ -615,9 +701,9 @@ public class DocumentParser {
 				throw new RuntimeException("Case not found (subnode of a NonNullType). The node is of type "
 						+ node.getClass().getName() + " (for field " + field.getName() + ")");
 			}
-		} else if (exec("getType", fieldDef) instanceof ListType) {
+		} else if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof ListType) {
 			field.setList(true);
-			Node<?> node = ((ListType) exec("getType", fieldDef)).getType();
+			Node<?> node = ((ListType) graphqlUtils.invokeMethod("getType", fieldDef)).getType();
 			if (node instanceof TypeName) {
 				typeName = (TypeName) node;
 			} else if (node instanceof NonNullType) {
@@ -659,26 +745,6 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Calls the 'methodName' method on the given object
-	 * 
-	 * @param methodName
-	 *            The name of the method name
-	 * @param object
-	 *            The given node, on which the 'methodName' method is to be called
-	 * @return
-	 */
-	Object exec(String methodName, Object object) {
-		try {
-			Method getType = object.getClass().getDeclaredMethod(methodName);
-			return getType.invoke(object);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
-					+ object.getClass().getName() + "': " + e.getMessage(), e);
-		}
-	}
-
-	/**
 	 * A utility method, which maps an object type to the class full name of the Java class which will be generated for
 	 * this object type. This utility method is based on the {@link PluginConfiguration#getPackageName()} plugin
 	 * attribute, available in this class
@@ -694,9 +760,14 @@ public class DocumentParser {
 	 * 
 	 * @param typeName
 	 * @return
+	 * @throws RuntimeException
+	 *             if the type could not be found
 	 */
-	public com.graphql_java_generator.plugin.language.Type getType(String typeName) {
-		return types.get(typeName);
+	public Type getType(String typeName) {
+		Type ret = types.get(typeName);
+		if (ret == null)
+			throw new RuntimeException("The type named '" + typeName + "' could not be found");
+		return ret;
 	}
 
 	/**
