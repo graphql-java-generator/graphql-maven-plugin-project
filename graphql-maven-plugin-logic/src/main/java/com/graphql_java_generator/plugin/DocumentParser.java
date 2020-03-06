@@ -522,6 +522,7 @@ public class DocumentParser {
 		ObjectType objectType = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
 
 		objectType.setName(node.getName());
+		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's read all its fields
 		objectType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, objectType))
@@ -560,7 +561,6 @@ public class DocumentParser {
 		for (InputValueDefinition def : node.getInputValueDefinitions()) {
 			FieldImpl field = readFieldTypeDefinition(def);
 			field.setOwningType(objectType);
-			field.setAppliedDirectives(readAppliedDirectives(def.getDirectives()));
 
 			objectType.getFields().add(field);
 		}
@@ -691,8 +691,6 @@ public class DocumentParser {
 		// Let's read all its input parameters
 		field.setInputParameters(fieldDef.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
 				.collect(Collectors.toList()));
-		// And its directives
-		field.setAppliedDirectives(readAppliedDirectives(fieldDef.getDirectives()));
 
 		return field;
 	}
@@ -707,10 +705,13 @@ public class DocumentParser {
 	 * @param field
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	FieldImpl readFieldTypeDefinition(AbstractNode<?> fieldDef) {
 		FieldImpl field = FieldImpl.builder().documentParser(this).build();
 
 		field.setName((String) graphqlUtils.invokeMethod("getName", fieldDef));
+		field.setAppliedDirectives(readAppliedDirectives(
+				(List<graphql.language.Directive>) graphqlUtils.invokeMethod("getDirectives", fieldDef)));
 
 		// Let's default value to false
 		field.setMandatory(false);

@@ -423,13 +423,20 @@ class DocumentParserTest_allGraphQLCases_Server {
 			fail("Could not find the parameter '" + parameterName + "' for the field '" + fieldName + "' on type '"
 					+ type.getName() + "'");
 		}
-		assertEquals(2, parameter.getAppliedDirectives().size());
+
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		assertEquals(nbDirectives, parameter.getAppliedDirectives().size());
 		if (containsTestDirective) {
-			assertEquals("@testDirective", field.getAppliedDirectives().get(0).getDirective().getName());
-			fail("check arguments");
+			assertEquals("testDirective", parameter.getAppliedDirectives().get(0).getDirective().getName());
+			// check arguments
+			assertEquals(value, parameter.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			if (anotherValue != null)
+				assertEquals(BigInteger.valueOf(anotherValue),
+						parameter.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
 		}
 		if (containsAnotherTestDirective) {
-			assertEquals("@anotherTestDirective", field.getAppliedDirectives().get(1).getDirective().getName());
+			int index = containsTestDirective ? 1 : 0;
+			assertEquals("anotherTestDirective", field.getAppliedDirectives().get(index).getDirective().getName());
 		}
 	}
 
