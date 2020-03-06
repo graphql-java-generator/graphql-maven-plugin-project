@@ -604,6 +604,7 @@ public class DocumentParser {
 
 		UnionType unionType = new UnionType(node.getName(), pluginConfiguration.getPackageName(),
 				pluginConfiguration.getMode());
+		unionType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		for (graphql.language.Type<?> memberType : node.getMemberTypes()) {
 			String memberTypeName = (String) graphqlUtils.invokeMethod("getName", memberType);
