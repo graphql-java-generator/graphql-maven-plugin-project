@@ -240,6 +240,33 @@ public class DocumentParser {
 				types.put(type.getName(), type);
 			}
 		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////
+		// Add of all GraphQL standard directives
+		DirectiveImpl skip = new DirectiveImpl();
+		skip.setName("skip");
+		skip.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
+		skip.getDirectiveLocations().add(DirectiveLocation.FIELD);
+		skip.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
+		skip.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
+		directives.add(skip);
+		//
+		DirectiveImpl include = new DirectiveImpl();
+		include.setName("include");
+		include.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
+		include.getDirectiveLocations().add(DirectiveLocation.FIELD);
+		include.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
+		include.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
+		directives.add(include);
+		//
+		DirectiveImpl deprecated = new DirectiveImpl();
+		deprecated.setName("deprecated");
+		deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeName("String")
+				.defaultValue("No longer supported").build());
+		deprecated.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
+		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
+		directives.add(deprecated);
+
 	}
 
 	/**
@@ -556,6 +583,7 @@ public class DocumentParser {
 				pluginConfiguration.getMode());
 
 		interfaceType.setName(node.getName());
+		interfaceType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's read all its fields
 		interfaceType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, interfaceType))
@@ -660,6 +688,8 @@ public class DocumentParser {
 		// Let's read all its input parameters
 		field.setInputParameters(fieldDef.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
 				.collect(Collectors.toList()));
+		// And its directives
+		field.setAppliedDirectives(readAppliedDirectives(fieldDef.getDirectives()));
 
 		return field;
 	}

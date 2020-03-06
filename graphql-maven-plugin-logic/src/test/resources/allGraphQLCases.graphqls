@@ -61,7 +61,7 @@ enum Episode @testDirective(value: "on Enum", anotherValue: 69) {
     DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: -1) @anotherTestDirective
 }
 
-interface WithID @testDirective(value:"on Interface") {
+interface WithID @testDirective(value:"on Interface", anotherValue: 666) {
    id: ID!
 }
 

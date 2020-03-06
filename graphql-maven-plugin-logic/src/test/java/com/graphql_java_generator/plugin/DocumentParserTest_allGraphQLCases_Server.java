@@ -32,6 +32,7 @@ import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
 import graphql.language.Definition;
+import graphql.language.DirectiveDefinition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.ObjectTypeDefinition;
@@ -68,7 +69,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals(25, i, "Nb java files are generated");
-		assertEquals(2, documentParser.directives.size(), "Nb directives");
+		assertEquals(5, documentParser.directives.size(), "Nb directives");
 		assertEquals(15, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
@@ -213,8 +214,12 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks of directive parsing
-		assertEquals("testDirective", documentParser.directives.get(0).getName());
-		assertEquals("anotherTestDirective", documentParser.directives.get(1).getName());
+		i = 0;
+		assertEquals("skip", documentParser.directives.get(i++).getName());
+		assertEquals("include", documentParser.directives.get(i++).getName());
+		assertEquals("deprecated", documentParser.directives.get(i++).getName());
+		assertEquals("testDirective", documentParser.directives.get(i++).getName());
+		assertEquals("anotherTestDirective", documentParser.directives.get(i++).getName());
 
 		// On Scalar
 		checkDirectivesOnType(documentParser.getType("Date"), true, "on Scalar", null, true);
@@ -669,6 +674,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// We need to read the directives first
+		documentParser.postConstruct();
+		documentParser.documents.get(0).getDefinitions().stream().filter(n -> (n instanceof DirectiveDefinition))
+				.forEach(node -> documentParser.directives
+						.add(documentParser.readDirectiveDefinition((DirectiveDefinition) node)));
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.queryTypes = new ArrayList<>();
 
