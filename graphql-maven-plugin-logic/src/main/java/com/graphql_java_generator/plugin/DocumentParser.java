@@ -259,6 +259,12 @@ public class DocumentParser {
 		include.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
 		directives.add(include);
 		//
+		DirectiveImpl defer = new DirectiveImpl();
+		defer.setName("defer");
+		defer.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
+		defer.getDirectiveLocations().add(DirectiveLocation.FIELD);
+		directives.add(defer);
+		//
 		DirectiveImpl deprecated = new DirectiveImpl();
 		deprecated.setName("deprecated");
 		deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeName("String")
