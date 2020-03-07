@@ -1,5 +1,6 @@
 package com.graphql_java_generator.plugin.language.impl;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
@@ -49,7 +50,8 @@ public class RelationImpl implements Relation {
 	/** {@inheritDoc} */
 	@Override
 	public String getDataFetcherName() {
-		return TypeUtil.getCamelCase(objectType.getName()) + TypeUtil.getPascalCase(field.getName());
+		return GraphqlUtils.graphqlUtils.getCamelCase(objectType.getName())
+				+ GraphqlUtils.graphqlUtils.getPascalCase(field.getName());
 	}
 
 	/** {@inheritDoc} */

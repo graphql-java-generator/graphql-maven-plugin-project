@@ -3,6 +3,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Type;
@@ -53,7 +54,7 @@ public abstract class AbstractType implements Type {
 	/** {@inheritDoc} */
 	@Override
 	public String getCamelCaseName() {
-		return TypeUtil.getCamelCase(getClassSimpleName());
+		return GraphqlUtils.graphqlUtils.getCamelCase(getClassSimpleName());
 	}
 
 	/** {@inheritDoc} */
