@@ -1,7 +1,7 @@
 package com.graphql_java_generator.client.domain.forum;
 
-import com.graphql_java_generator.CustomScalarRegistry;
-import com.graphql_java_generator.CustomScalarRegistryImpl;
+import com.graphql_java_generator.customscalars.CustomScalarRegistry;
+import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 
 public class CustomScalarRegistryInitializer {
 

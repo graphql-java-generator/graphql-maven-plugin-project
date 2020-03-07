@@ -5,9 +5,6 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-
 import com.graphql_java_generator.GraphqlUtils;
 
 /**
@@ -117,17 +114,7 @@ public interface Field {
 	 * 
 	 * @return
 	 */
-	public default String getPascalCaseName() {
-		String name = getName();
-		if ("Boolean".equals(name)) {
-			String[] camelSplittedProperty = name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-			if ("is".equals(camelSplittedProperty[0]) && camelSplittedProperty.length > 1) {
-				name = GraphqlUtils.graphqlUtils
-						.getCamelCase(StringUtils.join(ArrayUtils.remove(camelSplittedProperty, 0)));
-			}
-		}
-		return GraphqlUtils.graphqlUtils.getPascalCase(name);
-	}
+	public String getPascalCaseName();
 
 	/**
 	 * Convert the given name, which can be in non camel case (for instance: ThisIsCamelCase) to a pascal case string

@@ -5,8 +5,6 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.List;
 
-import com.graphql_java_generator.annotation.DirectiveLocation;
-
 /**
  * Contains getter for the attributes of a GraphQL directive definition.
  * 

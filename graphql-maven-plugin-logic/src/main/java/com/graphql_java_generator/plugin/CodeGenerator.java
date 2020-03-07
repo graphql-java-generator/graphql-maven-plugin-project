@@ -54,6 +54,7 @@ public class CodeGenerator {
 	private static final String PATH_VELOCITY_TEMPLATE_UNION = "templates/union_type.vm.java";
 	// Templates for client generation only
 	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER = "templates/client_CustomScalarRegistryInitializer.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_DIRECTIVE_REGISTRY_INITIALIZER = "templates/client_DirectiveRegistryInitializer.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/client_jackson_deserialize.vm.java";
@@ -127,6 +128,12 @@ public class CodeGenerator {
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
 					"Generating CustomScalarRegistryInitializer", context,
 					PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER);
+			// Files for Directives
+			context = new VelocityContext();
+			context.put("pluginConfiguration", pluginConfiguration);
+			context.put("directives", documentParser.directives);
+			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer"), "Generating DirectiveRegistryInitializer",
+					context, PATH_VELOCITY_TEMPLATE_DIRECTIVE_REGISTRY_INITIALIZER);
 			//
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER);
