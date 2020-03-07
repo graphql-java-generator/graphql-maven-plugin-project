@@ -12,11 +12,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<inherited>true</inherited>
-			</plugin>											
-			<plugin>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
@@ -37,6 +32,11 @@
 						</customScalar>
 					</customScalars>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<inherited>true</inherited>
 			</plugin>
 			<plugin>
 				<!-- Execution of the integration tests -->
