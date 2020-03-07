@@ -2,6 +2,7 @@ package ${pluginConfiguration.packageName};
 
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.directive.Directive;
+import com.graphql_java_generator.directive.DirectiveLocation;
 import com.graphql_java_generator.directive.DirectiveRegistry;
 import com.graphql_java_generator.directive.DirectiveRegistryImpl;
 
@@ -21,7 +22,7 @@ public class DirectiveRegistryInitializer {
 #foreach ($argument in $directive.arguments)
 		directive.getArguments().add(InputParameter.newHardCodedParameter("${argument.name}", null));
 #end
-#foreach ($location in $directive.locations)
+#foreach ($location in $directive.directiveLocations)
 		directive.getDirectiveLocations().add(DirectiveLocation.${location.name()});
 #end
 		directiveRegistry.registerDirective(directive);
