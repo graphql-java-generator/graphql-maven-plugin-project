@@ -247,16 +247,40 @@ public class Builder {
 						} else if (token.startsWith("&")) {
 							inputParameters.add(new InputParameter(parameterName, token.substring(1), null, true,
 									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
-						} else if (token.startsWith("\"") && token.endsWith("\"")) {
-							// The inputParameter starts and ends by "
+						} else if (token.startsWith("\"")) {
+							// The inputParameter starts with "
+							// We need to read all tokens until we find one that finishes by a "
+							// This ending token may be the current one.
+							StringBuffer sb = new StringBuffer();
+							if (token.endsWith("\"")) {
+								// Ok, this token starts and finishes by "
+								// We have read the whole value
+								sb.append(token.substring(1, token.length() - 1));
+							} else {
+								// This token doesn't end with a "
+								// So we must read until we find one that finishes by " (meaning we're finished with
+								// reading this value)
+								sb.append(token.substring(1));
+								while (st.hasMoreTokens()) {
+									String subtoken = st.nextToken();
+									if (subtoken.endsWith("\"")) {
+										// We've found the end of the value
+										sb.append(subtoken.substring(0, subtoken.length()));
+										break;
+									} else {
+										// It's just a value within the string
+										sb.append(subtoken);
+									}
+								}
+							}
 							// It's a regular String.
-							String value = token.substring(1, token.length() - 1);
-							inputParameters.add(new InputParameter(parameterName, null, value, true, null));
+							inputParameters.add(new InputParameter(parameterName, null, sb.toString(), true, null));
 						} else if (token.startsWith("\"") || token.endsWith("\"")) {
 							// Too bad, there is a " only at the end or only at the beginning
 							throw new GraphQLRequestPreparationException(
-									"Bad parameter value: parameter values should start and finish by \", or not having any \" at the beginning and end.. But it's not the case for the value <"
-											+ token + "> of parameter <" + parameterName
+									"Bad parameter value: parameter values should start and finish by \", or not having any \" at the beginning and end."
+											+ " But it's not the case for the value <" + token + "> of parameter <"
+											+ parameterName
 											+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 						} else {
 							Object parameterValue = getParameterValue(owningClazz, name, parameterName, token);
