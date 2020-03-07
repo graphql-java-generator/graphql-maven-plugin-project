@@ -30,7 +30,7 @@ public class Builder {
 	 * The list of character that can separate tokens, in the GraphQL query string. These token are read by the
 	 * {@link StringTokenizer}.
 	 */
-	private static final String STRING_TOKENIZER_DELIMITER = " {},:()";
+	private static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r";
 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
@@ -118,6 +118,8 @@ public class Builder {
 				String token = st.nextToken();
 				switch (token) {
 				case " ":
+				case "\n":
+				case "\r":
 					// Nothing to do.
 					break;
 				case ":":
@@ -215,6 +217,8 @@ public class Builder {
 									+ "Otherwise, please correct the query syntax");
 				case ":":
 				case " ":
+				case "\n":
+				case "\r":
 					break;
 				case ",":
 					if (step != InputParameterStep.NAME) {
@@ -717,8 +721,10 @@ public class Builder {
 				token = st.nextToken();
 				switch (token) {
 				case " ":
+				case "\n":
+				case "\r":
 					// Nothing to do.
-					break;
+					continue;
 				default:
 					throw new GraphQLRequestPreparationException(
 							"Unexpected token <" + token + "> at the end of the queryReponseDef: " + queryResponseDef);
