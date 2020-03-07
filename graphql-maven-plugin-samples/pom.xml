@@ -42,7 +42,7 @@
 				<executions>
 					<execution>
 						<id>add-source</id>
-						<phase>generate-resources</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-source</goal>
 						</goals>
