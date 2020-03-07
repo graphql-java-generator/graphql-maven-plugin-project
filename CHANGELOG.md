@@ -2,6 +2,7 @@
 
 Both modes (client and server):
 - GraphQL types can implement multiple interfaces
+- Upgrade of graphql-java from v13.0 to v14.0
 
 Client mode:
 - interfaces are properly deserialized, thanks to GraphQL introspection. 
