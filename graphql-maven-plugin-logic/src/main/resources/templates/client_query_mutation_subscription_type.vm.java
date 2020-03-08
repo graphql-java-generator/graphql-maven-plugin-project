@@ -97,7 +97,7 @@ public class ${object.javaName} {
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
 	 * describes the format of the response of the server response, that is the expected fields of the {@link ${field.type.classSimpleName}}
 	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
 	 * the StarWars, Forum and other samples for more complex queries.<BR/>
@@ -129,7 +129,7 @@ public class ${object.javaName} {
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
 	 * describes the format of the response of the server response, that is the expected fields of the {@link ${field.type.classSimpleName}}
 	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look at
 	 * the StarWars, Forum and other samples for more complex queries.
