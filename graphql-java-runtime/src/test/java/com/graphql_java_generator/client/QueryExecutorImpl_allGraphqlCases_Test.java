@@ -13,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
+import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.exception.GraphQLResponseParseException;
 
 /**
@@ -31,31 +33,35 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 	}
 
 	@Test
-	void buildRequest_withEnum_withDirectives_direct() throws GraphQLRequestExecutionException {
+	void buildRequest_withEnum_withDirectives_direct()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
+		MyQueryType myQueryType = new MyQueryType("http://localhost");
 		String query = "{\n"
-				+ "    id  @anotherTestDirective  @testDirective(value: \"a value\", anotherValue:\"something else\")\n"
-				+ "    name\n" + "    appearsIn @testDirective(value: \"a value2\", anotherValue:\"something else2\")\n"
+				+ "    id     @anotherTestDirective    @testDirective  ( value: \"id1 value\", anotherValue:\" something else for id1 \")\n"
+				+ "    name\n" //
+				+ "    appearsIn @testDirective(value: \"a value2\", anotherValue:\"something else2\")\n"
 				+ "    friends {\n"//
 				+ "      id @anotherTestDirective\n"
-				+ "      name @testDirective(value: \"a value2\", anotherValue:\"something else2\") @anotherTestDirective\n"
+				+ "      name @testDirective(value: \"a value3\", anotherValue:\"something_else3\") @anotherTestDirective\n"
 				+ "    }\n"//
 				+ "}\n";
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("episode", Episode.JEDI);
-		ObjectResponse objectResponse = null;
+		parameters.put("myQueryTypeWithEnumEpisode", Episode.JEDI);
+		ObjectResponse objectResponse = myQueryType.getWithEnumResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
 		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
 
 		// Verification
-		assertEquals(
-				"{\"query\":\"query{withEnum(episode:JEDI) @testDirective(value:\"a value\",anotherValue:\"something else\")"
-						+ "{id @anotherTestDirective @testDirective(value:\"value\", anotherValue:\"something else\") "
-						+ "name appearsIn @testDirective(value:\"a value2\",anotherValue:\"something else2\") "
-						+ "friends{id @anotherTestDirective name @testDirective(value:\"a value2\", anotherValue:\"something else2\") @anotherTestDirective}}}\""
-						+ ",\"variables\":null,\"operationName\":null}",
-				request);
+		assertEquals("{\"query\":\"query{withEnum(episode:JEDI)"//
+				+ "{id @anotherTestDirective @testDirective(value:\\\"id1 value\\\",anotherValue:\\\" something else for id1 \\\") "
+				+ "name " //
+				+ "appearsIn @testDirective(value:\\\"a value2\\\",anotherValue:\\\"something else2\\\") "
+				+ "__typename "
+				+ "friends{id @anotherTestDirective name @testDirective(value:\\\"a value3\\\",anotherValue:\\\"something_else3\\\") @anotherTestDirective "//
+				+ "__typename}}}\"" //
+				+ ",\"variables\":null,\"operationName\":null}", request);
 	}
 
 	@Test

@@ -13,6 +13,7 @@ import org.slf4j.Marker;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
+import com.graphql_java_generator.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -68,9 +69,10 @@ public class ObjectResponse {
 		final Class<?> owningClass;
 		final Class<?> clazz;
 		final List<InputParameter> inputParameters;
+		final List<Directive> directives;
 
-		Field(String name, String alias, Class<?> owningClass, Class<?> clazz, List<InputParameter> inputParameters)
-				throws GraphQLRequestPreparationException {
+		Field(String name, String alias, Class<?> owningClass, Class<?> clazz, List<InputParameter> inputParameters,
+				List<Directive> directives) throws GraphQLRequestPreparationException {
 			graphqlClientUtils.checkName(name);
 			if (alias != null) {
 				graphqlClientUtils.checkName(alias);
@@ -80,6 +82,7 @@ public class ObjectResponse {
 			this.owningClass = owningClass;
 			this.clazz = clazz;
 			this.inputParameters = (inputParameters == null) ? new ArrayList<>() : inputParameters;
+			this.directives = (directives == null) ? new ArrayList<>() : directives;
 		}
 	}
 
@@ -134,7 +137,7 @@ public class ObjectResponse {
 	ObjectResponse(Class<?> owningClass, String fieldName, String fieldAlias)
 			throws GraphQLRequestPreparationException {
 		this.field = new Field(fieldName, fieldAlias, owningClass,
-				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, false, owningClass), null);
+				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, false, owningClass), null, null);
 	}
 
 	/**
@@ -183,6 +186,15 @@ public class ObjectResponse {
 	}
 
 	/**
+	 * Retrieves the {@link InputParameter} for the field, which response is defined by this instance
+	 * 
+	 * @return
+	 */
+	public List<Directive> getDirectives() {
+		return field.directives;
+	}
+
+	/**
 	 * Retrieves the part of the query, which describes the fields that the GraphQL server should return.<BR/>
 	 * For instance, for the query: <I>{hero(episode: NEWHOPE) {id name}}</I>, the response definition is <I>{id
 	 * name}</I>
@@ -206,6 +218,10 @@ public class ObjectResponse {
 		appendInputParameters(sb, getInputParameters(), parameters);
 
 		//////////////////////////////////////////////////////////
+		// Then the directives
+		appendDirectives(sb, getDirectives());
+
+		//////////////////////////////////////////////////////////
 		// Then field list (if any)
 
 		boolean appendSpaceLocal = false;
@@ -217,6 +233,7 @@ public class ObjectResponse {
 			for (Field f : scalarFields) {
 				appendFieldName(sb, appendSpaceLocal, f.name, f.alias);
 				appendInputParameters(sb, f.inputParameters, parameters);
+				appendDirectives(sb, f.directives);
 				appendSpaceLocal = true;
 			}
 
@@ -247,11 +264,21 @@ public class ObjectResponse {
 				boolean writeComma = false;
 				for (String param : params) {
 					if (writeComma)
-						sb.append(", ");
+						sb.append(",");
 					writeComma = true;
 					sb.append(param);
 				} // for
 				sb.append(")");
+			}
+		}
+	}
+
+	private void appendDirectives(StringBuilder sb, List<Directive> directives)
+			throws GraphQLRequestExecutionException {
+		if (directives != null && directives.size() > 0) {
+			for (Directive dir : directives) {
+				sb.append(" ").append("@").append(dir.getName());
+				appendInputParameters(sb, dir.getArguments(), null);
 			}
 		}
 	}
@@ -292,6 +319,15 @@ public class ObjectResponse {
 	 */
 	public void addInputParameters(List<InputParameter> inputParameters) {
 		field.inputParameters.addAll(inputParameters);
+	}
+
+	/**
+	 * Add a list of {@link Directive}s to this object.
+	 * 
+	 * @param directives
+	 */
+	public void addDirectives(List<Directive> directives) {
+		field.directives.addAll(directives);
 	}
 
 }

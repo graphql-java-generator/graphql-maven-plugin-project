@@ -13,6 +13,7 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
+import com.graphql_java_generator.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -30,7 +31,7 @@ public class Builder {
 	 * The list of character that can separate tokens, in the GraphQL query string. These token are read by the
 	 * {@link StringTokenizer}.
 	 */
-	private static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r";
+	private static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r@";
 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
@@ -66,8 +67,11 @@ public class Builder {
 		/** The alias of this field */
 		String alias = null;
 
-		/** The list of input parameters for this QueryFields */
+		/** The list of input parameters for this QueryField */
 		List<InputParameter> inputParameters = new ArrayList<>();
+
+		/** The list of directives for this QueryField */
+		List<Directive> directives = new ArrayList<>();
 
 		/**
 		 * All subfields contained in this field. Empty if the field is a GraphQL Scalar. At least one if the field is a
@@ -111,11 +115,16 @@ public class Builder {
 		 * @throws GraphQLRequestPreparationException
 		 */
 		public void readTokenizerForResponseDefinition(StringTokenizer st) throws GraphQLRequestPreparationException {
-			/** The last field we've read. */
-			QueryField lastReadField = null;
+			// The field we're reading
+			QueryField currentField = null;
+			// The directive we're reading. It is associated to the current field during its creation
+			// (see the case "@" below for details)
+			Directive directive = null;
 
 			while (st.hasMoreTokens()) {
+
 				String token = st.nextToken();
+
 				switch (token) {
 				case " ":
 				case "\n":
@@ -124,65 +133,76 @@ public class Builder {
 					break;
 				case ":":
 					// The previously read field name is actually an alias
-					if (lastReadField == null) {
+					if (currentField == null) {
 						throw new GraphQLRequestPreparationException(
 								"The given query has a ':' character, not preceded by a proper alias name (before <"
 										+ st.nextToken() + ">)");
 					}
-					lastReadField.alias = lastReadField.name;
+					currentField.alias = currentField.name;
 					// The real field name is the next real token (we'll check latter that the field names are valid)
-					lastReadField.name = " ";
-					while (lastReadField.name.equals(" ")) {
-						lastReadField.name = st.nextToken();
+					currentField.name = " ";
+					while (currentField.name.equals(" ")) {
+						currentField.name = st.nextToken();
 					}
 
 					// We try to get the class of this field
-					lastReadField.owningClazz = clazz;
-					lastReadField.clazz = getFieldType(clazz, lastReadField.name, true);
+					currentField.owningClazz = clazz;
+					currentField.clazz = getFieldType(clazz, currentField.name, true);
 
 					break;
+				case "@":
+					// We're starting a GraphQL directive. The next token is its name.
+					directive = new Directive();
+					directive.setName(st.nextToken());// The directive name follows directly the @
+					currentField.directives.add(directive);
+					break;
 				case "(":
-					// We're starting the reading of field parameters
-					if (lastReadField == null) {
+					if (directive != null) {
+						// We're starting to read the arguments for the last directive we've read
+						directive.setArguments(readTokenizerForInputParameters(st));
+					} else if (currentField != null) {
+						// We're starting the reading of field parameters
+						currentField.inputParameters = currentField.readTokenizerForInputParameters(st);
+					} else {
 						throw new GraphQLRequestPreparationException(
 								"The given query has a parentesis '(' not preceded by a field name (error while reading field <"
 										+ name + ">");
-					} else {
-						lastReadField.readTokenizerForInputParameters(st);
 					}
 					break;
 				case "{":
+					directive = null;
 					// The last field we've read is actually an object (a non Scalar GraphQL type), as it itself has
 					// fields
-					if (lastReadField == null) {
+					if (currentField == null) {
 						throw new GraphQLRequestPreparationException(
 								"The given query has two '{', one after another (error while reading field <" + name
 										+ ">)");
-					} else if (lastReadField.clazz == null) {
+					} else if (currentField.clazz == null) {
 						throw new GraphQLRequestPreparationException(
-								"Starting reading definition of field '" + lastReadField.name + "' of class '"
+								"Starting reading definition of field '" + currentField.name + "' of class '"
 										+ owningClazz.getName() + "', but the owningClass is not set");
-					} else if (lastReadField.fields.size() > 0) {
+					} else if (currentField.fields.size() > 0) {
 						throw new GraphQLRequestPreparationException(
 								"The given query contains a '{' not preceded by a fieldname, after field <"
-										+ lastReadField.name + "> while reading <" + this.name + ">");
+										+ currentField.name + "> while reading <" + this.name + ">");
 					} else {
 						// Ok, let's read the field for the subobject, for which we just read the name (and potentiel
 						// alias :
-						lastReadField.readTokenizerForResponseDefinition(st);
+						currentField.readTokenizerForResponseDefinition(st);
 						// Let's clear the lastReadField, as we already have read its content.
-						lastReadField = null;
+						currentField = null;
 					}
 					break;
 				case "}":
 					// We're finished our current object : let's get out of this method.
 					return;
 				default:
+					directive = null;
 					// It's a field. Scalar or not ? That is the question. We don't care yet. If the next token is a
 					// '{', we'll read its content and fill its fields list.
-					lastReadField = new QueryField(clazz, getFieldType(clazz, token, false), token);
+					currentField = new QueryField(clazz, getFieldType(clazz, token, false), token);
 
-					fields.add(lastReadField);
+					fields.add(currentField);
 				}// switch
 			} // while
 
@@ -202,7 +222,9 @@ public class Builder {
 		 * @throws GraphQLRequestPreparationException
 		 *             If the request string is invalid
 		 */
-		void readTokenizerForInputParameters(StringTokenizer st) throws GraphQLRequestPreparationException {
+		List<InputParameter> readTokenizerForInputParameters(StringTokenizer st)
+				throws GraphQLRequestPreparationException {
+			List<InputParameter> ret = new ArrayList<>(); // The list that will be returned by this method
 			InputParameterStep step = InputParameterStep.NAME;
 
 			String parameterName = null;
@@ -236,7 +258,7 @@ public class Builder {
 								+ name + "' is not finished (no closing parenthesis)");
 					}
 					// We're finished, here.
-					return;
+					return ret;
 				default:
 					switch (step) {
 					case NAME:
@@ -246,18 +268,18 @@ public class Builder {
 					case VALUE:
 						// We've read the parameter value. Let's add this parameter.
 						if (token.startsWith("?")) {
-							inputParameters.add(new InputParameter(parameterName, token.substring(1), null, false,
+							ret.add(new InputParameter(parameterName, token.substring(1), null, false,
 									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("&")) {
-							inputParameters.add(new InputParameter(parameterName, token.substring(1), null, true,
+							ret.add(new InputParameter(parameterName, token.substring(1), null, true,
 									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
 						} else if (token.startsWith("\"")) {
 							// The inputParameter starts with "
 							// We need to read all tokens until we find one that finishes by a "
 							// This ending token may be the current one.
 							StringBuffer sb = new StringBuffer();
-							if (token.endsWith("\"")) {
-								// Ok, this token starts and finishes by "
+							if (token.length() > 1 && token.endsWith("\"")) {
+								// Ok, this token starts and finishes by " (and is not an only ")
 								// We have read the whole value
 								sb.append(token.substring(1, token.length() - 1));
 							} else {
@@ -269,7 +291,7 @@ public class Builder {
 									String subtoken = st.nextToken();
 									if (subtoken.endsWith("\"")) {
 										// We've found the end of the value
-										sb.append(subtoken.substring(0, subtoken.length()));
+										sb.append(subtoken.substring(0, subtoken.length() - 1));
 										break;
 									} else {
 										// It's just a value within the string
@@ -278,7 +300,7 @@ public class Builder {
 								}
 							}
 							// It's a regular String.
-							inputParameters.add(new InputParameter(parameterName, null, sb.toString(), true, null));
+							ret.add(new InputParameter(parameterName, null, sb.toString(), true, null));
 						} else if (token.startsWith("\"") || token.endsWith("\"")) {
 							// Too bad, there is a " only at the end or only at the beginning
 							throw new GraphQLRequestPreparationException(
@@ -288,7 +310,7 @@ public class Builder {
 											+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 						} else {
 							Object parameterValue = getParameterValue(owningClazz, name, parameterName, token);
-							inputParameters.add(new InputParameter(parameterName, null, parameterValue, true, null));
+							ret.add(new InputParameter(parameterName, null, parameterValue, true, null));
 						}
 						step = InputParameterStep.NAME;
 						break;
@@ -308,7 +330,7 @@ public class Builder {
 			try {
 				field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 			} catch (NoSuchFieldException | SecurityException e) {
-				throw new GraphQLRequestPreparationException("Couldn't parse the value for the parameter '"
+				throw new GraphQLRequestPreparationException("Couldn't find the value for the parameter '"
 						+ parameterName + "' of the field '" + fieldName + "'", e);
 			}
 
@@ -514,7 +536,7 @@ public class Builder {
 	 *             If the fieldName or the fieldAlias is not valid
 	 */
 	public Builder withField(String fieldName, String alias) throws GraphQLRequestPreparationException {
-		return withField(fieldName, alias, null);
+		return withField(fieldName, alias, null, null);
 	}
 
 	/**
@@ -529,8 +551,8 @@ public class Builder {
 	 * @throws GraphQLRequestPreparationException
 	 *             If the fieldName or the fieldAlias is not valid
 	 */
-	public Builder withField(String fieldName, String alias, List<InputParameter> inputParameters)
-			throws GraphQLRequestPreparationException {
+	public Builder withField(String fieldName, String alias, List<InputParameter> inputParameters,
+			List<Directive> directives) throws GraphQLRequestPreparationException {
 
 		// We check that this field exist, and is a scaler
 		graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz);
@@ -545,7 +567,7 @@ public class Builder {
 
 		ObjectResponse.Field field = new ObjectResponse.Field(fieldName, alias, objectResponse.field.clazz,
 				graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz),
-				inputParameters);
+				inputParameters, directives);
 
 		// This will check that the alias is null or a valid GraphQL identifier
 		objectResponse.scalarFields.add(field);
@@ -614,6 +636,17 @@ public class Builder {
 	 */
 	public Builder withInputParameters(List<InputParameter> inputParameters) {
 		objectResponse.addInputParameters(inputParameters);
+		return this;
+	}
+
+	/**
+	 * Add a list of {@link Directive}s to the current Object Response definition.
+	 * 
+	 * @param directives
+	 * @return The current {@link Builder}
+	 */
+	public Builder withDirectives(List<Directive> directives) {
+		objectResponse.addDirectives(directives);
 		return this;
 	}
 
@@ -700,7 +733,7 @@ public class Builder {
 			// We expect a first "{"
 			// But leading spaces are allowed. Let's skip them.
 			String token = " ";
-			while (token.equals(" ")) {
+			while (token.equals(" ") || token.equals("\n") || token.equals("\r")) {
 				token = st.nextToken();
 			}
 			if (!token.equals("{")) {
@@ -796,11 +829,12 @@ public class Builder {
 		for (QueryField field : queryField.fields) {
 			if (field.fields.size() == 0) {
 				// It's a Scalar
-				withField(field.name, field.alias, field.inputParameters);
+				withField(field.name, field.alias, field.inputParameters, field.directives);
 			} else {
 				// It's a non Scalar field : we'll recurse down one level, by calling withQueryField again.
 				Builder subobjectResponseDef = new Builder(objectResponse.field.clazz, field.name, field.alias)
-						.withQueryField(field).withInputParameters(field.inputParameters);
+						.withQueryField(field).withInputParameters(field.inputParameters)
+						.withDirectives(field.directives);
 				withSubObject(subobjectResponseDef.build());
 			}
 		}
@@ -869,7 +903,7 @@ public class Builder {
 		// If __typename was not found, we add it
 		if (__typename == null) {
 			__typename = new ObjectResponse.Field("__typename", null, objectResponse.getFieldClass(), String.class,
-					null);
+					null, null);
 			objectResponse.scalarFields.add(__typename);
 		}
 
