@@ -67,7 +67,7 @@ public class IntrospectionIT {
 		assertEquals("AllFieldCases", ret.get__typename());
 	}
 
-	@Test
+//	@Test
 	void test__datatype_withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification
@@ -82,7 +82,7 @@ public class IntrospectionIT {
 		// assertEquals("Droid", ret.get(0).get__typename());
 	}
 
-	@Test
+//	@Test
 	void test__datatype_allFieldCases_Error()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 #end
 
+import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
@@ -71,7 +72,7 @@ public class ${object.javaName} #if($object.implementz.size()>0)implements #fore
     /**
 	 * Enum of field names
 	 */
-	 public static enum Field {
+	 public static enum Field implements GraphQLField {
 #foreach ($field in $object.fields)
 		${field.pascalCaseName}("${field.name}")#if($foreach.hasNext),
 #end
@@ -87,5 +88,41 @@ public class ${object.javaName} #if($object.implementz.size()>0)implements #fore
 			return fieldName;
 		}
 
+		public Class<?> getGraphQLType() {
+			return this.getClass().getDeclaringClass();
+		}
+
 	}
+
+		public static Builder builder() {
+			return new Builder();
+		}
+
+
+
+/**
+ * Builder
+ */
+public static class Builder {
+#foreach ($field in $object.fields)
+	private #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
+#end
+
+
+#foreach ($field in $object.fields)
+	public Builder with${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}) {
+		this.${field.javaName} = ${field.javaName};
+		return this;
+	}
+#end
+
+	public ${object.javaName} build() {
+		${object.javaName} object = new ${object.javaName}();
+#foreach ($field in $object.fields)
+		object.set${field.pascalCaseName}(${field.javaName});
+#end
+		return object;
+	}
+}
+
 }
