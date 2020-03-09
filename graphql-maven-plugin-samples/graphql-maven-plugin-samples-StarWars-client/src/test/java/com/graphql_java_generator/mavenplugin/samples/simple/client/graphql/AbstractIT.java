@@ -192,7 +192,6 @@ abstract class AbstractIT {
 		assertEquals(human.getId(), lastCharacter.getId());
 	}
 
-	@Disabled	// FIXME
 	@Test
 	void test_addFriend() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
