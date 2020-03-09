@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.graphql_java_generator.CustomScalarRegistryImpl;
+import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -457,6 +458,17 @@ public class Builder {
 	public Builder(Class<?> owningClass, String fieldName, String fieldAlias)
 			throws GraphQLRequestPreparationException {
 		objectResponse = new ObjectResponse(owningClass, fieldName, fieldAlias);
+	}
+
+	/**
+	 * Creates a Builder for a field using the generated GraphQL Field enumeration without alias
+	 *
+	 * @param graphQLField
+	 *            The generated GraphQLField enumeration
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder(GraphQLField graphQLField) throws GraphQLRequestPreparationException {
+		objectResponse = new ObjectResponse(graphQLField.getGraphQLType(), graphQLField.getFieldName(), null);
 	}
 
 	/**
