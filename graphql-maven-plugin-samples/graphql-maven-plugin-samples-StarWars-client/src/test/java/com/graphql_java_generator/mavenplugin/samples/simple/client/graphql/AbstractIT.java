@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.generated.graphql.Character;
@@ -191,6 +192,7 @@ abstract class AbstractIT {
 		assertEquals(human.getId(), lastCharacter.getId());
 	}
 
+	@Disabled	// FIXME
 	@Test
 	void test_addFriend() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation

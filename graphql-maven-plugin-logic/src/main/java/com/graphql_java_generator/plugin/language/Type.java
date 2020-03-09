@@ -49,6 +49,25 @@ public interface Type {
 	public String getAnnotation();
 
 	/**
+	 * The annotation setter should be added. This method allows to properly manage indentation in the generated source
+	 * code
+	 * 
+	 * @param annotationToAdd
+	 *            The annotation, that will be added to the current one
+	 */
+	public void addAnnotation(String annotationToAdd);
+
+	/**
+	 * The annotation setter should be added. This method allows to properly manage indentation in the generated source
+	 * code
+	 * 
+	 * @param annotationToAdd
+	 *            The annotation, that will be added to the current one
+	 * @parma replace if true, any existing annotation is first removed
+	 */
+	public void addAnnotation(String annotationToAdd, boolean replace);
+
+	/**
 	 * The GraphQlType for this type
 	 * 
 	 * @return
@@ -109,4 +128,7 @@ public interface Type {
 
 	/** Returns true if this type is a GraphQL Custom Scalar, false otherwise */
 	public boolean isCustomScalar();
+
+	/** Returns the list of directives that have been defined for this type, in the GraphQL schema */
+	public List<AppliedDirective> getAppliedDirectives();
 }

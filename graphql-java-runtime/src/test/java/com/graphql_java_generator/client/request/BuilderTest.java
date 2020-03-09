@@ -150,10 +150,11 @@ class BuilderTest {
 		assertEquals(null, subObject.field.alias, "subobject fieldAlias");
 		assertEquals(Character.class, subObject.field.clazz, "subobject clazz");
 		//
-		assertEquals(2, subObject.scalarFields.size(), "subobject: nb scalarFields");
+		assertEquals(3, subObject.scalarFields.size(), "subobject: nb scalarFields (with the added __typename field)");
 		assertEquals(0, subObject.subObjects.size(), "subobject: nb subObjects");
 		assertEquals("id", subObject.scalarFields.get(0).name, "subobject: field 0");
 		assertEquals("name", subObject.scalarFields.get(1).name, "subobject: field 1");
+		assertEquals("__typename", subObject.scalarFields.get(2).name, "subobject: field 2");
 	}
 
 	@Test
@@ -203,10 +204,11 @@ class BuilderTest {
 		assertEquals("aValidAlias", subObject.field.alias, "subobject fieldAlias");
 		assertEquals(Character.class, subObject.field.clazz, "subobject clazz");
 		//
-		assertEquals(2, subObject.scalarFields.size(), "subobject: nb scalarFields");
+		assertEquals(3, subObject.scalarFields.size(), "subobject: nb scalarFields (with the added __typename field)");
 		assertEquals(0, subObject.subObjects.size(), "subobject: nb subObjects");
 		assertEquals("id", subObject.scalarFields.get(0).name, "subobject: field 0");
 		assertEquals("name", subObject.scalarFields.get(1).name, "subobject: field 1");
+		assertEquals("__typename", subObject.scalarFields.get(2).name, "subobject: field 2");
 	}
 
 	@Test
@@ -247,7 +249,8 @@ class BuilderTest {
 
 		// Verification
 		// Verification
-		assertEquals(4, humanResponseDefBuilder.objectResponse.scalarFields.size(), "all scalar fields");
+		assertEquals(5, humanResponseDefBuilder.objectResponse.scalarFields.size(),
+				"all scalar fields (with __typename)");
 		//
 		// field name check
 		int i = 0;
@@ -255,6 +258,7 @@ class BuilderTest {
 		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("__typename", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 
 		// No non scalar
 		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
@@ -268,7 +272,8 @@ class BuilderTest {
 
 		// Verification
 		// Verification
-		assertEquals(4, humanResponseDefBuilder.objectResponse.scalarFields.size(), "all scalar fields");
+		assertEquals(5, humanResponseDefBuilder.objectResponse.scalarFields.size(),
+				"all scalar fields (with __typename)");
 		//
 		// field name check
 		int i = 0;
@@ -276,6 +281,7 @@ class BuilderTest {
 		assertEquals("name", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("appearsIn", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 		assertEquals("homePlanet", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
+		assertEquals("__typename", humanResponseDefBuilder.objectResponse.scalarFields.get(i++).name);
 
 		// No non scalar
 		assertEquals(0, humanResponseDefBuilder.objectResponse.subObjects.size(), "no non scalar fields");
@@ -292,7 +298,7 @@ class BuilderTest {
 		ObjectResponse respDef = humanResponseDefBuilder.build();
 		assertEquals("human", respDef.field.name, "field name");
 		//
-		assertEquals(2, respDef.scalarFields.size(), "nb scalar fields");
+		assertEquals(3, respDef.scalarFields.size(), "nb scalar fields (with the added __typename field)");
 		assertEquals("id", respDef.scalarFields.get(0).name, "name scalarFields 0");
 		assertNull(respDef.scalarFields.get(0).alias, "alias scalarFields 0");
 		assertEquals("name", respDef.scalarFields.get(1).name, "name scalarFields 1");
@@ -304,7 +310,7 @@ class BuilderTest {
 		assertEquals("friends", friends1.field.name);
 		assertEquals(null, friends1.field.alias);
 		//
-		assertEquals(3, friends1.scalarFields.size(), "friends1: nb scalar fields");
+		assertEquals(4, friends1.scalarFields.size(), "friends1: nb scalar fields (with the added __typename field)");
 		assertEquals("id", friends1.scalarFields.get(0).name, "friends1: name scalarFields 0");
 		assertNull(friends1.scalarFields.get(0).alias, "friends1: alias scalarFields 0");
 		assertEquals("name", friends1.scalarFields.get(1).name, "friends1: name scalarFields 1");
@@ -318,7 +324,7 @@ class BuilderTest {
 		assertEquals("friends", friends2.field.name);
 		assertEquals("amis", friends2.field.alias);
 		//
-		assertEquals(2, friends2.scalarFields.size());
+		assertEquals(3, friends2.scalarFields.size(), " (with the added __typename field)");
 		assertEquals("id", friends2.scalarFields.get(0).name);
 		assertNull(friends2.scalarFields.get(0).alias);
 		assertEquals("name", friends2.scalarFields.get(1).name);
@@ -342,7 +348,7 @@ class BuilderTest {
 		assertEquals(Board.class, response.getFieldClass());
 		assertNull(response.field.alias);
 
-		assertEquals(3, response.scalarFields.size());
+		assertEquals(4, response.scalarFields.size(), " (with the added __typename field)");
 		int i = 0;
 		assertEquals("id", response.scalarFields.get(i++).name);
 		assertEquals("name", response.scalarFields.get(i++).name);
@@ -397,7 +403,7 @@ class BuilderTest {
 		assertEquals(Board.class, response.getFieldClass());
 		assertNull(response.field.alias);
 
-		assertEquals(3, response.scalarFields.size());
+		assertEquals(4, response.scalarFields.size(), " (with the added __typename field)");
 		int i = 0;
 		assertEquals("id", response.scalarFields.get(i++).name);
 		assertEquals("name", response.scalarFields.get(i++).name);
@@ -498,7 +504,7 @@ class BuilderTest {
 		ObjectResponse resp = humanResponseDefBuilder.build();
 
 		// Verification
-		assertEquals(4, resp.scalarFields.size(), "all scalar fields");
+		assertEquals(5, resp.scalarFields.size(), "all scalar fields (with the added __typename field)");
 		//
 		// field name check
 		int i = 0;
@@ -506,6 +512,7 @@ class BuilderTest {
 		assertEquals("name", resp.scalarFields.get(i++).name);
 		assertEquals("appearsIn", resp.scalarFields.get(i++).name);
 		assertEquals("homePlanet", resp.scalarFields.get(i++).name);
+		assertEquals("__typename", resp.scalarFields.get(i++).name);
 
 		// No non scalar
 		assertEquals(0, resp.subObjects.size(), "no non scalar fields");
@@ -519,7 +526,7 @@ class BuilderTest {
 				.withQueryResponseDef("{case(test: DOUBLE)}").build();
 
 		// Verification
-		assertEquals(1, objectResponse.scalarFields.size());
+		assertEquals(2, objectResponse.scalarFields.size(), " (with the added __typename field)");
 
 		Field field = objectResponse.scalarFields.get(0);
 		assertEquals("case", field.name);

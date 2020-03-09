@@ -1,6 +1,18 @@
+# Not released yet
+
+Both modes (client and server):
+- GraphQL types can implement multiple interfaces
+- Upgrade of graphql-java from v13.0 to v14.0
+
+Client mode:
+- interfaces are properly deserialized, thanks to GraphQL introspection. 
+(caution: code impact. Previously, for each interface, the plugin would generated a concrete class that doesn't exist in the GraphQL schema. This is not the case any more, and only GraphQL types are now generated
+- The __typename is added to the list of scalar fields, for every request GraphQL nonscalar type. This allow to properly deserialize interfaces and unions.  
+
+
 # 1.4.0
 
-Any mode, client or server:
+Both modes (client and server):
 - The plugin is compatible again with java 8
 - The provided Date and DateTime scalars are now provided as a static field (instead of the class itself), due to a graphql-java change) 
 
@@ -9,7 +21,7 @@ Client mode:
 
 # 1.3.2
 
-Any mode, client or server:
+Both modes (client and server):
 - Input parameters are now managed for scalar fields (custom or not)
 - Removed the dependency to log4j, replaced by slf4j
 - the GraphQL schema may now use java keywords (if the GraphQL schema uses identifiers that are java keywords, these identifiers are prefixed by an underscore in the generated code)
@@ -19,7 +31,7 @@ Client mode:
 
 # 1.3.1
 
-Any mode, client or server:
+Both modes (client and server):
 - The project now compiles up to JDK 13 (the generated code is still compatible with java 8 and higher)
 - Unknown GraphQL concept are now ignored (instead of blocking the plugin work by throwing an error)
  
@@ -28,7 +40,7 @@ Any mode, client or server:
 # 1.3
 
 
-Any mode, client or server:
+Both modes (client and server):
 - Custom Scalars are now properly managed. You can provide your own Custom Scalars, or used the ones defined by graphql-java
 - Fixed issue 8: Problem when using Boolean Type with property prefix "is"
 
@@ -36,7 +48,7 @@ Any mode, client or server:
 # 1.2
 
 
-Any mode, client or server:
+Both modes (client and server):
 - Corrected a bad dependency version, which prevents the released plugin to work
 - Input object types are now accepted
 - [CAUTION, code impact] All GraphQL exceptions have been moved into the com.graphql_java_generator.exception package

@@ -639,6 +639,11 @@ public class Builder {
 		if (objectResponse.scalarFields.size() == 0 && objectResponse.subObjects.size() == 0) {
 			addKnownScalarFields();
 		}
+		// We add the __typename field for every type that is queried, if __typename was not already queried.
+		// This allows to manage returned GraphQL interfaces and unions instances, to be instanciated in the proper java
+		// class
+		addDatatypeFields(objectResponse);
+
 		return objectResponse;
 	}
 
@@ -813,6 +818,35 @@ public class Builder {
 		throw new GraphQLRequestPreparationException(
 				"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
 						+ "' of the class '" + owningClass.getName() + "'");
-
 	}
+
+	/**
+	 * Adds the _datatype into the scalar fields list (if it doesn't already exist) for this ObjectResponse, and fo the
+	 * same recursively for all its sub-objects responses.
+	 * 
+	 * @param objectResponse
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private void addDatatypeFields(ObjectResponse objectResponse) throws GraphQLRequestPreparationException {
+
+		ObjectResponse.Field __typename = null;
+		for (ObjectResponse.Field f : objectResponse.scalarFields) {
+			if (f.name.equals("__typename")) {
+				__typename = f;
+				break;
+			}
+		}
+		// If __typename was not found, we add it
+		if (__typename == null) {
+			__typename = new ObjectResponse.Field("__typename", null, objectResponse.getFieldClass(), String.class,
+					null);
+			objectResponse.scalarFields.add(__typename);
+		}
+
+		// Then we recurse into every sub-object
+		for (ObjectResponse or : objectResponse.subObjects) {
+			addDatatypeFields(or);
+		}
+	}
+
 }

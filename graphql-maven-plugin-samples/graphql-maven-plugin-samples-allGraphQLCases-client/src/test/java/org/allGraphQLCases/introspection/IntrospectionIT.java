@@ -16,6 +16,7 @@ import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client.__IntrospectionQuery;
 import org.allGraphQLCases.client.__Schema;
 import org.allGraphQLCases.client.__Type;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -38,7 +39,7 @@ public class IntrospectionIT {
 		__Schema schema = introspectionQuery.__schema("{types {name fields {name type {name}}}}");
 
 		// Verification
-		assertEquals(44, schema.getTypes().size());
+		assertEquals(40, schema.getTypes().size());
 		assertEquals("AllFieldCases", schema.getTypes().get(0).getName());
 		assertEquals("id", schema.getTypes().get(0).getFields().get(0).getName());
 	}
@@ -67,7 +68,8 @@ public class IntrospectionIT {
 		assertEquals("AllFieldCases", ret.get__typename());
 	}
 
-//	@Test
+	@Disabled // Not ready yet for interfaces
+	@Test
 	void test__datatype_withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification
@@ -82,7 +84,8 @@ public class IntrospectionIT {
 		// assertEquals("Droid", ret.get(0).get__typename());
 	}
 
-//	@Test
+	@Disabled // Not ready yet
+	@Test
 	void test__datatype_allFieldCases_Error()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification

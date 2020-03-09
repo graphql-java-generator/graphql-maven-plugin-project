@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 import com.graphql_java_generator.samples.server.jpa.DroidRepository;
 import com.graphql_java_generator.samples.server.jpa.HumanRepository;
 
@@ -21,43 +20,35 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQueryType {
 
 	@Resource
-	CharacterRepository characterRepository;
-	@Resource
 	HumanRepository humanRepository;
 	@Resource
 	DroidRepository droidRepository;
+	@Resource
+	CharacterHelper characterHelper;
 
 	@Resource
 	GraphQLUtil graphQLUtil;
 
 	@Override
 	public Character hero(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		List<CharacterImpl> characters;
+		List<Character> characters;
 
 		// episode may be null
-		if (episode == null) {
-			characters = characterRepository.findAll();
-		} else {
-			characters = characterRepository.findByAppearsIn(episode.toString());
-		}
-
-		// For an unknown reason to me, the sample returns one item.
-		if (characters.size() == 0) {
-			return null;
-		} else {
-			return characters.get(0);
-		}
+		if (episode == null)
+			// Let's say that the first of the list is the main hero
+			return characterHelper.findAll().get(0);
+		else
+			// Let's say that the first of the list is the main hero
+			return characterHelper.findByAppearsIn(episode.toString()).get(0);
 	}
 
 	@Override
 	public List<Character> characters(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
 		// episode may be null
-		if (episode == null) {
-			return graphQLUtil.iterableConcreteClassToListInterface(characterRepository.findAll());
-		} else {
-			return graphQLUtil
-					.iterableConcreteClassToListInterface(characterRepository.findByAppearsIn(episode.toString()));
-		}
+		if (episode == null)
+			return characterHelper.findAll();
+		else
+			return characterHelper.findByAppearsIn(episode.toString());
 	}
 
 	@Override

@@ -239,6 +239,7 @@ public class CodeGenerator {
 		context.put("pluginConfiguration", pluginConfiguration);
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
+		context.put("unions", documentParser.getUnionTypes());
 		context.put("imports", getImportList());
 		context.put("customScalars", documentParser.customScalars);
 

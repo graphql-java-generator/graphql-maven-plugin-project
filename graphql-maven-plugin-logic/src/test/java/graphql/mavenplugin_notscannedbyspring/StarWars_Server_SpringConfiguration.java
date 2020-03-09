@@ -14,7 +14,7 @@ import com.graphql_java_generator.plugin.PluginMode;
  * @author EtienneSF
  */
 @Configuration
-@ComponentScan(basePackages = "com.graphql_java_generator.plugin")
+@ComponentScan(basePackages = "com.graphql_java_generator")
 public class StarWars_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public StarWars_Server_SpringConfiguration() {

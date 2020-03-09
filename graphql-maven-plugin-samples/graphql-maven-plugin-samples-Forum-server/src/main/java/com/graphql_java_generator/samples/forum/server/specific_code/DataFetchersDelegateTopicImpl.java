@@ -4,15 +4,16 @@
 package com.graphql_java_generator.samples.forum.server.specific_code;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
+import org.dataloader.DataLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateTopic;
@@ -60,7 +61,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 	@Override
 	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, UUID memberId,
-			String memberName, String since) {
+			String memberName, Date since) {
 
 		if (since == null) {
 			// This should not happen, as since is mandatory

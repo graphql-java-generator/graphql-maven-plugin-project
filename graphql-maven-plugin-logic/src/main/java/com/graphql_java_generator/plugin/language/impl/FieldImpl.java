@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.Type;
@@ -78,14 +79,13 @@ public class FieldImpl implements Field {
 	 */
 	private String annotation = "";
 
+	/** All directives that have been defined in the GraphQL schema for this field */
+	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
+
 	/** {@inheritDoc} */
 	@Override
 	public Type getType() {
-		Type type = documentParser.getType(graphQLTypeName);
-		if (type == null) {
-			throw new NullPointerException("Could not find any Type of name '" + graphQLTypeName + "'");
-		}
-		return type;
+		return documentParser.getType(graphQLTypeName);
 	}
 
 	public void setGraphQLTypeName(String graphQLTypeName) {

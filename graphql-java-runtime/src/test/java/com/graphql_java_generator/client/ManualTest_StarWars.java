@@ -59,7 +59,7 @@ public class ManualTest_StarWars {
 
 		// Execution of the query. We get the result back in a POJO
 		Human human = queryType.human("{id name appearsIn homePlanet friends{name}}",
-				"00000000-0000-0000-0000-000000000180", null);
+				"00000000-0000-0000-0000-000000000180");
 
 		System.out.println(human);
 

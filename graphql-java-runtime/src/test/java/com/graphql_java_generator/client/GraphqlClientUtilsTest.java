@@ -15,7 +15,7 @@ import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitia
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.starwars.Character;
-import com.graphql_java_generator.client.domain.starwars.CharacterImpl;
+import com.graphql_java_generator.client.domain.starwars.Droid;
 import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
@@ -108,7 +108,7 @@ class GraphqlClientUtilsTest {
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", null, CharacterImpl.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", null, Droid.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -122,7 +122,7 @@ class GraphqlClientUtilsTest {
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", false, CharacterImpl.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", false, Droid.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -136,7 +136,7 @@ class GraphqlClientUtilsTest {
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", true, CharacterImpl.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", true, Droid.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -156,12 +156,12 @@ class GraphqlClientUtilsTest {
 				"id : scalar OK");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("id", false, CharacterImpl.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("id", false, Droid.class));
 		assertTrue(e.getMessage().contains("id"), "id");
 		//
-		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", null, CharacterImpl.class),
+		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", null, Droid.class),
 				"id : scalar OK");
-		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", true, CharacterImpl.class),
+		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", true, Droid.class),
 				"id : scalar OK");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -183,12 +183,12 @@ class GraphqlClientUtilsTest {
 				"id : scalar OK");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("friends", true, CharacterImpl.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("friends", true, Droid.class));
 		assertTrue(e.getMessage().contains("friends"), "friends");
 		//
-		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", null, CharacterImpl.class),
+		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", null, Droid.class),
 				"id : scalar OK");
-		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", true, CharacterImpl.class),
+		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("id", true, Droid.class),
 				"id : scalar OK");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -266,12 +266,12 @@ class GraphqlClientUtilsTest {
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 
 		// When
-		Field field =  Post.class.getDeclaredField( "date" );
+		Field field = Post.class.getDeclaredField("date");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType( field );
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field);
 
 		// Then
-		assertNotNull( graphQlScalarType );
+		assertNotNull(graphQlScalarType);
 	}
 
 	@Test
@@ -280,12 +280,12 @@ class GraphqlClientUtilsTest {
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 
 		// When
-		Field field =  PostInput.class.getDeclaredField( "from" );
+		Field field = PostInput.class.getDeclaredField("from");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType( field );
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field);
 
 		// Then
-		assertNotNull( graphQlScalarType );
+		assertNotNull(graphQlScalarType);
 	}
 
 }

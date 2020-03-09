@@ -13,7 +13,7 @@ import org.allGraphQLCases.server.WithID;
 import org.springframework.stereotype.Component;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 @Component

@@ -25,10 +25,9 @@ class InterfaceTypeTest {
 		o.setName("AClassName");
 
 		InterfaceType i = new InterfaceType(packageName, PluginMode.server);
-		i.setDefaultImplementation(o);
 
 		// Verification
-		assertEquals("AClassName", i.getConcreteClassSimpleName(), "");
+		assertEquals(null, i.getConcreteClassSimpleName(), "");
 	}
 
 }

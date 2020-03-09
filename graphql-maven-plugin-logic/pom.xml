@@ -53,7 +53,6 @@
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-runtime</artifactId>
-			<!-- scope>provided</scope -->
 		</dependency>
 
 		<!-- Dependencies for tests -->

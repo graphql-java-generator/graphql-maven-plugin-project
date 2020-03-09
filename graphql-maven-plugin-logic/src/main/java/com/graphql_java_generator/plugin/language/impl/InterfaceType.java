@@ -53,12 +53,6 @@ type Droid implements Character {
 public class InterfaceType extends ObjectType {
 
 	/**
-	 * the default implementation for this class. This default implementation is necessary to map the return of the
-	 * GraphQL server, in some cases. See in the class definition, here above.
-	 */
-	ObjectType defaultImplementation = null;
-
-	/**
 	 * Contains the list of all concrete types which implements this interface. That is: all the types defined in the
 	 * GraphQL schema, and the concrete type created by the GraphQL maven plugin to implement this interface
 	 */
@@ -76,12 +70,6 @@ public class InterfaceType extends ObjectType {
 	 */
 	public InterfaceType(String packageName, PluginMode mode) {
 		super(null, packageName, mode, GraphQlType.INTERFACE);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String getConcreteClassSimpleName() {
-		return defaultImplementation.getClassSimpleName();
 	}
 
 }

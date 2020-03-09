@@ -162,13 +162,8 @@ public class GraphqlUtils {
 					// We have a Scalar, here. Let's look at all known scalars
 					if (graphQLScalar.javaClass() == UUID.class) {
 						invokeMethod(setter, t, UUID.fromString((String) map.get(key)));
-					} else if (graphQLScalar.javaClass() == String.class || graphQLScalar.javaClass() == Boolean.class
-							|| graphQLScalar.javaClass() == Integer.class || graphQLScalar.javaClass() == Float.class
-							|| graphQLScalar.javaClass().isEnum()) {
-						invokeMethod(setter, t, map.get(key));
 					} else {
-						throw new RuntimeException(
-								"Non managed type when reading the input map: '" + graphQLScalar.javaClass().getName());
+						invokeMethod(setter, t, map.get(key));
 					}
 				} else if (graphQLNonScalar != null) {
 					// We got a non scalar field. So we expect a map, which content will map to the fields of the target
@@ -340,6 +335,26 @@ public class GraphqlUtils {
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(
 					"Could not get the method '" + methodName + "' in the " + clazz.getName() + " class", e);
+		}
+	}
+
+	/**
+	 * Calls the 'methodName' method on the given object.
+	 * 
+	 * @param methodName
+	 *            The name of the method. This method should have no parameter
+	 * @param object
+	 *            The given node, on which the 'methodName' method is to be called
+	 * @return
+	 */
+	public Object invokeMethod(String methodName, Object object) {
+		try {
+			Method getType = object.getClass().getDeclaredMethod(methodName);
+			return getType.invoke(object);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
 	}
 

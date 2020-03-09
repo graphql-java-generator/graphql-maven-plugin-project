@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
+import com.graphql_java_generator.samples.server.jpa.DroidRepository;
 import com.graphql_java_generator.samples.server.jpa.HumanRepository;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -23,7 +23,9 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	@Resource
 	HumanRepository humanRepository;
 	@Resource
-	CharacterRepository characterRepository;
+	DroidRepository droidRepository;
+	@Resource
+	CharacterHelper characterHelper;
 
 	@Override
 	public Human createHuman(DataFetchingEnvironment dataFetchingEnvironment, String name, String homePlanet) {
@@ -36,14 +38,22 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 
 	@Override
 	public Character addFriend(DataFetchingEnvironment dataFetchingEnvironment, String idCharacter, String idFriend) {
+		// What kind of character is it?
+		Character c = characterHelper.findById(UUID.fromString(idCharacter));
 
-		// First, we add the friend
-		characterRepository.addFriend(UUID.fromString(idCharacter), UUID.fromString(idFriend));
+		if (c == null) {
+			throw new RuntimeException(idCharacter + " is not an id of a an existing character");
+		} else if (c instanceof Human) {
+			humanRepository.addFriend(UUID.fromString(idCharacter), UUID.fromString(idFriend));
+		} else if (c instanceof Droid) {
+			droidRepository.addFriend(UUID.fromString(idCharacter), UUID.fromString(idFriend));
+		} else {
+			throw new RuntimeException(
+					idCharacter + " is a character of an unknown type (" + c.getClass().getName() + ")");
+		}
 
-		// Then we return the expected character. Please note that this get() call can throw a NoSuchElementException,
-		// if the idCharacter doesn't exist. The generated code properly handles this error.
-		// (Ok, yes, here, if the idCharacter is wrong, the previous query would already have sent an exception... :) )
-		return characterRepository.findById(UUID.fromString(idCharacter)).get();
+		// Then we return the new friend
+		return characterHelper.findById(UUID.fromString(idCharacter));
 	}
 
 }

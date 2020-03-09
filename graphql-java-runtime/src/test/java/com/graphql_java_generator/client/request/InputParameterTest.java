@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.domain.forum.AvailabilityType;
 import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
@@ -107,14 +106,14 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_recursive_InputType() throws GraphQLRequestExecutionException {
 		// Preparation
 		TopicPostInput topicPostInput = new TopicPostInput();
-		topicPostInput.setAuthorId(UUID.fromString("00000000-0000-0000-0000-000000000012"));
+		topicPostInput.setAuthorId("00000000-0000-0000-0000-000000000012");
 		topicPostInput.setContent("Some other content");
-		topicPostInput.setDate("2009-11-21");
+		topicPostInput.setDate(new Date(2009 - 1900, 11 - 1, 21));
 		topicPostInput.setPubliclyAvailable(false);
 		topicPostInput.setTitle("The good title for a post");
 
 		PostInput postInput = new PostInput();
-		postInput.setTopicId(UUID.fromString("00000000-0000-0000-0000-000000000022"));
+		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
 		postInput.setInput(topicPostInput);
 
 		String name = "anotherName";
@@ -123,11 +122,6 @@ class InputParameterTest {
 		// Verification
 		assertEquals(
 				"{topicId: \\\"00000000-0000-0000-0000-000000000022\\\", input: {authorId: \\\"00000000-0000-0000-0000-000000000012\\\", date: \\\"2009-11-21\\\", publiclyAvailable: false, title: \\\"The good title for a post\\\", content: \\\"Some other content\\\"}}",
-				param.getValueForGraphqlQuery(postInput, null));
-
-		postInput.getInput().setAvailabilityType(AvailabilityType.SEMI_PRIVATE);
-		assertEquals(
-				"{topicId: \\\"00000000-0000-0000-0000-000000000022\\\", input: {authorId: \\\"00000000-0000-0000-0000-000000000012\\\", date: \\\"2009-11-21\\\", publiclyAvailable: false, title: \\\"The good title for a post\\\", content: \\\"Some other content\\\", availabilityType: SEMI_PRIVATE}}",
 				param.getValueForGraphqlQuery(postInput, null));
 	}
 
@@ -262,7 +256,8 @@ class InputParameterTest {
 	}
 
 	@Test
-	void getValueForGraphqlQuery_BindParameter_InputType_CustomScalar_Date_OK() throws GraphQLRequestExecutionException {
+	void getValueForGraphqlQuery_BindParameter_InputType_CustomScalar_Date_OK()
+			throws GraphQLRequestExecutionException {
 		// Given
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 
@@ -270,27 +265,27 @@ class InputParameterTest {
 		String bindParameterName = "variableName";
 
 		PostInput postInput = new PostInput();
-		postInput.setFrom( getDateFromDifferentFormat("01-01-2020") );
-		postInput.setIn( asList( getDateFromDifferentFormat("01-02-2020"), getDateFromDifferentFormat("01-03-2020")) );
+		postInput.setFrom(getDateFromDifferentFormat("01-01-2020"));
+		postInput.setIn(asList(getDateFromDifferentFormat("01-02-2020"), getDateFromDifferentFormat("01-03-2020")));
 
-		InputParameter inputTypeInputParameter = InputParameter.newBindParameter(  name, bindParameterName, false);
+		InputParameter inputTypeInputParameter = InputParameter.newBindParameter(name, bindParameterName, false);
 
-		Map<String,Object> parameters = new HashMap<>();
+		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(bindParameterName, postInput);
 
 		// When
-		assertEquals("{from: \\\"2020-01-01\\\", in: [\\\"2020-02-01\\\",\\\"2020-03-01\\\"]}", inputTypeInputParameter.getValueForGraphqlQuery(parameters));
+		assertEquals("{from: \\\"2020-01-01\\\", in: [\\\"2020-02-01\\\",\\\"2020-03-01\\\"]}",
+				inputTypeInputParameter.getValueForGraphqlQuery(parameters));
 	}
 
-	private Date getDateFromDifferentFormat( String dateInString ) {
-		SimpleDateFormat formatter = new SimpleDateFormat( "dd-MM-yyyy" );
+	private Date getDateFromDifferentFormat(String dateInString) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		try {
-			return formatter.parse( dateInString );
-		} catch ( ParseException e ) {
-			Assertions.fail( "Invalid date format.");
+			return formatter.parse(dateInString);
+		} catch (ParseException e) {
+			Assertions.fail("Invalid date format.");
 			return null;
 		}
 	}
-
 
 }

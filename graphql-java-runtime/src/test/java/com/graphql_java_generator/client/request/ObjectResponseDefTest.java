@@ -83,7 +83,7 @@ class ObjectResponseDefTest {
 		objectResponse.appendResponseQuery(sb, new HashMap<String, Object>(), false);
 
 		// Verification
-		assertEquals("human{aliasForName:name id homePlanet}", sb.toString());
+		assertEquals("human{aliasForName:name id homePlanet __typename}", sb.toString());
 	}
 
 	@Test
@@ -110,21 +110,22 @@ class ObjectResponseDefTest {
 		objectResponse.appendResponseQuery(sb, new HashMap<String, Object>(), false);
 
 		// Verification
-		assertEquals(3, objectResponse.scalarFields.size(), "Human: scalarFields");
+		assertEquals(4, objectResponse.scalarFields.size(), "Human: scalarFields (with the added __typename field)");
 		assertEquals(1, objectResponse.subObjects.size(), "Human: objects");
 
 		// Friends : first sublevel
-		assertEquals(2, objectResponse.subObjects.get(0).scalarFields.size(), "friends (first level): scalarFields");
+		assertEquals(3, objectResponse.subObjects.get(0).scalarFields.size(),
+				"friends (first level): scalarFields (with the added __typename field)");
 		assertEquals(1, objectResponse.subObjects.get(0).subObjects.size(), "friends (first level): objects");
 
 		// Friends : second sublevel
-		assertEquals(3, objectResponse.subObjects.get(0).subObjects.get(0).scalarFields.size(),
-				"friends (second level): scalarFields");
+		assertEquals(4, objectResponse.subObjects.get(0).subObjects.get(0).scalarFields.size(),
+				"friends (second level): scalarFields (with the added __typename field)");
 		assertEquals(0, objectResponse.subObjects.get(0).subObjects.get(0).subObjects.size(),
 				"friends (second level): objects");
 
 		assertEquals(
-				"human{aliasForId:id name homePlanet aliasForFriends:friends{id aliasForName:name friends{id name appearsIn}}}",
+				"human{aliasForId:id name homePlanet __typename aliasForFriends:friends{id aliasForName:name __typename friends{id name appearsIn __typename}}}",
 				sb.toString());
 	}
 }

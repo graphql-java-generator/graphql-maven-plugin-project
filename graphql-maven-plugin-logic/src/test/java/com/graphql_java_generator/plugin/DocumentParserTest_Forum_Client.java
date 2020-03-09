@@ -44,7 +44,7 @@ class DocumentParserTest_Forum_Client {
 	void test_initRelations() {
 
 		// Verification
-		assertEquals(4, documentParser.relations.size(), "nb relations found");
+		assertEquals(19, documentParser.relations.size(), "nb relations found");
 
 		// The Relation are found in the order of their declaratioon in the GraphQL schema definition.
 		// Let's check that
@@ -85,7 +85,8 @@ class DocumentParserTest_Forum_Client {
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
 				"@GraphQLScalar(graphQLTypeName = \"ID\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)");
+				"@JsonDeserialize(using = CustomScalarDeserializerDate.class)\n"
+						+ "	@GraphQLScalar(graphQLTypeName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
 				"@GraphQLNonScalar(graphQLTypeName = \"Member\", javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",

@@ -50,7 +50,7 @@ public interface Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	/** A utility method to create the TopicPostInput Type, from its values */
-	default TopicPostInput getTopicPostInput(Member author, String date, boolean publiclyAvailable, String title,
+	default TopicPostInput getTopicPostInput(Member author, Date date, boolean publiclyAvailable, String title,
 			String content) {
 		TopicPostInput input = new TopicPostInput();
 		input.setAuthorId(author.getId());
@@ -62,7 +62,7 @@ public interface Queries {
 	}
 
 	/** A utility method to create the TopicInput Type, from its values */
-	default TopicInput getTopicInput(Board board, Member author, String date, boolean publiclyAvailable, String title,
+	default TopicInput getTopicInput(Board board, Member author, Date date, boolean publiclyAvailable, String title,
 			String content) {
 		TopicInput input = new TopicInput();
 		input.setBoardId(board.getId());
@@ -71,7 +71,7 @@ public interface Queries {
 	}
 
 	/** A utility method to create the PostInput Type, from its values */
-	default PostInput getPostInput(Topic topic, Member author, String date, boolean publiclyAvailable, String title,
+	default PostInput getPostInput(Topic topic, Member author, Date date, boolean publiclyAvailable, String title,
 			String content) {
 		PostInput input = new PostInput();
 		input.setTopicId(topic.getId());

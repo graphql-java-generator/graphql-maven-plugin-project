@@ -43,7 +43,7 @@ public class PreparedQueriesWithFieldInputParameters {
 	List<Topic> boardsWithPostSince(String boardName, UUID memberId, String memberName, Date since)
 			throws GraphQLRequestExecutionException {
 		return queryType.topics(topicAuthorPostAuthorResponse, boardName, "memberId", memberId, "memberName",
-				memberName, "since", dateFormat.format(since));
+				memberName, "since", since);
 	}
 
 }

@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.samples.server.jpa.CharacterRepository;
 import com.graphql_java_generator.samples.server.jpa.HumanRepository;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -28,10 +27,9 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateHumanImpl.class);
 
 	@Resource
-	CharacterRepository characterRepository;
-
-	@Resource
 	HumanRepository humanRepository;
+	@Resource
+	CharacterHelper characterHelper;
 
 	@Resource
 	GraphQLUtil graphQLUtil;
@@ -39,7 +37,7 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	@Override
 	public List<Character> friends(DataFetchingEnvironment environment, Human source) {
 		logger.debug("Executing human.friends, with this human: {}", source.getId().toString());
-		return new ArrayList<Character>(characterRepository.findFriends(source.getId()));
+		return characterHelper.friends(source.getId());
 	}
 
 	@Override
