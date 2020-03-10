@@ -130,7 +130,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		Class<? extends T> clazz;
 		try {
 			clazz = (Class<? extends T>) getClass().getClassLoader()
-					.loadClass(t.getPackageName() + "." + simpleClassname);
+					.loadClass(t.getPackage().getName() + "." + simpleClassname);
 		} catch (RuntimeException | ClassNotFoundException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
