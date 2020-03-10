@@ -32,7 +32,7 @@ public interface DirectiveRegistry {
 	 * Retrieves the registered {@link GraphQLScalarType} for this GraphQL CustomScalar.
 	 * 
 	 * @param name
-	 * @return the {@link Directive}, or null if no converter has been registered for the given name
+	 * @return the {@link Directive}, or null if no directive has been registered for the given name
 	 */
 	public Directive getDirective(String name);
 

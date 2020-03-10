@@ -30,7 +30,7 @@ public class DirectiveRegistryImpl implements DirectiveRegistry {
 	 * Map of all registered Custom Scalars. The key is the type name or the Custom Scalar, as defined in the GraphQL
 	 * schema.
 	 */
-	Map<String, Directive> directiveTypes = new HashMap<>();
+	static Map<String, Directive> directiveTypes = new HashMap<>();
 
 	/**
 	 * {@inheritDoc}<BR/>

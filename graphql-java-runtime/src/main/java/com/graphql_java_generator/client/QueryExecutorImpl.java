@@ -16,12 +16,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, for query, mutation
@@ -82,8 +82,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 	}
 
 	/**
-	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
-	 * that gives the opportunity to customise the REST request<BR/>
+	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client that gives the opportunity
+	 * to customise the REST request<BR/>
 	 * For example: http://my.server.com/graphql
 	 *
 	 * @param graphqlEndpoint
@@ -188,6 +188,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	String buildRequest(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 
+		// TODO requestType should be an enum
 		if (!requestType.equals("query") && !requestType.equals("mutation") && !requestType.equals("subscription")) {
 			throw new IllegalArgumentException(
 					"requestType must be one of \"query\", \"mutation\" or \"subscription\", but is \"" + requestType
@@ -195,10 +196,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(requestType);
-		sb.append("{");
 		objectResponse.appendResponseQuery(sb, parameters, false);
-		sb.append("}");
 
 		return "{\"query\":\"" + sb.toString() + "\",\"variables\":null,\"operationName\":null}";
 	}

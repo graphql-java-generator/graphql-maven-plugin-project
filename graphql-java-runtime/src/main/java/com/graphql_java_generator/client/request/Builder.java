@@ -14,6 +14,8 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.directive.Directive;
+import com.graphql_java_generator.directive.DirectiveRegistry;
+import com.graphql_java_generator.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -35,6 +37,7 @@ public class Builder {
 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
+	DirectiveRegistry directiveRegistry = new DirectiveRegistryImpl();
 
 	final ObjectResponse objectResponse;
 
@@ -159,10 +162,10 @@ public class Builder {
 				case "(":
 					if (directive != null) {
 						// We're starting to read the arguments for the last directive we've read
-						directive.setArguments(readTokenizerForInputParameters(st));
+						directive.setArguments(readTokenizerForInputParameters(st, directive));
 					} else if (currentField != null) {
 						// We're starting the reading of field parameters
-						currentField.inputParameters = currentField.readTokenizerForInputParameters(st);
+						currentField.inputParameters = currentField.readTokenizerForInputParameters(st, null);
 					} else {
 						throw new GraphQLRequestPreparationException(
 								"The given query has a parentesis '(' not preceded by a field name (error while reading field <"
@@ -219,10 +222,13 @@ public class Builder {
 		 * @param st
 		 *            The StringTokenizer, where the opening parenthesis has been read. It will be read until and
 		 *            including the next closing parenthesis.
+		 * @param directive
+		 *            is not null, then this method is reading the input parameters (arguments) for this
+		 *            {@link Directive}
 		 * @throws GraphQLRequestPreparationException
 		 *             If the request string is invalid
 		 */
-		List<InputParameter> readTokenizerForInputParameters(StringTokenizer st)
+		List<InputParameter> readTokenizerForInputParameters(StringTokenizer st, Directive directive)
 				throws GraphQLRequestPreparationException {
 			List<InputParameter> ret = new ArrayList<>(); // The list that will be returned by this method
 			InputParameterStep step = InputParameterStep.NAME;
@@ -308,8 +314,14 @@ public class Builder {
 											+ " But it's not the case for the value <" + token + "> of parameter <"
 											+ parameterName
 											+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
+						} else if (directive != null) {
+							Object parameterValue = parseDirectiveArgumentValue(directive, parameterName, token,
+									owningClazz.getPackage().getName());
+							InputParameter arg = new InputParameter(parameterName, null, parameterValue, true, null);
+							ret.add(arg);
+							directive.getArguments().add(arg);
 						} else {
-							Object parameterValue = getParameterValue(owningClazz, name, parameterName, token);
+							Object parameterValue = parseInputParameterValue(owningClazz, name, parameterName, token);
 							ret.add(new InputParameter(parameterName, null, parameterValue, true, null));
 						}
 						step = InputParameterStep.NAME;
@@ -322,10 +334,18 @@ public class Builder {
 					"The list of parameters for the field '" + name + "' is not finished (no closing parenthesis)");
 		}
 
-		private Object getParameterValue(Class<?> owningClass, String fieldName, String parameterName,
+		/**
+		 * Parse a value read for an input parameter, within the query
+		 * 
+		 * @param owningClass
+		 * @param fieldName
+		 * @param parameterName
+		 * @param parameterValue
+		 * @return
+		 * @throws GraphQLRequestPreparationException
+		 */
+		private Object parseInputParameterValue(Class<?> owningClass, String fieldName, String parameterName,
 				String parameterValue) throws GraphQLRequestPreparationException {
-			Object ret = null;
-
 			Field field;
 			try {
 				field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
@@ -340,16 +360,65 @@ public class Builder {
 						+ "' is lacking the GraphQLInputParameters annotation");
 			}
 
-			String parameterType = null;
 			for (int i = 0; i < graphQLInputParameters.names().length; i += 1) {
 				if (graphQLInputParameters.names()[i].equals(parameterName)) {
-					parameterType = graphQLInputParameters.types()[i];
+					// We've found the parameterType. Let's get its value.
+					try {
+						return parseValueForInputParameter(parameterValue, graphQLInputParameters.types()[i],
+								owningClass.getPackage().getName());
+					} catch (Exception e) {
+						throw new GraphQLRequestPreparationException(
+								"Could not read the value for the parameter '" + parameterName + "' of the field '"
+										+ fieldName + "' of the type '" + owningClass.getName() + "'");
+					}
 				}
 			}
-			if (parameterType == null) {
-				throw new GraphQLRequestPreparationException("[Internal error] Can't find the type for the parameter '"
-						+ parameterName + "' of the field '" + fieldName + "'");
+
+			// Too bad...
+			throw new GraphQLRequestPreparationException("[Internal error] Can't find the type for the parameter '"
+					+ parameterName + "' of the field '" + fieldName + "'");
+		}
+
+		private Object parseDirectiveArgumentValue(Directive directive, String parameterName, String parameterValue,
+				String packageName) throws GraphQLRequestPreparationException {
+			// Let's find the directive definition for this read directive
+			Directive directiveDefinition = directiveRegistry.getDirective(directive.getName());
+			if (directiveDefinition == null) {
+				throw new GraphQLRequestPreparationException(
+						"Could not find the definition for the directive '" + directive.getName() + "'");
 			}
+
+			// Let's find the parameter type, so that we can call parseValueForInputParameter method
+			for (InputParameter param : directiveDefinition.getArguments()) {
+				if (param.getName().equals(parameterName)) {
+					// We've found the parameterType. Let's get its value.
+					try {
+						return parseValueForInputParameter(parameterValue, param.getGraphQLScalarType().getName(),
+								packageName);
+					} catch (Exception e) {
+						throw new GraphQLRequestPreparationException("Could not read the value for the parameter '"
+								+ parameterName + "' of the directive '" + directive.getName() + "'", e);
+					}
+				}
+			}
+
+			// Too bad...
+			throw new GraphQLRequestPreparationException("[Internal error] Can't find the argument '" + parameterName
+					+ "' of the directive '" + directive.getName() + "'");
+		}
+
+		/**
+		 * Parse a value, depending on the parameter type.
+		 * 
+		 * @param parameterValue
+		 * @param parameterType
+		 * @param packageName
+		 *            Needed to find the class that implements this type
+		 * @return
+		 * @throws GraphQLRequestPreparationException
+		 */
+		private Object parseValueForInputParameter(String parameterValue, String parameterType, String packageName)
+				throws GraphQLRequestPreparationException {
 
 			// Let's check if this type is a Custom Scalar
 			GraphQLScalarType scalarType = CustomScalarRegistryImpl.customScalarRegistry
@@ -357,44 +426,59 @@ public class Builder {
 
 			if (scalarType != null) {
 				// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
-				ret = scalarType.getCoercing().parseValue(parameterValue);
+				return scalarType.getCoercing().parseValue(parameterValue);
+			} else if (parameterType.equals("Boolean")) {
+				if (parameterValue.equals("true"))
+					return Boolean.TRUE;
+				else if (parameterValue.equals("false"))
+					return Boolean.FALSE;
+				else
+					throw new GraphQLRequestPreparationException("Bad boolean value '" + parameterValue
+							+ "' for the parameter type '" + parameterType + "'");
+			} else if (parameterType.equals("ID")) {
+				return parameterValue;
+			} else if (parameterType.equals("Float")) {
+				return Float.parseFloat(parameterValue);
+			} else if (parameterType.equals("Int")) {
+				return Integer.parseInt(parameterValue);
+			} else if (parameterType.equals("Long")) {
+				return Long.parseLong(parameterValue);
+			} else if (parameterType.equals("String")) {
+				return parameterValue;
 			} else {
 				// This type is not a Custom Scalar, so it must be a standard Scalar. Let's manage it
-				String parameterClassname = owningClass.getPackage().getName() + "."
-						+ graphqlUtils.getJavaName(parameterType);
+				String parameterClassname = packageName + "." + graphqlUtils.getJavaName(parameterType);
 				Class<?> parameterClass;
 				try {
 					parameterClass = Class.forName(parameterClassname);
 				} catch (ClassNotFoundException e) {
-					throw new GraphQLRequestPreparationException("Couldn't find the class (" + parameterClassname
-							+ ") of the parameter '" + parameterName + "' of the field '" + fieldName + "'", e);
+					throw new GraphQLRequestPreparationException(
+							"Couldn't find the class (" + parameterClassname + ") of the type '" + parameterType + "'",
+							e);
 				}
 
 				if (parameterClass.isEnum()) {
 					// This parameter is an enum. The parameterValue is one of its elements
 					Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
-					ret = graphqlUtils.invokeMethod(valueOf, null, parameterValue);
+					return graphqlUtils.invokeMethod(valueOf, null, parameterValue);
 				} else if (parameterClass.isAssignableFrom(Boolean.class)) {
 					// This parameter is a boolean. Only true and false are valid boolean.
 					if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
 						throw new GraphQLRequestPreparationException(
-								"Only true and false are allowed values for booleans. But the parameter '"
-										+ parameterName + "' of the field '" + fieldName + "' has the '"
+								"Only true and false are allowed values for booleans, but the value is '"
 										+ parameterValue + "'");
 					}
-					ret = "true".equals(parameterValue);
+					return "true".equals(parameterValue);
 				} else if (parameterClass.isAssignableFrom(Integer.class)) {
-					ret = Integer.parseInt(parameterValue);
+					return Integer.parseInt(parameterValue);
 				} else if (parameterClass.isAssignableFrom(Float.class)) {
-					ret = Float.parseFloat(parameterValue);
+					return Float.parseFloat(parameterValue);
 				}
 			} // else (scalarType != null)
 
-			if (ret != null)
-				return ret;
-			else
-				throw new GraphQLRequestPreparationException("Couldn't parse the value for the parameter '"
-						+ parameterName + "' of the field '" + fieldName + "'. The value is '" + parameterValue + "'");
+			// Too bad...
+			throw new GraphQLRequestPreparationException(
+					"Couldn't parse the value'" + parameterValue + "' for the parameter type '" + parameterType + "'");
 		}
 
 		/**
@@ -702,8 +786,8 @@ public class Builder {
 		}
 		// We add the __typename field for every type that is queried, if __typename was not already queried.
 		// This allows to manage returned GraphQL interfaces and unions instances, to be instanciated in the proper java
-		// class
-		addDatatypeFields(objectResponse);
+		// class.
+		addTypenameFields(objectResponse, false);
 
 		return objectResponse;
 	}
@@ -885,31 +969,39 @@ public class Builder {
 	}
 
 	/**
-	 * Adds the _datatype into the scalar fields list (if it doesn't already exist) for this ObjectResponse, and fo the
+	 * Adds the _typename into the scalar fields list (if it doesn't already exist) for this ObjectResponse, and fo the
 	 * same recursively for all its sub-objects responses.
 	 * 
 	 * @param objectResponse
+	 * @param addTypenameForThisLevel
+	 *            true if __typename should be added for this hierarchical level. It should be false only for the
+	 *            query/mutation/subscription level, and true for this others.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private void addDatatypeFields(ObjectResponse objectResponse) throws GraphQLRequestPreparationException {
+	private void addTypenameFields(ObjectResponse objectResponse, boolean addTypenameForThisLevel)
+			throws GraphQLRequestPreparationException {
 
-		ObjectResponse.Field __typename = null;
-		for (ObjectResponse.Field f : objectResponse.scalarFields) {
-			if (f.name.equals("__typename")) {
-				__typename = f;
-				break;
+		if (addTypenameForThisLevel) {
+			// Let's look for an existing __typename field
+			ObjectResponse.Field __typename = null;
+			for (ObjectResponse.Field f : objectResponse.scalarFields) {
+				if (f.name.equals("__typename")) {
+					__typename = f;
+					break;
+				}
 			}
-		}
-		// If __typename was not found, we add it
-		if (__typename == null) {
-			__typename = new ObjectResponse.Field("__typename", null, objectResponse.getFieldClass(), String.class,
-					null, null);
-			objectResponse.scalarFields.add(__typename);
+			// If __typename was not found, we add it
+			if (__typename == null) {
+				__typename = new ObjectResponse.Field("__typename", null, objectResponse.getFieldClass(), String.class,
+						null, null);
+				objectResponse.scalarFields.add(__typename);
+			}
 		}
 
 		// Then we recurse into every sub-object
 		for (ObjectResponse or : objectResponse.subObjects) {
-			addDatatypeFields(or);
+			// For subobjects, we always add the __typename field
+			addTypenameFields(or, true);
 		}
 	}
 

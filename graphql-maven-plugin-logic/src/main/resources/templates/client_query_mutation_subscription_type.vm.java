@@ -29,6 +29,8 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+import ${pluginConfiguration.packageName}.DirectiveRegistryInitializer;
+
 #foreach($import in $imports)
 import $import;
 #end
@@ -57,6 +59,7 @@ public class ${object.javaName} {
 	public ${object.javaName}(String graphqlEndpoint) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint);
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		new DirectiveRegistryInitializer().initDirectiveRegistry();
 	}
 
 	/**
