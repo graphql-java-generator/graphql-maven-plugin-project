@@ -145,6 +145,11 @@
 			<type>pom</type>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 
 		<!-- Dependencies for graphql-java-generator -->
