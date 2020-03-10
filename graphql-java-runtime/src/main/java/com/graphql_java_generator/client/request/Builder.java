@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.graphql_java_generator.GraphqlUtils;
@@ -12,6 +13,7 @@ import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.directive.Directive;
 import com.graphql_java_generator.directive.DirectiveRegistry;
@@ -574,7 +576,7 @@ public class Builder {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder(Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
-		objectResponse = new ObjectResponse(owningClass, fieldName, null);
+		this(owningClass, fieldName, null, false);
 	}
 
 	/**
@@ -590,7 +592,46 @@ public class Builder {
 	 */
 	public Builder(Class<?> owningClass, String fieldName, String fieldAlias)
 			throws GraphQLRequestPreparationException {
+		this(owningClass, fieldName, fieldAlias, false);
+	}
+
+	/**
+	 * Creates a Builder, for a field without alias
+	 * 
+	 * @param owningClass
+	 *            The class that contains this field
+	 * @param fieldName
+	 *            The field for which we must build an ObjectResponse
+	 * @param queryLevel
+	 *            true if this {@link ObjectResponse} contains the response definition from the query level. This is
+	 *            used in the {@link QueryExecutorImpl#execute(String, ObjectResponse, Map, Class)} method, to properly
+	 *            build the request.
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder(Class<?> owningClass, String fieldName, boolean queryLevel)
+			throws GraphQLRequestPreparationException {
+		this(owningClass, fieldName, null, queryLevel);
+	}
+
+	/**
+	 * Creates a Builder
+	 * 
+	 * @param owningClass
+	 *            The class that contains this field
+	 * @param fieldName
+	 *            The field for which we must build an ObjectResponse
+	 * @param fieldAlias
+	 *            Its optional alias (may be null)
+	 * @param queryLevel
+	 *            true if this {@link ObjectResponse} contains the response definition from the query level. This is
+	 *            used in the {@link QueryExecutorImpl#execute(String, ObjectResponse, Map, Class)} method, to properly
+	 *            build the request.
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder(Class<?> owningClass, String fieldName, String fieldAlias, boolean queryLevel)
+			throws GraphQLRequestPreparationException {
 		objectResponse = new ObjectResponse(owningClass, fieldName, fieldAlias);
+		objectResponse.setQueryLevel(queryLevel);
 	}
 
 	/**
@@ -787,7 +828,7 @@ public class Builder {
 		// We add the __typename field for every type that is queried, if __typename was not already queried.
 		// This allows to manage returned GraphQL interfaces and unions instances, to be instanciated in the proper java
 		// class.
-		addTypenameFields(objectResponse, false);
+		addTypenameFields(objectResponse);
 
 		return objectResponse;
 	}
@@ -973,15 +1014,12 @@ public class Builder {
 	 * same recursively for all its sub-objects responses.
 	 * 
 	 * @param objectResponse
-	 * @param addTypenameForThisLevel
-	 *            true if __typename should be added for this hierarchical level. It should be false only for the
-	 *            query/mutation/subscription level, and true for this others.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private void addTypenameFields(ObjectResponse objectResponse, boolean addTypenameForThisLevel)
-			throws GraphQLRequestPreparationException {
+	private void addTypenameFields(ObjectResponse objectResponse) throws GraphQLRequestPreparationException {
 
-		if (addTypenameForThisLevel) {
+		// We add the __typename for all levels, but the query/mutation/subscription one
+		if (!objectResponse.isQueryLevel()) {
 			// Let's look for an existing __typename field
 			ObjectResponse.Field __typename = null;
 			for (ObjectResponse.Field f : objectResponse.scalarFields) {
@@ -1001,7 +1039,7 @@ public class Builder {
 		// Then we recurse into every sub-object
 		for (ObjectResponse or : objectResponse.subObjects) {
 			// For subobjects, we always add the __typename field
-			addTypenameFields(or, true);
+			addTypenameFields(or);
 		}
 	}
 

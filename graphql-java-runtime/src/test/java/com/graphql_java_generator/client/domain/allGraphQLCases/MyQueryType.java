@@ -242,8 +242,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(MyQueryTypeRootResponse.class, "query");
-		return builder;
+		return new Builder(MyQueryTypeRootResponse.class, "query", true);
 	}
 
 	/**
@@ -422,7 +421,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithoutParametersResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withoutParameters");
+		Builder builder = new Builder(getClass(), "withoutParameters", false);
 		return builder;
 	}
 
@@ -616,7 +615,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithOneOptionalParamResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withOneOptionalParam");
+		Builder builder = new Builder(getClass(), "withOneOptionalParam", false);
 		builder.withInputParameter(
 				InputParameter.newBindParameter("character", "myQueryTypeWithOneOptionalParamCharacter", false, null));
 		return builder;
@@ -812,7 +811,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithOneMandatoryParamResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withOneMandatoryParam");
+		Builder builder = new Builder(getClass(), "withOneMandatoryParam", false);
 		builder.withInputParameter(
 				InputParameter.newBindParameter("character", "myQueryTypeWithOneMandatoryParamCharacter", false, null));
 		return builder;
@@ -1003,7 +1002,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithEnumResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withEnum");
+		Builder builder = new Builder(getClass(), "withEnum", false);
 		builder.withInputParameter(
 				InputParameter.newBindParameter("episode", "myQueryTypeWithEnumEpisode", false, null));
 		return builder;
@@ -1208,7 +1207,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithListResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withList");
+		Builder builder = new Builder(getClass(), "withList", false);
 		builder.withInputParameter(
 				InputParameter.newBindParameter("firstName", "myQueryTypeWithListFirstName", false, null));
 		builder.withInputParameter(
@@ -1406,7 +1405,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getAllFieldCasesResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "allFieldCases");
+		Builder builder = new Builder(getClass(), "allFieldCases", false);
 		builder.withInputParameter(
 				InputParameter.newBindParameter("input", "myQueryTypeAllFieldCasesInput", false, null));
 		return builder;
@@ -1596,7 +1595,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getErrorResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "error");
+		Builder builder = new Builder(getClass(), "error", false);
 		builder.withInputParameter(
 				InputParameter.newBindParameter("errorLabel", "myQueryTypeErrorErrorLabel", false, null));
 		return builder;
@@ -1774,7 +1773,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getABreakResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "aBreak");
+		Builder builder = new Builder(getClass(), "aBreak", false);
 		return builder;
 	}
 

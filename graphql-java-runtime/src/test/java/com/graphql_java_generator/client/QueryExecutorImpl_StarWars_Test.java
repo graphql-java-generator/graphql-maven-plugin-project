@@ -111,7 +111,7 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE, id:\\\"this is an id\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE,id:\\\"this is an id\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 

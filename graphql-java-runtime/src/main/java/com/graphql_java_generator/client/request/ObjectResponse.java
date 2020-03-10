@@ -13,6 +13,7 @@ import org.slf4j.Marker;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
+import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -103,6 +104,12 @@ public class ObjectResponse {
 	 * own sub-objects
 	 */
 	List<ObjectResponse> subObjects = new ArrayList<>();
+
+	/**
+	 * true if this {@link ObjectResponse} contains the response definition from the query level. This is used in the
+	 * {@link QueryExecutorImpl#execute(String, ObjectResponse, Map, Class)} method, to properly build the request.
+	 */
+	boolean queryLevel = false;
 
 	/**
 	 * A {@link ObjectResponse} can only be created through the {@link Builder} created for it. See the
@@ -328,6 +335,14 @@ public class ObjectResponse {
 	 */
 	public void addDirectives(List<Directive> directives) {
 		field.directives.addAll(directives);
+	}
+
+	public boolean isQueryLevel() {
+		return queryLevel;
+	}
+
+	public void setQueryLevel(boolean queryLevel) {
+		this.queryLevel = queryLevel;
 	}
 
 }
