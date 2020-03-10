@@ -5,11 +5,21 @@ scalar Long
 directive @testDirective(
   value: String! = "A value to test default values"
   anotherValue: String
-) on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+) on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
 # Another test directive, to check that two directives can be added
 directive @anotherTestDirective
- on SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
 schema @testDirective(value:"on Schema") {
 	#A comment on the query

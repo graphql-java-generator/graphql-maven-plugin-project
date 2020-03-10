@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.annotation;
+package com.graphql_java_generator.plugin.language;
 
 /**
  * All possible directive locations

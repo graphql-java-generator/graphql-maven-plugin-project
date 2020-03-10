@@ -6,8 +6,8 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.annotation.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Directive;
+import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
 
 import lombok.Data;

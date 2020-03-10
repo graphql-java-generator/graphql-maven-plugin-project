@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import com.graphql_java_generator.CustomScalarRegistryImpl;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -17,6 +16,11 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
+import com.graphql_java_generator.client.QueryExecutorImpl;
+import com.graphql_java_generator.client.directive.Directive;
+import com.graphql_java_generator.client.directive.DirectiveRegistry;
+import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
+import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

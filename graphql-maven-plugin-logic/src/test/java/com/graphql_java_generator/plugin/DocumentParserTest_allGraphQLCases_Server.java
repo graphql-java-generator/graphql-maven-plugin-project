@@ -69,7 +69,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals(25, i, "Nb java files are generated");
-		assertEquals(5, documentParser.directives.size(), "Nb directives");
+		assertEquals(6, documentParser.directives.size(), "Nb directives");
 		assertEquals(15, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
@@ -200,11 +200,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 		// Checks of type implementing multiples interfaces
 		objectType = (ObjectType) documentParser.getType("Human");
 		//
-		assertEquals(4, objectType.getImplementz().size());
+		assertEquals(3, objectType.getImplementz().size());
 		assertTrue(objectType.getImplementz().contains("Character"));
 		assertTrue(objectType.getImplementz().contains("Commented"));
 		assertTrue(objectType.getImplementz().contains("WithID"));
-		assertTrue(objectType.getImplementz().contains("AnyCharacter"));// This is an union
+		// assertTrue(objectType.getImplementz().contains("AnyCharacter"));// This is an union
 		//
 		InterfaceType interfaceType = (InterfaceType) documentParser.getType("WithID");
 		assertEquals(3, interfaceType.getImplementingTypes().size());
@@ -217,6 +217,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		i = 0;
 		assertEquals("skip", documentParser.directives.get(i++).getName());
 		assertEquals("include", documentParser.directives.get(i++).getName());
+		assertEquals("defer", documentParser.directives.get(i++).getName());
 		assertEquals("deprecated", documentParser.directives.get(i++).getName());
 		assertEquals("testDirective", documentParser.directives.get(i++).getName());
 		assertEquals("anotherTestDirective", documentParser.directives.get(i++).getName());
@@ -242,7 +243,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		checkDirectivesOnField(documentParser.getType("Character"), "name", true, "on interface field", null, true);
 		checkDirectivesOnField(documentParser.getType("Character"), "appearsIn", false, null, null, true);
 		// On union
-		checkDirectivesOnType(documentParser.getType("AnyCharacter"), true, "on Union", null, false);
+		// checkDirectivesOnType(documentParser.getType("AnyCharacter"), true, "on Union", null, false);
 		// On input type
 		checkDirectivesOnType(documentParser.getType("AllFieldCasesInput"), true, "on Input Type", null, false);
 		// On input type field

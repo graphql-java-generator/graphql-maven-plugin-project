@@ -6,6 +6,10 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -143,5 +147,19 @@ public class FieldImpl implements Field {
 			this.annotation = "";
 
 		addAnnotation(annotationToAdd);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getPascalCaseName() {
+		String name = getName();
+		if ("Boolean".equals(name)) {
+			String[] camelSplittedProperty = name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+			if ("is".equals(camelSplittedProperty[0]) && camelSplittedProperty.length > 1) {
+				name = GraphqlUtils.graphqlUtils
+						.getCamelCase(StringUtils.join(ArrayUtils.remove(camelSplittedProperty, 0)));
+			}
+		}
+		return GraphqlUtils.graphqlUtils.getPascalCase(name);
 	}
 }

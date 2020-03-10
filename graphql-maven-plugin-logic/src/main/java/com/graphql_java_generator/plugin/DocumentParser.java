@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.annotation.DirectiveLocation;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -25,6 +24,7 @@ import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Directive;
+import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
@@ -258,6 +258,12 @@ public class DocumentParser {
 		include.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		include.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
 		directives.add(include);
+		//
+		DirectiveImpl defer = new DirectiveImpl();
+		defer.setName("defer");
+		defer.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
+		defer.getDirectiveLocations().add(DirectiveLocation.FIELD);
+		directives.add(defer);
 		//
 		DirectiveImpl deprecated = new DirectiveImpl();
 		deprecated.setName("deprecated");

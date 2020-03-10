@@ -108,9 +108,18 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Returns the given name in PascalCase. For instance: theName -> TheName
+	 * Convert the given name, to a camel case name. Currenly very simple : it puts the first character in lower case.
 	 * 
-	 * @param name
+	 * @return
+	 */
+	public String getCamelCase(String name) {
+		return name.substring(0, 1).toLowerCase() + name.substring(1);
+	}
+
+	/**
+	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case
+	 * string (for instance: ThisIsCamelCase).
+	 * 
 	 * @return
 	 */
 	public String getPascalCase(String name) {
