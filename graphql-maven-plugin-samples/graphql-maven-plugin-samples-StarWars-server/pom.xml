@@ -36,6 +36,11 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<inherited>true</inherited>
+			</plugin>			
+			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
