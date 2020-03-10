@@ -94,7 +94,7 @@ public class ${object.javaName} #if($object.implementz.size()>0)implements #fore
 
 	}
 
-		public static Builder builder() {
+	public static Builder builder() {
 			return new Builder();
 		}
 
@@ -105,24 +105,31 @@ public class ${object.javaName} #if($object.implementz.size()>0)implements #fore
  */
 public static class Builder {
 #foreach ($field in $object.fields)
-	private #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
+#if(${field.javaName} != '__typename')
+		private #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
+#end
 #end
 
 
 #foreach ($field in $object.fields)
-	public Builder with${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}) {
-		this.${field.javaName} = ${field.javaName};
-		return this;
-	}
+#if(${field.javaName} != '__typename')
+		public Builder with${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}) {
+			this.${field.javaName} = ${field.javaName};
+			return this;
+		}
+#end
 #end
 
-	public ${object.javaName} build() {
-		${object.javaName} object = new ${object.javaName}();
+		public ${object.javaName} build() {
+			${object.javaName} object = new ${object.javaName}();
 #foreach ($field in $object.fields)
-		object.set${field.pascalCaseName}(${field.javaName});
+#if(${field.javaName} == '__typename')
+			object.set__typename("${object.javaName}");
+#else
+			object.set${field.pascalCaseName}(${field.javaName});
 #end
-		return object;
+#end
+			return object;
+		}
 	}
-}
-
 }
