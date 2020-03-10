@@ -14,10 +14,10 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutorImpl;
+import com.graphql_java_generator.client.directive.Directive;
+import com.graphql_java_generator.client.directive.DirectiveRegistry;
+import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
-import com.graphql_java_generator.directive.Directive;
-import com.graphql_java_generator.directive.DirectiveRegistry;
-import com.graphql_java_generator.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

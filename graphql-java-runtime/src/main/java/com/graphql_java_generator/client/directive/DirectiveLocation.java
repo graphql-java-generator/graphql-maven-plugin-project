@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.directive;
+package com.graphql_java_generator.client.directive;
 
 /**
  * All possible directive locations
