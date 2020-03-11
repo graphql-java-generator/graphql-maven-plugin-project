@@ -33,7 +33,7 @@ import $import;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 ${object.annotation}
-public class ${object.javaName} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
+public class ${targetFileName} #if($object.implementz.size()>0)implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
 
 #foreach ($field in $object.fields)
 #if (${field.inputParameters.size()} > 0)
@@ -120,8 +120,8 @@ public static class Builder {
 #end
 #end
 
-		public ${object.javaName} build() {
-			${object.javaName} object = new ${object.javaName}();
+		public ${targetFileName} build() {
+			${targetFileName} object = new ${targetFileName}();
 #foreach ($field in $object.fields)
 #if(${field.javaName} == '__typename')
 			object.set__typename("${object.javaName}");
