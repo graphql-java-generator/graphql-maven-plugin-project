@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -89,17 +91,23 @@ public class MyQueryType {
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
-	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
-	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method takes a full query definition, and executes the GraphQL request against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * For instance:
+	 * 
+	 * <PRE>
+	 * Character c = myQyeryType.exec(
+	 * 		"{hero(param: \"my param\") @include(if:true) {id name @skip(if: false) appearsIn friends {id name}}}");
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
 	 * <I>parameters</I> argument to pass the list of values.
 	 * 
 	 * @param queryResponseDef
-	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 *            The response definition of the query, in the native GraphQL format (see here above). It must ommit the
+	 *            query/mutation/subscription keyword, and start by the first { that follows.It may contain directives,
+	 *            as explained in the GraphQL specs.
 	 * @throws IOException
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
@@ -113,22 +121,39 @@ public class MyQueryType {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return exec(objectResponse, null);
+		return execWithBindValues(objectResponse, null);
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
-	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
-	 * at the StarWars, Forum and other samples for more complex queries.
+	 * This method takes a full query definition, and executes the GraphQL request against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * For instance:
+	 * 
+	 * <PRE>
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("heroParam", heroParamValue);
+	 * params.put("skip", Boolean.FALSE);
+	 * 
+	 * Character c = myQyeryType.execWithBindValues(
+	 * 		"{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}",
+	 * 		params);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
 	 * 
 	 * @param queryResponseDef
-	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 *            The response definition of the query, in the native GraphQL format (see here above). It must ommit the
+	 *            query/mutation/subscription keyword, and start by the first { that follows.It may contain directives,
+	 *            as explained in the GraphQL specs.
 	 * @param parameters
-	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
-	 *            defined Query, this argument may be null or an empty {@link Map}
+	 *            The map of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}. The key is the parameter name, as
+	 *            defined in the query (in the above sample: heroParam is an optional parameter and skip is a mandatory
+	 *            one). The value is the parameter vale in its Java type (for instance a {@link Date} for the
+	 *            {@link GraphQLScalarTypeDate}). The parameters which value is missing in this map will no be
+	 *            transmitted toward the GraphQL server.
 	 * @throws IOException
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
@@ -138,7 +163,7 @@ public class MyQueryType {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLQuery
-	public MyQueryTypeResponse exec(String queryResponseDef, Map<String, Object> parameters)
+	public MyQueryTypeResponse execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -146,8 +171,26 @@ public class MyQueryType {
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes a prepared {@link ObjectResponse} as the definition for the GraphQL request, and executes the
+	 * GraphQL request against the GraphQL server. This is the recommended way to call a GraphQL server, with a prepared
+	 * query. <BR/>
+	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * 
+	 * <PRE>
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	ObjectResponse objectResponse = myQueryType.getResponseBuilder()
+	 * 			.withQueryResponseDef("{hero @include(if:true) {id name appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * List<Board> boards = queryType.exec(objectResponse);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
 	 * <I>parameters</I> argument to pass the list of values.
 	 * 
@@ -160,12 +203,31 @@ public class MyQueryType {
 	 */
 	@GraphQLQuery
 	public MyQueryTypeResponse exec(ObjectResponse objectResponse) throws GraphQLRequestExecutionException {
-		return exec(objectResponse, null);
+		return execWithBindValues(objectResponse, null);
 	}
 
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * 
+	 * <PRE>
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	ObjectResponse objectResponse = myQueryType.getResponseBuilder()
+	 * 			.withQueryResponseDef("{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("heroParam", heroParamValue);
+	 * params.put("skip", Boolean.FALSE);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * List<Board> boards = queryType.execWithBindValues(objectResponse, params);
+	 * ...
+	 * }
+	 * </PRE>
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
@@ -213,8 +275,25 @@ public class MyQueryType {
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).
+	 * This method takes a predefined {@link ObjectResponse} as the definition for the GraphQL request, and executes the
+	 * GraphQL request against the GraphQL server. It offers a logging of the call (if in debug mode), or of the call
+	 * and its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * 
+	 * <PRE>
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	ObjectResponse objectResponse = myQueryType.getResponseBuilder()
+	 * 			.withQueryResponseDef("{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * List<Board> boards = queryType.exec(objectResponse, "heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * ...
+	 * }
+	 * </PRE>
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
@@ -236,18 +315,28 @@ public class MyQueryType {
 	}
 
 	/**
-	 * Get the {@link ObjectResponse.Builder} for the Character, as expected by the withoutParameters query.
+	 * Get the {@link ObjectResponse.Builder} for the full query, as expected by the exec and execWithBindValues
+	 * methods.
 	 * 
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
+
 	public Builder getResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(MyQueryTypeRootResponse.class, "query", true);
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * Character c = myQyeryType.hero("{id name @skip(if: false) appearsIn friends {id name}}", heroParamValue);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
 	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
 	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
@@ -276,12 +365,18 @@ public class MyQueryType {
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method takes care of writting the query name, and the parameter(s) for the query. The given queryResponseDef
-	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
-	 * at the StarWars, Forum and other samples for more complex queries.
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("skip", Boolean.FALSE);
+	 *
+	 * Character c = myQyeryType.heroWithBindValues("{id name @skip(if: ?skip) appearsIn friends {id name}}",
+	 * 		heroParamValue, params);
+	 * </PRE>
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
@@ -310,7 +405,23 @@ public class MyQueryType {
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	ObjectResponse boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable }").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * List<Board> boards = queryType.boards(boardsAndTopicsResponse);
+	 * ...
+	 * }
+	 * </PRE>
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
@@ -327,7 +438,27 @@ public class MyQueryType {
 
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	ObjectResponse boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("sinceParam", sinceValue);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * List<Board> boards = queryType.boards(boardsAndTopicsResponse, params);
+	 * ...
+	 * }
+	 * </PRE>
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
@@ -365,7 +496,25 @@ public class MyQueryType {
 
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	ObjectResponse boardsAndTopicsResponse = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * List<Board> boards = queryType.boards(boardsAndTopicsResponse, "sinceParam", sinceValue);
+	 * ...
+	 * }
+	 * </PRE>
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
