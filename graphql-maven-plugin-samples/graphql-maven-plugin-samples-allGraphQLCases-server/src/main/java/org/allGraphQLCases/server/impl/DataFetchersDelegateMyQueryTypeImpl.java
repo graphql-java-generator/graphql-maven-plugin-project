@@ -168,4 +168,16 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		}
 		return null;
 	}
+
+	@Override
+	public Character directiveOnField(DataFetchingEnvironment dataFetchingEnvironment) {
+		Human ret = generator.generateInstance(Human.class);
+		Field field = (Field) dataFetchingEnvironment.getMergedField().getFields().get(0).getSelectionSet()
+				.getSelections().get(1);
+		Directive testDirective = getTestDirective(field.getDirectives());
+		if (testDirective != null) {
+			ret.setName(((StringValue) testDirective.getArguments().get(0).getValue()).getValue());
+		}
+		return ret;
+	}
 }

@@ -59,6 +59,10 @@ type MyQueryType {
     # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
     # List is null if the directive is not present.
     directiveOnQuery(uppercase: Boolean): [String]!
+
+    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
+    # List is null if the directive is not present.
+    directiveOnField: Character!
 }
 
 type AnotherMutationType {
