@@ -361,7 +361,7 @@ public class ${object.javaName} {
 	@GraphQLQuery
 	public ${object.javaName}Response exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
-		return exec(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -498,11 +498,11 @@ public class ${object.javaName} {
 	 */
 	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	@GraphQLQuery
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Object... paramsAndValues)
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(String queryResponseDef#inputParams(), Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return ${field.javaName}(objectResponse#inputValues(), graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return ${field.javaName}WithBindValues(objectResponse#inputValues(), graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class FullQueriesDirectTest {
+class FullQueriesDirectIT {
 
 	MyQueryType queryType;
 

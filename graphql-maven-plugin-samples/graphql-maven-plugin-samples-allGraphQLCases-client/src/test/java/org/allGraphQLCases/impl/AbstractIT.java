@@ -156,55 +156,43 @@ abstract class AbstractIT {
 
 	@Test
 	void test_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Not implemented in direct partialQueries
-		if (this.getClass().getSimpleName().equals("DirectQueriesIT")) {
 
-			// Go, go, go
-			// bind variables are not used in PartialDirectQueries
-			GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-					() -> partialQueries.allFieldCases(null, null, null, 3, null, null, null, null, null, 2, null, null));
+		// Preparation
+		AllFieldCasesInput allFieldCasesInput = null;
+		Boolean uppercase = true;
+		String textToAppendToTheForname = "textToAppendToTheForname";
+		long nbItemsWithId = 3;
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2000 - 1900, 12 - 1, 20);
+		@SuppressWarnings("deprecation")
+		Date date2 = new Date(2000 - 1900, 12 - 1, 21);
+		List<Date> dates = new ArrayList<>();
+		dates.add(date);
+		dates.add(date2);
+		Boolean uppercaseNameList = null;
+		String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
+		FieldParameterInput input = new FieldParameterInput();
+		input.setUppercase(true);
+		int nbItemsWithoutId = 6;
+		FieldParameterInput inputList = null;
+		String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
 
-			assertTrue(e.getMessage().contains("listWithIdSubTypes"));
-			assertTrue(e.getMessage().contains(
-					"PartialDirectQueries with field's parameter that are Input Types, please consider using Prepared PartialQueries."));
+		// Go, go, go
+		AllFieldCases allFieldCases = partialQueries.allFieldCases(allFieldCasesInput, uppercase,
+				textToAppendToTheForname, nbItemsWithId, date, dates, uppercaseNameList, textToAppendToTheFornameWithId,
+				input, nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
 
-		} else {
-			// Preparation
-			AllFieldCasesInput allFieldCasesInput = null;
-			Boolean uppercase = true;
-			String textToAppendToTheForname = "textToAppendToTheForname";
-			long nbItemsWithId = 3;
-			@SuppressWarnings("deprecation")
-			Date date = new Date(2000 - 1900, 12 - 1, 20);
-			@SuppressWarnings("deprecation")
-			Date date2 = new Date(2000 - 1900, 12 - 1, 21);
-			List<Date> dates = new ArrayList<>();
-			dates.add(date);
-			dates.add(date2);
-			Boolean uppercaseNameList = null;
-			String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
-			FieldParameterInput input = new FieldParameterInput();
-			input.setUppercase(true);
-			int nbItemsWithoutId = 6;
-			FieldParameterInput inputList = null;
-			String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
+		// Verification
+		assertNotNull(allFieldCases);
 
-			// Go, go, go
-			AllFieldCases allFieldCases = partialQueries.allFieldCases(allFieldCasesInput, uppercase, textToAppendToTheForname,
-					nbItemsWithId, date, dates, uppercaseNameList, textToAppendToTheFornameWithId, input,
-					nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
+		// listWithIdSubTypes
+		assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());
+		assertTrue(allFieldCases.getListWithIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithId));
+		// listWithoutIdSubTypes
+		assertEquals(nbItemsWithoutId, allFieldCases.getListWithoutIdSubTypes().size());
+		assertTrue(
+				allFieldCases.getListWithoutIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithoutId));
 
-			// Verification
-			assertNotNull(allFieldCases);
-
-			// listWithIdSubTypes
-			assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());
-			assertTrue(allFieldCases.getListWithIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithId));
-			// listWithoutIdSubTypes
-			assertEquals(nbItemsWithoutId, allFieldCases.getListWithoutIdSubTypes().size());
-			assertTrue(allFieldCases.getListWithoutIdSubTypes().get(0).getName()
-					.endsWith(textToAppendToTheFornameWithoutId));
-		}
 	}
 
 	@Test

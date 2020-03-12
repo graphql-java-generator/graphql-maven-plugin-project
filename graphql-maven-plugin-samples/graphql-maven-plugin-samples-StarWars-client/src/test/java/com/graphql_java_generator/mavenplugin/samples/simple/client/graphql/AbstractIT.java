@@ -1,16 +1,12 @@
 package com.graphql_java_generator.mavenplugin.samples.simple.client.graphql;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 import com.generated.graphql.Character;
@@ -210,10 +206,10 @@ abstract class AbstractIT {
 		Character characterAfter = queries.addFriend(characterBefore.getId(), friend.getId());
 
 		// Wait for add to be processed
-		await()
-				.atMost(5, SECONDS)
-				.pollInterval( 1, SECONDS)
-				.until ( () -> characterBefore.getFriends().size() + 1 == characterAfter.getFriends().size() );
+		// await()
+		// .atMost(5, SECONDS)
+		// .pollInterval( 1, SECONDS)
+		// .until ( () -> characterBefore.getFriends().size() + 1 == characterAfter.getFriends().size() );
 
 		// Verification
 		assertNotNull(characterBefore);

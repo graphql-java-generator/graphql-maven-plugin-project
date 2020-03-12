@@ -986,16 +986,22 @@ public class Builder {
 			String parameterName) throws GraphQLRequestPreparationException {
 
 		if (directive != null) {
+			// Let's find the definition for this directive
+			Directive dirDef = directiveRegistry.getDirective(directive.getName());
+			if (dirDef == null) {
+				throw new GraphQLRequestPreparationException(
+						"Could not find directive definition for the directive '" + directive.getName() + "'");
+			}
 
-			for (InputParameter param : directive.getArguments()) {
+			// Let's find the GraphQL type of this argument
+			for (InputParameter param : dirDef.getArguments()) {
 				if (param.getName().equals(parameterName)) {
 					return param.getGraphQLScalarType();
 				}
 			} // for
 
-			throw new GraphQLRequestPreparationException(
-					"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
-							+ "' of the class '" + owningClass.getName() + "'");
+			throw new GraphQLRequestPreparationException("The parameter of name '" + parameterName
+					+ "' has not been found for the directive '" + directive.getName() + "'");
 		} else {
 			Field field;
 			try {

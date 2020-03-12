@@ -93,11 +93,27 @@ public class PartialDirectQueries implements PartialQueries {
 			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
 			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.allFieldCases("{id name forname age nbComments comments booleans aliases planets friends{id} "
-				+ " oneWithIdSubType{id name} listWithIdSubTypes(nbItems:3, textToAppendToTheForname:\"textToAppendToTheFornameWithId\"){name id} "
-				+ " oneWithoutIdSubType(input:{uppercase: true}){name} "
-				+ " listWithoutIdSubTypes(nbItems:6, textToAppendToTheForname:\"textToAppendToTheFornameWithoutId\"){name}}",
-				allFieldCasesInput);
+		return queryType.allFieldCases("{id name " //
+				// Parameter for fields are not managed yet)
+				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
+				+ " forname"//
+				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
+				+ " oneWithIdSubType {id name} "//
+				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+				+ " oneWithoutIdSubType(input: ?input) {name}"//
+				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+				+ "}", //
+				allFieldCasesInput, //
+				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
+				"nbItemsWithId", nbItemsWithId, //
+				"date", date, //
+				"dates", dates, //
+				"uppercaseNameList", uppercaseNameList, //
+				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //
+				"input", input, //
+				"nbItemsWithoutId", nbItemsWithoutId, //
+				"inputList", inputList, //
+				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
 	}
 
 	@Override
