@@ -1,13 +1,18 @@
 # Not released yet
 
 Both modes (client and server):
+- GraphQL __Directives__ are now managed
 - GraphQL types can implement multiple interfaces
 - Upgrade of graphql-java from v13.0 to v14.0
 
 Client mode:
+- Directives can be added in the query, on query and fields (fragment is for a next release, coming soon)
+- The query/subscription/mutation classes have now a collection of __exec__ methods, which allows to execute several queries/mutations/subscriptions in one server call. This allows to add directive on the queries/mutations/subscriptions. 
+- Added a queryName/mutationName/subscriptionName that accept bind parameters, for each query/mutation/subscription. Please have a look at the allGraphQLCases client tests, in the _org.allGraphQLCases.FullQueriesDirectIT_ class
 - interfaces are properly deserialized, thanks to GraphQL introspection. 
 (caution: code impact. Previously, for each interface, the plugin would generated a concrete class that doesn't exist in the GraphQL schema. This is not the case any more, and only GraphQL types are now generated
-- The __typename is added to the list of scalar fields, for every request GraphQL nonscalar type. This allow to properly deserialize interfaces and unions.  
+- The __typename is added to the list of scalar fields, for every request GraphQL nonscalar type. This allow to properly deserialize interfaces and unions.
+  
 
 
 # 1.4.0
