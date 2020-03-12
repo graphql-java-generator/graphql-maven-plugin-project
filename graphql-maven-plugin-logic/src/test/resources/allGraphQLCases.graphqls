@@ -36,21 +36,29 @@ type MyQueryType {
     #withTwoMandatoryParamDefaultVal(theHero: DroidInput!, num: Int = 45): Droid!
     withEnum(episode: Episode! = NEWHOPE): Character
     
+    ################################################################################
     # withList return a list of Characters, matching the given list of CharacterInput.
     # The name of the first Character returned is replaced by the given firstName.
     # All ids are generated  
     withList(firstName: String!, characters: [CharacterInput]!): [Character]
 
-
-	# Complementary tests with the AllFieldCases Object
+    ################################################################################
+   	# Complementary tests with the AllFieldCases Object
 	allFieldCases(input: AllFieldCasesInput): AllFieldCases    
-    
-    
+        
+    ################################################################################
     # error always returns an error!  (used to check the error management)
     error(errorLabel: String!): Character!
     
     # Check for GraphQL identifier that are java keywords
     aBreak: break
+    
+    ################################################################################
+    # queries to check directive behavior
+    
+    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
+    # List is null if the directive is not present.
+    directiveOnQuery(uppercase: Boolean): [String]!
 }
 
 type AnotherMutationType {

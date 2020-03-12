@@ -13,25 +13,33 @@ import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
-import org.allGraphQLCases.graphql.DirectQueries;
-import org.allGraphQLCases.graphql.PreparedQueries;
-import org.allGraphQLCases.graphql.WithBuilder;
+import org.allGraphQLCases.impl.PartialDirectQueries;
+import org.allGraphQLCases.impl.PartialPreparedQueries;
+import org.allGraphQLCases.impl.PartialWithBuilder;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
- * These are samples of queries that can be used with GraphQL against the Star Wars GraphQL schema. There are
- * implemented in three ways in these classes: {@link DirectQueries}, {@link WithBuilder}, {@link PreparedQueries}.<BR/>
- * You can see use of these queries in the JUnit tests.
+ * These are samples of partialQueries that can be used with GraphQL against the allGraphQLCases GraphQL schema. There
+ * are implemented in three ways in these classes: {@link PartialDirectQueries}, {@link PartialWithBuilder},
+ * {@link PartialPreparedQueries}.<BR/>
+ * You can see use of these partialQueries in the JUnit tests.<BR/>
+ * These samples tests the execution of partial partialQueries, that is: calling for one of the query, mutation or
+ * subscription that is defined in a Query, a Mutation or a Subscription object.<BR/>
+ * For instance:
+ * 
+ * <PRE>
+ * Character character = queryType.withEnum("{id name appearsIn homePlanet friends{name}}", "180");
+ * </PRE>
  * 
  * @author EtienneSF
  *
  */
-public interface Queries {
+public interface PartialQueries {
 
 	////////////////////////////////////////////////////////////////////////////
-	// First part: queries (based on the Star Wars use case)
+	// First part: partialQueries (based on the Star Wars use case)
 	List<Character> withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	Character withOneOptionalParam(CharacterInput character)
@@ -54,7 +62,7 @@ public interface Queries {
 	Character error(String errorLabel) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	////////////////////////////////////////////////////////////////////////////
-	// Second part: queries (based on the allGraphQLCases use case)
+	// Second part: partialQueries (based on the allGraphQLCases use case)
 
 	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
 			String textToAppendToTheForname, long nbItemsWithId, Date date, List<Date> dates, Boolean uppercaseNameList,

@@ -885,10 +885,21 @@ public class DocumentParser {
 		// annotation
 		switch (pluginConfiguration.getMode()) {
 		case client:
+			// Type annotations
 			Stream.concat(objectTypes.stream(), interfaceTypes.stream())
 					.forEach(o -> addTypeAnnotationForClientMode(o));
-			Stream.concat(objectTypes.stream(), interfaceTypes.stream()).flatMap(o -> o.getFields().stream())
+
+			// Field annotations
+			objectTypes.stream().flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode(f));
+			interfaceTypes.stream().flatMap(o -> o.getFields().stream())
 					.forEach(f -> addFieldAnnotationForClientMode(f));
+			queryTypes.parallelStream().flatMap(o -> o.getFields().stream())
+					.forEach(f -> addFieldAnnotationForClientMode(f));
+			mutationTypes.stream().flatMap(o -> o.getFields().stream())
+					.forEach(f -> addFieldAnnotationForClientMode(f));
+			subscriptionTypes.stream().flatMap(o -> o.getFields().stream())
+					.forEach(f -> addFieldAnnotationForClientMode(f));
+
 			break;
 		case server:
 			Stream.concat(objectTypes.stream(), interfaceTypes.stream())

@@ -125,11 +125,11 @@ public class ${object.javaName} {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLQuery
-	public MyQueryTypeResponse exec(String queryResponseDef)
+	public ${object.javaName}Response exec(String queryResponseDef)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return exec(objectResponse, null);
+		return execWithBindValues(objectResponse, null);
 	}
 
 	/**
@@ -171,11 +171,52 @@ public class ${object.javaName} {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLQuery
-	public MyQueryTypeResponse execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+	public ${object.javaName}Response execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return exec(objectResponse, parameters);
+	}
+
+	/**
+	 * This method takes a full query definition, and executes the GraphQL request against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * For instance:
+	 * 
+	 * <PRE>
+	 * Character c = myQyeryType.execWithBindValues(
+	 * 		"{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}",
+	 * 		"heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above). It must ommit the
+	 *            query/mutation/subscription keyword, and start by the first { that follows.It may contain directives,
+	 *            as explained in the GraphQL specs.
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @throws IOException
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLQuery
+	public ${object.javaName}Response exec(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query {} ", queryResponseDef);
+		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
@@ -210,8 +251,8 @@ public class ${object.javaName} {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLQuery
-	public MyQueryTypeResponse exec(ObjectResponse objectResponse) throws GraphQLRequestExecutionException {
-		return exec(objectResponse, null);
+	public ${object.javaName}Response exec(ObjectResponse objectResponse) throws GraphQLRequestExecutionException {
+		return execWithBindValues(objectResponse, null);
 	}
 
 	/**
@@ -250,38 +291,35 @@ public class ${object.javaName} {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLQuery
-	public MyQueryTypeResponse execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+	public ${object.javaName}Response execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer("Executing of query 'withoutParameters' with parameters: ");
-			boolean addComma = false;
-			for (String key : parameters.keySet()) {
-				sb.append(key).append(":").append(parameters.get(key));
-				if (addComma)
-					sb.append(", ");
-				addComma = true;
+			if (parameters == null) {
+				logger.trace("Executing of root query without parameters");
+			} else {
+				StringBuffer sb = new StringBuffer("Executing of root query with parameters: ");
+				boolean addComma = false;
+				for (String key : parameters.keySet()) {
+					sb.append(key).append(":").append(parameters.get(key));
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
+				logger.trace(sb.toString());
 			}
-			logger.trace(sb.toString());
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of query 'withoutParameters'");
 		}
 
-		if (!MyQueryTypeResponse.class.equals(objectResponse.getFieldClass())) {
+		if (!${object.javaName}Response.class.equals(objectResponse.getFieldClass())) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ MyQueryTypeResponse.class + ", but is an instance of " + objectResponse.getClass().getName());
+					+ ${object.javaName}Response.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
 
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
-		MyQueryTypeResponse ret = executor.execute("query", objectResponse, parameters, MyQueryTypeResponse.class);
-
-		return ret;
+		return executor.execute("query", objectResponse, parameters, ${object.javaName}Response.class);
 	}
 
 	/**
@@ -321,7 +359,7 @@ public class ${object.javaName} {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLQuery
-	public MyQueryTypeResponse exec(ObjectResponse objectResponse, Object... paramsAndValues)
+	public ${object.javaName}Response exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		return exec(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
@@ -334,7 +372,7 @@ public class ${object.javaName} {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new Builder(MyQueryTypeRootResponse.class, "query", true);
+		return new Builder(${object.javaName}RootResponse.class, "query", true);
 	}
 
 #foreach ($field in $object.fields)
@@ -422,6 +460,49 @@ public class ${object.javaName} {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return ${field.javaName}(objectResponse#inputValues(), parameters);
+	}
+
+	/**
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end c = myQyeryType.${field.name}("{id name @skip(if: false) appearsIn friends {id name}}"#inputValues, "skip", Boolean.FALSE);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+#foreach ($inputParameter in $field.inputParameters)
+	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws IOException
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
+	@GraphQLQuery
+	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
+		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return ${field.javaName}(objectResponse#inputValues(), graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 

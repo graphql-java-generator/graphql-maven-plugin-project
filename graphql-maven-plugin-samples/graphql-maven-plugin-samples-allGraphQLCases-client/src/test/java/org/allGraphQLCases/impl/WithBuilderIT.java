@@ -1,7 +1,8 @@
-package org.allGraphQLCases.graphql;
+package org.allGraphQLCases.impl;
 
 import org.allGraphQLCases.Main;
 import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.impl.PartialWithBuilder;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -10,16 +11,16 @@ import org.junit.jupiter.api.BeforeEach;
  * 
  * @author EtienneSF
  */
-class DirectQueriesIT extends AbstractIT {
+class WithBuilderIT extends AbstractIT {
 
 	@BeforeEach
 	void setUp() throws Exception {
 
-		// For some tests, we need to execute additional queries
+		// For some tests, we need to execute additional partialQueries
 		queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new DirectQueries(Main.GRAPHQL_ENDPOINT);
+		partialQueries = new PartialWithBuilder(Main.GRAPHQL_ENDPOINT);
 	}
 
 }

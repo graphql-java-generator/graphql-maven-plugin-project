@@ -226,7 +226,7 @@ public class ObjectResponse {
 
 		//////////////////////////////////////////////////////////
 		// Then the directives
-		appendDirectives(sb, getDirectives());
+		appendDirectives(sb, getDirectives(), parameters);
 
 		//////////////////////////////////////////////////////////
 		// Then field list (if any)
@@ -240,7 +240,7 @@ public class ObjectResponse {
 			for (Field f : scalarFields) {
 				appendFieldName(sb, appendSpaceLocal, f.name, f.alias);
 				appendInputParameters(sb, f.inputParameters, parameters);
-				appendDirectives(sb, f.directives);
+				appendDirectives(sb, f.directives, parameters);
 				appendSpaceLocal = true;
 			}
 
@@ -280,12 +280,12 @@ public class ObjectResponse {
 		}
 	}
 
-	private void appendDirectives(StringBuilder sb, List<Directive> directives)
+	private void appendDirectives(StringBuilder sb, List<Directive> directives, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (directives != null && directives.size() > 0) {
 			for (Directive dir : directives) {
 				sb.append(" ").append("@").append(dir.getName());
-				appendInputParameters(sb, dir.getArguments(), null);
+				appendInputParameters(sb, dir.getArguments(), parameters);
 			}
 		}
 	}

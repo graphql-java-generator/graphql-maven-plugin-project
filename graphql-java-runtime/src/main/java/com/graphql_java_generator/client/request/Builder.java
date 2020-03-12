@@ -252,7 +252,7 @@ public class Builder {
 					break;
 				case ",":
 					if (step != InputParameterStep.NAME) {
-						throw new GraphQLRequestPreparationException("Misplacer comma for the field '" + name
+						throw new GraphQLRequestPreparationException("Misplaced comma for the field '" + name
 								+ "' is not finished (no closing parenthesis)");
 					}
 					break;
@@ -277,10 +277,10 @@ public class Builder {
 						// We've read the parameter value. Let's add this parameter.
 						if (token.startsWith("?")) {
 							ret.add(new InputParameter(parameterName, token.substring(1), null, false,
-									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
+									getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
 						} else if (token.startsWith("&")) {
 							ret.add(new InputParameter(parameterName, token.substring(1), null, true,
-									getCustomScalarGraphQLType(owningClazz, name, parameterName)));
+									getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
 						} else if (token.startsWith("\"")) {
 							// The inputParameter starts with "
 							// We need to read all tokens until we find one that finishes by a "
@@ -746,7 +746,7 @@ public class Builder {
 	 */
 	public Builder withInputParameter(String name, String bindParameterName, boolean mandatory)
 			throws GraphQLRequestPreparationException {
-		GraphQLScalarType graphQLScalarType = getCustomScalarGraphQLType(objectResponse.getOwningClass(),
+		GraphQLScalarType graphQLScalarType = getCustomScalarGraphQLType(null, objectResponse.getOwningClass(),
 				objectResponse.getFieldName(), name);
 		objectResponse
 				.addInputParameter(new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType));
@@ -970,6 +970,9 @@ public class Builder {
 	/**
 	 * Retrieves the {@link GraphQLScalarType} from this input parameter, if this parameter is a Custom Scalar
 	 * 
+	 * @param directive
+	 *            If not null, then we're looking for an argument of a GraphQL directive. Oherwise, it's a field
+	 *            argument, and the owningClass and fieldName parameters will be used.
 	 * @param owningClass
 	 *            The class that contains this field
 	 * @param fieldName
@@ -979,34 +982,47 @@ public class Builder {
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private GraphQLScalarType getCustomScalarGraphQLType(Class<?> owningClass, String fieldName, String parameterName)
-			throws GraphQLRequestPreparationException {
+	private GraphQLScalarType getCustomScalarGraphQLType(Directive directive, Class<?> owningClass, String fieldName,
+			String parameterName) throws GraphQLRequestPreparationException {
 
-		Field field;
-		try {
-			field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
-		} catch (NoSuchFieldException | SecurityException e) {
-			throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-					+ "' in the class '" + owningClass.getName() + "'", e);
-		}
+		if (directive != null) {
 
-		GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
-		if (inputParams == null)
-			throw new GraphQLRequestPreparationException("The field '" + fieldName + "' of the class '"
-					+ owningClass.getName() + "' has no input parameters. Error while looking for its '" + parameterName
-					+ "' input parameter");
+			for (InputParameter param : directive.getArguments()) {
+				if (param.getName().equals(parameterName)) {
+					return param.getGraphQLScalarType();
+				}
+			} // for
 
-		for (int i = 0; i < inputParams.names().length; i += 1) {
-			if (inputParams.names()[i].equals(parameterName)) {
-				// We've found the expected parameter
-				String typeName = inputParams.types()[i];
-				return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
+			throw new GraphQLRequestPreparationException(
+					"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
+							+ "' of the class '" + owningClass.getName() + "'");
+		} else {
+			Field field;
+			try {
+				field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
+			} catch (NoSuchFieldException | SecurityException e) {
+				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+						+ "' in the class '" + owningClass.getName() + "'", e);
 			}
-		}
 
-		throw new GraphQLRequestPreparationException(
-				"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
-						+ "' of the class '" + owningClass.getName() + "'");
+			GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
+			if (inputParams == null)
+				throw new GraphQLRequestPreparationException("The field '" + fieldName + "' of the class '"
+						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
+						+ parameterName + "' input parameter");
+
+			for (int i = 0; i < inputParams.names().length; i += 1) {
+				if (inputParams.names()[i].equals(parameterName)) {
+					// We've found the expected parameter
+					String typeName = inputParams.types()[i];
+					return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
+				}
+			}
+
+			throw new GraphQLRequestPreparationException(
+					"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
+							+ "' of the class '" + owningClass.getName() + "'");
+		}
 	}
 
 	/**
