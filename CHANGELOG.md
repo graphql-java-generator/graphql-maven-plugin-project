@@ -7,7 +7,7 @@ Both modes (client and server):
 
 Client mode:
 - Directives can be added in the query, on query and fields (fragment is for a next release, coming soon)
-- The query/subscription/mutation classes have now a collection of __exec__ methods, which allows to execute several queries/mutations/subscriptions in one server call. This allows to add directive on the queries/mutations/subscriptions. Please the [client mode doc](https://graphql-maven-plugin-project.graphql-java-generator.com/client.html) for more informations. 
+- The query/subscription/mutation classes have now a collection of __exec__ methods, which allows to execute several queries/mutations/subscriptions in one server call. This allows to add directive on the queries/mutations/subscriptions. Please the [client mode doc](https://graphql-maven-plugin-project.graphql-java-generator.com/client.html) for more information. 
 - Added a queryName/mutationName/subscriptionName that accept bind parameters, for each query/mutation/subscription. Please have a look at the allGraphQLCases client tests, in the _org.allGraphQLCases.FullQueriesDirectIT_ class
 - interfaces are properly deserialized, thanks to GraphQL introspection. 
 (caution: code impact. Previously, for each interface, the plugin would generated a concrete class that doesn't exist in the GraphQL schema. This is not the case any more, and only GraphQL types are now generated

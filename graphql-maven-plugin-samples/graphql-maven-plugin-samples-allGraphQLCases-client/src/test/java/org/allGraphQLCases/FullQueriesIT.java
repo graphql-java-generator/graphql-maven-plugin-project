@@ -2,12 +2,15 @@ package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.AnotherMutationTypeResponse;
+import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
@@ -20,14 +23,15 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class FullQueriesDirectIT {
+class FullQueriesIT {
 
 	MyQueryType queryType;
 	AnotherMutationType mutationType;
 
-	ObjectResponse responseMutationWithDirective;
-	ObjectResponse responseMutationWithoutDirective;
-	ObjectResponse responseWithDirectiveTwoParameters;
+	ObjectResponse mutationWithDirectiveResponse;
+	ObjectResponse mutationWithoutDirectiveResponse;
+	ObjectResponse withDirectiveTwoParametersResponse;
+	ObjectResponse multipleQueriesResponse;
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
@@ -35,16 +39,24 @@ class FullQueriesDirectIT {
 		mutationType = new AnotherMutationType(Main.GRAPHQL_ENDPOINT);
 
 		// The response preparation should be somewhere in the application initialization code.
-		responseMutationWithDirective = mutationType.getResponseBuilder().withQueryResponseDef(//
+		mutationWithDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//
 				"{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
 		).build();
-		responseMutationWithoutDirective = mutationType.getResponseBuilder().withQueryResponseDef(//
+
+		mutationWithoutDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//
 				"{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}"//
 		).build();
-		responseWithDirectiveTwoParameters = queryType.getResponseBuilder().withQueryResponseDef(
+
+		withDirectiveTwoParametersResponse = queryType.getResponseBuilder().withQueryResponseDef(
 				"{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}")
 				.build();
+
+		multipleQueriesResponse = queryType.getResponseBuilder().withQueryResponseDef("{"//
+				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
+				+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
+				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
+				+ "}").build();
 
 	}
 
@@ -82,7 +94,7 @@ class FullQueriesDirectIT {
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = queryType.exec(responseWithDirectiveTwoParameters, //
+		MyQueryTypeResponse resp = queryType.exec(withDirectiveTwoParametersResponse, //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -110,7 +122,7 @@ class FullQueriesDirectIT {
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		AnotherMutationTypeResponse resp = mutationType.exec(responseMutationWithoutDirective, "humanInput", input);
+		AnotherMutationTypeResponse resp = mutationType.exec(mutationWithoutDirectiveResponse, "humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
@@ -122,7 +134,7 @@ class FullQueriesDirectIT {
 		// WITH DIRECTIVE
 
 		// Go, go, go
-		resp = mutationType.exec(responseMutationWithDirective, //
+		resp = mutationType.exec(mutationWithDirectiveResponse, //
 				"humanInput", input, //
 				"value", "the mutation value", //
 				"anotherValue", "the other mutation value");
@@ -134,4 +146,66 @@ class FullQueriesDirectIT {
 		assertEquals("the other mutation value", ret.getName());
 	}
 
+	/**
+	 * Test of this multiple query request :
+	 * 
+	 * <PRE>
+	 * {
+	 * directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)
+	 * withOneOptionalParam {id name appearsIn friends {id name}}
+	 * withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }
+	 * }
+	 * </PRE>
+	 */
+	@Test
+	void multipleQueriesResponse() throws GraphQLRequestExecutionException {
+		/*
+		 * { directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)
+		 * 
+		 * withOneOptionalParam {id name appearsIn friends {id name}}
+		 * 
+		 * withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }}
+		 */
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// Let's skip appearsIn but not name
+
+		// Go, go, go
+		MyQueryTypeResponse resp = queryType.exec(multipleQueriesResponse, //
+				"value", "An expected returned string", //
+				"skipAppearsIn", true, //
+				"skipName", false);
+
+		// Verification
+		assertNotNull(resp);
+		//
+		List<String> directiveOnQuery = resp.getDirectiveOnQuery();
+		assertEquals(1, directiveOnQuery.size());
+		assertEquals("An expected returned string", directiveOnQuery.get(0));
+		//
+		Character withOneOptionalParam = resp.getWithOneOptionalParam();
+		assertNotNull(withOneOptionalParam.getFriends());
+		//
+		List<Character> withoutParameters = resp.getWithoutParameters();
+		assertNotNull(withoutParameters);
+		assertTrue(withoutParameters.size() > 0);
+		assertNull(withoutParameters.get(0).getAppearsIn());
+		assertNotNull(withoutParameters.get(0).getName());
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// Let's skip appearsIn but not name
+
+		// Go, go, go
+		resp = queryType.exec(multipleQueriesResponse, //
+				"value", "An expected returned string", //
+				"skipAppearsIn", false, //
+				"skipName", true);
+
+		// Verification
+		withoutParameters = resp.getWithoutParameters();
+		assertNotNull(withoutParameters);
+		assertTrue(withoutParameters.size() > 0);
+		assertNotNull(withoutParameters.get(0).getAppearsIn());
+		assertNull(withoutParameters.get(0).getName());
+	}
 }

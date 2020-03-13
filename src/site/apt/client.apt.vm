@@ -122,7 +122,24 @@ MyQueryTypeResponse resp = queryType.exec(
 Human human = resp.getCreateHuman();
 +--------------------------------------------------------------------------------------------
 
-  The full queries allows you to execute several queries, or several mutations, or several subscriptions in one server call.
+  The full queries allows you to execute several queries, or several mutations, or several subscriptions in one server call. Please note that you can not mix queries and mutations in the same call. And, as the plugin currently doesn't manage aliases on the query/mutation/subscription level, you can not execute several times the same query/mutation/subscription in the same call. 
+  
+  For instance, this is one of the integration tests in the allGraphQLCases client project:
+
++--------------------------------------------------------------------------------------------
+MyQueryTypeResponse resp = queryType.exec(
+		"{"//
+			+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
+			+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
+			+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
+			+ "}",
+		"value", "An expected returned string", //
+		"skipAppearsIn", true, //
+		"skipName", false);
+List<String> directiveOnQuery = resp.getDirectiveOnQuery();
+Character withOneOptionalParam = resp.getWithOneOptionalParam();
+List<Character> withoutParameters = resp.getWithoutParameters();
++--------------------------------------------------------------------------------------------
   
   In this sample, you can see the use of mandatory bind variables (value and humanInput) and optional bind variables. The names and values of bind variables are given, as arguments of the method. You can also provide a map, where the keys are the bind variable names, and the values are the bind variable values. 
   
