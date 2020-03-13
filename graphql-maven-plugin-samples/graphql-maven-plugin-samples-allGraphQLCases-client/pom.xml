@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-samples</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.5.0</version>
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-allGraphQLCases-client</artifactId>
