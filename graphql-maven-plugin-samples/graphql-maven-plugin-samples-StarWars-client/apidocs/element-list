@@ -2,7 +2,7 @@ com.generated.graphql
 com.graphql_java_generator
 com.graphql_java_generator.annotation
 com.graphql_java_generator.client
-com.graphql_java_generator.client.introspection
+com.graphql_java_generator.client.directive
 com.graphql_java_generator.client.request
 com.graphql_java_generator.client.response
 com.graphql_java_generator.customscalars
