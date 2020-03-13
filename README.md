@@ -68,8 +68,20 @@ When in _client_ mode, you can query the server with just one line of code.
 For instance :
 
 ```Java
-Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", "180");
+String id = [an id];
+
+Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", id);
 ```
+
+Or, with bind parameters:
+
+```Java
+HumanInput input = new HumanInput();
+... [some initialization of input content]
+
+Human human = mutationType.createHuman("{id name appearsIn friends {id name}}", input);
+```
+
 
 In this mode, the plugin generates:
 
@@ -140,9 +152,23 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 You'll find all the info on the [server](server.html) page.
 
+# Plugin GraphQL compatibility
+
+The plugin currently manages this part of GraphQL specifications:
+- Object Type
+- Schema, Queries and Mutation types
+- Custom Scalars
+- Input Parameters
+- Interfaces
+- Directives
+- Alias on field name (not on query or mutation names)
+- GraphQL names that are java keyword (out of enum items)
+
+
 # Main evolutions for the near future
 
 You'll find below the main changes, that are planned in the near future:
+- Union
 - Fragment in graphql queries
 - Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 - Add a gradle plugin (work in progress)

@@ -10,16 +10,21 @@ Client mode usage description
 
 %{toc}
 	
+* {Summary}
+~~~~~~~~~~~~~~~~~~~
+
+  The client mode makes it easy for a Java GraphQL client-side application, to execute queries/mutations/subscriptions against a GraphQL server. The graphql-maven-plugin generates all the necessary code, so that a Java application can call a GraphQL server by simply calling the relevant Java method.
+
 * {Presentation}
 ~~~~~~~~~~~~~~~~~~~
 
-  When configuring the graphql-maven-plugin in client mode, it reads a graphqls schema file, and will generates all the necessary code to make it easy to call a GraphQL server. 
+  When configuring the graphql-maven-plugin in client mode, it reads a graphqls schema file, and generates all the necessary code to make it easy to call a GraphQL server. 
 
   As an overview, it generates:
 
-  * One java class for the Query object
+  * One java class for the Query object. This object contains all the method allowing to execute a full query, and shortcuts methods to execute each of the queries defined in the query object.
   
-  * One java class for the Mutation object (if any)
+  * One java class for the Mutation object (if any). It's the same as for the Query object (described just above)
   
   * One POJO for each standard object of the GraphQL object
   
@@ -88,8 +93,69 @@ Client mode usage description
   You can define the package that will contain the generated code. If you don't, the default package is <com.generated.graphql>. 
   This package contains the generated code. 
 
-  The necessary runtime code source is joined to the generated code, but remains in its original package, 
-  which is <graphql.java.client.*> and <graphql.java.annotation>. So everything is embedded.
+  The necessary runtime code source is joined into the generated code, and remains in its original package, 
+  which is <com.graphql_java_generator.*>. So everything is embedded.
+
+
+* {Full queries versus Partial queries}
+~~~~~~~~~~~~~~~~~~~
+
+  When the plugin generates the query/mutation/subscription java classes, it generates two families of methods:
+  
+** {Full queries/mutations/subscriptions}
+~~~~~~~~~~~~~~~~~~~
+  
+  The <exec> and <execWithBindValues> methods allows to execute full GraphQL queries, that is: the GraphQL request, without the query/mutation/subscription keyword (see below for sample).
+    
+  The <getResponseBuilder()> method returns a Builder that allows you to prepare the GraphQL request during the application initialization. This will accelerate the further GraphQL calls for this query/mutation/subscription. And it allows to check at startup time that your queries/mutations/subscriptions are valid.
+  
+  If you want/need to specify a GraphQL directive on the query/mutation/subscription itself, you must use a full query. For instance:
+
++--------------------------------------------------------------------------------------------
+HumanInput input = new HumanInput();
+..
+[putting some content into input]
+..
+MyQueryTypeResponse resp = queryType.exec(
+		"{createHuman (human: &humanInput)  @myDirective(value:&value, anotherValue: ?anotherValueParam) {id name appearsIn friends {id name}}}",
+		"value", "the value", "humanInput", input);
+Human human = resp.getCreateHuman();
++--------------------------------------------------------------------------------------------
+
+  The full queries allows you to execute several queries, or several mutations, or several subscriptions in one server call.
+  
+  In this sample, you can see the use of mandatory bind variables (value and humanInput) and optional bind variables. The names and values of bind variables are given, as arguments of the method. You can also provide a map, where the keys are the bind variable names, and the values are the bind variable values. 
+  
+  When you execute the query, an exception is thrown if a mandatory bind variable value is missing.
+  
+  If an optional bind variable value is missing, then the relevant parameter is not sent to the server. In the above sample, the <anotherValueParam> is not given. So the <anotherValue> param is not sent to the server.
+       
+  
+** {Partial queries/mutations/subscriptions}
+~~~~~~~~~~~~~~~~~~~
+
+  In each query/mutation/subscription object, the plugin also generates <Xxxx> and <XxxxWithBindValues> methods, where <Xxxx> is successively each query/mutation/subscription defined in this query/mutation/subscription object. 
+  
+  These methods allows to directly receive the result in the relevant type:
+
++--------------------------------------------------------------------------------------------
+HumanInput input = new HumanInput();
+..
+[putting some content into input]
+..
+Human human = queryType.createHuman (
+		"(value:&value, anotherValue: ?anotherValue) {id name appearsIn friends {id name}}",
+		// Then we put the list of expected parameters for createHuman
+		input,
+		// Then the bind variables, by pair of parameters: the bind variable name, then its value
+		"value", "the value", "humanInput", input);
++--------------------------------------------------------------------------------------------
+
+  This method generates less code. 
+  
+  But directives can't be added on the query/mutation/subscription level. Of course, they can still be added in the given queries, that is on fields and fragments.
+  
+  The bind variables works as specified for the Full queries.
 
 * {How to execute a GraphQL query?}
 ~~~~~~~~~~~~~~~~~~~
