@@ -6,6 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.language.Field;
 
@@ -112,5 +113,9 @@ public class ObjectType extends AbstractType {
 	@Override
 	public boolean isCustomScalar() {
 		return false;
+	}
+
+	public String getRequestTypePascalCase() {
+		return GraphqlUtils.graphqlUtils.getPascalCase(getRequestType());
 	}
 }

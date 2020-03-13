@@ -9,20 +9,20 @@ import com.graphql_java_generator.client.response.Error;
 
 public class ${object.javaName}RootResponse {
 
-	@JsonProperty("query")
+	@JsonProperty("${object.requestType}")
 	@GraphQLNonScalar(graphQLTypeName = "${object.javaName}", javaClass = ${object.javaName}Response.class)
-	${object.javaName}Response query;
+	${object.javaName}Response ${object.requestType};
 
 	@JsonProperty("errors")
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public ${object.javaName}Response getQuery() {
-		return query;
+	public ${object.javaName}Response get${object.requestTypePascalCase}PascalCase() {
+		return ${object.requestType};
 	}
 
-	public void setQuery(${object.javaName}Response query) {
-		this.query = query;
+	public void set${object.requestTypePascalCase}(${object.javaName}Response ${object.requestType}) {
+		this.${object.requestType} = ${object.requestType};
 	}
 
 	public List<Error> getErrors() {

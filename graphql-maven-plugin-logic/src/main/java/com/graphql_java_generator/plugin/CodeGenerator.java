@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
@@ -83,6 +84,9 @@ public class CodeGenerator {
 	/** The component that reads the GraphQL schema from the file system */
 	@Autowired
 	ResourceSchemaStringProvider resourceSchemaStringProvider;
+
+	@Autowired
+	GraphqlUtils graphqlUtils;
 
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
