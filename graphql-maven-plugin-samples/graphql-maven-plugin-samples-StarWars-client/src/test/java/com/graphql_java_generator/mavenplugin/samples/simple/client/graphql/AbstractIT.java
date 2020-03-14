@@ -205,12 +205,6 @@ abstract class AbstractIT {
 		// Go, go, go
 		Character characterAfter = queries.addFriend(characterBefore.getId(), friend.getId());
 
-		// Wait for add to be processed
-		// await()
-		// .atMost(5, SECONDS)
-		// .pollInterval( 1, SECONDS)
-		// .until ( () -> characterBefore.getFriends().size() + 1 == characterAfter.getFriends().size() );
-
 		// Verification
 		assertNotNull(characterBefore);
 		assertNotNull(characterAfter);
