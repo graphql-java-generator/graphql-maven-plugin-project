@@ -32,9 +32,11 @@ import com.graphql_java_generator.exception.GraphQLResponseParseException;
 class QueryExecutorImpl_allGraphqlCases_Test {
 
 	QueryExecutorImpl queryExecutorImpl;
+	MyQueryType myQueryType;
 
 	@BeforeEach
 	void setUp() throws Exception {
+		myQueryType = new MyQueryType("http://localhost");
 		queryExecutorImpl = new QueryExecutorImpl("http://localhost:8180/graphql");
 	}
 
@@ -42,7 +44,6 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 	void buildRequest_withEnum_withDirectives_prepared()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryType myQueryType = new MyQueryType("http://localhost");
 		String query = "{\n"
 				+ "    id     @anotherTestDirective    @testDirective  ( value: \"id1 value\", anotherValue:\" something else for id1 \")\n"
 				+ "    name\n" //
@@ -74,7 +75,6 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 	void buildRequest_withEnum_withDirectives_withBuilder()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryType myQueryType = new MyQueryType("http://localhost");
 		// {
 		// id @anotherTestDirective @testDirective(value:"id1 value",anotherValue:" something else for id1 ")
 		// name
@@ -130,7 +130,6 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 	void buildRequest_query_withEnum_withDirectives_prepared()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryType myQueryType = new MyQueryType("http://localhost");
 		String query = "{\n" + //
 				"  withoutParameters @include(if: true) @anotherTestDirective {\n" + //
 				"    id\n" + //
@@ -180,7 +179,6 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 	void buildRequest_multipleQueries_withEnum_withDirectives_prepared()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryType myQueryType = new MyQueryType("http://localhost");
 		String query = "{\n" + //
 				"  withoutParameters @include(if: true) @anotherTestDirective {\n" + //
 				"    id\n" + //
@@ -216,6 +214,43 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 				"friends{name @anotherTestDirective __typename}" + //
 				"}" + //
 				"}\"" //
+				+ ",\"variables\":null,\"operationName\":null}", request);
+	}
+
+	@Disabled
+	@Test
+	void test_MultipleFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		String query = "fragment ChararacterIdNameFriends on Character {" + //
+				"	...ChararacterIdName" + //
+				"	...ChararacterFriends" + //
+				"}" + //
+				"" + //
+				"{ withoutParameters {" + //
+				"    __typename" + //
+				"    ...ChararacterIdNameFriends" + //
+				"}}" + //
+				"" + //
+				"fragment ChararacterIdName on Character {" + //
+				"	id" + //
+				"	name" + //
+				"}" + //
+				"" + //
+				"fragment ChararacterFriends on Character {" + //
+				"	friends {" + //
+				"		...ChararacterIdName" + //
+				"		appearsIn" + //
+				"	}" + //
+				"}" + //
+				"" + //
+				"";
+		ObjectResponse objectResponse = myQueryType.getResponseBuilder().withQueryResponseDef(query).build();
+
+		// Go, go, go
+		String request = queryExecutorImpl.buildRequest("query", objectResponse, null);
+
+		// Verification
+		assertEquals("{\"query\":\"query{withoutParameters{__typename id name friends{id name appearsIn __typename}}}" //
 				+ ",\"variables\":null,\"operationName\":null}", request);
 	}
 

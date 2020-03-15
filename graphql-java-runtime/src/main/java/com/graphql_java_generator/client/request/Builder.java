@@ -35,13 +35,14 @@ public class Builder {
 	 * The list of character that can separate tokens, in the GraphQL query string. These token are read by the
 	 * {@link StringTokenizer}.
 	 */
-	private static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r@";
+	public static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r@";
 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 	DirectiveRegistry directiveRegistry = new DirectiveRegistryImpl();
 
 	final ObjectResponse objectResponse;
+	List<Fragment> fragments;
 
 	/** Indicates what is being read by the {@link #readTokenizerForInputParameters(StringTokenizer) method */
 	private enum InputParameterStep {
@@ -775,6 +776,11 @@ public class Builder {
 		return this;
 	}
 
+	public Builder withFragment(Fragment fragment) {
+		fragments.add(fragment);
+		return this;
+	}
+
 	/**
 	 * Adds a non scalar field (a sub-object), to the {@link ObjectResponse} we are building. The given objectResponse
 	 * contains the field name and its optional alias.
@@ -854,40 +860,45 @@ public class Builder {
 			// Ok, we have to parse a string which looks like that: "{ id name friends{name}}"
 			// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
 			StringTokenizer st = new StringTokenizer(queryResponseDef, STRING_TOKENIZER_DELIMITER, true);
+			QueryField queryField = null;
 
-			// We expect a first "{"
-			// But leading spaces are allowed. Let's skip them.
-			String token = " ";
-			while (token.equals(" ") || token.equals("\n") || token.equals("\r")) {
-				token = st.nextToken();
-			}
-			if (!token.equals("{")) {
-				throw new GraphQLRequestPreparationException("The queryResponseDef should start with '{'");
-			}
-
-			QueryField queryField = new QueryField(objectResponse.field.owningClass, objectResponse.field.clazz,
-					objectResponse.field.name);
-			try {
-				queryField.readTokenizerForResponseDefinition(st);
-			} catch (GraphQLRequestPreparationException e) {
-				throw new GraphQLRequestPreparationException(
-						e.getMessage() + " while reading the queryReponseDef: " + queryResponseDef, e);
-			}
-
-			// We should have only spaces left
+			// We scan the input string. It may contain fragment definition and query/mutation/subscription
 			while (st.hasMoreTokens()) {
-				token = st.nextToken();
+				String token = st.nextToken();
+
 				switch (token) {
 				case " ":
 				case "\n":
 				case "\r":
-					// Nothing to do.
-					continue;
+					break;
+				case "{":
+					// We've found the start of the query/mutation/subscription
+					queryField = new QueryField(objectResponse.field.owningClass, objectResponse.field.clazz,
+							objectResponse.field.name);
+					try {
+						queryField.readTokenizerForResponseDefinition(st);
+					} catch (GraphQLRequestPreparationException e) {
+						throw new GraphQLRequestPreparationException(
+								e.getMessage() + " while reading the queryReponseDef: " + queryResponseDef, e);
+					}
+					break;
+				case "query":
+				case "mutation":
+				case "subscription":
+					// No action
+					break;
+				case "fragment":
+					withFragment(new Fragment(st, null));
+					break;
 				default:
 					throw new GraphQLRequestPreparationException(
-							"Unexpected token <" + token + "> at the end of the queryReponseDef: " + queryResponseDef);
-				}// switch
-			} // while
+							"Unknown token '" + token + " while reading the queryReponseDef: " + queryResponseDef);
+				}
+			}
+
+			if (queryField == null) {
+				throw new GraphQLRequestPreparationException("No response definition found");
+			}
 
 			// Ok, the queryResponseDef has been parsed, and the content is store in our queryField.
 			// Let's build our ObjectResponse
