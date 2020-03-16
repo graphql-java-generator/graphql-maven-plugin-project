@@ -17,8 +17,12 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLCustomScalar;
+import com.graphql_java_generator.annotation.GraphQLEnumType;
+import com.graphql_java_generator.annotation.GraphQLInterfaceType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
+import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.GraphQLUnionType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -31,6 +35,9 @@ import graphql.schema.GraphQLScalarType;
  */
 @Component
 public class GraphqlClientUtils {
+
+	/** A singleton without Spring */
+	public static GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 
@@ -314,19 +321,55 @@ public class GraphqlClientUtils {
 	}
 
 	/**
-	 * This method retrieves the {@link GraphQLScalarType} for a custom scalar field or method.
-	 * {@link GraphQLScalar} is used in generated InputType and response type POJOs and
-	 * {@link GraphQLCustomScalar} is used in some legacy generated response type POJOs.
+	 * Retrieves the GraphQL type name (as defined in the GraphQL schema), from the GraphQL annotation added in the
+	 * generated code by the plugin.
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public String getGraphQLTypeNameFromClass(Class<?> clazz) {
+		// Object
+		GraphQLObjectType graphQLObjectType = clazz.getAnnotation(GraphQLObjectType.class);
+		if (graphQLObjectType != null) {
+			return graphQLObjectType.value();
+		}
+
+		// Interface
+		GraphQLInterfaceType graphQLInterfaceType = clazz.getAnnotation(GraphQLInterfaceType.class);
+		if (graphQLInterfaceType != null) {
+			return graphQLInterfaceType.value();
+		}
+
+		// Union
+		GraphQLUnionType graphQLUnionType = clazz.getAnnotation(GraphQLUnionType.class);
+		if (graphQLUnionType != null) {
+			return graphQLUnionType.value();
+		}
+
+		// Enum
+		GraphQLEnumType graphQLEnumType = clazz.getAnnotation(GraphQLEnumType.class);
+		if (graphQLEnumType != null) {
+			return graphQLEnumType.value();
+		}
+
+		throw new RuntimeException("Could not find the GraphQL type for the class " + clazz.getName());
+	}
+
+	/**
+	 * This method retrieves the {@link GraphQLScalarType} for a custom scalar field or method. {@link GraphQLScalar} is
+	 * used in generated InputType and response type POJOs and {@link GraphQLCustomScalar} is used in some legacy
+	 * generated response type POJOs.
 	 *
-	 * @param fieldOrMethod The field or method of the generated POJO class
+	 * @param fieldOrMethod
+	 *            The field or method of the generated POJO class
 	 * @return the {@link GraphQLScalarType}
 	 */
-	public GraphQLScalarType getGraphQLCustomScalarType( AccessibleObject fieldOrMethod ) {
+	public GraphQLScalarType getGraphQLCustomScalarType(AccessibleObject fieldOrMethod) {
 		String graphQLTypeName;
 		if (fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null) {
 			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLCustomScalar.class).graphQLTypeName();
 		} else if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
-			graphQLTypeName = fieldOrMethod.getAnnotation( GraphQLScalar.class ).graphQLTypeName();
+			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLScalar.class).graphQLTypeName();
 		} else {
 			graphQLTypeName = null;
 		}
@@ -336,6 +379,5 @@ public class GraphqlClientUtils {
 			return null;
 		}
 	}
-
 
 }
