@@ -18,6 +18,7 @@ import com.graphql_java_generator.client.domain.starwars.Human;
  */
 @JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "__typename")
 @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name = "Human") })
+@GraphQLInterfaceType("Character")
 public interface Character {
 
 	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)

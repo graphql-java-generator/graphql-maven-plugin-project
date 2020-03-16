@@ -11,6 +11,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.client.domain.allGraphQLCases._break;
+import com.graphql_java_generator.client.domain.allGraphQLCases._extends;
 import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.forum.PostInput;
@@ -288,4 +290,21 @@ class GraphqlClientUtilsTest {
 		assertNotNull(graphQlScalarType);
 	}
 
+	@Test
+	void test_getGraphQLTypeNameFromClass() {
+		// Enum
+		assertEquals("Episode", graphqlClientUtils.getGraphQLTypeNameFromClass(Episode.class));
+		// Interface
+		assertEquals("Character", graphqlClientUtils.getGraphQLTypeNameFromClass(Character.class));
+		// Object
+		assertEquals("Human", graphqlClientUtils.getGraphQLTypeNameFromClass(Human.class));
+		assertEquals("Droid", graphqlClientUtils.getGraphQLTypeNameFromClass(Droid.class));
+		// Union
+		assertEquals("Droid", graphqlClientUtils.getGraphQLTypeNameFromClass(Droid.class));
+
+		// With a different name GraphQL and java
+		assertEquals("break", graphqlClientUtils.getGraphQLTypeNameFromClass(_break.class));
+		assertEquals("extends", graphqlClientUtils.getGraphQLTypeNameFromClass(_extends.class));
+
+	}
 }
