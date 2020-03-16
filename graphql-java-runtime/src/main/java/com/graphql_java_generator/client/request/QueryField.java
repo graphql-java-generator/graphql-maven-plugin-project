@@ -56,8 +56,8 @@ public class QueryField {
 	List<Directive> directives = new ArrayList<>();
 
 	/**
-	 * All subfields contained in this field. Empty if the field is a GraphQL Scalar. At least one if the field is a not
-	 * a Scalar
+	 * All subfields contained in this field. It should remain empty if the field is a GraphQL Scalar. At least one if
+	 * the field is a not a Scalar
 	 */
 	List<QueryField> fields = new ArrayList<>();
 
