@@ -125,6 +125,12 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	MavenProject project;
 
+	/**
+	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyGraphQLJavaSources", defaultValue = "true")	
+	boolean copyGraphQLJavaSources;
+
 	/** {@inheritDoc} */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {

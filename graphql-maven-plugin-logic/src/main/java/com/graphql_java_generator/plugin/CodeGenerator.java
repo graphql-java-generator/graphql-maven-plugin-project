@@ -134,7 +134,9 @@ public class CodeGenerator {
 			break;
 		}
 
-		copyGraphQLJavaSources();
+		if(pluginConfiguration.isCopyGraphQLJavaSources()) {
+			copyGraphQLJavaSources();
+		}
 
 		return i;
 

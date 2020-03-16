@@ -2,6 +2,8 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -10,13 +12,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
@@ -39,6 +46,7 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
 class CodeGeneratorTest {
+	
 
 	@Resource
 	ApplicationContext context;
@@ -48,11 +56,24 @@ class CodeGeneratorTest {
 	MavenTestHelper mavenTestHelper;
 
 	private File targetSourceFolder;
+	private File targetRuntimeClassesSourceFolder;
+	private File testRuntimeSourcesFile;
 	private CodeGenerator codeGenerator;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		targetSourceFolder = mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
+		targetRuntimeClassesSourceFolder = mavenTestHelper.getTargetRuntimeClassesBaseSourceFolder(this.getClass().getSimpleName());
+		testRuntimeSourcesFile = mavenTestHelper.getTestRutimeSourcesJarFile();
+		
+		if(targetSourceFolder.exists()) {
+			FileUtils.forceDelete(targetSourceFolder);
+			targetSourceFolder.mkdirs();
+		}
+		
+		if(testRuntimeSourcesFile.exists()) {
+			testRuntimeSourcesFile.delete();
+		}
 
 		codeGenerator = context.getBean(CodeGenerator.class);
 		codeGenerator.documentParser = new DocumentParser();
@@ -185,5 +206,76 @@ class CodeGeneratorTest {
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 	}
+	
+	/**
+	 * Test to validate the code generation process copies runtime sources if {@link PluginConfiguration#isCopyGraphQLJavaSources()} is set to true
+	 * @throws IOException
+	 */
+	@Test
+	@DirtiesContext
+	void testGenerateCode_copySources() throws IOException {
+
+		pluginConfiguration.mode = PluginMode.client;
+		pluginConfiguration.packageName = "test.generatecode.enabled";
+		pluginConfiguration.copyGraphQLJavaSources = true;
+		pluginConfiguration.mainResourcesFolder = new File("src/test/resources");
+		pluginConfiguration.schemaFilePattern = "basic.graphqls";
+		pluginConfiguration.targetSourceFolder = targetSourceFolder;
+		pluginConfiguration.targetClassFolder = targetSourceFolder;
+
+		if(Objects.isNull(getClass().getResourceAsStream("/graphql-java-runtime-sources.jar"))) {
+			createRuntimeSourcesJar();
+		}
+
+		codeGenerator.generateCode();
+		assertTrue(targetRuntimeClassesSourceFolder.exists());
+		assertTrue(targetRuntimeClassesSourceFolder.isDirectory());
+	}
+	
+	/**
+	 * Test to validate the code generation process does not copy runtime sources if {@link PluginConfiguration#isCopyGraphQLJavaSources()} is set to false
+	 * @throws IOException
+	 */
+	@Test
+	@DirtiesContext
+	void testGenerateCode_skipCopySources() throws IOException {
+		
+		pluginConfiguration.mode = PluginMode.client;
+		pluginConfiguration.packageName = "test.generatecode.enabled";
+		pluginConfiguration.copyGraphQLJavaSources = false;
+		pluginConfiguration.mainResourcesFolder = new File("src/test/resources");
+		pluginConfiguration.schemaFilePattern = "basic.graphqls";
+		pluginConfiguration.targetSourceFolder = targetSourceFolder;
+		pluginConfiguration.targetClassFolder = targetSourceFolder;
+
+		codeGenerator.generateCode();
+		assertFalse(targetRuntimeClassesSourceFolder.exists());
+	}
+
+	
+	/**
+	 * Creates a mock graphql-java-runtime-sources.jar
+	 * Generates a jar with the package com.graphql_java_generator. and sample file
+	 * @throws IOException
+	 */
+	protected void createRuntimeSourcesJar() throws IOException {
+		File file = mavenTestHelper.getTestRutimeSourcesJarFile();
+		if(file.exists()) {
+			file.delete();
+		}
+		
+		FileOutputStream fout = new FileOutputStream(file);
+		JarOutputStream jarOut = new JarOutputStream(fout);
+		jarOut.putNextEntry(new ZipEntry("com/")); // Folders must end with "/".
+		jarOut.putNextEntry(new ZipEntry("com/graphql_java_generator/")); // Folders must end with "/".
+		jarOut.putNextEntry(new ZipEntry("com/graphql_java_generator/SomeFile.java"));
+		jarOut.write("Some text".getBytes());
+		jarOut.closeEntry();
+		jarOut.close();
+		fout.close();		
+	}
+	
+	
+	
 
 }

@@ -5,7 +5,11 @@ package com.graphql_java_generator.plugin;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -105,6 +109,12 @@ public interface PluginConfiguration {
 	/** The folder where the generated classes will be generated */
 	public File getTargetSourceFolder();
 
+	/**
+	 * Returns true if shall copy graphql sources (graphql-java-runtime) source code
+	 * @return
+	 */
+	public boolean isCopyGraphQLJavaSources();
+
 	/** Logs all the configuration parameters, in the debug level */
 	default public void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
@@ -118,6 +128,7 @@ public interface PluginConfiguration {
 			getLog().debug("  SourceEncoding: " + getMode());
 			getLog().debug("  TargetClassFolder: " + getTargetClassFolder());
 			getLog().debug("  TargetSourceFolder: " + getTargetSourceFolder());
+			getLog().debug("  CopyGraphQLJavaSources: " + isCopyGraphQLJavaSources());
 		}
 	}
 }
