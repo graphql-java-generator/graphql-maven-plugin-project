@@ -972,7 +972,7 @@ public class DocumentParser {
 	 */
 	private void addTypeAnnotationForBothClientAndServerMode(Type o) {
 		if (o.isInputType()) {
-			((AbstractType) o).addAnnotation("@GraphQLInputType");
+			((AbstractType) o).addAnnotation("@GraphQLInputType(\"" + o.getName() + "\")");
 		}
 	}
 
