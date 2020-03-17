@@ -112,6 +112,7 @@ public class QueryField {
 			case " ":
 			case "\n":
 			case "\r":
+			case "\t":
 				// Nothing to do.
 				break;
 			case ":":
@@ -225,6 +226,7 @@ public class QueryField {
 			case " ":
 			case "\n":
 			case "\r":
+			case "\t":
 				break;
 			case ",":
 				if (step != InputParameterStep.NAME) {

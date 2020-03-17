@@ -13,7 +13,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * @see <a href=
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
-@GraphQLInputType
+@GraphQLInputType("AllFieldCasesInput")
 public class AllFieldCasesInput {
 
 	@JsonProperty("id")

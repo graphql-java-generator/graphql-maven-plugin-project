@@ -32,7 +32,7 @@ public class Builder {
 	 * The list of character that can separate tokens, in the GraphQL query string. These token are read by the
 	 * {@link StringTokenizer}.
 	 */
-	public static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r@";
+	public static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r\t@";
 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
@@ -358,6 +358,7 @@ public class Builder {
 				case " ":
 				case "\n":
 				case "\r":
+				case "\t":
 					break;
 				case "{":
 					// We've found the start of the query/mutation/subscription

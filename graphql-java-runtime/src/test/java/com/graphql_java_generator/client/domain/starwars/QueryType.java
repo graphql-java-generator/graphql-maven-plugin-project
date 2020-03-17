@@ -275,6 +275,7 @@ public class QueryType {
 	public Builder getHeroResponseBuilder() throws GraphQLRequestPreparationException {
 		Builder builder = new Builder(getClass(), "hero");
 		builder.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null));
+		builder.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null));
 		return builder;
 	}
 
@@ -845,7 +846,7 @@ public class QueryType {
 	 */
 	public Builder getDroidResponseBuilder() throws GraphQLRequestPreparationException {
 		Builder builder = new Builder(getClass(), "droid");
-		builder.withInputParameter(InputParameter.newBindParameter("id", "queryTypeDroidId", false, null));
+		builder.withInputParameter(InputParameter.newBindParameter("id", "queryTypeDroidId", true, null));
 		return builder;
 	}
 
