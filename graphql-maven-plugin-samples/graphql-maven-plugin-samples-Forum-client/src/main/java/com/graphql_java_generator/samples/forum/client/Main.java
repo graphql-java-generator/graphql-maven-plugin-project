@@ -6,7 +6,6 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.DirectQueries;
 import com.graphql_java_generator.samples.forum.client.graphql.PreparedQueries;
-import com.graphql_java_generator.samples.forum.client.graphql.WithBuilder;
 
 /**
  * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
@@ -31,12 +30,6 @@ public class Main {
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
 		exec(new PreparedQueries(), null);
-
-		System.out.println("");
-		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		System.out.println("============================================================================");
-		exec(new WithBuilder(), null);
 
 		System.out.println("");
 		System.out.println("");

@@ -69,8 +69,8 @@ public class Builder {
 	 *            Its optional alias (may be null)
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public Builder(Class<?> owningClass, String fieldName, String fieldAlias)
-			throws GraphQLRequestPreparationException {
+	@Deprecated
+	Builder(Class<?> owningClass, String fieldName, String fieldAlias) throws GraphQLRequestPreparationException {
 		this(owningClass, fieldName, fieldAlias, false);
 	}
 
@@ -107,7 +107,8 @@ public class Builder {
 	 *            build the request.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public Builder(Class<?> owningClass, String fieldName, String fieldAlias, boolean queryLevel)
+	@Deprecated
+	Builder(Class<?> owningClass, String fieldName, String fieldAlias, boolean queryLevel)
 			throws GraphQLRequestPreparationException {
 		objectResponse = new ObjectResponse(owningClass, fieldName, fieldAlias);
 		objectResponse.setQueryLevel(queryLevel);
@@ -123,7 +124,8 @@ public class Builder {
 	 * @throws GraphQLRequestPreparationException
 	 *             If the fieldName or the fieldAlias is not valid
 	 */
-	public Builder withField(String fieldName) throws GraphQLRequestPreparationException {
+	@Deprecated
+	Builder withField(String fieldName) throws GraphQLRequestPreparationException {
 		return withField(fieldName, null);
 	}
 
@@ -139,7 +141,8 @@ public class Builder {
 	 * @throws GraphQLRequestPreparationException
 	 *             If the fieldName or the fieldAlias is not valid
 	 */
-	public Builder withField(String fieldName, String alias) throws GraphQLRequestPreparationException {
+	@Deprecated
+	Builder withField(String fieldName, String alias) throws GraphQLRequestPreparationException {
 		return withField(fieldName, alias, null, null);
 	}
 
@@ -155,8 +158,9 @@ public class Builder {
 	 * @throws GraphQLRequestPreparationException
 	 *             If the fieldName or the fieldAlias is not valid
 	 */
-	public Builder withField(String fieldName, String alias, List<InputParameter> inputParameters,
-			List<Directive> directives) throws GraphQLRequestPreparationException {
+	@Deprecated
+	Builder withField(String fieldName, String alias, List<InputParameter> inputParameters, List<Directive> directives)
+			throws GraphQLRequestPreparationException {
 
 		// We check that this field exist, and is a scaler
 		graphqlClientUtils.checkFieldOfGraphQLType(fieldName, true, objectResponse.field.clazz);
@@ -201,7 +205,8 @@ public class Builder {
 	 *            compatible. Otherwise, the toString() method is called to write the result in the GraphQL query.
 	 * @return The current {@link Builder}
 	 */
-	public Builder withInputParameterHardCoded(String name, Object value) {
+	@Deprecated
+	Builder withInputParameterHardCoded(String name, Object value) {
 		objectResponse.addInputParameter(new InputParameter(name, null, value, true, null));
 		return this;
 	}
@@ -223,7 +228,8 @@ public class Builder {
 	 * @return The current {@link Builder}
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public Builder withInputParameter(String name, String bindParameterName, boolean mandatory)
+	@Deprecated
+	Builder withInputParameter(String name, String bindParameterName, boolean mandatory)
 			throws GraphQLRequestPreparationException {
 		GraphQLScalarType graphQLScalarType = getCustomScalarGraphQLType(null, objectResponse.getOwningClass(),
 				objectResponse.getFieldName(), name);
@@ -238,7 +244,8 @@ public class Builder {
 	 * @param inputParameters
 	 * @return The current {@link Builder}
 	 */
-	public Builder withInputParameters(List<InputParameter> inputParameters) {
+	@Deprecated
+	Builder withInputParameters(List<InputParameter> inputParameters) {
 		objectResponse.addInputParameters(inputParameters);
 		return this;
 	}
@@ -249,12 +256,14 @@ public class Builder {
 	 * @param directives
 	 * @return The current {@link Builder}
 	 */
-	public Builder withDirectives(List<Directive> directives) {
+	@Deprecated
+	Builder withDirectives(List<Directive> directives) {
 		objectResponse.addDirectives(directives);
 		return this;
 	}
 
-	public Builder withFragment(Fragment fragment) {
+	@Deprecated
+	Builder withFragment(Fragment fragment) {
 		fragments.add(fragment);
 		return this;
 	}
@@ -272,7 +281,8 @@ public class Builder {
 	 *             If the subobjetResponseDef can't be added. For instance: the fieldName or the fieldAlias is not
 	 *             valid, or if the field of this subobjetResponseDef doesn't exist in the current owningClass...
 	 */
-	public Builder withSubObject(ObjectResponse subobjetResponseDef) throws GraphQLRequestPreparationException {
+	@Deprecated
+	Builder withSubObject(ObjectResponse subobjetResponseDef) throws GraphQLRequestPreparationException {
 		// The sub-object must be based ... on a subobject of the current Field.
 		// That is: the owningClass for the subject must be our field class.
 		if (subobjetResponseDef.field.owningClass != objectResponse.getFieldClass()) {

@@ -8,7 +8,6 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
 import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
-import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
 
 /**
  * These are samples of queries that can be used with GraphQL against the Star Wars GraphQL schema. There are

@@ -15,7 +15,6 @@ import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.impl.PartialDirectQueries;
 import org.allGraphQLCases.impl.PartialPreparedQueries;
-import org.allGraphQLCases.impl.PartialWithBuilder;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
