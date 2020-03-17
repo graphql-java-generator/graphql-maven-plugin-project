@@ -100,10 +100,10 @@ public class ${targetFileName} #if($object.implementz.size()>0)implements #forea
 
 
 
-/**
- * Builder
- */
-public static class Builder {
+	/**
+	 * Builder
+	 */
+	public static class Builder {
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
 		private #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
