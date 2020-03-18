@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ class InputParameterTest {
 		TopicPostInput topicPostInput = new TopicPostInput();
 		topicPostInput.setAuthorId("00000000-0000-0000-0000-000000000012");
 		topicPostInput.setContent("Some other content");
-		topicPostInput.setDate(new Date(2009 - 1900, 11 - 1, 21));
+		topicPostInput.setDate(new GregorianCalendar(2009, 11 - 1, 21).getTime());
 		topicPostInput.setPubliclyAvailable(false);
 		topicPostInput.setTitle("The good title for a post");
 
@@ -213,7 +214,6 @@ class InputParameterTest {
 
 	@Test
 	void getValueForGraphqlQuery_BindParameter_CustomScalar_Date_OK() throws GraphQLRequestExecutionException {
-		GraphQLScalarTypeDate graphQLScalarTypeDate = new GraphQLScalarTypeDate();
 		String name = "aName";
 		String bindParameterName = "variableName";
 		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName, false,

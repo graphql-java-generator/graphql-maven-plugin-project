@@ -84,17 +84,4 @@ public class IntrospectionIT {
 		// assertEquals("Droid", ret.get(0).get__typename());
 	}
 
-	@Disabled // Not ready yet
-	@Test
-	void test__datatype_allFieldCases_Error()
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Verification
-		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
-
-		// Go, go, go
-		AllFieldCases ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
-
-		// Verification
-		fail("This should raise a proper error, as the correct query type should be '{id __typename}'");
-	}
 }

@@ -24,7 +24,8 @@ public class QueryTypeCharacters {
 		return characters;
 	}
 	
-    public String toString() {
+    @Override
+	public String toString() {
         return "QueryTypeCharacters {characters: " + characters + "}";
     }
 }

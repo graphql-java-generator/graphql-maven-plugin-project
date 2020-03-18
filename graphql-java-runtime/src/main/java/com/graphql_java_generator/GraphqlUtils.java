@@ -149,8 +149,9 @@ public class GraphqlUtils {
 			Field field;
 
 			try {
-				t = clazz.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
+				t = clazz.getConstructor().newInstance();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				throw new RuntimeException("Error while creating a new instance of  '" + clazz.getName() + " class", e);
 			}
 

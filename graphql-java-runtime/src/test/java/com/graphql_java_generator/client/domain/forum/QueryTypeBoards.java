@@ -24,7 +24,8 @@ public class QueryTypeBoards {
 		return boards;
 	}
 	
-    public String toString() {
+    @Override
+	public String toString() {
         return "QueryTypeBoards {boards: " + boards + "}";
     }
 }

@@ -24,7 +24,8 @@ public class QueryTypeFindTopics {
 		return findTopics;
 	}
 	
-    public String toString() {
+    @Override
+	public String toString() {
         return "QueryTypeFindTopics {findTopics: " + findTopics + "}";
     }
 }

@@ -31,8 +31,6 @@ public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQu
 
 	@Override
 	public Character hero(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		List<Character> characters;
-
 		// episode may be null
 		if (episode == null)
 			// Let's say that the first of the list is the main hero

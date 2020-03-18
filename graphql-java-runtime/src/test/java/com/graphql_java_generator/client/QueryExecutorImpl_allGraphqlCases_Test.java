@@ -111,7 +111,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 				+ "  }\n" //
 				+ "}\n";
 
-		fail("not implemented");
+		fail("not implemented: " + query);
 	}
 
 	@Disabled

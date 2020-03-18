@@ -2,9 +2,7 @@ package com.graphql_java_generator.client.domain.starwars;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;

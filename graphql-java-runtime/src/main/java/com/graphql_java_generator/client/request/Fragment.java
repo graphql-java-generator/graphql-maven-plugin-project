@@ -53,9 +53,9 @@ public class Fragment {
 
 		// Ok, we're ready to read the fragment content
 		String classname = packageName + "." + GraphqlUtils.graphqlUtils.getJavaName(typeName);
-		Class<?> clazz;
+
 		try {
-			clazz = getClass().getClassLoader().loadClass(classname);
+			getClass().getClassLoader().loadClass(classname);
 		} catch (ClassNotFoundException e) {
 			throw new GraphQLRequestPreparationException(
 					"Could not load class '" + classname + "' for type '" + typeName + "'", e);

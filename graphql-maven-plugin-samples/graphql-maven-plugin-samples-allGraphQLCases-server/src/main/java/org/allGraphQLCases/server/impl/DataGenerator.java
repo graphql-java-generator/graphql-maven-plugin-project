@@ -4,6 +4,7 @@
 package org.allGraphQLCases.server.impl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -51,14 +52,12 @@ public class DataGenerator {
 
 	public DataGenerator() {
 		interfaceImplementations = new HashMap<>();
-		List<Class<? extends Character>> implementations = new ArrayList<Class<? extends Character>>();
 		interfaceImplementations.put(Character.class, Human.class);
 		interfaceImplementations.put(Character.class, Droid.class);
 		interfaceImplementations.put(Commented.class, Human.class);
 		interfaceImplementations.put(WithID.class, AllFieldCases.class);
 		interfaceImplementations.put(WithID.class, Human.class);
 		interfaceImplementations.put(WithID.class, Droid.class);
-		int i = 1;
 	}
 
 	/**
@@ -91,8 +90,9 @@ public class DataGenerator {
 			T t;
 
 			try {
-				t = clazzToInstanciate.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
+				t = clazzToInstanciate.getDeclaredConstructor().newInstance();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				throw new RuntimeException("Could not create a new instance of " + clazzToInstanciate.getName(), e);
 			}
 

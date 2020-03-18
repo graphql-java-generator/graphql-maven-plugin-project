@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,7 +375,7 @@ class BuilderTest {
 		i = 1;
 		// The second parameter is a bind variable
 		Map<String, Object> bindParameterValues = new HashMap<>();
-		bindParameterValues.put("sinceParam", new Date(1903 - 1900, 02 - 1, 1));
+		bindParameterValues.put("sinceParam", new GregorianCalendar(1903, 02 - 1, 1).getTime());
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
 		assertEquals("\\\"1903-02-01\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(bindParameterValues));
@@ -430,7 +430,7 @@ class BuilderTest {
 		i = 1;
 		// The second parameter is a bind variable
 		Map<String, Object> bindParameterValues = new HashMap<>();
-		bindParameterValues.put("sinceParam", new Date(2020 - 1900, 5 - 1, 3));
+		bindParameterValues.put("sinceParam", new GregorianCalendar(2020, 5 - 1, 3).getTime());
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
 		assertEquals("\\\"2020-05-03\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(bindParameterValues));

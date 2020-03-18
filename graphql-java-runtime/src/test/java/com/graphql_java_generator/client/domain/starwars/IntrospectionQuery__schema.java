@@ -1,9 +1,6 @@
 package com.graphql_java_generator.client.domain.starwars;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
 /**
@@ -23,7 +20,8 @@ public class IntrospectionQuery__schema {
 		return __schema;
 	}
 	
-    public String toString() {
+    @Override
+	public String toString() {
         return "IntrospectionQuery__schema {__schema: " + __schema + "}";
     }
 }

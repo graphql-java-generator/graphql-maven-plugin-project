@@ -1,9 +1,6 @@
 package com.graphql_java_generator.client.domain.forum;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
 /**
@@ -23,7 +20,8 @@ public class IntrospectionQuery__type {
 		return __type;
 	}
 	
-    public String toString() {
+    @Override
+	public String toString() {
         return "IntrospectionQuery__type {__type: " + __type + "}";
     }
 }

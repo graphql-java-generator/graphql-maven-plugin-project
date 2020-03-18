@@ -24,7 +24,8 @@ public class MutationTypeCreatePosts {
 		return createPosts;
 	}
 	
-    public String toString() {
+    @Override
+	public String toString() {
         return "MutationTypeCreatePosts {createPosts: " + createPosts + "}";
     }
 }

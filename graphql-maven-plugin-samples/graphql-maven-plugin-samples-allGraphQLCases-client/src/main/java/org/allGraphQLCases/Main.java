@@ -43,8 +43,6 @@ public class Main {
 
 	public void execOne(PartialQueries client)
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		// A random value, to variabilize mutations
-		int i = (int) (Math.random() * Integer.MAX_VALUE);
 
 		try {
 

@@ -1,12 +1,8 @@
 package com.graphql_java_generator.client.domain.forum;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import com.graphql_java_generator.annotation.GraphQLInputParameters;
-import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
@@ -112,7 +108,8 @@ public class Post  {
 		return __typename;
 	}
 
-    public String toString() {
+    @Override
+	public String toString() {
         return "Post {"
 				+ "id: " + id
 				+ ", "
