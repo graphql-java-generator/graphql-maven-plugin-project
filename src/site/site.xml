@@ -24,6 +24,7 @@
 		<menu name="Client mode">
 			<item name="Plugin usage" href="client.html" />
 			<item name="Introspection" href="introspection.html" />
+			<item name="Runtime Classes" href="runtimeclasses.html" />
 		</menu>
 
 		<menu name="Server mode">
