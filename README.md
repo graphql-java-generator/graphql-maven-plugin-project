@@ -1,5 +1,9 @@
 # GraphQL Java Generator
 
+[TOC]
+
+[[_TOC_]]
+
 The GraphQL Java Generator makes it easy to work in Java with graphQL in a schema first approach.
 
 This project is an accelerator to develop __GraphQL clients__ and __GraphQL servers__ in java. 
