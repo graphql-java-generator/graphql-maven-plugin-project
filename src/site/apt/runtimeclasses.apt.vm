@@ -21,9 +21,10 @@ Runtime Classes
   
   []
   
-  The runtime classes are copied as source code so, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator. 
-  But if for any reason you don't what the the runtime classes in your generated source code (and you just want to add them as a dependency) it is possible to customize
-  the plugin execution so they are not generated
+  The runtime classes are copied as source code so, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
+   
+  But if for any reason you don't what the the runtime classes in your generated source code (and you just want to add them as a dependency), 
+  it is possible to customize the plugin execution so that they are not generated.
   
   
 
@@ -31,9 +32,18 @@ Runtime Classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   To avoid the generation of runtime classes you can use the parameter <<copyGraphQLJavaSources>> (-Dcom.graphql_java_generator.mavenplugin.copyGraphQLJavaSources)
-  If copyGraphQLJavaSources is "false", then the runtime classes won't be generated. By default, the parameter value is "true"
+  If copyGraphQLJavaSources is "false", then the runtime classes won't be generated. By default, the parameter value is "true".
   
-  Here there's an exmaple of plugin configuration to not generate runtime classes
+  The main purpose for adding this feature to the plugin is double:
+
+  * Do not generate/keep non-model dependent code if it's already in a dependency. If for some reason an upgrade or patch of the runtime classes is released, the code does not need to be regenerated and just the graphql-java-runtime dependency version must be updated.
+  
+  * On the other hand, in some cases, you may want to customize the runtime classes with customized behavior. I know that this may sound a bit strange but I found myself in this situation.
+  
+  []
+  
+  
+  Here there's an example of plugin configuration to not generate runtime classes
 
 +--------------------------------------------------------------------------------------------
 <project ...>
