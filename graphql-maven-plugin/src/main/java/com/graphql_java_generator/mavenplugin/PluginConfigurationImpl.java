@@ -99,4 +99,9 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 		return new File(getTargetFolder(), mojo.targetSourceFolder);
 	}
 
+	@Override
+	public boolean isCopyGraphQLJavaSources() {
+		return this.mojo.copyGraphQLJavaSources;
+	}
+
 }
