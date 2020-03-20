@@ -15,6 +15,8 @@ public class MavenTestHelper {
 
 	final static String MODULE_NAME = "graphql-maven-plugin";
 	final static String TARGET_SOURCE_FOLDER = "/target/junittest/UNIT_TEST_NAME/generated-src";
+	final static String RUNTIME_BASE_PACKAGE_FOLDER = "com/graphql_java_generator";
+	final static String TESTING_RUNTIME_SOURCE_FILE = "target/test-classes/graphql-java-runtime-sources.jar"; 
 
 	/**
 	 * Returns the root path for this module. The issue here, is that the current path is the root path for this module,
@@ -44,6 +46,23 @@ public class MavenTestHelper {
 	 */
 	public File getTargetSourceFolder(String unitTestName) {
 		return new File(getModulePathFile(), TARGET_SOURCE_FOLDER.replace("UNIT_TEST_NAME", unitTestName));
+	}
+	
+	/**
+	 * Gets the base folder for runtime classes calculated for the given test name  
+	 * @param unitTestName
+	 * @return
+	 */
+	public File getTargetRuntimeClassesBaseSourceFolder(String unitTestName) {
+		return new File(getTargetSourceFolder(unitTestName), RUNTIME_BASE_PACKAGE_FOLDER);
+	}
+	
+	/**
+	 * Resolve the file for runtime sources to be used in IDE tests related to code generation 
+	 * @return
+	 */
+	public File getTestRutimeSourcesJarFile() {
+		return new File(TESTING_RUNTIME_SOURCE_FILE);
 	}
 
 	/**

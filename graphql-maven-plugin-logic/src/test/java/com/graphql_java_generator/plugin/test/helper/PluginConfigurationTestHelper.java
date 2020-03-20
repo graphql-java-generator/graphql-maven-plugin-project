@@ -34,6 +34,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public String sourceEncoding = null;
 	public File targetClassFolder = null;
 	public File targetSourceFolder = null;
+	public boolean copyGraphQLJavaSources = true;
 
 	/**
 	 * @param caller
@@ -46,6 +47,11 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	@Override
 	public boolean getGenerateJPAAnnotation() {
 		return true;
+	}
+
+	@Override
+	public boolean isCopyGraphQLJavaSources() {
+		return copyGraphQLJavaSources;
 	}
 
 }
