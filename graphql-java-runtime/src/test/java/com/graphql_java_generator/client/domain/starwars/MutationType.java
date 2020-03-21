@@ -21,6 +21,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -213,7 +214,8 @@ public class MutationType {
 		parameters.put("mutationTypeCreateHumanName", name);
 		parameters.put("mutationTypeCreateHumanHomePlanet", homePlanet);
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.mutation)
+				|| !objectResponse.getQueryName().equals("createHuman")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -266,7 +268,8 @@ public class MutationType {
 			logger.debug("Executing of query 'createHuman' (with bind variables)");
 		}
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.mutation)
+				|| !objectResponse.getQueryName().equals("createHuman")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -288,9 +291,8 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createHuman");
-		builder.withInputParameter(InputParameter.newBindParameter("name", "mutationTypeCreateHumanName", false, null));
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "createHuman",
+				InputParameter.newBindParameter("name", "mutationTypeCreateHumanName", false, null),
 				InputParameter.newBindParameter("homePlanet", "mutationTypeCreateHumanHomePlanet", false, null));
 		return builder;
 	}
@@ -420,7 +422,8 @@ public class MutationType {
 		parameters.put("mutationTypeAddFriendIdCharacter", idCharacter);
 		parameters.put("mutationTypeAddFriendIdNewFriend", idNewFriend);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.mutation)
+				|| !objectResponse.getQueryName().equals("addFriend")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -473,7 +476,8 @@ public class MutationType {
 			logger.debug("Executing of query 'addFriend' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.mutation)
+				|| !objectResponse.getQueryName().equals("addFriend")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -495,10 +499,8 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getAddFriendResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "addFriend");
-		builder.withInputParameter(
-				InputParameter.newBindParameter("idCharacter", "mutationTypeAddFriendIdCharacter", false, null));
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "addFriend",
+				InputParameter.newBindParameter("idCharacter", "mutationTypeAddFriendIdCharacter", false, null),
 				InputParameter.newBindParameter("idNewFriend", "mutationTypeAddFriendIdNewFriend", false, null));
 		return builder;
 	}

@@ -256,18 +256,8 @@ public class MyQueryType {
 			logger.debug("Executing of query 'withoutParameters'");
 		}
 
-		if (!MyQueryTypeResponse.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ MyQueryTypeResponse.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
-
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
 
 		MyQueryTypeResponse ret = executor.execute("query", objectResponse, parameters, MyQueryTypeResponse.class);
 
@@ -323,7 +313,7 @@ public class MyQueryType {
 	 */
 
 	public Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new Builder(MyQueryTypeRootResponse.class, "query", true);
+		return new Builder(MyQueryTypeRootResponse.class, "query");
 	}
 
 	/**
@@ -483,11 +473,6 @@ public class MyQueryType {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeWithoutParameters ret = executor.execute("query", objectResponse, parameters,
 				MyQueryTypeWithoutParameters.class);
 
@@ -550,11 +535,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'withoutParameters' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
 		MyQueryTypeWithoutParameters ret = executor.execute("query", objectResponse, bindVariableValues,
@@ -570,7 +550,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithoutParametersResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withoutParameters", false);
+		Builder builder = new Builder(getClass(), "withoutParameters");
 		return builder;
 	}
 
@@ -692,11 +672,6 @@ public class MyQueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneOptionalParamCharacter", character);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeWithOneOptionalParam ret = executor.execute("query", objectResponse, parameters,
 				MyQueryTypeWithOneOptionalParam.class);
 
@@ -743,11 +718,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'withOneOptionalParam' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("myQueryTypeWithOneOptionalParamCharacter", character);
 
@@ -764,8 +734,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithOneOptionalParamResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withOneOptionalParam", false);
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "withOneOptionalParam",
 				InputParameter.newBindParameter("character", "myQueryTypeWithOneOptionalParamCharacter", false, null));
 		return builder;
 	}
@@ -888,11 +857,6 @@ public class MyQueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneMandatoryParamCharacter", character);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeWithOneMandatoryParam ret = executor.execute("query", objectResponse, parameters,
 				MyQueryTypeWithOneMandatoryParam.class);
 
@@ -939,11 +903,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'withOneMandatoryParam' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("myQueryTypeWithOneMandatoryParamCharacter", character);
 
@@ -960,8 +919,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithOneMandatoryParamResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withOneMandatoryParam", false);
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "withOneMandatoryParam",
 				InputParameter.newBindParameter("character", "myQueryTypeWithOneMandatoryParamCharacter", false, null));
 		return builder;
 	}
@@ -1080,11 +1038,6 @@ public class MyQueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithEnumEpisode", episode);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeWithEnum ret = executor.execute("query", objectResponse, parameters, MyQueryTypeWithEnum.class);
 
 		return ret.withEnum;
@@ -1130,11 +1083,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'withEnum' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("myQueryTypeWithEnumEpisode", episode);
 
@@ -1151,8 +1099,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithEnumResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withEnum", false);
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "withEnum",
 				InputParameter.newBindParameter("episode", "myQueryTypeWithEnumEpisode", false, null));
 		return builder;
 	}
@@ -1282,11 +1229,6 @@ public class MyQueryType {
 		parameters.put("myQueryTypeWithListFirstName", firstName);
 		parameters.put("myQueryTypeWithListCharacters", characters);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeWithList ret = executor.execute("query", objectResponse, parameters, MyQueryTypeWithList.class);
 
 		return ret.withList;
@@ -1334,11 +1276,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'withList' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("myQueryTypeWithListFirstName", firstName);
 		bindVariableValues.put("myQueryTypeWithListCharacters", characters);
@@ -1356,10 +1293,8 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getWithListResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "withList", false);
-		builder.withInputParameter(
-				InputParameter.newBindParameter("firstName", "myQueryTypeWithListFirstName", false, null));
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "withList",
+				InputParameter.newBindParameter("firstName", "myQueryTypeWithListFirstName", false, null),
 				InputParameter.newBindParameter("characters", "myQueryTypeWithListCharacters", false, null));
 		return builder;
 	}
@@ -1482,11 +1417,6 @@ public class MyQueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeAllFieldCasesInput", input);
 
-		if (!AllFieldCases.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ AllFieldCases.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeAllFieldCases ret = executor.execute("query", objectResponse, parameters,
 				MyQueryTypeAllFieldCases.class);
 
@@ -1533,11 +1463,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'allFieldCases' (with bind variables)");
 		}
 
-		if (!AllFieldCases.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ AllFieldCases.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("myQueryTypeAllFieldCasesInput", input);
 
@@ -1554,8 +1479,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getAllFieldCasesResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "allFieldCases", false);
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "allFieldCases",
 				InputParameter.newBindParameter("input", "myQueryTypeAllFieldCasesInput", false, null));
 		return builder;
 	}
@@ -1674,11 +1598,6 @@ public class MyQueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeErrorErrorLabel", errorLabel);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeError ret = executor.execute("query", objectResponse, parameters, MyQueryTypeError.class);
 
 		return ret.error;
@@ -1724,11 +1643,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'error' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("myQueryTypeErrorErrorLabel", errorLabel);
 
@@ -1744,8 +1658,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getErrorResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "error", false);
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "error",
 				InputParameter.newBindParameter("errorLabel", "myQueryTypeErrorErrorLabel", false, null));
 		return builder;
 	}
@@ -1855,11 +1768,6 @@ public class MyQueryType {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		if (!_break.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ _break.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		MyQueryTypeABreak ret = executor.execute("query", objectResponse, parameters, MyQueryTypeABreak.class);
 
 		return ret.aBreak;
@@ -1903,11 +1811,6 @@ public class MyQueryType {
 			logger.debug("Executing of query 'aBreak' (with bind variables)");
 		}
 
-		if (!_break.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ _break.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
 		MyQueryTypeABreak ret = executor.execute("query", objectResponse, bindVariableValues, MyQueryTypeABreak.class);
@@ -1922,7 +1825,7 @@ public class MyQueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getABreakResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "aBreak", false);
+		Builder builder = new Builder(getClass(), "aBreak");
 		return builder;
 	}
 

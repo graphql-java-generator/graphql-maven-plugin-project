@@ -53,7 +53,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getWithEnumResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals("{\"query\":\"query{withEnum(episode:JEDI)"//
@@ -84,7 +84,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals("{\"query\":\"query{" + //
@@ -141,7 +141,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals("{\"query\":\"query{" + //
@@ -187,7 +187,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, null);
+		String request = objectResponse.buildRequest(null);
 
 		// Verification
 		assertEquals("{\"query\":\"query{withoutParameters{__typename id name friends{id name appearsIn __typename}}}" //

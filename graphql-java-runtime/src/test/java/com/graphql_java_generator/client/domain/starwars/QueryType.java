@@ -22,6 +22,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -203,7 +204,8 @@ public class QueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("queryTypeHeroEpisode", episode);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("hero")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -253,7 +255,8 @@ public class QueryType {
 			logger.debug("Executing of query 'hero' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("hero")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -273,9 +276,9 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getHeroResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "hero");
-		builder.withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null));
-		builder.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null));
+		Builder builder = new Builder(getClass(), "hero",
+				InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null),
+				InputParameter.newBindParameter("id", "queryTypeHeroId", false, null));
 		return builder;
 	}
 
@@ -395,7 +398,8 @@ public class QueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("queryTypeCharactersEpisode", episode);
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("characters")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -445,7 +449,8 @@ public class QueryType {
 			logger.debug("Executing of query 'characters' (with bind variables)");
 		}
 
-		if (!Character.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("characters")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Character.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -466,8 +471,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCharactersResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "characters");
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "characters",
 				InputParameter.newBindParameter("episode", "queryTypeCharactersEpisode", false, null));
 		return builder;
 	}
@@ -586,7 +590,8 @@ public class QueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("queryTypeHumanId", id);
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("human")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -636,7 +641,8 @@ public class QueryType {
 			logger.debug("Executing of query 'human' (with bind variables)");
 		}
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("human")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -656,8 +662,8 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "human");
-		builder.withInputParameter(InputParameter.newBindParameter("id", "queryTypeHumanId", false, null));
+		Builder builder = new Builder(getClass(), "human",
+				InputParameter.newBindParameter("id", "queryTypeHumanId", false, null));
 		return builder;
 	}
 
@@ -775,7 +781,8 @@ public class QueryType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("queryTypeDroidId", id);
 
-		if (!Droid.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("droid")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Droid.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -825,7 +832,8 @@ public class QueryType {
 			logger.debug("Executing of query 'droid' (with bind variables)");
 		}
 
-		if (!Droid.class.equals(objectResponse.getFieldClass())) {
+		if (!objectResponse.getRequestType().equals(RequestType.query)
+				|| !objectResponse.getQueryName().equals("droid")) {
 			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
 					+ Droid.class + ", but is an instance of " + objectResponse.getClass().getName());
 		}
@@ -845,8 +853,8 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getDroidResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "droid");
-		builder.withInputParameter(InputParameter.newBindParameter("id", "queryTypeDroidId", true, null));
+		Builder builder = new Builder(getClass(), "droid",
+				InputParameter.newBindParameter("id", "queryTypeDroidId", true, null));
 		return builder;
 	}
 

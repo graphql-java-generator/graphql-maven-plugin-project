@@ -302,7 +302,7 @@ public class ${object.javaName} {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new Builder(${object.javaName}RootResponse.class, "${object.requestType}", true);
+		return new Builder(${object.javaName}RootResponse.class, "${object.requestType}");
 	}
 
 #foreach ($field in $object.fields)
@@ -541,11 +541,11 @@ public class ${object.javaName} {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "${field.name}");
+		return new Builder(getClass(), "${field.name}"
 #foreach ($inputParameter in $field.inputParameters)
-		builder.withInputParameter(InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", false, null));
+			, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", false, null)
 #end
-		return builder;
+			);
 	}
 	
 #end

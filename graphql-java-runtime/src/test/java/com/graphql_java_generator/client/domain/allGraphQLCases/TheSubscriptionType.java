@@ -208,11 +208,6 @@ public class TheSubscriptionType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", episode);
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		TheSubscriptionTypeSubscribeNewHumanForEpisode ret = executor.execute("subscription", objectResponse,
 				parameters, TheSubscriptionTypeSubscribeNewHumanForEpisode.class);
 
@@ -260,11 +255,6 @@ public class TheSubscriptionType {
 			logger.debug("Executing of query 'subscribeNewHumanForEpisode' (with bind variables)");
 		}
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", episode);
 
@@ -281,9 +271,8 @@ public class TheSubscriptionType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getSubscribeNewHumanForEpisodeResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "subscribeNewHumanForEpisode");
-		builder.withInputParameter(InputParameter.newBindParameter("episode",
-				"theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", false, null));
+		Builder builder = new Builder(getClass(), "subscribeNewHumanForEpisode", InputParameter
+				.newBindParameter("episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", false, null));
 		return builder;
 	}
 

@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.client.request;
 
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.graphql_java_generator.GraphqlUtils;
@@ -85,7 +86,7 @@ public class Fragment {
 			throws GraphQLRequestPreparationException {
 		while (st.hasMoreTokens()) {
 			String token = st.nextToken();
-			if (Builder.STRING_TOKENIZER_DELIMITER.contains(token))
+			if (AbstractGraphQLRequest.STRING_TOKENIZER_DELIMITER.contains(token))
 				continue;
 
 			// We found a non null token
@@ -105,6 +106,10 @@ public class Fragment {
 
 	public String getTypeName() {
 		return typeName;
+	}
+
+	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> params) {
+		throw new RuntimeException("not yet implemented");
 	}
 
 }

@@ -3,13 +3,15 @@
  */
 package com.graphql_java_generator.client;
 
-import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import java.io.IOException;
+import java.util.Map;
+
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.io.IOException;
-import java.util.Map;
+import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, and return its

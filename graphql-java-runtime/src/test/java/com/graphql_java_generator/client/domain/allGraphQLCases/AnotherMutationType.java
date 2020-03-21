@@ -202,11 +202,6 @@ public class AnotherMutationType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("anotherMutationTypeCreateHumanHuman", human);
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		AnotherMutationTypeCreateHuman ret = executor.execute("mutation", objectResponse, parameters,
 				AnotherMutationTypeCreateHuman.class);
 
@@ -253,11 +248,6 @@ public class AnotherMutationType {
 			logger.debug("Executing of query 'createHuman' (with bind variables)");
 		}
 
-		if (!Human.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ Human.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("anotherMutationTypeCreateHumanHuman", human);
 
@@ -274,8 +264,7 @@ public class AnotherMutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createHuman");
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "createHuman",
 				InputParameter.newBindParameter("human", "anotherMutationTypeCreateHumanHuman", false, null));
 		return builder;
 	}
@@ -398,11 +387,6 @@ public class AnotherMutationType {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("anotherMutationTypeCreateAllFieldCasesInput", input);
 
-		if (!AllFieldCases.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ AllFieldCases.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		AnotherMutationTypeCreateAllFieldCases ret = executor.execute("mutation", objectResponse, parameters,
 				AnotherMutationTypeCreateAllFieldCases.class);
 
@@ -449,11 +433,6 @@ public class AnotherMutationType {
 			logger.debug("Executing of query 'createAllFieldCases' (with bind variables)");
 		}
 
-		if (!AllFieldCases.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ AllFieldCases.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		bindVariableValues.put("anotherMutationTypeCreateAllFieldCasesInput", input);
 
@@ -470,8 +449,7 @@ public class AnotherMutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateAllFieldCasesResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createAllFieldCases");
-		builder.withInputParameter(
+		Builder builder = new Builder(getClass(), "createAllFieldCases",
 				InputParameter.newBindParameter("input", "anotherMutationTypeCreateAllFieldCasesInput", false, null));
 		return builder;
 	}

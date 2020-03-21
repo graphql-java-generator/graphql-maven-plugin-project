@@ -82,7 +82,7 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("mutation", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals(
@@ -114,7 +114,7 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals(
@@ -145,7 +145,7 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals(
@@ -175,7 +175,7 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals(
@@ -203,7 +203,7 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, null); // No map given (null instead)
+		String request = objectResponse.buildRequest(null); // No map given (null instead)
 
 		// Verification
 		assertEquals(
@@ -231,9 +231,9 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Go, go, go
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> queryExecutorImpl.buildRequest("query", objectResponse, new HashMap<>())); // Empty map given
+				() -> objectResponse.buildRequest(new HashMap<>())); // Empty map given
 		GraphQLRequestExecutionException e2 = assertThrows(GraphQLRequestExecutionException.class,
-				() -> queryExecutorImpl.buildRequest("query", objectResponse, null)); // No map given (null instead)
+				() -> objectResponse.buildRequest(null)); // No map given (null instead)
 
 		// Verification
 		assertTrue(e.getMessage().contains("queryTypeDroidId"));
@@ -251,7 +251,7 @@ class QueryExecutorImpl_StarWars_Test {
 		Map<String, Object> parameters = new HashMap<>();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, parameters);
+		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
 		assertEquals(
@@ -269,7 +269,7 @@ class QueryExecutorImpl_StarWars_Test {
 						.build();
 
 		// Go, go, go
-		String request = queryExecutorImpl.buildRequest("query", objectResponse, null);
+		String request = objectResponse.buildRequest(null);
 
 		// Verification
 		assertEquals(

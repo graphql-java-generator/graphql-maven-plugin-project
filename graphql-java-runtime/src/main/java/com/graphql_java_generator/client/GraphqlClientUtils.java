@@ -87,6 +87,8 @@ public class GraphqlClientUtils {
 	 *            The field whose type should be (or not) a scalar
 	 * @param shouldBeScalar
 	 *            if true, this method checks that field's type is a scalar (if false, checks that it is not a scalar)
+	 * @return Returns the Class indicated as the value for the graphqlType attribute of the GraphQLScalar or
+	 *         GraphQLNonScalar annotation
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Class<?> checkIsScalar(java.lang.reflect.Field field, Boolean shouldBeScalar)
