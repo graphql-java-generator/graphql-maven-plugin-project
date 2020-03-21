@@ -57,11 +57,11 @@ public class QueryField {
 	 * The GraphQL class of the type, that is: the type of the field if it's not a List. And the type of the items of
 	 * the list, if the field's type is a list
 	 */
-	Class<?> clazz;
+	final Class<?> clazz;
 	/** The name of this field */
-	String name;
+	final String name;
 	/** The alias of this field */
-	String alias = null;
+	final String alias = null;
 
 	/** true if the {@link QueryField} is a query, a mutation or a subscription. False otherwise. */
 	Boolean scalar = null;
@@ -85,17 +85,32 @@ public class QueryField {
 	 * 
 	 * @param owningClass
 	 *            The {@link Class} that owns the field
-	 * @param fieldClass
-	 *            The {@link Class} of the field
+	 * @param fieldName
+	 *            The name of the field
+	 * @param fieldAlias
+	 *            The alias for this field
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public QueryField(Class<?> owningClass, String fieldName, String fieldAlias)
+			throws GraphQLRequestPreparationException {
+		graphqlClientUtils.checkName(fieldName);
+		graphqlClientUtils.checkName(fieldAlias);
+		this.owningClazz = owningClass;
+		this.clazz = graphqlClientUtils.checkFieldOfGraphQLType(fieldName, false, owningClass);
+		this.name = fieldName;
+	}
+
+	/**
+	 * The constructor, when created by the {@link Builder}: it must provide the owningClass
+	 * 
+	 * @param owningClass
+	 *            The {@link Class} that owns the field
 	 * @param fieldName
 	 *            The name of the field
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public QueryField(Class<?> owningClass, Class<?> fieldClass, String fieldName)
-			throws GraphQLRequestPreparationException {
-		this.owningClazz = owningClass;
-		this.clazz = fieldClass;
-		this.name = fieldName;
+	public QueryField(Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
+		this(owningClass, fieldName, null);
 	}
 
 	/**
@@ -117,6 +132,8 @@ public class QueryField {
 	 */
 	public void readTokenizerForResponseDefinition(StringTokenizer st) throws GraphQLRequestPreparationException {
 		// The field we're reading
+		String currentFieldName = null;
+		String currentFieldAlias = null;
 		QueryField currentField = null;
 		// The directive we're reading. It is associated to the current field during its creation
 		// (see the case "@" below for details)
@@ -140,12 +157,20 @@ public class QueryField {
 							"The given query has a ':' character, not preceded by a proper alias name (before <"
 									+ st.nextToken() + ">)");
 				}
-				currentField.alias = currentField.name;
+				currentField.setAlias(currentField.getName());
 				// The real field name is the next real token (we'll check latter that the field names are valid)
-				currentField.name = " ";
-				while (currentField.name.equals(" ")) {
-					currentField.name = st.nextToken();
+				token = " ";
+				while (token.equals(" ") || token.equals("\n") || token.equals("\r") || token.equals("\t")) {
+					token = st.nextToken();
 				}
+
+				// Does a field of this name already exist ?
+				// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
+				if (getField(token) != null) {
+					throw new GraphQLRequestPreparationException("The field <" + token
+							+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
+				}
+				currentField.setName(token);
 
 				// We try to get the class of this field
 				currentField.owningClazz = clazz;
@@ -153,6 +178,11 @@ public class QueryField {
 
 				break;
 			case "@":
+				// We've finished reading the field name and alias.
+				currentField = new QueryField(clazz, currentFieldName, currentFieldAlias);
+				currentFieldName = null;
+				currentFieldAlias = null;
+
 				// We're starting a GraphQL directive. The next token is its name.
 				directive = new Directive();
 				directive.setName(st.nextToken());// The directive name follows directly the @
@@ -200,9 +230,13 @@ public class QueryField {
 				return;
 			default:
 				directive = null;
-				// It's a field. Scalar or not ? That is the question. We don't care yet. If the next token is a
-				// '{', we'll read its content and fill its fields list.
-				currentField = new QueryField(clazz, graphqlUtils.getFieldType(clazz, token, false), token);
+
+				// Does a field of this name already exist ?
+				// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
+				if (getField(token) != null) {
+					throw new GraphQLRequestPreparationException("The field <" + token
+							+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
+				}
 
 				fields.add(currentField);
 			}// switch
@@ -590,7 +624,7 @@ public class QueryField {
 
 			// We add the __typename for all levels, but not for the query/mutation/subscription one
 			if (!isQueryLevel() && __typename == null) {
-				__typename = new QueryField(this.clazz, String.class, "__typename");
+				__typename = new QueryField(this.clazz, "__typename");
 				fields.add(__typename);
 			}
 		}
@@ -604,11 +638,28 @@ public class QueryField {
 	 */
 	public boolean isScalar() throws GraphQLRequestPreparationException {
 		if (scalar == null) {
-			try {
-				return graphqlClientUtils.isScalar(owningClazz.getDeclaredField(graphqlUtils.getJavaName(name)));
-			} catch (NoSuchFieldException | SecurityException e) {
-				throw new GraphQLRequestPreparationException("Could not determine if the '" + name + "' field of the '"
-						+ owningClazz.getName() + "' is a scalar", e);
+
+			// The scalar value has not yet been calculated.
+
+			// The owning class may be an object or an interface. An union has no field.
+
+			// If it's an interface, we'll search for a getter
+			if (owningClazz.isInterface()) {
+				try {
+					return graphqlClientUtils.isScalar(owningClazz
+							.getDeclaredMethod("get" + graphqlUtils.getPascalCase(graphqlUtils.getJavaName(name))));
+				} catch (SecurityException | NoSuchMethodException e) {
+					throw new GraphQLRequestPreparationException("Could not determine if the <" + name
+							+ "> field of the '" + owningClazz.getName() + "' is a scalar", e);
+				}
+			} else {
+				// Otherwise, we search for a field
+				try {
+					return graphqlClientUtils.isScalar(owningClazz.getDeclaredField(graphqlUtils.getJavaName(name)));
+				} catch (NoSuchFieldException | SecurityException e) {
+					throw new GraphQLRequestPreparationException("Could not determine if the <" + name
+							+ "> field of the '" + owningClazz.getName() + "' is a scalar", e);
+				}
 			}
 		}
 		return scalar;
@@ -624,6 +675,36 @@ public class QueryField {
 			queryLevel = name.equals("query") || name.equals("mutation") || name.equals("subscription");
 		}
 		return queryLevel;
+	}
+
+	/**
+	 * Returns the subfield for this {@link QueryField} of the given name
+	 * 
+	 * @param name
+	 *            The field's name to search
+	 * @return The subfield of the given name, or null of this {@link QueryField} contains no field of this name
+	 */
+	QueryField getField(String name) {
+		for (QueryField f : fields) {
+			if (f.name.equals(name)) {
+				// We found it
+				return f;
+			}
+		}
+		// No field of this name has been found
+		return null;
+	}
+
+	public Class<?> getClazz() {
+		return clazz;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getAlias() {
+		return alias;
 	}
 
 }

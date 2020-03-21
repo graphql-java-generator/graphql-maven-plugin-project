@@ -359,8 +359,7 @@ public class BuilderOld {
 					break;
 				case "{":
 					// We've found the start of the query/mutation/subscription
-					queryField = new QueryField(objectResponse.field.owningClass, objectResponse.field.clazz,
-							objectResponse.field.name);
+					queryField = new QueryField(objectResponse.field.owningClass, objectResponse.field.name);
 					try {
 						queryField.readTokenizerForResponseDefinition(st);
 					} catch (GraphQLRequestPreparationException e) {

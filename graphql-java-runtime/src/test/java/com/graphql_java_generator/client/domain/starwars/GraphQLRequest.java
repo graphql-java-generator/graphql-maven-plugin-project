@@ -19,12 +19,12 @@ public class GraphQLRequest extends ObjectResponse {
 
 	@Override
 	public QueryField getQueryContext() throws GraphQLRequestPreparationException {
-		return new QueryField(QueryTypeRootResponse.class, QueryTypeResponse.class, "query");
+		return new QueryField(QueryTypeRootResponse.class, "query");
 	}
 
 	@Override
 	public QueryField getMutationContext() throws GraphQLRequestPreparationException {
-		return new QueryField(MutationTypeRootResponse.class, MutationTypeResponse.class, "mutation");
+		return new QueryField(MutationTypeRootResponse.class, "mutation");
 	}
 
 	@Override

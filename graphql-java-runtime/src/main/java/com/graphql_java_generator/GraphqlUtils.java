@@ -179,13 +179,13 @@ public class GraphqlUtils {
 			try {
 				field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 			} catch (NoSuchFieldException | SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-						+ "' in the class '" + owningClass.getName() + "'", e);
+				throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+						+ "> in the class '" + owningClass.getName() + "'", e);
 			}
 
 			GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
 			if (inputParams == null)
-				throw new GraphQLRequestPreparationException("The field '" + fieldName + "' of the class '"
+				throw new GraphQLRequestPreparationException("The field <" + fieldName + "> of the class '"
 						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
 						+ parameterName + "' input parameter");
 
@@ -198,8 +198,8 @@ public class GraphqlUtils {
 			}
 
 			throw new GraphQLRequestPreparationException(
-					"The parameter of name '" + parameterName + "' has not been found for the field '" + fieldName
-							+ "' of the class '" + owningClass.getName() + "'");
+					"The parameter of name <" + parameterName + "> has not been found for the field <" + fieldName
+							+ "> of the class '" + owningClass.getName() + "'");
 		}
 	}
 
@@ -260,19 +260,19 @@ public class GraphqlUtils {
 				else if (graphQLScalar != null)
 					return graphQLScalar.javaClass();
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-							+ "' in the class '" + owningClass.getName()
+					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+							+ "> in the class '" + owningClass.getName()
 							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
 			} catch (NoSuchFieldException e) {
 				// Hum, the field doesn't exist.
 				if (!returnIsMandatory)
 					return null;
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-							+ "' in the class '" + owningClass.getName() + "'", e);
+					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+							+ "> in the class '" + owningClass.getName() + "'", e);
 			} catch (SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-						+ "' in the class '" + owningClass.getName() + "'", e);
+				throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+						+ "> in the class '" + owningClass.getName() + "'", e);
 			}
 		}
 	}

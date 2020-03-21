@@ -10,18 +10,47 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.GraphQLRequest;
+import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 class AbstractGraphQLRequestTest_StarWars {
 
 	@Test
+	void testWithField_Simple_OK() throws GraphQLRequestPreparationException {
+		// Go, go, go
+		GraphQLRequest graphQLRequest = new GraphQLRequest(
+				"{human(id:\"00000000-0000-0000-0000-000000000031\") {name}}");
+
+		// Verification
+		assertEquals("query", graphQLRequest.getQuery().name);
+		assertEquals(1, graphQLRequest.getQuery().fields.size(), "nb queries");
+
+		QueryField human = graphQLRequest.getQuery().fields.get(0);
+		assertEquals("human", human.name);
+		assertEquals(null, human.alias);
+		assertEquals(Human.class, human.clazz, "name");
+		assertEquals(2, human.fields.size(), "nb fields (with __typename)");
+		int i = 0;
+		assertEquals("name", human.fields.get(i).name, "name");
+		assertEquals(null, human.fields.get(i).alias, "alias");
+		assertEquals(0, human.fields.get(i).fields.size(), "sub fields");
+		assertEquals(String.class, human.fields.get(i).clazz, "name");
+		i += 1;
+		assertEquals("__typename", human.fields.get(i).name, "name");
+		assertEquals(null, human.fields.get(i).alias, "alias");
+		assertEquals(0, human.fields.get(i).fields.size(), "sub fields");
+		assertEquals(String.class, human.fields.get(i).clazz, "name");
+	}
+
+	@Test
 	void test_AbstractGraphQLRequest_oneQuery()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		String query1 = "  \\n\\r\\t  {human(id:\"00000000-0000-0000-0000-000000000031\") {id name friends {name appearsIn}}}  \\n\\r\\t ";
-		String query2 = "  \n\r\t query \\n\\r\\t  {human(id:&theHumanId) {id name friends {name appearsIn}}}  \\n\\r\\t ";
+		String query1 = "  \n\r\t  {human(id:\"00000000-0000-0000-0000-000000000031\") {id name friends {name appearsIn}}}  \n\r\t ";
+		String query2 = "  \n\r\t query \n\r\t  {human(id:&theHumanId) {id name friends {name appearsIn}}}  \n\r\t ";
 
 		String expected = "{\"query\":\""//
 				+ "query{human(id:\\\"00000000-0000-0000-0000-000000000031\\\") {id name __typename friends {name appearsIn __typename}}}\"" //
@@ -43,8 +72,8 @@ class AbstractGraphQLRequestTest_StarWars {
 	void test_AbstractGraphQLRequest_introspectionQuery()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		String query1 = "  \\n\\r\\t   {__schema {types{kind name}}}  \\n\\r\\t ";
-		String query2 = "  \n\r\t query \\n\\r\\t  {__schema {types{kind name}}} \\n\\r\\t ";
+		String query1 = "  \n\r\t   {__schema {types{kind name}}}  \n\r\t ";
+		String query2 = "  \n\r\t query \n\r\t  {__schema {types{kind name}}} \n\r\t ";
 
 		String expected = "{\"query\":\"query{__schema {types{kind name}}}\",\"variables\":null,\"operationName\":null}";
 
@@ -69,6 +98,20 @@ class AbstractGraphQLRequestTest_StarWars {
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{human(id:\"00000000-0000-0000-0000-000000000031\") {id name validAlias:name}}"));
 		assertTrue(e.getMessage().contains("<name>"));
+	}
+
+	@Test
+	void testWithField_KO_NonExistingField() throws GraphQLRequestPreparationException {
+		GraphQLRequestPreparationException e;
+
+		// Go, go go
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
+				"{human(id:\"00000000-0000-0000-0000-000000000031\") {id name itDoesntExist}}"));
+		assertTrue(e.getMessage().contains("<itDoesntExist>"));
+
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
+				"{human(id:\"00000000-0000-0000-0000-000000000031\") {id name validAlias:itDoesntExist}}"));
+		assertTrue(e.getMessage().contains("<itDoesntExist>"));
 	}
 
 	@Test
@@ -103,30 +146,6 @@ class AbstractGraphQLRequestTest_StarWars {
 	}
 
 	@Test
-	void testWithField_Simple_OK() throws GraphQLRequestPreparationException {
-		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(
-				"{human(id:\"00000000-0000-0000-0000-000000000031\") {name}}");
-
-		// Verification
-		assertEquals("query", graphQLRequest.getQuery().name);
-		assertEquals(1, graphQLRequest.getQuery().fields.size(), "nb queries");
-
-		QueryField human = graphQLRequest.getQuery().fields.get(0);
-		assertEquals("human", human.name);
-		assertEquals(null, human.alias);
-		assertEquals(2, human.fields.size(), "nb fields (with __typename)");
-		int i = 0;
-		assertEquals("name", human.fields.get(i).name, "name");
-		assertEquals(null, human.fields.get(i).alias, "alias");
-		assertEquals(0, human.fields.get(i).fields.size(), "sub fields");
-		i += 1;
-		assertEquals("__typename", human.fields.get(i).name, "name");
-		assertEquals(null, human.fields.get(i).alias, "alias");
-		assertEquals(0, human.fields.get(i).fields.size(), "sub fields");
-	}
-
-	@Test
 	void testWithFieldWithAlias_OK() throws GraphQLRequestPreparationException {
 		// Go, go, go
 		GraphQLRequest graphQLRequest = new GraphQLRequest(
@@ -155,111 +174,73 @@ class AbstractGraphQLRequestTest_StarWars {
 		assertTrue(e.getMessage().contains("qdqd/qdsq"));
 	}
 
-	// @Test
-	// void testWithSubObject_OK() throws GraphQLRequestPreparationException {
-	// // Go, go, go
-	// humanResponseDefBuilder
-	// .withSubObject(new Builder(Human.class, "friends").withField("id").withField("name").build());
-	//
-	// // Verification
-	// assertEquals(1, humanResponseDefBuilder.objectResponse.subObjects.size(), "one object in the list");
-	// //
-	// ObjectResponse subObject = humanResponseDefBuilder.objectResponse.subObjects.get(0);
-	// assertEquals("friends", subObject.field.name, "subobject fieldName");
-	// assertEquals(null, subObject.field.alias, "subobject fieldAlias");
-	// assertEquals(Character.class, subObject.field.clazz, "subobject clazz");
-	// //
-	// assertEquals(3, subObject.scalarFields.size(), "subobject: nb scalarFields (with the added __typename field)");
-	// assertEquals(0, subObject.subObjects.size(), "subobject: nb subObjects");
-	// assertEquals("id", subObject.scalarFields.get(0).name, "subobject: field 0");
-	// assertEquals("name", subObject.scalarFields.get(1).name, "subobject: field 1");
-	// assertEquals("__typename", subObject.scalarFields.get(2).name, "subobject: field 2");
-	// }
-	//
-	// @Test
-	// void testWithSubObject_KO_fieldPresentTwoTimes() throws GraphQLRequestPreparationException {
-	// // Preparation
-	// GraphQLRequestPreparationException e;
-	// humanResponseDefBuilder
-	// .withSubObject(new Builder(Human.class, "friends").withField("id").withField("name").build());
-	//
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder
-	// .withSubObject(new Builder(Human.class, "friends").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("<friends>"));
-	// }
-	//
-	// @Test
-	// void testWithSubObject_KO() {
-	// GraphQLRequestPreparationException e;
-	//
-	// // Bad class for the ReponseDef of the subObject : different owning type
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder
-	// .withSubObject(new Builder(Droid.class, "friends").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("friends"));
-	// assertTrue(e.getMessage().contains("Droid"));
-	//
-	// // Non existant field
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder
-	// .withSubObject(new Builder(Human.class, "mml").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("mml"));
-	//
-	// // subObject added, whereas it is a Field
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder
-	// .withSubObject(new Builder(Human.class, "appearsIn").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("appearsIn"));
-	// }
-	//
-	// @Test
-	// void testWithSubObject_withAlias_OK() throws GraphQLRequestPreparationException {
-	// // Go, go, go
-	// humanResponseDefBuilder.withSubObject(
-	// new Builder(Human.class, "friends", "aValidAlias").withField("id").withField("name").build());
-	//
-	// // Verification
-	// assertEquals(1, humanResponseDefBuilder.objectResponse.subObjects.size(), "one field in the list");
-	// //
-	// ObjectResponse subObject = humanResponseDefBuilder.objectResponse.subObjects.get(0);
-	// assertEquals("friends", subObject.field.name, "subobject fieldName");
-	// assertEquals("aValidAlias", subObject.field.alias, "subobject fieldAlias");
-	// assertEquals(Character.class, subObject.field.clazz, "subobject clazz");
-	// //
-	// assertEquals(3, subObject.scalarFields.size(), "subobject: nb scalarFields (with the added __typename field)");
-	// assertEquals(0, subObject.subObjects.size(), "subobject: nb subObjects");
-	// assertEquals("id", subObject.scalarFields.get(0).name, "subobject: field 0");
-	// assertEquals("name", subObject.scalarFields.get(1).name, "subobject: field 1");
-	// assertEquals("__typename", subObject.scalarFields.get(2).name, "subobject: field 2");
-	// }
-	//
-	// @Test
-	// void testWithSubObject_withAlias_KO() {
-	// GraphQLRequestPreparationException e;
-	//
-	// // Bad class for the ReponseDef of the subObject : different of the type of the given field name
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder.withSubObject(
-	// new Builder(Droid.class, "friends", "anAlias").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("friends"));
-	// assertTrue(e.getMessage().contains("Droid"));
-	//
-	// // Non existant field
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder
-	// .withSubObject(new Builder(Human.class, "mml", "anAlias").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("mml"));
-	//
-	// // subObject added, whereas it is a Field
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder.withSubObject(
-	// new Builder(Human.class, "appearsIn", "anAlias").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("appearsIn"));
-	//
-	// // Bad identifiers
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder.withSubObject(
-	// new Builder(Human.class, "not valid name", "validAlias").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("not valid name"));
-	//
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder.withSubObject(
-	// new Builder(Human.class, "friends", "non valid alias").withField("id").withField("name").build()));
-	// assertTrue(e.getMessage().contains("non valid alias"));
-	// }
-	//
+	@Test
+	void testWithSubObject_OK() throws GraphQLRequestPreparationException {
+		// Go, go, go
+		GraphQLRequest graphQLRequest = new GraphQLRequest(
+				"{human(id:\"00000000-0000-0000-0000-000000000031\") \n\r\t   {\n\r\t  friends  \n\r\t  {  \n\r\t  id \n\r\t  name\n\r\t  } \n\r\t }  \n\r\t } \n\r\t ");
+
+		// Verification
+		assertEquals(1, graphQLRequest.getQuery().fields.size(), "one query in the list");
+		//
+		QueryField human = graphQLRequest.getQuery().fields.get(0);
+		assertEquals("human", human.name, "query fieldName");
+		assertEquals(null, human.alias, "query fieldAlias");
+		assertEquals(Human.class, human.clazz, "query clazz");
+		assertEquals(2, human.fields.size());
+		assertEquals("friends", human.fields.get(0).name);
+		assertEquals(null, human.alias, "subobject fieldAlias");
+		assertEquals(Human.class, human.clazz, "subobject clazz");
+		assertEquals("__typename", human.fields.get(1).name);
+		//
+		QueryField friends = human.fields.get(0);
+		assertEquals("friends", friends.name, "subobject fieldName");
+		assertEquals(null, friends.alias, "subobject fieldAlias");
+		assertEquals(Character.class, friends.clazz, "subobject clazz");
+		assertEquals(3, friends.fields.size());
+		int i = 0;
+		assertEquals("id", friends.fields.get(i++).name);
+		assertEquals("name", friends.fields.get(i++).name);
+		assertEquals("__typename", friends.fields.get(i++).name);
+	}
+
+	@Test
+	void testWithSubObject_KO_fieldPresentTwoTimes() throws GraphQLRequestPreparationException {
+		// Preparation
+		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRequest(
+						"{human(id:\"00000000-0000-0000-0000-000000000031\"){friends{name} friends{id}}"));
+		assertTrue(e.getMessage().contains("<friends>"));
+	}
+
+	@Test
+	void testWithSubObject_withAlias_OK() throws GraphQLRequestPreparationException {
+		// Go, go, go
+		GraphQLRequest graphQLRequest = new GraphQLRequest(
+				"{human(id:\"00000000-0000-0000-0000-000000000031\"){aValidAlias:friends{name id}}}");
+
+		// Verification
+		assertEquals(1, graphQLRequest.getQuery().fields.size(), "one query in the list");
+		//
+		QueryField human = graphQLRequest.getQuery().fields.get(0);
+		assertEquals("human", human.name, "query fieldName");
+		assertEquals(null, human.alias, "query fieldAlias");
+		assertEquals(Human.class, human.clazz, "query clazz");
+		assertEquals(2, human.fields.size());
+		//
+		QueryField friends = human.fields.get(0);
+		assertEquals("friends", friends.name);
+		assertEquals("aValidAlias", friends.alias, "subobject fieldAlias");
+		assertEquals(Character.class, friends.clazz, "subobject clazz");
+		assertEquals("__typename", human.fields.get(1).name);
+		//
+		assertEquals(3, friends.fields.size());
+		int i = 0;
+		assertEquals("name", friends.fields.get(i++).name);
+		assertEquals("id", friends.fields.get(i++).name);
+		assertEquals("__typename", friends.fields.get(i++).name);
+	}
+
 	// /**
 	// * When requesting a non scalar field F, without specifying subfields, than all F's scalar fields are
 	// automatically
@@ -315,8 +296,8 @@ class AbstractGraphQLRequestTest_StarWars {
 	// public void test_withQueryResponseDef_StarWars() throws GraphQLRequestPreparationException {
 	//
 	// // Go, go, go
-	// humanResponseDefBuilder.withQueryResponseDef(
-	// "{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name } ");
+	// humanResponseDefBuilder
+	// .withQueryResponseDef("{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name } ");
 	//
 	// // Verification
 	// ObjectResponse respDef = humanResponseDefBuilder.build();
@@ -364,9 +345,9 @@ class AbstractGraphQLRequestTest_StarWars {
 	// String queryResponseDef = "{id name publiclyAvailable "
 	// + " topics{id date author{id name email type} nbPosts posts(memberName: \"Me!\", since: ?sinceParam) {date
 	// author{name email type}}}}";
+	//
 	// ObjectResponse response = new com.graphql_java_generator.client.domain.forum.QueryType(
-	// "http://localhost:8180/graphql").getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef)
-	// .build();
+	// "http://localhost:8180/graphql").getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 	//
 	// // Verifications
 	// assertEquals("boards", response.fieldName);
@@ -472,14 +453,13 @@ class AbstractGraphQLRequestTest_StarWars {
 	// // Errors with { or }
 	// humanResponseDefBuilder = new Builder(QueryType.class, "human");
 	// assertThrows(GraphQLRequestPreparationException.class,
-	// () -> humanResponseDefBuilder.withQueryResponseDef(
-	// "id friends{ id nameAlias:name amis : friends{id name} appearsIn} name "),
+	// () -> humanResponseDefBuilder
+	// .withQueryResponseDef("id friends{ id nameAlias:name amis : friends{id name} appearsIn} name "),
 	// "missing a '{'");
 	//
 	// humanResponseDefBuilder = new Builder(QueryType.class, "human");
-	// assertThrows(GraphQLRequestPreparationException.class,
-	// () -> humanResponseDefBuilder.withQueryResponseDef(
-	// "{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name "),
+	// assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder
+	// .withQueryResponseDef("{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name "),
 	// "missing a '}'");
 	//
 	// humanResponseDefBuilder = new Builder(QueryType.class, "human");
@@ -500,8 +480,8 @@ class AbstractGraphQLRequestTest_StarWars {
 	//
 	// // Field present two times
 	// humanResponseDefBuilder = new Builder(QueryType.class, "human");
-	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder.withQueryResponseDef(
-	// "{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name id } "));
+	// e = assertThrows(GraphQLRequestPreparationException.class, () -> humanResponseDefBuilder
+	// .withQueryResponseDef("{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name id } "));
 	// assertTrue(e.getMessage().contains("<id>"), e.getMessage());
 	//
 	// // Wrong field name
@@ -544,7 +524,7 @@ class AbstractGraphQLRequestTest_StarWars {
 	// // No non scalar
 	// assertEquals(0, resp.subObjects.size(), "no non scalar fields");
 	// }
-
+	//
 	// @Test
 	// void testBuild_scalarInputParameters() throws GraphQLRequestPreparationException {
 	// // Go, go, go
