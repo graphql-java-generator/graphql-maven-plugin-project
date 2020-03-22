@@ -241,6 +241,12 @@
 				<version>2.23.0</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+			    <groupId>org.javatuples</groupId>
+			    <artifactId>javatuples</artifactId>
+			    <version>1.2</version>
+			    <scope>test</scope>
+			</dependency>
 
 			<!-- Dependencies used to build the Maven plugin -->
 			<dependency>
