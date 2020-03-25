@@ -28,4 +28,16 @@ public class _class {
 	public String toString() {
 		return "_class {" + "_default: " + _default + "}";
 	}
+
+	@JsonProperty("__typename")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
+	public String get__typename() {
+		return __typename;
+	}
 }

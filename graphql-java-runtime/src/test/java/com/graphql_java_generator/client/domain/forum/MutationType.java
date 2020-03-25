@@ -21,6 +21,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -85,6 +86,10 @@ public class MutationType {
 	public MutationType(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+	}
+
+	public static RequestType getRequestType() {
+		return RequestType.mutation;
 	}
 
 	/**
@@ -277,7 +282,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateBoardResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createBoard",
+		Builder builder = new Builder(GraphQLRequest.class, "createBoard", RequestType.mutation,
 				InputParameter.newBindParameter("name", "mutationTypeCreateBoardName", false, null),
 				InputParameter.newBindParameter("publiclyAvailable", "mutationTypeCreateBoardPubliclyAvailable", false,
 						null));
@@ -460,7 +465,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateTopicResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createTopic",
+		Builder builder = new Builder(GraphQLRequest.class, "createTopic", RequestType.mutation,
 				InputParameter.newBindParameter("topic", "mutationTypeCreateTopicTopic", false, null));
 		return builder;
 	}
@@ -641,7 +646,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreatePostResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createPost",
+		Builder builder = new Builder(GraphQLRequest.class, "createPost", RequestType.mutation,
 				InputParameter.newBindParameter("post", "mutationTypeCreatePostPost", false, null));
 		return builder;
 	}
@@ -824,7 +829,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreatePostsResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createPosts",
+		Builder builder = new Builder(GraphQLRequest.class, "createPosts", RequestType.mutation,
 				InputParameter.newBindParameter("spam", "mutationTypeCreatePostsSpam", false, null));
 		return builder;
 	}

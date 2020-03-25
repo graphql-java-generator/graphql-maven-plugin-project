@@ -20,6 +20,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -271,8 +272,9 @@ public class TheSubscriptionType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getSubscribeNewHumanForEpisodeResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "subscribeNewHumanForEpisode", InputParameter
-				.newBindParameter("episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", false, null));
+		Builder builder = new Builder(GraphQLRequest.class, "subscribeNewHumanForEpisode", RequestType.subscription,
+				InputParameter.newBindParameter("episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode",
+						false, null));
 		return builder;
 	}
 

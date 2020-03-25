@@ -47,4 +47,16 @@ public class CommentedImpl implements Commented {
 	public String toString() {
 		return "CommentedImpl {" + "nbComments: " + nbComments + ", " + "comments: " + comments + "}";
 	}
+
+	@JsonProperty("__typename")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
+	public String get__typename() {
+		return __typename;
+	}
 }

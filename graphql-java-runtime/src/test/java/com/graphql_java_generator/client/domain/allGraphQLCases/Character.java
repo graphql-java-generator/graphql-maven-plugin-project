@@ -47,4 +47,10 @@ public interface Character {
 	@JsonDeserialize(contentAs = Episode.class)
 	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
 	public List<Episode> getAppearsIn();
+
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	public String get__typename();
+
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	public void set__typename(String __typename);
 }

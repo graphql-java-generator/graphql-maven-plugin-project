@@ -90,6 +90,10 @@ public class QueryType {
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 	}
 
+	public static RequestType getRequestType() {
+		return RequestType.query;
+	}
+
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
@@ -276,7 +280,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getHeroResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "hero",
+		Builder builder = new Builder(GraphQLRequest.class, "hero", RequestType.query,
 				InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null),
 				InputParameter.newBindParameter("id", "queryTypeHeroId", false, null));
 		return builder;
@@ -471,7 +475,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCharactersResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "characters",
+		Builder builder = new Builder(GraphQLRequest.class, "characters", RequestType.query,
 				InputParameter.newBindParameter("episode", "queryTypeCharactersEpisode", false, null));
 		return builder;
 	}
@@ -662,7 +666,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "human",
+		Builder builder = new Builder(GraphQLRequest.class, "human", RequestType.query,
 				InputParameter.newBindParameter("id", "queryTypeHumanId", false, null));
 		return builder;
 	}
@@ -853,9 +857,446 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getDroidResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "droid",
+		Builder builder = new Builder(GraphQLRequest.class, "droid", RequestType.query,
 				InputParameter.newBindParameter("id", "queryTypeDroidId", true, null));
 		return builder;
+	}
+
+	/**
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("skip", Boolean.FALSE);
+	 *
+	 * __Type c = myQyeryType.__typeWithBindValues("{id name @skip(if: false) appearsIn friends {id name}}", name,
+	 * 		params);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param name
+	 *            Parameter for the __type field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws IOException
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLQuery
+	public __Type __typeWithBindValues(String queryResponseDef, String name, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query '__type' in query mode: {} ", queryResponseDef);
+		ObjectResponse objectResponse = get__typeResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return __type(objectResponse, name, parameters);
+	}
+
+	/**
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * __Type c = myQyeryType.__type("{id name @skip(if: false) appearsIn friends {id name}}", name, "skip",
+	 * 		Boolean.FALSE);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param name
+	 *            Parameter for the __type field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws IOException
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLQuery
+	public __Type __type(String queryResponseDef, String name, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query '__type' in query mode: {} ", queryResponseDef);
+		ObjectResponse objectResponse = get__typeResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return __typeWithBindValues(objectResponse, name,
+				graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("sinceParam", sinceValue);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * __Type ret = queryType.__typeWithBindValues(response, name, params);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param name
+	 *            Parameter for the __type field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws IOException
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLQuery
+	public __Type __typeWithBindValues(ObjectResponse objectResponse, String name, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
+		if (logger.isTraceEnabled()) {
+			logger.trace("Executing of query '__type' with parameters: {} ", name);
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of query '__type'");
+		}
+
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("myQueryType__typeName", name);
+
+		QueryType__type ret = executor.execute("query", objectResponse, parameters, QueryType__type.class);
+
+		return ret.__type;
+	}
+
+	/**
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * __Type ret = queryType.__type(response, name, "sinceParam", sinceValue);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param name
+	 *            Parameter for the __type field of MyQueryType, as defined in the GraphQL schema
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @throws IOException
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLQuery
+	public __Type __type(ObjectResponse objectResponse, String name, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
+		if (logger.isTraceEnabled()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("Executing of query '__type' with bind variables: ");
+			boolean addComma = false;
+			for (Object o : paramsAndValues) {
+				if (o != null) {
+					sb.append(o.toString());
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
+			}
+			logger.trace(sb.toString());
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of query '__type' (with bind variables)");
+		}
+
+		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
+		bindVariableValues.put("myQueryType__typeName", name);
+
+		QueryType__type ret = executor.execute("query", objectResponse, bindVariableValues, QueryType__type.class);
+
+		return ret.__type;
+	}
+
+	/**
+	 * Get the {@link ObjectResponse.Builder} for the __Type, as expected by the __type query.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder get__typeResponseBuilder() throws GraphQLRequestPreparationException {
+		return new Builder(GraphQLRequest.class, "__type", RequestType.query,
+				InputParameter.newBindParameter("name", "myQueryType__typeName", false, null));
+	}
+
+	/**
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("skip", Boolean.FALSE);
+	 *
+	 * __Schema c = myQyeryType.__schemaWithBindValues("{id name @skip(if: false) appearsIn friends {id name}}",
+	 * 		params);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws IOException
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLQuery
+	public __Schema __schemaWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query '__schema' in query mode: {} ", queryResponseDef);
+		ObjectResponse objectResponse = get__schemaResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return __schema(objectResponse, parameters);
+	}
+
+	/**
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * __Schema c = myQyeryType.__schema("{id name @skip(if: false) appearsIn friends {id name}}", "skip",
+	 * 		Boolean.FALSE);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws IOException
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLQuery
+	public __Schema __schema(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query '__schema' in query mode: {} ", queryResponseDef);
+		ObjectResponse objectResponse = get__schemaResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return __schemaWithBindValues(objectResponse,
+				graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("sinceParam", sinceValue);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * __Schema ret = queryType.__schemaWithBindValues(response, params);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws IOException
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLQuery
+	public __Schema __schemaWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
+		if (logger.isTraceEnabled()) {
+			logger.trace("Executing of query '__schema' with parameters: ");
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of query '__schema'");
+		}
+
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+
+		QueryType__schema ret = executor.execute("query", objectResponse, parameters, QueryType__schema.class);
+
+		return ret.__schema;
+	}
+
+	/**
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * __Schema ret = queryType.__schema(response, "sinceParam", sinceValue);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @throws IOException
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLQuery
+	public __Schema __schema(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
+		if (logger.isTraceEnabled()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("Executing of query '__schema' with bind variables: ");
+			boolean addComma = false;
+			for (Object o : paramsAndValues) {
+				if (o != null) {
+					sb.append(o.toString());
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
+			}
+			logger.trace(sb.toString());
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of query '__schema' (with bind variables)");
+		}
+
+		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
+
+		QueryType__schema ret = executor.execute("query", objectResponse, bindVariableValues, QueryType__schema.class);
+
+		return ret.__schema;
+	}
+
+	/**
+	 * Get the {@link ObjectResponse.Builder} for the __Schema, as expected by the __schema query.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder get__schemaResponseBuilder() throws GraphQLRequestPreparationException {
+		return new Builder(GraphQLRequest.class, "__schema", RequestType.query);
 	}
 
 }

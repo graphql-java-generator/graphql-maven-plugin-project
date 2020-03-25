@@ -28,7 +28,6 @@ import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.client.domain.starwars.QueryTypeHero;
-import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -86,7 +85,7 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"mutation{hero(id:\\\"1\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(id:\\\"1\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -149,7 +148,7 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn __typename friends{name __typename}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn friends{name __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -179,7 +178,7 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn __typename friends{name __typename}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero{id name appearsIn friends{name __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -207,7 +206,7 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn __typename friends{name __typename}}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero{id name appearsIn friends{name __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -238,43 +237,6 @@ class QueryExecutorImpl_StarWars_Test {
 		// Verification
 		assertTrue(e.getMessage().contains("queryTypeDroidId"));
 		assertTrue(e2.getMessage().contains("queryTypeDroidId"));
-	}
-
-	@Test
-	void test_buildRequest_withFieldParameters_hardCoded()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		// Preparation
-		ObjectResponse objectResponse = new Builder(com.graphql_java_generator.client.domain.forum.QueryType.class,
-				"boards").withQueryResponseDef(
-						"{id name publiclyAvailable topics(since: \"2019-12-21\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
-						.build();
-		Map<String, Object> parameters = new HashMap<>();
-
-		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
-
-		// Verification
-		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable __typename topics(since:\\\"2019-12-21\\\"){id date nbPosts __typename author{id name email type __typename} posts{date __typename author{name email type __typename}}}}}\",\"variables\":null,\"operationName\":null}",
-				request);
-	}
-
-	@Test
-	void test_buildRequest_withFieldParameters_bindVariables()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		// Preparation
-		ObjectResponse objectResponse = new Builder(com.graphql_java_generator.client.domain.forum.QueryType.class,
-				"boards").withQueryResponseDef(
-						"{id name publiclyAvailable topics(since: \"2018-12-20\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
-						.build();
-
-		// Go, go, go
-		String request = objectResponse.buildRequest(null);
-
-		// Verification
-		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable __typename topics(since:\\\"2018-12-20\\\"){id date nbPosts __typename author{id name email type __typename} posts{date __typename author{name email type __typename}}}}}\",\"variables\":null,\"operationName\":null}",
-				request);
 	}
 
 	@Test

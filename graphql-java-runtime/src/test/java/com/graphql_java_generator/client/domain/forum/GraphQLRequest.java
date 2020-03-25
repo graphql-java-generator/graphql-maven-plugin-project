@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.domain.starwars;
+package com.graphql_java_generator.client.domain.forum;
 
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;

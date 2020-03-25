@@ -60,9 +60,8 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 				+ "{id @anotherTestDirective @testDirective(value:\\\"id1 value\\\",anotherValue:\\\" something else for id1 \\\") "
 				+ "name " //
 				+ "appearsIn @testDirective(value:\\\"a value2\\\",anotherValue:\\\"something else2\\\") "
-				+ "__typename "
 				+ "friends{id @anotherTestDirective name @testDirective(value:\\\"a value3\\\",anotherValue:\\\"something_else3\\\") @anotherTestDirective "//
-				+ "__typename}}}\"" //
+				+ "__typename} __typename}}\"" //
 				+ ",\"variables\":null,\"operationName\":null}", request);
 	}
 
@@ -89,9 +88,9 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		// Verification
 		assertEquals("{\"query\":\"query{" + //
 				"withoutParameters @include(if:true) @anotherTestDirective{" + //
-				"id name @include(if:false) __typename " + //
-				"friends{name @anotherTestDirective @testDirective(value:\\\"no value\\\") __typename}" + //
-				"}" + //
+				"id name @include(if:false) " + //
+				"friends{name @anotherTestDirective @testDirective(value:\\\"no value\\\") __typename} " + //
+				"__typename}" + //
 				"}\"" + //
 				",\"variables\":null,\"operationName\":null}", request);
 	}

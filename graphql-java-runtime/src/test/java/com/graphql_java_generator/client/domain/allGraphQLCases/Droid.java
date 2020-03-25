@@ -89,4 +89,16 @@ public class Droid implements Character {
 		return "Droid {" + "id: " + id + ", " + "name: " + name + ", " + "friends: " + friends + ", " + "appearsIn: "
 				+ appearsIn + ", " + "primaryFunction: " + primaryFunction + "}";
 	}
+
+	@JsonProperty("__typename")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
+	public String get__typename() {
+		return __typename;
+	}
 }

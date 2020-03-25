@@ -30,4 +30,16 @@ public class _break {
 	public String toString() {
 		return "_break {" + "_case: " + _case + "}";
 	}
+
+	@JsonProperty("__typename")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
+	public String get__typename() {
+		return __typename;
+	}
 }

@@ -28,4 +28,10 @@ abstract public class ObjectResponse extends AbstractGraphQLRequest {
 		super(graphQLRequest);
 	}
 
+	/** {@inheritDoc} */
+	public ObjectResponse(String graphQLRequest, RequestType requestType, String queryName,
+			InputParameter... inputParams) throws GraphQLRequestPreparationException {
+		super(graphQLRequest, requestType, queryName, inputParams);
+	}
+
 }

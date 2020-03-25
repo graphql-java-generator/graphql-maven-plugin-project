@@ -61,7 +61,7 @@ public class QueryField {
 	/** The name of this field */
 	final String name;
 	/** The alias of this field */
-	final String alias = null;
+	final String alias;
 
 	/** true if the {@link QueryField} is a query, a mutation or a subscription. False otherwise. */
 	Boolean scalar = null;
@@ -94,10 +94,13 @@ public class QueryField {
 	public QueryField(Class<?> owningClass, String fieldName, String fieldAlias)
 			throws GraphQLRequestPreparationException {
 		graphqlClientUtils.checkName(fieldName);
-		graphqlClientUtils.checkName(fieldAlias);
+		if (fieldAlias != null) {
+			graphqlClientUtils.checkName(fieldAlias);
+		}
 		this.owningClazz = owningClass;
-		this.clazz = graphqlClientUtils.checkFieldOfGraphQLType(fieldName, false, owningClass);
+		this.clazz = graphqlClientUtils.checkFieldOfGraphQLType(fieldName, null, owningClass);
 		this.name = fieldName;
+		this.alias = fieldAlias;
 	}
 
 	/**
@@ -130,10 +133,8 @@ public class QueryField {
 	 *            read until and including the first '}' that follows content. Thus, there is still a '}' to read.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public void readTokenizerForResponseDefinition(StringTokenizer st) throws GraphQLRequestPreparationException {
+	public void readTokenizerForResponseDefinition(QueryTokenizer st) throws GraphQLRequestPreparationException {
 		// The field we're reading
-		String currentFieldName = null;
-		String currentFieldAlias = null;
 		QueryField currentField = null;
 		// The directive we're reading. It is associated to the current field during its creation
 		// (see the case "@" below for details)
@@ -144,45 +145,7 @@ public class QueryField {
 			String token = st.nextToken();
 
 			switch (token) {
-			case " ":
-			case "\n":
-			case "\r":
-			case "\t":
-				// Nothing to do.
-				break;
-			case ":":
-				// The previously read field name is actually an alias
-				if (currentField == null) {
-					throw new GraphQLRequestPreparationException(
-							"The given query has a ':' character, not preceded by a proper alias name (before <"
-									+ st.nextToken() + ">)");
-				}
-				currentField.setAlias(currentField.getName());
-				// The real field name is the next real token (we'll check latter that the field names are valid)
-				token = " ";
-				while (token.equals(" ") || token.equals("\n") || token.equals("\r") || token.equals("\t")) {
-					token = st.nextToken();
-				}
-
-				// Does a field of this name already exist ?
-				// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
-				if (getField(token) != null) {
-					throw new GraphQLRequestPreparationException("The field <" + token
-							+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
-				}
-				currentField.setName(token);
-
-				// We try to get the class of this field
-				currentField.owningClazz = clazz;
-				currentField.clazz = graphqlUtils.getFieldType(clazz, currentField.name, true);
-
-				break;
 			case "@":
-				// We've finished reading the field name and alias.
-				currentField = new QueryField(clazz, currentFieldName, currentFieldAlias);
-				currentFieldName = null;
-				currentFieldAlias = null;
-
 				// We're starting a GraphQL directive. The next token is its name.
 				directive = new Directive();
 				directive.setName(st.nextToken());// The directive name follows directly the @
@@ -226,15 +189,26 @@ public class QueryField {
 				}
 				break;
 			case "}":
-				// We're finished our current object : let's get out of this method.
+				// We're finished our current object : let's get out of this method
+				// (end of this recursion level)
 				return;
 			default:
 				directive = null;
 
+				// If the next token is ":", then we've found an alias (not a name field)
+				if (st.checkNextToken(":")) {
+					String alias = token;
+					token = st.nextToken(); // It's the ":". We ignore it
+					token = st.nextToken();
+					currentField = new QueryField(clazz, token, alias);
+				} else {
+					currentField = new QueryField(clazz, token);
+				}
+
 				// Does a field of this name already exist ?
 				// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
-				if (getField(token) != null) {
-					throw new GraphQLRequestPreparationException("The field <" + token
+				if (getField(currentField.name) != null) {
+					throw new GraphQLRequestPreparationException("The field <" + currentField.name
 							+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
 				}
 
@@ -259,7 +233,7 @@ public class QueryField {
 	 * @throws GraphQLRequestPreparationException
 	 *             If the request string is invalid
 	 */
-	List<InputParameter> readTokenizerForInputParameters(StringTokenizer st, Directive directive)
+	List<InputParameter> readTokenizerForInputParameters(QueryTokenizer st, Directive directive)
 			throws GraphQLRequestPreparationException {
 		List<InputParameter> ret = new ArrayList<>(); // The list that will be returned by this method
 		InputParameterStep step = InputParameterStep.NAME;
@@ -269,17 +243,14 @@ public class QueryField {
 		while (st.hasMoreTokens()) {
 			String token = st.nextToken();
 			switch (token) {
+			case ":":
+				// We're about to read an input parameter value.
+				break;
 			case "{":
 				throw new GraphQLRequestPreparationException(
 						"Encountered a '{' while reading parameters for the field '" + name
 								+ "' : if you're using DirectQueries with field's parameter that are Input Types, please consider using Prepared Queries. "
 								+ "Otherwise, please correct the query syntax");
-			case ":":
-			case " ":
-			case "\n":
-			case "\r":
-			case "\t":
-				break;
 			case ",":
 				if (step != InputParameterStep.NAME) {
 					throw new GraphQLRequestPreparationException(
@@ -311,32 +282,29 @@ public class QueryField {
 					} else if (token.startsWith("&")) {
 						ret.add(new InputParameter(parameterName, token.substring(1), null, true,
 								graphqlUtils.getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
-					} else if (token.startsWith("\"")) {
-						// The inputParameter starts with "
-						// We need to read all tokens until we find one that finishes by a "
-						// This ending token may be the current one.
+					} else if (token.equals("\"")) {
+						// We've found a String value: let's read the string content
 						StringBuffer sb = new StringBuffer();
-						if (token.length() > 1 && token.endsWith("\"")) {
-							// Ok, this token starts and finishes by " (and is not an only ")
-							// We have read the whole value
-							sb.append(token.substring(1, token.length() - 1));
-						} else {
-							// This token doesn't end with a "
-							// So we must read until we find one that finishes by " (meaning we're finished with
-							// reading this value)
-							sb.append(token.substring(1));
-							while (st.hasMoreTokens()) {
-								String subtoken = st.nextToken();
-								if (subtoken.endsWith("\"")) {
-									// We've found the end of the value
-									sb.append(subtoken.substring(0, subtoken.length() - 1));
-									break;
-								} else {
-									// It's just a value within the string
-									sb.append(subtoken);
-								}
+						while (true) {
+							if (!st.hasMoreTokens(true)) {
+								throw new GraphQLRequestPreparationException(
+										"Found the end of string before the end of the string parameter '"
+												+ sb.toString() + "'");
 							}
-						}
+							token = st.nextToken(true);
+							if (token.contentEquals("\"")) {
+								// We've found the end of the string value.
+								break;
+							}
+							sb.append(token);
+							if (token.equals("\\")) {
+								// It's the escape character. We add the next token, as is. Especially if it's a double
+								// quote (as a double quote here doens't mean we found the end of the string)
+								sb.append(st.nextToken(true));
+							}
+
+						} // while (true)
+
 						// It's a regular String.
 						ret.add(new InputParameter(parameterName, null, sb.toString(), true, null));
 					} else if (token.startsWith("\"") || token.endsWith("\"")) {
@@ -359,8 +327,8 @@ public class QueryField {
 					step = InputParameterStep.NAME;
 					break;
 				}
-			}
-		}
+			}// switch (token)
+		} // while (st.hasMoreTokens())
 
 		throw new GraphQLRequestPreparationException(
 				"The list of parameters for the field '" + name + "' is not finished (no closing parenthesis)");

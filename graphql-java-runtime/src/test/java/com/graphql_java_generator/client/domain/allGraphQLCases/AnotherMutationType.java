@@ -21,6 +21,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -264,7 +265,7 @@ public class AnotherMutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createHuman",
+		Builder builder = new Builder(GraphQLRequest.class, "createHuman", RequestType.mutation,
 				InputParameter.newBindParameter("human", "anotherMutationTypeCreateHumanHuman", false, null));
 		return builder;
 	}
@@ -449,7 +450,7 @@ public class AnotherMutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateAllFieldCasesResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createAllFieldCases",
+		Builder builder = new Builder(GraphQLRequest.class, "createAllFieldCases", RequestType.mutation,
 				InputParameter.newBindParameter("input", "anotherMutationTypeCreateAllFieldCasesInput", false, null));
 		return builder;
 	}

@@ -360,12 +360,12 @@ public class BuilderOld {
 				case "{":
 					// We've found the start of the query/mutation/subscription
 					queryField = new QueryField(objectResponse.field.owningClass, objectResponse.field.name);
-					try {
-						queryField.readTokenizerForResponseDefinition(st);
-					} catch (GraphQLRequestPreparationException e) {
-						throw new GraphQLRequestPreparationException(
-								e.getMessage() + " while reading the queryReponseDef: " + queryResponseDef, e);
-					}
+					// try {
+					// queryField.readTokenizerForResponseDefinition(st);
+					// } catch (GraphQLRequestPreparationException e) {
+					// throw new GraphQLRequestPreparationException(
+					// e.getMessage() + " while reading the queryReponseDef: " + queryResponseDef, e);
+					// }
 					break;
 				case "query":
 				case "mutation":
@@ -373,7 +373,7 @@ public class BuilderOld {
 					// No action
 					break;
 				case "fragment":
-					withFragment(new Fragment(st, null));
+					// withFragment(new Fragment(st, null));
 					break;
 				default:
 					throw new GraphQLRequestPreparationException(

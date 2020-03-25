@@ -29,4 +29,16 @@ public class WithIDImpl implements WithID {
 	public String toString() {
 		return "WithIDImpl {" + "id: " + id + "}";
 	}
+
+	@JsonProperty("__typename")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
+	public String get__typename() {
+		return __typename;
+	}
 }

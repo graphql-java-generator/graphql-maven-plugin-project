@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.domain.starwars;
+package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -28,12 +28,13 @@ public class GraphQLRequest extends ObjectResponse {
 
 	@Override
 	public QueryField getQueryContext() throws GraphQLRequestPreparationException {
-		return new QueryField(QueryTypeRootResponse.class, "query");
+		return new QueryField(MyQueryTypeRootResponse.class, "query");
 	}
 
 	@Override
 	public QueryField getMutationContext() throws GraphQLRequestPreparationException {
-		return new QueryField(MutationTypeRootResponse.class, "mutation");
+		throw new GraphQLRequestPreparationException(
+				"Mutations are not managed in Junit tests for allGraphQLCases yet");
 	}
 
 	@Override

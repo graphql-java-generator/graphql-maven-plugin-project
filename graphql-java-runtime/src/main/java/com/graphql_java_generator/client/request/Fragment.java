@@ -4,7 +4,6 @@
 package com.graphql_java_generator.client.request;
 
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -23,7 +22,7 @@ public class Fragment {
 
 	final ObjectResponse objetResponse;
 
-	public Fragment(StringTokenizer st, String packageName) throws GraphQLRequestPreparationException {
+	public Fragment(QueryTokenizer st, String packageName) throws GraphQLRequestPreparationException {
 
 		// We expect a string like this: " fragmentName on fragmentTargetType"
 		// Let's read these three tokens
@@ -35,8 +34,8 @@ public class Fragment {
 		// The content of the fragment is the same as reading the response for the given type.
 
 		// So, we wait for the first {
-		while (st.hasMoreElements()) {
-			String token = st.nextToken();
+		while (st.hasMoreTokens()) {
+			String token = st.nextToken(false);
 
 			if (token.equals(" ") || token.equals("\n") || token.equals("\r")) {
 				// Ok, let's go to the next token
@@ -82,12 +81,11 @@ public class Fragment {
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private String readNextRealToken(StringTokenizer st, String action, String expected)
+	private String readNextRealToken(QueryTokenizer st, String action, String expected)
 			throws GraphQLRequestPreparationException {
+
 		while (st.hasMoreTokens()) {
-			String token = st.nextToken();
-			if (AbstractGraphQLRequest.STRING_TOKENIZER_DELIMITER.contains(token))
-				continue;
+			String token = st.nextToken(false);
 
 			// We found a non null token
 			if (expected != null && !expected.equals(token))

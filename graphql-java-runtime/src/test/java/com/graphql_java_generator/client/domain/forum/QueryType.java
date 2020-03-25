@@ -21,6 +21,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -249,7 +250,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getBoardsResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "boards");
+		Builder builder = new Builder(GraphQLRequest.class, "boards", RequestType.query);
 		return builder;
 	}
 
@@ -415,7 +416,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getNbBoardsResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "nbBoards");
+		Builder builder = new Builder(GraphQLRequest.class, "nbBoards", RequestType.query);
 		return builder;
 	}
 
@@ -593,7 +594,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getTopicsResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "topics",
+		Builder builder = new Builder(GraphQLRequest.class, "topics", RequestType.query,
 				InputParameter.newBindParameter("boardName", "queryTypeTopicsBoardName", false, null));
 		return builder;
 	}
@@ -787,7 +788,7 @@ public class QueryType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getFindTopicsResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "findTopics",
+		Builder builder = new Builder(GraphQLRequest.class, "findTopics", RequestType.query,
 				InputParameter.newBindParameter("boardName", "queryTypeFindTopicsBoardName", false, null),
 				InputParameter.newBindParameter("keyword", "queryTypeFindTopicsKeyword", false, null));
 		return builder;

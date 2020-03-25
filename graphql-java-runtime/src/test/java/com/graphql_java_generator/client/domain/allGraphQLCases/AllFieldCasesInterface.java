@@ -117,4 +117,10 @@ public interface AllFieldCasesInterface {
 	@JsonDeserialize(contentAs = AllFieldCasesWithoutIdSubtype.class)
 	@GraphQLNonScalar(graphQLTypeName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)
 	public List<AllFieldCasesWithoutIdSubtype> getListWithoutIdSubTypes();
+
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	public String get__typename();
+
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	public void set__typename(String __typename);
 }

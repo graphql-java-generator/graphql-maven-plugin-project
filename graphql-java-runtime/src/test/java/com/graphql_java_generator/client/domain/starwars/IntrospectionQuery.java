@@ -263,7 +263,7 @@ public class IntrospectionQuery {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder get__schemaResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "__schema");
+		Builder builder = new Builder(GraphQLRequest.class, "__schema", RequestType.query);
 		return builder;
 	}
 
@@ -455,7 +455,7 @@ public class IntrospectionQuery {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder get__typeResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "__type",
+		Builder builder = new Builder(GraphQLRequest.class, "__type", RequestType.query,
 				InputParameter.newBindParameter("name", "introspectionQuery__typeName", false, null));
 		return builder;
 	}

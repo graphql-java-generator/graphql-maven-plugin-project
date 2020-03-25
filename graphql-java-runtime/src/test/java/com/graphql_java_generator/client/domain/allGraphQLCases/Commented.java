@@ -25,4 +25,10 @@ public interface Commented {
 	@JsonDeserialize(contentAs = String.class)
 	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
 	public List<String> getComments();
+
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	public String get__typename();
+
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	public void set__typename(String __typename);
 }

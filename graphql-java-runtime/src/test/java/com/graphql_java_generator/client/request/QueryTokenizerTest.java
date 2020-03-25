@@ -58,6 +58,22 @@ class QueryTokenizerTest {
 	}
 
 	@Test
+	void testNextToken_withoutEmptyTokens2() {
+		// Preparation
+		List<String> realTokens = new ArrayList<>();
+		QueryTokenizer qt = new QueryTokenizer("{human(id:\"00000000-0000-0000-0000-000000000031\") {name}}");
+
+		// Go, go, go
+		while (qt.hasMoreTokens()) {
+			realTokens.add(qt.nextToken());
+		}
+
+		// Verification
+		assertEquals(Arrays.asList("{", "human", "(", "id", ":", "\"", "00000000-0000-0000-0000-000000000031", "\"",
+				")", "{", "name", "}", "}"), realTokens);
+	}
+
+	@Test
 	void testCheckNextToken() {
 		QueryTokenizer qt = new QueryTokenizer("(This is\r:\na non \"valid\" query \t)");
 

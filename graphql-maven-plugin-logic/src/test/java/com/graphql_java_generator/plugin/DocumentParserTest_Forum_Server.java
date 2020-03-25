@@ -335,7 +335,7 @@ class DocumentParserTest_Forum_Server {
 	}
 
 	void checkObjectHasNoAnnotation(ObjectType o) {
-		assertEquals("@GraphQLInputType", o.getAnnotation());
+		assertEquals("@GraphQLInputType(\"" + o.getName() + "\")", o.getAnnotation());
 		for (Field f : o.getFields()) {
 			assertTrue(f.getAnnotation().contains("@GraphQL"));
 		}

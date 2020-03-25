@@ -234,4 +234,18 @@ public class AllFieldCasesInterfaceType implements AllFieldCasesInterface {
 				+ listWithIdSubTypes + ", " + "oneWithoutIdSubType: " + oneWithoutIdSubType + ", "
 				+ "listWithoutIdSubTypes: " + listWithoutIdSubTypes + "}";
 	}
+
+	@JsonProperty("__typename")
+	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	String __typename;
+
+	@Override
+	public void set__typename(String __typename) {
+		this.__typename = __typename;
+	}
+
+	@Override
+	public String get__typename() {
+		return __typename;
+	}
 }

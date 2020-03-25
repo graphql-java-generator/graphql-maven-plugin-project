@@ -43,8 +43,8 @@ class QueryFieldTest {
 	@Test
 	void testIsQueryLevel() throws GraphQLRequestPreparationException {
 		assertTrue(new QueryField(MyQueryTypeRootResponse.class, "query").isQueryLevel());
-		assertTrue(new QueryField(MyQueryTypeRootResponse.class, "mutation").isQueryLevel());
-		assertTrue(new QueryField(MyQueryTypeRootResponse.class, "subscription").isQueryLevel());
+		assertTrue(new QueryField(AnotherMutationTypeRootResponse.class, "mutation").isQueryLevel());
+		assertTrue(new QueryField(TheSubscriptionTypeRootResponse.class, "subscription").isQueryLevel());
 
 		assertFalse(new QueryField(MyQueryTypeResponse.class, "aBreak").isQueryLevel());
 		assertFalse(new QueryField(_break.class, "case").isQueryLevel());

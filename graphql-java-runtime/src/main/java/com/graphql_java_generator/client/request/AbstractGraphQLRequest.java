@@ -3,10 +3,11 @@
  */
 package com.graphql_java_generator.client.request;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -26,12 +27,6 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * @author etienne-sf
  */
 public abstract class AbstractGraphQLRequest {
-
-	/**
-	 * The list of character that can separate tokens, in the GraphQL query string. These token are read by the
-	 * {@link StringTokenizer}.
-	 */
-	public static final String STRING_TOKENIZER_DELIMITER = " {},:()\n\r\t@";
 
 	/** The generated class that is based on the standard GraphQL introspection query */
 	Class<?> introspectionQueryTypeClass = null;
@@ -76,10 +71,12 @@ public abstract class AbstractGraphQLRequest {
 	 *            The information whether this queryName is actually a query, a mutation or a subscription
 	 * @param queryName
 	 *            The name of the query, mutation or subscription
+	 * @param The
+	 *            list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(String graphQLRequest, RequestType requestType, String queryName)
-			throws GraphQLRequestPreparationException {
+	public AbstractGraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
+			InputParameter... inputParams) throws GraphQLRequestPreparationException {
 		if (requestType == null) {
 			throw new NullPointerException("requestType is mandatory, but a null value has been provided");
 		}
@@ -88,11 +85,67 @@ public abstract class AbstractGraphQLRequest {
 		}
 		this.requestType = requestType;
 		this.queryName = queryName;
-		readGraphQLRequest(graphQLRequest);
+
+		QueryField field;
+		switch (requestType) {
+		case query:
+			query = getQueryContext();// Get the query field from the concrete class
+			field = new QueryField(query.clazz, queryName);
+			query.fields.add(field);
+			break;
+		case mutation:
+			mutation = getMutationContext();// Get the mutation field from the concrete class
+			field = new QueryField(mutation.clazz, queryName);
+			mutation.fields.add(field);
+			break;
+		case subscription:
+			subscription = getSubscriptionContext();// Get the subscription field from the concrete class
+			field = new QueryField(subscription.clazz, queryName);
+			subscription.fields.add(field);
+			break;
+		default:
+			throw new GraphQLRequestPreparationException("Non managed request type '" + requestType
+					+ " while reading the GraphQL request: " + graphQLRequest);
+		}
+
+		// Let's add the input parameters to this new field
+		field.inputParameters = Arrays.asList(inputParams);
+
+		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
+		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
+		QueryTokenizer qt = new QueryTokenizer(graphQLRequest);
+
+		// The graphQLRequest may be null (for instance for a scalar, or if we want the plugin to automatically add all
+		// scalar fields for this query/mutation/subscription)
+		if (!qt.hasMoreTokens()) {
+			// Ok, we're done
+		} else {
+			// The first token must be a {
+			// And we must read it first, before parsing the request content
+			String token = qt.nextToken();
+			if (!"{".equals(token)) {
+				throw new GraphQLRequestPreparationException(
+						"The Partial GraphQL Request should start by a '{', but it doesn't: " + graphQLRequest);
+			}
+			field.readTokenizerForResponseDefinition(qt);
+		}
+
+		// For each non scalar field, we add its non scalar fields, if none was defined
+		AddScalarFieldToEmptyNonScalarField();
+		// Let's add the <I>__typename</I> fields to all non scalar types
+		addTypenameFields();
 	}
 
 	/**
-	 * Create the instance, from the GraphQL request, for a full request.
+	 * Create the instance, from the GraphQL request, for a full request. It will:
+	 * <UL>
+	 * <LI>Read the query and/or the mutation</LI>
+	 * <LI>Read all fragment definitions</LI>
+	 * <LI>For all non scalar field, subfields (and so on recursively), if they are empty (that is the query doesn't
+	 * define the requested fields of a non scalar field, then all its scalar fields are added)</LI>
+	 * <LI>Add the introspection __typename field to all scalar field list, if it doesnt't already exist. This is
+	 * necessary to allow proper deserialization of interfaces and unions.</LI>
+	 * </UL>
 	 * 
 	 * @param graphQLRequest
 	 *            The GraphQL request, in text format, as defined in the GraphQL specifications, and as it can be used
@@ -105,28 +158,10 @@ public abstract class AbstractGraphQLRequest {
 	public AbstractGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 		this.requestType = null;
 		this.queryName = null;
-		readGraphQLRequest(graphQLRequest);
-	}
-
-	/**
-	 * Reads the GraphQL request, and generates all the internal structure. It will:
-	 * <UL>
-	 * <LI>Read the query and/or the mutation</LI>
-	 * <LI>Read all fragment definitions</LI>
-	 * <LI>For all non scalar field, subfields (and so on recursively), if they are empty (that is the query doesn't
-	 * define the requested fields of a non scalar field, then all its scalar fields are added)</LI>
-	 * <LI>Add the introspection __typename field to all scalar field list, if it doesnt't already exist. This is
-	 * necessary to allow proper deserialization of interfaces and unions.</LI>
-	 * </UL>
-	 * 
-	 * @param graphQLRequest
-	 * @throws GraphQLRequestPreparationException
-	 */
-	private void readGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
-		StringTokenizer st = new StringTokenizer(graphQLRequest, STRING_TOKENIZER_DELIMITER, true);
+		QueryTokenizer st = new QueryTokenizer(graphQLRequest);
 		RequestType requestType = RequestType.query; // If not precised, then it's a query
 
 		// We scan the input string. It may contain fragment definition and query/mutation/subscription
@@ -134,11 +169,6 @@ public abstract class AbstractGraphQLRequest {
 			String token = st.nextToken();
 
 			switch (token) {
-			case " ":
-			case "\n":
-			case "\r":
-			case "\t":
-				break;
 			case "fragment":
 				fragments.add(new Fragment(st, null));
 				break;
@@ -177,6 +207,20 @@ public abstract class AbstractGraphQLRequest {
 			throw new GraphQLRequestPreparationException("No response definition found");
 		}
 
+		// For each non scalar field, we add its non scalar fields, if none was defined
+		AddScalarFieldToEmptyNonScalarField();
+		// Let's add the <I>__typename</I> fields to all non scalar types
+		addTypenameFields();
+	}
+
+	/**
+	 * Adds the <I>__typename</I> fields to all non scalar types
+	 * 
+	 * @param graphQLRequest
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private void addTypenameFields() throws GraphQLRequestPreparationException {
+
 		// We need the __typename fields, to properly parse the JSON response for interfaces and unions.
 		// So we add it for every returned object.
 		if (query != null) {
@@ -191,13 +235,46 @@ public abstract class AbstractGraphQLRequest {
 	}
 
 	/**
+	 * For each non scalar fields of the query (if defined), the mutation (if defined) and the subscription (if
+	 * defined), we add its non scalar fields, if none was defined.
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private void AddScalarFieldToEmptyNonScalarField() throws GraphQLRequestPreparationException {
+		AddScalarFieldToEmptyNonScalarField(query);
+		AddScalarFieldToEmptyNonScalarField(mutation);
+		AddScalarFieldToEmptyNonScalarField(subscription);
+	}
+
+	private void AddScalarFieldToEmptyNonScalarField(QueryField field) throws GraphQLRequestPreparationException {
+		// If this field contains no subfield, and is not a scalar, we add all its scalar fields, as requested fields.
+		if (field == null || field.isScalar()) {
+			// No action
+		} else if (field.fields.size() == 0) {
+			// This non scalar field has no subfields in the GraphQL request
+			// We'll request all it scalar fields.
+			for (Field f : field.clazz.getDeclaredFields()) {
+				QueryField qf = new QueryField(field.clazz, f.getName());
+				if (qf.isScalar()) {
+					// We've found a subfield that is a scalar. Let's add it.
+					field.fields.add(qf);
+				}
+			}
+		} else {
+			// This non scalar fields contains requested subfield. We recurse into each of its fields.
+			for (QueryField f : field.fields)
+				AddScalarFieldToEmptyNonScalarField(f);
+		} // for
+	}
+
+	/**
 	 * 
 	 * @param params
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
 	public String buildRequest(Map<String, Object> params) throws GraphQLRequestExecutionException {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder("{\"query\":\"");
 
 		// Let's start by the fragments
 		for (Fragment fragment : fragments) {
@@ -214,6 +291,8 @@ public abstract class AbstractGraphQLRequest {
 		if (subscription != null) {
 			subscription.appendToGraphQLRequests(sb, params);
 		}
+
+		sb.append("\",\"variables\":null,\"operationName\":null}");
 
 		return sb.toString();
 	}
@@ -242,10 +321,6 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 */
 	protected abstract QueryField getSubscriptionContext() throws GraphQLRequestPreparationException;
-
-	public static String getStringTokenizerDelimiter() {
-		return STRING_TOKENIZER_DELIMITER;
-	}
 
 	public Class<?> getIntrospectionQueryTypeClass() {
 		return introspectionQueryTypeClass;

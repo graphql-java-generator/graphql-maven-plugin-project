@@ -89,6 +89,10 @@ public class MutationType {
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 	}
 
+	public static RequestType getRequestType() {
+		return RequestType.mutation;
+	}
+
 	/**
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
@@ -291,7 +295,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCreateHumanResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "createHuman",
+		Builder builder = new Builder(GraphQLRequest.class, "createHuman", RequestType.mutation,
 				InputParameter.newBindParameter("name", "mutationTypeCreateHumanName", false, null),
 				InputParameter.newBindParameter("homePlanet", "mutationTypeCreateHumanHomePlanet", false, null));
 		return builder;
@@ -499,7 +503,7 @@ public class MutationType {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getAddFriendResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "addFriend",
+		Builder builder = new Builder(GraphQLRequest.class, "addFriend", RequestType.mutation,
 				InputParameter.newBindParameter("idCharacter", "mutationTypeAddFriendIdCharacter", false, null),
 				InputParameter.newBindParameter("idNewFriend", "mutationTypeAddFriendIdNewFriend", false, null));
 		return builder;
