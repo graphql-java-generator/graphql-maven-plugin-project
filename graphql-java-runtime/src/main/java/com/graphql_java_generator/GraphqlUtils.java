@@ -15,17 +15,9 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLCustomScalar;
-import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.client.directive.Directive;
-import com.graphql_java_generator.client.directive.DirectiveRegistry;
-import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
-import com.graphql_java_generator.client.request.InputParameter;
-import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-
-import graphql.schema.GraphQLScalarType;
 
 /**
  * @author EtienneSF
@@ -35,9 +27,6 @@ public class GraphqlUtils {
 
 	/** This singleton is usable in default method, within interfaces */
 	public static GraphqlUtils graphqlUtils = new GraphqlUtils();
-
-	/** The registry for all known GraphQL directives */
-	DirectiveRegistry directiveRegistry = DirectiveRegistryImpl.directiveRegistry;
 
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 
@@ -137,70 +126,6 @@ public class GraphqlUtils {
 	 */
 	public String getPascalCase(String name) {
 		return name.substring(0, 1).toUpperCase() + name.substring(1);
-	}
-
-	/**
-	 * Retrieves the {@link GraphQLScalarType} from this input parameter, if this parameter is a Custom Scalar
-	 * 
-	 * @param directive
-	 *            If not null, then we're looking for an argument of a GraphQL directive. Oherwise, it's a field
-	 *            argument, and the owningClass and fieldName parameters will be used.
-	 * @param owningClass
-	 *            The class that contains this field
-	 * @param fieldName
-	 *            The field name
-	 * @param parameterName
-	 *            The parameter name, which must be the name for an input parameter for this field in the GraphQL schema
-	 * @return
-	 * @throws GraphQLRequestPreparationException
-	 */
-	public GraphQLScalarType getCustomScalarGraphQLType(Directive directive, Class<?> owningClass, String fieldName,
-			String parameterName) throws GraphQLRequestPreparationException {
-
-		if (directive != null) {
-			// Let's find the definition for this directive
-			Directive dirDef = directiveRegistry.getDirective(directive.getName());
-			if (dirDef == null) {
-				throw new GraphQLRequestPreparationException(
-						"Could not find directive definition for the directive '" + directive.getName() + "'");
-			}
-
-			// Let's find the GraphQL type of this argument
-			for (InputParameter param : dirDef.getArguments()) {
-				if (param.getName().equals(parameterName)) {
-					return param.getGraphQLScalarType();
-				}
-			} // for
-
-			throw new GraphQLRequestPreparationException("The parameter of name '" + parameterName
-					+ "' has not been found for the directive '" + directive.getName() + "'");
-		} else {
-			Field field;
-			try {
-				field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
-			} catch (NoSuchFieldException | SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-						+ "> in the class '" + owningClass.getName() + "'", e);
-			}
-
-			GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
-			if (inputParams == null)
-				throw new GraphQLRequestPreparationException("The field <" + fieldName + "> of the class '"
-						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
-						+ parameterName + "' input parameter");
-
-			for (int i = 0; i < inputParams.names().length; i += 1) {
-				if (inputParams.names()[i].equals(parameterName)) {
-					// We've found the expected parameter
-					String typeName = inputParams.types()[i];
-					return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
-				}
-			}
-
-			throw new GraphQLRequestPreparationException(
-					"The parameter of name <" + parameterName + "> has not been found for the field <" + fieldName
-							+ "> of the class '" + owningClass.getName() + "'");
-		}
 	}
 
 	/**

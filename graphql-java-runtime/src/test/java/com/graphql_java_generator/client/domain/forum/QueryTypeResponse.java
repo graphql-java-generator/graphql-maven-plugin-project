@@ -9,6 +9,7 @@ import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
+import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 
 import java.util.Date;
@@ -45,6 +46,17 @@ public class QueryTypeResponse  {
 	List<Topic> findTopics;
 
 
+	@JsonProperty("__schema")
+	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	__Schema __schema;
+
+
+	@GraphQLInputParameters(names = {"name"}, types = {"String"})
+	@JsonProperty("__type")
+	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	__Type __type;
+
+
 
 	public void setBoards(List<Board> boards) {
 		this.boards = boards;
@@ -78,6 +90,22 @@ public class QueryTypeResponse  {
 		return findTopics;
 	}
 
+	public void set__schema(__Schema __schema) {
+		this.__schema = __schema;
+	}
+
+	public __Schema get__schema() {
+		return __schema;
+	}
+
+	public void set__type(__Type __type) {
+		this.__type = __type;
+	}
+
+	public __Type get__type() {
+		return __type;
+	}
+
     public String toString() {
         return "QueryType {"
 				+ "boards: " + boards
@@ -87,6 +115,10 @@ public class QueryTypeResponse  {
 				+ "topics: " + topics
 				+ ", "
 				+ "findTopics: " + findTopics
+				+ ", "
+				+ "__schema: " + __schema
+				+ ", "
+				+ "__type: " + __type
         		+ "}";
     }
 
@@ -97,7 +129,9 @@ public class QueryTypeResponse  {
 		Boards("boards"),
 		NbBoards("nbBoards"),
 		Topics("topics"),
-		FindTopics("findTopics");
+		FindTopics("findTopics"),
+		__schema("__schema"),
+		__type("__type");
 
 		private String fieldName;
 
@@ -129,6 +163,8 @@ public class QueryTypeResponse  {
 		private Integer nbBoards;
 		private List<Topic> topics;
 		private List<Topic> findTopics;
+		private __Schema __schema;
+		private __Type __type;
 
 
 		public Builder withBoards(List<Board> boards) {
@@ -147,6 +183,14 @@ public class QueryTypeResponse  {
 			this.findTopics = findTopics;
 			return this;
 		}
+		public Builder with__schema(__Schema __schema) {
+			this.__schema = __schema;
+			return this;
+		}
+		public Builder with__type(__Type __type) {
+			this.__type = __type;
+			return this;
+		}
 
 		public QueryTypeResponse build() {
 			QueryTypeResponse object = new QueryTypeResponse();
@@ -154,6 +198,8 @@ public class QueryTypeResponse  {
 			object.setNbBoards(nbBoards);
 			object.setTopics(topics);
 			object.setFindTopics(findTopics);
+			object.set__schema(__schema);
+			object.set__type(__type);
 			return object;
 		}
 	}

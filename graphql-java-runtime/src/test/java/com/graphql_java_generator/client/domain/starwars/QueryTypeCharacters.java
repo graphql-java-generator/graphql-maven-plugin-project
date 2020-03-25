@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeCharacters {
 
+	public static final String NAME = "characters";
+
 	@JsonDeserialize(contentAs = Character.class)
 	@JsonProperty("characters")
 	List<Character> characters;
@@ -24,8 +26,7 @@ public class QueryTypeCharacters {
 		return characters;
 	}
 	
-    @Override
-	public String toString() {
+    public String toString() {
         return "QueryTypeCharacters {characters: " + characters + "}";
     }
 }

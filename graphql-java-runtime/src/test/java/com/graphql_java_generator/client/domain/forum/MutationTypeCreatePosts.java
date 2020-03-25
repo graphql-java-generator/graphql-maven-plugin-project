@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MutationTypeCreatePosts {
 
+	public static final String NAME = "createPosts";
+
 	@JsonDeserialize(contentAs = Post.class)
 	@JsonProperty("createPosts")
 	List<Post> createPosts;
@@ -24,8 +26,7 @@ public class MutationTypeCreatePosts {
 		return createPosts;
 	}
 	
-    @Override
-	public String toString() {
+    public String toString() {
         return "MutationTypeCreatePosts {createPosts: " + createPosts + "}";
     }
 }

@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeFindTopics {
 
+	public static final String NAME = "findTopics";
+
 	@JsonDeserialize(contentAs = Topic.class)
 	@JsonProperty("findTopics")
 	List<Topic> findTopics;
@@ -24,8 +26,7 @@ public class QueryTypeFindTopics {
 		return findTopics;
 	}
 	
-    @Override
-	public String toString() {
+    public String toString() {
         return "QueryTypeFindTopics {findTopics: " + findTopics + "}";
     }
 }

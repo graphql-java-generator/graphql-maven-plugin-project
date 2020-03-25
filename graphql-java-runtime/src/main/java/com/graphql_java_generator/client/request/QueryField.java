@@ -277,11 +277,11 @@ public class QueryField {
 				case VALUE:
 					// We've read the parameter value. Let's add this parameter.
 					if (token.startsWith("?")) {
-						ret.add(new InputParameter(parameterName, token.substring(1), null, false,
-								graphqlUtils.getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
+						ret.add(new InputParameter(parameterName, token.substring(1), null, false, graphqlClientUtils
+								.getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
 					} else if (token.startsWith("&")) {
-						ret.add(new InputParameter(parameterName, token.substring(1), null, true,
-								graphqlUtils.getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
+						ret.add(new InputParameter(parameterName, token.substring(1), null, true, graphqlClientUtils
+								.getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
 					} else if (token.equals("\"")) {
 						// We've found a String value: let's read the string content
 						StringBuffer sb = new StringBuffer();

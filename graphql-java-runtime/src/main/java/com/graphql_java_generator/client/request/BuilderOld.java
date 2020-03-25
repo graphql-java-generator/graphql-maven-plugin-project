@@ -228,7 +228,7 @@ public class BuilderOld {
 	@Deprecated
 	BuilderOld withInputParameter(String name, String bindParameterName, boolean mandatory)
 			throws GraphQLRequestPreparationException {
-		GraphQLScalarType graphQLScalarType = graphqlUtils.getCustomScalarGraphQLType(null,
+		GraphQLScalarType graphQLScalarType = graphqlClientUtils.getCustomScalarGraphQLType(null,
 				objectResponse.getOwningClass(), objectResponse.getFieldName(), name);
 		objectResponse
 				.addInputParameter(new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType));

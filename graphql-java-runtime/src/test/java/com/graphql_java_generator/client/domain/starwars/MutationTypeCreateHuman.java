@@ -1,6 +1,9 @@
 package com.graphql_java_generator.client.domain.starwars;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
 /**
@@ -8,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 public class MutationTypeCreateHuman {
+
+	public static final String NAME = "createHuman";
 
 	@JsonProperty("createHuman")
 	Human createHuman;
@@ -20,8 +25,7 @@ public class MutationTypeCreateHuman {
 		return createHuman;
 	}
 	
-    @Override
-	public String toString() {
+    public String toString() {
         return "MutationTypeCreateHuman {createHuman: " + createHuman + "}";
     }
 }

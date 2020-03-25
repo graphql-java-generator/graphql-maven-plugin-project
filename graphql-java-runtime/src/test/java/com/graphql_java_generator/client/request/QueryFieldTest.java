@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeRootResponse;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeResponse;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeRootResponse;
+import com.graphql_java_generator.client.domain.allGraphQLCases.TheSubscriptionTypeRootResponse;
 import com.graphql_java_generator.client.domain.allGraphQLCases._break;
 import com.graphql_java_generator.client.domain.forum.Board;
 import com.graphql_java_generator.client.domain.forum.Post;

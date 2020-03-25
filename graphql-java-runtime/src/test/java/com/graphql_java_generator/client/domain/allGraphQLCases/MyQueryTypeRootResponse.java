@@ -17,7 +17,7 @@ public class MyQueryTypeRootResponse {
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public MyQueryTypeResponse getQuery() {
+	public MyQueryTypeResponse getQueryPascalCase() {
 		return query;
 	}
 

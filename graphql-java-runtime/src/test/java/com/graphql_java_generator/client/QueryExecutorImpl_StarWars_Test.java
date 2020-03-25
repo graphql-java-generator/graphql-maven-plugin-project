@@ -84,8 +84,7 @@ class QueryExecutorImpl_StarWars_Test {
 		String request = objectResponse.buildRequest(parameters);
 
 		// Verification
-		assertEquals(
-				"{\"query\":\"query{hero(id:\\\"1\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
+		assertEquals("{\"query\":\"query{hero{id name __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 
@@ -117,7 +116,7 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE,id:\\\"this is an id\\\"){id name __typename}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE){id name __typename}}\",\"variables\":null,\"operationName\":null}",
 				request);
 	}
 

@@ -56,6 +56,7 @@ public class CodeGenerator {
 	// Templates for client generation only
 	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER = "templates/client_CustomScalarRegistryInitializer.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DIRECTIVE_REGISTRY_INITIALIZER = "templates/client_DirectiveRegistryInitializer.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQL_REQUEST = "templates/GraphQLRequest.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/client_jackson_deserialize.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
@@ -140,6 +141,9 @@ public class CodeGenerator {
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
 					PATH_VELOCITY_TEMPLATE_ROOT_RESPONSE);
 
+			// Generation of the GraphQLRequest class
+			i += generateGraphQLRequest();
+
 			// Files for Custom Scalars
 			VelocityContext context = new VelocityContext();
 			context.put("pluginConfiguration", pluginConfiguration);
@@ -160,7 +164,7 @@ public class CodeGenerator {
 			break;
 		}
 
-		if(pluginConfiguration.isCopyGraphQLJavaSources()) {
+		if (pluginConfiguration.isCopyGraphQLJavaSources()) {
 			copyGraphQLJavaSources();
 		}
 
@@ -256,6 +260,23 @@ public class CodeGenerator {
 			}
 		}
 		return i;
+	}
+
+	/**
+	 * Generates the {@link GraphQLRequest} class . This method expects at most one query, one mutation and one
+	 * subscription, which is compliant with the GraphQL specification
+	 */
+	int generateGraphQLRequest() {
+		VelocityContext context = new VelocityContext();
+		context.put("pluginConfiguration", pluginConfiguration);
+
+		context.put("query", (documentParser.queryTypes.size() > 0) ? documentParser.queryTypes.get(0) : null);
+		context.put("mutation", (documentParser.mutationTypes.size() > 0) ? documentParser.mutationTypes.get(0) : null);
+		context.put("subscription",
+				(documentParser.subscriptionTypes.size() > 0) ? documentParser.subscriptionTypes.get(0) : null);
+
+		return generateOneFile(getJavaFile("GraphQLRequest"), "generating GraphQLRequest", context,
+				PATH_VELOCITY_TEMPLATE_GRAPHQL_REQUEST);
 	}
 
 	/**

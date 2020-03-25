@@ -56,7 +56,7 @@ class DocumentParserTest {
 
 		type = new ObjectType("TheName", "the.package.name", PluginMode.client);
 		documentParser.addTypeAnnotationForClientMode(type);
-		assertEquals("", type.getAnnotation(), type.getClass().getName());
+		assertEquals("@GraphQLObjectType(\"TheName\")", type.getAnnotation(), type.getClass().getName());
 
 		type = new InterfaceType("TheName", "the.package.name", PluginMode.client);
 		documentParser.addTypeAnnotationForClientMode(type);

@@ -1,6 +1,9 @@
 package com.graphql_java_generator.client.domain.forum;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
 /**
@@ -8,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 public class MutationTypeCreateBoard {
+
+	public static final String NAME = "createBoard";
 
 	@JsonProperty("createBoard")
 	Board createBoard;
@@ -20,8 +25,7 @@ public class MutationTypeCreateBoard {
 		return createBoard;
 	}
 	
-    @Override
-	public String toString() {
+    public String toString() {
         return "MutationTypeCreateBoard {createBoard: " + createBoard + "}";
     }
 }

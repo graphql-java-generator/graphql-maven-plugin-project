@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -918,6 +919,7 @@ public class DocumentParser {
 	 */
 	void addTypeAnnotationForClientMode(Type o) {
 		// No specific annotation for objects and interfaces when in client mode.
+
 		if (o instanceof InterfaceType || o instanceof UnionType) {
 			o.addAnnotation(
 					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)");
@@ -939,7 +941,16 @@ public class DocumentParser {
 			jsonSubTypes.append(" })");
 
 			o.addAnnotation(jsonSubTypes.toString());
-		} // if (o instanceof InterfaceType) {
+		} // if (o instanceof InterfaceType)
+		else if (o instanceof ObjectType) {
+			if (((ObjectType) o).isInputType()) {
+				// input type
+				o.addAnnotation("@GraphQLInputType(\"" + o.getName() + "\")");
+			} else {
+				// Standard object type
+				o.addAnnotation("@GraphQLObjectType(\"" + o.getName() + "\")");
+			}
+		}
 
 		// Let's add the annotations, that are common to both the client and the server mode
 		addTypeAnnotationForBothClientAndServerMode(o);
@@ -971,9 +982,7 @@ public class DocumentParser {
 	 * @param o
 	 */
 	private void addTypeAnnotationForBothClientAndServerMode(Type o) {
-		if (o.isInputType()) {
-			((AbstractType) o).addAnnotation("@GraphQLInputType(\"" + o.getName() + "\")");
-		}
+		// No action
 	}
 
 	/**
