@@ -22,17 +22,17 @@ import java.util.Date;
 public class AllFieldCasesWithIdSubtype  {
 
 	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

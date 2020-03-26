@@ -22,34 +22,34 @@ import java.util.Date;
 public class __Directive  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("locations")
 	@JsonDeserialize(contentAs = __DirectiveLocation.class)
-	@GraphQLScalar(graphQLTypeName = "__DirectiveLocation", javaClass = __DirectiveLocation.class)
+	@GraphQLScalar(fieldName = "locations", graphQLTypeName = "__DirectiveLocation", javaClass = __DirectiveLocation.class)
 	List<__DirectiveLocation> locations;
 
 
 	@JsonProperty("args")
 	@JsonDeserialize(contentAs = __InputValue.class)
-	@GraphQLNonScalar(graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
+	@GraphQLNonScalar(fieldName = "args", graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
 	List<__InputValue> args;
 
 
 	@JsonProperty("isRepeatable")
-	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "isRepeatable", graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean isRepeatable;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

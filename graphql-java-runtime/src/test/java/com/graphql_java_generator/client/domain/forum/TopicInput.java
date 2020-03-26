@@ -22,12 +22,12 @@ import java.util.Date;
 public class TopicInput  {
 
 	@JsonProperty("boardId")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "boardId", graphQLTypeName = "ID", javaClass = String.class)
 	String boardId;
 
 
 	@JsonProperty("input")
-	@GraphQLNonScalar(graphQLTypeName = "TopicPostInput", javaClass = TopicPostInput.class)
+	@GraphQLNonScalar(fieldName = "input", graphQLTypeName = "TopicPostInput", javaClass = TopicPostInput.class)
 	TopicPostInput input;
 
 

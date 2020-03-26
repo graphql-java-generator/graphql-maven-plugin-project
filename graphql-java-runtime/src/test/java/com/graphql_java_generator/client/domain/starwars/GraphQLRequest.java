@@ -3,7 +3,7 @@ package com.graphql_java_generator.client.domain.starwars;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.request.QueryField;
-import com.graphql_java_generator.client.request.RequestType;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**

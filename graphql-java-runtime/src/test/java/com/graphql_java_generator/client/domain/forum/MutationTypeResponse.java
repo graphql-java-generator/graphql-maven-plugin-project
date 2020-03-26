@@ -23,26 +23,26 @@ public class MutationTypeResponse  {
 
 	@GraphQLInputParameters(names = {"name", "publiclyAvailable"}, types = {"String", "Boolean"})
 	@JsonProperty("createBoard")
-	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
+	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeName = "Board", javaClass = Board.class)
 	Board createBoard;
 
 
 	@GraphQLInputParameters(names = {"topic"}, types = {"TopicInput"})
 	@JsonProperty("createTopic")
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
+	@GraphQLNonScalar(fieldName = "createTopic", graphQLTypeName = "Topic", javaClass = Topic.class)
 	Topic createTopic;
 
 
 	@GraphQLInputParameters(names = {"post"}, types = {"PostInput"})
 	@JsonProperty("createPost")
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	@GraphQLNonScalar(fieldName = "createPost", graphQLTypeName = "Post", javaClass = Post.class)
 	Post createPost;
 
 
 	@GraphQLInputParameters(names = {"spam"}, types = {"PostInput"})
 	@JsonProperty("createPosts")
 	@JsonDeserialize(contentAs = Post.class)
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	@GraphQLNonScalar(fieldName = "createPosts", graphQLTypeName = "Post", javaClass = Post.class)
 	List<Post> createPosts;
 
 

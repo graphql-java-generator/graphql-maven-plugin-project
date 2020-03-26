@@ -19,13 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -327,7 +328,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHumanWithBindValues(String queryResponseDef, String name, String homePlanet, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createHuman' in query mode: {} ", queryResponseDef);
@@ -368,7 +369,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHuman(String queryResponseDef, String name, String homePlanet, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createHuman' in query mode: {} ", queryResponseDef);
@@ -413,7 +414,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHumanWithBindValues(ObjectResponse objectResponse, String name, String homePlanet, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -470,7 +471,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHuman(ObjectResponse objectResponse, String name, String homePlanet, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -548,7 +549,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "addFriend", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character addFriendWithBindValues(String queryResponseDef, String idCharacter, String idNewFriend, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'addFriend' in query mode: {} ", queryResponseDef);
@@ -589,7 +590,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "addFriend", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character addFriend(String queryResponseDef, String idCharacter, String idNewFriend, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'addFriend' in query mode: {} ", queryResponseDef);
@@ -634,7 +635,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "addFriend", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character addFriendWithBindValues(ObjectResponse objectResponse, String idCharacter, String idNewFriend, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -691,7 +692,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "addFriend", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character addFriend(ObjectResponse objectResponse, String idCharacter, String idNewFriend, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {

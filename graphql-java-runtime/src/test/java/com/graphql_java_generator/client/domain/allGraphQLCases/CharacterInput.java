@@ -22,24 +22,24 @@ import java.util.Date;
 public class CharacterInput  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("friends")
 	@JsonDeserialize(contentAs = CharacterInput.class)
-	@GraphQLNonScalar(graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
 	List<CharacterInput> friends;
 
 
 	@JsonProperty("appearsIn")
 	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
 	@JsonProperty("type")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "type", graphQLTypeName = "String", javaClass = String.class)
 	String type;
 
 

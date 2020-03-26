@@ -10,7 +10,7 @@ import com.graphql_java_generator.client.response.Error;
 public class ${object.javaName}RootResponse {
 
 	@JsonProperty("${object.requestType}")
-	@GraphQLNonScalar(graphQLTypeName = "${object.javaName}", javaClass = ${object.javaName}Response.class)
+	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeName = "${object.javaName}", javaClass = ${object.javaName}Response.class)
 	${object.javaName}Response ${object.requestType};
 
 	@JsonProperty("errors")

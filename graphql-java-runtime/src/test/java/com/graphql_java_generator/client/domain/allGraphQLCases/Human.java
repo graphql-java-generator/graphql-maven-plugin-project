@@ -22,50 +22,50 @@ import java.util.Date;
 public class Human implements Character, Commented, WithID {
 
 	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("bestFriend")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "bestFriend", graphQLTypeName = "Character", javaClass = Character.class)
 	Character bestFriend;
 
 
 	@JsonProperty("friends")
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "Character", javaClass = Character.class)
 	List<Character> friends;
 
 
 	@JsonProperty("nbComments")
-	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbComments;
 
 
 	@JsonProperty("comments")
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", javaClass = String.class)
 	List<String> comments;
 
 
 	@JsonProperty("appearsIn")
 	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
 	@JsonProperty("homePlanet")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "homePlanet", graphQLTypeName = "String", javaClass = String.class)
 	String homePlanet;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

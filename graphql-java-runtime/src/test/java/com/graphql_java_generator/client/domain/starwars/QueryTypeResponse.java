@@ -22,37 +22,37 @@ public class QueryTypeResponse  {
 
 	@GraphQLInputParameters(names = {"episode"}, types = {"Episode"})
 	@JsonProperty("hero")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "hero", graphQLTypeName = "Character", javaClass = Character.class)
 	Character hero;
 
 
 	@GraphQLInputParameters(names = {"episode"}, types = {"Episode"})
 	@JsonProperty("characters")
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "characters", graphQLTypeName = "Character", javaClass = Character.class)
 	List<Character> characters;
 
 
 	@GraphQLInputParameters(names = {"id"}, types = {"ID"})
 	@JsonProperty("human")
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(fieldName = "human", graphQLTypeName = "Human", javaClass = Human.class)
 	Human human;
 
 
 	@GraphQLInputParameters(names = {"id"}, types = {"ID"})
 	@JsonProperty("droid")
-	@GraphQLNonScalar(graphQLTypeName = "Droid", javaClass = Droid.class)
+	@GraphQLNonScalar(fieldName = "droid", graphQLTypeName = "Droid", javaClass = Droid.class)
 	Droid droid;
 
 
 	@JsonProperty("__schema")
-	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
 	__Schema __schema;
 
 
 	@GraphQLInputParameters(names = {"name"}, types = {"String"})
 	@JsonProperty("__type")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type __type;
 
 

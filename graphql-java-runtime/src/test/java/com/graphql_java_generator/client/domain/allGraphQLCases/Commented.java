@@ -22,26 +22,26 @@ import java.util.Date;
  */
 @JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "__typename", visible = true)
 		@JsonSubTypes({ @Type(value = Human.class, name = "Human") })
-@GraphQLInterfaceType("Commented")
+		@GraphQLInterfaceType("Commented")
 public interface Commented  {
 
-	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", javaClass = Integer.class)
 	public void setNbComments(Integer nbComments);
 
-	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", javaClass = Integer.class)
 	public Integer getNbComments();
 
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", javaClass = String.class)
 	public void setComments(List<String> comments);
 
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", javaClass = String.class)
 	public List<String> getComments();
 
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	public void set__typename(String __typename);
 
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	public String get__typename();
 }

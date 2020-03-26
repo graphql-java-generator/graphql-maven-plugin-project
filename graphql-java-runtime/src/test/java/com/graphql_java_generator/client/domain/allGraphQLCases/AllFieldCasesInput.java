@@ -22,64 +22,64 @@ import java.util.Date;
 public class AllFieldCasesInput  {
 
 	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("forname")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "forname", graphQLTypeName = "String", javaClass = String.class)
 	String forname;
 
 
 	@JsonProperty("age")
 	@JsonDeserialize(using = CustomScalarDeserializerLong.class)
-	@GraphQLScalar(graphQLTypeName = "Long", javaClass = Long.class)
+	@GraphQLScalar(fieldName = "age", graphQLTypeName = "Long", javaClass = Long.class)
 	Long age;
 
 
 	@JsonProperty("nbComments")
-	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbComments;
 
 
 	@JsonProperty("comments")
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", javaClass = String.class)
 	List<String> comments;
 
 
 	@JsonProperty("booleans")
 	@JsonDeserialize(contentAs = Boolean.class)
-	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "booleans", graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	List<Boolean> booleans;
 
 
 	@JsonProperty("aliases")
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "aliases", graphQLTypeName = "String", javaClass = String.class)
 	List<String> aliases;
 
 
 	@JsonProperty("planets")
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "planets", graphQLTypeName = "String", javaClass = String.class)
 	List<String> planets;
 
 
 	@JsonProperty("withIdSubtype")
 	@JsonDeserialize(contentAs = AllFieldCasesWithIdSubtypeInput.class)
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCasesWithIdSubtypeInput", javaClass = AllFieldCasesWithIdSubtypeInput.class)
+	@GraphQLNonScalar(fieldName = "withIdSubtype", graphQLTypeName = "AllFieldCasesWithIdSubtypeInput", javaClass = AllFieldCasesWithIdSubtypeInput.class)
 	List<AllFieldCasesWithIdSubtypeInput> withIdSubtype;
 
 
 	@JsonProperty("withoutIdSubtype")
 	@JsonDeserialize(contentAs = AllFieldCasesWithoutIdSubtypeInput.class)
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCasesWithoutIdSubtypeInput", javaClass = AllFieldCasesWithoutIdSubtypeInput.class)
+	@GraphQLNonScalar(fieldName = "withoutIdSubtype", graphQLTypeName = "AllFieldCasesWithoutIdSubtypeInput", javaClass = AllFieldCasesWithoutIdSubtypeInput.class)
 	List<AllFieldCasesWithoutIdSubtypeInput> withoutIdSubtype;
 
 

@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.graphql_java_generator.client.request.RequestType;
-
 /**
  * This annotation marks all generated classes that are queries/mutations/subscription, as defined in the GraphQL
  * schema.

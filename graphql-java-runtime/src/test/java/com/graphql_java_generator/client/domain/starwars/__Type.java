@@ -21,59 +21,59 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 public class __Type  {
 
 	@JsonProperty("kind")
-	@GraphQLScalar(graphQLTypeName = "__TypeKind", javaClass = __TypeKind.class)
+	@GraphQLScalar(fieldName = "kind", graphQLTypeName = "__TypeKind", javaClass = __TypeKind.class)
 	__TypeKind kind;
 
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@GraphQLInputParameters(names = {"includeDeprecated"}, types = {"Boolean"})
 	@JsonProperty("fields")
 	@JsonDeserialize(contentAs = __Field.class)
-	@GraphQLNonScalar(graphQLTypeName = "__Field", javaClass = __Field.class)
+	@GraphQLNonScalar(fieldName = "fields", graphQLTypeName = "__Field", javaClass = __Field.class)
 	List<__Field> fields;
 
 
 	@JsonProperty("interfaces")
 	@JsonDeserialize(contentAs = __Type.class)
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "interfaces", graphQLTypeName = "__Type", javaClass = __Type.class)
 	List<__Type> interfaces;
 
 
 	@JsonProperty("possibleTypes")
 	@JsonDeserialize(contentAs = __Type.class)
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "possibleTypes", graphQLTypeName = "__Type", javaClass = __Type.class)
 	List<__Type> possibleTypes;
 
 
 	@GraphQLInputParameters(names = {"includeDeprecated"}, types = {"Boolean"})
 	@JsonProperty("enumValues")
 	@JsonDeserialize(contentAs = __EnumValue.class)
-	@GraphQLNonScalar(graphQLTypeName = "__EnumValue", javaClass = __EnumValue.class)
+	@GraphQLNonScalar(fieldName = "enumValues", graphQLTypeName = "__EnumValue", javaClass = __EnumValue.class)
 	List<__EnumValue> enumValues;
 
 
 	@JsonProperty("inputFields")
 	@JsonDeserialize(contentAs = __InputValue.class)
-	@GraphQLNonScalar(graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
+	@GraphQLNonScalar(fieldName = "inputFields", graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
 	List<__InputValue> inputFields;
 
 
 	@JsonProperty("ofType")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "ofType", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type ofType;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

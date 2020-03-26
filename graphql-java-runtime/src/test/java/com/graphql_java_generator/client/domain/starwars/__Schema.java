@@ -21,39 +21,39 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 public class __Schema  {
 
 	@JsonProperty("description")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("types")
 	@JsonDeserialize(contentAs = __Type.class)
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "types", graphQLTypeName = "__Type", javaClass = __Type.class)
 	List<__Type> types;
 
 
 	@JsonProperty("queryType")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "queryType", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type queryType;
 
 
 	@JsonProperty("mutationType")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "mutationType", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type mutationType;
 
 
 	@JsonProperty("subscriptionType")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "subscriptionType", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type subscriptionType;
 
 
 	@JsonProperty("directives")
 	@JsonDeserialize(contentAs = __Directive.class)
-	@GraphQLNonScalar(graphQLTypeName = "__Directive", javaClass = __Directive.class)
+	@GraphQLNonScalar(fieldName = "directives", graphQLTypeName = "__Directive", javaClass = __Directive.class)
 	List<__Directive> directives;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

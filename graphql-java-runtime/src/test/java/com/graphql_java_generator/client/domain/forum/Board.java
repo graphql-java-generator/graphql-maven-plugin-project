@@ -22,29 +22,29 @@ import java.util.Date;
 public class Board  {
 
 	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("publiclyAvailable")
-	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
 
 	@GraphQLInputParameters(names = {"since"}, types = {"Date"})
 	@JsonProperty("topics")
 	@JsonDeserialize(contentAs = Topic.class)
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
+	@GraphQLNonScalar(fieldName = "topics", graphQLTypeName = "Topic", javaClass = Topic.class)
 	List<Topic> topics;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

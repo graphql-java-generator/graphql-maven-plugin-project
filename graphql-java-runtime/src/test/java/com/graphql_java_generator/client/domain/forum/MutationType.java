@@ -19,13 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -328,7 +329,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
+	 @GraphQLNonScalar (fieldName = "createBoard", graphQLTypeName = "Board", javaClass = Board.class)
 	public Board createBoardWithBindValues(String queryResponseDef, String name, Boolean publiclyAvailable, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createBoard' in query mode: {} ", queryResponseDef);
@@ -369,7 +370,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
+	 @GraphQLNonScalar (fieldName = "createBoard", graphQLTypeName = "Board", javaClass = Board.class)
 	public Board createBoard(String queryResponseDef, String name, Boolean publiclyAvailable, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createBoard' in query mode: {} ", queryResponseDef);
@@ -414,7 +415,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
+	 @GraphQLNonScalar (fieldName = "createBoard", graphQLTypeName = "Board", javaClass = Board.class)
 	public Board createBoardWithBindValues(ObjectResponse objectResponse, String name, Boolean publiclyAvailable, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -471,7 +472,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Board", javaClass = Board.class)
+	 @GraphQLNonScalar (fieldName = "createBoard", graphQLTypeName = "Board", javaClass = Board.class)
 	public Board createBoard(ObjectResponse objectResponse, String name, Boolean publiclyAvailable, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -548,7 +549,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
+	 @GraphQLNonScalar (fieldName = "createTopic", graphQLTypeName = "Topic", javaClass = Topic.class)
 	public Topic createTopicWithBindValues(String queryResponseDef, TopicInput topic, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createTopic' in query mode: {} ", queryResponseDef);
@@ -588,7 +589,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
+	 @GraphQLNonScalar (fieldName = "createTopic", graphQLTypeName = "Topic", javaClass = Topic.class)
 	public Topic createTopic(String queryResponseDef, TopicInput topic, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createTopic' in query mode: {} ", queryResponseDef);
@@ -632,7 +633,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
+	 @GraphQLNonScalar (fieldName = "createTopic", graphQLTypeName = "Topic", javaClass = Topic.class)
 	public Topic createTopicWithBindValues(ObjectResponse objectResponse, TopicInput topic, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -687,7 +688,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Topic", javaClass = Topic.class)
+	 @GraphQLNonScalar (fieldName = "createTopic", graphQLTypeName = "Topic", javaClass = Topic.class)
 	public Topic createTopic(ObjectResponse objectResponse, TopicInput topic, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -762,7 +763,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPost", graphQLTypeName = "Post", javaClass = Post.class)
 	public Post createPostWithBindValues(String queryResponseDef, PostInput post, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createPost' in query mode: {} ", queryResponseDef);
@@ -802,7 +803,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPost", graphQLTypeName = "Post", javaClass = Post.class)
 	public Post createPost(String queryResponseDef, PostInput post, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createPost' in query mode: {} ", queryResponseDef);
@@ -846,7 +847,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPost", graphQLTypeName = "Post", javaClass = Post.class)
 	public Post createPostWithBindValues(ObjectResponse objectResponse, PostInput post, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -901,7 +902,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPost", graphQLTypeName = "Post", javaClass = Post.class)
 	public Post createPost(ObjectResponse objectResponse, PostInput post, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -976,7 +977,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPosts", graphQLTypeName = "Post", javaClass = Post.class)
 	public List<Post> createPostsWithBindValues(String queryResponseDef, List<PostInput> spam, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createPosts' in query mode: {} ", queryResponseDef);
@@ -1016,7 +1017,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPosts", graphQLTypeName = "Post", javaClass = Post.class)
 	public List<Post> createPosts(String queryResponseDef, List<PostInput> spam, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createPosts' in query mode: {} ", queryResponseDef);
@@ -1060,7 +1061,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPosts", graphQLTypeName = "Post", javaClass = Post.class)
 	public List<Post> createPostsWithBindValues(ObjectResponse objectResponse, List<PostInput> spam, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1115,7 +1116,7 @@ public class MutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Post", javaClass = Post.class)
+	 @GraphQLNonScalar (fieldName = "createPosts", graphQLTypeName = "Post", javaClass = Post.class)
 	public List<Post> createPosts(ObjectResponse objectResponse, List<PostInput> spam, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {

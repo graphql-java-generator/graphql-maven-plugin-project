@@ -10,7 +10,7 @@ import com.graphql_java_generator.client.response.Error;
 public class QueryTypeRootResponse {
 
 	@JsonProperty("query")
-	@GraphQLNonScalar(graphQLTypeName = "QueryType", javaClass = QueryTypeResponse.class)
+	@GraphQLNonScalar(fieldName = "QueryType", graphQLTypeName = "QueryType", javaClass = QueryTypeResponse.class)
 	QueryTypeResponse query;
 
 	@JsonProperty("errors")

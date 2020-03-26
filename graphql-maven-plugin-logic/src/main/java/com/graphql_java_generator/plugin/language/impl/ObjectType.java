@@ -115,6 +115,12 @@ public class ObjectType extends AbstractType {
 		return false;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean isScalar() {
+		return false;
+	}
+
 	public String getRequestTypePascalCase() {
 		return GraphqlUtils.graphqlUtils.getPascalCase(getRequestType());
 	}

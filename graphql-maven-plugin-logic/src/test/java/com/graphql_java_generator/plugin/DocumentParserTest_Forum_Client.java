@@ -81,25 +81,25 @@ class DocumentParserTest_Forum_Client {
 		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
 
 		// Verification
-		assertEquals("", topic.getAnnotation(), "Entity annotation");
+		assertEquals("@GraphQLObjectType(\"Topic\")", topic.getAnnotation());
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@GraphQLScalar(graphQLTypeName = \"ID\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
 				"@JsonDeserialize(using = CustomScalarDeserializerDate.class)\n"
-						+ "	@GraphQLScalar(graphQLTypeName = \"Date\", javaClass = Date.class)");
+						+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@GraphQLNonScalar(graphQLTypeName = \"Member\", javaClass = Member.class)");
+				"@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
-				"@GraphQLScalar(graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
+				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts",
-				"@GraphQLScalar(graphQLTypeName = \"Int\", javaClass = Integer.class)");
+				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", javaClass = Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title",
-				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content",
-				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@JsonDeserialize(contentAs = Post.class)\n\t@GraphQLNonScalar(graphQLTypeName = \"Post\", javaClass = Post.class)");
+				"@JsonDeserialize(contentAs = Post.class)\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", javaClass = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {

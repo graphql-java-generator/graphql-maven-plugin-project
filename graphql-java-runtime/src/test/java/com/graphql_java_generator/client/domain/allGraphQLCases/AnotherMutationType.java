@@ -19,13 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -327,7 +328,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHumanWithBindValues(String queryResponseDef, HumanInput human, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createHuman' in query mode: {} ", queryResponseDef);
@@ -367,7 +368,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHuman(String queryResponseDef, HumanInput human, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createHuman' in query mode: {} ", queryResponseDef);
@@ -411,7 +412,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHumanWithBindValues(ObjectResponse objectResponse, HumanInput human, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -466,7 +467,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human createHuman(ObjectResponse objectResponse, HumanInput human, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -541,7 +542,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "createAllFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases createAllFieldCasesWithBindValues(String queryResponseDef, AllFieldCasesInput input, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createAllFieldCases' in query mode: {} ", queryResponseDef);
@@ -581,7 +582,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "createAllFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases createAllFieldCases(String queryResponseDef, AllFieldCasesInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'createAllFieldCases' in query mode: {} ", queryResponseDef);
@@ -625,7 +626,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "createAllFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases createAllFieldCasesWithBindValues(ObjectResponse objectResponse, AllFieldCasesInput input, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -680,7 +681,7 @@ public class AnotherMutationType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "createAllFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases createAllFieldCases(ObjectResponse objectResponse, AllFieldCasesInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {

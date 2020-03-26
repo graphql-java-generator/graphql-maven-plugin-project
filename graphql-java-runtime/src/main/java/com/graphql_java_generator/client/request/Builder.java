@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**

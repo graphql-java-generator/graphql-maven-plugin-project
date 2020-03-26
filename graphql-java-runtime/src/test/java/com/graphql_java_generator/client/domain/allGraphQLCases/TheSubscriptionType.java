@@ -19,13 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -327,7 +328,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human subscribeNewHumanForEpisodeWithBindValues(String queryResponseDef, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'subscribeNewHumanForEpisode' in query mode: {} ", queryResponseDef);
@@ -367,7 +368,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human subscribeNewHumanForEpisode(String queryResponseDef, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'subscribeNewHumanForEpisode' in query mode: {} ", queryResponseDef);
@@ -411,7 +412,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human subscribeNewHumanForEpisodeWithBindValues(ObjectResponse objectResponse, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -466,7 +467,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	 @GraphQLNonScalar (fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public Human subscribeNewHumanForEpisode(ObjectResponse objectResponse, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {

@@ -122,7 +122,7 @@ class InputParameterTest {
 
 		// Verification
 		assertEquals(
-				"{topicId: \\\"00000000-0000-0000-0000-000000000022\\\", input: {authorId: \\\"00000000-0000-0000-0000-000000000012\\\", date: \\\"2009-11-21\\\", publiclyAvailable: false, title: \\\"The good title for a post\\\", content: \\\"Some other content\\\"}}",
+				"{topicId:\\\"00000000-0000-0000-0000-000000000022\\\",input:{authorId:\\\"00000000-0000-0000-0000-000000000012\\\",date:\\\"2009-11-21\\\",publiclyAvailable:false,title:\\\"The good title for a post\\\",content:\\\"Some other content\\\"}}",
 				param.getValueForGraphqlQuery(postInput, null));
 	}
 
@@ -274,7 +274,7 @@ class InputParameterTest {
 		parameters.put(bindParameterName, postInput);
 
 		// When
-		assertEquals("{from: \\\"2020-01-01\\\", in: [\\\"2020-02-01\\\",\\\"2020-03-01\\\"]}",
+		assertEquals("{from:\\\"2020-01-01\\\",in:[\\\"2020-02-01\\\",\\\"2020-03-01\\\"]}",
 				inputTypeInputParameter.getValueForGraphqlQuery(parameters));
 	}
 

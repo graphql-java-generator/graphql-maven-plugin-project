@@ -22,18 +22,18 @@ import java.util.Date;
  */
 @JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "__typename", visible = true)
 		@JsonSubTypes({ @Type(value = AllFieldCases.class, name = "AllFieldCases"), @Type(value = Human.class, name = "Human"), @Type(value = Droid.class, name = "Droid") })
-@GraphQLInterfaceType("WithID")
+		@GraphQLInterfaceType("WithID")
 public interface WithID  {
 
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	public void setId(String id);
 
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	public String getId();
 
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	public void set__typename(String __typename);
 
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	public String get__typename();
 }

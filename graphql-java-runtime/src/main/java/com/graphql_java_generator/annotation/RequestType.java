@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.request;
+package com.graphql_java_generator.annotation;
 
 /**
  * @author etienne-sf

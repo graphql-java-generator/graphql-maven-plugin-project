@@ -19,6 +19,15 @@ import java.lang.annotation.Target;
 public @interface GraphQLNonScalar {
 
 	/**
+	 * The name of the field's attribute, as defined in the GraphQL schema. <BR/>
+	 * Note on object and input types: It can be different from the attribute's name in the generated class, when the
+	 * GraphQL field's name is a java keyword. <BR/>
+	 * Note on interface: it's not possible to guess the attribute name from the getter method name, as there may be a
+	 * case issue.
+	 */
+	public String fieldName();
+
+	/**
 	 * The name of the Custom Scalar type, as defined in the GraphQL schema. This name is used to retrieve the
 	 * associated converter, on runtime
 	 */

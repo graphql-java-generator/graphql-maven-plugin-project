@@ -13,7 +13,6 @@ import org.allGraphQLCases.Main;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.MyQueryType;
-import org.allGraphQLCases.client.__IntrospectionQuery;
 import org.allGraphQLCases.client.__Schema;
 import org.allGraphQLCases.client.__Type;
 import org.junit.jupiter.api.Disabled;
@@ -30,13 +29,13 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public class IntrospectionIT {
 
-	__IntrospectionQuery introspectionQuery = new __IntrospectionQuery(Main.GRAPHQL_ENDPOINT);
+	MyQueryType myQuery = new MyQueryType(Main.GRAPHQL_ENDPOINT);
 
 	@Test
 	void testSchema() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		__Schema schema = introspectionQuery.__schema("{types {name fields {name type {name}}}}");
+		__Schema schema = myQuery.__schema("{types {name fields {name type {name}}}}");
 
 		// Verification
 		assertEquals(40, schema.getTypes().size());
@@ -48,7 +47,7 @@ public class IntrospectionIT {
 	void testType() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		__Type type = introspectionQuery.__type("{name fields {name type {name}}}", "AllFieldCases");
+		__Type type = myQuery.__type("{name fields {name type {name}}}", "AllFieldCases");
 
 		// Verification
 		assertEquals("AllFieldCases", type.getName());

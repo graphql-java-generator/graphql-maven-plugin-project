@@ -133,6 +133,9 @@ public interface Type {
 	/** Returns true if this type is a GraphQL InputObjectType, false otherwise */
 	public boolean isInputType();
 
+	/** Returns true if this type is a GraphQL Scalar (custom or not), false otherwise */
+	public boolean isScalar();
+
 	/** Returns true if this type is a GraphQL Custom Scalar, false otherwise */
 	public boolean isCustomScalar();
 

@@ -22,40 +22,40 @@ import java.util.Date;
 public class HumanInput  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("bestFriend")
-	@GraphQLNonScalar(graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
+	@GraphQLNonScalar(fieldName = "bestFriend", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
 	CharacterInput bestFriend;
 
 
 	@JsonProperty("friends")
 	@JsonDeserialize(contentAs = CharacterInput.class)
-	@GraphQLNonScalar(graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
 	List<CharacterInput> friends;
 
 
 	@JsonProperty("nbComments")
-	@GraphQLScalar(graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbComments;
 
 
 	@JsonProperty("comments")
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", javaClass = String.class)
 	List<String> comments;
 
 
 	@JsonProperty("appearsIn")
 	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
 	@JsonProperty("homePlanet")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "homePlanet", graphQLTypeName = "String", javaClass = String.class)
 	String homePlanet;
 
 

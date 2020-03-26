@@ -23,7 +23,7 @@ public class TheSubscriptionTypeResponse  {
 
 	@GraphQLInputParameters(names = {"episode"}, types = {"Episode"})
 	@JsonProperty("subscribeNewHumanForEpisode")
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	Human subscribeNewHumanForEpisode;
 
 

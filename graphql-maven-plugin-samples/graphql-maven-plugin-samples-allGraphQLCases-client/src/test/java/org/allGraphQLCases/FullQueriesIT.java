@@ -40,16 +40,16 @@ class FullQueriesIT {
 
 		// The response preparation should be somewhere in the application initialization code.
 		mutationWithDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//
-				"{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
+				"mutation{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
 		).build();
 
 		mutationWithoutDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//
-				"{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}"//
+				"mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}"//
 		).build();
 
 		withDirectiveTwoParametersResponse = queryType.getResponseBuilder().withQueryResponseDef(
-				"{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}")
+				"query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}")
 				.build();
 
 		multipleQueriesResponse = queryType.getResponseBuilder().withQueryResponseDef("{"//

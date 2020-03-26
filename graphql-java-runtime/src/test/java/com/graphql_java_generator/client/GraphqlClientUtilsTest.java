@@ -232,6 +232,13 @@ class GraphqlClientUtilsTest {
 				"hero : scalar OK");
 		assertEquals(Character.class, graphqlClientUtils.checkFieldOfGraphQLType("hero", false, QueryType.class),
 				"hero : scalar OK");
+
+		// With a query that returns a scalar
+		assertEquals(Integer.class, graphqlClientUtils.checkFieldOfGraphQLType("nbBoards", null,
+				com.graphql_java_generator.client.domain.forum.QueryType.class), "nbBoards : scalar OK");
+		assertEquals(Integer.class, graphqlClientUtils.checkFieldOfGraphQLType("nbBoards", true,
+				com.graphql_java_generator.client.domain.forum.QueryType.class), "nbBoards : scalar OK");
+
 	}
 
 	@Test

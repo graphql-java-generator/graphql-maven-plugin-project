@@ -22,33 +22,33 @@ import java.util.Date;
 public class Member  {
 
 	@JsonProperty("id")
-	@GraphQLScalar(graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
 	@GraphQLInputParameters(names = {"uppercase"}, types = {"Boolean"})
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("alias")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "alias", graphQLTypeName = "String", javaClass = String.class)
 	String alias;
 
 
 	@JsonProperty("email")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "email", graphQLTypeName = "String", javaClass = String.class)
 	String email;
 
 
 	@JsonProperty("type")
-	@GraphQLScalar(graphQLTypeName = "MemberType", javaClass = MemberType.class)
+	@GraphQLScalar(fieldName = "type", graphQLTypeName = "MemberType", javaClass = MemberType.class)
 	MemberType type;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

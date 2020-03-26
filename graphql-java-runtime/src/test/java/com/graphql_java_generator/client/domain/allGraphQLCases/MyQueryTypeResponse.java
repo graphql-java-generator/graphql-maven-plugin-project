@@ -23,72 +23,72 @@ public class MyQueryTypeResponse  {
 
 	@JsonProperty("withoutParameters")
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeName = "Character", javaClass = Character.class)
 	List<Character> withoutParameters;
 
 
 	@GraphQLInputParameters(names = {"character"}, types = {"CharacterInput"})
 	@JsonProperty("withOneOptionalParam")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeName = "Character", javaClass = Character.class)
 	Character withOneOptionalParam;
 
 
 	@GraphQLInputParameters(names = {"character"}, types = {"CharacterInput"})
 	@JsonProperty("withOneMandatoryParam")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeName = "Character", javaClass = Character.class)
 	Character withOneMandatoryParam;
 
 
 	@GraphQLInputParameters(names = {"episode"}, types = {"Episode"})
 	@JsonProperty("withEnum")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeName = "Character", javaClass = Character.class)
 	Character withEnum;
 
 
 	@GraphQLInputParameters(names = {"firstName", "characters"}, types = {"String", "CharacterInput"})
 	@JsonProperty("withList")
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withList", graphQLTypeName = "Character", javaClass = Character.class)
 	List<Character> withList;
 
 
 	@GraphQLInputParameters(names = {"input"}, types = {"AllFieldCasesInput"})
 	@JsonProperty("allFieldCases")
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	AllFieldCases allFieldCases;
 
 
 	@GraphQLInputParameters(names = {"errorLabel"}, types = {"String"})
 	@JsonProperty("error")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "error", graphQLTypeName = "Character", javaClass = Character.class)
 	Character error;
 
 
 	@JsonProperty("aBreak")
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
+	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeName = "break", javaClass = _break.class)
 	_break aBreak;
 
 
 	@GraphQLInputParameters(names = {"uppercase"}, types = {"Boolean"})
 	@JsonProperty("directiveOnQuery")
 	@JsonDeserialize(contentAs = String.class)
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeName = "String", javaClass = String.class)
 	List<String> directiveOnQuery;
 
 
 	@JsonProperty("directiveOnField")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeName = "Character", javaClass = Character.class)
 	Character directiveOnField;
 
 
 	@JsonProperty("__schema")
-	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
 	__Schema __schema;
 
 
 	@GraphQLInputParameters(names = {"name"}, types = {"String"})
 	@JsonProperty("__type")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type __type;
 
 

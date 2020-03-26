@@ -10,8 +10,6 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.client.domain.allGraphQLCases._extends;
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.GraphQLRequest;
 import com.graphql_java_generator.client.domain.starwars.Human;
@@ -269,49 +267,74 @@ class AbstractGraphQLRequestTest_StarWars {
 	}
 
 	/**
-	 * When requesting a non scalar field F, without specifying subfields, than all F's scalar fields are automatically
-	 * added
+	 * When requesting a non scalar field that is an object type, without specifying subfields, than all F's scalar
+	 * fields are automatically added
 	 */
 	@Test
-	public void test_withQueryResponseDef_emptyQuery() throws GraphQLRequestPreparationException {
+	public void test_withQueryResponseDef_object_emptyQuery() throws GraphQLRequestPreparationException {
+		// no query
+		checkEmptyHumanQuery(humanResponseDefBuilder.build(), "no query");
 
-		// Go, go, go
-		AbstractGraphQLRequest graphQLRequest = humanResponseDefBuilder.withQueryResponseDef("").build();
+		// Empty query
+		checkEmptyHumanQuery(humanResponseDefBuilder.withQueryResponseDef("").build(), "Empty query");
 
-		// Verification
-		assertEquals(1, graphQLRequest.query.fields.size(), "all scalar fields (with __typename)");
-		QueryField human = graphQLRequest.query.fields.get(0);
-		assertEquals("human", human.getName());
-		assertEquals(5, human.fields.size(), "all scalar fields (with __typename)");
-		//
-		// field name check
-		int i = 0;
-		assertEquals("id", human.fields.get(i++).name);
-		assertEquals("name", human.fields.get(i++).name);
-		assertEquals("appearsIn", human.fields.get(i++).name);
-		assertEquals("homePlanet", human.fields.get(i++).name);
-		assertEquals("__typename", human.fields.get(i++).name);
+		// Null query
+		checkEmptyHumanQuery(humanResponseDefBuilder.withQueryResponseDef("").build(), "Null query");
 	}
 
-	@Test
-	public void test_withQueryResponseDef_nullQuery() throws GraphQLRequestPreparationException {
-
-		// Go, go, go
-		AbstractGraphQLRequest graphQLRequest = humanResponseDefBuilder.withQueryResponseDef(null).build();
-
-		// Verification
+	private void checkEmptyHumanQuery(AbstractGraphQLRequest graphQLRequest, String test) {
 		assertEquals(1, graphQLRequest.query.fields.size(), "all scalar fields (with __typename)");
 		QueryField human = graphQLRequest.query.fields.get(0);
-		assertEquals("human", human.getName());
-		assertEquals(5, human.fields.size(), "all scalar fields (with __typename)");
+		assertEquals("human", human.getName(), "check query name, for test: " + test);
+		assertEquals(5, human.fields.size(), "all scalar fields (with __typename), for test: " + test);
 		//
 		// field name check
 		int i = 0;
-		assertEquals("id", human.fields.get(i++).name);
-		assertEquals("name", human.fields.get(i++).name);
-		assertEquals("appearsIn", human.fields.get(i++).name);
-		assertEquals("homePlanet", human.fields.get(i++).name);
-		assertEquals("__typename", human.fields.get(i++).name);
+		assertEquals("id", human.fields.get(i++).name, "check field n°" + (i - 1) + "'s name, for test: " + test);
+		assertEquals("name", human.fields.get(i++).name, "check field n°" + (i - 1) + "'s name, for test: " + test);
+		assertEquals("appearsIn", human.fields.get(i++).name,
+				"check field n°" + (i - 1) + "'s name, for test: " + test);
+		assertEquals("homePlanet", human.fields.get(i++).name,
+				"check field n°" + (i - 1) + "'s name, for test: " + test);
+		assertEquals("__typename", human.fields.get(i++).name,
+				"check field n°" + (i - 1) + "'s name, for test: " + test);
+	}
+
+	/**
+	 * When requesting a non scalar field that is an interface type, without specifying subfields, than all F's scalar
+	 * fields are automatically added
+	 */
+	@Test
+	public void test_withQueryResponseDef_interface_emptyQuery() throws GraphQLRequestPreparationException {
+
+		// no query
+		checkEmptyHeroQuery(queryType.getHeroResponseBuilder().build(), "no query");
+
+		// Empty query
+		checkEmptyHeroQuery(queryType.getHeroResponseBuilder().withQueryResponseDef("").build(), "Empty query");
+
+		// Null query
+		checkEmptyHeroQuery(queryType.getHeroResponseBuilder().withQueryResponseDef("").build(), "Null query");
+
+	}
+
+	private void checkEmptyHeroQuery(AbstractGraphQLRequest graphQLRequest, String test) {
+		assertEquals(1, graphQLRequest.query.fields.size(), "all scalar fields (with __typename)");
+		QueryField hero = graphQLRequest.query.fields.get(0);
+		assertEquals("hero", hero.getName(), "check query name, for test: " + test);
+		assertEquals(4, hero.fields.size(), "all scalar fields (with __typename), for test: " + test);
+		//
+		// field name check
+		int i = 0;
+		// The field order is strange (not the one in the GraphQL schema). Any link with the fact that this is an
+		// interface ???
+		assertEquals("name", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
+		i += 1;
+		assertEquals("id", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
+		i += 1;
+		assertEquals("appearsIn", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
+		i += 1;
+		assertEquals("__typename", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
 	}
 
 	@Test
@@ -403,26 +426,6 @@ class AbstractGraphQLRequestTest_StarWars {
 		assertEquals("appearsIn", human.fields.get(i++).name);
 		assertEquals("homePlanet", human.fields.get(i++).name);
 		assertEquals("__typename", human.fields.get(i++).name);
-	}
-
-	@Test
-	void testBuild_scalarInputParameters() throws GraphQLRequestPreparationException {
-		// Go, go, go
-		MyQueryType queryType = new MyQueryType("http://localhost");
-		AbstractGraphQLRequest graphQLRequest = queryType.getABreakResponseBuilder()
-				.withQueryResponseDef("{case(test: DOUBLE)}").build();
-
-		// Verification
-		assertEquals(1, graphQLRequest.query.fields.size());
-		QueryField aBreak = graphQLRequest.query.fields.get(0);
-		assertEquals("aBreak", aBreak.name);
-		assertEquals(2, aBreak.fields.size(), " (with the added __typename field)");
-
-		QueryField field = aBreak.fields.get(0);
-		assertEquals("case", field.name);
-		assertEquals(1, field.inputParameters.size());
-		assertEquals("test", field.inputParameters.get(0).getName());
-		assertEquals(_extends.DOUBLE, field.inputParameters.get(0).getValue());
 	}
 
 }

@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.domain.forum.GraphQLRequest;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.exception.GraphQLResponseParseException;

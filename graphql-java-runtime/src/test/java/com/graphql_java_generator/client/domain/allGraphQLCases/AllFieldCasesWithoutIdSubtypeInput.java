@@ -22,7 +22,7 @@ import java.util.Date;
 public class AllFieldCasesWithoutIdSubtypeInput  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 

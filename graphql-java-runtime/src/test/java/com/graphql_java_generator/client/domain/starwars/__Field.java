@@ -21,38 +21,38 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 public class __Field  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("args")
 	@JsonDeserialize(contentAs = __InputValue.class)
-	@GraphQLNonScalar(graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
+	@GraphQLNonScalar(fieldName = "args", graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
 	List<__InputValue> args;
 
 
 	@JsonProperty("type")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type type;
 
 
 	@JsonProperty("isDeprecated")
-	@GraphQLScalar(graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "isDeprecated", graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean isDeprecated;
 
 
 	@JsonProperty("deprecationReason")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "deprecationReason", graphQLTypeName = "String", javaClass = String.class)
 	String deprecationReason;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

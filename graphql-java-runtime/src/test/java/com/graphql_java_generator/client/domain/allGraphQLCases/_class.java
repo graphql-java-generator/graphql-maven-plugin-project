@@ -22,7 +22,7 @@ import java.util.Date;
 public class _class  {
 
 	@JsonProperty("default")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "default", graphQLTypeName = "String", javaClass = String.class)
 	String _default;
 
 

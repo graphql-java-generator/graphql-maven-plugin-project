@@ -292,10 +292,10 @@ public class InputParameter {
 				result.append(separator);
 
 				result.append(field.getName());
-				result.append(": ");
+				result.append(":");
 				result.append(getValueForGraphqlQuery(val, graphqlClientUtils.getGraphQLCustomScalarType(field)));
 
-				separator = ", ";
+				separator = ",";
 			}
 		} // for
 

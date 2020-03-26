@@ -19,13 +19,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.request.RequestType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -326,7 +327,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withoutParameters", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withoutParametersWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withoutParameters' in query mode: {} ", queryResponseDef);
@@ -365,7 +366,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withoutParameters", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withoutParameters(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withoutParameters' in query mode: {} ", queryResponseDef);
@@ -408,7 +409,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withoutParameters", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withoutParametersWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -461,7 +462,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withoutParameters", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withoutParameters(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -534,7 +535,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneOptionalParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParamWithBindValues(String queryResponseDef, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withOneOptionalParam' in query mode: {} ", queryResponseDef);
@@ -574,7 +575,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneOptionalParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParam(String queryResponseDef, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withOneOptionalParam' in query mode: {} ", queryResponseDef);
@@ -618,7 +619,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneOptionalParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParamWithBindValues(ObjectResponse objectResponse, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -673,7 +674,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneOptionalParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneOptionalParam(ObjectResponse objectResponse, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -748,7 +749,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneMandatoryParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParamWithBindValues(String queryResponseDef, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withOneMandatoryParam' in query mode: {} ", queryResponseDef);
@@ -788,7 +789,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneMandatoryParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParam(String queryResponseDef, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withOneMandatoryParam' in query mode: {} ", queryResponseDef);
@@ -832,7 +833,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneMandatoryParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParamWithBindValues(ObjectResponse objectResponse, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -887,7 +888,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withOneMandatoryParam", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withOneMandatoryParam(ObjectResponse objectResponse, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -962,7 +963,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withEnum", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withEnumWithBindValues(String queryResponseDef, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withEnum' in query mode: {} ", queryResponseDef);
@@ -1002,7 +1003,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withEnum", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withEnum(String queryResponseDef, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withEnum' in query mode: {} ", queryResponseDef);
@@ -1046,7 +1047,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withEnum", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withEnumWithBindValues(ObjectResponse objectResponse, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1101,7 +1102,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withEnum", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character withEnum(ObjectResponse objectResponse, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1177,7 +1178,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withList", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withListWithBindValues(String queryResponseDef, String firstName, List<CharacterInput> characters, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withList' in query mode: {} ", queryResponseDef);
@@ -1218,7 +1219,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withList", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withList(String queryResponseDef, String firstName, List<CharacterInput> characters, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'withList' in query mode: {} ", queryResponseDef);
@@ -1263,7 +1264,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withList", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withListWithBindValues(ObjectResponse objectResponse, String firstName, List<CharacterInput> characters, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1320,7 +1321,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "withList", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> withList(ObjectResponse objectResponse, String firstName, List<CharacterInput> characters, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1397,7 +1398,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "allFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCasesWithBindValues(String queryResponseDef, AllFieldCasesInput input, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'allFieldCases' in query mode: {} ", queryResponseDef);
@@ -1437,7 +1438,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "allFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCases(String queryResponseDef, AllFieldCasesInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'allFieldCases' in query mode: {} ", queryResponseDef);
@@ -1481,7 +1482,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "allFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCasesWithBindValues(ObjectResponse objectResponse, AllFieldCasesInput input, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1536,7 +1537,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
+	 @GraphQLNonScalar (fieldName = "allFieldCases", graphQLTypeName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public AllFieldCases allFieldCases(ObjectResponse objectResponse, AllFieldCasesInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1611,7 +1612,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "error", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character errorWithBindValues(String queryResponseDef, String errorLabel, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'error' in query mode: {} ", queryResponseDef);
@@ -1651,7 +1652,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "error", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character error(String queryResponseDef, String errorLabel, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'error' in query mode: {} ", queryResponseDef);
@@ -1695,7 +1696,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "error", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character errorWithBindValues(ObjectResponse objectResponse, String errorLabel, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1750,7 +1751,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "error", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character error(ObjectResponse objectResponse, String errorLabel, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1824,7 +1825,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
+	 @GraphQLNonScalar (fieldName = "aBreak", graphQLTypeName = "break", javaClass = _break.class)
 	public _break aBreakWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'aBreak' in query mode: {} ", queryResponseDef);
@@ -1863,7 +1864,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
+	 @GraphQLNonScalar (fieldName = "aBreak", graphQLTypeName = "break", javaClass = _break.class)
 	public _break aBreak(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'aBreak' in query mode: {} ", queryResponseDef);
@@ -1906,7 +1907,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
+	 @GraphQLNonScalar (fieldName = "aBreak", graphQLTypeName = "break", javaClass = _break.class)
 	public _break aBreakWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -1959,7 +1960,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "break", javaClass = _break.class)
+	 @GraphQLNonScalar (fieldName = "aBreak", graphQLTypeName = "break", javaClass = _break.class)
 	public _break aBreak(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2032,7 +2033,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "String", javaClass = String.class)
+	 @GraphQLScalar (fieldName = "directiveOnQuery", graphQLTypeName = "String", javaClass = String.class)
 	public List<String> directiveOnQueryWithBindValues(String queryResponseDef, Boolean uppercase, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'directiveOnQuery' in query mode: {} ", queryResponseDef);
@@ -2072,7 +2073,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "String", javaClass = String.class)
+	 @GraphQLScalar (fieldName = "directiveOnQuery", graphQLTypeName = "String", javaClass = String.class)
 	public List<String> directiveOnQuery(String queryResponseDef, Boolean uppercase, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'directiveOnQuery' in query mode: {} ", queryResponseDef);
@@ -2116,7 +2117,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "String", javaClass = String.class)
+	 @GraphQLScalar (fieldName = "directiveOnQuery", graphQLTypeName = "String", javaClass = String.class)
 	public List<String> directiveOnQueryWithBindValues(ObjectResponse objectResponse, Boolean uppercase, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2171,7 +2172,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "String", javaClass = String.class)
+	 @GraphQLScalar (fieldName = "directiveOnQuery", graphQLTypeName = "String", javaClass = String.class)
 	public List<String> directiveOnQuery(ObjectResponse objectResponse, Boolean uppercase, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2245,7 +2246,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "directiveOnField", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character directiveOnFieldWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'directiveOnField' in query mode: {} ", queryResponseDef);
@@ -2284,7 +2285,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "directiveOnField", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character directiveOnField(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'directiveOnField' in query mode: {} ", queryResponseDef);
@@ -2327,7 +2328,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "directiveOnField", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character directiveOnFieldWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2380,7 +2381,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	 @GraphQLNonScalar (fieldName = "directiveOnField", graphQLTypeName = "Character", javaClass = Character.class)
 	public Character directiveOnField(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2452,7 +2453,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	 @GraphQLNonScalar (fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schemaWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '__schema' in query mode: {} ", queryResponseDef);
@@ -2491,7 +2492,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	 @GraphQLNonScalar (fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schema(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '__schema' in query mode: {} ", queryResponseDef);
@@ -2534,7 +2535,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	 @GraphQLNonScalar (fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schemaWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2587,7 +2588,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	 @GraphQLNonScalar (fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
 	public __Schema __schema(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2660,7 +2661,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	 @GraphQLNonScalar (fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	public __Type __typeWithBindValues(String queryResponseDef, String name, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '__type' in query mode: {} ", queryResponseDef);
@@ -2700,7 +2701,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	 @GraphQLNonScalar (fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	public __Type __type(String queryResponseDef, String name, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '__type' in query mode: {} ", queryResponseDef);
@@ -2744,7 +2745,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	 @GraphQLNonScalar (fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	public __Type __typeWithBindValues(ObjectResponse objectResponse, String name, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -2799,7 +2800,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	 @GraphQLNonScalar (fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	public __Type __type(ObjectResponse objectResponse, String name, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {

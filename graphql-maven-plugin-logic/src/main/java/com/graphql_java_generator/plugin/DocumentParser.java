@@ -941,15 +941,6 @@ public class DocumentParser {
 			jsonSubTypes.append(" })");
 
 			o.addAnnotation(jsonSubTypes.toString());
-		} // if (o instanceof InterfaceType)
-		else if (o instanceof ObjectType) {
-			if (((ObjectType) o).isInputType()) {
-				// input type
-				o.addAnnotation("@GraphQLInputType(\"" + o.getName() + "\")");
-			} else {
-				// Standard object type
-				o.addAnnotation("@GraphQLObjectType(\"" + o.getName() + "\")");
-			}
 		}
 
 		// Let's add the annotations, that are common to both the client and the server mode
@@ -982,7 +973,19 @@ public class DocumentParser {
 	 * @param o
 	 */
 	private void addTypeAnnotationForBothClientAndServerMode(Type o) {
-		// No action
+		if (o instanceof InterfaceType) {
+			o.addAnnotation("@GraphQLInterfaceType(\"" + o.getName() + "\")");
+		} else if (o instanceof UnionType) {
+			o.addAnnotation("@GraphQLUnionType(\"" + o.getName() + "\")");
+		} else if (o instanceof ObjectType) {
+			if (((ObjectType) o).isInputType()) {
+				// input type
+				o.addAnnotation("@GraphQLInputType(\"" + o.getName() + "\")");
+			} else {
+				// Standard object type
+				o.addAnnotation("@GraphQLObjectType(\"" + o.getName() + "\")");
+			}
+		}
 	}
 
 	/**
@@ -1042,11 +1045,13 @@ public class DocumentParser {
 	 */
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
-			((FieldImpl) field).addAnnotation("@GraphQLScalar(graphQLTypeName = \"" + field.getGraphQLTypeName()
-					+ "\", javaClass = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName()
+					+ "\", graphQLTypeName = \"" + field.getGraphQLTypeName() + "\", javaClass = "
+					+ field.getType().getClassSimpleName() + ".class)");
 		} else {
-			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(graphQLTypeName = \"" + field.getGraphQLTypeName()
-					+ "\", javaClass = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName()
+					+ "\", graphQLTypeName = \"" + field.getGraphQLTypeName() + "\", javaClass = "
+					+ field.getType().getClassSimpleName() + ".class)");
 		}
 	}
 

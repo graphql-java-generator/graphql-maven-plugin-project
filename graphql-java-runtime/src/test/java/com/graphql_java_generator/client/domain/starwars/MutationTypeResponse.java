@@ -22,13 +22,13 @@ public class MutationTypeResponse  {
 
 	@GraphQLInputParameters(names = {"name", "homePlanet"}, types = {"String", "String"})
 	@JsonProperty("createHuman")
-	@GraphQLNonScalar(graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
 	Human createHuman;
 
 
 	@GraphQLInputParameters(names = {"idCharacter", "idNewFriend"}, types = {"String", "String"})
 	@JsonProperty("addFriend")
-	@GraphQLNonScalar(graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "addFriend", graphQLTypeName = "Character", javaClass = Character.class)
 	Character addFriend;
 
 

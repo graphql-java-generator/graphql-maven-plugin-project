@@ -21,27 +21,27 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 public class __InputValue  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("type")
-	@GraphQLNonScalar(graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type type;
 
 
 	@JsonProperty("defaultValue")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "defaultValue", graphQLTypeName = "String", javaClass = String.class)
 	String defaultValue;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

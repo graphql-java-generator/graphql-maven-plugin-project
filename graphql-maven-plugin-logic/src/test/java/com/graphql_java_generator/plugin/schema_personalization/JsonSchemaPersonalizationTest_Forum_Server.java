@@ -56,7 +56,8 @@ class JsonSchemaPersonalizationTest_Forum_Server {
 
 		// Verification
 		ObjectType member = jsonSchemaPersonalization.findObjectTypeFromName("Member");
-		assertEquals("@Entity\n\t\t@MyAdditionalAnnotation", member.getAnnotation(), "member annotation");
+		assertEquals("@Entity\n\t\t@GraphQLObjectType(\"Member\")\n\t\t@MyAdditionalAnnotation", member.getAnnotation(),
+				"member annotation");
 		//
 		Field age = jsonSchemaPersonalization.findFieldFromName(member, "age");
 		assertEquals("int", age.getGraphQLTypeName(), "age type");
@@ -80,7 +81,7 @@ class JsonSchemaPersonalizationTest_Forum_Server {
 		//
 		Field name = jsonSchemaPersonalization.findFieldFromName(board, "name");
 		assertEquals(
-				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)\n\t@Column(name=\"column_name\")",
+				"@GraphQLScalar(fieldName = \"name\", graphQLTypeName = \"String\", javaClass = String.class)\n\t@Column(name=\"column_name\")",
 				name.getAnnotation(), "board.name annotation");
 	}
 

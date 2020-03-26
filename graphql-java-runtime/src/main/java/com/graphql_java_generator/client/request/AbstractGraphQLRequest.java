@@ -4,11 +4,14 @@
 package com.graphql_java_generator.client.request;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -253,11 +256,26 @@ public abstract class AbstractGraphQLRequest {
 		} else if (field.fields.size() == 0) {
 			// This non scalar field has no subfields in the GraphQL request
 			// We'll request all it scalar fields.
-			for (Field f : field.clazz.getDeclaredFields()) {
-				QueryField qf = new QueryField(field.clazz, f.getName());
-				if (qf.isScalar()) {
-					// We've found a subfield that is a scalar. Let's add it.
-					field.fields.add(qf);
+
+			if (field.clazz.isInterface()) {
+				// For interfaces, we look for getters
+				for (Method m : field.clazz.getDeclaredMethods()) {
+					if (m.getName().startsWith("get")) {
+						GraphQLScalar graphQLScalar = m.getAnnotation(GraphQLScalar.class);
+						if (graphQLScalar != null) {
+							// We've found a subfield that is a scalar. Let's add it.
+							field.fields.add(new QueryField(field.clazz, graphQLScalar.fieldName()));
+						}
+					}
+				}
+			} else {
+				// For objects, we look for class's attributes
+				for (Field f : field.clazz.getDeclaredFields()) {
+					GraphQLScalar graphQLScalar = f.getAnnotation(GraphQLScalar.class);
+					if (graphQLScalar != null) {
+						// We've found a subfield that is a scalar. Let's add it.
+						field.fields.add(new QueryField(field.clazz, graphQLScalar.fieldName()));
+					}
 				}
 			}
 		} else {

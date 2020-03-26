@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.client.request;
 
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
