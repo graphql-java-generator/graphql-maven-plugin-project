@@ -32,7 +32,13 @@ The aim of this project is to:
 * Make it __easy__ to create a GraphQL server. The plugin generated the server boilerplate code and the POJOs. But it's still up to the developer to map the GraphQL schema to the database schema. See the provided samples for different ways to do this. The generated POJOs integrate the JPA schema, making the database access easy, thanks to the Spring Data Repositories.
 * Let the generated code work as a standalone code. That is: your project, when it runs, doesn't depend on any dependency from graphql-java-generator.
 
-## How to use it
+## How to use it?
+
+### Full projet documentation
+
+You'll find below a quick presentation of the plugin.
+
+For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/)
 
 ### Samples
 
@@ -150,7 +156,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 }
 ```
 
-You'll find all the info on the [server](server.html) page.
+You'll find all the info on the [server](https://graphql-maven-plugin-project.graphql-java-generator.com/server.html) page.
 
 # Plugin GraphQL compatibility
 
@@ -189,6 +195,11 @@ If you want to compile it, you'll have to add the lombok.jar file in your IDE. P
 
 If you use eclipse, please use the __code formatter__ given with the project (file _graphql-java-generator (eclipse code formatter).xml_ at the root of the project). This allows to have the sample code formatting: the code is then homogeneous, and the comparison between versions is simpler. To do this, go to the eclipse preferences, select Java/Code Style/Formatter, and import this file. Then, in the Java/Editor/Save Actions, check the "Perform the selected action on save", "Format source code", "Format all lines", "Organize imports" and "Additional actions" which its default content
 
+
+
+# Full projet documentation
+
+For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/)
 
 # License
 
