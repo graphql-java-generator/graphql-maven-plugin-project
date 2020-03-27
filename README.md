@@ -98,7 +98,6 @@ When in server mode, the plugin generates:
 * The POJOs to manipulate the GraphQL objects defined in the GraphQL schema.
     * These POJOs are annotated with JPA annotations. This allows you to link them to almost any database
     * You can customize these annotations, with the Schema Personalization file (see below for details)
-    * (in a near future) It will be possible to define your own code template, to generate exactly the code you want
 * All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
 
 Once all this is generated, your only work is to implement the DataFetchersDelegate interfaces. They are the link between the GraphQL schema and your data storage. As such, they are specific to your use case. A DataFetchersDelegate implementation looks like this:
@@ -237,7 +236,7 @@ The Change Log is available [here](CHANGELOG.md)
 
 # Note for contributors
 
-This project is a maven plugin project.
+This project is a maven plugin project. 
 
 If you want to compile it, you'll have to add the lombok.jar file in your IDE. Please see the relevant section, in the Install menu of the [https://projectlombok.org/](https://projectlombok.org/) home page. This very nice tools generates all java boiler plate code, like setters, getters, constructors from fields...
 
