@@ -25,6 +25,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.graphql.mavenplugin.junittest.customtemplates_server_springconfiguration.GraphQLRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -47,29 +48,6 @@ import graphql.schema.GraphQLScalarType;
  */
 @Component
 public class CodeGenerator {
-
-	// Templates for both client and server generation
-	private static final String PATH_VELOCITY_TEMPLATE_ENUM = "templates/enum_type.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_INTERFACE = "templates/interface_type.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_OBJECT = "templates/object_type.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_UNION = "templates/union_type.vm.java";
-	// Templates for client generation only
-	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER = "templates/client_CustomScalarRegistryInitializer.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_DIRECTIVE_REGISTRY_INITIALIZER = "templates/client_DirectiveRegistryInitializer.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQL_REQUEST = "templates/client_GraphQLRequest.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/client_jackson_deserialize.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_ROOT_RESPONSE = "templates/client_query_mutation_subscription_rootResponse.vm.java";
-	// Templates for server generation only
-	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE = "templates/server_BatchLoaderDelegate.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL = "templates/server_BatchLoaderDelegateImpl.vm.java";
-	// private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALARS = "templates/server_GraphQLScalarType.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHER = "templates/server_GraphQLDataFetchers.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE = "templates/server_GraphQLDataFetchersDelegate.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL = "templates/server_GraphQLUtil.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_PROVIDER = "templates/server_GraphQLProvider.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_SERVER = "templates/server_GraphQLServerMain.vm.java";
 
 	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
 
@@ -111,7 +89,8 @@ public class CodeGenerator {
 
 		int i = 0;
 		i += generateTargetFiles(documentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT));
-		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface", resolveTemplate(CodeTemplate.INTERFACE));
+		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface",
+				resolveTemplate(CodeTemplate.INTERFACE));
 		i += generateTargetFiles(documentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION));
 		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM));
 
@@ -129,17 +108,19 @@ public class CodeGenerator {
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 
 			// Generation of the query/mutation/subscription response classes
-			i += generateTargetFiles(documentParser.getQueryTypes(), "response", PATH_VELOCITY_TEMPLATE_OBJECT);
-			i += generateTargetFiles(documentParser.getMutationTypes(), "response", PATH_VELOCITY_TEMPLATE_OBJECT);
-			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response", PATH_VELOCITY_TEMPLATE_OBJECT);
+			i += generateTargetFiles(documentParser.getQueryTypes(), "response", resolveTemplate(CodeTemplate.OBJECT));
+			i += generateTargetFiles(documentParser.getMutationTypes(), "response",
+					resolveTemplate(CodeTemplate.OBJECT));
+			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response",
+					resolveTemplate(CodeTemplate.OBJECT));
 
 			// Generation of the query/mutation/subscription root responses classes
 			i += generateTargetFiles(documentParser.getQueryTypes(), "root response",
-					PATH_VELOCITY_TEMPLATE_ROOT_RESPONSE);
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
 			i += generateTargetFiles(documentParser.getMutationTypes(), "root response",
-					PATH_VELOCITY_TEMPLATE_ROOT_RESPONSE);
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
-					PATH_VELOCITY_TEMPLATE_ROOT_RESPONSE);
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
 
 			// Generation of the GraphQLRequest class
 			i += generateGraphQLRequest();
@@ -156,7 +137,7 @@ public class CodeGenerator {
 			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("directives", documentParser.directives);
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer"), "Generating DirectiveRegistryInitializer",
-					context, PATH_VELOCITY_TEMPLATE_DIRECTIVE_REGISTRY_INITIALIZER);
+					context, resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
 			//
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER));
@@ -276,7 +257,7 @@ public class CodeGenerator {
 				(documentParser.subscriptionTypes.size() > 0) ? documentParser.subscriptionTypes.get(0) : null);
 
 		return generateOneFile(getJavaFile("GraphQLRequest"), "generating GraphQLRequest", context,
-				PATH_VELOCITY_TEMPLATE_GRAPHQL_REQUEST);
+				resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
 	}
 
 	/**
@@ -444,15 +425,16 @@ public class CodeGenerator {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Resolves the template for the given key
+	 * 
 	 * @param templateKey
 	 * @param defaultValue
 	 * @return
 	 */
 	protected String resolveTemplate(CodeTemplate template) {
-		if(pluginConfiguration.getTemplates().containsKey(template.name())) {
+		if (pluginConfiguration.getTemplates().containsKey(template.name())) {
 			return pluginConfiguration.getTemplates().get(template.name());
 		} else {
 			return template.getDefaultValue();

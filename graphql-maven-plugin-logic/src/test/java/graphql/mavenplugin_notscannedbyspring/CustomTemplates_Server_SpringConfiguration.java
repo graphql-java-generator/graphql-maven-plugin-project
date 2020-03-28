@@ -17,7 +17,7 @@ import com.graphql_java_generator.plugin.PluginMode;
 public class CustomTemplates_Server_SpringConfiguration extends AbstractCustomTemplatesSpringConfiguration {
 
 	public CustomTemplates_Server_SpringConfiguration() {
-		super("allGraphQLCases.graphqls", PluginMode.client, customScalars);
+		super("allGraphQLCases.graphqls", PluginMode.server, customScalars);
 	}
 
 }
