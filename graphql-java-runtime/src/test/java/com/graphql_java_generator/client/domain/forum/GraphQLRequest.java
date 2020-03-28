@@ -1,9 +1,16 @@
 package com.graphql_java_generator.client.domain.forum;
 
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.request.QueryField;
-import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
@@ -12,15 +19,193 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public class GraphQLRequest extends ObjectResponse {
 
+	/** Logger for this class */
+	private static Logger logger = LoggerFactory.getLogger(GraphQLRequest.class);
+
+	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
+
 	/** {@inheritDoc} */
 	public GraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 		super(graphQLRequest);
 	}
-
+	
 	/** {@inheritDoc} */
 	public GraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
 		super(graphQLRequest, requestType, queryName, inputParams);
+	}
+
+	/**
+	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
+	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
+	 * its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * 
+	 * <PRE>
+	 * GraphQLRequest request;
+	 * 
+	 * public void setup() {
+	 *  GraphQLRequest.setStaticConfiguration(...);
+	 * 	// Preparation of the query
+	 * 	request = myQueryType.getResponseBuilder()
+	 * 			.withQueryResponseDef("query{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("heroParam", heroParamValue);
+	 * params.put("skip", Boolean.FALSE);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * QueryTypeResponse response = request.exec(params);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public QueryTypeResponse execQuery(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+		logExecution(RequestType.mutation, parameters);
+		return exec(QueryTypeResponse.class, parameters);
+	}
+
+	/**
+	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
+	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
+	 * its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * 
+	 * <PRE>
+	 * GraphQLRequest request;
+	 * 
+	 * public void setup() {
+	 *  GraphQLRequest.setStaticConfiguration(...);
+	 * 	// Preparation of the query
+	 * 	request = new GraphQLRequest("query{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * QueryTypeResponse response = request.exec("heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public QueryTypeResponse execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
+		return exec(QueryTypeResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
+	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
+	 * its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * 
+	 * <PRE>
+	 * GraphQLRequest request;
+	 * 
+	 * public void setup() {
+	 *  GraphQLRequest.setStaticConfiguration(...);
+	 * 	// Preparation of the query
+	 * 	request = myQueryType.getResponseBuilder()
+	 * 			.withQueryResponseDef("mutation{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("heroParam", heroParamValue);
+	 * params.put("skip", Boolean.FALSE);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * MutationTypeResponse response = request.exec(params);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public MutationTypeResponse execMutation(Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
+		logExecution(RequestType.mutation, parameters);
+		return exec(MutationTypeResponse.class, parameters);
+	}
+
+	/**
+	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
+	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
+	 * its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * 
+	 * <PRE>
+	 * GraphQLRequest request;
+	 * 
+	 * public void setup() {
+	 *  GraphQLRequest.setStaticConfiguration(...);
+	 * 	// Preparation of the query
+	 * 	request = new GraphQLRequest("mutation{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * MutationTypeResponse response = request.exec("heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public MutationTypeResponse execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
+		return exec(MutationTypeResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * 
+	 * @param executionOf
+	 *            A string
+	 * @param parameters
+	 */
+	private void logExecution(RequestType requestType, Map<String, Object> parameters) {
+		if (logger.isTraceEnabled()) {
+			if (parameters == null) {
+				logger.trace("Executing of " + requestType.toString() + " without parameters");
+			} else {
+				StringBuffer sb = new StringBuffer("Executing of root mutation with parameters: ");
+				boolean addComma = false;
+				for (String key : parameters.keySet()) {
+					sb.append(key).append(":").append(parameters.get(key));
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
+				logger.trace(sb.toString());
+			}
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of mutation 'MutationType'");
+		}
 	}
 
 	@Override

@@ -12,9 +12,9 @@ public class CustomScalarRegistryInitializer {
 	public void initCustomScalarRegistry() {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
-		customScalarRegistry.registerGraphQLScalarType(com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date);
+		customScalarRegistry
+				.registerGraphQLScalarType(com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date);
 		customScalarRegistry.registerGraphQLScalarType(graphql.Scalars.GraphQLLong);
-		customScalarRegistry.registerGraphQLScalarType(com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String);
 
 		CustomScalarRegistryImpl.customScalarRegistry = customScalarRegistry;
 	}
