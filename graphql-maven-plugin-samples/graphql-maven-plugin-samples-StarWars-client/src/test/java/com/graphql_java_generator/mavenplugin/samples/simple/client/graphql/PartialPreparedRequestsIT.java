@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import com.generated.graphql.QueryType;
 import com.graphql_java_generator.samples.simple.client.Main;
-import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
+import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedRequests;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
@@ -15,7 +15,7 @@ import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
  * 
  * @author EtienneSF
  */
-class DirectQueriesIT extends AbstractIT {
+class PartialPreparedRequestsIT extends AbstractIT {
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -26,8 +26,7 @@ class DirectQueriesIT extends AbstractIT {
 		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new DirectQueries(Main.graphqlEndpoint, sslContext, hostNameVerifier);
-
+		queries = new PartialPreparedRequests(Main.graphqlEndpoint, main.getNoCheckSslContext(), main.getHostnameVerifier());
 	}
 
 }

@@ -663,6 +663,10 @@ public class QueryField {
 		return null;
 	}
 
+	public Class<?> getOwningClazz() {
+		return owningClazz;
+	}
+
 	public Class<?> getClazz() {
 		return clazz;
 	}

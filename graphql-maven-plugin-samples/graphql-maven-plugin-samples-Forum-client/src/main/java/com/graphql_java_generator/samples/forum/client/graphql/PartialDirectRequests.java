@@ -20,7 +20,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author EtienneSF
  */
-public class DirectQueries implements Queries {
+public class PartialDirectRequests implements Queries {
 
 	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
 	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);

@@ -10,7 +10,6 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
@@ -48,8 +47,8 @@ public interface QueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <T> T execute(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters,
-			Class<T> valueType) throws GraphQLRequestExecutionException;
+	public <T> T execute(ObjectResponse objectResponse, Map<String, Object> parameters, Class<T> valueType)
+			throws GraphQLRequestExecutionException;
 
 	/**
 	 * Execution of the given simple GraphQL query, and return its response mapped in the relevant POJO. This method
@@ -71,8 +70,7 @@ public interface QueryExecutor {
 	 *            The GraphQL type to map the response into
 	 * @return The response mapped to the code, generated from the GraphQl server. Or a wrapper for composite responses.
 	 * @throws GraphQLRequestExecutionException
-	 * @throws IOException
 	 */
-	public <T> T execute(String graphqlQuery, Class<T> valueType) throws GraphQLRequestExecutionException, IOException;
+	public <T> T execute(String graphqlQuery, Class<T> valueType) throws GraphQLRequestExecutionException;
 
 }

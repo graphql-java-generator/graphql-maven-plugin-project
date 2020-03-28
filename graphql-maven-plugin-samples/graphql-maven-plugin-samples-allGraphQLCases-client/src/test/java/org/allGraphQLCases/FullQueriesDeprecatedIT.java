@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.AnotherMutationTypeResponse;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.GraphQLRequest;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
@@ -19,48 +19,49 @@ import org.allGraphQLCases.client.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class FullQueriesIT {
+class FullQueriesDeprecatedIT {
 
-	GraphQLRequest mutationWithDirectiveRequest;
-	GraphQLRequest mutationWithoutDirectiveRequest;
-	GraphQLRequest withDirectiveTwoParametersRequest;
-	GraphQLRequest multipleQueriesRequest;
+	MyQueryType queryType;
+	AnotherMutationType mutationType;
+
+	ObjectResponse mutationWithDirectiveResponse;
+	ObjectResponse mutationWithoutDirectiveResponse;
+	ObjectResponse withDirectiveTwoParametersResponse;
+	ObjectResponse multipleQueriesResponse;
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-
-		// We have only one GraphQL server. So we just set the default configuration.
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT));
+		queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		mutationType = new AnotherMutationType(Main.GRAPHQL_ENDPOINT);
 
 		// The response preparation should be somewhere in the application initialization code.
-		mutationWithDirectiveRequest = new GraphQLRequest(//
+		mutationWithDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//
 				"mutation{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
-		);
+		).build();
 
-		mutationWithoutDirectiveRequest = new GraphQLRequest(//
+		mutationWithoutDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//
 				"mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}"//
-		);
+		).build();
 
-		withDirectiveTwoParametersRequest = new GraphQLRequest(
-				"query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}");
+		withDirectiveTwoParametersResponse = queryType.getResponseBuilder().withQueryResponseDef(
+				"query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}")
+				.build();
 
-		multipleQueriesRequest = new GraphQLRequest("{"//
+		multipleQueriesResponse = queryType.getResponseBuilder().withQueryResponseDef("{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
 				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
-				+ "}");
+				+ "}").build();
 
 	}
 
 	@Test
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Preparation
-		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
 		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery}"); // Direct queries should be used only for very
@@ -75,12 +76,8 @@ class FullQueriesIT {
 
 	@Test
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Preparation
-		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
-
-		// Direct queries should be used only for very simple cases, but you can do what you want... :)
 		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
 				"value", "the value", "skip", Boolean.FALSE);
 
@@ -97,7 +94,7 @@ class FullQueriesIT {
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = withDirectiveTwoParametersRequest.execQuery( //
+		MyQueryTypeResponse resp = queryType.exec(withDirectiveTwoParametersResponse, //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -125,7 +122,7 @@ class FullQueriesIT {
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		AnotherMutationTypeResponse resp = mutationWithoutDirectiveRequest.execMutation("humanInput", input);
+		AnotherMutationTypeResponse resp = mutationType.exec(mutationWithoutDirectiveResponse, "humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
@@ -137,7 +134,7 @@ class FullQueriesIT {
 		// WITH DIRECTIVE
 
 		// Go, go, go
-		resp = mutationWithDirectiveRequest.execMutation( //
+		resp = mutationType.exec(mutationWithDirectiveResponse, //
 				"humanInput", input, //
 				"value", "the mutation value", //
 				"anotherValue", "the other mutation value");
@@ -174,7 +171,7 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		MyQueryTypeResponse resp = multipleQueriesRequest.execQuery( //
+		MyQueryTypeResponse resp = queryType.exec(multipleQueriesResponse, //
 				"value", "An expected returned string", //
 				"skipAppearsIn", true, //
 				"skipName", false);
@@ -199,7 +196,7 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		resp = multipleQueriesRequest.execQuery( //
+		resp = queryType.exec(multipleQueriesResponse, //
 				"value", "An expected returned string", //
 				"skipAppearsIn", false, //
 				"skipName", true);

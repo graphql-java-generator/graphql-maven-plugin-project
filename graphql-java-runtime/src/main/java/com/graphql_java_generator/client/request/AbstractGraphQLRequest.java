@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -31,8 +32,17 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public abstract class AbstractGraphQLRequest {
 
-	/** The generated class that is based on the standard GraphQL introspection query */
-	Class<?> introspectionQueryTypeClass = null;
+	/**
+	 * This contains the default configuration, that will apply if no local configuration has been defined for this
+	 * instance
+	 */
+	static GraphQLConfiguration staticConfiguration = null;
+
+	/**
+	 * This contains the configuration for this instance. This configuration overrides the {@link #staticConfiguration},
+	 * if defined.
+	 */
+	GraphQLConfiguration instanceConfiguration = null;
 
 	/** The query, if any */
 	QueryField query = null;
@@ -45,6 +55,9 @@ public abstract class AbstractGraphQLRequest {
 
 	/** All the fragments defined for this query */
 	List<Fragment> fragments = new ArrayList<>();
+
+	/** The string that has been used to create this GraphQL request */
+	final String graphQLRequest;
 
 	/**
 	 * Null if the request is a full request. Mandatory if the request is a partial request. When this GraphQLRequest is
@@ -61,7 +74,11 @@ public abstract class AbstractGraphQLRequest {
 	final String queryName;
 
 	/**
-	 * Create the instance, from the GraphQL request, for a partial request.
+	 * Create the instance, from the GraphQL request, for a partial request.<BR/>
+	 * 
+	 * <B><U>Important note:</U></B> this constructor <B>SHOULD NOT</B> be called by external application. Its signature
+	 * may change in the future. To prepare Partial Requests, application code <B>SHOULD</B> call the
+	 * getXxxxGraphQLRequests methods, that are generated in the query/mutation/subscription java classes.
 	 * 
 	 * @param graphQLRequest
 	 *            The <B>partial</B> GraphQL request, in text format. Writing partial request allows use to execute a
@@ -88,6 +105,7 @@ public abstract class AbstractGraphQLRequest {
 		}
 		this.requestType = requestType;
 		this.queryName = queryName;
+		this.graphQLRequest = (graphQLRequest == null) ? "" : graphQLRequest;
 
 		QueryField field;
 		switch (requestType) {
@@ -116,7 +134,7 @@ public abstract class AbstractGraphQLRequest {
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
-		QueryTokenizer qt = new QueryTokenizer(graphQLRequest);
+		QueryTokenizer qt = new QueryTokenizer(this.graphQLRequest);
 
 		// The graphQLRequest may be null (for instance for a scalar, or if we want the plugin to automatically add all
 		// scalar fields for this query/mutation/subscription)
@@ -140,7 +158,7 @@ public abstract class AbstractGraphQLRequest {
 	}
 
 	/**
-	 * Create the instance, from the GraphQL request, for a full request. It will:
+	 * Creates the GraphQL request, for a full request. It will:
 	 * <UL>
 	 * <LI>Read the query and/or the mutation</LI>
 	 * <LI>Read all fragment definitions</LI>
@@ -161,10 +179,11 @@ public abstract class AbstractGraphQLRequest {
 	public AbstractGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 		this.requestType = null;
 		this.queryName = null;
+		this.graphQLRequest = (graphQLRequest == null) ? "" : graphQLRequest;
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
-		QueryTokenizer st = new QueryTokenizer(graphQLRequest);
+		QueryTokenizer st = new QueryTokenizer(this.graphQLRequest);
 		RequestType requestType = RequestType.query; // If not precised, then it's a query
 
 		// We scan the input string. It may contain fragment definition and query/mutation/subscription
@@ -214,6 +233,21 @@ public abstract class AbstractGraphQLRequest {
 		AddScalarFieldToEmptyNonScalarField();
 		// Let's add the <I>__typename</I> fields to all non scalar types
 		addTypenameFields();
+	}
+
+	public <T> T exec(Class<T> t, Map<String, Object> params) throws GraphQLRequestExecutionException {
+		String request = buildRequest(params);
+
+		if (instanceConfiguration != null) {
+			return instanceConfiguration.getQueryExecutor().execute(request, t);
+		} else if (staticConfiguration != null) {
+			return staticConfiguration.getQueryExecutor().execute(request, t);
+		} else {
+			throw new GraphQLRequestExecutionException(
+					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "
+							+ "Please set either the GraphQL instance configuration "
+							+ "or the GraphQL static configuration before executing a GraphQL request");
+		}
 	}
 
 	/**
@@ -340,10 +374,6 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	protected abstract QueryField getSubscriptionContext() throws GraphQLRequestPreparationException;
 
-	public Class<?> getIntrospectionQueryTypeClass() {
-		return introspectionQueryTypeClass;
-	}
-
 	public QueryField getQuery() {
 		return query;
 	}
@@ -366,6 +396,48 @@ public abstract class AbstractGraphQLRequest {
 
 	public String getQueryName() {
 		return queryName;
+	}
+
+	/**
+	 * This gets the default configuration, that will apply if no local configuration has been defined for this
+	 * instance.
+	 * 
+	 * @return the staticConfiguration
+	 */
+	public static GraphQLConfiguration getStaticConfiguration() {
+		return staticConfiguration;
+	}
+
+	/**
+	 * This sets the default configuration, that will apply if no local configuration has been defined for this
+	 * instance.
+	 * 
+	 * @param staticConfiguration
+	 *            the staticConfiguration to set
+	 */
+	public static void setStaticConfiguration(GraphQLConfiguration staticConfiguration) {
+		AbstractGraphQLRequest.staticConfiguration = staticConfiguration;
+	}
+
+	/**
+	 * This gets the configuration for this instance. This configuration overrides the
+	 * {@link #getStaticConfiguration()}, if defined.
+	 * 
+	 * @return the instanceConfiguration
+	 */
+	public GraphQLConfiguration getInstanceConfiguration() {
+		return instanceConfiguration;
+	}
+
+	/**
+	 * This sets the configuration for this instance. This configuration overrides the
+	 * {@link #getStaticConfiguration()}, if defined.
+	 * 
+	 * @param instanceConfiguration
+	 *            the instanceConfiguration to set
+	 */
+	public void setInstanceConfiguration(GraphQLConfiguration instanceConfiguration) {
+		this.instanceConfiguration = instanceConfiguration;
 	}
 
 }

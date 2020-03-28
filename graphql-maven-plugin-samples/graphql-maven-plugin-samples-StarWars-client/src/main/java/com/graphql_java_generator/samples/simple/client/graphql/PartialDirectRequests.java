@@ -18,7 +18,7 @@ import com.graphql_java_generator.samples.simple.client.Queries;
  * 
  * @author EtienneSF
  */
-public class DirectQueries implements Queries {
+public class PartialDirectRequests implements Queries {
 
 	final QueryType queryType;
 	final MutationType mutationType;
@@ -33,7 +33,7 @@ public class DirectQueries implements Queries {
 	 * @param sslContext
 	 * @param hostnameVerifier
 	 */
-	public DirectQueries(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+	public PartialDirectRequests(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		queryType = new QueryType(graphqlEndpoint, sslContext, hostnameVerifier);
 		mutationType = new MutationType(graphqlEndpoint, sslContext, hostnameVerifier);
 	}

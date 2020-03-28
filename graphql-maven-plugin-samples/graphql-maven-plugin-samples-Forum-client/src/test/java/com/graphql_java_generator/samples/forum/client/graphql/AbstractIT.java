@@ -33,7 +33,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author EtienneSF
  */
-abstract class AbstractTest {
+abstract class AbstractIT {
 
 	Queries queries;
 

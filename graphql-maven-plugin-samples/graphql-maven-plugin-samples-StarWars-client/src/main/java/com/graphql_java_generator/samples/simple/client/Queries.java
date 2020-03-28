@@ -6,12 +6,12 @@ import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
-import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
+import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectRequests;
+import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedRequests;
 
 /**
  * These are samples of queries that can be used with GraphQL against the Star Wars GraphQL schema. There are
- * implemented in three ways in these classes: {@link DirectQueries}, {@link WithBuilder}, {@link PreparedQueries}.<BR/>
+ * implemented in three ways in these classes: {@link PartialDirectRequests}, {@link WithBuilder}, {@link PartialPreparedRequests}.<BR/>
  * You can see use of these queries in the JUnit tests.
  * 
  * @author EtienneSF

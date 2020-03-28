@@ -101,8 +101,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters,
-			Class<T> valueType) throws GraphQLRequestExecutionException {
+	public <T> T execute(ObjectResponse objectResponse, Map<String, Object> parameters, Class<T> valueType)
+			throws GraphQLRequestExecutionException {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
@@ -118,8 +118,12 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String query, Class<T> valueType) throws IOException, GraphQLRequestExecutionException {
-		return doJsonRequestExecution(query, valueType);
+	public <T> T execute(String query, Class<T> valueType) throws GraphQLRequestExecutionException {
+		try {
+			return doJsonRequestExecution(query, valueType);
+		} catch (IOException e) {
+			throw new GraphQLRequestExecutionException(e.getMessage(), e);
+		}
 	}
 
 	/**

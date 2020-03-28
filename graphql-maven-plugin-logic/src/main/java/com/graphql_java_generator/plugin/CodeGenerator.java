@@ -56,7 +56,7 @@ public class CodeGenerator {
 	// Templates for client generation only
 	private static final String PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER = "templates/client_CustomScalarRegistryInitializer.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_DIRECTIVE_REGISTRY_INITIALIZER = "templates/client_DirectiveRegistryInitializer.vm.java";
-	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQL_REQUEST = "templates/GraphQLRequest.vm.java";
+	private static final String PATH_VELOCITY_TEMPLATE_GRAPHQL_REQUEST = "templates/client_GraphQLRequest.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER = "templates/client_jackson_deserialize.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION = "templates/client_query_mutation_subscription_type.vm.java";
 	private static final String PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE = "templates/client_query_target_type.vm.java";

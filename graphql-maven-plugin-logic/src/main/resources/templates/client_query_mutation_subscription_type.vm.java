@@ -3,7 +3,6 @@ package ${pluginConfiguration.packageName};
 
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +22,7 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
@@ -49,7 +49,7 @@ public class ${object.javaName} {
 
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
-	final QueryExecutor executor;
+	final GraphQLConfiguration configuration;
 
 	/**
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
@@ -60,7 +60,7 @@ public class ${object.javaName} {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public ${object.javaName}(String graphqlEndpoint) {
-		this.executor = new QueryExecutorImpl(graphqlEndpoint);
+		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 		new DirectiveRegistryInitializer().initDirectiveRegistry();
 	}
@@ -79,7 +79,8 @@ public class ${object.javaName} {
 	 * @param hostnameVerifier
 	 */
 	public ${object.javaName}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.executor = new QueryExecutorImpl(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		new DirectiveRegistryInitializer().initDirectiveRegistry();
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class ${object.javaName} {
 	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
 	public ${object.name}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
-		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
+		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 	}
 
@@ -129,7 +130,6 @@ public class ${object.javaName} {
 	 *            one). The value is the parameter vale in its Java type (for instance a {@link Date} for the
 	 *            {@link GraphQLScalarTypeDate}). The parameters which value is missing in this map will no be
 	 *            transmitted toward the GraphQL server.
-	 * @throws IOException
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
@@ -169,7 +169,6 @@ public class ${object.javaName} {
 	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
 	 *            This parameter contains an even number of parameters: it must be a series of name and values :
 	 *            (paramName1, paramValue1, paramName2, paramValue2...)
-	 * @throws IOException
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
@@ -214,7 +213,6 @@ public class ${object.javaName} {
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
 	 *            defined Query, this argument may be null or an empty {@link Map}
-	 * @throws IOException
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
@@ -242,7 +240,7 @@ public class ${object.javaName} {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return executor.execute("${object.requestType}", objectResponse, parameters, ${object.javaName}Response.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, ${object.javaName}Response.class);
 	}
 
 	/**
@@ -276,7 +274,6 @@ public class ${object.javaName} {
 	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
 	 *            This parameter contains an even number of parameters: it must be a series of name and values :
 	 *            (paramName1, paramValue1, paramName2, paramValue2...)
-	 * @throws IOException
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
@@ -295,6 +292,20 @@ public class ${object.javaName} {
 	 */
 	public Builder getResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(GraphQLRequest.class);
+	}
+
+	/**
+	 * Get the {@link GraphQLRequest} for Full request. It's easier to directly execute:
+	 * <PRE>
+	 * GraphQLRequest request = new GraphQLRequest(fullRequest);
+	 * </PRE>
+	 * 
+	 * @param fullRequest The full GraphQLRequest, as specified in the GraphQL specification
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLRequest(fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -327,7 +338,6 @@ public class ${object.javaName} {
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
 	 *            defined Query, this argument may be null or an empty {@link Map}
-	 * @throws IOException
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
@@ -369,7 +379,6 @@ public class ${object.javaName} {
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
 	 *            defined Query, this argument may be null or an empty {@link Map}
-	 * @throws IOException
 	 * @throws GraphQLRequestPreparationException
 	 *             When an error occurs during the request preparation, typically when building the
 	 *             {@link ObjectResponse}
@@ -418,7 +427,6 @@ public class ${object.javaName} {
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
 	 *            defined Query, this argument may be null or an empty {@link Map}
-	 * @throws IOException
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
@@ -438,7 +446,7 @@ public class ${object.javaName} {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 
-		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute("${object.requestType}", objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
+		${field.owningType.classSimpleName}${field.pascalCaseName} ret = configuration.getQueryExecutor().execute(objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
 		
 		return ret.${field.javaName};
 	}
@@ -477,7 +485,6 @@ public class ${object.javaName} {
 	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
 	 *            This parameter contains an even number of parameters: it must be a series of name and values :
 	 *            (paramName1, paramValue1, paramName2, paramValue2...)
-	 * @throws IOException
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
@@ -507,7 +514,7 @@ public class ${object.javaName} {
 		bindVariableValues.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 		
-		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute("${object.requestType}", objectResponse, bindVariableValues, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
+		${field.owningType.classSimpleName}${field.pascalCaseName} ret = configuration.getQueryExecutor().execute(objectResponse, bindVariableValues, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
 		
 		return ret.${field.javaName};
 	}
@@ -524,6 +531,24 @@ public class ${object.javaName} {
 			, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.mandatory}, null)
 #end
 			);
+	}
+
+
+	/**
+	 * Get the {@link GraphQLRequest} for the ${field.name} $type, created with the given Partial request.
+	 * 
+	 * @param partialRequest
+	 * 				The Partial GraphQLRequest, as explained in the 
+	 * 				<A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">plugin client documentation</A> 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLRequest(partialRequest, RequestType.$type, "${field.name}"
+#foreach ($inputParameter in $field.inputParameters)
+		, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.mandatory}, null)
+#end
+		);
 	}
 	
 #end

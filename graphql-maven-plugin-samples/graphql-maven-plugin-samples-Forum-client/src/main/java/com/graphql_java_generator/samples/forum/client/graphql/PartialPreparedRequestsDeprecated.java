@@ -29,7 +29,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author EtienneSF
  */
-public class PreparedQueries implements Queries {
+public class PartialPreparedRequestsDeprecated implements Queries {
 
 	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
 	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
@@ -44,7 +44,7 @@ public class PreparedQueries implements Queries {
 	ObjectResponse createPostResponse;
 	ObjectResponse createPostsResponse;
 
-	public PreparedQueries() throws GraphQLRequestPreparationException {
+	public PartialPreparedRequestsDeprecated() throws GraphQLRequestPreparationException {
 		// No field specified: all scalar fields of the root type will be queried
 		boardsSimpleResponse = queryType.getBoardsResponseBuilder().build();
 
@@ -132,7 +132,7 @@ public class PreparedQueries implements Queries {
 	@Override
 	public List<Post> createPosts(List<PostInput> input)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// createPostsResponse has been create with this query string:
+		// createPostsRequest has been create with this query string:
 		// {id date author{id} title content publiclyAvailable}
 		return mutationType.createPosts(createPostsResponse, input);
 	}

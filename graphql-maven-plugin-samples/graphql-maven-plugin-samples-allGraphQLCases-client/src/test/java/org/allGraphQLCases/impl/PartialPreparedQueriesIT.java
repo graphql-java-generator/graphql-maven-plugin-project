@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
  * 
  * @author EtienneSF
  */
-class PreparedQueriesIT extends AbstractIT {
+class PartialPreparedQueriesIT extends AbstractIT {
 
 	@BeforeEach
 	void setUp() throws Exception {
