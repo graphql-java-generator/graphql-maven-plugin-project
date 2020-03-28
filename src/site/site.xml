@@ -3,8 +3,8 @@
 
 	<publishDate position="right" />
 
-	<!-- bannerLeft> <name>GraphQL Java Generator - Maven Plugin</name> <src>http://maven.apache.org/images/apache-maven-project.png</src> 
-		<href>http://maven.apache.org/</href> </bannerLeft> <bannerRight> <src>http://maven.apache.org/images/maven-small.gif</src> 
+	<!-- bannerLeft> <name>GraphQL Java Generator - Maven Plugin</name> <src>http://maven.apache.org/images/apache-maven-project.png</src>
+		<href>http://maven.apache.org/</href> </bannerLeft> <bannerRight> <src>http://maven.apache.org/images/maven-small.gif</src>
 		</bannerRight -->
 
 	<poweredBy>
@@ -19,6 +19,7 @@
 		<menu name="Maven Plugin Usage">
 			<item name="Introduction" href="README.html" />
 			<item name="Custom Scalars" href="customscalars.html" />
+			<item name="Custom Code Templates" href="customtemplates.html" />
 		</menu>
 
 		<menu name="Client mode">

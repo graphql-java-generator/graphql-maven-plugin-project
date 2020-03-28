@@ -110,10 +110,10 @@ public class CodeGenerator {
 	public int generateCode() throws IOException {
 
 		int i = 0;
-		i += generateTargetFiles(documentParser.getObjectTypes(), "object", PATH_VELOCITY_TEMPLATE_OBJECT);
-		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface", PATH_VELOCITY_TEMPLATE_INTERFACE);
-		i += generateTargetFiles(documentParser.getUnionTypes(), "union", PATH_VELOCITY_TEMPLATE_UNION);
-		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", PATH_VELOCITY_TEMPLATE_ENUM);
+		i += generateTargetFiles(documentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT));
+		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface", resolveTemplate(CodeTemplate.INTERFACE));
+		i += generateTargetFiles(documentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION));
+		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM));
 
 		switch (pluginConfiguration.getMode()) {
 		case server:
@@ -122,11 +122,11 @@ public class CodeGenerator {
 		case client:
 			// Generation of the query/mutation/subscription classes
 			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
-					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 			i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
-					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
-					PATH_VELOCITY_TEMPLATE_QUERY_MUTATION_SUBSCRIPTION);
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 
 			// Generation of the query/mutation/subscription response classes
 			i += generateTargetFiles(documentParser.getQueryTypes(), "response", PATH_VELOCITY_TEMPLATE_OBJECT);
@@ -150,7 +150,7 @@ public class CodeGenerator {
 			context.put("customScalars", documentParser.customScalars);
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
 					"Generating CustomScalarRegistryInitializer", context,
-					PATH_VELOCITY_TEMPLATE_CUSTOM_SCALAR_REGISTRY_INITIALIZER);
+					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
 			// Files for Directives
 			context = new VelocityContext();
 			context.put("pluginConfiguration", pluginConfiguration);
@@ -159,7 +159,7 @@ public class CodeGenerator {
 					context, PATH_VELOCITY_TEMPLATE_DIRECTIVE_REGISTRY_INITIALIZER);
 			//
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
-					PATH_VELOCITY_TEMPLATE_JACKSON_DESERIALIZER);
+					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER));
 			i += generateQueryTargetType();
 			break;
 		}
@@ -256,7 +256,7 @@ public class CodeGenerator {
 				context.put("objectName", objectName);
 				context.put("query", query);
 
-				i += generateOneFile(targetFile, msg, context, PATH_VELOCITY_TEMPLATE_QUERY_TARGET_TYPE);
+				i += generateOneFile(targetFile, msg, context, resolveTemplate(CodeTemplate.QUERY_TARGET_TYPE));
 			}
 		}
 		return i;
@@ -304,28 +304,28 @@ public class CodeGenerator {
 
 		int ret = 0;
 		ret += generateOneFile(getJavaFile("GraphQLServerMain"), "generating GraphQLServerMain", context,
-				PATH_VELOCITY_TEMPLATE_SERVER);
+				resolveTemplate(CodeTemplate.SERVER));
 		ret += generateOneFile(getJavaFile("GraphQLProvider"), "generating GraphQLProvider", context,
-				PATH_VELOCITY_TEMPLATE_PROVIDER);
+				resolveTemplate(CodeTemplate.PROVIDER));
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers"), "generating GraphQLDataFetchers", context,
-				PATH_VELOCITY_TEMPLATE_DATAFETCHER);
+				resolveTemplate(CodeTemplate.DATAFETCHER));
 		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
-				PATH_VELOCITY_TEMPLATE_GRAPHQLUTIL);
+				resolveTemplate(CodeTemplate.GRAPHQLUTIL));
 
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
 			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName()),
 					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
-					PATH_VELOCITY_TEMPLATE_DATAFETCHERDELEGATE);
+					resolveTemplate(CodeTemplate.DATAFETCHERDELEGATE));
 		}
 
 		ret += generateOneFile(getJavaFile("BatchLoaderDelegate"), "generating BatchLoaderDelegate", context,
-				PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATE);
+				resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));
 		for (BatchLoader batchLoader : documentParser.batchLoaders) {
 			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
 			context.put("batchLoader", batchLoader);
 			ret += generateOneFile(getJavaFile(name), "generating " + name, context,
-					PATH_VELOCITY_TEMPLATE_BATCHLOADERDELEGATEIMPL);
+					resolveTemplate(CodeTemplate.BATCHLOADERDELEGATEIMPL));
 		}
 
 		return ret;
@@ -443,5 +443,19 @@ public class CodeGenerator {
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Resolves the template for the given key
+	 * @param templateKey
+	 * @param defaultValue
+	 * @return
+	 */
+	protected String resolveTemplate(CodeTemplate template) {
+		if(pluginConfiguration.getTemplates().containsKey(template.name())) {
+			return pluginConfiguration.getTemplates().get(template.name());
+		} else {
+			return template.getDefaultValue();
+		}
 	}
 }

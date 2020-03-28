@@ -1,0 +1,2 @@
+graphql:
+  endpoint: https://localhost:8443/starwars/graphql

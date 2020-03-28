@@ -1,9 +1,9 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -47,7 +47,6 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
 class CodeGeneratorTest {
 	
-
 	@Resource
 	ApplicationContext context;
 	@Resource
@@ -252,6 +251,26 @@ class CodeGeneratorTest {
 		assertFalse(targetRuntimeClassesSourceFolder.exists());
 	}
 
+	/**
+	 * Test for validating default template resolution
+	 */
+	@Test
+	@DirtiesContext
+	protected void testResolveTemplateDefault() {
+		pluginConfiguration.templates.clear();
+		assertEquals(CodeTemplate.BATCHLOADERDELEGATE.getDefaultValue(), this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));;
+	}
+
+	/**
+	 * Test for validating customized template resolution
+	 */
+	@Test
+	@DirtiesContext
+	protected void testResolveTemplateCustom() {
+		pluginConfiguration.templates.clear();
+		pluginConfiguration.templates.put(CodeTemplate.BATCHLOADERDELEGATE.name(), "/my/custom/template");
+		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));;
+	}
 	
 	/**
 	 * Creates a mock graphql-java-runtime-sources.jar
