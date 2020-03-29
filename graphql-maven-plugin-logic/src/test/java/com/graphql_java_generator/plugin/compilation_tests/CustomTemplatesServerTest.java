@@ -2,6 +2,7 @@ package com.graphql_java_generator.plugin.compilation_tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class CustomTemplatesServerTest extends AbstractCustomTemplateIntegrationTest {
 		// Validate that every file generated has been generated with the templates in
 		// src/test/resources/templates_personalization
 		File generatedSourcesDir = new File(this.pluginConfiguration.getTargetSourceFolder(),
-				pluginConfiguration.getPackageName().replaceAll("\\.", File.separator));
+				pluginConfiguration.getPackageName().replaceAll("\\.", Matcher.quoteReplacement(File.separator)));
 		assertCustomTemplateGeneration(generatedSourcesDir);
 
 	}
