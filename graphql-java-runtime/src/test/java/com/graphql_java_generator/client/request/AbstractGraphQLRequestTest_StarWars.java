@@ -3,8 +3,10 @@ package com.graphql_java_generator.client.request;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -326,15 +328,23 @@ class AbstractGraphQLRequestTest_StarWars {
 		//
 		// field name check
 		int i = 0;
-		// The field order is strange (not the one in the GraphQL schema). Any link with the fact that this is an
-		// interface ???
-		assertEquals("name", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
-		i += 1;
-		assertEquals("id", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
-		i += 1;
-		assertEquals("appearsIn", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
-		i += 1;
-		assertEquals("__typename", hero.fields.get(i).name, "check field n°" + i + "'s name, for test: " + test);
+		// The field order is strange, and changes overtime. So we just check that 4 expected fields exits
+		// It seems to be linked with the fact that this is an interface ???
+		checkContainsField(hero.fields, "id");
+		checkContainsField(hero.fields, "name");
+		checkContainsField(hero.fields, "appearsIn");
+		checkContainsField(hero.fields, "__typename");
+	}
+
+	private void checkContainsField(List<QueryField> fields, String fieldName) {
+		for (QueryField f : fields) {
+			if (fieldName.equals(f.getName())) {
+				// It's ok. Let's stop there.
+				return;
+			}
+		} // for
+
+		fail("The field '" + fieldName + "' has not been found");
 	}
 
 	@Test

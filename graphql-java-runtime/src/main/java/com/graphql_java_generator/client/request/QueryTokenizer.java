@@ -45,7 +45,8 @@ public class QueryTokenizer {
 	 */
 	public QueryTokenizer(String graphQLRequest) {
 		// We still use this old StringTokenizer, to get the delimiters returned as token
-		StringTokenizer st = new StringTokenizer(graphQLRequest, EMPTY_DELIMITERS + MEANINGFUL_DELIMITERS, true);
+		StringTokenizer st = new StringTokenizer((graphQLRequest == null) ? "" : graphQLRequest,
+				EMPTY_DELIMITERS + MEANINGFUL_DELIMITERS, true);
 		tokens = new ArrayList<>(st.countTokens());
 		while (st.hasMoreTokens()) {
 			tokens.add(st.nextToken());

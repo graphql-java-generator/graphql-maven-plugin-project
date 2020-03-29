@@ -105,7 +105,7 @@ public abstract class AbstractGraphQLRequest {
 		}
 		this.requestType = requestType;
 		this.queryName = queryName;
-		this.graphQLRequest = (graphQLRequest == null) ? "" : graphQLRequest;
+		this.graphQLRequest = graphQLRequest;
 
 		QueryField field;
 		switch (requestType) {
@@ -179,7 +179,7 @@ public abstract class AbstractGraphQLRequest {
 	public AbstractGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 		this.requestType = null;
 		this.queryName = null;
-		this.graphQLRequest = (graphQLRequest == null) ? "" : graphQLRequest;
+		this.graphQLRequest = graphQLRequest;
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
