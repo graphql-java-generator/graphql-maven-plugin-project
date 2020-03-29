@@ -1,4 +1,5 @@
 Here are the next tasks listed, as a TODO list:
+* query/mutation/subscription class: check the method documentation
 * it seems that @GraphQLCustomScalar annotation is used in the Post hard-coded test POJO to identify a custom scalar; but this annotation is no longer used in the generation of POJOs. I the Post class may need updating to use @GraphQLScalar instead unless I am missing something.
 * enum values may currently not be a java keyword (seems to be a graphql-java limitation). issue to raise in the graphql-java project
 * Add tests for unions

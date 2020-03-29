@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
+import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.DataFetcherImpl;
@@ -30,6 +32,7 @@ import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
 import graphql.language.Definition;
+import graphql.language.DirectiveDefinition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.ObjectTypeDefinition;
@@ -66,6 +69,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals(25, i, "Nb java files are generated");
+		assertEquals(6, documentParser.directives.size(), "Nb directives");
 		assertEquals(15, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(3, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
@@ -95,115 +99,344 @@ class DocumentParserTest_allGraphQLCases_Server {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks if input types for the AllFieldCases object are correctly read
 		//
-		ObjectType type = (ObjectType) documentParser.getType("AllFieldCases");
+		ObjectType objectType = (ObjectType) documentParser.getType("AllFieldCases");
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// checkInputParameter(type, j, numParam, name, list, mandatory, itemMandatory, typeName, classname,
 		// defaultValue)
 		//
 		// id: ID!
-		checkField(type, j, "id", false, true, null, "ID", "java.util.UUID");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "id", false, true, null, "ID", "java.util.UUID");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// name: String!
-		checkField(type, j, "name", false, true, null, "String", "java.lang.String");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "name", false, true, null, "String", "java.lang.String");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// forname(uppercase: Boolean, textToAppendToTheForname: String): String
-		checkField(type, j, "forname", false, false, null, "String", "java.lang.String");
-		checkNbInputParameter(type, j, 2);
-		checkInputParameter(type, j, 0, "uppercase", false, false, null, "Boolean", "java.lang.Boolean", null);
-		checkInputParameter(type, j, 1, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
-				null);
+		checkField(objectType, j, "forname", false, false, null, "String", "java.lang.String");
+		checkNbInputParameter(objectType, j, 2);
+		checkInputParameter(objectType, j, 0, "uppercase", false, false, null, "Boolean", "java.lang.Boolean", null);
+		checkInputParameter(objectType, j, 1, "textToAppendToTheForname", false, false, null, "String",
+				"java.lang.String", null);
 		j += 1;
 		// age: Long!
-		checkField(type, j, "age", false, true, null, "Long", "java.lang.Long");
-		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "unit", false, false, null, "Unit",
+		checkField(objectType, j, "age", false, true, null, "Long", "java.lang.Long");
+		checkNbInputParameter(objectType, j, 1);
+		checkInputParameter(objectType, j, 0, "unit", false, false, null, "Unit",
 				pluginConfiguration.getPackageName() + ".Unit", "YEAR");
 		j += 1;
 		// date: Date
-		checkField(type, j, "date", false, false, null, "Date", "java.util.Date");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "date", false, false, null, "Date", "java.util.Date");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// dates: [Date]!
-		checkField(type, j, "dates", true, true, false, "Date", "java.util.Date");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "dates", true, true, false, "Date", "java.util.Date");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// nbComments: Int
-		checkField(type, j, "nbComments", false, false, null, "Int", "java.lang.Integer");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "nbComments", false, false, null, "Int", "java.lang.Integer");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// comments: [String]
-		checkField(type, j, "comments", true, false, false, "String", "java.lang.String");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "comments", true, false, false, "String", "java.lang.String");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// booleans: [Boolean!]
-		checkField(type, j, "booleans", true, false, true, "Boolean", "java.lang.Boolean");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "booleans", true, false, true, "Boolean", "java.lang.Boolean");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// aliases: [String]!
-		checkField(type, j, "aliases", true, true, false, "String", "java.lang.String");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "aliases", true, true, false, "String", "java.lang.String");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// planets: [String!]!
-		checkField(type, j, "planets", true, true, true, "String", "java.lang.String");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "planets", true, true, true, "String", "java.lang.String");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// friends: [Human!]
-		checkField(type, j, "friends", true, false, true, "Human", pluginConfiguration.getPackageName() + ".Human");
-		checkNbInputParameter(type, j, 0);
+		checkField(objectType, j, "friends", true, false, true, "Human",
+				pluginConfiguration.getPackageName() + ".Human");
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
-		checkField(type, j, "oneWithIdSubType", false, false, null, "AllFieldCasesWithIdSubtype",
+		checkField(objectType, j, "oneWithIdSubType", false, false, null, "AllFieldCasesWithIdSubtype",
 				pluginConfiguration.getPackageName() + ".AllFieldCasesWithIdSubtype");
-		checkNbInputParameter(type, j, 0);
+		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean,
 		// textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
-		checkField(type, j, "listWithIdSubTypes", true, false, false, "AllFieldCasesWithIdSubtype",
+		checkField(objectType, j, "listWithIdSubTypes", true, false, false, "AllFieldCasesWithIdSubtype",
 				pluginConfiguration.getPackageName() + ".AllFieldCasesWithIdSubtype");
-		checkNbInputParameter(type, j, 5);
-		checkInputParameter(type, j, 0, "nbItems", false, true, null, "Long", "java.lang.Long", null);
-		checkInputParameter(type, j, 1, "date", false, false, null, "Date", "java.util.Date", null);
-		checkInputParameter(type, j, 2, "dates", true, true, false, "Date", "java.util.Date", null);
-		checkInputParameter(type, j, 3, "uppercaseName", false, false, null, "Boolean", "java.lang.Boolean", null);
-		checkInputParameter(type, j, 4, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
+		checkNbInputParameter(objectType, j, 5);
+		checkInputParameter(objectType, j, 0, "nbItems", false, true, null, "Long", "java.lang.Long", null);
+		checkInputParameter(objectType, j, 1, "date", false, false, null, "Date", "java.util.Date", null);
+		checkInputParameter(objectType, j, 2, "dates", true, true, false, "Date", "java.util.Date", null);
+		checkInputParameter(objectType, j, 3, "uppercaseName", false, false, null, "Boolean", "java.lang.Boolean",
 				null);
+		checkInputParameter(objectType, j, 4, "textToAppendToTheForname", false, false, null, "String",
+				"java.lang.String", null);
 		j += 1;
 		// oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
-		checkField(type, j, "oneWithoutIdSubType", false, false, false, "AllFieldCasesWithoutIdSubtype",
+		checkField(objectType, j, "oneWithoutIdSubType", false, false, false, "AllFieldCasesWithoutIdSubtype",
 				pluginConfiguration.getPackageName() + ".AllFieldCasesWithoutIdSubtype");
-		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "input", false, false, null, "FieldParameterInput",
+		checkNbInputParameter(objectType, j, 1);
+		checkInputParameter(objectType, j, 0, "input", false, false, null, "FieldParameterInput",
 				pluginConfiguration.getPackageName() + ".FieldParameterInput", null);
 		j += 1;
 		// listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String):
 		// [AllFieldCasesWithoutIdSubtype]
-		checkField(type, j, "listWithoutIdSubTypes", true, false, false, "AllFieldCasesWithoutIdSubtype",
+		checkField(objectType, j, "listWithoutIdSubTypes", true, false, false, "AllFieldCasesWithoutIdSubtype",
 				pluginConfiguration.getPackageName() + ".AllFieldCasesWithoutIdSubtype");
-		checkNbInputParameter(type, j, 3);
-		checkInputParameter(type, j, 0, "nbItems", false, true, null, "Long", "java.lang.Long", null);
-		checkInputParameter(type, j, 1, "input", false, false, null, "FieldParameterInput",
+		checkNbInputParameter(objectType, j, 3);
+		checkInputParameter(objectType, j, 0, "nbItems", false, true, null, "Long", "java.lang.Long", null);
+		checkInputParameter(objectType, j, 1, "input", false, false, null, "FieldParameterInput",
 				pluginConfiguration.getPackageName() + ".FieldParameterInput", null);
-		checkInputParameter(type, j, 2, "textToAppendToTheForname", false, false, null, "String", "java.lang.String",
-				null);
+		checkInputParameter(objectType, j, 2, "textToAppendToTheForname", false, false, null, "String",
+				"java.lang.String", null);
 		j += 1;
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks of type implementing multiples interfaces
-		type = (ObjectType) documentParser.getType("Human");
+		objectType = (ObjectType) documentParser.getType("Human");
 		//
-		assertEquals(3, type.getImplementz().size());
-		assertTrue(type.getImplementz().contains("Character"));
-		assertTrue(type.getImplementz().contains("Commented"));
-		assertTrue(type.getImplementz().contains("WithID"));
+		assertEquals(3, objectType.getImplementz().size());
+		assertTrue(objectType.getImplementz().contains("Character"));
+		assertTrue(objectType.getImplementz().contains("Commented"));
+		assertTrue(objectType.getImplementz().contains("WithID"));
+		// assertTrue(objectType.getImplementz().contains("AnyCharacter"));// This is an union
 		//
 		InterfaceType interfaceType = (InterfaceType) documentParser.getType("WithID");
 		assertEquals(3, interfaceType.getImplementingTypes().size());
 		assertEquals("AllFieldCases", interfaceType.getImplementingTypes().get(0).getName());
 		assertEquals("Human", interfaceType.getImplementingTypes().get(1).getName());
 		assertEquals("Droid", interfaceType.getImplementingTypes().get(2).getName());
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Checks of directive parsing
+		i = 0;
+		assertEquals("skip", documentParser.directives.get(i++).getName());
+		assertEquals("include", documentParser.directives.get(i++).getName());
+		assertEquals("defer", documentParser.directives.get(i++).getName());
+		assertEquals("deprecated", documentParser.directives.get(i++).getName());
+		assertEquals("testDirective", documentParser.directives.get(i++).getName());
+		assertEquals("anotherTestDirective", documentParser.directives.get(i++).getName());
+
+		// On Scalar
+		checkDirectivesOnType(documentParser.getType("Date"), true, "on Scalar", null, true);
+		checkDirectivesOnType(documentParser.getType("Long"), false, null, null, false);
+
+		// On schema
+		// Currently not managed (schema is not stored, and no java classes is generated afteward for the schema)
+
+		// On enum
+		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", "69", false);
+		checkDirectivesOnType(documentParser.getType("Unit"), false, null, null, false);
+		// On enum item
+		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", "-1", true);
+		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "JEDI", false, null, null, false);
+		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "EMPIRE", false, null, null, true);
+		// On interface
+		checkDirectivesOnType(documentParser.getType("WithID"), true, "on Interface", "666", false);
+		checkDirectivesOnType(documentParser.getType("Character"), true, "on Character interface", null, true);
+		// On interface field
+		checkDirectivesOnField(documentParser.getType("Character"), "name", true, "on interface field", null, true);
+		checkDirectivesOnField(documentParser.getType("Character"), "appearsIn", false, null, null, true);
+		// On union
+		// checkDirectivesOnType(documentParser.getType("AnyCharacter"), true, "on Union", null, false);
+		// On input type
+		checkDirectivesOnType(documentParser.getType("AllFieldCasesInput"), true, "on Input Type", null, false);
+		// On input type field
+		checkDirectivesOnField(documentParser.getType("AllFieldCasesInput"), "id", true, "on Input Field", null, false);
+		checkDirectivesOnField(documentParser.getType("AllFieldCasesInput"), "name", false, null, null, false);
+		// On type
+		checkDirectivesOnType(documentParser.getType("AllFieldCases"), true, "on Object", null, true);
+		// On type field
+		checkDirectivesOnField(documentParser.getType("AllFieldCases"), "id", true, "on Field", null, false);
+		checkDirectivesOnField(documentParser.getType("AllFieldCases"), "name", false, null, null, false);
+		// On input parameter
+		checkDirectivesOnInputParameter(documentParser.getType("AllFieldCases"), "forname", "uppercase", true,
+				"on Argument", null, false);
+		checkDirectivesOnInputParameter(documentParser.getType("AllFieldCases"), "forname", "textToAppendToTheForname",
+				false, null, null, false);
+	}
+
+	/**
+	 * Check that a Directive for an object, field, scalar (...) has been properly parsed
+	 * 
+	 * @param type
+	 * @param containsTestDirective
+	 *            true if this type contains the testDirective
+	 * @param value
+	 *            Value of the 'value' field of the testDirective
+	 * @param anotherValue
+	 *            Value of the 'anotherValue' field of the testDirective
+	 * @param containsAnotherTestDirective
+	 *            true if this type contains the anotherTestDirective
+	 */
+	private void checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
+			boolean containsAnotherTestDirective) {
+
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		assertEquals(nbDirectives, type.getAppliedDirectives().size());
+		if (containsTestDirective) {
+			assertEquals("testDirective", type.getAppliedDirectives().get(0).getDirective().getName());
+			// Check of the arguments
+			assertEquals(value, type.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			if (anotherValue != null)
+				assertEquals(anotherValue, type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+		}
+		if (containsAnotherTestDirective) {
+			assertEquals("anotherTestDirective", type.getAppliedDirectives().get(1).getDirective().getName());
+		}
+	}
+
+	/**
+	 * Check that a Directive for an object, field, scalar (...) has been properly parsed
+	 * 
+	 * @param type
+	 * @param fieldName
+	 *            The name of the field, within the given type
+	 * @param containsTestDirective
+	 *            true if this type contains the testDirective
+	 * @param value
+	 *            Value of the 'value' field of the testDirective
+	 * @param anotherValue
+	 *            Value of the 'anotherValue' field of the testDirective
+	 * @param containsAnotherTestDirective
+	 *            true if this type contains the anotherTestDirective
+	 */
+	private void checkDirectivesOnField(Type type, String fieldName, boolean containsTestDirective, String value,
+			String anotherValue, boolean containsAnotherTestDirective) {
+
+		Field field = null;
+		for (Field f : type.getFields()) {
+			if (f.getName().equals(fieldName)) {
+				field = f;
+				break;
+			}
+		}
+		if (field == null) {
+			fail("Could not find the field '" + fieldName + "' on type '" + type.getName() + "'");
+		}
+
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		assertEquals(nbDirectives, field.getAppliedDirectives().size());
+		if (containsTestDirective) {
+			assertEquals("testDirective", field.getAppliedDirectives().get(0).getDirective().getName());
+			// check arguments
+			assertEquals(value, field.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			if (anotherValue != null)
+				assertEquals(anotherValue, field.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+		}
+		if (containsAnotherTestDirective) {
+			int index = containsTestDirective ? 1 : 0;
+			assertEquals("anotherTestDirective", field.getAppliedDirectives().get(index).getDirective().getName());
+		}
+	}
+
+	/**
+	 * Check that a Directive for an object, field, scalar (...) has been properly parsed
+	 * 
+	 * @param type
+	 * @param enumValueName
+	 *            The name of the field, within the given type
+	 * @param containsTestDirective
+	 *            true if this type contains the testDirective
+	 * @param value
+	 *            Value of the 'value' field of the testDirective
+	 * @param anotherValue
+	 *            Value of the 'anotherValue' field of the testDirective
+	 * @param containsAnotherTestDirective
+	 *            true if this type contains the anotherTestDirective
+	 */
+	private void checkDirectivesOnEnumValue(Type type, String enumValueName, boolean containsTestDirective,
+			String value, String anotherValue, boolean containsAnotherTestDirective) {
+
+		EnumValue enumValue = null;
+		for (EnumValue f : ((EnumType) type).getValues()) {
+			if (f.getName().equals(enumValueName)) {
+				enumValue = f;
+				break;
+			}
+		}
+		if (enumValue == null) {
+			fail("Could not find the enum value '" + enumValueName + "' on enum '" + type.getName() + "'");
+		}
+
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		assertEquals(nbDirectives, enumValue.getAppliedDirectives().size());
+		if (containsTestDirective) {
+			assertEquals("testDirective", enumValue.getAppliedDirectives().get(0).getDirective().getName());
+			// check arguments
+			assertEquals(value, enumValue.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			if (anotherValue != null)
+				assertEquals(anotherValue,
+						enumValue.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+		}
+		if (containsAnotherTestDirective) {
+			int index = containsTestDirective ? 1 : 0;
+			assertEquals("anotherTestDirective", enumValue.getAppliedDirectives().get(index).getDirective().getName());
+		}
+	}
+
+	/**
+	 * Check that a Directive for an object, field, scalar (...) has been properly parsed
+	 * 
+	 * @param type
+	 * @param fieldName
+	 *            The name of the field, within the given type
+	 * @param containsTestDirective
+	 *            true if this type contains the testDirective
+	 * @param value
+	 *            Value of the 'value' field of the testDirective
+	 * @param anotherValue
+	 *            Value of the 'anotherValue' field of the testDirective
+	 * @param containsAnotherTestDirective
+	 *            true if this type contains the anotherTestDirective
+	 */
+	private void checkDirectivesOnInputParameter(Type type, String fieldName, String parameterName,
+			boolean containsTestDirective, String value, Integer anotherValue, boolean containsAnotherTestDirective) {
+
+		// First, we find the field
+		Field field = null;
+		for (Field f : type.getFields()) {
+			if (f.getName().equals(fieldName)) {
+				field = f;
+				break;
+			}
+		}
+		if (field == null) {
+			fail("Could not find the field '" + fieldName + "' on type '" + type.getName() + "'");
+		}
+
+		// Second, we find the parameter
+		Field parameter = null;
+		for (Field p : field.getInputParameters()) {
+			if (p.getName().contentEquals(parameterName)) {
+				parameter = p;
+				break;
+			}
+		}
+		if (parameter == null) {
+			fail("Could not find the parameter '" + parameterName + "' for the field '" + fieldName + "' on type '"
+					+ type.getName() + "'");
+		}
+
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		assertEquals(nbDirectives, parameter.getAppliedDirectives().size());
+		if (containsTestDirective) {
+			assertEquals("testDirective", parameter.getAppliedDirectives().get(0).getDirective().getName());
+			// check arguments
+			assertEquals(value, parameter.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			if (anotherValue != null)
+				assertEquals(BigInteger.valueOf(anotherValue),
+						parameter.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+		}
+		if (containsAnotherTestDirective) {
+			int index = containsTestDirective ? 1 : 0;
+			assertEquals("anotherTestDirective", field.getAppliedDirectives().get(index).getDirective().getName());
+		}
 	}
 
 	@Test
@@ -447,6 +680,11 @@ class DocumentParserTest_allGraphQLCases_Server {
 			}
 		} // for
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
+		// We need to read the directives first
+		documentParser.postConstruct();
+		documentParser.documents.get(0).getDefinitions().stream().filter(n -> (n instanceof DirectiveDefinition))
+				.forEach(node -> documentParser.directives
+						.add(documentParser.readDirectiveDefinition((DirectiveDefinition) node)));
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.queryTypes = new ArrayList<>();
 
@@ -458,10 +696,10 @@ class DocumentParserTest_allGraphQLCases_Server {
 		assertEquals(4, type.getValues().size(), "Number of values");
 
 		int i = 0;
-		assertEquals("NEWHOPE", type.getValues().get(i++));
-		assertEquals("EMPIRE", type.getValues().get(i++));
-		assertEquals("JEDI", type.getValues().get(i++));
-		assertEquals("DOES_NOT_EXIST", type.getValues().get(i++));
+		assertEquals("NEWHOPE", type.getValues().get(i++).getName());
+		assertEquals("EMPIRE", type.getValues().get(i++).getName());
+		assertEquals("JEDI", type.getValues().get(i++).getName());
+		assertEquals("DOES_NOT_EXIST", type.getValues().get(i++).getName());
 	}
 
 	@Test

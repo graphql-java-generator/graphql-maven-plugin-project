@@ -6,8 +6,13 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.Type;
@@ -78,14 +83,13 @@ public class FieldImpl implements Field {
 	 */
 	private String annotation = "";
 
+	/** All directives that have been defined in the GraphQL schema for this field */
+	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
+
 	/** {@inheritDoc} */
 	@Override
 	public Type getType() {
-		Type type = documentParser.getType(graphQLTypeName);
-		if (type == null) {
-			throw new NullPointerException("Could not find any Type of name '" + graphQLTypeName + "'");
-		}
-		return type;
+		return documentParser.getType(graphQLTypeName);
 	}
 
 	public void setGraphQLTypeName(String graphQLTypeName) {
@@ -143,5 +147,19 @@ public class FieldImpl implements Field {
 			this.annotation = "";
 
 		addAnnotation(annotationToAdd);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getPascalCaseName() {
+		String name = getName();
+		if ("Boolean".equals(name)) {
+			String[] camelSplittedProperty = name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+			if ("is".equals(camelSplittedProperty[0]) && camelSplittedProperty.length > 1) {
+				name = GraphqlUtils.graphqlUtils
+						.getCamelCase(StringUtils.join(ArrayUtils.remove(camelSplittedProperty, 0)));
+			}
+		}
+		return GraphqlUtils.graphqlUtils.getPascalCase(name);
 	}
 }

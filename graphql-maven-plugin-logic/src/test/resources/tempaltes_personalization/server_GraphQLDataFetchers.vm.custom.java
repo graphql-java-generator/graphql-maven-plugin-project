@@ -82,7 +82,7 @@ public class GraphQLDataFetchers {
 			return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
 #elseif (${dataFetcher.field.list})
 			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
-			logger.debug("${dataFetcher.name}: {} found rows", ret.size());
+			logger.debug("${dataFetcher.name}: {} found rows", (ret==null) ? 0 : ret.size());
 
 			return ret;
 #else

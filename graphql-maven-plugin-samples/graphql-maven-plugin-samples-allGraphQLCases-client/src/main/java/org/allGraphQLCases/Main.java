@@ -1,15 +1,15 @@
 package org.allGraphQLCases;
 
-import org.allGraphQLCases.graphql.DirectQueries;
-import org.allGraphQLCases.graphql.PreparedQueries;
-import org.allGraphQLCases.graphql.WithBuilder;
+import org.allGraphQLCases.impl.PartialDirectQueries;
+import org.allGraphQLCases.impl.PartialPreparedQueries;
+import org.allGraphQLCases.impl.PartialWithBuilder;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
- * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
- * {@link PreparedQueries}, {@link WithBuilder}
+ * The main class, which executes the same partialQueries, built by three different methods. See {@link PartialDirectQueries},
+ * {@link PartialPreparedQueries}, {@link PartialWithBuilder}
  * 
  * @author EtienneSF
  */
@@ -28,17 +28,17 @@ public class Main {
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		execOne(new DirectQueries(GRAPHQL_ENDPOINT));
+		execOne(new PartialDirectQueries(GRAPHQL_ENDPOINT));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new PreparedQueries(GRAPHQL_ENDPOINT));
+		execOne(new PartialPreparedQueries(GRAPHQL_ENDPOINT));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new WithBuilder(GRAPHQL_ENDPOINT));
+		execOne(new PartialWithBuilder(GRAPHQL_ENDPOINT));
 
 		System.out.println("");
 		System.out.println("");
@@ -47,7 +47,7 @@ public class Main {
 		System.out.println("(please take a look at the other samples, for other use cases)");
 	}
 
-	public void execOne(Queries client) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	public void execOne(PartialQueries client) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// A random value, to variabilize mutations
 		int i = (int) (Math.random() * Integer.MAX_VALUE);
 

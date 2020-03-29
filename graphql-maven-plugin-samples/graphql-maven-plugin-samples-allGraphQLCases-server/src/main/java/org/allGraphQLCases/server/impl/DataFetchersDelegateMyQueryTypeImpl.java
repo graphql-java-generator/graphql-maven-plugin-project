@@ -20,8 +20,11 @@ import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
 
+import graphql.language.Argument;
+import graphql.language.Directive;
 import graphql.language.EnumValue;
 import graphql.language.Field;
+import graphql.language.StringValue;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -135,5 +138,46 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			throw new RuntimeException(e.getMessage(), e);
 		}
 		return clazz;
+	}
+
+	@Override
+	public List<String> directiveOnQuery(DataFetchingEnvironment dataFetchingEnvironment, Boolean uppercase) {
+		List<String> ret = new ArrayList<>();
+
+		// Let's look for the testDirective
+		Directive testDirective = getTestDirective(
+				dataFetchingEnvironment.getMergedField().getSingleField().getDirectives());
+
+		if (testDirective != null) {
+			for (Argument arg : testDirective.getArguments()) {
+				String val = ((StringValue) arg.getValue()).getValue();
+				if (uppercase) {
+					val = val.toUpperCase();
+				}
+				ret.add(val);
+			}
+		}
+
+		return ret;
+	}
+
+	private Directive getTestDirective(List<Directive> directives) {
+		for (Directive d : directives) {
+			if (d.getName().equals("testDirective"))
+				return d;
+		}
+		return null;
+	}
+
+	@Override
+	public Character directiveOnField(DataFetchingEnvironment dataFetchingEnvironment) {
+		Human ret = generator.generateInstance(Human.class);
+		Field field = (Field) dataFetchingEnvironment.getMergedField().getFields().get(0).getSelectionSet()
+				.getSelections().get(1);
+		Directive testDirective = getTestDirective(field.getDirectives());
+		if (testDirective != null) {
+			ret.setName(((StringValue) testDirective.getArguments().get(0).getValue()).getValue());
+		}
+		return ret;
 	}
 }

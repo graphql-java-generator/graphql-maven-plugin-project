@@ -5,16 +5,11 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.PluginMode;
-import com.graphql_java_generator.plugin.language.impl.TypeUtil;
 
 /**
- * This interface describes one field of one objet type (or interface...). It aims to be simple enough, so that the
- * Velocity template can easily generated ths fields from it.<BR/>
+ * This interface describes one field of one object type (or interface...). It aims to be simple enough, so that the
+ * Velocity template can easily generated the fields from it.<BR/>
  * For instance:
  * 
  * <PRE>
@@ -71,9 +66,8 @@ public interface Field {
 	public String getGraphQLTypeName();
 
 	/**
-	 * Indicates whether this field is an id or not. It's used in {@link PluginMode#SERVER} mode to add the
-	 * javax.persistence annotations for the id fields. Default value is false. This field is set to true for GraphQL
-	 * fields which are of 'ID' type.
+	 * Indicates whether this field is an id or not. It's used in server mode to add the javax.persistence annotations
+	 * for the id fields. Default value is false. This field is set to true for GraphQL fields which are of 'ID' type.
 	 */
 	public boolean isId();
 
@@ -120,16 +114,7 @@ public interface Field {
 	 * 
 	 * @return
 	 */
-	public default String getPascalCaseName() {
-		String name = getName();
-		if ("Boolean".equals(name)) {
-			String[] camelSplittedProperty = name.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-			if ("is".equals(camelSplittedProperty[0]) && camelSplittedProperty.length > 1) {
-				name = TypeUtil.getCamelCase(StringUtils.join(ArrayUtils.remove(camelSplittedProperty, 0)));
-			}
-		}
-		return TypeUtil.getPascalCase(name);
-	}
+	public String getPascalCaseName();
 
 	/**
 	 * Convert the given name, which can be in non camel case (for instance: ThisIsCamelCase) to a pascal case string
@@ -138,6 +123,9 @@ public interface Field {
 	 * @return
 	 */
 	public default String getCamelCaseName() {
-		return TypeUtil.getCamelCase(getName());
+		return GraphqlUtils.graphqlUtils.getCamelCase(getName());
 	}
+
+	/** Returns the list of directives that have been defined for this field, in the GraphQL schema */
+	public List<AppliedDirective> getAppliedDirectives();
 }

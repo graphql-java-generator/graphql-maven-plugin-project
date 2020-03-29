@@ -23,6 +23,8 @@ public enum CodeTemplate {
 	QUERY_MUTATION_SUBSCRIPTION(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_type.vm.java"),
 	QUERY_TARGET_TYPE(CodeTemplateScope.CLIENT, "templates/client_query_target_type.vm.java"),
 	JACKSON_DESERIALIZER(CodeTemplateScope.CLIENT, "templates/client_jackson_deserialize.vm.java"),
+	ROOT_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_rootResponse.vm.java"),
+	DIRECTIVE_REGISTRY_INITIALIZER(CodeTemplateScope.CLIENT, "templates/client_DirectiveRegistryInitializer.vm.java"), 
 	BATCHLOADERDELEGATE(CodeTemplateScope.SERVER, "templates/server_BatchLoaderDelegate.vm.java"),
 	BATCHLOADERDELEGATEIMPL(CodeTemplateScope.SERVER, "templates/server_BatchLoaderDelegateImpl.vm.java"),
 	DATAFETCHER(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchers.vm.java"),

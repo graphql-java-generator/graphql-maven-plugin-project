@@ -16,12 +16,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, for query, mutation
@@ -82,8 +82,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 	}
 
 	/**
-	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
-	 * that gives the opportunity to customise the REST request<BR/>
+	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client that gives the opportunity
+	 * to customise the REST request<BR/>
 	 * For example: http://my.server.com/graphql
 	 *
 	 * @param graphqlEndpoint
@@ -177,7 +177,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * Builds a single GraphQL request from the parameter given.
 	 * 
 	 * @param requestType
-	 *            One of "query", "mutation" or "subscription"
+	 *            Null of objectResponse is the full query response (that is: it starts from the query, mutation or
+	 *            subscription keyword). If not, requestType contains the keyword that must be added, which indicates
+	 *            the kind of server call. It must then be one of "query", "mutation" or "subscription".
 	 * @param objectResponse
 	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()} method
 	 *            returns the field of the query, that is: the query name.
@@ -188,19 +190,33 @@ public class QueryExecutorImpl implements QueryExecutor {
 	String buildRequest(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 
-		if (!requestType.equals("query") && !requestType.equals("mutation") && !requestType.equals("subscription")) {
-			throw new IllegalArgumentException(
-					"requestType must be one of \"query\", \"mutation\" or \"subscription\", but is \"" + requestType
-							+ "\"");
+		StringBuilder sb = new StringBuilder("{\"query\":\"");
+
+		if (objectResponse.isQueryLevel()) {
+			// The objectResponse contains the full request, and starts at query level.
+			// We don't add the __typename at query level
+			objectResponse.appendResponseQuery(sb, parameters, false);
+		} else {
+			// TODO requestType should be an enum
+			if (!requestType.equals("query") && !requestType.equals("mutation")
+					&& !requestType.equals("subscription")) {
+				throw new IllegalArgumentException(
+						"requestType must be one of \"query\", \"mutation\" or \"subscription\", but is \""
+								+ requestType + "\"");
+			}
+			sb.append(requestType);
+			sb.append("{");
+
+			// Let's add the query/subscription/mutation. We must add the __typename from this level. So the second
+			// parameter is true
+			objectResponse.appendResponseQuery(sb, parameters, false);
+
+			sb.append("}");
 		}
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(requestType);
-		sb.append("{");
-		objectResponse.appendResponseQuery(sb, parameters, false);
-		sb.append("}");
+		sb.append("\",\"variables\":null,\"operationName\":null}");
 
-		return "{\"query\":\"" + sb.toString() + "\",\"variables\":null,\"operationName\":null}";
+		return sb.toString();
 	}
 
 }

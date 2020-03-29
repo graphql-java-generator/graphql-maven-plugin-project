@@ -1,9 +1,9 @@
-package org.allGraphQLCases.graphql;
+package org.allGraphQLCases.impl;
 
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -21,11 +21,11 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
- * This class implements the simplest way to call GraphQl queries, with the GraphQL Java Generator
+ * This class implements the simplest way to call GraphQl partialQueries, with the GraphQL Java Generator
  * 
  * @author EtienneSF
  */
-public class DirectQueries implements Queries {
+public class PartialDirectQueries implements PartialQueries {
 
 	final MyQueryType queryType;
 	final AnotherMutationType mutationType;
@@ -38,7 +38,7 @@ public class DirectQueries implements Queries {
 	 * @param graphqlEndpoint
 	 *            the https URI for the GraphQL endpoint
 	 */
-	public DirectQueries(String graphqlEndpoint) {
+	public PartialDirectQueries(String graphqlEndpoint) {
 		queryType = new MyQueryType(graphqlEndpoint);
 		mutationType = new AnotherMutationType(graphqlEndpoint);
 	}
@@ -93,11 +93,27 @@ public class DirectQueries implements Queries {
 			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
 			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.allFieldCases("{id name forname age nbComments comments booleans aliases planets friends{id} "
-				+ " oneWithIdSubType{id name} listWithIdSubTypes(nbItems:3, textToAppendToTheForname:\"textToAppendToTheFornameWithId\"){name id} "
-				+ " oneWithoutIdSubType(input:{uppercase: true}){name} "
-				+ " listWithoutIdSubTypes(nbItems:6, textToAppendToTheForname:\"textToAppendToTheFornameWithoutId\"){name}}",
-				allFieldCasesInput);
+		return queryType.allFieldCases("{id name " //
+				// Parameter for fields are not managed yet)
+				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
+				+ " forname"//
+				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
+				+ " oneWithIdSubType {id name} "//
+				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+				+ " oneWithoutIdSubType(input: ?input) {name}"//
+				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+				+ "}", //
+				allFieldCasesInput, //
+				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
+				"nbItemsWithId", nbItemsWithId, //
+				"date", date, //
+				"dates", dates, //
+				"uppercaseNameList", uppercaseNameList, //
+				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //
+				"input", input, //
+				"nbItemsWithoutId", nbItemsWithoutId, //
+				"inputList", inputList, //
+				"textToAppendToTheFornameWithoutId", textToAppendToTheFornameWithoutId);
 	}
 
 	@Override

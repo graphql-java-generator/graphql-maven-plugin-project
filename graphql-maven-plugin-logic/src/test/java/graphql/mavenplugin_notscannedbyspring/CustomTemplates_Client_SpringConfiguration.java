@@ -12,7 +12,7 @@ import com.graphql_java_generator.plugin.PluginMode;
  * @author ggomez
  */
 @Configuration
-@ComponentScan(basePackages = "com.graphql_java_generator.plugin")
+@ComponentScan(basePackages = "com.graphql_java_generator")
 public class CustomTemplates_Client_SpringConfiguration extends AbstractCustomTemplatesSpringConfiguration {
 	
 	public CustomTemplates_Client_SpringConfiguration() {

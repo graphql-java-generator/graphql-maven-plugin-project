@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator;
+package com.graphql_java_generator.customscalars;
 
 import org.springframework.stereotype.Component;
 

@@ -122,6 +122,22 @@ public class InputParameter {
 	}
 
 	/**
+	 * Creates and returns a new instance of {@link InputParameter}, which value is given, and can not be changed
+	 * afterwards.
+	 * 
+	 * @param name
+	 * @param value
+	 * @param mandatory
+	 * @param type
+	 * @return
+	 */
+	@Deprecated
+	public static InputParameter newHardCodedParameter(String name, Object value, boolean mandatory,
+			GraphQLScalarType type) {
+		return new InputParameter(name, null, value, mandatory, type);
+	}
+
+	/**
 	 * The constructor is private. Instances must be created with one of these helper methods:
 	 * {@link #newBindParameter(String, String)} or {@link #newHardCodedParameter(String, Object)}
 	 * 
@@ -206,7 +222,8 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	String getValueForGraphqlQuery(Object val, GraphQLScalarType graphQLScalarType) throws GraphQLRequestExecutionException {
+	String getValueForGraphqlQuery(Object val, GraphQLScalarType graphQLScalarType)
+			throws GraphQLRequestExecutionException {
 		if (val == null) {
 			return null;
 		} else if (val instanceof java.util.List) {
@@ -246,7 +263,8 @@ public class InputParameter {
 	 * @throws NullPointerException
 	 *             If lst is null
 	 */
-	private String getListValue(List<?> list, GraphQLScalarType graphQLScalarType) throws GraphQLRequestExecutionException {
+	private String getListValue(List<?> list, GraphQLScalarType graphQLScalarType)
+			throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("[");
 		for (int index = 0; index < list.size(); index++) {
 			Object obj = list.get(index);
@@ -286,6 +304,18 @@ public class InputParameter {
 		} // for
 
 		return result.append("}").toString();
+	}
+
+	public String getBindParameterName() {
+		return bindParameterName;
+	}
+
+	public boolean isMandatory() {
+		return mandatory;
+	}
+
+	public GraphQLScalarType getGraphQLScalarType() {
+		return graphQLScalarType;
 	}
 
 }

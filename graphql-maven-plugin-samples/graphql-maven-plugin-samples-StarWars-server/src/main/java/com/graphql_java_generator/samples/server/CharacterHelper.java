@@ -5,6 +5,7 @@ package com.graphql_java_generator.samples.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -33,11 +34,12 @@ public class CharacterHelper {
 	 * @return
 	 */
 	public Character findById(UUID id) {
-		Character c = humanRepository.findById(id).get();
-		if (c == null) {
-			c = droidRepository.findById(id).get();
+		Optional<Human> h = humanRepository.findById(id);
+		if (h.isPresent()) {
+			return h.get();
+		} else {
+			return droidRepository.findById(id).get();
 		}
-		return c;
 	}
 
 	/**

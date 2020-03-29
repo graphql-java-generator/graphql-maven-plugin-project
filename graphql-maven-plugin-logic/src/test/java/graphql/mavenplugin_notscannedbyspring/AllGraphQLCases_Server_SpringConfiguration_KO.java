@@ -17,7 +17,7 @@ import graphql.schema.GraphQLScalarType;
  * @author EtienneSF
  */
 @Configuration
-@ComponentScan(basePackages = "com.graphql_java_generator.plugin")
+@ComponentScan(basePackages = "com.graphql_java_generator")
 public class AllGraphQLCases_Server_SpringConfiguration_KO extends AbstractSpringConfiguration {
 
 	public AllGraphQLCases_Server_SpringConfiguration_KO() {

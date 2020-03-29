@@ -15,6 +15,8 @@ import $import;
  */
 public class ${objectName} {
 
+	public static final String NAME = "${query.javaName}";
+
 #if ($query.list  &&  $query.type.class.simpleName == "InterfaceType")
 	@JsonDeserialize(contentAs = ${query.type.concreteClassSimpleName}.class)
 #elseif (${query.list})

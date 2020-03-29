@@ -31,9 +31,9 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	/**
 	 * Pattern for default templates
 	 */
+	
+	
 	protected static final Pattern templatePattern = Pattern.compile("templates\\/([a-zA-Z_]*)\\.vm\\.java");
-	
-	
 	protected static List<CustomScalarDefinition> customScalars;
 
 	static {
@@ -72,7 +72,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 					return new Pair<CodeTemplate, String>(codeTemplate, 
 							String.format("tempaltes_personalization/%s.vm.custom.java", matcher.group(1)));
 				} else {
-					throw new RuntimeException("Template does not match expected pattenr");
+					throw new RuntimeException(
+							String.format( "Template does not match expected pattenr: %s - %s", codeTemplate, codeTemplate.getDefaultValue()));
 				}
 				
 			}

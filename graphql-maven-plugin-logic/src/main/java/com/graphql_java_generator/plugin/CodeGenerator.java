@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
@@ -62,6 +63,9 @@ public class CodeGenerator {
 	@Autowired
 	ResourceSchemaStringProvider resourceSchemaStringProvider;
 
+	@Autowired
+	GraphqlUtils graphqlUtils;
+
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
 
@@ -93,12 +97,29 @@ public class CodeGenerator {
 			i += generateServerFiles();
 			break;
 		case client:
+			// Generation of the query/mutation/subscription classes
 			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 			i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
+			
+			// Generation of the query/mutation/subscription response classes
+			i += generateTargetFiles(documentParser.getQueryTypes(), "response", 
+					resolveTemplate(CodeTemplate.OBJECT));
+			i += generateTargetFiles(documentParser.getMutationTypes(), "response", 
+					resolveTemplate(CodeTemplate.OBJECT));
+			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response", 
+					resolveTemplate(CodeTemplate.OBJECT));
+
+			// Generation of the query/mutation/subscription root responses classes
+			i += generateTargetFiles(documentParser.getQueryTypes(), "root response",
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+			i += generateTargetFiles(documentParser.getMutationTypes(), "root response",
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
 
 			// Files for Custom Scalars
 			VelocityContext context = new VelocityContext();
@@ -107,6 +128,12 @@ public class CodeGenerator {
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
 					"Generating CustomScalarRegistryInitializer", context,
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
+			// Files for Directives
+			context = new VelocityContext();
+			context.put("pluginConfiguration", pluginConfiguration);
+			context.put("directives", documentParser.directives);
+			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer"), "Generating DirectiveRegistryInitializer",
+					context, resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER) );
 			//
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER));
@@ -168,11 +195,15 @@ public class CodeGenerator {
 			throws RuntimeException {
 		int i = 0;
 		for (Type object : objects) {
-			File targetFile = getJavaFile((String) execWithOneStringParam("getTargetFileName", object, type));
+			String targetFileName = (String) execWithOneStringParam("getTargetFileName", object, type);
+			File targetFile = getJavaFile(targetFileName);
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
+
 			VelocityContext context = new VelocityContext();
-			context.put("pluginConfiguration", pluginConfiguration);
+			context.put("imports", getImportList());
 			context.put("object", object);
+			context.put("pluginConfiguration", pluginConfiguration);
+			context.put("targetFileName", targetFileName);
 			context.put("type", type);
 			context.put("imports", getImportList());
 
@@ -221,6 +252,7 @@ public class CodeGenerator {
 		context.put("pluginConfiguration", pluginConfiguration);
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
+		context.put("unions", documentParser.getUnionTypes());
 		context.put("imports", getImportList());
 		context.put("customScalars", documentParser.customScalars);
 

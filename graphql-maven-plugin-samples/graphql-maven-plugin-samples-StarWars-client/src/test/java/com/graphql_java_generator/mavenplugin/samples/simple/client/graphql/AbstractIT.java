@@ -194,16 +194,23 @@ abstract class AbstractIT {
 	@Test
 	void test_addFriend() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		int idCharacter = (int) (Math.random() * 200);
-		Character characterBefore = queryType.characters("{id name friends{id name}}", null).get(idCharacter);
-		int idFriend = (int) (Math.random() * 200);
-		Character friend = queryType.characters("{id name friends{id name}}", null).get(idFriend);
+		List<Character> charsBefore = queryType.characters("{id name friends{id name}}", null);
+		int idCharacter = (int) (Math.random() * charsBefore.size());
+		Character characterBefore = charsBefore.get(idCharacter);
+		//
+		List<Character> friends = queryType.characters("{id name friends{id name}}", null);
+		int idFriend = (int) (Math.random() * friends.size());
+		Character friend = friends.get(idFriend);
 
 		// Go, go, go
 		Character characterAfter = queries.addFriend(characterBefore.getId(), friend.getId());
 
 		// Verification
-		assertEquals(characterBefore.getFriends().size() + 1, characterAfter.getFriends().size());
+		assertNotNull(characterBefore);
+		assertNotNull(characterAfter);
+		assertNotNull(characterAfter.getFriends());
+		int nbBefore = (characterBefore.getFriends() == null) ? 0 : characterBefore.getFriends().size();
+		assertEquals(nbBefore + 1, characterAfter.getFriends().size());
 		// The new friend should be somewhere in the list
 		boolean found = false;
 		for (Character c : characterAfter.getFriends()) {

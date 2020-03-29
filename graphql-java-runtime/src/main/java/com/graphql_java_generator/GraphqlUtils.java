@@ -108,9 +108,18 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Returns the given name in PascalCase. For instance: theName -> TheName
+	 * Convert the given name, to a camel case name. Currenly very simple : it puts the first character in lower case.
 	 * 
-	 * @param name
+	 * @return
+	 */
+	public String getCamelCase(String name) {
+		return name.substring(0, 1).toLowerCase() + name.substring(1);
+	}
+
+	/**
+	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case
+	 * string (for instance: ThisIsCamelCase).
+	 * 
 	 * @return
 	 */
 	public String getPascalCase(String name) {
@@ -335,6 +344,26 @@ public class GraphqlUtils {
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(
 					"Could not get the method '" + methodName + "' in the " + clazz.getName() + " class", e);
+		}
+	}
+
+	/**
+	 * Calls the 'methodName' method on the given object.
+	 * 
+	 * @param methodName
+	 *            The name of the method. This method should have no parameter
+	 * @param object
+	 *            The given node, on which the 'methodName' method is to be called
+	 * @return
+	 */
+	public Object invokeMethod(String methodName, Object object) {
+		try {
+			Method getType = object.getClass().getDeclaredMethod(methodName);
+			return getType.invoke(object);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"
+					+ object.getClass().getName() + "': " + e.getMessage(), e);
 		}
 	}
 

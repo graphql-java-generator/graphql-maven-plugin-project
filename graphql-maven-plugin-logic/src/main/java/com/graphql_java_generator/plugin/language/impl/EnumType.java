@@ -6,8 +6,8 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 
 import lombok.Data;
@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 public class EnumType extends AbstractType {
 
 	/** The list of values */
-	List<String> values = new ArrayList<String>();
+	List<EnumValue> values = new ArrayList<>();
 
 	/**
 	 * 
@@ -81,18 +81,4 @@ public class EnumType extends AbstractType {
 		return false;
 	}
 
-	/**
-	 * Returns the values, with each value that are java keywords prefixed by an underscore
-	 * 
-	 * @return
-	 */
-	public List<String> getJavaValues() {
-		List<String> ret = new ArrayList<String>(values.size());
-
-		for (String value : values) {
-			ret.add(GraphqlUtils.graphqlUtils.getJavaName(value));
-		}
-
-		return ret;
-	}
 }

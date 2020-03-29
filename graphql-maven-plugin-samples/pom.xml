@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-project</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.5.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples</artifactId>
@@ -37,6 +37,25 @@
 					<artifactId>graphql-maven-plugin</artifactId>
 					<version>${project.version}</version>
 				</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>							
 			</plugins>
 		</pluginManagement>
 		<plugins>

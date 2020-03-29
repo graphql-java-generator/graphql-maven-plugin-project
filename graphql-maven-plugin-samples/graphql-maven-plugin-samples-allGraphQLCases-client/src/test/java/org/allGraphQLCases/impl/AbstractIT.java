@@ -1,4 +1,4 @@
-package org.allGraphQLCases.graphql;
+package org.allGraphQLCases.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -35,11 +35,11 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 abstract class AbstractIT {
 
 	MyQueryType queryType;
-	Queries queries;
+	PartialQueries partialQueries;
 
 	@Test
 	void test_withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		List<Character> list = queries.withoutParameters();
+		List<Character> list = partialQueries.withoutParameters();
 
 		assertNotNull(list);
 		assertEquals(10, list.size());
@@ -52,7 +52,7 @@ abstract class AbstractIT {
 	void test_withOneOptionalParam() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Without parameter
-		Character c = queries.withOneOptionalParam(null);
+		Character c = partialQueries.withOneOptionalParam(null);
 		checkCharacter(c, "test_withOneOptionalParam(null)", false, "Random String (", 0, 0);
 
 		// With a parameter
@@ -62,7 +62,7 @@ abstract class AbstractIT {
 		input.setType("Human");
 
 		// Go, go, go
-		c = queries.withOneOptionalParam(input);
+		c = partialQueries.withOneOptionalParam(input);
 		// Verification
 		assertNotNull(c.getId());
 		assertEquals("A name", c.getName());
@@ -79,7 +79,7 @@ abstract class AbstractIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// With null parameter
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> queries.withOneMandatoryParam(null));
+				() -> partialQueries.withOneMandatoryParam(null));
 		assertTrue(e.getMessage().contains("character"));
 	}
 
@@ -92,7 +92,7 @@ abstract class AbstractIT {
 		input.setType("Droid");
 
 		// Go, go, go
-		Character c = queries.withOneMandatoryParam(input);
+		Character c = partialQueries.withOneMandatoryParam(input);
 
 		// Verification
 		assertEquals("Droid", c.getClass().getSimpleName());
@@ -110,11 +110,11 @@ abstract class AbstractIT {
 	void test_withEnum() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// With null parameter: NEWHOPE is the default value
-		Character c = queries.withEnum(null);
+		Character c = partialQueries.withEnum(null);
 		assertEquals(Episode.NEWHOPE.name(), c.getName());// See server code for more info
 
 		// With a non null parameter
-		c = queries.withEnum(Episode.JEDI);
+		c = partialQueries.withEnum(Episode.JEDI);
 		assertEquals(Episode.JEDI.name(), c.getName()); // See server code for more info
 	}
 
@@ -138,7 +138,7 @@ abstract class AbstractIT {
 		String firstName = "A first name";
 
 		// Go, go, go
-		List<Character> ret = queries.withList(firstName, list);
+		List<Character> ret = partialQueries.withList(firstName, list);
 
 		// Verification
 		assertEquals(2, ret.size());
@@ -156,69 +156,57 @@ abstract class AbstractIT {
 
 	@Test
 	void test_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Not implemented in direct queries
-		if (this.getClass().getSimpleName().equals("DirectQueriesIT")) {
 
-			// Go, go, go
-			// bind variables are not used in DirectQueries
-			GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-					() -> queries.allFieldCases(null, null, null, 3, null, null, null, null, null, 2, null, null));
+		// Preparation
+		AllFieldCasesInput allFieldCasesInput = null;
+		Boolean uppercase = true;
+		String textToAppendToTheForname = "textToAppendToTheForname";
+		long nbItemsWithId = 3;
+		@SuppressWarnings("deprecation")
+		Date date = new Date(2000 - 1900, 12 - 1, 20);
+		@SuppressWarnings("deprecation")
+		Date date2 = new Date(2000 - 1900, 12 - 1, 21);
+		List<Date> dates = new ArrayList<>();
+		dates.add(date);
+		dates.add(date2);
+		Boolean uppercaseNameList = null;
+		String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
+		FieldParameterInput input = new FieldParameterInput();
+		input.setUppercase(true);
+		int nbItemsWithoutId = 6;
+		FieldParameterInput inputList = null;
+		String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
 
-			assertTrue(e.getMessage().contains("listWithIdSubTypes"));
-			assertTrue(e.getMessage().contains(
-					"DirectQueries with field's parameter that are Input Types, please consider using Prepared Queries."));
+		// Go, go, go
+		AllFieldCases allFieldCases = partialQueries.allFieldCases(allFieldCasesInput, uppercase,
+				textToAppendToTheForname, nbItemsWithId, date, dates, uppercaseNameList, textToAppendToTheFornameWithId,
+				input, nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
 
-		} else {
-			// Preparation
-			AllFieldCasesInput allFieldCasesInput = null;
-			Boolean uppercase = true;
-			String textToAppendToTheForname = "textToAppendToTheForname";
-			long nbItemsWithId = 3;
-			@SuppressWarnings("deprecation")
-			Date date = new Date(2000 - 1900, 12 - 1, 20);
-			@SuppressWarnings("deprecation")
-			Date date2 = new Date(2000 - 1900, 12 - 1, 21);
-			List<Date> dates = new ArrayList<>();
-			dates.add(date);
-			dates.add(date2);
-			Boolean uppercaseNameList = null;
-			String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
-			FieldParameterInput input = new FieldParameterInput();
-			input.setUppercase(true);
-			int nbItemsWithoutId = 6;
-			FieldParameterInput inputList = null;
-			String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
+		// Verification
+		assertNotNull(allFieldCases);
 
-			// Go, go, go
-			AllFieldCases allFieldCases = queries.allFieldCases(allFieldCasesInput, uppercase, textToAppendToTheForname,
-					nbItemsWithId, date, dates, uppercaseNameList, textToAppendToTheFornameWithId, input,
-					nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
+		// listWithIdSubTypes
+		assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());
+		assertTrue(allFieldCases.getListWithIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithId));
+		// listWithoutIdSubTypes
+		assertEquals(nbItemsWithoutId, allFieldCases.getListWithoutIdSubTypes().size());
+		assertTrue(
+				allFieldCases.getListWithoutIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithoutId));
 
-			// Verification
-			assertNotNull(allFieldCases);
-
-			// listWithIdSubTypes
-			assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());
-			assertTrue(allFieldCases.getListWithIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithId));
-			// listWithoutIdSubTypes
-			assertEquals(nbItemsWithoutId, allFieldCases.getListWithoutIdSubTypes().size());
-			assertTrue(allFieldCases.getListWithoutIdSubTypes().get(0).getName()
-					.endsWith(textToAppendToTheFornameWithoutId));
-		}
 	}
 
 	@Test
 	void test_error() {
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> queries.error("This is an expected error"));
+				() -> partialQueries.error("This is an expected error"));
 		assertTrue(e.getMessage().contains("This is an expected error"),
 				"'" + e.getMessage() + "' should contain 'This is an expected error'");
 	}
 
 	@Test
 	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals(_extends.FLOAT, queries.aBreak(_extends.FLOAT, null).getCase());
-		assertEquals(_extends.DOUBLE, queries.aBreak(_extends.DOUBLE, null).getCase());
+		assertEquals(_extends.FLOAT, partialQueries.aBreak(_extends.FLOAT, null).getCase());
+		assertEquals(_extends.DOUBLE, partialQueries.aBreak(_extends.DOUBLE, null).getCase());
 	}
 
 	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,

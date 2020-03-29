@@ -37,7 +37,14 @@ public interface Type {
 
 	/** Get the filename where this type must be created. Default is to return the name for the Type */
 	default public String getTargetFileName(String fileType) {
-		return getJavaName();
+		switch (fileType) {
+		case "response":
+			return getJavaName() + "Response";
+		case "root response":
+			return getJavaName() + "RootResponse";
+		default:
+			return getJavaName();
+		}
 	}
 
 	/**
@@ -128,4 +135,7 @@ public interface Type {
 
 	/** Returns true if this type is a GraphQL Custom Scalar, false otherwise */
 	public boolean isCustomScalar();
+
+	/** Returns the list of directives that have been defined for this type, in the GraphQL schema */
+	public List<AppliedDirective> getAppliedDirectives();
 }

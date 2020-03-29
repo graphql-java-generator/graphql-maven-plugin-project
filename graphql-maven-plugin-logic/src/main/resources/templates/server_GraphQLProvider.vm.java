@@ -114,13 +114,6 @@ public class GraphQLProvider {
 	private GraphQLSchema buildSchema(String sdl) {
 		TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
 
-#if ($interfaces.size() > 0)
-		// Add of the CharacterImpl type definition
-#end
-#foreach ($interface in $interfaces)
-		typeRegistry.add(get${interface.classSimpleName}ImplType(typeRegistry));
-#end
-
 		RuntimeWiring runtimeWiring = buildWiring();
 		SchemaGenerator schemaGenerator = new SchemaGenerator();
 		return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
@@ -160,26 +153,16 @@ public class GraphQLProvider {
 #foreach ($interface in $interfaces)
 			.type("${interface.javaName}", typeWiring -> typeWiring.typeResolver(get${interface.javaName}Resolver()))
 #end
+#if ($unions.size() > 0)
+			//
+			// Let's link the interface types to the concrete types
+#end
+#foreach ($union in $unions)
+			.type("${union.javaName}", typeWiring -> typeWiring.typeResolver(get${union.javaName}Resolver()))
+#end
 			.build();
 	}
 
-#foreach ($interface in $interfaces)
-	private ObjectTypeDefinition get${interface.classSimpleName}ImplType(TypeDefinitionRegistry typeRegistry) {
-		InterfaceTypeDefinition def${interface.classSimpleName} = (InterfaceTypeDefinition) typeRegistry.getType("${interface.classSimpleName}").get();
-		ObjectTypeDefinition.Builder def${interface.classSimpleName}Impl = ObjectTypeDefinition.newObjectTypeDefinition();
-		def${interface.classSimpleName}Impl.name("${interface.classSimpleName}Impl");
-		for (FieldDefinition fieldDef : def${interface.classSimpleName}.getFieldDefinitions()) {
-			def${interface.classSimpleName}Impl.fieldDefinition(fieldDef);
-		}
-		// Let's precise that the new type is an implementation for this interface
-		TypeName typeName = TypeName.newTypeName("${interface.classSimpleName}").build();
-		def${interface.classSimpleName}Impl.implementz(typeName);
-
-		return def${interface.classSimpleName}Impl.build();
-	}
-#end
-
-	
 #foreach ($interface in $interfaces)
 	private TypeResolver get${interface.javaName}Resolver() {
 		return new TypeResolver() {
@@ -201,6 +184,29 @@ public class GraphQLProvider {
 			}
 		};
 	}
+
+#end
+#foreach ($union in $unions)
+private TypeResolver get${union.javaName}Resolver() {
+	return new TypeResolver() {
+		@Override
+		public GraphQLObjectType getType(TypeResolutionEnvironment env) {
+			Object javaObject = env.getObject();
+			String ret = null;
+
+#foreach ($implementingType in ${union.implementingTypes})
+			if (javaObject instanceof ${implementingType.javaName}) {
+				ret = "${implementingType.javaName}";
+			} else
+#end
+			{
+				throw new RuntimeException("Can't resolve javaObject " + javaObject.getClass().getName());
+			}
+			logger.trace("Resolved type for javaObject {} is {}", javaObject.getClass().getName());
+			return env.getSchema().getObjectType(ret);
+		}
+	};
+}
 
 #end
 }

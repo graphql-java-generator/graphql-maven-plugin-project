@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-samples</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.5.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
@@ -35,6 +35,11 @@
 					<packageName>com.graphql_java_generator.samples.server</packageName>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<inherited>true</inherited>
+			</plugin>			
 			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->
 				<artifactId>maven-deploy-plugin</artifactId>

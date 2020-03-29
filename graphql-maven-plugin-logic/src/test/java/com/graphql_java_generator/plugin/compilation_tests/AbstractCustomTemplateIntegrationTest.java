@@ -28,7 +28,8 @@ public abstract class AbstractCustomTemplateIntegrationTest extends AbstractInte
 			.filter(generatedFile -> generatedFile.exists() && generatedFile.isFile())
 			.forEach(generatedFile-> {
 				try {
-					assertEquals(CUSTOMIZED_CODE_FIRST_LINE, FileUtils.readLines(generatedFile, "UTF-8").get(0));					
+					assertEquals(CUSTOMIZED_CODE_FIRST_LINE, FileUtils.readLines(generatedFile, "UTF-8").get(0), 
+							String.format("File %s is not generated with custom template", generatedFile));					
 				} catch(Exception e) {
 					throw new RuntimeException(e);
 				}

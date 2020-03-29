@@ -1,12 +1,13 @@
 /**
  * 
  */
-package org.allGraphQLCases.graphql;
+package org.allGraphQLCases.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.Queries;
+import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -20,29 +21,34 @@ import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
 
+import com.graphql_java_generator.client.request.Builder;
+import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
- * This class implements the away to call GraphQl queries, where all queries are prepared before execution.<BR/>
+ * This class implements the away to call GraphQl partialQueries, where all partialQueries are prepared before execution.<BR/>
  * The advantages are:
  * <UL>
  * <LI>Performance: this avoid to build an {@link ObjectResponse} for each response. This {@link ObjectResponse} is
  * useful, to help control at runtime if a field has been queried or not. It allows to throw an exception when your code
  * tries to use a field that was not queried</LI>
- * <LI>Security: as all request have been prepared at startup, this make sure at startup that your queries are
+ * <LI>Security: as all request have been prepared at startup, this make sure at startup that your partialQueries are
  * valid.</LI>
  * </UL>
  * 
  * @author EtienneSF
  */
-public class PreparedQueries implements Queries {
+public class PartialWithBuilder implements PartialQueries {
 
 	final MyQueryType queryType;
 	final AnotherMutationType mutationType;
 
-	// Queries
+	GraphQLScalarTypeDate graphQLScalarTypeDate = new GraphQLScalarTypeDate();
+
+	// PartialQueries
 	ObjectResponse withoutParametersResponse;
 	ObjectResponse withOneOptionalParamResponse;
 	ObjectResponse withOneMandatoryParamResponse;
@@ -68,38 +74,65 @@ public class PreparedQueries implements Queries {
 	 * @param hostnameVerifier
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public PreparedQueries(String graphqlEndpoint) throws GraphQLRequestPreparationException {
+	public PartialWithBuilder(String graphqlEndpoint) throws GraphQLRequestPreparationException {
 		queryType = new MyQueryType(graphqlEndpoint);
 		mutationType = new AnotherMutationType(graphqlEndpoint);
 
-		withoutParametersResponse = queryType.getWithoutParametersResponseBuilder()
-				.withQueryResponseDef("{appearsIn name}").build();
-		withOneOptionalParamResponse = queryType.getWithOneOptionalParamResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		withOneMandatoryParamResponse = queryType.getWithOneMandatoryParamResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		// withOneMandatoryParamDefaultValueResponse = queryType.getWithOneMandatoryParamDefaultValueResponseBuilder()
-		// .withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		// withTwoMandatoryParamDefaultValResponse = queryType.getWithTwoMandatoryParamDefaultValResponseBuilder()
-		// .withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		withEnumResponse = queryType.getWithEnumResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		withListResponse = queryType.getWithListResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		errorResponse = queryType.getErrorResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		aBreakResponse = queryType.getABreakResponseBuilder().withQueryResponseDef("{case(test: &test, if: ?if)}")
+		ObjectResponse characterFriends = new Builder(Character.class, "friends").withField("id").withField("name")
 				.build();
-		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withQueryResponseDef("{id name " //
+
+		withoutParametersResponse = queryType.getWithoutParametersResponseBuilder().withField("appearsIn")
+				.withField("name").build();
+		withOneOptionalParamResponse = queryType.getWithOneOptionalParamResponseBuilder().withField("id")
+				.withField("name").withField("appearsIn").withSubObject(characterFriends).build();
+		withOneMandatoryParamResponse = queryType.getWithOneMandatoryParamResponseBuilder().withField("id")
+				.withField("name").withField("appearsIn").withSubObject(characterFriends).build();
+		// withOneMandatoryParamDefaultValueResponse = queryType.getWithOneMandatoryParamDefaultValueResponseBuilder()
+		// .withField("id").withField("name").withField("appearsIn").withSubObject(characterFriends).build();
+		// withTwoMandatoryParamDefaultValResponse = queryType.getWithTwoMandatoryParamDefaultValResponseBuilder()
+		// .withField("id").withField("name").withField("appearsIn").withSubObject(characterFriends).build();
+		withEnumResponse = queryType.getWithEnumResponseBuilder().withField("id").withField("name")
+				.withField("appearsIn").withSubObject(characterFriends).build();
+		withListResponse = queryType.getWithListResponseBuilder().withField("id").withField("name")
+				.withField("appearsIn").withSubObject(characterFriends).build();
+		errorResponse = queryType.getErrorResponseBuilder().build();
+
+		// allFieldCasesResponse
+		ObjectResponse oneWithIdSubTypeResponse = new Builder(AllFieldCases.class, "oneWithIdSubType").withField("id")
+				.withField("name").build();
+		ObjectResponse listWithIdSubTypesResponse = new Builder(AllFieldCases.class, "listWithIdSubTypes")
+				.withInputParameter(InputParameter.newBindParameter("nbItems", "nbItemsWithId", false))
+				.withInputParameter(InputParameter.newBindParameter("date", "date", false, graphQLScalarTypeDate.Date))
+				.withInputParameter(
+						InputParameter.newBindParameter("dates", "dates", false, graphQLScalarTypeDate.Date))
+				.withInputParameter(InputParameter.newBindParameter("uppercaseName", "uppercaseNameList", false))
+				.withInputParameter(InputParameter.newBindParameter("textToAppendToTheForname",
+						"textToAppendToTheFornameWithId", false))
+				.withField("id").withField("name").build();
+		ObjectResponse oneWithoutIdSubTypeResponse = new Builder(AllFieldCases.class, "oneWithoutIdSubType")
+				.withInputParameter(InputParameter.newBindParameter("input", "input", false)).withField("name").build();
+		ObjectResponse listWithoutIdSubTypesResponse = new Builder(AllFieldCases.class, "listWithoutIdSubTypes")
+				.withInputParameter(InputParameter.newBindParameter("nbItems", "nbItemsWithoutId", false))
+				.withInputParameter(InputParameter.newBindParameter("input", "inputList", false)).withField("name")
+				.withInputParameter(InputParameter.newBindParameter("textToAppendToTheForname",
+						"textToAppendToTheFornameWithoutId", false))
+				.build();
+		ObjectResponse simpleFriendsResponse = new Builder(AllFieldCases.class, "friends").withField("id").build();
+		//
+		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withField("id").withField("name")
 				// Parameter for fields are not managed yet)
-				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
-				+ " forname"//
-				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
-				+ " oneWithIdSubType {id name} "//
-				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
-				+ " oneWithoutIdSubType(input: ?input) {name}"//
-				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
-				+ "}").build();
+				// .withField("forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname)")
+				.withField("forname")//
+				.withField("age").withField("nbComments").withField("comments").withField("booleans")
+				.withField("aliases").withField("planets").withSubObject(simpleFriendsResponse)
+				.withSubObject(oneWithIdSubTypeResponse).withSubObject(listWithIdSubTypesResponse)
+				.withSubObject(oneWithoutIdSubTypeResponse).withSubObject(listWithoutIdSubTypesResponse).build();
+
+		// aBreak {case(test: &test, if: ?if)}
+		List<InputParameter> inputParams = new ArrayList<InputParameter>();
+		inputParams.add(InputParameter.newBindParameter("test", "test", true));
+		inputParams.add(InputParameter.newBindParameter("if", "if", false));
+		aBreakResponse = queryType.getABreakResponseBuilder().withField("case", null, inputParams, null).build();
 	}
 
 	@Override
@@ -133,9 +166,9 @@ public class PreparedQueries implements Queries {
 	}
 
 	@Override
-	public Character error(String errorLabel)
+	public Human createHuman(HumanInput human)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.error(errorResponse, errorLabel);
+		return mutationType.createHuman(createHumanResponse, human);
 	}
 
 	@Override
@@ -165,8 +198,8 @@ public class PreparedQueries implements Queries {
 	}
 
 	@Override
-	public Human createHuman(HumanInput human)
+	public Character error(String errorLabel)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return mutationType.createHuman(createHumanResponse, human);
+		return queryType.error(errorResponse, errorLabel);
 	}
 }

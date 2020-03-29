@@ -11,7 +11,7 @@
 
 	<groupId>com.graphql-java-generator</groupId>
 	<artifactId>graphql-maven-plugin-project</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.5.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
@@ -45,7 +45,7 @@
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
 		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
-		<tag>graphql-maven-plugin-project-1.0.0-RC1</tag>
+		<tag>graphql-maven-plugin-project-1.5.0</tag>
 	</scm>
 
 	<distributionManagement>
@@ -319,7 +319,7 @@
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java</artifactId>
-				<version>13.0</version>
+				<version>14.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
@@ -335,7 +335,7 @@
 				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
 				<groupId>com.graphql-java-kickstart</groupId>
 				<artifactId>graphiql-spring-boot-starter</artifactId>
-				<version>5.7.0</version>
+				<version>6.0.1</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
@@ -390,6 +390,12 @@
 				<groupId>org.apache.velocity</groupId>
 				<artifactId>velocity</artifactId>
 				<version>1.7</version>
+			</dependency>
+			<dependency>
+				<groupId>org.awaitility</groupId>
+				<artifactId>awaitility</artifactId>
+				<version>3.0.0</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
