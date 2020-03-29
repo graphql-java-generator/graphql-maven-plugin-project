@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MutationTypeCreateBoard {
 
+	public static final String NAME = "createBoard";
+
 	@JsonProperty("createBoard")
 	Board createBoard;
 

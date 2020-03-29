@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MutationTypeAddFriend {
 
+	public static final String NAME = "addFriend";
+
 	@JsonDeserialize(as = Character.class)
 	@JsonProperty("addFriend")
 	Character addFriend;

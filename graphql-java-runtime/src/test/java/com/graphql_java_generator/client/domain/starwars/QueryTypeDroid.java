@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeDroid {
 
+	public static final String NAME = "droid";
+
 	@JsonProperty("droid")
 	Droid droid;
 

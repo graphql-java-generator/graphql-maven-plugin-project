@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MutationTypeCreatePost {
 
+	public static final String NAME = "createPost";
+
 	@JsonProperty("createPost")
 	Post createPost;
 

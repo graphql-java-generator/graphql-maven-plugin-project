@@ -14,24 +14,55 @@ Client mode usage description
 ~~~~~~~~~~~~~~~~~~~
 
   The client mode makes it easy for a Java GraphQL client-side application, to execute queries/mutations/subscriptions against a GraphQL server. The graphql-maven-plugin generates all the necessary code, so that a Java application can call a GraphQL server by simply calling the relevant Java method.
+  
+  The plugin manages two kinds of request:
+  
+  * The <<Full request>>: it's actually a standard GraphQL request, that you can test within graphiql
+  
+  * The <<Partial request>>: you can call a java method that executes one of the queries/mutations/subscriptions defined in the schema. This java method accepts one parameter, for each parameter of this query/mutation/subscription.
+  
+  []
+  
+  It manages two way of executing the request:
+  
+  * The <<direct execution>>: you call the generated method with the GraphQL request (partial or full), and you receive the result into Java objects. This is simpler, but slower: for technical reasons, the plugin has two analyze the content of the request. And it will do that at each execution. The main reason for that is to allow proper deserialization of GraphQL interfaces and unions: the __typename is injected into the query, for all returned object, union and interface types.
+  
+  * The recommended <<prepared execution>>: 
+  
+    * A GraphQLRequest object is created by the application, if possible at application startup. This allows to analyze the request only once. And it avoids errors during the app execution, as all the GraphQL requests have been checked at startup.
+    
+    * Each GraphQL request execution is executed from this object. 
+    
+    * <Note: the GraphQLRequest object has been created in the 1.6 release. The prepared object was before stored into a ObjectResponse. This ObjectResponse has been maintained when used with the withQueryResponseDef Builder method, and the code that uses will continue to work. Support for other Builder method has been removed.>
+    
+      * <There is no plan yet to remove the ObjectResponse object and the withQueryResponseDef Builder method. But they should be avoided in new code.>
 
-* {Presentation}
+  []
+  
+  Both kinds of requests, and both modes of execution allows to use bind parameters into your query definitions.  
+
+* {How it works?}
 ~~~~~~~~~~~~~~~~~~~
 
-  When configuring the graphql-maven-plugin in client mode, it reads a graphqls schema file, and generates all the necessary code to make it easy to call a GraphQL server. 
+  When configuring the graphql-maven-plugin in client mode, it reads a GraphQL schema file, and generates all the necessary code to make it easy to call a GraphQL server. 
 
   As an overview, it generates:
 
-  * One java class for the Query object. This object contains all the method allowing to execute a full query, and shortcuts methods to execute each of the queries defined in the query object.
+  * One java class for each Query/Mutation/Subscription object. This object contains all the method allowing to execute a full query, and shortcuts methods to execute each of the queries defined in the query/mutation/subscription.
   
-  * One java class for the Mutation object (if any). It's the same as for the Query object (described just above)
+    * The introspection queries (__schema and __type) are added to the query defined in the GraphQL schema. If no query exists in the schema, a default one is created, named QueryType.
   
   * One POJO for each standard object of the GraphQL object
   
-  * All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. 
-    So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator. 
-    <<This is why we call it an accelerator>>: you can generate the code once, and get rid of graphql-java-generator if you wish. 
-    BTW: we think its better to continue using it! But you're free to leave, and keep the generated code. :)
+  * One GraphQLRequest object
+  
+  * All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone.
+  
+    * So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
+    
+      * <<This is why we call it an accelerator>>: you can generate the code once, and get rid of graphql-java-generator if you wish. BTW: we think its better to continue using it! But you're free to leave, and keep the generated code. :)
+      
+      * You can change this default behavior, and use the runtime into an external dependency. Read the {{{./schema_personalization.html}Howto personalize the generated code}} for more information.
 
   []
 
@@ -93,19 +124,32 @@ Client mode usage description
   You can define the package that will contain the generated code. If you don't, the default package is <com.generated.graphql>. 
   This package contains the generated code. 
 
-  The necessary runtime code source is joined into the generated code, and remains in its original package, 
-  which is <com.graphql_java_generator.*>. So everything is embedded.
+  The necessary runtime code source is joined into the generated code, and remains in its original package, which is <com.graphql_java_generator.*>. So everything is embedded. Read the {{{./schema_personalization.html}Howto personalize the generated code}} if you want to change this default behavior.
 
 
-* {Full queries versus Partial queries}
+* {Full requests versus Partial requests}
 ~~~~~~~~~~~~~~~~~~~
 
-  When the plugin generates the query/mutation/subscription java classes, it generates two families of methods:
+  When the plugin generates the query/mutation/subscription java classes (one for each), it generates two families of methods: Full requests, and Partial requests, as introduced on the top of this page.
   
-** {Full queries/mutations/subscriptions}
+** {Full requests}
 ~~~~~~~~~~~~~~~~~~~
   
-  The <exec> and <execWithBindValues> methods allows to execute full GraphQL queries, that is: the GraphQL request, without the query/mutation/subscription keyword (see below for sample).
+  For each query/mutation/subscription in the GraphQL schema, a Java class is generated.
+  
+  The <exec> and <execWithBindValues> methods allows to execute full GraphQL queries, that is: the full GraphQL request, as it would work in the graphiql interface. So you can test your request in graphiql, then parse the tested request into you code, as a Full Request (see below for sample).
+  
+  This is interesting when:
+  
+  * You want to execute several queries into one call toward the server
+  
+  * You want to add directives to the query/mutation/subscription itself
+  
+  * You want to use GraphQL fragments into your query
+  
+  []
+  
+  TODO FINISH HERE 
     
   The <getResponseBuilder()> method returns a Builder that allows you to prepare the GraphQL request during the application initialization. This will accelerate the further GraphQL calls for this query/mutation/subscription. And it allows to check at startup time that your queries/mutations/subscriptions are valid.
   
@@ -148,7 +192,7 @@ List<Character> withoutParameters = resp.getWithoutParameters();
   If an optional bind variable value is missing, then the relevant parameter is not sent to the server. In the above sample, the <anotherValueParam> is not given. So the <anotherValue> param is not sent to the server.
        
   
-** {Partial queries/mutations/subscriptions}
+** {Partial requests}
 ~~~~~~~~~~~~~~~~~~~
 
   In each query/mutation/subscription object, the plugin also generates <Xxxx> and <XxxxWithBindValues> methods, where <Xxxx> is successively each query/mutation/subscription defined in this query/mutation/subscription object. 

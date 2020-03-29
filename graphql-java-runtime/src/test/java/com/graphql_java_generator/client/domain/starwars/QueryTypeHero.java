@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeHero {
 
+	public static final String NAME = "hero";
+
 	@JsonDeserialize(as = Character.class)
 	@JsonProperty("hero")
 	Character hero;

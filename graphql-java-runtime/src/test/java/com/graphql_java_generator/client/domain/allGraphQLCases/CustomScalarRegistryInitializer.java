@@ -14,8 +14,6 @@ public class CustomScalarRegistryInitializer {
 
 		customScalarRegistry
 				.registerGraphQLScalarType(com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date);
-		customScalarRegistry
-				.registerGraphQLScalarType(com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String);
 		customScalarRegistry.registerGraphQLScalarType(graphql.Scalars.GraphQLLong);
 
 		CustomScalarRegistryImpl.customScalarRegistry = customScalarRegistry;

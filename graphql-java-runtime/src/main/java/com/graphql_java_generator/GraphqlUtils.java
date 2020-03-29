@@ -14,8 +14,10 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * @author EtienneSF
@@ -127,6 +129,80 @@ public class GraphqlUtils {
 	}
 
 	/**
+	 * Retrieves the class of the fieldName field of the owningClass class.
+	 * 
+	 * @param owningClass
+	 * @param fieldName
+	 * @param returnIsMandatory
+	 *            If true, a {@link GraphQLRequestPreparationException} is thrown if the field is not found.
+	 * @return The class of the field. Or null of the field doesn't exist, and returnIdMandatory is false
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Class<?> getFieldType(Class<?> owningClass, String fieldName, boolean returnIsMandatory)
+			throws GraphQLRequestPreparationException {
+		if (owningClass.isInterface()) {
+			// We try to get the class of this getter of the field
+			try {
+				Method method = owningClass.getDeclaredMethod("get" + graphqlUtils.getPascalCase(fieldName));
+
+				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
+				GraphQLNonScalar graphQLNonScalar = method.getAnnotation(GraphQLNonScalar.class);
+				GraphQLScalar graphQLScalar = method.getAnnotation(GraphQLScalar.class);
+
+				if (graphQLNonScalar != null)
+					return graphQLNonScalar.javaClass();
+				else if (graphQLScalar != null)
+					return graphQLScalar.javaClass();
+				else
+					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
+							+ fieldName + "' in the interface '" + owningClass.getName()
+							+ "': this method should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
+			} catch (NoSuchMethodException e) {
+				// Hum, the field doesn't exist.
+				if (!returnIsMandatory)
+					return null;
+				else
+					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
+							+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
+			} catch (SecurityException e) {
+				throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
+						+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
+			}
+		} else {
+			// We try to get the class of this field
+			try {
+				Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
+
+				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
+				GraphQLCustomScalar graphQLCustomScalar = field.getAnnotation(GraphQLCustomScalar.class);
+				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+
+				if (graphQLCustomScalar != null)
+					return graphQLCustomScalar.javaClass();
+				else if (graphQLNonScalar != null)
+					return graphQLNonScalar.javaClass();
+				else if (graphQLScalar != null)
+					return graphQLScalar.javaClass();
+				else
+					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+							+ "> in the class '" + owningClass.getName()
+							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
+			} catch (NoSuchFieldException e) {
+				// Hum, the field doesn't exist.
+				if (!returnIsMandatory)
+					return null;
+				else
+					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+							+ "> in the class '" + owningClass.getName() + "'", e);
+			} catch (SecurityException e) {
+				throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+						+ "> in the class '" + owningClass.getName() + "'", e);
+			}
+		}
+	}
+
+	/**
 	 * This method returns a GraphQL input object, as defined in the GraphQL schema, from the Map that has been read
 	 * from the JSON object sent to the server.
 	 * 
@@ -149,8 +225,9 @@ public class GraphqlUtils {
 			Field field;
 
 			try {
-				t = clazz.newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
+				t = clazz.getConstructor().newInstance();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				throw new RuntimeException("Error while creating a new instance of  '" + clazz.getName() + " class", e);
 			}
 

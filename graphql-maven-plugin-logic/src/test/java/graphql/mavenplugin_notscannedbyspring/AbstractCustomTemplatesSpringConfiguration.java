@@ -21,7 +21,7 @@ import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelp
 
 /**
  * Base Spring configuration for Custom template test
- * Extends {@link AbstractSpringConfiguration} to configure {@link PluginConfigurationTestHelper} with custom templates located in src/test/resources/tempaltes_personalization
+ * Extends {@link AbstractSpringConfiguration} to configure {@link PluginConfigurationTestHelper} with custom templates located in src/test/resources/templates_personalization
  * @author ggomez
  *
  */
@@ -57,7 +57,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 
 	/**
 	 * Helper method to build customize templates map for given scope
-	 * The customized templaes are located at src/test/resources/tempaltes_personalization 
+	 * The customized templaes are located at src/test/resources/templates_personalization 
 	 * Also {@link CodeTemplateScope#COMMON} tempaltes are addedd
 	 * @param scope
 	 * @return
@@ -70,7 +70,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 				Matcher matcher = templatePattern.matcher(codeTemplate.getDefaultValue());
 				if(matcher.matches()) {
 					return new Pair<CodeTemplate, String>(codeTemplate, 
-							String.format("tempaltes_personalization/%s.vm.custom.java", matcher.group(1)));
+							String.format("templates_personalization/%s.vm.custom.java", matcher.group(1)));
 				} else {
 					throw new RuntimeException(
 							String.format( "Template does not match expected pattenr: %s - %s", codeTemplate, codeTemplate.getDefaultValue()));
@@ -81,7 +81,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	}
 
 	/**
-	 * Overrirdes {@link AbstractSpringConfiguratio#pluginConfigurationTestHelper} by configured custom templates localted in src/test/resources/tempaltes_personalization
+	 * Overrirdes {@link AbstractSpringConfiguratio#pluginConfigurationTestHelper} by configured custom templates localted in src/test/resources/templates_personalization
 	 */
 	@Override
 	@Bean

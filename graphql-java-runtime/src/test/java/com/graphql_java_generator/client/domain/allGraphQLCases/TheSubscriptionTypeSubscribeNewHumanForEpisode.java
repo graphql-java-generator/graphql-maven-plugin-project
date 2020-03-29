@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class TheSubscriptionTypeSubscribeNewHumanForEpisode {
 
+	public static final String NAME = "subscribeNewHumanForEpisode";
+
 	@JsonProperty("subscribeNewHumanForEpisode")
 	Human subscribeNewHumanForEpisode;
 

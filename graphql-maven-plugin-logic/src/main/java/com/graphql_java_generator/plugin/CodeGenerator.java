@@ -88,7 +88,8 @@ public class CodeGenerator {
 
 		int i = 0;
 		i += generateTargetFiles(documentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT));
-		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface", resolveTemplate(CodeTemplate.INTERFACE));
+		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface",
+				resolveTemplate(CodeTemplate.INTERFACE));
 		i += generateTargetFiles(documentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION));
 		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM));
 
@@ -104,13 +105,12 @@ public class CodeGenerator {
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
-			
+
 			// Generation of the query/mutation/subscription response classes
-			i += generateTargetFiles(documentParser.getQueryTypes(), "response", 
+			i += generateTargetFiles(documentParser.getQueryTypes(), "response", resolveTemplate(CodeTemplate.OBJECT));
+			i += generateTargetFiles(documentParser.getMutationTypes(), "response",
 					resolveTemplate(CodeTemplate.OBJECT));
-			i += generateTargetFiles(documentParser.getMutationTypes(), "response", 
-					resolveTemplate(CodeTemplate.OBJECT));
-			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response", 
+			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response",
 					resolveTemplate(CodeTemplate.OBJECT));
 
 			// Generation of the query/mutation/subscription root responses classes
@@ -120,6 +120,9 @@ public class CodeGenerator {
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+			
+			// Generation of the GraphQLRequest class
+			i += generateGraphQLRequest();			
 
 			// Files for Custom Scalars
 			VelocityContext context = new VelocityContext();
@@ -133,7 +136,7 @@ public class CodeGenerator {
 			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("directives", documentParser.directives);
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer"), "Generating DirectiveRegistryInitializer",
-					context, resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER) );
+					context, resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
 			//
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER));
@@ -141,7 +144,7 @@ public class CodeGenerator {
 			break;
 		}
 
-		if(pluginConfiguration.isCopyGraphQLJavaSources()) {
+		if (pluginConfiguration.isCopyGraphQLJavaSources()) {
 			copyGraphQLJavaSources();
 		}
 
@@ -205,7 +208,6 @@ public class CodeGenerator {
 			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("targetFileName", targetFileName);
 			context.put("type", type);
-			context.put("imports", getImportList());
 
 			i += generateOneFile(targetFile, msg, context, templateFilename);
 		} // for
@@ -238,6 +240,23 @@ public class CodeGenerator {
 			}
 		}
 		return i;
+	}
+
+	/**
+	 * Generates the {@link GraphQLRequest} class . This method expects at most one query, one mutation and one
+	 * subscription, which is compliant with the GraphQL specification
+	 */
+	int generateGraphQLRequest() {
+		VelocityContext context = new VelocityContext();
+		context.put("pluginConfiguration", pluginConfiguration);
+
+		context.put("query", (documentParser.queryTypes.size() > 0) ? documentParser.queryTypes.get(0) : null);
+		context.put("mutation", (documentParser.mutationTypes.size() > 0) ? documentParser.mutationTypes.get(0) : null);
+		context.put("subscription",
+				(documentParser.subscriptionTypes.size() > 0) ? documentParser.subscriptionTypes.get(0) : null);
+
+		return generateOneFile(getJavaFile("GraphQLRequest"), "generating GraphQLRequest", context,
+				resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
 	}
 
 	/**
@@ -405,15 +424,16 @@ public class CodeGenerator {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Resolves the template for the given key
+	 * 
 	 * @param templateKey
 	 * @param defaultValue
 	 * @return
 	 */
 	protected String resolveTemplate(CodeTemplate template) {
-		if(pluginConfiguration.getTemplates().containsKey(template.name())) {
+		if (pluginConfiguration.getTemplates().containsKey(template.name())) {
 			return pluginConfiguration.getTemplates().get(template.name());
 		} else {
 			return template.getDefaultValue();

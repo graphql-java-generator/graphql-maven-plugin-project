@@ -23,24 +23,25 @@ class CustomTemplatesClientTest extends AbstractCustomTemplateIntegrationTest {
 	public void setUp() throws IOException {
 		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases.graphqls");
 	}
-	
+
 	/**
 	 * This test will be executed for each concrete subclass of this class
 	 * 
 	 * @throws MojoExecutionException
 	 * @throws IOException
 	 */
+	@Override
 	@Test
 	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 	void testGenerateCode() throws IOException {
 		super.testGenerateCode();
-		
-		// Validate that every file generated has been generated with the templates in src/test/resources/templates_personalization
-		File generatedSourcesDir = new File(this.pluginConfiguration.getTargetSourceFolder(), pluginConfiguration.getPackageName().replaceAll("\\.", File.separator));
+
+		// Validate that every file generated has been generated with the templates in
+		// src/test/resources/templates_personalization
+		File generatedSourcesDir = new File(this.pluginConfiguration.getTargetSourceFolder(),
+				pluginConfiguration.getPackageName().replaceAll("\\.", File.separator));
 		assertCustomTemplateGeneration(generatedSourcesDir);
-		
-		
+
 	}
 
-	
 }

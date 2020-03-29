@@ -4,13 +4,12 @@ import java.util.Calendar;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.DirectQueries;
-import com.graphql_java_generator.samples.forum.client.graphql.PreparedQueries;
-import com.graphql_java_generator.samples.forum.client.graphql.WithBuilder;
+import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
+import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
 
 /**
- * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
- * {@link PreparedQueries}, {@link WithBuilder}
+ * The main class, which executes the same queries, built by three different methods. See {@link PartialDirectRequests},
+ * {@link PartialPreparedRequests}, {@link WithBuilder}
  * 
  * @author EtienneSF
  */
@@ -24,19 +23,13 @@ public class Main {
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		exec(new DirectQueries(), null);
+		exec(new PartialDirectRequests(), null);
 
 		System.out.println("");
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		exec(new PreparedQueries(), null);
-
-		System.out.println("");
-		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		System.out.println("============================================================================");
-		exec(new WithBuilder(), null);
+		exec(new PartialPreparedRequests(), null);
 
 		System.out.println("");
 		System.out.println("");

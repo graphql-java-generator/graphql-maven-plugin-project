@@ -69,4 +69,10 @@ public class ScalarType extends AbstractType {
 	public boolean isCustomScalar() {
 		return false;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isScalar() {
+		return true;
+	}
 }

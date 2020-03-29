@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeHuman {
 
+	public static final String NAME = "human";
+
 	@JsonProperty("human")
 	Human human;
 

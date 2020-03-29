@@ -101,12 +101,12 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters,
-			Class<T> valueType) throws GraphQLRequestExecutionException {
+	public <T> T execute(ObjectResponse objectResponse, Map<String, Object> parameters, Class<T> valueType)
+			throws GraphQLRequestExecutionException {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
-			request = buildRequest(requestType, objectResponse, parameters);
+			request = objectResponse.buildRequest(parameters);
 			logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
 			return doJsonRequestExecution(request, valueType);
@@ -118,8 +118,12 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(String query, Class<T> valueType) throws IOException, GraphQLRequestExecutionException {
-		return doJsonRequestExecution(query, valueType);
+	public <T> T execute(String query, Class<T> valueType) throws GraphQLRequestExecutionException {
+		try {
+			return doJsonRequestExecution(query, valueType);
+		} catch (IOException e) {
+			throw new GraphQLRequestExecutionException(e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -171,52 +175,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 				throw new GraphQLRequestExecutionException(nbErrors + " errors occured: " + agregatedMessage);
 			}
 		}
-	}
-
-	/**
-	 * Builds a single GraphQL request from the parameter given.
-	 * 
-	 * @param requestType
-	 *            Null of objectResponse is the full query response (that is: it starts from the query, mutation or
-	 *            subscription keyword). If not, requestType contains the keyword that must be added, which indicates
-	 *            the kind of server call. It must then be one of "query", "mutation" or "subscription".
-	 * @param objectResponse
-	 *            Defines what response is expected from the server. The {@link ObjectResponse#getFieldAlias()} method
-	 *            returns the field of the query, that is: the query name.
-	 * @param parameters
-	 * @return The GraphQL request, ready to be sent to the GraphQl server.
-	 * @throws GraphQLRequestExecutionException
-	 */
-	String buildRequest(String requestType, ObjectResponse objectResponse, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
-
-		StringBuilder sb = new StringBuilder("{\"query\":\"");
-
-		if (objectResponse.isQueryLevel()) {
-			// The objectResponse contains the full request, and starts at query level.
-			// We don't add the __typename at query level
-			objectResponse.appendResponseQuery(sb, parameters, false);
-		} else {
-			// TODO requestType should be an enum
-			if (!requestType.equals("query") && !requestType.equals("mutation")
-					&& !requestType.equals("subscription")) {
-				throw new IllegalArgumentException(
-						"requestType must be one of \"query\", \"mutation\" or \"subscription\", but is \""
-								+ requestType + "\"");
-			}
-			sb.append(requestType);
-			sb.append("{");
-
-			// Let's add the query/subscription/mutation. We must add the __typename from this level. So the second
-			// parameter is true
-			objectResponse.appendResponseQuery(sb, parameters, false);
-
-			sb.append("}");
-		}
-
-		sb.append("\",\"variables\":null,\"operationName\":null}");
-
-		return sb.toString();
 	}
 
 }

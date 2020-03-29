@@ -14,6 +14,7 @@ import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
+import org.allGraphQLCases.client.GraphQLRequest;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
@@ -25,7 +26,8 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
- * This class implements the away to call GraphQl partialQueries, where all partialQueries are prepared before execution.<BR/>
+ * This class implements the way to call GraphQl partialQueries, where all partialQueries are prepared before
+ * execution.<BR/>
  * The advantages are:
  * <UL>
  * <LI>Performance: this avoid to build an {@link ObjectResponse} for each response. This {@link ObjectResponse} is
@@ -43,19 +45,19 @@ public class PartialPreparedQueries implements PartialQueries {
 	final AnotherMutationType mutationType;
 
 	// PartialQueries
-	ObjectResponse withoutParametersResponse;
-	ObjectResponse withOneOptionalParamResponse;
-	ObjectResponse withOneMandatoryParamResponse;
-	ObjectResponse withOneMandatoryParamDefaultValueResponse;
-	ObjectResponse withTwoMandatoryParamDefaultValResponse;
-	ObjectResponse withEnumResponse;
-	ObjectResponse withListResponse;
-	ObjectResponse errorResponse;
-	ObjectResponse aBreakResponse;
-	ObjectResponse allFieldCasesResponse;
+	GraphQLRequest withoutParametersRequest;
+	GraphQLRequest withOneOptionalParamRequest;
+	GraphQLRequest withOneMandatoryParamRequest;
+	GraphQLRequest withOneMandatoryParamDefaultValueRequest;
+	GraphQLRequest withTwoMandatoryParamDefaultValRequest;
+	GraphQLRequest withEnumRequest;
+	GraphQLRequest withListRequest;
+	GraphQLRequest errorRequest;
+	GraphQLRequest aBreakRequest;
+	GraphQLRequest allFieldCasesRequest;
 
 	// Mutations
-	ObjectResponse createHumanResponse;
+	GraphQLRequest createHumanResponse;
 
 	/**
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
@@ -72,25 +74,16 @@ public class PartialPreparedQueries implements PartialQueries {
 		queryType = new MyQueryType(graphqlEndpoint);
 		mutationType = new AnotherMutationType(graphqlEndpoint);
 
-		withoutParametersResponse = queryType.getWithoutParametersResponseBuilder()
-				.withQueryResponseDef("{appearsIn name}").build();
-		withOneOptionalParamResponse = queryType.getWithOneOptionalParamResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		withOneMandatoryParamResponse = queryType.getWithOneMandatoryParamResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		// withOneMandatoryParamDefaultValueResponse = queryType.getWithOneMandatoryParamDefaultValueResponseBuilder()
-		// .withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		// withTwoMandatoryParamDefaultValResponse = queryType.getWithTwoMandatoryParamDefaultValResponseBuilder()
-		// .withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		withEnumResponse = queryType.getWithEnumResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		withListResponse = queryType.getWithListResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		errorResponse = queryType.getErrorResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}").build();
-		aBreakResponse = queryType.getABreakResponseBuilder().withQueryResponseDef("{case(test: &test, if: ?if)}")
-				.build();
-		allFieldCasesResponse = queryType.getAllFieldCasesResponseBuilder().withQueryResponseDef("{id name " //
+		withoutParametersRequest = queryType.getWithoutParametersGraphQLRequest("{appearsIn name}");
+		withOneOptionalParamRequest = queryType
+				.getWithOneOptionalParamGraphQLRequest("{id name appearsIn friends {id name}}");
+		withOneMandatoryParamRequest = queryType
+				.getWithOneMandatoryParamGraphQLRequest("{id name appearsIn friends {id name}}");
+		withEnumRequest = queryType.getWithEnumGraphQLRequest("{id name appearsIn friends {id name}}");
+		withListRequest = queryType.getWithListGraphQLRequest("{id name appearsIn friends {id name}}");
+		errorRequest = queryType.getErrorGraphQLRequest("{id name appearsIn friends {id name}}");
+		aBreakRequest = queryType.getABreakGraphQLRequest("{case(test: &test, if: ?if)}");
+		allFieldCasesRequest = queryType.getAllFieldCasesGraphQLRequest("{id name " //
 				// Parameter for fields are not managed yet)
 				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 				+ " forname"//
@@ -99,43 +92,43 @@ public class PartialPreparedQueries implements PartialQueries {
 				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
 				+ " oneWithoutIdSubType(input: ?input) {name}"//
 				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
-				+ "}").build();
+				+ "}");
 	}
 
 	@Override
 	public List<Character> withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.withoutParameters(withoutParametersResponse);
+		return queryType.withoutParameters(withoutParametersRequest);
 	}
 
 	@Override
 	public Character withOneOptionalParam(CharacterInput character)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.withOneOptionalParam(withOneOptionalParamResponse, character);
+		return queryType.withOneOptionalParam(withOneOptionalParamRequest, character);
 	}
 
 	@Override
 	public Character withOneMandatoryParam(CharacterInput character)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.withOneMandatoryParam(withOneMandatoryParamResponse, character);
+		return queryType.withOneMandatoryParam(withOneMandatoryParamRequest, character);
 	}
 
 	@Override
 	public Character withEnum(Episode episode)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.withEnum(withEnumResponse, episode);
+		return queryType.withEnum(withEnumRequest, episode);
 	}
 
 	@Override
 	public List<Character> withList(String name, List<CharacterInput> friends)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.withList(withListResponse, name, friends);
+		return queryType.withList(withListRequest, name, friends);
 	}
 
 	@Override
 	public Character error(String errorLabel)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.error(errorResponse, errorLabel);
+		return queryType.error(errorRequest, errorLabel);
 	}
 
 	@Override
@@ -144,7 +137,7 @@ public class PartialPreparedQueries implements PartialQueries {
 			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
 			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.allFieldCases(allFieldCasesResponse, allFieldCasesInput, //
+		return queryType.allFieldCases(allFieldCasesRequest, allFieldCasesInput, //
 				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
 				"nbItemsWithId", nbItemsWithId, //
 				"date", date, //
@@ -161,7 +154,7 @@ public class PartialPreparedQueries implements PartialQueries {
 	public _break aBreak(_extends test, String $if)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// aBreak {case(test: &test, if: ?if)}
-		return queryType.aBreak(aBreakResponse, "test", test, "if", $if);
+		return queryType.aBreak(aBreakRequest, "test", test, "if", $if);
 	}
 
 	@Override

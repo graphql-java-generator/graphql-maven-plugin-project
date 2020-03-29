@@ -616,7 +616,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(8, type.getFields().size());
+		assertEquals(10, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -665,7 +665,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 		checkInputParameter(type, j, 0, "firstName", false, true, null, "String", String.class.getName(), null);
 		checkInputParameter(type, j, 1, "characters", true, true, false, "CharacterInput",
 				pluginConfiguration.getPackageName() + ".CharacterInput", null);
-		j += 1;
+
 	}
 
 	@Test

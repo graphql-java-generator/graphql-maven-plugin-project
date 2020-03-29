@@ -16,8 +16,6 @@ import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
-import com.graphql_java_generator.client.request.Builder;
-import com.graphql_java_generator.client.request.ObjectResponse;
 
 /**
  * Manual test for query execution. Not a JUnit test. The automation for this test is done in the
@@ -60,38 +58,6 @@ public class ManualTest_StarWars {
 		// Execution of the query. We get the result back in a POJO
 		Human human = queryType.human("{id name appearsIn homePlanet friends{name}}",
 				"00000000-0000-0000-0000-000000000180");
-
-		System.out.println(human);
-
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		////////////////// More verbose: you use our Builder.
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("------------------    executeHero()    (with builder)   -----------------------------");
-
-		// ObjectResponse
-		ObjectResponse objectResponse = queryType.getHeroResponseBuilder().withField("id").withField("name")
-				.withField("appearsIn").withSubObject(new Builder(Character.class, "friends").withField("name").build())
-				.build();
-
-		// Execution of the query. We get the result back in a POJO
-		Character hero = queryType.hero(objectResponse, Episode.NEWHOPE, null);
-
-		System.out.println(hero);
-
-		//
-
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("------------------    executeHuman()   (with builder)  ------------------------------");
-
-		// ObjectResponse
-		objectResponse = queryType.getHumanResponseBuilder()//
-				.withField("id").withField("name").withField("appearsIn")//
-				.withSubObject(new Builder(Character.class, "friends").withField("name").build()).build();
-
-		// Execution of the query. We get the result back in a POJO
-		human = queryType.human(objectResponse, "00000000-0000-0000-0000-000000000180", null);
 
 		System.out.println(human);
 

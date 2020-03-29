@@ -15,13 +15,12 @@ import javax.net.ssl.X509TrustManager;
 import com.generated.graphql.Episode;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.simple.client.graphql.DirectQueries;
-import com.graphql_java_generator.samples.simple.client.graphql.PreparedQueries;
-import com.graphql_java_generator.samples.simple.client.graphql.WithBuilder;
+import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectRequests;
+import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedRequests;
 
 /**
- * The main class, which executes the same queries, built by three different methods. See {@link DirectQueries},
- * {@link PreparedQueries}, {@link WithBuilder}
+ * The main class, which executes the same queries, built by three different methods. See {@link PartialDirectRequests},
+ * {@link PartialPreparedRequests}, {@link WithBuilder}
  * 
  * @author EtienneSF
  */
@@ -40,17 +39,12 @@ public class Main {
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		execOne(new DirectQueries(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
+		execOne(new PartialDirectRequests(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("============================================================================");
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
-		execOne(new PreparedQueries(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
-
-		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		System.out.println("============================================================================");
-		execOne(new WithBuilder(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
+		execOne(new PartialPreparedRequests(graphqlEndpoint, getNoCheckSslContext(), new NoOpHostnameVerifier()));
 
 		System.out.println("");
 		System.out.println("");

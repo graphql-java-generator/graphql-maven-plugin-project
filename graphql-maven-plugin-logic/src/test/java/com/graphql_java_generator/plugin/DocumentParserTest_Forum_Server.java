@@ -93,24 +93,24 @@ class DocumentParserTest_Forum_Server {
 		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
 
 		// Verification
-		assertEquals("@Entity", topic.getAnnotation(), "Entity annotation");
+		assertEquals("@Entity\n\t\t@GraphQLObjectType(\"Topic\")", topic.getAnnotation(), "Entity annotation");
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(graphQLTypeName = \"ID\", javaClass = UUID.class)");
+				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", javaClass = UUID.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@GraphQLScalar(graphQLTypeName = \"Date\", javaClass = Date.class)");
+				"@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@Transient\n\t@GraphQLNonScalar(graphQLTypeName = \"Member\", javaClass = Member.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
-				"@GraphQLScalar(graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
+				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts",
-				"@GraphQLScalar(graphQLTypeName = \"Int\", javaClass = Integer.class)");
+				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", javaClass = Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title",
-				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content",
-				"@GraphQLScalar(graphQLTypeName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@Transient\n\t@GraphQLNonScalar(graphQLTypeName = \"Post\", javaClass = Post.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", javaClass = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {
@@ -329,13 +329,13 @@ class DocumentParserTest_Forum_Server {
 	@Test
 	@DirtiesContext
 	void test_inputTypesAnnotationInServerMode() {
-		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("TopicPostInput"));
-		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("PostInput"));
-		checkObjectHasNoAnnotation((ObjectType) documentParser.getType("TopicInput"));
+		checkInputTypeAnnotations((ObjectType) documentParser.getType("TopicPostInput"));
+		checkInputTypeAnnotations((ObjectType) documentParser.getType("PostInput"));
+		checkInputTypeAnnotations((ObjectType) documentParser.getType("TopicInput"));
 	}
 
-	void checkObjectHasNoAnnotation(ObjectType o) {
-		assertEquals("@GraphQLInputType", o.getAnnotation());
+	void checkInputTypeAnnotations(ObjectType o) {
+		assertEquals("@GraphQLInputType(\"" + o.getName() + "\")", o.getAnnotation());
 		for (Field f : o.getFields()) {
 			assertTrue(f.getAnnotation().contains("@GraphQL"));
 		}

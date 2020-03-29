@@ -4,16 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.client.domain.forum.MutationType;
+import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.domain.forum.GraphQLRequest;
 import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.exception.GraphQLResponseParseException;
 
@@ -34,7 +38,7 @@ class QueryExecutorImpl_Forum_Test {
 	void parseResponse_OK_Topics_withCustomScalar()
 			throws GraphQLRequestPreparationException, GraphQLResponseParseException, IOException {
 		// Preparation
-		ObjectResponse createPostResponse = new Builder(MutationType.class, "createPost")
+		ObjectResponse createPostResponse = new Builder(GraphQLRequest.class, "createPost", RequestType.mutation)
 				.withQueryResponseDef("{id date author{id} title content publiclyAvailable}").build();
 		String rawResponse = "{\"data\":{\"post\":{\"id\":\"d87c5c05-7cca-4302-adc8-627a282b1f1b\","
 				+ "\"date\":\"2009-11-21\"," + "\"title\":\"The good title for a post\","
@@ -71,5 +75,42 @@ class QueryExecutorImpl_Forum_Test {
 			throw new GraphQLResponseParseException("Could not retrieve the 'post' node");
 
 		return mapper.treeToValue(post, valueType);
+	}
+
+	@Test
+	void test_buildRequest_withFieldParameters_bindVariables()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		ObjectResponse objectResponse = new Builder(GraphQLRequest.class, "boards", RequestType.query)
+				.withQueryResponseDef(
+						"{id name publiclyAvailable topics(since: \"2018-12-20\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
+				.build();
+
+		// Go, go, go
+		String request = objectResponse.buildRequest(null);
+
+		// Verification
+		assertEquals(
+				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2018-12-20\\\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
+				request);
+	}
+
+	@Test
+	void test_buildRequest_withFieldParameters_hardCoded()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		ObjectResponse objectResponse = new Builder(GraphQLRequest.class, "boards", RequestType.query)
+				.withQueryResponseDef(
+						"{id name publiclyAvailable topics(since: \"2019-12-21\") {id date author{id name email type} nbPosts posts{date author{name email type}}}}")
+				.build();
+		Map<String, Object> parameters = new HashMap<>();
+
+		// Go, go, go
+		String request = objectResponse.buildRequest(parameters);
+
+		// Verification
+		assertEquals(
+				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2019-12-21\\\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
+				request);
 	}
 }

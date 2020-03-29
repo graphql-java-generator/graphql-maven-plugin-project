@@ -76,7 +76,6 @@ public class InputParameter {
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
-	@Deprecated
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory) {
 		return InputParameter.newBindParameter(name, bindParameterName, mandatory, null);
 	}
@@ -102,7 +101,6 @@ public class InputParameter {
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
-	@Deprecated
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory,
 			GraphQLScalarType graphQLScalarType) {
 		return new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType);
@@ -116,7 +114,6 @@ public class InputParameter {
 	 * @param value
 	 * @return
 	 */
-	@Deprecated
 	public static InputParameter newHardCodedParameter(String name, Object value) {
 		return new InputParameter(name, null, value, true, null);
 	}
@@ -131,7 +128,6 @@ public class InputParameter {
 	 * @param type
 	 * @return
 	 */
-	@Deprecated
 	public static InputParameter newHardCodedParameter(String name, Object value, boolean mandatory,
 			GraphQLScalarType type) {
 		return new InputParameter(name, null, value, mandatory, type);
@@ -296,10 +292,10 @@ public class InputParameter {
 				result.append(separator);
 
 				result.append(field.getName());
-				result.append(": ");
+				result.append(":");
 				result.append(getValueForGraphqlQuery(val, graphqlClientUtils.getGraphQLCustomScalarType(field)));
 
-				separator = ", ";
+				separator = ",";
 			}
 		} // for
 

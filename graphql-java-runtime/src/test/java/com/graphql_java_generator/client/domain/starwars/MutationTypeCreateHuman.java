@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MutationTypeCreateHuman {
 
+	public static final String NAME = "createHuman";
+
 	@JsonProperty("createHuman")
 	Human createHuman;
 

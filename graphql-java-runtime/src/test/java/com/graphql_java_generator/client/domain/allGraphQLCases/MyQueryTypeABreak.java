@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MyQueryTypeABreak {
 
+	public static final String NAME = "aBreak";
+
 	@JsonProperty("aBreak")
 	_break aBreak;
 

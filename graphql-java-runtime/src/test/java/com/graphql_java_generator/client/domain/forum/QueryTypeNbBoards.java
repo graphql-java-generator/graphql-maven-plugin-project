@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class QueryTypeNbBoards {
 
+	public static final String NAME = "nbBoards";
+
 	@JsonProperty("nbBoards")
 	Integer nbBoards;
 

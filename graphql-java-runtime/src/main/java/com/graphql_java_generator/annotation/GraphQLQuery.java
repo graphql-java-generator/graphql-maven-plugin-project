@@ -15,4 +15,14 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface GraphQLQuery {
 
+	/**
+	 * The name of the query/mutation/subscription, that is represented by the annotated java class, as defined in the
+	 * GraphQL schema.
+	 */
+	public String name();
+
+	/**
+	 * The type : query, mutation or subscription, as defined in the GraphQL schema.
+	 */
+	public RequestType type();
 }

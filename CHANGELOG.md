@@ -1,3 +1,15 @@
+# Not releases yet
+
+Client mode:
+* The client code has been highly simplified :
+    * The Builder support is now limited to the  _withQueryResponseDef(String query)_  method.
+    * The support for the  _withField()_, _withSubObject()_ (...) methods has been removed
+    * The  ___IntrospectionQuery_  class is no mode generated: the ___schema_  and  ___type_  queries has been added to the GraphQL schema's query, as defined in the GraphQL spec. A default query is added if no query was defined in the GraphQL schema.  
+    * The client code should now use the  _GraphQLRequest_  that is now generated along with the GraphQL java classes.
+    * A _GraphQLConfiguration_ class has been added. The generated query/mutation/subscription classes create an instance of this class, so there is no impact on existing code. But this class must be used to configure the _GraphQLRequest_.
+    * Please check the behavior of your full queries: the mutation keyword is now mandatory for mutations, as specified in the GraphQL specification. The query keyword remains optional. 
+    * Please the [client mode doc](https://graphql-maven-plugin-project.graphql-java-generator.com/client.html) for more information. 
+
 # 1.5.0
 
 Both modes (client and server):

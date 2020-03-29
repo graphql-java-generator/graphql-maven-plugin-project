@@ -17,19 +17,19 @@
 		</links>
 
 		<menu name="Maven Plugin Usage">
-			<item name="Introduction" href="index.html" />
+			<item name="Introduction" href="README.html" />
 			<item name="Custom Scalars" href="customscalars.html" />
 			<item name="Custom Code Templates" href="customtemplates.html" />
 		</menu>
 
 		<menu name="Client mode">
-			<item name="Client mode usage" href="client.html" />
+			<item name="Client usage" href="client.html" />
 			<item name="Introspection" href="introspection.html" />
 			<item name="Runtime Classes" href="runtimeclasses.html" />
 		</menu>
 
 		<menu name="Server mode">
-			<item name="Server mode usage" href="server.html" />
+			<item name="Server usage" href="server.html" />
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 

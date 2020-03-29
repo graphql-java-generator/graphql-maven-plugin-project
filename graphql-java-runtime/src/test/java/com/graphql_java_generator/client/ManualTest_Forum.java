@@ -5,10 +5,8 @@ import java.util.List;
 
 import com.graphql_java_generator.client.domain.forum.Board;
 import com.graphql_java_generator.client.domain.forum.MutationType;
-import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.forum.QueryType;
 import com.graphql_java_generator.client.domain.forum.Topic;
-import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -102,47 +100,6 @@ public class ManualTest_Forum {
 		Board board = mutationType.createBoard(resp, "a new Board", true);
 
 		System.out.println(board);
-
-		System.out.println("/////////////////////////////////////////////////////////////////////////////////////");
-		System.out.println("////////////////// More verbose: you use our Builder.");
-		System.out.println("/////////////////////////////////////////////////////////////////////////////////////");
-
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("------------------    boards()    (with builder)   -----------------------------");
-
-		// ObjectResponse
-		ObjectResponse objectResponse = queryType.getBoardsResponseBuilder().withField("id").withField("name")
-				.withField("publiclyAvailable")//
-				.withSubObject(new Builder(QueryType.class, "topics").withField("date")
-						.withSubObject(new Builder(Topic.class, "author").withField("name").withField("type").build())
-						.withField("publiclyAvailable").withField("nbPosts").build())
-				.build();
-
-		// Execution of the query. We get the result back in a POJO
-		boards = queryType.boards(objectResponse);
-
-		System.out.println(boards);
-
-		//
-
-		System.out.println("-------------------------------------------------------------------------------------");
-		System.out.println("------------------    topics()   (with builder)  ------------------------------");
-
-		// ObjectResponse
-		objectResponse = queryType.getTopicsResponseBuilder()//
-				.withField("id").withField("date").withField("publiclyAvailable")//
-				.withSubObject(new Builder(Topic.class, "author").withField("name").withField("type").withField("email")
-						.build())
-				.withSubObject(new Builder(Topic.class, "posts").withField("date").withField("title")
-						.withField("content").withSubObject(new Builder(Post.class, "author").withField("name")
-								.withField("type").withField("email").build())
-						.build())
-				.build();
-
-		// Execution of the query. We get the result back in a POJO
-		topics = queryType.topics(objectResponse, "Board name 2");
-
-		System.out.println(topics);
 
 		System.out.println("");
 		System.out.println("");

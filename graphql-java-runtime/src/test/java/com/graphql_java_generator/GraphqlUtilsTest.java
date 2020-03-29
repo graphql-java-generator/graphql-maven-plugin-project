@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,8 +79,8 @@ class GraphqlUtilsTest {
 	void test_invokeSetter() {
 		TopicPostInput topicPostInput = new TopicPostInput();
 
-		graphqlUtils.invokeSetter(topicPostInput, "date", new Date(2020 - 1900, 3 - 1, 1));
-		assertEquals(new Date(2020 - 1900, 3 - 1, 1), topicPostInput.getDate());
+		graphqlUtils.invokeSetter(topicPostInput, "date", new GregorianCalendar(2020, 3 - 1, 1).getTime());
+		assertEquals(new GregorianCalendar(2020, 3 - 1, 1).getTime(), topicPostInput.getDate());
 
 		graphqlUtils.invokeSetter(topicPostInput, "publiclyAvailable", true);
 		assertEquals(true, topicPostInput.getPubliclyAvailable());
@@ -91,7 +91,7 @@ class GraphqlUtilsTest {
 		// Preparation
 		Map<String, Object> input = new LinkedHashMap<>();
 		input.put("authorId", "00000000-0000-0000-0000-000000000003");
-		input.put("date", new Date(2009 - 1900, 11 - 1, 20));
+		input.put("date", new GregorianCalendar(2009, 11 - 1, 20).getTime());
 		input.put("publiclyAvailable", true);
 		input.put("title", "The good title");
 		input.put("content", "Some content");
@@ -107,7 +107,7 @@ class GraphqlUtilsTest {
 		assertEquals("00000000-0000-0000-0000-000000000004", topicInput.getBoardId());
 		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getInput().getAuthorId());
 		assertEquals("Some content", topicInput.getInput().getContent());
-		assertEquals(new Date(2009 - 1900, 11 - 1, 20), topicInput.getInput().getDate());
+		assertEquals(new GregorianCalendar(2009, 11 - 1, 20).getTime(), topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
 	}
@@ -135,7 +135,7 @@ class GraphqlUtilsTest {
 		// Preparation
 		Map<String, Object> input1 = new LinkedHashMap<>();
 		input1.put("authorId", "00000000-0000-0000-0000-000000000003");
-		input1.put("date", new Date(2009 - 1900, 11 - 1, 20));
+		input1.put("date", new GregorianCalendar(2009, 11 - 1, 20).getTime());
 		input1.put("publiclyAvailable", true);
 		input1.put("title", "The good title");
 		input1.put("content", "Some content");
@@ -145,7 +145,7 @@ class GraphqlUtilsTest {
 
 		Map<String, Object> input2 = new LinkedHashMap<>();
 		input2.put("authorId", "00000000-0000-0000-0000-000000000006");
-		input2.put("date", new Date(2009 - 1900, 11 - 1, 25));
+		input2.put("date", new GregorianCalendar(2009, 11 - 1, 25).getTime());
 		input2.put("publiclyAvailable", false);
 		input2.put("title", "The good title (2)");
 		input2.put("content", "Some content (2)");
@@ -165,7 +165,7 @@ class GraphqlUtilsTest {
 		assertEquals("00000000-0000-0000-0000-000000000004", topicInput.getBoardId().toString());
 		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getInput().getAuthorId().toString());
 		assertEquals("Some content", topicInput.getInput().getContent());
-		assertEquals(new Date(2009 - 1900, 11 - 1, 20), topicInput.getInput().getDate());
+		assertEquals(new GregorianCalendar(2009, 11 - 1, 20).getTime(), topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
 
@@ -173,7 +173,7 @@ class GraphqlUtilsTest {
 		assertEquals("00000000-0000-0000-0000-000000000005", topicInput.getBoardId().toString());
 		assertEquals("00000000-0000-0000-0000-000000000006", topicInput.getInput().getAuthorId().toString());
 		assertEquals("Some content (2)", topicInput.getInput().getContent());
-		assertEquals(new Date(2009 - 1900, 11 - 1, 25), topicInput.getInput().getDate());
+		assertEquals(new GregorianCalendar(2009, 11 - 1, 25).getTime(), topicInput.getInput().getDate());
 		assertEquals(false, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title (2)", topicInput.getInput().getTitle());
 	}

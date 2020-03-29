@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class MyQueryTypeAllFieldCases {
 
+	public static final String NAME = "allFieldCases";
+
 	@JsonProperty("allFieldCases")
 	AllFieldCases allFieldCases;
 

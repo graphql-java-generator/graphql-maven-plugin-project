@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class AnotherMutationTypeCreateAllFieldCases {
 
+	public static final String NAME = "createAllFieldCases";
+
 	@JsonProperty("createAllFieldCases")
 	AllFieldCases createAllFieldCases;
 
