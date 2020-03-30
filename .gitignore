@@ -12,3 +12,6 @@ logs/
 # Ignore files from maven-release-plugin
 pom.xml.releaseBackup
 release.properties
+
+*.iml
+idea

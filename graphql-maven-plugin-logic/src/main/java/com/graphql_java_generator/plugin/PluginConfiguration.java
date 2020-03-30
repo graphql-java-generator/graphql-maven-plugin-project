@@ -5,7 +5,11 @@ package com.graphql_java_generator.plugin;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -107,8 +111,13 @@ public interface PluginConfiguration {
 	File getTargetSourceFolder();
 
 	/**
+	 * The overwritting templates
+	 */
+	public Map<String, String> getTemplates();
+
+	/**
 	 * Returns true if shall copy graphql sources (graphql-java-runtime) source code
-	 * 
+	 *
 	 * @return
 	 */
 	boolean isCopyGraphQLJavaSources();
@@ -127,6 +136,8 @@ public interface PluginConfiguration {
 			getLog().debug("  TargetClassFolder: " + getTargetClassFolder());
 			getLog().debug("  TargetSourceFolder: " + getTargetSourceFolder());
 			getLog().debug("  CopyGraphQLJavaSources: " + isCopyGraphQLJavaSources());
+			getLog().debug("  Templates: " +  (Objects.nonNull(getTemplates())?
+					getTemplates().entrySet().stream().map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue())).collect(Collectors.joining(", ")): StringUtils.EMPTY) );
 		}
 	}
 }

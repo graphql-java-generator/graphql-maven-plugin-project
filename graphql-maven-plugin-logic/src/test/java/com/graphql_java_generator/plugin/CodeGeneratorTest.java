@@ -46,7 +46,6 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
 class CodeGeneratorTest {
-
 	@Resource
 	ApplicationContext context;
 	@Resource
@@ -210,7 +209,7 @@ class CodeGeneratorTest {
 	/**
 	 * Test to validate the code generation process copies runtime sources if
 	 * {@link PluginConfiguration#isCopyGraphQLJavaSources()} is set to true
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Test
@@ -237,7 +236,7 @@ class CodeGeneratorTest {
 	/**
 	 * Test to validate the code generation process does not copy runtime sources if
 	 * {@link PluginConfiguration#isCopyGraphQLJavaSources()} is set to false
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Test
@@ -257,9 +256,30 @@ class CodeGeneratorTest {
 	}
 
 	/**
+	 * Test for validating default template resolution
+	 */
+	@Test
+	@DirtiesContext
+	protected void testResolveTemplateDefault() {
+		pluginConfiguration.templates.clear();
+		assertEquals(CodeTemplate.BATCHLOADERDELEGATE.getDefaultValue(), this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));;
+	}
+
+	/**
+	 * Test for validating customized template resolution
+	 */
+	@Test
+	@DirtiesContext
+	protected void testResolveTemplateCustom() {
+		pluginConfiguration.templates.clear();
+		pluginConfiguration.templates.put(CodeTemplate.BATCHLOADERDELEGATE.name(), "/my/custom/template");
+		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));;
+	}
+
+	/**
 	 * Creates a mock graphql-java-runtime-sources.jar Generates a jar with the package com.graphql_java_generator. and
 	 * sample file
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	protected void createRuntimeSourcesJar() throws IOException {

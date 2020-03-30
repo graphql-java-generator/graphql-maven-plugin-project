@@ -2,8 +2,11 @@ package com.graphql_java_generator.plugin.test.helper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
@@ -35,6 +38,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public File targetClassFolder = null;
 	public File targetSourceFolder = null;
 	public boolean copyGraphQLJavaSources = true;
+	public Map<String, String> templates = new HashMap<String, String>();
 
 	/**
 	 * @param caller
@@ -53,5 +57,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public boolean isCopyGraphQLJavaSources() {
 		return copyGraphQLJavaSources;
 	}
+	
+	
 
 }
