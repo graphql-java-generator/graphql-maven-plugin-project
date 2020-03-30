@@ -88,6 +88,11 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+		    <groupId>org.javatuples</groupId>
+		    <artifactId>javatuples</artifactId>
+		    <scope>test</scope>
+		</dependency>
 
 		<!-- Other dependencies -->
 		<dependency>

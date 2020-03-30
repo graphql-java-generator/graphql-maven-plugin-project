@@ -108,7 +108,12 @@ public interface PluginConfiguration {
 
 	/** The folder where the generated classes will be generated */
 	public File getTargetSourceFolder();
-
+	
+	/**
+	 * The overwritting templates
+	 */
+	public Map<String, String> getTemplates();
+	
 	/**
 	 * Returns true if shall copy graphql sources (graphql-java-runtime) source code
 	 * @return
@@ -129,6 +134,8 @@ public interface PluginConfiguration {
 			getLog().debug("  TargetClassFolder: " + getTargetClassFolder());
 			getLog().debug("  TargetSourceFolder: " + getTargetSourceFolder());
 			getLog().debug("  CopyGraphQLJavaSources: " + isCopyGraphQLJavaSources());
+			getLog().debug("  Templates: " +  (Objects.nonNull(getTemplates())? 
+					getTemplates().entrySet().stream().map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue())).collect(Collectors.joining(", ")): StringUtils.EMPTY) );
 		}
 	}
 }

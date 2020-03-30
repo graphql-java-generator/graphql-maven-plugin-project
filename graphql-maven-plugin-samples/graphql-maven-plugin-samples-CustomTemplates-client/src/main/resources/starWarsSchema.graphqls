@@ -1,0 +1,47 @@
+schema {
+    query: QueryType
+    mutation: MutationType
+}
+
+type QueryType {
+	#hero is the main character of the episode
+    hero(episode: Episode): Character
+    characters(episode: Episode): [Character]!
+    human(id: ID) : Human
+    droid(id: ID!): Droid
+}
+
+type MutationType {
+	createHuman(name: String!, homePlanet: String): Human
+	addFriend(idCharacter: String!, idNewFriend: String!): Character
+}
+
+
+enum Episode {
+    NEWHOPE
+    EMPIRE
+    JEDI
+}
+
+interface Character {
+    id: ID!
+    name: String!
+    friends: [Character]
+    appearsIn: [Episode]!
+}
+
+type Human implements Character {
+    id: ID!
+    name: String!
+    friends: [Character]
+    appearsIn: [Episode]!
+    homePlanet: String
+}
+
+type Droid implements Character {
+    id: ID!
+    name: String!
+    friends: [Character]
+    appearsIn: [Episode]!
+    primaryFunction: String
+}
