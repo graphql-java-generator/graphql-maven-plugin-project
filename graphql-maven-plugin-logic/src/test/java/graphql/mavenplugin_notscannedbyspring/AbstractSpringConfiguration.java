@@ -71,7 +71,7 @@ public abstract class AbstractSpringConfiguration {
 	@Bean
 	PluginConfiguration pluginConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
 		PluginConfigurationTestHelper pluginConfigurationTestHelper = new PluginConfigurationTestHelper(this);
-		pluginConfigurationTestHelper.mainResourcesFolder = new File(mavenTestHelper.getModulePathFile(),
+		pluginConfigurationTestHelper.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(),
 				"/src/test/resources");
 
 		String classname = this.getClass().getSimpleName();

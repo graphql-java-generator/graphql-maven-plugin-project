@@ -105,6 +105,10 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
 	String schemaFilePattern;
 
+	/** The folder where the graphql schema file(s) will be searched */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
+	String schemaFileFolder;
+
 	/**
 	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
 	 * apply before generating the code. See the doc for more details.<BR/>
@@ -128,7 +132,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	/**
 	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyGraphQLJavaSources", defaultValue = "true")	
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyGraphQLJavaSources", defaultValue = "true")
 	boolean copyGraphQLJavaSources;
 
 	/** {@inheritDoc} */

@@ -28,7 +28,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public PluginMode mode = null;
 	public String packageName = null;
 	public Packaging packaging = null;
-	public File mainResourcesFolder = null;
+	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
 	public String sourceEncoding = null;

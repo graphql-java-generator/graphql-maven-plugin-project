@@ -65,8 +65,8 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
-	public File getMainResourcesFolder() {
-		return new File(mojo.project.getBasedir(), "/src/main/resources");
+	public File getSchemaFileFolder() {
+		return new File(mojo.project.getBasedir(), mojo.schemaFileFolder);
 	}
 
 	@Override

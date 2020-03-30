@@ -48,7 +48,7 @@ public class ResourceSchemaStringProvider {
 			// We take the file pattern as is
 			fullPathPattern = pluginConfiguration.getSchemaFilePattern();
 		} else {
-			fullPathPattern = "file:///" + pluginConfiguration.getMainResourcesFolder().getCanonicalPath()
+			fullPathPattern = "file:///" + pluginConfiguration.getSchemaFileFolder().getCanonicalPath()
 					+ ((pluginConfiguration.getSchemaFilePattern().startsWith("/")
 							|| (pluginConfiguration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
 					+ pluginConfiguration.getSchemaFilePattern();
