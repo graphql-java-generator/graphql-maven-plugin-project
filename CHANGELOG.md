@@ -9,6 +9,7 @@ Client mode:
     * A _GraphQLConfiguration_ class has been added. The generated query/mutation/subscription classes create an instance of this class, so there is no impact on existing code. But this class must be used to configure the _GraphQLRequest_.
     * Please check the behavior of your full queries: the mutation keyword is now mandatory for mutations, as specified in the GraphQL specification. The query keyword remains optional. 
     * Please the [client mode doc](https://graphql-maven-plugin-project.graphql-java-generator.com/client.html) for more information. 
+* Removed the unused java annotation GraphQLCustomScalar
 
 # 1.5.0
 

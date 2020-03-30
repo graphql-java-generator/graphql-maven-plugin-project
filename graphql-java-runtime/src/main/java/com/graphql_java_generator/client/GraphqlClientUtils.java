@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLEnumType;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInterfaceType;
@@ -177,12 +176,10 @@ public class GraphqlClientUtils {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public boolean isScalar(AccessibleObject fieldOrMethod) throws GraphQLRequestPreparationException {
-		if (fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null
-				|| fieldOrMethod.getAnnotation(GraphQLScalar.class) != null
+		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null
 				|| fieldOrMethod.getAnnotation(GraphQLNonScalar.class) != null) {
 			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
-			return fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null
-					|| fieldOrMethod.getAnnotation(GraphQLScalar.class) != null;
+			return fieldOrMethod.getAnnotation(GraphQLScalar.class) != null;
 		} else {
 			// No GraphQLScalar or GraphQLNonScalar annotation: let's thrown an internal error.
 			if (fieldOrMethod instanceof Field) {
@@ -208,9 +205,7 @@ public class GraphqlClientUtils {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Class<?> getGraphQLType(AccessibleObject fieldOrMethod) throws GraphQLRequestPreparationException {
-		if (fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null) {
-			return fieldOrMethod.getAnnotation(GraphQLCustomScalar.class).javaClass();
-		} else if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
+		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
 			return fieldOrMethod.getAnnotation(GraphQLScalar.class).javaClass();
 		} else if (fieldOrMethod.getAnnotation(GraphQLNonScalar.class) != null) {
 			return fieldOrMethod.getAnnotation(GraphQLNonScalar.class).javaClass();
@@ -376,9 +371,7 @@ public class GraphqlClientUtils {
 	 */
 	public GraphQLScalarType getGraphQLCustomScalarType(AccessibleObject fieldOrMethod) {
 		String graphQLTypeName;
-		if (fieldOrMethod.getAnnotation(GraphQLCustomScalar.class) != null) {
-			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLCustomScalar.class).graphQLTypeName();
-		} else if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
+		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
 			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLScalar.class).graphQLTypeName();
 		} else {
 			graphQLTypeName = null;
