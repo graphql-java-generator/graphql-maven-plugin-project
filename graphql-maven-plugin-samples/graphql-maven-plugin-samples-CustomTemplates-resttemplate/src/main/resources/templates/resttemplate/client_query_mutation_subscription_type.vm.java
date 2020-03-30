@@ -20,6 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
@@ -42,6 +45,7 @@ import $import;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @Component
+@GraphQLQuery(name = "${object.name}", type = RequestType.$type)
 public class ${object.javaName} {
 
 	/** Logger for this class */
@@ -49,6 +53,8 @@ public class ${object.javaName} {
 
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
+	final GraphQLConfiguration configuration;
+	
 	/**
 	 * The rest client implementaiton 
 	 */
@@ -66,6 +72,7 @@ public class ${object.javaName} {
 	 */
 	public ${object.javaName}() {
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		new DirectiveRegistryInitializer().initDirectiveRegistry();
 	}
 
 #foreach ($field in $object.fields)
@@ -92,8 +99,7 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	@GraphQLQuery
+	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}(String queryResponseDef#inputParams())
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
@@ -125,8 +131,7 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	@GraphQLQuery
+	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
@@ -151,8 +156,7 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	@GraphQLQuery
+	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}(ObjectResponse objectResponse#inputParams())
 			throws GraphQLRequestExecutionException  {
 		return ${field.name}WithBindValues(objectResponse#inputValues(), null);
@@ -175,8 +179,7 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	@GraphQLQuery
+	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -191,12 +194,7 @@ public class ${object.javaName} {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 
-		if (!${field.type.classSimpleName}.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ ${field.type.classSimpleName}.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
-		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute("${object.requestType}", objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
+		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute(objectResponse, parameters, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
 		
 		return ret.${field.javaName};
 	}
@@ -221,8 +219,7 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	@GraphQLQuery
+	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}(ObjectResponse objectResponse#inputParams(), Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
@@ -242,17 +239,12 @@ public class ${object.javaName} {
 			logger.debug("Executing of query '${field.name}' (with bind variables)");
 		}
 
-		if (!${field.type.classSimpleName}.class.equals(objectResponse.getFieldClass())) {
-			throw new GraphQLRequestExecutionException("The ObjectResponse parameter should be an instance of "
-					+ ${field.type.classSimpleName}.class + ", but is an instance of " + objectResponse.getClass().getName());
-		}
-
 		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 #foreach ($inputParameter in $field.inputParameters)
 		bindVariableValues.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 		
-		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute("${object.requestType}", objectResponse, bindVariableValues, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
+		${field.owningType.classSimpleName}${field.pascalCaseName} ret = executor.execute(objectResponse, bindVariableValues, ${field.owningType.classSimpleName}${field.pascalCaseName}.class);
 		
 		return ret.${field.javaName};
 	}
@@ -264,12 +256,29 @@ public class ${object.javaName} {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		Builder builder = new Builder(getClass(), "${field.name}");
+		return new Builder(GraphQLRequest.class, "${field.name}", RequestType.$type
 #foreach ($inputParameter in $field.inputParameters)
-		builder.withInputParameter(InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", false, null));
+			, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.mandatory}, null)
 #end
-		return builder;
+			);
 	}
-	
+
+	/**
+	 * Get the {@link GraphQLRequest} for the ${field.name} $type, created with the given Partial request.
+	 * 
+	 * @param partialRequest
+	 * 				The Partial GraphQLRequest, as explained in the 
+	 * 				<A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">plugin client documentation</A> 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLRequest(partialRequest, RequestType.$type, "${field.name}"
+#foreach ($inputParameter in $field.inputParameters)
+		, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.mandatory}, null)
+#end
+		);
+	}
+
 #end
 }
