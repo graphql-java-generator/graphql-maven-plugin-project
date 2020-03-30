@@ -40,7 +40,7 @@ class AbstractGraphQLRequestTest_fragment {
 	}
 
 	@Test
-	void testBuild_ThreeFragments() throws GraphQLRequestPreparationException {
+	void testBuild_ThreeFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
 		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(//
@@ -119,7 +119,13 @@ class AbstractGraphQLRequestTest_fragment {
 		assertEquals("appearsIn", content3.fields.get(i++).name);
 		assertEquals("__typename", content3.fields.get(i++).name);
 
-		fail("not yet finished");
+		assertEquals("{\"query\":\""//
+				+ "fragment fragment1 on Character{id appearsIn friends{id __typename ...fragment3 ...fragment2} __typename}"
+				+ "fragment fragment2 on Character{id name __typename}"//
+				+ "fragment fragment3 on Character{appearsIn __typename}" //
+				+ "query{withoutParameters{appearsIn __typename ...fragment1}}"//
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				graphQLRequest.buildRequest(params));
 	}
 
 	@Test

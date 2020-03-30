@@ -6,6 +6,7 @@ package com.graphql_java_generator.client.request;
 import java.util.Map;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
@@ -105,8 +106,13 @@ public class Fragment {
 		return typeName;
 	}
 
-	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> params) {
-		throw new RuntimeException("not yet implemented");
+	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> params)
+			throws GraphQLRequestExecutionException {
+		sb.append("fragment ");
+		sb.append(name);
+		sb.append(" on ");
+		sb.append(typeName);
+		content.appendToGraphQLRequests(sb, params, false);
 	}
 
 	/**

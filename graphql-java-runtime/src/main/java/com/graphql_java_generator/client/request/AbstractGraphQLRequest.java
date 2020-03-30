@@ -339,13 +339,13 @@ public abstract class AbstractGraphQLRequest {
 
 		// Then the other parts of the request
 		if (query != null) {
-			query.appendToGraphQLRequests(sb, params);
+			query.appendToGraphQLRequests(sb, params, true);
 		}
 		if (mutation != null) {
-			mutation.appendToGraphQLRequests(sb, params);
+			mutation.appendToGraphQLRequests(sb, params, true);
 		}
 		if (subscription != null) {
-			subscription.appendToGraphQLRequests(sb, params);
+			subscription.appendToGraphQLRequests(sb, params, true);
 		}
 
 		sb.append("\",\"variables\":null,\"operationName\":null}");

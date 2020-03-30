@@ -522,17 +522,22 @@ public class QueryField {
 	 * 
 	 * @param sb
 	 * @param parameters
+	 * @param appendName
+	 *            true if the name of the field must be written in the query (for regular fields for instance). False
+	 *            otherwise (for fragments, for instance)
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> parameters)
+	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> parameters, boolean appendName)
 			throws GraphQLRequestExecutionException {
 
 		//////////////////////////////////////////////////////////
 		// We start with the field name
-		if (alias == null) {
-			sb.append(name);
-		} else {
-			sb.append(alias).append(":").append(name);
+		if (appendName) {
+			if (alias == null) {
+				sb.append(name);
+			} else {
+				sb.append(alias).append(":").append(name);
+			}
 		}
 
 		//////////////////////////////////////////////////////////
@@ -546,19 +551,28 @@ public class QueryField {
 		//////////////////////////////////////////////////////////
 		// Then field list (if any)
 		boolean appendSpaceLocal = false;
-		if (fields.size() > 0) {
+
+		if (fields.size() > 0 || fragments.size() > 0) {
 			logger.debug("Appending ReponseDef content for field " + name + " of type " + clazz.getSimpleName());
-
 			sb.append("{");
-			for (QueryField f : fields) {
-				if (appendSpaceLocal) {
-					sb.append(" ");
-				}
-
-				f.appendToGraphQLRequests(sb, parameters);
-
-				appendSpaceLocal = true;
+		}
+		// Let's append the fields...
+		for (QueryField f : fields) {
+			if (appendSpaceLocal) {
+				sb.append(" ");
 			}
+			f.appendToGraphQLRequests(sb, parameters, true);
+			appendSpaceLocal = true;
+		}
+		// ...the fragment names
+		for (String f : fragments) {
+			if (appendSpaceLocal) {
+				sb.append(" ");
+			}
+			sb.append("...").append(f);
+			appendSpaceLocal = true;
+		}
+		if (fields.size() > 0 || fragments.size() > 0) {
 			sb.append("}");
 		}
 	}
