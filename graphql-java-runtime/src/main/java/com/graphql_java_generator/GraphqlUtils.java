@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.annotation.GraphQLCustomScalar;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -174,13 +173,10 @@ public class GraphqlUtils {
 				Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 
 				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
-				GraphQLCustomScalar graphQLCustomScalar = field.getAnnotation(GraphQLCustomScalar.class);
 				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
 				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
 
-				if (graphQLCustomScalar != null)
-					return graphQLCustomScalar.javaClass();
-				else if (graphQLNonScalar != null)
+				if (graphQLNonScalar != null)
 					return graphQLNonScalar.javaClass();
 				else if (graphQLScalar != null)
 					return graphQLScalar.javaClass();

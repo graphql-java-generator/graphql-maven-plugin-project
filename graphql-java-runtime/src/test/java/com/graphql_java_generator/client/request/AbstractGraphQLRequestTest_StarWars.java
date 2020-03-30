@@ -324,12 +324,13 @@ class AbstractGraphQLRequestTest_StarWars {
 		assertEquals(1, graphQLRequest.query.fields.size(), "all scalar fields (with __typename)");
 		QueryField hero = graphQLRequest.query.fields.get(0);
 		assertEquals("hero", hero.getName(), "check query name, for test: " + test);
-		assertEquals(4, hero.fields.size(), "all scalar fields (with __typename), for test: " + test);
 		//
 		// field name check
-		int i = 0;
-		// The field order is strange, and changes overtime. So we just check that 4 expected fields exits
+		//
+		// The fields order is strange, and changes overtime. So we just check the number of expected fields, and that
+		// each of them exits.
 		// It seems to be linked with the fact that this is an interface ???
+		assertEquals(4, hero.fields.size(), "all scalar fields (with __typename), for test: " + test);
 		checkContainsField(hero.fields, "id");
 		checkContainsField(hero.fields, "name");
 		checkContainsField(hero.fields, "appearsIn");

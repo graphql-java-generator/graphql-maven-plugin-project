@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
+import com.graphql_java_generator.annotation.GraphQLInputType;
+import com.graphql_java_generator.annotation.GraphQLInterfaceType;
+import com.graphql_java_generator.annotation.GraphQLObjectType;
+import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLUnionType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
@@ -75,6 +80,12 @@ public class QueryField {
 	List<Directive> directives = new ArrayList<>();
 
 	/**
+	 * The lists of fragment that are in this field's definition, like <I>fragment1</I> and <I>fragment2</I> in:
+	 * <I>thisField {field1 ...fragment1 field2 ...fragment2}</I>
+	 */
+	List<String> fragments = new ArrayList<>();
+
+	/**
 	 * All subfields contained in this field. It should remain empty if the field is a GraphQL Scalar. At least one if
 	 * the field is a not a Scalar
 	 */
@@ -114,6 +125,22 @@ public class QueryField {
 	 */
 	public QueryField(Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
 		this(owningClass, fieldName, null);
+	}
+
+	/**
+	 * The constructor, when created for a {@link Fragment}. We only know the class of the Fragment. This class is the
+	 * owning class of all the fields defined in the fragment.<BR/>
+	 * The access for this constructor is limited to the package, as only the {@link Fragment} class should call it.
+	 * 
+	 * @param clazz
+	 *            The {@link Class} of the {@link Fragment} we're about to read.
+	 * @throws GraphQLRequestPreparationException
+	 */
+	QueryField(Class<?> clazz) throws GraphQLRequestPreparationException {
+		this.owningClazz = null;
+		this.clazz = clazz;
+		this.name = null;
+		this.alias = null;
 	}
 
 	/**
@@ -195,24 +222,32 @@ public class QueryField {
 			default:
 				directive = null;
 
-				// If the next token is ":", then we've found an alias (not a name field)
-				if (st.checkNextToken(":")) {
-					String alias = token;
-					token = st.nextToken(); // It's the ":". We ignore it
-					token = st.nextToken();
-					currentField = new QueryField(clazz, token, alias);
+				if (token.startsWith("...")) {
+					// This token starts by "...", we've read a fragment
+					String fragmentName = token.substring(3);
+					logger.trace("Found fragment {} for field {}", fragmentName, name);
+					fragments.add(fragmentName);
 				} else {
-					currentField = new QueryField(clazz, token);
-				}
+					// We've read a regular field
+					if (st.checkNextToken(":")) {
+						// The next token is ":", so we've found an alias (not a name field)
+						String alias = token;
+						token = st.nextToken(); // It's the ":". We ignore it
+						token = st.nextToken();
+						currentField = new QueryField(clazz, token, alias);
+					} else {
+						currentField = new QueryField(clazz, token);
+					}
 
-				// Does a field of this name already exist ?
-				// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
-				if (getField(currentField.name) != null) {
-					throw new GraphQLRequestPreparationException("The field <" + currentField.name
-							+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
-				}
+					// Does a field of this name already exist ?
+					// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
+					if (getField(currentField.name) != null) {
+						throw new GraphQLRequestPreparationException("The field <" + currentField.name
+								+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
+					}
 
-				fields.add(currentField);
+					fields.add(currentField);
+				}
 			}// switch
 		} // while
 
@@ -606,29 +641,19 @@ public class QueryField {
 	 */
 	public boolean isScalar() throws GraphQLRequestPreparationException {
 		if (scalar == null) {
-
 			// The scalar value has not yet been calculated.
 
-			// The owning class may be an object or an interface. An union has no field.
+			// All the generated classes have a GraphQL annotation.
+			// If no such annotation, then this type is a scalar.
+			GraphQLInputType graphQLInputType = clazz.getAnnotation(GraphQLInputType.class);
+			GraphQLInterfaceType graphQLInterfaceType = clazz.getAnnotation(GraphQLInterfaceType.class);
+			GraphQLObjectType graphQLObjectType = clazz.getAnnotation(GraphQLObjectType.class);
+			GraphQLQuery graphQLQuery = clazz.getAnnotation(GraphQLQuery.class);
+			GraphQLUnionType graphQLUnionType = clazz.getAnnotation(GraphQLUnionType.class);
 
-			// If it's an interface, we'll search for a getter
-			if (owningClazz.isInterface()) {
-				try {
-					return graphqlClientUtils.isScalar(owningClazz
-							.getDeclaredMethod("get" + graphqlUtils.getPascalCase(graphqlUtils.getJavaName(name))));
-				} catch (SecurityException | NoSuchMethodException e) {
-					throw new GraphQLRequestPreparationException("Could not determine if the <" + name
-							+ "> field of the '" + owningClazz.getName() + "' is a scalar", e);
-				}
-			} else {
-				// Otherwise, we search for a field
-				try {
-					return graphqlClientUtils.isScalar(owningClazz.getDeclaredField(graphqlUtils.getJavaName(name)));
-				} catch (NoSuchFieldException | SecurityException e) {
-					throw new GraphQLRequestPreparationException("Could not determine if the <" + name
-							+ "> field of the '" + owningClazz.getName() + "' is a scalar", e);
-				}
-			}
+			// If one of these annotations is not null, then it's not a scalar. Otherwise, this type is a scalar.
+			scalar = !(graphQLInputType != null || graphQLInterfaceType != null || graphQLObjectType != null
+					|| graphQLQuery != null || graphQLUnionType != null);
 		}
 		return scalar;
 	}
@@ -640,7 +665,8 @@ public class QueryField {
 	 */
 	public boolean isQueryLevel() {
 		if (queryLevel == null) {
-			queryLevel = name.equals("query") || name.equals("mutation") || name.equals("subscription");
+			queryLevel = name != null
+					&& (name.equals("query") || name.equals("mutation") || name.equals("subscription"));
 		}
 		return queryLevel;
 	}

@@ -20,7 +20,8 @@ public class Fragment {
 	/** The GraphQL type on which the fragment is based (on clause of the fragment definition) */
 	final String typeName;
 
-	final ObjectResponse objetResponse;
+	/** The content of the GraphQL fragment, as defined in the GraphQL request */
+	QueryField content = null;
 
 	public Fragment(QueryTokenizer st, String packageName) throws GraphQLRequestPreparationException {
 
@@ -53,19 +54,17 @@ public class Fragment {
 
 		// Ok, we're ready to read the fragment content
 		String classname = packageName + "." + GraphqlUtils.graphqlUtils.getJavaName(typeName);
+		Class<?> clazz;
 
 		try {
-			getClass().getClassLoader().loadClass(classname);
+			clazz = getClass().getClassLoader().loadClass(classname);
 		} catch (ClassNotFoundException e) {
 			throw new GraphQLRequestPreparationException(
 					"Could not load class '" + classname + "' for type '" + typeName + "'", e);
 		}
 
-		// Builder.QueryField queryField = new Builder.QueryField(null, clazz, null);
-		// queryField.readTokenizerForResponseDefinition(st);
-		objetResponse = null;
-
-		throw new RuntimeException("Reading of the ObjectResponse is not implemented");
+		content = new QueryField(clazz);
+		content.readTokenizerForResponseDefinition(st);
 	}
 
 	/**
@@ -108,6 +107,15 @@ public class Fragment {
 
 	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> params) {
 		throw new RuntimeException("not yet implemented");
+	}
+
+	/**
+	 * Adds the <I>__typename</I> field into this fragment, and all the subojects it contains.
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public void addTypenameFields() throws GraphQLRequestPreparationException {
+		content.addTypenameFields();
 	}
 
 }

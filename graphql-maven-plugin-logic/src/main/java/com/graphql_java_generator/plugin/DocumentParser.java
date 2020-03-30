@@ -19,7 +19,9 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
+import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
@@ -890,6 +892,11 @@ public class DocumentParser {
 			Stream.concat(objectTypes.stream(), interfaceTypes.stream())
 					.forEach(o -> addTypeAnnotationForClientMode(o));
 
+			// Add the GraphQLQuery annotation
+			queryTypes.parallelStream().forEach(f -> addQueryAnnotationForClientMode(f, RequestType.query));
+			mutationTypes.stream().forEach(f -> addQueryAnnotationForClientMode(f, RequestType.mutation));
+			subscriptionTypes.forEach(f -> addQueryAnnotationForClientMode(f, RequestType.subscription));
+
 			// Field annotations
 			objectTypes.stream().flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode(f));
 			interfaceTypes.stream().flatMap(o -> o.getFields().stream())
@@ -910,6 +917,18 @@ public class DocumentParser {
 			break;
 		}
 
+	}
+
+	/**
+	 * Add the {@link GraphQLQuery} annotation to the given query/mutation/subscription
+	 * 
+	 * @param f
+	 *            The query/mutation/subscription, for the annotation must be added.
+	 * @param type
+	 *            The kind of request
+	 */
+	private void addQueryAnnotationForClientMode(ObjectType f, RequestType type) {
+		f.addAnnotation("@GraphQLQuery(name = \"" + f.getName() + "\", type = RequestType." + type.name() + ")");
 	}
 
 	/**

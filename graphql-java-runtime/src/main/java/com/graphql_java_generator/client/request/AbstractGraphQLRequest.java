@@ -183,16 +183,16 @@ public abstract class AbstractGraphQLRequest {
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
-		QueryTokenizer st = new QueryTokenizer(this.graphQLRequest);
+		QueryTokenizer qt = new QueryTokenizer(this.graphQLRequest);
 		RequestType requestType = RequestType.query; // If not precised, then it's a query
 
 		// We scan the input string. It may contain fragment definition and query/mutation/subscription
-		while (st.hasMoreTokens()) {
-			String token = st.nextToken();
+		while (qt.hasMoreTokens()) {
+			String token = qt.nextToken();
 
 			switch (token) {
 			case "fragment":
-				fragments.add(new Fragment(st, null));
+				fragments.add(new Fragment(qt, this.getClass().getPackage().getName()));
 				break;
 			case "query":
 			case "mutation":
@@ -204,15 +204,15 @@ public abstract class AbstractGraphQLRequest {
 				switch (requestType) {
 				case query:
 					query = getQueryContext();// Get the query field from the concrete class
-					query.readTokenizerForResponseDefinition(st);
+					query.readTokenizerForResponseDefinition(qt);
 					break;
 				case mutation:
 					mutation = getMutationContext();// Get the mutation field from the concrete class
-					mutation.readTokenizerForResponseDefinition(st);
+					mutation.readTokenizerForResponseDefinition(qt);
 					break;
 				case subscription:
 					subscription = getSubscriptionContext();// Get the subscription field from the concrete class
-					subscription.readTokenizerForResponseDefinition(st);
+					subscription.readTokenizerForResponseDefinition(qt);
 					break;
 				default:
 					throw new GraphQLRequestPreparationException("Non managed request type '" + requestType
@@ -268,6 +268,10 @@ public abstract class AbstractGraphQLRequest {
 		}
 		if (subscription != null) {
 			subscription.addTypenameFields();
+		}
+
+		for (Fragment f : fragments) {
+			f.addTypenameFields();
 		}
 	}
 
