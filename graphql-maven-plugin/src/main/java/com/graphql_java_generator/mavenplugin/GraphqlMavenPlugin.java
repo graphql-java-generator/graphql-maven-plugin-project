@@ -19,7 +19,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.CodeGenerator;
-import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginConfiguration;
@@ -130,13 +129,13 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 */
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	MavenProject project;
-	
+
 	/**
-	 * Map of tempaltes to be used
+	 * Map of templates to be used
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.templates")	
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.templates")
 	Map<String, String> templates;
-	
+
 	/**
 	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory
 	 */
