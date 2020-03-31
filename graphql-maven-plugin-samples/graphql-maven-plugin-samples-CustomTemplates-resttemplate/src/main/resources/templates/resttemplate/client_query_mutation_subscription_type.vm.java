@@ -53,8 +53,6 @@ public class ${object.javaName} {
 
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
-	final GraphQLConfiguration configuration;
-	
 	/**
 	 * The rest client implementaiton 
 	 */
