@@ -24,6 +24,8 @@ import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelp
 
 import graphql.language.Document;
 import graphql.parser.Parser;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Spring configuration used for JUnit tests. To use tit, just create a subclass, and provide the schemaFilePattern
@@ -40,7 +42,11 @@ public abstract class AbstractSpringConfiguration {
 
 	/** Logger pour cette classe */
 	private final String schemaFilePattern;
-
+	
+	@Getter
+	@Setter
+	private String schemaFileSubFolder;
+	
 	private PluginMode mode;
 	private String schemaPersonalizationFilename = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
 	private List<CustomScalarDefinition> customScalars = null;
@@ -71,8 +77,12 @@ public abstract class AbstractSpringConfiguration {
 	@Bean
 	PluginConfiguration pluginConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
 		PluginConfigurationTestHelper pluginConfigurationTestHelper = new PluginConfigurationTestHelper(this);
-		pluginConfigurationTestHelper.mainResourcesFolder = new File(mavenTestHelper.getModulePathFile(),
+		pluginConfigurationTestHelper.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(),
 				"/src/test/resources");
+		if (schemaFileSubFolder != null) {
+			pluginConfigurationTestHelper.schemaFileFolder = new File(pluginConfigurationTestHelper.schemaFileFolder,
+					schemaFileSubFolder);
+		}
 
 		String classname = this.getClass().getSimpleName();
 		int firstDollar = classname.indexOf('$');

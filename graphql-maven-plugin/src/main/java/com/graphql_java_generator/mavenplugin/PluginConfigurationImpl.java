@@ -5,6 +5,7 @@ package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.Logger;
@@ -65,8 +66,8 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
-	public File getMainResourcesFolder() {
-		return new File(mojo.project.getBasedir(), "/src/main/resources");
+	public File getSchemaFileFolder() {
+		return new File(mojo.project.getBasedir(), mojo.schemaFileFolder);
 	}
 
 	@Override
@@ -102,6 +103,11 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	@Override
 	public boolean isCopyGraphQLJavaSources() {
 		return this.mojo.copyGraphQLJavaSources;
+	}
+
+	@Override
+	public Map<String, String> getTemplates() {
+		return this.mojo.templates;
 	}
 
 }
