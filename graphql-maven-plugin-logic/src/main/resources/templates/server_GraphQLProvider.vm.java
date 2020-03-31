@@ -105,8 +105,9 @@ public class GraphQLProvider {
 		StringBuffer sdl = new StringBuffer();
 #foreach ($schemaFile in $schemaFiles)
 		res = new ClassPathResource("/${schemaFile}");
-		Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"));
-		sdl.append(FileCopyUtils.copyToString(reader));
+		try(Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"))) {
+			sdl.append(FileCopyUtils.copyToString(reader));
+		}
 #end
 		this.graphQL = GraphQL.newGraphQL(buildSchema(sdl.toString())).build();
 	}
