@@ -25,7 +25,6 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration.GraphQLRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -121,9 +120,9 @@ public class CodeGenerator {
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
-			
+
 			// Generation of the GraphQLRequest class
-			i += generateGraphQLRequest();			
+			i += generateGraphQLRequest();
 
 			// Files for Custom Scalars
 			VelocityContext context = new VelocityContext();
@@ -244,8 +243,8 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Generates the {@link GraphQLRequest} class . This method expects at most one query, one mutation and one
-	 * subscription, which is compliant with the GraphQL specification
+	 * Generates the GraphQLRequest class . This method expects at most one query, one mutation and one subscription,
+	 * which is compliant with the GraphQL specification
 	 */
 	int generateGraphQLRequest() {
 		VelocityContext context = new VelocityContext();
