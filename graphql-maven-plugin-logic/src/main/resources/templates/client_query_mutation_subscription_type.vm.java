@@ -94,7 +94,7 @@ public class ${object.javaName} {
 	 * @param objectMapper
 	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
-	public ${object.name}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public ${object.javaName}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
 		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
 	}
