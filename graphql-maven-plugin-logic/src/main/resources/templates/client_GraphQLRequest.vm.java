@@ -24,6 +24,12 @@ public class GraphQLRequest extends ObjectResponse {
 
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
+	// This initialization must occur before the execution of the constructors, in order to properly parse the GraphQL request
+	static {
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
+	}
+
 	/** {@inheritDoc} */
 	public GraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 		super(graphQLRequest);

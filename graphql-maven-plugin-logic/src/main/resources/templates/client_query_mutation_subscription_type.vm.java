@@ -60,8 +60,8 @@ public class ${object.javaName} {
 	 */
 	public ${object.javaName}(String graphqlEndpoint) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
-		new DirectiveRegistryInitializer().initDirectiveRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**
@@ -79,7 +79,8 @@ public class ${object.javaName} {
 	 */
 	public ${object.javaName}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		new DirectiveRegistryInitializer().initDirectiveRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**
@@ -96,7 +97,8 @@ public class ${object.javaName} {
 	 */
 	public ${object.javaName}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**

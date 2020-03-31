@@ -10,14 +10,11 @@ import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 
 public class DirectiveRegistryInitializer {
 	
-	
-	CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
-	
 	/**
 	 * Initialization of the {@link DirectiveRegistry} with all known custom scalars, that is with all custom scalars
 	 * defined in the project pom
 	 */
-	public void initDirectiveRegistry() {
+	public static DirectiveRegistry initDirectiveRegistry() {
 		DirectiveRegistry directiveRegistry = new DirectiveRegistryImpl();
 		Directive directive;
 		InputParameter param;
@@ -55,6 +52,7 @@ public class DirectiveRegistryInitializer {
 #end
 
 		DirectiveRegistryImpl.directiveRegistry = directiveRegistry;
+		return directiveRegistry;
 	}
 
 }
