@@ -20,6 +20,9 @@ public class DirectiveRegistryInitializer {
 		InputParameter param;
 
 #foreach ($directive in $directives)
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Creating Directive ${directive.name}
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("${directive.name}");
 #foreach ($argument in $directive.arguments)
@@ -39,7 +42,7 @@ public class DirectiveRegistryInitializer {
 					graphql.Scalars.GraphQL${argument.graphQLTypeName}
 #else
 ## It must be a custom scalar
-					customScalarRegistry.getGraphQLScalarType(${argument.graphQLTypeName})
+					CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType("${argument.graphQLTypeName}")
 #end
 				);
 		directive.getArguments().add(param);

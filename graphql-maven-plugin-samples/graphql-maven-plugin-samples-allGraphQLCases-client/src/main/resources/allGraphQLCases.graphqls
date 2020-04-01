@@ -5,6 +5,8 @@ scalar Long
 directive @testDirective(
   value: String! = "A value to test default values"
   anotherValue: String
+  anEnum: Episode = JEDI
+  aCustomSCalar: Date = "2000-12-31"
 ) on
 # ExecutableDirectiveLocation
 # SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
@@ -266,3 +268,20 @@ input class {
 type break {
 	case(test: extends!, if: else): extends
 }
+
+
+
+#############################
+# test for issue #35
+
+directive @relation(
+    name: String
+    direction: direction
+) on FIELD_DEFINITION | FIELD
+
+enum direction {
+    IN
+    OUT
+}
+#############################
+

@@ -145,7 +145,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		List<String> ret = new ArrayList<>();
 
 		// Let's look for the testDirective
-		Directive testDirective = getTestDirective(
+		Directive testDirective = getDirectiveForName("testDirective",
 				dataFetchingEnvironment.getMergedField().getSingleField().getDirectives());
 
 		if (testDirective != null) {
@@ -161,9 +161,16 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return ret;
 	}
 
-	private Directive getTestDirective(List<Directive> directives) {
+	/**
+	 * Retrieves the directive of the given name, from the given list of directives
+	 * 
+	 * @param directiveName
+	 * @param directives
+	 * @return the Directive with the given name, or null if it was not found in the given list
+	 */
+	private Directive getDirectiveForName(String directiveName, List<Directive> directives) {
 		for (Directive d : directives) {
-			if (d.getName().equals("testDirective"))
+			if (d.getName().equals(directiveName))
 				return d;
 		}
 		return null;
@@ -174,10 +181,24 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		Human ret = generator.generateInstance(Human.class);
 		Field field = (Field) dataFetchingEnvironment.getMergedField().getFields().get(0).getSelectionSet()
 				.getSelections().get(1);
-		Directive testDirective = getTestDirective(field.getDirectives());
+
+		StringBuilder sb = new StringBuilder();
+
+		Directive testDirective = getDirectiveForName("testDirective", field.getDirectives());
 		if (testDirective != null) {
-			ret.setName(((StringValue) testDirective.getArguments().get(0).getValue()).getValue());
+			sb.append(((StringValue) testDirective.getArguments().get(0).getValue()).getValue());
 		}
+
+		Directive relationDirective = getDirectiveForName("relation", field.getDirectives());
+		if (relationDirective != null) {
+			sb.append(" (relation: ");
+			sb.append(((StringValue) relationDirective.getArguments().get(0).getValue()).getValue());
+			sb.append(", direction: ");
+			sb.append(((EnumValue) relationDirective.getArguments().get(1).getValue()).getName().toString());
+			sb.append(")");
+		}
+
+		ret.setName(sb.toString());
 		return ret;
 	}
 }
