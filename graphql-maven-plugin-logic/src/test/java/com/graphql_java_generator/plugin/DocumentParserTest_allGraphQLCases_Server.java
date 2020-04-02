@@ -68,12 +68,12 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(25, i, "Nb java files are generated");
-		assertEquals(6, documentParser.directives.size(), "Nb directives");
-		assertEquals(15, documentParser.objectTypes.size(), "Nb objects");
-		assertEquals(3, documentParser.customScalars.size(), "Nb custom scalars");
+		assertEquals(27, i, "Nb java files are generated");
+		assertEquals(7, documentParser.directives.size(), "Nb directives");
+		assertEquals(16, documentParser.objectTypes.size(), "Nb objects");
+		assertEquals(4, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
-		assertEquals(3, documentParser.enumTypes.size(), "Nb enums");
+		assertEquals(4, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
 		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
 		assertEquals(1, documentParser.subscriptionTypes.size(), "Nb subscriptions");

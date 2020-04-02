@@ -207,6 +207,8 @@ public class DocumentParser {
 	@PostConstruct
 	public void postConstruct() {
 
+		pluginConfiguration.getLog().debug("Starting DocumentParser's PostConstrut intialization");
+
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL standard scalars
 
@@ -228,6 +230,7 @@ public class DocumentParser {
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL custom scalar implementations must be provided by the plugin configuration
+		pluginConfiguration.getLog().debug("Storing custom scalar's implementations [START]");
 		if (pluginConfiguration.getCustomScalars() != null) {
 			for (CustomScalarDefinition customScalarDef : pluginConfiguration.getCustomScalars()) {
 				String className = customScalarDef.getJavaType();
@@ -243,6 +246,7 @@ public class DocumentParser {
 				types.put(type.getName(), type);
 			}
 		}
+		pluginConfiguration.getLog().debug("Storing custom scalar's implementations [END]");
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL standard directives
@@ -276,6 +280,8 @@ public class DocumentParser {
 		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
 		directives.add(deprecated);
 
+		pluginConfiguration.getLog().debug("Finished DocumentParser's PostConstrut intialization");
+
 	}
 
 	/**
@@ -286,28 +292,40 @@ public class DocumentParser {
 	 * @return
 	 */
 	public int parseDocuments() {
+		pluginConfiguration.getLog().debug("Starting documents parsing");
+
 		int nbClasses = documents.stream().mapToInt(this::parseOneDocument).sum();
+
+		pluginConfiguration.getLog().debug("Documents have been parsed. Executing internal finalizations");
 
 		// Let's finalize some "details":
 
 		// Add introspection capabilities (the introspection schema has already been read, as it is added by
 		// ResourceSchemaStringProvider in the documents list
+		pluginConfiguration.getLog().debug("Adding introspection capabilities");
 		addIntrospectionCapabilities();
 		// Init the list of the object implementing each interface. This is done last, when all objects has been read by
 		// the plugin.
+		pluginConfiguration.getLog().debug("Init list of interface implementations");
 		initListOfInterfaceImplementations();
 		// The types Map allows to retrieve easily a Type from its name
+		pluginConfiguration.getLog().debug("Fill type map");
 		fillTypesMap();
 		// Let's identify every relation between objects, interface or union in the model
+		pluginConfiguration.getLog().debug("Init relations");
 		initRelations();
 		// Some annotations are needed for Jackson or JPA
+		pluginConfiguration.getLog().debug("Add annotations");
 		addAnnotations();
 		// List all data fetchers
+		pluginConfiguration.getLog().debug("Init data fetchers");
 		initDataFetchers();
 		// List all Batch Loaders
+		pluginConfiguration.getLog().debug("Init batch loaders");
 		initBatchLoaders();
 
 		// Apply the user's schema personalization
+		pluginConfiguration.getLog().debug("Apply schema personalization");
 		jsonSchemaPersonalization.applySchemaPersonalization();
 
 		return nbClasses;
@@ -336,6 +354,7 @@ public class DocumentParser {
 
 		// Looks for a schema definitions, to list the defined queries, mutations and subscriptions (should be only one
 		// of each), but we're ready for more. (for instance if several schema files have been merged)
+		pluginConfiguration.getLog().debug("Looking for schema definition");
 		for (Definition<?> node : document.getDefinitions()) {
 			if (node instanceof SchemaDefinition) {
 				readSchemaDefinition((SchemaDefinition) node, queryObjectNames, mutationObjectNames,
@@ -343,6 +362,7 @@ public class DocumentParser {
 			} // if
 		} // for
 
+		pluginConfiguration.getLog().debug("Reading node definitions");
 		for (Definition<?> node : document.getDefinitions()) {
 			// directive
 			if (node instanceof DirectiveDefinition) {
@@ -398,6 +418,7 @@ public class DocumentParser {
 		} // for
 
 		// Once all Types have been properly read, we can read the union types
+		pluginConfiguration.getLog().debug("Reading union definitions");
 		document.getDefinitions().stream().filter(n -> (n instanceof UnionTypeDefinition))
 				.forEach(n -> unionTypes.add(readUnionType((UnionTypeDefinition) n)));
 
@@ -1024,7 +1045,7 @@ public class DocumentParser {
 			contentAs = field.getType().getConcreteClassSimpleName() + ".class";
 		}
 		if (field.getType().isCustomScalar()) {
-			using = "CustomScalarDeserializer" + field.getType().getConcreteClassSimpleName() + ".class";
+			using = "CustomScalarDeserializer" + field.getType().getName() + ".class";
 		}
 		if (contentAs != null || using != null) {
 			((FieldImpl) field).addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
@@ -1170,10 +1191,12 @@ public class DocumentParser {
 			// interfaces, along with Enums...
 
 			// We fetch only the objects, here. The interfaces are managed just after
+			pluginConfiguration.getLog().debug("Init batch loader for objects");
 			objectTypes.stream().filter(o -> (o.getGraphQlType() == GraphQlType.OBJECT && !o.isInputType()))
 					.forEach(o -> initOneBatchLoader(o));
 
 			// Let's go through all interfaces.
+			pluginConfiguration.getLog().debug("Init batch loader for objects");
 			interfaceTypes.stream().forEach(i -> initOneBatchLoader(i));
 		}
 	}
@@ -1185,6 +1208,7 @@ public class DocumentParser {
 	 *            the Type that may need a BatchLoader
 	 */
 	private void initOneBatchLoader(ObjectType type) {
+		pluginConfiguration.getLog().debug("Init batch loader for " + type.getName());
 		// No BatchLoader for the "artificial" Object Type created to instanciate an Interface. This "artificial" Object
 		// Type is for internal usage only, and to be used in Client mode to allow instanciation of the server response
 		// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no BatchLoader.

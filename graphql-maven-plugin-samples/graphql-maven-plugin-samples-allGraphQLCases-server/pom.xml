@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -40,6 +41,11 @@
 							<graphQLTypeName>Long</graphQLTypeName>
 							<javaType>java.lang.Long</javaType>
 							<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
+						</customScalar>
+						<customScalar>
+							<graphQLTypeName>NonNegativeInt</graphQLTypeName>
+							<javaType>java.lang.Integer</javaType>
+							<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
 						</customScalar>
 					</customScalars>
 				</configuration>
@@ -85,7 +91,11 @@
 			<artifactId>graphql-java-server-dependencies</artifactId>
 			<type>pom</type>
 		</dependency>
-
+		<!-- Complementary graphql dependencies -->
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-extended-scalars</artifactId>
+		</dependency>
 
 		<!-- Generates at runtime a GUI to execute GraphQL requests. -->
 		<!-- Very useful for tests, but take care for production ! -->

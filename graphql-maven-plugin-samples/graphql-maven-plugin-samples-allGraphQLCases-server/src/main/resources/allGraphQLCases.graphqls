@@ -285,3 +285,13 @@ enum direction {
 }
 #############################
 
+#############################
+# test for issue #36
+
+type TestExtScalar {
+bad: NonNegativeInt
+}
+
+scalar NonNegativeInt
+
+#############################

@@ -30,6 +30,8 @@ public class AllGraphQLCases_Client_SpringConfiguration extends AbstractSpringCo
 				.add(new CustomScalarDefinition("Long", "java.lang.Long", null, "graphql.Scalars.GraphQLLong", null));
 		customScalars.add(new CustomScalarDefinition("else", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
+		customScalars.add(new CustomScalarDefinition("NonNegativeInt", "java.lang.Integer", null,
+				"graphql.scalars.ExtendedScalars.NonNegativeInt", null));
 	}
 
 	public AllGraphQLCases_Client_SpringConfiguration() {
