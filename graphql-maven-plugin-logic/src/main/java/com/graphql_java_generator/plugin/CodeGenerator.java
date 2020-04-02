@@ -86,48 +86,67 @@ public class CodeGenerator {
 	 */
 	public int generateCode() throws IOException {
 
+		pluginConfiguration.getLog().debug("Starting code generation");
+
 		int i = 0;
+		pluginConfiguration.getLog().debug("Generating objects");
 		i += generateTargetFiles(documentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT));
+		pluginConfiguration.getLog().debug("Generating interfaces");
 		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface",
 				resolveTemplate(CodeTemplate.INTERFACE));
+		pluginConfiguration.getLog().debug("Generating unions");
 		i += generateTargetFiles(documentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION));
+		pluginConfiguration.getLog().debug("Generating enums");
 		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM));
 
 		switch (pluginConfiguration.getMode()) {
 		case server:
+			pluginConfiguration.getLog().debug("Starting server specific code generation");
 			i += generateServerFiles();
 			break;
 		case client:
+			pluginConfiguration.getLog().debug("Starting client specific code generation");
 			// Generation of the query/mutation/subscription classes
+			pluginConfiguration.getLog().debug("Generating query");
 			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
+			pluginConfiguration.getLog().debug("Generating mutation");
 			i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
+			pluginConfiguration.getLog().debug("Generating subscription");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
 
 			// Generation of the query/mutation/subscription response classes
+			pluginConfiguration.getLog().debug("Generating query response");
 			i += generateTargetFiles(documentParser.getQueryTypes(), "response", resolveTemplate(CodeTemplate.OBJECT));
+			pluginConfiguration.getLog().debug("Generating mutation response");
 			i += generateTargetFiles(documentParser.getMutationTypes(), "response",
 					resolveTemplate(CodeTemplate.OBJECT));
+			pluginConfiguration.getLog().debug("Generating subscription response");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response",
 					resolveTemplate(CodeTemplate.OBJECT));
 
 			// Generation of the query/mutation/subscription root responses classes
+			pluginConfiguration.getLog().debug("Generating query root response");
 			i += generateTargetFiles(documentParser.getQueryTypes(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+			pluginConfiguration.getLog().debug("Generating mutation root response");
 			i += generateTargetFiles(documentParser.getMutationTypes(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+			pluginConfiguration.getLog().debug("Generating subscription root response");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
 
 			// Generation of the GraphQLRequest class
+			pluginConfiguration.getLog().debug("Generating GraphQL Request class");
 			i += generateGraphQLRequest();
 
 			// Files for Custom Scalars
 			VelocityContext context = new VelocityContext();
 			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("customScalars", documentParser.customScalars);
+			pluginConfiguration.getLog().debug("Generating CustomScalarRegistryInitializer");
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
 					"Generating CustomScalarRegistryInitializer", context,
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
@@ -135,9 +154,11 @@ public class CodeGenerator {
 			context = new VelocityContext();
 			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("directives", documentParser.directives);
+			pluginConfiguration.getLog().debug("Generating DirectiveRegistryInitializer");
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer"), "Generating DirectiveRegistryInitializer",
 					context, resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
 			//
+			pluginConfiguration.getLog().debug("Generating " + FILE_TYPE_JACKSON_DESERIALIZER);
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER));
 			i += generateQueryTargetType();
@@ -283,27 +304,39 @@ public class CodeGenerator {
 		context.put("schemaFiles", schemaFiles);
 
 		int ret = 0;
+
+		pluginConfiguration.getLog().debug("Generating GraphQLServerMain");
 		ret += generateOneFile(getJavaFile("GraphQLServerMain"), "generating GraphQLServerMain", context,
 				resolveTemplate(CodeTemplate.SERVER));
+
+		pluginConfiguration.getLog().debug("Generating GraphQLProvider");
 		ret += generateOneFile(getJavaFile("GraphQLProvider"), "generating GraphQLProvider", context,
 				resolveTemplate(CodeTemplate.PROVIDER));
+
+		pluginConfiguration.getLog().debug("Generating GraphQLDataFetchers");
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers"), "generating GraphQLDataFetchers", context,
 				resolveTemplate(CodeTemplate.DATAFETCHER));
+
+		pluginConfiguration.getLog().debug("Generating GraphQLUtil");
 		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
 				resolveTemplate(CodeTemplate.GRAPHQLUTIL));
 
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
+			pluginConfiguration.getLog().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
 			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName()),
 					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 					resolveTemplate(CodeTemplate.DATAFETCHERDELEGATE));
 		}
 
+		pluginConfiguration.getLog().debug("Generating BatchLoaderDelegate");
 		ret += generateOneFile(getJavaFile("BatchLoaderDelegate"), "generating BatchLoaderDelegate", context,
 				resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));
+
 		for (BatchLoader batchLoader : documentParser.batchLoaders) {
 			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
 			context.put("batchLoader", batchLoader);
+			pluginConfiguration.getLog().debug("Generating " + name);
 			ret += generateOneFile(getJavaFile(name), "generating " + name, context,
 					resolveTemplate(CodeTemplate.BATCHLOADERDELEGATEIMPL));
 		}
