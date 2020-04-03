@@ -75,6 +75,7 @@ import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
 import graphql.language.UnionTypeDefinition;
+import graphql.language.Value;
 import graphql.parser.Parser;
 import lombok.Getter;
 
@@ -498,8 +499,8 @@ public class DocumentParser {
 				// Let's read its arguments
 				if (nodeDirective.getArguments() != null) {
 					for (Argument a : nodeDirective.getArguments()) {
-						Object value = graphqlUtils.invokeMethod("getValue", a.getValue());
-						d.getArgumentValues().put(a.getName(), value);
+						d.getArgumentValues().put(a.getName(),
+								getValue(a.getValue(), "reading applied directive " + nodeDirective.getName()));
 					}
 				}
 				ret.add(d);
@@ -791,24 +792,11 @@ public class DocumentParser {
 		// com.graphql_java_generator.plugin.language.Type when generating the code.
 		field.setGraphQLTypeName(typeName.getName());
 
-		// For InputValueDefinition, we may have a defaut value
+		// For InputValueDefinition, we may have a default value
 		if (fieldDef instanceof InputValueDefinition) {
-			Object defaultValue = ((InputValueDefinition) fieldDef).getDefaultValue();
+			Value<?> defaultValue = ((InputValueDefinition) fieldDef).getDefaultValue();
 			if (defaultValue != null) {
-				if (defaultValue instanceof StringValue) {
-					field.setDefaultValue(((StringValue) defaultValue).getValue());
-				} else if (defaultValue instanceof BooleanValue) {
-					field.setDefaultValue(((BooleanValue) defaultValue).isValue());
-				} else if (defaultValue instanceof IntValue) {
-					field.setDefaultValue(((IntValue) defaultValue).getValue());
-				} else if (defaultValue instanceof FloatValue) {
-					field.setDefaultValue(((FloatValue) defaultValue).getValue());
-				} else if (defaultValue instanceof graphql.language.EnumValue) {
-					field.setDefaultValue(((graphql.language.EnumValue) defaultValue).getName());
-				} else {
-					throw new RuntimeException("DefaultValue of type " + defaultValue.getClass().getName()
-							+ " is not managed (for field " + field.getName() + ")");
-				}
+				field.setDefaultValue(getValue(defaultValue, "reading field " + field.getName()));
 			}
 		}
 
@@ -1315,6 +1303,32 @@ public class DocumentParser {
 				type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
 						.graphQLTypeName("String").owningType(type).mandatory(false).build());
 			}
+		}
+	}
+
+	/**
+	 * Get the internal value for a {@link Value} stored in the graphql-java AST.
+	 * 
+	 * @param value
+	 * @param action
+	 * @return
+	 */
+	private Object getValue(Value<?> value, String action) {
+		if (value instanceof StringValue) {
+			return ((StringValue) value).getValue();
+		} else if (value instanceof BooleanValue) {
+			return ((BooleanValue) value).isValue();
+		} else if (value instanceof IntValue) {
+			return ((IntValue) value).getValue();
+		} else if (value instanceof FloatValue) {
+			return ((FloatValue) value).getValue();
+		} else if (value instanceof graphql.language.EnumValue) {
+			// For enums, we can't retrive an instance of the enum value, as the enum class has not been created yet. So
+			// we just return the label of the enum, as a String.
+			return ((graphql.language.EnumValue) value).getName();
+		} else {
+			throw new RuntimeException(
+					"Value of type " + value.getClass().getName() + " is not managed (" + action + ")");
 		}
 	}
 }

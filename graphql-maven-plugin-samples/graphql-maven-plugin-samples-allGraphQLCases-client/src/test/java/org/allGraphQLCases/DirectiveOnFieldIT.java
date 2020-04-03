@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client.MyQueryTypeResponse;
-import org.allGraphQLCases.client.direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,16 +41,14 @@ class DirectiveOnFieldIT {
 
 		// Go, go, go
 		MyQueryTypeResponse resp = queryType.exec(
-				"{directiveOnField {id name @testDirective(value: &value) @relation(name:&relationName, direction: &relationDirection) @anotherTestDirective}}", //
-				"value", "this is a value", //
-				"relationName", "a relation name", //
-				"relationDirection", direction.IN);
+				"{directiveOnField {id name @testDirective(value: &value)  @anotherTestDirective}}", //
+				"value", "this is a value");
 
 		// Verifications
 		assertNotNull(resp);
 		Character ret = resp.getDirectiveOnField();
 		assertNotNull(ret);
-		assertEquals("this is a value (relation: a relation name, direction: IN)", ret.getName());
+		assertEquals("this is a value", ret.getName());
 	}
 
 }

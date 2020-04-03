@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.EnumValue;
@@ -30,6 +33,7 @@ import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+import com.ibm.icu.util.GregorianCalendar;
 
 import graphql.language.Definition;
 import graphql.language.DirectiveDefinition;
@@ -68,12 +72,12 @@ class DocumentParserTest_allGraphQLCases_Server {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(27, i, "Nb java files are generated");
-		assertEquals(7, documentParser.directives.size(), "Nb directives");
+		assertEquals(26, i, "Nb java files are generated");
+		assertEquals(6, documentParser.directives.size(), "Nb directives");
 		assertEquals(16, documentParser.objectTypes.size(), "Nb objects");
 		assertEquals(4, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
-		assertEquals(4, documentParser.enumTypes.size(), "Nb enums");
+		assertEquals(3, documentParser.enumTypes.size(), "Nb enums");
 		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
 		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
 		assertEquals(1, documentParser.subscriptionTypes.size(), "Nb subscriptions");
@@ -223,37 +227,46 @@ class DocumentParserTest_allGraphQLCases_Server {
 		assertEquals("anotherTestDirective", documentParser.directives.get(i++).getName());
 
 		// On Scalar
-		checkDirectivesOnType(documentParser.getType("Date"), true, "on Scalar", null, true);
-		checkDirectivesOnType(documentParser.getType("Long"), false, null, null, false);
+		checkDirectivesOnType(documentParser.getType("Date"), true, "on Scalar", null, null, null, null, null, null,
+				null, true);
+		checkDirectivesOnType(documentParser.getType("Long"), false, null, null, null, null, null, null, null, null,
+				false);
 
 		// On schema
 		// Currently not managed (schema is not stored, and no java classes is generated afteward for the schema)
 
 		// On enum
-		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", "69", false);
-		checkDirectivesOnType(documentParser.getType("Unit"), false, null, null, false);
+		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", "69", 666, (float) 666.666, true,
+				"00000000-0000-0000-0000-000000000002", null, new GregorianCalendar(2001, 2 - 1, 28).getTime(), false);
+		checkDirectivesOnType(documentParser.getType("Unit"), false, null, null, null, null, null, null, null, null,
+				false);
 		// On enum item
 		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", "-1", true);
 		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "JEDI", false, null, null, false);
 		checkDirectivesOnEnumValue(documentParser.getType("Episode"), "EMPIRE", false, null, null, true);
 		// On interface
-		checkDirectivesOnType(documentParser.getType("WithID"), true, "on Interface", "666", false);
-		checkDirectivesOnType(documentParser.getType("Character"), true, "on Character interface", null, true);
+		checkDirectivesOnType(documentParser.getType("WithID"), true, "on Interface", "666", null, null, null, null,
+				null, null, false);
+		checkDirectivesOnType(documentParser.getType("Character"), true, "on Character interface", null, null, null,
+				null, null, null, null, true);
 		// On interface field
-		checkDirectivesOnField(documentParser.getType("Character"), "name", true, "on interface field", null, true);
-		checkDirectivesOnField(documentParser.getType("Character"), "appearsIn", false, null, null, true);
+		checkDirectivesOnField(documentParser.getType("Character"), "name", true, "on interface field", null, true, 0);
+		checkDirectivesOnField(documentParser.getType("Character"), "appearsIn", false, null, null, true, 0);
 		// On union
 		// checkDirectivesOnType(documentParser.getType("AnyCharacter"), true, "on Union", null, false);
 		// On input type
-		checkDirectivesOnType(documentParser.getType("AllFieldCasesInput"), true, "on Input Type", null, false);
+		checkDirectivesOnType(documentParser.getType("AllFieldCasesInput"), true, "on Input Type", null, null, null,
+				null, null, null, null, false);
 		// On input type field
-		checkDirectivesOnField(documentParser.getType("AllFieldCasesInput"), "id", true, "on Input Field", null, false);
-		checkDirectivesOnField(documentParser.getType("AllFieldCasesInput"), "name", false, null, null, false);
+		checkDirectivesOnField(documentParser.getType("AllFieldCasesInput"), "id", true, "on Input Field", null, false,
+				0);
+		checkDirectivesOnField(documentParser.getType("AllFieldCasesInput"), "name", false, null, null, false, 0);
 		// On type
-		checkDirectivesOnType(documentParser.getType("AllFieldCases"), true, "on Object", null, true);
+		checkDirectivesOnType(documentParser.getType("AllFieldCases"), true, "on Object", null, null, null, null, null,
+				null, null, true);
 		// On type field
-		checkDirectivesOnField(documentParser.getType("AllFieldCases"), "id", true, "on Field", null, false);
-		checkDirectivesOnField(documentParser.getType("AllFieldCases"), "name", false, null, null, false);
+		checkDirectivesOnField(documentParser.getType("AllFieldCases"), "id", true, "on Field", null, false, 0);
+		checkDirectivesOnField(documentParser.getType("AllFieldCases"), "name", false, null, null, false, 0);
 		// On input parameter
 		checkDirectivesOnInputParameter(documentParser.getType("AllFieldCases"), "forname", "uppercase", true,
 				"on Argument", null, false);
@@ -275,6 +288,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 	 *            true if this type contains the anotherTestDirective
 	 */
 	private void checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
+			Integer anInt, Float aFloat, Boolean aBoolean, String anID, String anEnumName, Date aCustomScalarDate,
 			boolean containsAnotherTestDirective) {
 
 		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
@@ -285,6 +299,22 @@ class DocumentParserTest_allGraphQLCases_Server {
 			assertEquals(value, type.getAppliedDirectives().get(0).getArgumentValues().get("value"));
 			if (anotherValue != null)
 				assertEquals(anotherValue, type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+			if (anInt != null)
+				assertEquals(BigInteger.valueOf(anInt),
+						type.getAppliedDirectives().get(0).getArgumentValues().get("anInt"));
+			if (aFloat != null)
+				assertEquals(BigDecimal.valueOf(aFloat).floatValue(),
+						((BigDecimal) type.getAppliedDirectives().get(0).getArgumentValues().get("aFloat"))
+								.floatValue());
+			if (aBoolean != null)
+				assertEquals(aBoolean, type.getAppliedDirectives().get(0).getArgumentValues().get("aBoolean"));
+			if (anID != null)
+				assertEquals(anID, type.getAppliedDirectives().get(0).getArgumentValues().get("anID"));
+			if (anEnumName != null)
+				assertEquals(anEnumName, type.getAppliedDirectives().get(0).getArgumentValues().get("anEnum"));
+			if (aCustomScalarDate != null)
+				assertEquals(GraphQLScalarTypeDate.Date.getCoercing().serialize(aCustomScalarDate),
+						type.getAppliedDirectives().get(0).getArgumentValues().get("aCustomScalarDate"));
 		}
 		if (containsAnotherTestDirective) {
 			assertEquals("anotherTestDirective", type.getAppliedDirectives().get(1).getDirective().getName());
@@ -307,7 +337,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 	 *            true if this type contains the anotherTestDirective
 	 */
 	private void checkDirectivesOnField(Type type, String fieldName, boolean containsTestDirective, String value,
-			String anotherValue, boolean containsAnotherTestDirective) {
+			String anotherValue, boolean containsAnotherTestDirective, int nbOtherDirectives) {
 
 		Field field = null;
 		for (Field f : type.getFields()) {
@@ -320,7 +350,7 @@ class DocumentParserTest_allGraphQLCases_Server {
 			fail("Could not find the field '" + fieldName + "' on type '" + type.getName() + "'");
 		}
 
-		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0) + nbOtherDirectives;
 		assertEquals(nbDirectives, field.getAppliedDirectives().size());
 		if (containsTestDirective) {
 			assertEquals("testDirective", field.getAppliedDirectives().get(0).getDirective().getName());
