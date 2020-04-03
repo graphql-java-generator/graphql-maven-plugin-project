@@ -24,20 +24,37 @@ public class Fragment {
 	/** The content of the GraphQL fragment, as defined in the GraphQL request */
 	QueryField content = null;
 
-	public Fragment(QueryTokenizer st, String packageName) throws GraphQLRequestPreparationException {
+	/**
+	 * Reads a Fragment definition, from the current {@link QueryTokenizer}.
+	 * 
+	 * @param qt
+	 *            The {@link QueryTokenizer}, that just read the "fragment" keyword, or the "..." for inline fragment
+	 * @param packageName
+	 *            The package name is used to load the java class that has been generated for the given fragment's
+	 *            GraphQL type
+	 * @param inlineFragment
+	 *            true if this fragment is an inline fragment. In this case, there is no fragment name to read.
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Fragment(QueryTokenizer qt, String packageName, boolean inlineFragment)
+			throws GraphQLRequestPreparationException {
 
 		// We expect a string like this: " fragmentName on fragmentTargetType"
 		// Let's read these three tokens
-		name = readNextRealToken(st, "reading fragment name", null);
-		readNextRealToken(st, "looking for the 'on' token of the fragment definition", "on");
-		typeName = readNextRealToken(st, "reading fragment name", null);
+		if (inlineFragment) {
+			name = null;
+		} else {
+			name = qt.readNextRealToken(null, "reading fragment name");
+		}
+		qt.readNextRealToken("on", "looking for the 'on' token of the fragment definition");
+		typeName = qt.readNextRealToken(null, "reading fragment name");
 
 		///////////////////////////////////////////////////////////////////////////////////
 		// The content of the fragment is the same as reading the response for the given type.
 
 		// So, we wait for the first {
-		while (st.hasMoreTokens()) {
-			String token = st.nextToken(false);
+		while (qt.hasMoreTokens()) {
+			String token = qt.nextToken(false);
 
 			if (token.equals(" ") || token.equals("\n") || token.equals("\r")) {
 				// Ok, let's go to the next token
@@ -65,37 +82,7 @@ public class Fragment {
 		}
 
 		content = new QueryField(clazz);
-		content.readTokenizerForResponseDefinition(st);
-	}
-
-	/**
-	 * Reads the next real token, that is the next token that is not a separator
-	 * 
-	 * @param st
-	 * @param action
-	 *            The action for which the real token is needed (use to get some context in a the exception message, if
-	 *            any). The exception message will be: <I>"error occurs while " + action</I>
-	 * @param expected
-	 *            If expected is not null, this method will check that the real token read is equal to this expected
-	 *            value
-	 * @return
-	 * @throws GraphQLRequestPreparationException
-	 */
-	private String readNextRealToken(QueryTokenizer st, String action, String expected)
-			throws GraphQLRequestPreparationException {
-
-		while (st.hasMoreTokens()) {
-			String token = st.nextToken(false);
-
-			// We found a non null token
-			if (expected != null && !expected.equals(token))
-				throw new GraphQLRequestPreparationException("The token read is '" + token
-						+ "', but the expected one is '" + expected + "' while " + action);
-			// Ok, we're done
-			return token;
-		}
-
-		throw new GraphQLRequestPreparationException("End of string found while " + action);
+		content.readTokenizerForResponseDefinition(qt);
 	}
 
 	public String getName() {
@@ -108,8 +95,12 @@ public class Fragment {
 
 	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> params)
 			throws GraphQLRequestExecutionException {
-		sb.append("fragment ");
-		sb.append(name);
+
+		// For inline fragment, we write neither "fragment", nor the name
+		if (name != null) {
+			sb.append("fragment ");
+			sb.append(name);
+		}
 		sb.append(" on ");
 		sb.append(typeName);
 		content.appendToGraphQLRequests(sb, params, false);

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
 /**
  * This class is responsible to split the GraphQL query into meaningful tokens: the spaces, EOL (...) are removed and
  * the (, @, { (...) are sent as token. It also allows to check the comming tokens. For instance, when reading a field
@@ -136,6 +138,34 @@ public class QueryTokenizer {
 		}
 		// We found only empty delimiters.
 		return false;
+	}
+
+	/**
+	 * Reads the next real token, that is the next token that is not a separator
+	 * 
+	 * @param expected
+	 *            If expected is not null, this method will check that the real token read is equal to this expected
+	 *            value
+	 * @param action
+	 *            The action for which the real token is needed (use to get some context in a the exception message, if
+	 *            any). The exception message will be: <I>"error occurs while " + action</I>
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public String readNextRealToken(String expected, String action) throws GraphQLRequestPreparationException {
+
+		while (hasMoreTokens()) {
+			String token = nextToken(false);
+
+			// We found a non null token
+			if (expected != null && !expected.equals(token))
+				throw new GraphQLRequestPreparationException("The token read is '" + token
+						+ "', but the expected one is '" + expected + "' while " + action);
+			// Ok, we're done
+			return token;
+		}
+
+		throw new GraphQLRequestPreparationException("End of string found while " + action);
 	}
 
 }

@@ -67,6 +67,11 @@ public class QueryField {
 	final String name;
 	/** The alias of this field */
 	final String alias;
+	/**
+	 * The package name, where the generated classes are. It's used to load the class definition, and get the GraphQL
+	 * metadata coming from the GraphQL schema
+	 */
+	final String packageName;
 
 	/** true if the {@link QueryField} is a query, a mutation or a subscription. False otherwise. */
 	Boolean scalar = null;
@@ -84,6 +89,8 @@ public class QueryField {
 	 * <I>thisField {field1 ...fragment1 field2 ...fragment2}</I>
 	 */
 	List<String> fragments = new ArrayList<>();
+	/** The list of inline fragments that are defined for this field */
+	List<Fragment> inlineFragments = new ArrayList<>();
 
 	/**
 	 * All subfields contained in this field. It should remain empty if the field is a GraphQL Scalar. At least one if
@@ -112,6 +119,7 @@ public class QueryField {
 		this.clazz = graphqlClientUtils.checkFieldOfGraphQLType(fieldName, null, owningClass);
 		this.name = fieldName;
 		this.alias = fieldAlias;
+		this.packageName = owningClass.getPackage().getName();
 	}
 
 	/**
@@ -141,6 +149,7 @@ public class QueryField {
 		this.clazz = clazz;
 		this.name = null;
 		this.alias = null;
+		this.packageName = clazz.getPackage().getName();
 	}
 
 	/**
@@ -215,6 +224,10 @@ public class QueryField {
 					currentField = null;
 				}
 				break;
+			case "...":
+				// We're reading an inline fragment
+				inlineFragments.add(new Fragment(st, packageName, true));
+				break;
 			case "}":
 				// We're finished our current object : let's get out of this method
 				// (end of this recursion level)
@@ -223,7 +236,7 @@ public class QueryField {
 				directive = null;
 
 				if (token.startsWith("...")) {
-					// This token starts by "...", we've read a fragment
+					// This token starts by "...", we've read a global fragment
 					String fragmentName = token.substring(3);
 					logger.trace("Found fragment {} for field {}", fragmentName, name);
 					fragments.add(fragmentName);
@@ -312,11 +325,11 @@ public class QueryField {
 				case VALUE:
 					// We've read the parameter value. Let's add this parameter.
 					if (token.startsWith("?")) {
-						ret.add(new InputParameter(parameterName, token.substring(1), null, false, graphqlClientUtils
-								.getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
+						ret.add(new InputParameter(parameterName, token.substring(1), null, false,
+								graphqlClientUtils.getGraphQLType(directive, owningClazz, name, parameterName)));
 					} else if (token.startsWith("&")) {
-						ret.add(new InputParameter(parameterName, token.substring(1), null, true, graphqlClientUtils
-								.getCustomScalarGraphQLType(directive, owningClazz, name, parameterName)));
+						ret.add(new InputParameter(parameterName, token.substring(1), null, true,
+								graphqlClientUtils.getGraphQLType(directive, owningClazz, name, parameterName)));
 					} else if (token.equals("\"")) {
 						// We've found a String value: let's read the string content
 						StringBuffer sb = new StringBuffer();
@@ -350,8 +363,7 @@ public class QueryField {
 										+ parameterName
 										+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 					} else if (directive != null) {
-						Object parameterValue = parseDirectiveArgumentValue(directive, parameterName, token,
-								owningClazz.getPackage().getName());
+						Object parameterValue = parseDirectiveArgumentValue(directive, parameterName, token);
 						InputParameter arg = new InputParameter(parameterName, null, parameterValue, true, null);
 						ret.add(arg);
 						directive.getArguments().add(arg);
@@ -399,8 +411,7 @@ public class QueryField {
 			if (graphQLInputParameters.names()[i].equals(parameterName)) {
 				// We've found the parameterType. Let's get its value.
 				try {
-					return parseValueForInputParameter(parameterValue, graphQLInputParameters.types()[i],
-							owningClass.getPackage().getName());
+					return parseValueForInputParameter(parameterValue, graphQLInputParameters.types()[i]);
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException(
 							"Could not read the value for the parameter '" + parameterName + "' of the field '"
@@ -414,8 +425,8 @@ public class QueryField {
 				+ parameterName + "' of the field '" + fieldName + "'");
 	}
 
-	private Object parseDirectiveArgumentValue(Directive directive, String parameterName, String parameterValue,
-			String packageName) throws GraphQLRequestPreparationException {
+	private Object parseDirectiveArgumentValue(Directive directive, String parameterName, String parameterValue)
+			throws GraphQLRequestPreparationException {
 		// Let's find the directive definition for this read directive
 		Directive directiveDefinition = directiveRegistry.getDirective(directive.getName());
 		if (directiveDefinition == null) {
@@ -428,8 +439,7 @@ public class QueryField {
 			if (param.getName().equals(parameterName)) {
 				// We've found the parameterType. Let's get its value.
 				try {
-					return parseValueForInputParameter(parameterValue, param.getGraphQLScalarType().getName(),
-							packageName);
+					return parseValueForInputParameter(parameterValue, param.getGraphQLScalarType().getName());
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException("Could not read the value for the parameter '"
 							+ parameterName + "' of the directive '" + directive.getName() + "'", e);
@@ -447,12 +457,10 @@ public class QueryField {
 	 * 
 	 * @param parameterValue
 	 * @param parameterType
-	 * @param packageName
-	 *            Needed to find the class that implements this type
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private Object parseValueForInputParameter(String parameterValue, String parameterType, String packageName)
+	private Object parseValueForInputParameter(String parameterValue, String parameterType)
 			throws GraphQLRequestPreparationException {
 
 		// Let's check if this type is a Custom Scalar
@@ -555,24 +563,35 @@ public class QueryField {
 		if (fields.size() > 0 || fragments.size() > 0) {
 			logger.debug("Appending ReponseDef content for field " + name + " of type " + clazz.getSimpleName());
 			sb.append("{");
-		}
-		// Let's append the fields...
-		for (QueryField f : fields) {
-			if (appendSpaceLocal) {
-				sb.append(" ");
+
+			// Let's append the fields...
+			for (QueryField f : fields) {
+				if (appendSpaceLocal) {
+					sb.append(" ");
+				}
+				f.appendToGraphQLRequests(sb, parameters, true);
+				appendSpaceLocal = true;
 			}
-			f.appendToGraphQLRequests(sb, parameters, true);
-			appendSpaceLocal = true;
-		}
-		// ...the fragment names
-		for (String f : fragments) {
-			if (appendSpaceLocal) {
-				sb.append(" ");
-			}
-			sb.append("...").append(f);
-			appendSpaceLocal = true;
-		}
-		if (fields.size() > 0 || fragments.size() > 0) {
+
+			// ...the fragment names
+			for (String f : fragments) {
+				if (appendSpaceLocal) {
+					sb.append(" ");
+				}
+				sb.append("...").append(f);
+				appendSpaceLocal = true;
+			} // for
+
+			// ...the inline fragments
+			for (Fragment f : inlineFragments) {
+				if (appendSpaceLocal) {
+					sb.append(" ");
+				}
+				sb.append("...");
+				f.appendToGraphQLRequests(sb, parameters);
+				appendSpaceLocal = true;
+			} // for
+
 			sb.append("}");
 		}
 	}
@@ -623,9 +642,15 @@ public class QueryField {
 	 */
 	void addTypenameFields() throws GraphQLRequestPreparationException {
 
-		// No action for scalar fields
-		if (!isScalar()) {
-
+		if (isScalar()) {
+			// No action for scalar fields
+		} else if (inlineFragments.size() > 0) {
+			// We add the __typename field into all fragments, but not on the type itself (useless)
+			for (Fragment f : inlineFragments) {
+				f.addTypenameFields();
+			}
+		} else if (fragments.size() == 0) {
+			// It's a non scalar field, without any fragment. We must add the __typename
 			QueryField __typename = null;
 
 			// Let's go through sub fields to:
@@ -644,7 +669,9 @@ public class QueryField {
 				__typename = new QueryField(this.clazz, "__typename");
 				fields.add(__typename);
 			}
+
 		}
+
 	}
 
 	/**

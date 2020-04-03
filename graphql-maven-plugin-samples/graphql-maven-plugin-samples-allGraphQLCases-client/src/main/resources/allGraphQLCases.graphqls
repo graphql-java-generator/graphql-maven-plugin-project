@@ -81,48 +81,20 @@ type TheSubscriptionType {
 	subscribeNewHumanForEpisode(episode: Episode!): Human!
 }
 
-
-enum Episode @testDirective(
-		value: "on Enum", 
-		anotherValue: "69", 
-		anInt: 666, 
-		aFloat: 666.666, 
-		aBoolean: true, 
-		anID: "00000000-0000-0000-0000-000000000002", 
-		#anEnum: NEWHOPE, 
-		aCustomScalarDate: "2001-02-28") {
-    NEWHOPE
-    EMPIRE @anotherTestDirective
-    JEDI
-    DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
-}
-
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
    id: ID!
-}
-
-interface Character @testDirective(value:"on Character interface") @anotherTestDirective {
-    id: ID!
-    name: String! @testDirective(value:"on interface field") @anotherTestDirective
-    friends: [Character]
-    appearsIn: [Episode]! @anotherTestDirective
-}
-
-#union AnyCharacter @testDirective(value:"on Union")
-#= Human | Droid
-
-input CharacterInput {
-    name: String!
-    friends: [CharacterInput]
-    appearsIn: [Episode]!
-    # type should be one of Human or Droid
-    type: String!
 }
 
 interface Commented {
 	nbComments: Int
     comments: [String]
 }
+
+
+##############################################################################################################
+################  ALL GRAPHQL CASES TEST CASES################################################################
+##############################################################################################################
+
 
 input AllFieldCasesInput @testDirective(value:"on Input Type") {
     id: ID! @testDirective(value:"on Input Field")
@@ -226,9 +198,46 @@ type AllFieldCasesWithoutIdSubtype {
     name: String!
 }
 
+##############################################################################################################
+################  STAR WARS SCHEMA  ##########################################################################
+##############################################################################################################
+
+enum Episode @testDirective(
+		value: "on Enum", 
+		anotherValue: "69", 
+		anInt: 666, 
+		aFloat: 666.666, 
+		aBoolean: true, 
+		anID: "00000000-0000-0000-0000-000000000002", 
+		#anEnum: NEWHOPE, 
+		aCustomScalarDate: "2001-02-28") {
+    NEWHOPE
+    EMPIRE @anotherTestDirective
+    JEDI
+    DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
+}
+
+interface Character @testDirective(value:"on Character interface") @anotherTestDirective {
+    id: ID!
+    name(uppercase: Boolean): String! @testDirective(value:"on interface field") @anotherTestDirective
+    friends: [Character]
+    appearsIn: [Episode]! @anotherTestDirective
+}
+
+#union AnyCharacter @testDirective(value:"on Union")
+#= Human | Droid
+
+input CharacterInput {
+    name: String!
+    friends: [CharacterInput]
+    appearsIn: [Episode]!
+    # type should be one of Human or Droid
+    type: String!
+}
+
 type Human implements Character & Commented &  WithID {
     id: ID!
-    name: String!
+    name(uppercase: Boolean): String!
     bestFriend: Character
     friends: [Character]
 	nbComments: Int
@@ -250,7 +259,7 @@ input HumanInput {
 
 type Droid implements Character & WithID {
     id: ID!
-    name: String!
+    name(uppercase: Boolean): String!
     friends: [Character]
     appearsIn: [Episode]!
     primaryFunction: String
@@ -263,6 +272,9 @@ input DroidInput {
     primaryFunction: String
 }
 
+##############################################################################################################
+##################  TEST ON COLLISION WITH JAVA KEYWORDS  ####################################################
+##############################################################################################################
 
 scalar else
 
@@ -281,7 +293,9 @@ type break {
 	case(test: extends!, if: else): extends
 }
 
-
+##############################################################################################################
+###############   TEST CASE FOR ISSUES #######################################################################
+##############################################################################################################
 
 #############################
 # test for issue #35

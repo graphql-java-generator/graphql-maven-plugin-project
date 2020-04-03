@@ -9,7 +9,7 @@ public class CustomScalarRegistryInitializer {
 	 * Initialization of the {@link CustomScalarRegistry} with all known custom scalars, that is with all custom scalars
 	 * defined in the project pom
 	 */
-	public void initCustomScalarRegistry() {
+	public static void initCustomScalarRegistry() {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
 		customScalarRegistry

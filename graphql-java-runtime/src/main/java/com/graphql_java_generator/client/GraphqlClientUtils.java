@@ -395,10 +395,10 @@ public class GraphqlClientUtils {
 	 *            The field name
 	 * @param parameterName
 	 *            The parameter name, which must be the name for an input parameter for this field in the GraphQL schema
-	 * @return
+	 * @return The {@link GraphQLScalarType} if this type is a scalar (out of enums). And null otherwise.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public GraphQLScalarType getCustomScalarGraphQLType(Directive directive, Class<?> owningClass, String fieldName,
+	public GraphQLScalarType getGraphQLType(Directive directive, Class<?> owningClass, String fieldName,
 			String parameterName) throws GraphQLRequestPreparationException {
 
 		if (directive != null) {
@@ -419,15 +419,28 @@ public class GraphqlClientUtils {
 			throw new GraphQLRequestPreparationException("The parameter of name '" + parameterName
 					+ "' has not been found for the directive '" + directive.getName() + "'");
 		} else {
-			Field field;
-			try {
-				field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
-			} catch (NoSuchFieldException | SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-						+ "> in the class '" + owningClass.getName() + "'", e);
+			GraphQLInputParameters inputParams;
+
+			if (owningClass.isInterface()) {
+				Method method;
+				try {
+					method = owningClass
+							.getMethod("get" + graphqlUtils.getPascalCase(graphqlUtils.getJavaName(fieldName)));
+					inputParams = method.getAnnotation(GraphQLInputParameters.class);
+				} catch (NoSuchMethodException | SecurityException e) {
+					throw new GraphQLRequestPreparationException("Error while looking for the the getter for <"
+							+ fieldName + "> in the interface '" + owningClass.getName() + "'", e);
+				}
+			} else {
+				try {
+					Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
+					inputParams = field.getAnnotation(GraphQLInputParameters.class);
+				} catch (NoSuchFieldException | SecurityException e) {
+					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
+							+ "> in the class '" + owningClass.getName() + "'", e);
+				}
 			}
 
-			GraphQLInputParameters inputParams = field.getAnnotation(GraphQLInputParameters.class);
 			if (inputParams == null)
 				throw new GraphQLRequestPreparationException("The field <" + fieldName + "> of the class '"
 						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
@@ -436,8 +449,7 @@ public class GraphqlClientUtils {
 			for (int i = 0; i < inputParams.names().length; i += 1) {
 				if (inputParams.names()[i].equals(parameterName)) {
 					// We've found the expected parameter
-					String typeName = inputParams.types()[i];
-					return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
+					return getGraphQLTypeFromName(inputParams.types()[i]);
 				}
 			}
 
@@ -446,4 +458,37 @@ public class GraphqlClientUtils {
 							+ "> of the class '" + owningClass.getName() + "'");
 		}
 	}
+
+	/**
+	 * Returns the GraphQL type for this object
+	 * 
+	 * @param typeName
+	 * @return The GraphQL type. Or null if not found (enum, object, input type, interface, union)
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public GraphQLScalarType getGraphQLTypeFromName(String typeName) throws GraphQLRequestPreparationException {
+
+		// Is it a known type ?
+		if (typeName.equals("String")) {
+			return graphql.Scalars.GraphQLString;
+		} else if (typeName.equals("Boolean")) {
+			return graphql.Scalars.GraphQLBoolean;
+		} else if (typeName.equals("Float")) {
+			return graphql.Scalars.GraphQLFloat;
+		} else if (typeName.equals("Int")) {
+			return graphql.Scalars.GraphQLInt;
+		} else if (typeName.equals("ID")) {
+			return graphql.Scalars.GraphQLID;
+		}
+
+		GraphQLScalarType type = CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
+		if (type != null) {
+			// Ok, it's a custom scalar
+			return type;
+		}
+
+		// No GraphQLType for enum
+		return null;
+	}
+
 }

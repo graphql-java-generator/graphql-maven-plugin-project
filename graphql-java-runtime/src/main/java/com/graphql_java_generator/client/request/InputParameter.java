@@ -54,12 +54,12 @@ public class InputParameter {
 	/**
 	 * If this input parameter's type is a GraphQL Custom Scalar, it is initialized in the constructor. Otherwise, it is
 	 * null. <BR/>
-	 * graphQLScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String that can be
-	 * written in the GraphQL request, or convert from a String that is found in the GraphQL response. If this type is
-	 * not a GraphQL Custom Scalar, it must be null.
+	 * graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String that
+	 * can be written in the GraphQL request, or convert from a String that is found in the GraphQL response. If this
+	 * type is not a GraphQL Custom Scalar, it must be null.
 	 * 
 	 */
-	final GraphQLScalarType graphQLScalarType;
+	final GraphQLScalarType graphQLCustomScalarType;
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
@@ -92,12 +92,12 @@ public class InputParameter {
 	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
 	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
 	 *            the server
-	 * @param graphQLScalarType
+	 * @param graphQLCustomScalarType
 	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
 	 *            null. <BR/>
-	 *            graphQLScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String
-	 *            that can be written in the GraphQL request, or convert from a String that is found in the GraphQL
-	 *            response. If this type is not a GraphQL Custom Scalar, it must be null.
+	 *            graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a
+	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
+	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 * @return
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
@@ -151,20 +151,24 @@ public class InputParameter {
 	 *            {@link GraphQLRequestExecutionException} exception is thrown at execution time<BR/>
 	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
 	 *            the server
-	 * @param graphQLScalarType
+	 * @param graphQLCustomScalarType
 	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
 	 *            null. <BR/>
-	 *            graphQLScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String
-	 *            that can be written in the GraphQL request, or convert from a String that is found in the GraphQL
-	 *            response. If this type is not a GraphQL Custom Scalar, it must be null.
+	 *            graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a
+	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
+	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 */
 	InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
-			GraphQLScalarType graphQLScalarType) {
+			GraphQLScalarType graphQLCustomScalarType) {
+		if (name == null) {
+			throw new NullPointerException("The input parameter's name is mandatory");
+		}
+
 		this.name = name;
 		this.bindParameterName = bindParameterName;
 		this.value = value;
 		this.mandatory = mandatory;
-		this.graphQLScalarType = graphQLScalarType;
+		this.graphQLCustomScalarType = graphQLCustomScalarType;
 	}
 
 	public String getName() {
@@ -202,9 +206,9 @@ public class InputParameter {
 			if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
 				return null;
 			else
-				return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName), graphQLScalarType);
+				return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName), graphQLCustomScalarType);
 		} else
-			return this.getValueForGraphqlQuery(this.value, graphQLScalarType);
+			return this.getValueForGraphqlQuery(this.value, graphQLCustomScalarType);
 
 	}
 
@@ -311,7 +315,7 @@ public class InputParameter {
 	}
 
 	public GraphQLScalarType getGraphQLScalarType() {
-		return graphQLScalarType;
+		return graphQLCustomScalarType;
 	}
 
 }

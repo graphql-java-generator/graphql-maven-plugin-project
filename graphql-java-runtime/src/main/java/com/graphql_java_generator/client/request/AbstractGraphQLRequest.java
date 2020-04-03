@@ -72,6 +72,11 @@ public abstract class AbstractGraphQLRequest {
 	 * good to be executed for this partial query.
 	 */
 	final String queryName;
+	/**
+	 * The package name, where the generated classes are. It's used to load the class definition, and get the GraphQL
+	 * metadata coming from the GraphQL schema
+	 */
+	protected final String packageName;
 
 	/**
 	 * Create the instance, from the GraphQL request, for a partial request.<BR/>
@@ -91,8 +96,8 @@ public abstract class AbstractGraphQLRequest {
 	 *            The information whether this queryName is actually a query, a mutation or a subscription
 	 * @param queryName
 	 *            The name of the query, mutation or subscription
-	 * @param The
-	 *            list of input parameters for this query/mutation/subscription
+	 * @param inputParams
+	 *            The list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public AbstractGraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
@@ -106,6 +111,7 @@ public abstract class AbstractGraphQLRequest {
 		this.requestType = requestType;
 		this.queryName = queryName;
 		this.graphQLRequest = graphQLRequest;
+		this.packageName = this.getClass().getPackage().getName();
 
 		QueryField field;
 		switch (requestType) {
@@ -151,10 +157,8 @@ public abstract class AbstractGraphQLRequest {
 			field.readTokenizerForResponseDefinition(qt);
 		}
 
-		// For each non scalar field, we add its non scalar fields, if none was defined
-		AddScalarFieldToEmptyNonScalarField();
-		// Let's add the <I>__typename</I> fields to all non scalar types
-		addTypenameFields();
+		// Let's finish the job
+		finishRequestPreparation();
 	}
 
 	/**
@@ -180,6 +184,7 @@ public abstract class AbstractGraphQLRequest {
 		this.requestType = null;
 		this.queryName = null;
 		this.graphQLRequest = graphQLRequest;
+		this.packageName = this.getClass().getPackage().getName();
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
@@ -192,7 +197,7 @@ public abstract class AbstractGraphQLRequest {
 
 			switch (token) {
 			case "fragment":
-				fragments.add(new Fragment(qt, this.getClass().getPackage().getName()));
+				fragments.add(new Fragment(qt, packageName, false));
 				break;
 			case "query":
 			case "mutation":
@@ -229,10 +234,8 @@ public abstract class AbstractGraphQLRequest {
 			throw new GraphQLRequestPreparationException("No response definition found");
 		}
 
-		// For each non scalar field, we add its non scalar fields, if none was defined
-		AddScalarFieldToEmptyNonScalarField();
-		// Let's add the <I>__typename</I> fields to all non scalar types
-		addTypenameFields();
+		// Let's finish the job
+		finishRequestPreparation();
 	}
 
 	public <T> T exec(Class<T> t, Map<String, Object> params) throws GraphQLRequestExecutionException {
@@ -276,23 +279,32 @@ public abstract class AbstractGraphQLRequest {
 	}
 
 	/**
-	 * For each non scalar fields of the query (if defined), the mutation (if defined) and the subscription (if
-	 * defined), we add its non scalar fields, if none was defined.
+	 * Finish the preparation of the GraphQL request, once everything has been read:
+	 * <UL>
+	 * <LI>add the scalar fields, for all empty non scalar fields.</LI>
+	 * <LI>Add the __typename field in fragments and field lists, to be sure to get it in return. This is necessary to
+	 * properly deserialize the GRaphQL interfaces and unions
+	 * </UL>
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private void AddScalarFieldToEmptyNonScalarField() throws GraphQLRequestPreparationException {
+	private void finishRequestPreparation() throws GraphQLRequestPreparationException {
+		// For each non scalar field, we add its non scalar fields, if none was defined
 		AddScalarFieldToEmptyNonScalarField(query);
 		AddScalarFieldToEmptyNonScalarField(mutation);
 		AddScalarFieldToEmptyNonScalarField(subscription);
+
+		// Let's add the <I>__typename</I> fields to all non scalar types
+		addTypenameFields();
+
 	}
 
 	private void AddScalarFieldToEmptyNonScalarField(QueryField field) throws GraphQLRequestPreparationException {
 		// If this field contains no subfield, and is not a scalar, we add all its scalar fields, as requested fields.
 		if (field == null || field.isScalar()) {
 			// No action
-		} else if (field.fields.size() == 0) {
-			// This non scalar field has no subfields in the GraphQL request
+		} else if (field.fields.size() == 0 && field.fragments.size() == 0 && field.inlineFragments.size() == 0) {
+			// This non scalar field has no subfields in the GraphQL request. It also have no fragment
 			// We'll request all it scalar fields.
 
 			if (field.clazz.isInterface()) {
