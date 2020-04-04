@@ -26,7 +26,8 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Quer
  */
 public class FullRequestWithFragmentIT {
 
-	static GraphQLRequest boardsRequest;
+	static GraphQLRequest boardsRequestWithGlobalFragments;
+	static GraphQLRequest boardsRequestWithInlineFragments;
 
 	@BeforeAll
 	static void setupAll() throws GraphQLRequestPreparationException {
@@ -34,17 +35,29 @@ public class FullRequestWithFragmentIT {
 		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT_URL));
 
 		// Let's build once the request, and use it for each further execution
-		boardsRequest = new GraphQLRequest(""//
+		boardsRequestWithGlobalFragments = new GraphQLRequest(""//
 				+ "fragment member on Member {name alias} "
 				+ "fragment post on Post {date content author{...member   id}}\n"
 				+ "fragment topic on Topic {title posts(since: &sinceParam){id ...post} author{...member}}\r"
 				+ "query{boards{id name topics {id ...topic}}}");
+
+		// The same request, with inline fragments
+		boardsRequestWithInlineFragments = new GraphQLRequest(""//
+				+ "query{boards{" //
+				+ "  id name topics {"//
+				+ "     id ... on Topic {" //
+				+ "         title " //
+				+ "         posts(since: &sinceParam){id ... on Post {date content author{... on Member {name alias}   id}} } "//
+				+ "         author{... on Member {name alias}}"//
+				+ "     } "//
+				+ "  }"//
+				+ "}}");
 	}
 
 	@Test
-	void test_NoRecentPost() throws GraphQLRequestExecutionException {
+	void test_GlobalFragments_NoRecentPost() throws GraphQLRequestExecutionException {
 		// There is no post since 2020, march the 3rd
-		QueryTypeResponse response = boardsRequest.execQuery("sinceParam",
+		QueryTypeResponse response = boardsRequestWithGlobalFragments.execQuery("sinceParam",
 				new GregorianCalendar(2020, 3 - 1, 31).getTime());
 		List<Board> boards = response.getBoards();
 
@@ -55,9 +68,35 @@ public class FullRequestWithFragmentIT {
 	}
 
 	@Test
-	void test_WithOldPosts() throws GraphQLRequestExecutionException {
+	void test_GlobalFragments_WithOldPosts() throws GraphQLRequestExecutionException {
 		// There is no post since 2020, march the 3rd
-		QueryTypeResponse response = boardsRequest.execQuery("sinceParam",
+		QueryTypeResponse response = boardsRequestWithGlobalFragments.execQuery("sinceParam",
+				new GregorianCalendar(2000, 3 - 1, 31).getTime());
+		List<Board> boards = response.getBoards();
+
+		// Verification
+		assertEquals(10, boards.size());
+		// no posts, as this date is too early
+		assertTrue(boards.get(0).getTopics().get(0).getPosts().size() > 0);
+	}
+
+	@Test
+	void test_InlineFragments_NoRecentPost() throws GraphQLRequestExecutionException {
+		// There is no post since 2020, march the 3rd
+		QueryTypeResponse response = boardsRequestWithInlineFragments.execQuery("sinceParam",
+				new GregorianCalendar(2020, 3 - 1, 31).getTime());
+		List<Board> boards = response.getBoards();
+
+		// Verification
+		assertEquals(10, boards.size());
+		// no posts, as this date is too early
+		assertEquals(0, boards.get(0).getTopics().get(0).getPosts().size());
+	}
+
+	@Test
+	void test_InlineFragments_WithOldPosts() throws GraphQLRequestExecutionException {
+		// There is no post since 2020, march the 3rd
+		QueryTypeResponse response = boardsRequestWithInlineFragments.execQuery("sinceParam",
 				new GregorianCalendar(2000, 3 - 1, 31).getTime());
 		List<Board> boards = response.getBoards();
 

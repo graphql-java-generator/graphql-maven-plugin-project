@@ -560,7 +560,7 @@ public class QueryField {
 		// Then field list (if any)
 		boolean appendSpaceLocal = false;
 
-		if (fields.size() > 0 || fragments.size() > 0) {
+		if (fields.size() > 0 || fragments.size() > 0 || inlineFragments.size() > 0) {
 			logger.debug("Appending ReponseDef content for field " + name + " of type " + clazz.getSimpleName());
 			sb.append("{");
 

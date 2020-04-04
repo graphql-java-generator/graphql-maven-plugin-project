@@ -146,7 +146,7 @@ class AbstractGraphQLRequestTest_fragment {
 						+ "    ...id " //
 						+ "    ... on Character { ...id friends { ...id }} " //
 						+ "    ... on Droid {  primaryFunction ... on Character {name(uppercase: ?uppercaseFalse) friends {name}}  } " //
-						+ "    ... on Human {  homePlanet ... on Human {name(uppercase: ?notDefinedBindVariable)} } " //
+						+ "    ... on Human {  homePlanet ... on Human { ... on Character  { name(uppercase: ?notDefinedBindVariable)}} } " //
 						+ "  } "//
 						+ "} " //
 						+ "fragment id on Character {id} "//
@@ -215,17 +215,19 @@ class AbstractGraphQLRequestTest_fragment {
 		assertEquals(1, fragmentHuman.content.inlineFragments.size());
 		// fragmentHuman.inline
 		assertEquals("Human", fragmentHuman.content.inlineFragments.get(0).content.clazz.getSimpleName());
-		assertEquals("name", fragmentHuman.content.inlineFragments.get(0).content.fields.get(0).name);
-		assertEquals(1, fragmentHuman.content.inlineFragments.get(0).content.fields.get(0).inputParameters.size());
-		assertEquals("uppercase",
-				fragmentHuman.content.inlineFragments.get(0).content.fields.get(0).inputParameters.get(0).name);
-		assertEquals("Boolean", fragmentHuman.content.inlineFragments.get(0).content.fields.get(0).inputParameters
-				.get(0).graphQLCustomScalarType.getName());
-		assertEquals(null,
-				fragmentHuman.content.inlineFragments.get(0).content.fields.get(0).inputParameters.get(0).value);
+		assertEquals(0, fragmentHuman.content.inlineFragments.get(0).content.fields.size());
+		assertEquals(0, fragmentHuman.content.inlineFragments.get(0).content.fragments.size());
+		assertEquals(1, fragmentHuman.content.inlineFragments.get(0).content.inlineFragments.size());
+		// No field or fragment for the inline fragment, but one new inline fragment
+		Fragment inlineInlineHuman = fragmentHuman.content.inlineFragments.get(0).content.inlineFragments.get(0);
+		assertEquals("name", inlineInlineHuman.content.fields.get(0).name);
+		assertEquals(1, inlineInlineHuman.content.fields.get(0).inputParameters.size());
+		assertEquals("uppercase", inlineInlineHuman.content.fields.get(0).inputParameters.get(0).name);
+		assertEquals("Boolean",
+				inlineInlineHuman.content.fields.get(0).inputParameters.get(0).graphQLCustomScalarType.getName());
+		assertEquals(null, inlineInlineHuman.content.fields.get(0).inputParameters.get(0).value);
 		assertEquals("notDefinedBindVariable",
-				fragmentHuman.content.inlineFragments.get(0).content.fields.get(0).inputParameters
-						.get(0).bindParameterName);
+				inlineInlineHuman.content.fields.get(0).inputParameters.get(0).bindParameterName);
 
 		// + "query{" //
 		// + " withoutParameters{"//
@@ -244,7 +246,7 @@ class AbstractGraphQLRequestTest_fragment {
 				+ "withoutParameters{appearsIn ...id" //
 				+ " ... on Character{friends{...id} ...id}" //
 				+ " ... on Droid{primaryFunction ... on Character{name(uppercase:false) friends{name __typename} __typename}}" //
-				+ " ... on Human{homePlanet ... on Human{name __typename}}" //
+				+ " ... on Human{homePlanet ... on Human{... on Character{name __typename}}}" //
 				+ "}"//
 				+ "}"//
 				+ "\",\"variables\":null,\"operationName\":null}", //
