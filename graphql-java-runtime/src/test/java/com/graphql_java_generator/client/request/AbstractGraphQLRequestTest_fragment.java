@@ -3,6 +3,8 @@ package com.graphql_java_generator.client.request;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -317,6 +319,54 @@ class AbstractGraphQLRequestTest_fragment {
 				+ "{id name ... on Human{friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
 				+ "\",\"variables\":null,\"operationName\":null}", //
 				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
+	void testBuild_Partial_allFieldCases() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// Preparation
+		MyQueryType queryType = new MyQueryType("http://localhost/graphql");
+
+		List<Date> dates = new ArrayList<>();
+		dates.add(new GregorianCalendar(2022, 5 - 1, 1).getTime());
+		dates.add(new GregorianCalendar(2022, 5 - 1, 2).getTime());
+		dates.add(new GregorianCalendar(2022, 5 - 1, 3).getTime());
+
+		params = new HashMap<>();
+		params.put("uppercase", true);
+		params.put("textToAppendToTheForname", "append");
+		params.put("date", new GregorianCalendar(2022, 5 - 1, 20).getTime());
+		params.put("dates", dates);
+		params.put("uppercaseNameList", true);
+		params.put("textToAppendToTheFornameWithId", "append2");
+		params.put("nbItemsWithoutId", 69);
+		params.put("textToAppendToTheFornameWithoutId", "append3");
+
+		// Go, go, go
+		AbstractGraphQLRequest allFieldCasesRequest = queryType
+				.getAllFieldCasesGraphQLRequest("{ ... on WithID { id } name " //
+						+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
+						+ " age nbComments  comments booleans aliases planets friends {id}" //
+						+ " oneWithIdSubType {id name} "//
+						+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+						+ " oneWithoutIdSubType(input: ?input) {name}"//
+						+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+						+ "}");
+
+		// Verification
+		assertEquals("{\"query\":\"query{allFieldCases" //
+				+ "{name" //
+				+ " forname(uppercase:true,textToAppendToTheForname:\\\"append\\\")"
+				+ " age nbComments comments booleans aliases planets friends{id __typename}" //
+				+ " oneWithIdSubType{id name __typename}"//
+				+ " listWithIdSubTypes(date:\\\"2022-05-20\\\",dates:[\\\"2022-05-01\\\",\\\"2022-05-02\\\",\\\"2022-05-03\\\"],"
+				+ "uppercaseName:true,textToAppendToTheForname:\\\"append2\\\"){name id __typename}"
+				+ " oneWithoutIdSubType{name __typename}"//
+				+ " listWithoutIdSubTypes(nbItems:69,textToAppendToTheForname:\\\"append3\\\"){name __typename}" //
+				+ " ... on WithID{id __typename}" //
+				+ "}}" //
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				allFieldCasesRequest.buildRequest(params));
 	}
 
 }

@@ -83,10 +83,8 @@ public class PartialPreparedQueries implements PartialQueries {
 		withListRequest = queryType.getWithListGraphQLRequest("{id name appearsIn friends {id name}}");
 		errorRequest = queryType.getErrorGraphQLRequest("{id name appearsIn friends {id name}}");
 		aBreakRequest = queryType.getABreakGraphQLRequest("{case(test: &test, if: ?if)}");
-		allFieldCasesRequest = queryType.getAllFieldCasesGraphQLRequest("{id name " //
-				// Parameter for fields are not managed yet)
-				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
-				+ " forname"//
+		allFieldCasesRequest = queryType.getAllFieldCasesGraphQLRequest("{ ... on WithID { id } name " //
+				+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
 				+ " oneWithIdSubType {id name} "//
 				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"

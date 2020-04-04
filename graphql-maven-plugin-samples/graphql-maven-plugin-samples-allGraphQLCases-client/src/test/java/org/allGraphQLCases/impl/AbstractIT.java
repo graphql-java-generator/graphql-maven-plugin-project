@@ -184,6 +184,7 @@ abstract class AbstractIT {
 
 		// Verification
 		assertNotNull(allFieldCases);
+		assertNotNull(allFieldCases.getId());
 
 		// listWithIdSubTypes
 		assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());

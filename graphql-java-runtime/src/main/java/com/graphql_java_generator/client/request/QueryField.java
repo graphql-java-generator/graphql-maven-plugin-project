@@ -642,34 +642,37 @@ public class QueryField {
 	 */
 	void addTypenameFields() throws GraphQLRequestPreparationException {
 
-		if (isScalar()) {
-			// No action for scalar fields
-		} else if (inlineFragments.size() > 0) {
-			// We add the __typename field into all fragments, but not on the type itself (useless)
-			for (Fragment f : inlineFragments) {
-				f.addTypenameFields();
-			}
-		} else if (fragments.size() == 0) {
-			// It's a non scalar field, without any fragment. We must add the __typename
-			QueryField __typename = null;
-
-			// Let's go through sub fields to:
-			// 1) look for an existing __typename field
-			// 2) Recurse into this method for non scalar fields
-			for (QueryField f : fields) {
-				if (f.name.equals("__typename")) {
-					__typename = f;
-					break;
+		// Action only for non scalar fields
+		if (!isScalar()) {
+			if (inlineFragments.size() > 0) {
+				// We add the __typename field into all fragments, but not on the type itself (useless)
+				for (Fragment f : inlineFragments) {
+					f.addTypenameFields();
 				}
+			} else if (fragments.size() == 0) {
+				// It's a non scalar field, without any fragment. We must add the __typename
+				QueryField __typename = null;
+
+				// Let's go through sub fields to look for an existing __typename field
+				for (QueryField f : fields) {
+					if (f.name.equals("__typename")) {
+						__typename = f;
+						break;
+					}
+					f.addTypenameFields();
+				}
+
+				// We add the __typename for all levels, but not for the query/mutation/subscription one
+				if (!isQueryLevel() && __typename == null) {
+					__typename = new QueryField(this.clazz, "__typename");
+					fields.add(__typename);
+				}
+			}
+
+			// In all cases, we need to recurse into each fields of the current one.
+			for (QueryField f : fields) {
 				f.addTypenameFields();
 			}
-
-			// We add the __typename for all levels, but not for the query/mutation/subscription one
-			if (!isQueryLevel() && __typename == null) {
-				__typename = new QueryField(this.clazz, "__typename");
-				fields.add(__typename);
-			}
-
 		}
 
 	}
