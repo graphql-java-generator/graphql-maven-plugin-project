@@ -4,6 +4,7 @@ import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.client.directive.DirectiveLocation;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
+import com.graphql_java_generator.client.domain.allGraphQLCases.DirectiveRegistryInitializer;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.customscalars.CustomScalarRegistry;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
@@ -25,6 +26,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("${directive.name}");
+		directive.setPackageName("${pluginConfiguration.packageName}");
 #foreach ($argument in $directive.arguments)
 		param = InputParameter.newHardCodedParameter("${argument.name}", null, ${argument.mandatory},
 #if ($argument.graphQLTypeName == "BigDecimal" || 

@@ -197,7 +197,7 @@ public abstract class AbstractGraphQLRequest {
 
 			switch (token) {
 			case "fragment":
-				fragments.add(new Fragment(qt, packageName, false));
+				fragments.add(new Fragment(qt, packageName, false, null));
 				break;
 			case "query":
 			case "mutation":

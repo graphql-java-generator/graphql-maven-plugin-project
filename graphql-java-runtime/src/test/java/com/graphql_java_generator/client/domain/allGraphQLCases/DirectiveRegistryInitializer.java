@@ -23,6 +23,7 @@ public class DirectiveRegistryInitializer {
 
 		directive = new Directive();
 		directive.setName("skip");
+		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
 		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
@@ -32,6 +33,7 @@ public class DirectiveRegistryInitializer {
 
 		directive = new Directive();
 		directive.setName("include");
+		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
 		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
@@ -41,6 +43,7 @@ public class DirectiveRegistryInitializer {
 
 		directive = new Directive();
 		directive.setName("defer");
+		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
 		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
@@ -48,6 +51,7 @@ public class DirectiveRegistryInitializer {
 
 		directive = new Directive();
 		directive.setName("deprecated");
+		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
 		param = InputParameter.newHardCodedParameter("reason", null, false, graphql.Scalars.GraphQLString);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
@@ -56,6 +60,7 @@ public class DirectiveRegistryInitializer {
 
 		directive = new Directive();
 		directive.setName("testDirective");
+		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
 		param = InputParameter.newHardCodedParameter("value", null, true, graphql.Scalars.GraphQLString);
 		directive.getArguments().add(param);
 		param = InputParameter.newHardCodedParameter("anotherValue", null, false, graphql.Scalars.GraphQLString);
@@ -81,6 +86,7 @@ public class DirectiveRegistryInitializer {
 
 		directive = new Directive();
 		directive.setName("anotherTestDirective");
+		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
 		directive.getDirectiveLocations().add(DirectiveLocation.QUERY);
 		directive.getDirectiveLocations().add(DirectiveLocation.MUTATION);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);

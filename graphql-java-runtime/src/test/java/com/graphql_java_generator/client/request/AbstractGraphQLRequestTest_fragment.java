@@ -76,7 +76,7 @@ class AbstractGraphQLRequestTest_fragment {
 		assertEquals(0, withoutParameters.fields.get(0).inputParameters.size());
 		// Nb fragments
 		assertEquals(1, withoutParameters.fragments.size());
-		assertEquals("fragment1", withoutParameters.fragments.get(0));
+		assertEquals("fragment1", withoutParameters.fragments.get(0).name);
 
 		assertEquals(3, graphQLRequest.fragments.size());
 		//
@@ -97,8 +97,8 @@ class AbstractGraphQLRequestTest_fragment {
 		i = 0;
 		assertEquals("id", friends.fields.get(i++).name);
 		assertEquals(2, friends.fragments.size());
-		assertEquals("fragment3", friends.fragments.get(0));
-		assertEquals("fragment2", friends.fragments.get(1));
+		assertEquals("fragment3", friends.fragments.get(0).name);
+		assertEquals("fragment2", friends.fragments.get(1).name);
 		//
 		// Fragment 2
 		//
@@ -165,7 +165,7 @@ class AbstractGraphQLRequestTest_fragment {
 		//
 		// Nb fragments
 		assertEquals(1, withoutParameters.fragments.size());
-		assertEquals("id", withoutParameters.fragments.get(0));
+		assertEquals("id", withoutParameters.fragments.get(0).name);
 		//
 		// NB inline fragments
 		assertEquals(3, withoutParameters.inlineFragments.size());
@@ -178,11 +178,11 @@ class AbstractGraphQLRequestTest_fragment {
 		i = 0;
 		assertEquals("friends", fragmentCharacter.content.fields.get(i++).name);
 		assertEquals(1, fragmentCharacter.content.fragments.size());
-		assertEquals("id", fragmentCharacter.content.fragments.get(0));
+		assertEquals("id", fragmentCharacter.content.fragments.get(0).name);
 		assertEquals(0, fragmentCharacter.content.inlineFragments.size());
 		// fragmentCharacter.friends
 		assertEquals(1, fragmentCharacter.content.fields.get(0).fragments.size());
-		assertEquals("id", fragmentCharacter.content.fields.get(0).fragments.get(0));
+		assertEquals("id", fragmentCharacter.content.fields.get(0).fragments.get(0).name);
 		assertEquals(0, fragmentCharacter.content.fields.get(0).inlineFragments.size());
 		//
 		// inline fragment Droid
@@ -317,6 +317,81 @@ class AbstractGraphQLRequestTest_fragment {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name ... on Human{friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
+	void testBuild_Full_createHuman_withDirectivesOnFullFragment()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// Preparation
+		params = new HashMap<>();
+		params.put("humanInput", input);
+		params.put("value", "the mutation value");
+		params.put("anotherValue", "the other mutation value");
+		params.put("expandedInfo", true);
+
+		// Go, go, go
+		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
+				+ "fragment humanFrag on Human  {friends {id name} appearsIn @testDirective(value:&value,anotherValue:?anotherValue)}"
+				+ "mutation{createHuman (human : &humanInput ) { id name ...humanFrag @include(if: &expandedInfo)}}");
+
+		// Verification
+		assertEquals("{\"query\":\"" //
+				+ "fragment humanFrag on Human{friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}"
+				+ "mutation{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name ...humanFrag @include(if:true)}}" //
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
+	void testBuild_Partial_createHuman_withDirectivesWithOnClause()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// Preparation
+		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		params = new HashMap<>();
+		params.put("anotherMutationTypeCreateHumanHuman", input);
+		params.put("value", "the mutation value");
+		params.put("anotherValue", "the other mutation value");
+		params.put("expandedInfo", true);
+
+		// Go, go, go
+		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder().withQueryResponseDef(
+				"{id name ... on Human @include(if: &expandedInfo) {friends {id name} appearsIn @testDirective(value:&value,anotherValue:?anotherValue)}}}")
+				.build();
+
+		// Verification
+		assertEquals("{\"query\":\"mutation" //
+				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name ... on Human @include(if:true){friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
+	void testBuild_Partial_createHuman_withDirectivesWithoutOnClause()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
+		// Preparation
+		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		params = new HashMap<>();
+		params.put("anotherMutationTypeCreateHumanHuman", input);
+		params.put("value", "the mutation value");
+		params.put("anotherValue", "the other mutation value");
+		params.put("expandedInfo", false);
+
+		// Go, go, go
+		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder().withQueryResponseDef(
+				"{id name ...  @include(if: &expandedInfo) {friends {id name} appearsIn @testDirective(value:&value,anotherValue:?anotherValue)}}}")
+				.build();
+
+		// Verification
+		assertEquals("{\"query\":\"mutation" //
+				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name ... @include(if:false){friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
 				+ "\",\"variables\":null,\"operationName\":null}", //
 				graphQLRequest.buildRequest(params));
 	}

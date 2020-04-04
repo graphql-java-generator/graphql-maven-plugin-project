@@ -141,6 +141,26 @@ public class QueryTokenizer {
 	}
 
 	/**
+	 * Checks if the next meaningful token starts by the expected string that is given. The index is not updated, which
+	 * means that if this method returns true, the next returned token will be the token that begins by the expected
+	 * string.
+	 * 
+	 * @param expectedStart
+	 * @return
+	 */
+	public boolean checkNextTokenStartsWith(String expectedStart) {
+		for (int i = index; i < tokens.size(); i += 1) {
+			if (!EMPTY_DELIMITERS.contains(tokens.get(i))) {
+				// We've found a real token coming. Is it equals to the expected one?
+				return tokens.get(i).startsWith(expectedStart);
+			}
+			// It was an empty delimiter. Let's iterate once more.
+		}
+		// We found only empty delimiters.
+		return false;
+	}
+
+	/**
 	 * Reads the next real token, that is the next token that is not a separator
 	 * 
 	 * @param expected
