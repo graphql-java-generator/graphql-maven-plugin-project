@@ -83,7 +83,7 @@ String id = [an id];
 Human human = queryType.human("{id name appearsIn homePlanet friends{name}}", id);
 ```
 
-Or, with bind parameters:
+You can use input types:
 
 ```Java
 HumanInput input = new HumanInput();
@@ -160,18 +160,6 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 ```
 
 You'll find all the info on the [server](https://graphql-maven-plugin-project.graphql-java-generator.com/server.html) page.
-
-# Plugin GraphQL compatibility
-
-The plugin currently manages this part of GraphQL specifications:
-- Object Type
-- Schema, Queries and Mutation types
-- Custom Scalars
-- Input Parameters
-- Interfaces
-- Directives
-- Alias on field name (not on query or mutation names)
-- GraphQL names that are java keyword (out of enum items)
 
 
 
@@ -253,11 +241,9 @@ The avialable template IDs that can be configured for customization are:
 # Main evolutions for the near future
 
 You'll find below the main changes, that are planned in the near future:
-- Union
-- Fragment in graphql queries
 - Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 - Add a gradle plugin (work in progress)
-- Manage properties which name are java keyword, like: public, private, class... Currently, it would generate a compilation error.
+- Manage enum values that are java keyword. Currently, it generates a compilation error.
 - Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 
 
