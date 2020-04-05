@@ -204,11 +204,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Checks of type implementing multiples interfaces
 		objectType = (ObjectType) documentParser.getType("Human");
 		//
-		assertEquals(3, objectType.getImplementz().size());
+		assertEquals(4, objectType.getImplementz().size());
 		assertTrue(objectType.getImplementz().contains("Character"));
 		assertTrue(objectType.getImplementz().contains("Commented"));
 		assertTrue(objectType.getImplementz().contains("WithID"));
-		// assertTrue(objectType.getImplementz().contains("AnyCharacter"));// This is an union
+		assertTrue(objectType.getImplementz().contains("AnyCharacter"));// This is an union
 		//
 		InterfaceType interfaceType = (InterfaceType) documentParser.getType("WithID");
 		assertEquals(3, interfaceType.getImplementingTypes().size());
@@ -646,7 +646,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(10, type.getFields().size());
+		assertEquals(11, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
