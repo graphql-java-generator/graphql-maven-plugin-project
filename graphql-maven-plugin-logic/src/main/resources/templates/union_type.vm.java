@@ -1,5 +1,9 @@
 package ${pluginConfiguration.packageName};
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.graphql_java_generator.annotation.GraphQLUnionType;
 
 

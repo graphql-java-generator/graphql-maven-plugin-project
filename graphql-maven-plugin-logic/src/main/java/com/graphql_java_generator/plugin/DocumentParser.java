@@ -898,8 +898,9 @@ public class DocumentParser {
 		switch (pluginConfiguration.getMode()) {
 		case client:
 			// Type annotations
-			Stream.concat(objectTypes.stream(), interfaceTypes.stream())
-					.forEach(o -> addTypeAnnotationForClientMode(o));
+			interfaceTypes.stream().forEach(o -> addTypeAnnotationForClientMode(o));
+			objectTypes.stream().forEach(o -> addTypeAnnotationForClientMode(o));
+			unionTypes.stream().forEach(o -> addTypeAnnotationForClientMode(o));
 
 			// Add the GraphQLQuery annotation
 			queryTypes.parallelStream().forEach(f -> addQueryAnnotationForClientMode(f, RequestType.query));
@@ -957,7 +958,14 @@ public class DocumentParser {
 			StringBuffer jsonSubTypes = new StringBuffer();
 			jsonSubTypes.append("@JsonSubTypes({");
 			boolean addSeparator = false;
-			for (ObjectType type : ((InterfaceType) o).getImplementingTypes()) {
+
+			List<ObjectType> types;
+			if (o instanceof InterfaceType)
+				types = ((InterfaceType) o).getImplementingTypes();
+			else
+				types = ((UnionType) o).getMemberTypes();
+
+			for (ObjectType type : types) {
 				// No separator for the first iteration
 				if (addSeparator)
 					jsonSubTypes.append(",");

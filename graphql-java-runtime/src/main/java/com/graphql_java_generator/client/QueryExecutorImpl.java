@@ -107,8 +107,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 		try {
 			// Let's build the GraphQL request, to send to the server
 			request = objectResponse.buildRequest(parameters);
-			logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
-
 			return doJsonRequestExecution(request, valueType);
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(
@@ -141,6 +139,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 */
 	<T> T doJsonRequestExecution(String jsonRequest, Class<T> valueType)
 			throws IOException, GraphQLRequestExecutionException {
+
+		logger.trace(GRAPHQL_MARKER, "Executing GraphQL request: {}", jsonRequest);
+
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 		invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
 
@@ -148,8 +149,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 				JsonResponseWrapper.class);
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("Parsed response data: {}", objectMapper.writeValueAsString(response.data));
-			logger.trace("Parsed response errors: {}", objectMapper.writeValueAsString(response.errors));
+			logger.trace("Response data: {}", objectMapper.writeValueAsString(response.data));
+			logger.trace("Response errors: {}", objectMapper.writeValueAsString(response.errors));
 		}
 
 		if (response.errors == null || response.errors.size() == 0) {

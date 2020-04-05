@@ -195,9 +195,9 @@ private TypeResolver get${union.javaName}Resolver() {
 			Object javaObject = env.getObject();
 			String ret = null;
 
-#foreach ($implementingType in ${union.implementingTypes})
-			if (javaObject instanceof ${implementingType.javaName}) {
-				ret = "${implementingType.javaName}";
+#foreach ($memberType in ${union.memberTypes})
+			if (javaObject instanceof ${memberType.javaName}) {
+				ret = "${memberType.javaName}";
 			} else
 #end
 			{

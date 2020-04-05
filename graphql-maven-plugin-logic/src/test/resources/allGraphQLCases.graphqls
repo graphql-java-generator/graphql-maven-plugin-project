@@ -54,7 +54,7 @@ type MyQueryType {
 	  
     ################################################################################
    	# Test for unions
-	#unionTest(human1: HumanInput, human2: HumanInput, droid1: DroidInput, droid2: DroidInput): AnyCharacter    
+	unionTest(human1: HumanInput, human2: HumanInput, droid1: DroidInput, droid2: DroidInput): [AnyCharacter!]!    
         
     ################################################################################
     # error always returns an error!  (used to check the error management)
@@ -228,8 +228,8 @@ interface Character @testDirective(value:"on Character interface") @anotherTestD
     appearsIn: [Episode]! @anotherTestDirective
 }
 
-#union AnyCharacter @testDirective(value:"on Union")
-#= Human | Droid
+union AnyCharacter @testDirective(value:"on Union")
+= Human | Droid
 
 input CharacterInput {
     name: String!

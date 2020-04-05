@@ -8,12 +8,15 @@ import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
+import org.allGraphQLCases.server.AnyCharacter;
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.Droid;
+import org.allGraphQLCases.server.DroidInput;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.HumanInput;
 import org.allGraphQLCases.server._break;
 import org.allGraphQLCases.server._extends;
 import org.dozer.DozerBeanMapper;
@@ -215,5 +218,40 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 		ret.setName(sb.toString());
 		return ret;
+	}
+
+	@Override
+	public List<AnyCharacter> unionTest(DataFetchingEnvironment dataFetchingEnvironment, HumanInput human1,
+			HumanInput human2, DroidInput droid1, DroidInput droid2) {
+		List<AnyCharacter> ret = new ArrayList<>();
+
+		if (human1 != null) {
+			ret.add(mapFromHumanInput(human1));
+		}
+		if (droid1 != null) {
+			ret.add(mapFromDroidInput(droid1));
+		}
+		if (human2 != null) {
+			ret.add(mapFromHumanInput(human2));
+		}
+		if (droid2 != null) {
+			ret.add(mapFromDroidInput(droid2));
+		}
+
+		return ret;
+	}
+
+	private Human mapFromHumanInput(HumanInput input) {
+		Human human = mapper.map(input, Human.class);
+		human.setId(UUID.randomUUID());
+		human.setHomePlanet("a home planet");
+		return human;
+	}
+
+	private Droid mapFromDroidInput(DroidInput input) {
+		Droid droid = mapper.map(input, Droid.class);
+		droid.setId(UUID.randomUUID());
+		droid.setPrimaryFunction("a primary function");
+		return droid;
 	}
 }

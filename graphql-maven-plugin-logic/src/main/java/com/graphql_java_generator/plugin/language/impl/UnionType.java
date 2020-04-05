@@ -40,10 +40,12 @@ public class UnionType extends ObjectType {
 		super(null, packageName, mode, GraphQlType.UNION);
 	}
 
-	/** There is no concrete class for an union */
+	/**
+	 * There is no concrete class for an union. So we return it's name (to be used in the @JsonDeserialize annotation)
+	 */
 	@Override
 	public String getConcreteClassSimpleName() {
-		return null;
+		return getName();
 	}
 
 }
