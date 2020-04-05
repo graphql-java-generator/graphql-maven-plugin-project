@@ -51,6 +51,14 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		} else {
 			Character c = mapper.map(character, getClassFromName(Character.class, character.getType()));
 			c.setId(UUID.randomUUID());
+
+			// Let's fill in the class specific to each class, to test fragments
+			if (c instanceof Droid) {
+				((Droid) c).setPrimaryFunction("a primary function");
+			} else if (c instanceof Human) {
+				((Human) c).setHomePlanet("a home planet");
+			}
+
 			return c;
 		}
 	}
@@ -88,6 +96,13 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			}
 			Character c = mapper.map(input, characterClass);
 			c.setId(UUID.randomUUID());
+
+			// Let's fill in the class specific to each class, to test fragments
+			if (c instanceof Droid) {
+				((Droid) c).setPrimaryFunction("a primary function");
+			} else if (c instanceof Human) {
+				((Human) c).setHomePlanet("a home planet");
+			}
 			list.add(c);
 		}
 

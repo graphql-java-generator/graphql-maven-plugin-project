@@ -50,7 +50,11 @@ type MyQueryType {
 
     ################################################################################
    	# Complementary tests with the AllFieldCases Object
-	allFieldCases(input: AllFieldCasesInput): AllFieldCases    
+	allFieldCases(input: AllFieldCasesInput): AllFieldCases  
+	  
+    ################################################################################
+   	# Test for unions
+	#unionTest(human1: HumanInput, human2: HumanInput, droid1: DroidInput, droid2: DroidInput): AnyCharacter    
         
     ################################################################################
     # error always returns an error!  (used to check the error management)

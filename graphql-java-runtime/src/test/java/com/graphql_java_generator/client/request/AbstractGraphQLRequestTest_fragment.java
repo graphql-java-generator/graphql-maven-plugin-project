@@ -51,18 +51,11 @@ class AbstractGraphQLRequestTest_fragment {
 	void testBuild_ThreeGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
-		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(//
-				""//
-						+ "query{withoutParameters{appearsIn ...fragment1}} " //
-						//
-						+ "fragment fragment1 on Character {"//
-						+ "   id appearsIn friends{id ...fragment3 ...fragment2 }"//
-						+ "}"//
-						//
-						+ "fragment fragment2 on Character {"//
-						+ "   id name(uppercase: &uppercaseTrue) "//
-						+ "}"// //
-						+ "fragment fragment3 on Character { appearsIn }"//
+		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(""//
+				+ "query{withoutParameters{appearsIn ...fragment1}} " //
+				+ "fragment fragment1 on Character {id appearsIn friends{id ...fragment3 ...fragment2 }}"//
+				+ "fragment fragment2 on Character {id name(uppercase: &uppercaseTrue)}"//
+				+ "fragment fragment3 on Character {appearsIn}"//
 		);
 
 		// Verification
@@ -140,18 +133,17 @@ class AbstractGraphQLRequestTest_fragment {
 
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
-		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(//
-				""//
-						+ "query{" //
-						+ "  withoutParameters{"//
-						+ "    appearsIn " //
-						+ "    ...id " //
-						+ "    ... on Character { ...id friends { ...id }} " //
-						+ "    ... on Droid {  primaryFunction ... on Character {name(uppercase: ?uppercaseFalse) friends {name}}  } " //
-						+ "    ... on Human {  homePlanet ... on Human { ... on Character  { name(uppercase: ?notDefinedBindVariable)}} } " //
-						+ "  } "//
-						+ "} " //
-						+ "fragment id on Character {id} "//
+		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(""//
+				+ "query{" //
+				+ "  withoutParameters{"//
+				+ "    appearsIn " //
+				+ "    ...id " //
+				+ "    ... on Character { ...id friends { ...id }} " //
+				+ "    ... on Droid {  primaryFunction ... on Character {name(uppercase: ?uppercaseFalse) friends {name}}  } " //
+				+ "    ... on Human {  homePlanet ... on Human { ... on Character  { name(uppercase: ?notDefinedBindVariable)}} } " //
+				+ "  } "//
+				+ "} " //
+				+ "fragment id on Character {id} "//
 		);
 
 		// Verification
