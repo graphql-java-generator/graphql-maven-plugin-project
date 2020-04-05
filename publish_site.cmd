@@ -16,29 +16,27 @@ REM This script executes several commands, with PAUSE in between, to let the use
 echo "Working in the current dir. Want to use target/checkout instead ?    (after a release)"
 pause
 
-REM We need the correct release number
-set /p version="Enter the last released version (e.g.: 1.0): "
+REM in Ant REM We need the correct release number
+REM in Ant set /p version="Enter the last released version (e.g.: 1.0):
 
-REM To be sure we have that all artefacts are built, we rebuild them (publishing a release won't install the samples)
-call mvn install -Dmaven.test.skip=true
-pause
+REM in Ant REM To be sure we have that all artefacts are built, we rebuild them (publishing a release won't install the samples)
+REM in Ant call mvn install -Dmaven.test.skip=true
+REM in Ant pause
 
 REM The next command is long to execute
-@echo on
-call mvn site -Prelease "-DlastReleasedVersion=%version%"
-@echo off
-pause
+REM in Ant @echo on
+REM in Ant call mvn site -Prelease "-DlastReleasedVersion=%version%"
+REM in Ant @echo off
+REM in Ant pause
 
-call mvn site:stage
-pause
+REM in Ant call mvn site:stage
 
-REM For git on Windows, there is an issue with (too) long filenames. The git command below takes care of that 
-git config --system core.longpaths true
 
 call mvn antrun:run -Prelease
 pause
 
 cd target\gh-pages_branch\graphql-maven-plugin-project
+echo Pushing to github
 git push
 cd ..\..\..
 

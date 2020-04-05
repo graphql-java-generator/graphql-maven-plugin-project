@@ -13,10 +13,40 @@
 
 		<!-- This is an ant implementation largely inspired from this page (thanks a lot to you, guys!): -->
 		<!-- http://wiki.bitplan.com/index.php/Multi-Module_Maven_with_github_pages -->
+		
+		<input message="Enter the last released version (e.g.: 1.6.0):" addproperty="version" />
+
+		<!-- For git on Windows, there is an issue with (too) long filenames. The git command below takes care of that  -->
+		<exec executable="git" failonerror="true">
+			<arg value="config" />
+			<arg value="--system" />
+			<arg value="core.longpaths" />
+			<arg value="true" />
+		</exec>
+
+		<!-- To be sure everything is ready for the site, we first build the project -->
+		<exec executable="cmd" failonerror="true">
+			<arg value="/c" />
+			<arg value="mvn" />
+			<arg value="install" />
+			<arg value="-Dmaven.test.skip=true" />
+		</exec>
+		
+		<!-- Prepares the site (this command is very long to execute -->
+		<exec executable="cmd" failonerror="true">
+			<arg value="/c" />
+			<arg value="mvn" />
+			<arg value="site" />
+			<arg value="-Prelease" />
+			<arg value="&quot;-DlastReleasedVersion=${version}&quot;" />
+		</exec>
 
 		<!-- Stages the site -->
-		<!-- This doesn't work on windows, as .bat file can not be started by 'exec'! :( -->
-		<!-- exec executable="mvn" failonerror="true"> <arg value="site:stage" /> </exec -->
+		<exec executable="cmd" failonerror="true">
+			<arg value="/c" />
+			<arg value="mvn" />
+			<arg value="site:stage" />
+		</exec>
 
 		<!-- Checks that the site has been staged -->
 		<available file="${sourceFolder}" type="dir" property="siteHasBeenStaged" value="true" />
