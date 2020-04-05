@@ -43,6 +43,9 @@ public interface ${object.javaName} #if($object.implementz.size()>0)implements #
 	${field.annotation}
 	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName});
 
+#if (${field.inputParameters.size()} > 0)
+	@GraphQLInputParameters(names = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.name}"#if($foreach.hasNext), #end#end}, types = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.type.name}"#if($foreach.hasNext), #end#end})
+#end
 	${field.annotation}
 	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end get${field.pascalCaseName}();
 #end
