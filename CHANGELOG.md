@@ -1,7 +1,7 @@
 # Not releases yet
 
 Client mode:
-* Added GraphQL fragment capability. Query/mutation/subscription can now contain Fragment and inline Fragment.
+* Added GraphQL fragment capability. Query/mutation/subscription can now contain Fragment(s) and inline Fragment(s), including directives on fragments.
 * The client code has been highly simplified :
     * The Builder support is now limited to the  _withQueryResponseDef(String query)_  method.
     * The support for the  _withField()_, _withSubObject()_ (...) methods has been removed
