@@ -77,7 +77,8 @@ class UnionIT {
 	}
 
 	@Test
-	void test_unionTest() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void test_unionTest_withAFragmentForEachMember()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
@@ -94,7 +95,7 @@ class UnionIT {
 
 		// Verification
 		assertNotNull(unionTest);
-		assertTrue(unionTest.size() > 0);
+		assertTrue(unionTest.size() == 4);
 		// humanInput1
 		assertTrue(unionTest.get(0) instanceof Human);
 		Human human1 = (Human) unionTest.get(0);
@@ -135,6 +136,60 @@ class UnionIT {
 		assertNotNull(droid2.getFriends(), "friends are requested for humans");
 		assertNotNull(droid2.getPrimaryFunction());
 		assertEquals("name droid2", droid2.getName(), "to uppercase field parameter set to false");
+	}
 
+	@Test
+	void test_unionTest_withMissingFragments()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		GraphQLRequest graphQLRequest_withoutFragmentForHuman = new GraphQLRequest(""//
+				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
+				+ "    ... on Droid { id primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
+				+ "  } "//
+				+ "} " //
+		);
+
+		// Go, go, go
+		List<AnyCharacter> unionTest = graphQLRequest_withoutFragmentForHuman.execQuery(params).getUnionTest();
+
+		// Verification
+		assertNotNull(unionTest);
+		assertTrue(unionTest.size() == 4);
+		//
+		// humanInput1 ==> Only the__typename is filled (for proper JSON deserialization)
+		assertTrue(unionTest.get(0) instanceof Human);
+		Human human1 = (Human) unionTest.get(0);
+		assertNull(human1.getId());
+		assertNull(human1.getAppearsIn());
+		assertNull(human1.getFriends());
+		assertNull(human1.getHomePlanet());
+		assertNull(human1.getName());
+		//
+		// Human2
+		assertTrue(unionTest.get(2) instanceof Human);
+		Human human2 = (Human) unionTest.get(2);
+		assertNull(human2.getId());
+		assertNull(human2.getAppearsIn());
+		assertNull(human2.getFriends(), "no friends requested for humans");
+		assertNull(human2.getHomePlanet());
+		assertNull(human2.getName(), "to uppercase field parameter set to true");
+		//
+		// droidInput1
+		assertTrue(unionTest.get(1) instanceof Droid);
+		Droid droid1 = (Droid) unionTest.get(1);
+		assertNotNull(droid1.getId());
+		assertNull(droid1.getAppearsIn());
+		assertNotNull(droid1.getFriends(), "friends are requested for humans");
+		assertNotNull(droid1.getPrimaryFunction());
+		assertEquals("name droid1", droid1.getName(), "to uppercase field parameter set to false");
+		//
+		// droidInput2
+		assertTrue(unionTest.get(3) instanceof Droid);
+		Droid droid2 = (Droid) unionTest.get(3);
+		assertNotNull(droid2.getId());
+		assertNull(droid2.getAppearsIn());
+		assertNotNull(droid2.getFriends(), "friends are requested for humans");
+		assertNotNull(droid2.getPrimaryFunction());
+		assertEquals("name droid2", droid2.getName(), "to uppercase field parameter set to false");
 	}
 }

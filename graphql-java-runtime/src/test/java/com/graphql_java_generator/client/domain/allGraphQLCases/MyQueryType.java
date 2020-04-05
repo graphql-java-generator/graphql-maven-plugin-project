@@ -27,7 +27,6 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -57,8 +56,8 @@ public class MyQueryType {
 	 */
 	public MyQueryType(String graphqlEndpoint) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
-		new DirectiveRegistryInitializer().initDirectiveRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**
@@ -76,7 +75,8 @@ public class MyQueryType {
 	 */
 	public MyQueryType(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		new DirectiveRegistryInitializer().initDirectiveRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**
@@ -93,7 +93,8 @@ public class MyQueryType {
 	 */
 	public MyQueryType(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**
@@ -1657,6 +1658,256 @@ public class MyQueryType {
 	public GraphQLRequest getAllFieldCasesGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "allFieldCases"
 		, InputParameter.newBindParameter("input","myQueryTypeAllFieldCasesInput", false, null)
+		);
+	}
+	
+	/**
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("skip", Boolean.FALSE);
+	 *
+	 * List<AnyCharacter> c = myQyeryType.unionTestWithBindValues("{id name @skip(if: false) appearsIn friends {id name}}", human1, human2, droid1, droid2, params);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param human1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param human2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	 @GraphQLNonScalar (fieldName = "unionTest", graphQLTypeName = "AnyCharacter", javaClass = AnyCharacter.class)
+	public List<AnyCharacter> unionTestWithBindValues(String queryResponseDef, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query 'unionTest' in query mode: {} ", queryResponseDef);
+		ObjectResponse objectResponse = getUnionTestResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return unionTest(objectResponse, human1, human2, droid1, droid2, parameters);
+	}
+
+	/**
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * List<AnyCharacter> c = myQyeryType.unionTest("{id name @skip(if: false) appearsIn friends {id name}}", human1, human2, droid1, droid2, "skip", Boolean.FALSE);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param human1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param human2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	 @GraphQLNonScalar (fieldName = "unionTest", graphQLTypeName = "AnyCharacter", javaClass = AnyCharacter.class)
+	public List<AnyCharacter> unionTest(String queryResponseDef, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing of query 'unionTest' in query mode: {} ", queryResponseDef);
+		ObjectResponse objectResponse = getUnionTestResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return unionTestWithBindValues(objectResponse, human1, human2, droid1, droid2, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("sinceParam", sinceValue);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * List<AnyCharacter> ret = queryType.unionTestWithBindValues(response, human1, human2, droid1, droid2, params);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param human1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param human2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	 @GraphQLNonScalar (fieldName = "unionTest", graphQLTypeName = "AnyCharacter", javaClass = AnyCharacter.class)
+	public List<AnyCharacter> unionTestWithBindValues(ObjectResponse objectResponse, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException  {
+		if (logger.isTraceEnabled()) {
+			logger.trace("Executing of query 'unionTest' with parameters: {}, {}, {}, {} ", human1, human2, droid1, droid2);
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of query 'unionTest'");
+		}
+	
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("myQueryTypeUnionTestHuman1", human1);
+		parameters.put("myQueryTypeUnionTestHuman2", human2);
+		parameters.put("myQueryTypeUnionTestDroid1", droid1);
+		parameters.put("myQueryTypeUnionTestDroid2", droid2);
+
+		MyQueryTypeUnionTest ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryTypeUnionTest.class);
+		
+		return ret.unionTest;
+	}
+
+	/**
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * List<AnyCharacter> ret = queryType.unionTest(response, human1, human2, droid1, droid2, "sinceParam", sinceValue);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param human1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param human2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid1 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param droid2 Parameter for the unionTest field of MyQueryType, as defined in the GraphQL schema
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	 @GraphQLNonScalar (fieldName = "unionTest", graphQLTypeName = "AnyCharacter", javaClass = AnyCharacter.class)
+	public List<AnyCharacter> unionTest(ObjectResponse objectResponse, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException  {
+		if (logger.isTraceEnabled()) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("Executing of query 'unionTest' with bind variables: ");
+			boolean addComma = false;
+			for (Object o : paramsAndValues) {
+				if (o != null) {
+					sb.append(o.toString());
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
+			}
+			logger.trace(sb.toString());
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing of query 'unionTest' (with bind variables)");
+		}
+
+		Map<String, Object> bindVariableValues = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
+		bindVariableValues.put("myQueryTypeUnionTestHuman1", human1);
+		bindVariableValues.put("myQueryTypeUnionTestHuman2", human2);
+		bindVariableValues.put("myQueryTypeUnionTestDroid1", droid1);
+		bindVariableValues.put("myQueryTypeUnionTestDroid2", droid2);
+		
+		MyQueryTypeUnionTest ret = configuration.getQueryExecutor().execute(objectResponse, bindVariableValues, MyQueryTypeUnionTest.class);
+		
+		return ret.unionTest;
+	}
+
+	/**
+	 * Get the {@link ObjectResponse.Builder} for the AnyCharacter, as expected by the unionTest query.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Builder getUnionTestResponseBuilder() throws GraphQLRequestPreparationException {
+		return new Builder(GraphQLRequest.class, "unionTest", RequestType.query
+			, InputParameter.newBindParameter("human1","myQueryTypeUnionTestHuman1", false, null)
+			, InputParameter.newBindParameter("human2","myQueryTypeUnionTestHuman2", false, null)
+			, InputParameter.newBindParameter("droid1","myQueryTypeUnionTestDroid1", false, null)
+			, InputParameter.newBindParameter("droid2","myQueryTypeUnionTestDroid2", false, null)
+			);
+	}
+
+
+	/**
+	 * Get the {@link GraphQLRequest} for the unionTest query, created with the given Partial request.
+	 * 
+	 * @param partialRequest
+	 * 				The Partial GraphQLRequest, as explained in the 
+	 * 				<A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">plugin client documentation</A> 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public GraphQLRequest getUnionTestGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLRequest(partialRequest, RequestType.query, "unionTest"
+		, InputParameter.newBindParameter("human1","myQueryTypeUnionTestHuman1", false, null)
+		, InputParameter.newBindParameter("human2","myQueryTypeUnionTestHuman2", false, null)
+		, InputParameter.newBindParameter("droid1","myQueryTypeUnionTestDroid1", false, null)
+		, InputParameter.newBindParameter("droid2","myQueryTypeUnionTestDroid2", false, null)
 		);
 	}
 	

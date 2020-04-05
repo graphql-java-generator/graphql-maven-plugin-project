@@ -41,6 +41,7 @@ public interface AllFieldCasesInterface  {
 	@GraphQLScalar(fieldName = "forname", graphQLTypeName = "String", javaClass = String.class)
 	public void setForname(String forname);
 
+	@GraphQLInputParameters(names = {"uppercase", "textToAppendToTheForname"}, types = {"Boolean", "String"})
 	@GraphQLScalar(fieldName = "forname", graphQLTypeName = "String", javaClass = String.class)
 	public String getForname();
 
@@ -107,6 +108,7 @@ public interface AllFieldCasesInterface  {
 	@GraphQLNonScalar(fieldName = "listWithIdSubTypes", graphQLTypeName = "AllFieldCasesWithIdSubtype", javaClass = AllFieldCasesWithIdSubtype.class)
 	public void setListWithIdSubTypes(List<AllFieldCasesWithIdSubtype> listWithIdSubTypes);
 
+	@GraphQLInputParameters(names = {"nbItems", "uppercaseName", "textToAppendToTheForname"}, types = {"Int", "Boolean", "String"})
 	@JsonDeserialize(contentAs = AllFieldCasesWithIdSubtype.class)
 	@GraphQLNonScalar(fieldName = "listWithIdSubTypes", graphQLTypeName = "AllFieldCasesWithIdSubtype", javaClass = AllFieldCasesWithIdSubtype.class)
 	public List<AllFieldCasesWithIdSubtype> getListWithIdSubTypes();
@@ -115,6 +117,7 @@ public interface AllFieldCasesInterface  {
 	@GraphQLNonScalar(fieldName = "oneWithoutIdSubType", graphQLTypeName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)
 	public void setOneWithoutIdSubType(AllFieldCasesWithoutIdSubtype oneWithoutIdSubType);
 
+	@GraphQLInputParameters(names = {"input"}, types = {"FieldParameterInput"})
 	@GraphQLNonScalar(fieldName = "oneWithoutIdSubType", graphQLTypeName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)
 	public AllFieldCasesWithoutIdSubtype getOneWithoutIdSubType();
 
@@ -123,6 +126,7 @@ public interface AllFieldCasesInterface  {
 	@GraphQLNonScalar(fieldName = "listWithoutIdSubTypes", graphQLTypeName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)
 	public void setListWithoutIdSubTypes(List<AllFieldCasesWithoutIdSubtype> listWithoutIdSubTypes);
 
+	@GraphQLInputParameters(names = {"nbItems", "input", "textToAppendToTheForname"}, types = {"Int", "FieldParameterInput", "String"})
 	@JsonDeserialize(contentAs = AllFieldCasesWithoutIdSubtype.class)
 	@GraphQLNonScalar(fieldName = "listWithoutIdSubTypes", graphQLTypeName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)
 	public List<AllFieldCasesWithoutIdSubtype> getListWithoutIdSubTypes();

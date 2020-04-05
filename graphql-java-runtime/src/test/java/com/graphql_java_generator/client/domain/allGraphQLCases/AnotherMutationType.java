@@ -27,7 +27,6 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -57,8 +56,8 @@ public class AnotherMutationType {
 	 */
 	public AnotherMutationType(String graphqlEndpoint) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
-		new DirectiveRegistryInitializer().initDirectiveRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**
@@ -76,7 +75,8 @@ public class AnotherMutationType {
 	 */
 	public AnotherMutationType(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		new DirectiveRegistryInitializer().initDirectiveRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**
@@ -93,7 +93,8 @@ public class AnotherMutationType {
 	 */
 	public AnotherMutationType(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	/**

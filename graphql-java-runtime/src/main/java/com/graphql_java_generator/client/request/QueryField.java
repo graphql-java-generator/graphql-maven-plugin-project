@@ -281,9 +281,18 @@ public class QueryField {
 		// Then field list (if any)
 		boolean appendSpaceLocal = false;
 
-		if (fields.size() > 0 || fragments.size() > 0 || inlineFragments.size() > 0) {
+		String unionName = getUnionName();
+		if (fields.size() > 0 || fragments.size() > 0 || inlineFragments.size() > 0 || unionName != null) {
 			logger.debug("Appending ReponseDef content for field " + name + " of type " + clazz.getSimpleName());
 			sb.append("{");
+
+			// For union, we need to be sure to always have the __typename field
+			if (unionName != null) {
+				sb.append("... on ");
+				sb.append(unionName);
+				sb.append("{__typename}");
+				appendSpaceLocal = true;
+			}
 
 			// Let's append the fields...
 			for (QueryField f : fields) {
@@ -315,6 +324,19 @@ public class QueryField {
 
 			sb.append("}");
 		}
+	}
+
+	/**
+	 * If the field's type is a GraphQL union, then this method returns the union's name as defined in the GraphQL
+	 * schema. Otherwise returns null
+	 * 
+	 * @return
+	 */
+	private String getUnionName() {
+		// All the generated classes have a GraphQL annotation.
+		// If no such annotation, then this type is a scalar.
+		GraphQLUnionType graphQLUnionType = clazz.getAnnotation(GraphQLUnionType.class);
+		return (graphQLUnionType == null) ? null : graphQLUnionType.value();
 	}
 
 	/**

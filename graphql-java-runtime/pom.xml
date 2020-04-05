@@ -56,6 +56,11 @@
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-extended-scalars</artifactId> 
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
