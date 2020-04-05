@@ -407,7 +407,7 @@ void exec(Date since, String memberName, String memberId) {
 * {How to personalize the plugin behavior?}
 ~~~~~~~~~~~~~~~~~~~
 
-* {Use a preconfigured Jersey client}
+** {Use a preconfigured Jersey client}
 ~~~~~~~~~~~~~~~~~~~
 
   You can use a preconfigured Jersey client instance to support customization of the rest request:
@@ -416,7 +416,7 @@ void exec(Date since, String memberName, String memberId) {
     public QueryType(String graphqlEndpoint, Client client, ObjectMapper objectMapper)
 +--------------------------------------------------------------------------------------------  
 
-* {Use your own code templates}
+** {Use your own code templates}
 ~~~~~~~~~~~~~~~~~~~
 
   The plugin generates the code, from a Velocity templates. You can override the provided templates.
