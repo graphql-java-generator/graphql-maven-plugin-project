@@ -38,7 +38,7 @@ The aim of this project is to:
 
 You'll find below a quick presentation of the plugin.
 
-For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/)
+For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/README.html)
 
 ### Samples
 
