@@ -1,4 +1,6 @@
 'Z:/target/checkout/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/CodeGenerator.java'
+'Z:/target/checkout/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/CodeTemplate.java'
+'Z:/target/checkout/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/CodeTemplateScope.java'
 'Z:/target/checkout/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/CustomScalarDefinition.java'
 'Z:/target/checkout/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/DocumentParser.java'
 'Z:/target/checkout/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/language/AppliedDirective.java'

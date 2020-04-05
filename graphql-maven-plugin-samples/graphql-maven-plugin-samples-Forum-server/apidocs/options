@@ -16,10 +16,10 @@
 'UTF-8'
 -Xdoclint:none
 -doctitle
-'graphql-maven-plugin-samples-Forum-server 1.5.0 API'
+'graphql-maven-plugin-samples-Forum-server 1.6.0 API'
 -linkoffline
 'https://docs.oracle.com/javase/8/docs/api' 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'graphql-maven-plugin-samples-Forum-server 1.5.0 API'
+'graphql-maven-plugin-samples-Forum-server 1.6.0 API'
