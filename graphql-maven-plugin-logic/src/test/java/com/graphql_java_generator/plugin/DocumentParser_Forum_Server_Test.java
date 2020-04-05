@@ -33,7 +33,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { Forum_Server_SpringConfiguration.class })
-class DocumentParserTest_Forum_Server {
+class DocumentParser_Forum_Server_Test {
 
 	@Autowired
 	DocumentParser documentParser;

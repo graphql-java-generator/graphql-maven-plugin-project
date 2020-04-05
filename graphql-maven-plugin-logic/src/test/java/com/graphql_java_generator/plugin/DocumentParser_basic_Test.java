@@ -23,7 +23,7 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @SpringJUnitConfig(classes = { Basic_Server_SpringConfiguration.class })
-class DocumentParserTest_basic {
+class DocumentParser_basic_Test {
 
 	@javax.annotation.Resource
 	private ApplicationContext ctx;

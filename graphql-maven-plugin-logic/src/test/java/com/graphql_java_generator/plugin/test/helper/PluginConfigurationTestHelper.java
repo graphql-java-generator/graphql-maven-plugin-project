@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
@@ -37,7 +36,8 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public String sourceEncoding = null;
 	public File targetClassFolder = null;
 	public File targetSourceFolder = null;
-	public boolean copyGraphQLJavaSources = true;
+	public boolean copyGraphQLJavaSources = false; // This will speed build time up (less classes to compile, and allow
+													// to load several generated source folders in the IDE.
 	public Map<String, String> templates = new HashMap<String, String>();
 
 	/**
@@ -57,7 +57,5 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public boolean isCopyGraphQLJavaSources() {
 		return copyGraphQLJavaSources;
 	}
-	
-	
 
 }

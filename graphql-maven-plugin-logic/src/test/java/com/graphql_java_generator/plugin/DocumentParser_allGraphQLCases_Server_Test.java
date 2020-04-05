@@ -49,7 +49,7 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
-class DocumentParserTest_allGraphQLCases_Server {
+class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Resource
 	private DocumentParser documentParser;

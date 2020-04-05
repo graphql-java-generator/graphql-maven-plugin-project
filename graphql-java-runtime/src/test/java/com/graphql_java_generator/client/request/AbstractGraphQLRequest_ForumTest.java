@@ -18,7 +18,7 @@ import com.graphql_java_generator.client.domain.forum.QueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class AbstractGraphQLRequestTest_Forum {
+class AbstractGraphQLRequest_ForumTest {
 
 	QueryType queryType;
 	Map<String, Object> params;

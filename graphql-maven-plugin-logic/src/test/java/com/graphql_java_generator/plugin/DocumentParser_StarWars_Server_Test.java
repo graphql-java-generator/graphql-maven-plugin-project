@@ -23,7 +23,7 @@ import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguratio
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { StarWars_Server_SpringConfiguration.class })
-class DocumentParserTest_StarWars_Server {
+class DocumentParser_StarWars_Server_Test {
 
 	@Autowired
 	DocumentParser documentParser;

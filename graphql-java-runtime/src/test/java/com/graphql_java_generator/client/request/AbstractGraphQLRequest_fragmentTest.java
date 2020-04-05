@@ -21,7 +21,7 @@ import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class AbstractGraphQLRequestTest_fragment {
+class AbstractGraphQLRequest_fragmentTest {
 
 	HumanInput input;
 	Map<String, Object> params = new HashMap<>();

@@ -26,7 +26,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { Forum_Server_SpringConfiguration.class })
-class JsonSchemaPersonalizationTest_Forum_Server {
+class JsonSchemaPersonalization_Forum_Server_Test {
 
 	@Resource
 	PluginConfiguration pluginConfiguration;

@@ -25,7 +25,7 @@ import graphql.schema.GraphQLScalarType;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration_KO.class })
-class DocumentParserTest_allGraphQLCases_Server_KO {
+class DocumentParser_allGraphQLCases_Server_KO_Test {
 
 	@Resource
 	private DocumentParser documentParser;

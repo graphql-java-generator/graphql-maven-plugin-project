@@ -14,7 +14,7 @@ import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class AbstractGraphQLRequestTest_union {
+class AbstractGraphQLRequest_unionTest {
 
 	Map<String, Object> params = new HashMap<>();
 

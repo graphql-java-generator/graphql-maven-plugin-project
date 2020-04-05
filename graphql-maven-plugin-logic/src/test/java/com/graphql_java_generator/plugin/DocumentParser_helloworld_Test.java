@@ -28,7 +28,7 @@ import graphql.parser.Parser;
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { HelloWorld_Server_SpringConfiguration.class })
-class DocumentParserTest_helloworld {
+class DocumentParser_helloworld_Test {
 
 	@Autowired
 	private ApplicationContext ctx;

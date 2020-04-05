@@ -19,7 +19,7 @@ import com.graphql_java_generator.client.domain.allGraphQLCases._extends;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class AbstractGraphQLRequestTest_allGraphQLCases {
+class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 	HumanInput input;
 	Map<String, Object> params = new HashMap<>();

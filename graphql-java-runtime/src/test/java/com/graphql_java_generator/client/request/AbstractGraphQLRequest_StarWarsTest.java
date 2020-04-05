@@ -19,7 +19,7 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
-class AbstractGraphQLRequestTest_StarWars {
+class AbstractGraphQLRequest_StarWarsTest {
 
 	QueryType queryType;
 	Builder humanResponseDefBuilder;
