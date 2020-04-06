@@ -53,6 +53,7 @@ import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPerson
 
 import graphql.language.AbstractNode;
 import graphql.language.Argument;
+import graphql.language.ArrayValue;
 import graphql.language.BooleanValue;
 import graphql.language.Definition;
 import graphql.language.DirectiveDefinition;
@@ -70,6 +71,7 @@ import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.NullValue;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.ObjectValue;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
@@ -1337,6 +1339,15 @@ public class DocumentParser {
 			return ((graphql.language.EnumValue) value).getName();
 		} else if (value instanceof NullValue) {
 			return null;
+		} else if (value instanceof ObjectValue) {
+			return null;
+		} else if (value instanceof ArrayValue) {
+			List<Value> list = ((ArrayValue) value).getValues();
+			Object[] ret = new Object[list.size()];
+			for (int i = 0; i < list.size(); i += 1) {
+				ret[i] = getValue(list.get(i), action + ": ArrayValue(" + i + ")");
+			}
+			return ret;
 		} else {
 			throw new RuntimeException(
 					"Value of type " + value.getClass().getName() + " is not managed (" + action + ")");

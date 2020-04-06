@@ -1,4 +1,7 @@
 Here are the next tasks listed, as a TODO list:
+* Test with null value (like in the shopify schema)
+* Test with ArrayValue (like in the github schema)
+* Test with ObjectValue (like in the github schema). Caution, the ObjectValue throws no error, but the value is replaced by a null
 * [server side] Check graphql-java correction for issue 1844 (Directive values of type 'EnumValue' are not supported yet)
 * enum values may currently not be a java keyword (seems to be a graphql-java limitation). issue to raise in the graphql-java project
 * Check compatibility with the schema.public.graphqls (available in the plugin logic test resources folder)
