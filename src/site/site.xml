@@ -33,7 +33,7 @@
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 
-		<menu name="Project usage">
+		<menu name="Project internal">
 			<item name="How to build?" href="howto_build.html" />
 			<item name="How to contribute?" href="howto_contribute.html" />
 			<item name="How to publish the site?" href="howto_publish_site.html" />
