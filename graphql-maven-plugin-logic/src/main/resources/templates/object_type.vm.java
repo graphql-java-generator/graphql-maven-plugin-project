@@ -124,15 +124,15 @@ public class ${targetFileName} #if($object.implementz.size()>0)implements #forea
 #end
 
 		public ${targetFileName} build() {
-			${targetFileName} object = new ${targetFileName}();
+			${targetFileName} _object = new ${targetFileName}();
 #foreach ($field in $object.fields)
 #if(${field.javaName} == '__typename')
-			object.set__typename("${object.javaName}");
+			_object.set__typename("${object.javaName}");
 #else
-			object.set${field.pascalCaseName}(${field.javaName});
+			_object.set${field.pascalCaseName}(${field.javaName});
 #end
 #end
-			return object;
+			return _object;
 		}
 	}
 }
