@@ -4,6 +4,8 @@
 package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -154,7 +156,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-
+			Instant start = Instant.now();
 			getLog().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
@@ -176,8 +178,10 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			File targetDir = new File(project.getBasedir(), "target");
 			project.addCompileSourceRoot(new File(targetDir, targetSourceFolder).getAbsolutePath());
 
-			getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
-					+ schemaFilePattern + "' in the package '" + packageName + "'");
+			Duration duration = Duration.between(start, Instant.now());
+			getLog().info(
+					nbGeneratedClasses + " java classes have been generated from the schema(s) '" + schemaFilePattern
+							+ "' in the package '" + packageName + "' in " + duration.getSeconds() + " seconds");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
