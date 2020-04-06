@@ -78,6 +78,10 @@ public class InputParameter {
 	 * 
 	 * @param name
 	 * @param bindParameterName
+	 *            The name of the bind parameter, as defined in the GraphQL response definition. It is mandator for bind
+	 *            parameters, so it may not be null here. Please read the
+	 *            <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">client doc</A>
+	 *            for more information on input parameters and bind variables.
 	 * @param mandatory
 	 *            true if the parameter's value must be defined during request/mutation/subscription execution. <BR/>
 	 *            If mandatory is true and the parameter's value is not provided, a
@@ -88,6 +92,9 @@ public class InputParameter {
 	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
 	 */
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory) {
+		if (bindParameterName == null) {
+			throw new NullPointerException("[Internal error] The bindParameterName is mandatory");
+		}
 		return InputParameter.newBindParameter(name, bindParameterName, mandatory, null);
 	}
 
@@ -97,6 +104,10 @@ public class InputParameter {
 	 * 
 	 * @param name
 	 * @param bindParameterName
+	 *            The name of the bind parameter, as defined in the GraphQL response definition. It is mandator for bind
+	 *            parameters, so it may not be null here. Please read the
+	 *            <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">client doc</A>
+	 *            for more information on input parameters and bind variables.
 	 * @param mandatory
 	 *            true if the parameter's value must be defined during request/mutation/subscription execution. <BR/>
 	 *            If mandatory is true and the parameter's value is not provided, a
@@ -114,6 +125,9 @@ public class InputParameter {
 	 */
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory,
 			GraphQLScalarType graphQLScalarType) {
+		if (bindParameterName == null) {
+			throw new NullPointerException("[Internal error] The bindParameterName is mandatory");
+		}
 		return new InputParameter(name, bindParameterName, null, mandatory, graphQLScalarType);
 	}
 
@@ -152,7 +166,9 @@ public class InputParameter {
 	 *            The parameter name, as defined in the GraphQL schema
 	 * @param bindParameterName
 	 *            The name of the bind parameter, as defined in the GraphQL response definition. If null, it's a hard
-	 *            coded value. The value is then mandatory.
+	 *            coded value. The value will be sent to the server, when the request is executed. Please read the
+	 *            <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">client doc</A>
+	 *            for more information on input parameters and bind variables.
 	 * @param value
 	 *            The value to send, for this input parameter. If null, it's a bind parameter. The bindParameterName is
 	 *            then mandatory.
@@ -169,7 +185,7 @@ public class InputParameter {
 	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
 	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 */
-	InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
+	private InputParameter(String name, String bindParameterName, Object value, boolean mandatory,
 			GraphQLScalarType graphQLCustomScalarType) {
 		if (name == null) {
 			throw new NullPointerException("The input parameter's name is mandatory");
@@ -468,22 +484,22 @@ public class InputParameter {
 	 * @throws GraphQLRequestExecutionException
 	 */
 	public String getValueForGraphqlQuery(Map<String, Object> bindVariables) throws GraphQLRequestExecutionException {
-		if (this.value == null) {
-			// It's a Bind Variable.
-
-			// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
-			if (mandatory && (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))) {
-				throw new GraphQLRequestExecutionException("The Bind Parameter for '" + this.bindParameterName
-						+ "' must be provided in the BindVariables map");
-			}
-
-			if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
-				return null;
-			else
-				return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName), graphQLCustomScalarType);
-		} else
+		if (this.bindParameterName == null) {
+			// It's a hard coded value
 			return this.getValueForGraphqlQuery(this.value, graphQLCustomScalarType);
+		} else
+		// It's a Bind Variable.
 
+		// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
+		if (mandatory && (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))) {
+			throw new GraphQLRequestExecutionException("The Bind Parameter for '" + this.bindParameterName
+					+ "' must be provided in the BindVariables map");
+		}
+
+		if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
+			return null;
+		else
+			return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName), graphQLCustomScalarType);
 	}
 
 	/**

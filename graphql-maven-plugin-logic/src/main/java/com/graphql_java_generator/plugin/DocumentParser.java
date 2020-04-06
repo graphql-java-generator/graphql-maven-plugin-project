@@ -68,6 +68,7 @@ import graphql.language.InterfaceTypeDefinition;
 import graphql.language.ListType;
 import graphql.language.Node;
 import graphql.language.NonNullType;
+import graphql.language.NullValue;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
@@ -1334,6 +1335,8 @@ public class DocumentParser {
 			// For enums, we can't retrive an instance of the enum value, as the enum class has not been created yet. So
 			// we just return the label of the enum, as a String.
 			return ((graphql.language.EnumValue) value).getName();
+		} else if (value instanceof NullValue) {
+			return null;
 		} else {
 			throw new RuntimeException(
 					"Value of type " + value.getClass().getName() + " is not managed (" + action + ")");

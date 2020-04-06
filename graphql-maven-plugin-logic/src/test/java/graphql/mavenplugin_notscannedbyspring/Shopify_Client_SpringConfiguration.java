@@ -24,28 +24,28 @@ public class Shopify_Client_SpringConfiguration extends AbstractSpringConfigurat
 	static List<CustomScalarDefinition> customScalars;
 	static {
 		customScalars = new ArrayList<>();
-		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate", null, null));
-		customScalars.add(new CustomScalarDefinition("DateTime", "java.util.Date",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDateTime", null, null));
+		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date", null));
+		customScalars.add(new CustomScalarDefinition("DateTime", "java.util.Date", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDateTime.DateTime", null));
 		customScalars.add(new CustomScalarDefinition("Decimal", "java.math.BigDecimal", null,
 				"graphql.Scalars.GraphQLBigDecimal", null));
-		customScalars.add(new CustomScalarDefinition("FormattedString", "java.lang.String",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
-		customScalars.add(new CustomScalarDefinition("HTML", "java.lang.String",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
-		customScalars.add(new CustomScalarDefinition("JSON", "java.lang.String",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
+		customScalars.add(new CustomScalarDefinition("FormattedString", "java.lang.String", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
+		customScalars.add(new CustomScalarDefinition("HTML", "java.lang.String", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
+		customScalars.add(new CustomScalarDefinition("JSON", "java.lang.String", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 		customScalars.add(
 				new CustomScalarDefinition("Money", "java.lang.Float", null, "graphql.Scalars.GraphQLFloat", null));
-		customScalars.add(new CustomScalarDefinition("StorefrontID", "java.lang.String",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
+		customScalars.add(new CustomScalarDefinition("StorefrontID", "java.lang.String", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 		customScalars.add(new CustomScalarDefinition("UnsignedInt64", "java.math.BigInteger", null,
 				"graphql.Scalars.GraphQLBigInteger", null));
-		customScalars.add(new CustomScalarDefinition("URL", "java.lang.String",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
-		customScalars.add(new CustomScalarDefinition("UtcOffset", "java.lang.String",
-				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
+		customScalars.add(new CustomScalarDefinition("URL", "java.lang.String", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
+		customScalars.add(new CustomScalarDefinition("UtcOffset", "java.lang.String", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 	}
 
 	public Shopify_Client_SpringConfiguration() {
