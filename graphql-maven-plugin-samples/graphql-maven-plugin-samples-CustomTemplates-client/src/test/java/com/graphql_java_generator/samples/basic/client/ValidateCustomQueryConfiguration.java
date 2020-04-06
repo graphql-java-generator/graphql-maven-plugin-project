@@ -9,6 +9,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.TrustStrategy;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +17,11 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@ComponentScan(basePackages = { "com.generated.graphql", "com.generated.graphql.samples.customtemplates" })
+@ComponentScan(basePackages = { "com.graphql_java_generator", "com.generated.graphql.samples.customtemplates" })
 public class ValidateCustomQueryConfiguration {
 
 	@Bean
+	@Qualifier("RestTemplateQueryExecutor")
 	public RestTemplate restTemplate() throws Exception{
 		TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
 		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()

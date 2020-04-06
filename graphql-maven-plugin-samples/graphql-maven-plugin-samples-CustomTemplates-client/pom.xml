@@ -23,6 +23,14 @@
 				</executions>
 				<configuration>
 					<mode>client</mode>
+					<packageName>com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client</packageName>					
+					<customScalars>
+						<customScalar>
+							<graphQLTypeName>Date</graphQLTypeName>
+							<javaType>java.util.Date</javaType>
+							<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
+						</customScalar>
+					</customScalars>
 					<templates>
 						<QUERY_MUTATION_SUBSCRIPTION>templates/resttemplate/client_query_mutation_subscription_type.vm.java</QUERY_MUTATION_SUBSCRIPTION>
 					</templates>
@@ -52,56 +60,37 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.cargo</groupId>
-				<artifactId>cargo-maven2-plugin</artifactId>
-				<version>1.7.4</version>
+				<!-- This plugin allows to start the SpringBoot Forum-server in the background during the integration tests -->
+				<groupId>com.bazaarvoice.maven.plugins</groupId>
+				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>start-tomcat</id>
+						<id>switchboard-process</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>start</goal>
 						</goals>
+						<configuration>
+							<name>StarWars GraphQL server</name>
+							<workingDir>starwars_graphql_server</workingDir>
+							<waitForInterrupt>false</waitForInterrupt>
+							<healthcheckUrl>http://localhost:8180/graphiql</healthcheckUrl>
+							<arguments>
+								<argument>java</argument>
+								<argument>-jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-Forum-server/target/graphql-maven-plugin-samples-Forum-server-${project.version}.jar</argument>
+							</arguments>
+						</configuration>
 					</execution>
+					<!--Stop all processes in reverse order -->
 					<execution>
-						<id>stop-tomcat</id>
+						<id>stop-all</id>
 						<phase>post-integration-test</phase>
 						<goals>
-							<goal>stop</goal>
+							<goal>stop-all</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<container>
-						<containerId>tomcat9x</containerId>
-						<zipUrlInstaller>
-							<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/9.0.20/tomcat-9.0.20.zip</url>
-							<downloadDir>${project.basedir}/downloads</downloadDir>
-						</zipUrlInstaller>
-					</container>
-					<configuration>
-						<properties>
-							<cargo.logging>low</cargo.logging>
-							<log>target/cargo.log</log>
-							<cargo.protocol>https</cargo.protocol>
-							<cargo.tomcat.connector.keyAlias>graphql</cargo.tomcat.connector.keyAlias>
-							<cargo.tomcat.connector.keystoreFile>${project.basedir}/src/main/resources/keystore.jks</cargo.tomcat.connector.keystoreFile>
-							<cargo.tomcat.connector.keystorePass>graphql</cargo.tomcat.connector.keystorePass>
-							<cargo.tomcat.connector.keystoreType>JKS</cargo.tomcat.connector.keystoreType>
-							<cargo.servlet.port>8443</cargo.servlet.port>
-							<cargo.servlet.users>admin:tomcat:manager-gui</cargo.servlet.users>
-						</properties>
-					</configuration>
-					<deployables>
-						<deployable>
-							<location>${basedir}/../graphql-maven-plugin-samples-StarWars-server/target/graphql-maven-plugin-samples-StarWars-server-${project.version}.war</location>
-							<type>war</type>
-							<properties>
-								<context>/starwars</context>
-							</properties>
-						</deployable>
-					</deployables>
-				</configuration>
 			</plugin>
 			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->
