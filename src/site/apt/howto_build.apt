@@ -119,3 +119,21 @@ How-to build the project
   * For other IDE: please fork the project on github, and provide a Pull Request with the relevant doc.
   
   []
+  
+
+* {Help for debugging}
+~~~~~~~~~~~~~~~~~~~
+
+** {View server output}
+~~~~~~~~~~~~~~~~~~~
+
+
+  To avoid polluting the maven output, the default log4j configuration file sent all the output into the log file. You can check that in the /src/main/resources/log4j2.xml file.
+  
+  Another file is available, that shows more information, and output it on the console: /src/main/resources/log4j2-local.xml 
+  
+  To have all the output in the console (very useful when testing), you can start the GraphQLServerMain with this JVM parameter:
+
++---------------------------------------------------------------------------------------------
+GraphQLServerMain -Dlog4j2.configurationFile=log4j2-local.xml
++---------------------------------------------------------------------------------------------
