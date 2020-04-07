@@ -71,8 +71,8 @@
 							<goal>start</goal>
 						</goals>
 						<configuration>
-							<name>StarWars GraphQL server</name>
-							<workingDir>starwars_graphql_server</workingDir>
+							<name>Forum GraphQL server</name>
+							<workingDir>forum_graphql_server</workingDir>
 							<waitForInterrupt>false</waitForInterrupt>
 							<healthcheckUrl>http://localhost:8180/graphiql</healthcheckUrl>
 							<arguments>
