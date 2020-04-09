@@ -17,6 +17,8 @@ import org.allGraphQLCases.client.__Schema;
 import org.allGraphQLCases.client.__Type;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -27,6 +29,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
+@Execution(ExecutionMode.CONCURRENT)
 public class IntrospectionIT {
 
 	MyQueryType myQuery = new MyQueryType(Main.GRAPHQL_ENDPOINT);

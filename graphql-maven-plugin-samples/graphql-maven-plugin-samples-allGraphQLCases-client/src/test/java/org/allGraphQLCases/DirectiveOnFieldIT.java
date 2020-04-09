@@ -8,10 +8,13 @@ import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+@Execution(ExecutionMode.CONCURRENT)
 class DirectiveOnFieldIT {
 
 	MyQueryType queryType;

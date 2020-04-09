@@ -11,6 +11,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -22,6 +24,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * @author EtienneSF
  *
  */
+@Execution(ExecutionMode.CONCURRENT)
 public class DirectQueriesWithFieldInputParametersIT {
 
 	static DirectQueriesWithFieldInputParameters directQueriesWithFieldInputParameters;

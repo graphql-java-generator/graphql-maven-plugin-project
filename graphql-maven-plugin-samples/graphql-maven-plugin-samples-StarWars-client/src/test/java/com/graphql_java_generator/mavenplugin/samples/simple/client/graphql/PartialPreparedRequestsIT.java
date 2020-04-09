@@ -4,6 +4,8 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.generated.graphql.QueryType;
 import com.graphql_java_generator.samples.simple.client.Main;
@@ -15,6 +17,7 @@ import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedR
  * 
  * @author EtienneSF
  */
+@Execution(ExecutionMode.CONCURRENT)
 class PartialPreparedRequestsIT extends AbstractIT {
 
 	@BeforeEach
@@ -26,7 +29,8 @@ class PartialPreparedRequestsIT extends AbstractIT {
 		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new PartialPreparedRequests(Main.graphqlEndpoint, main.getNoCheckSslContext(), main.getHostnameVerifier());
+		queries = new PartialPreparedRequests(Main.graphqlEndpoint, main.getNoCheckSslContext(),
+				main.getHostnameVerifier());
 	}
 
 }

@@ -1,8 +1,8 @@
 package com.graphql_java_generator.samples.forum.client.graphql;
 
 import org.junit.jupiter.api.BeforeEach;
-
-import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
@@ -10,6 +10,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequ
  * 
  * @author EtienneSF
  */
+@Execution(ExecutionMode.CONCURRENT)
 class PartialDirectRequestsIT extends AbstractIT {
 
 	@BeforeEach

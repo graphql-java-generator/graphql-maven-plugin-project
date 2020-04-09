@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -24,6 +26,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Quer
  * 
  * @author etienne-sf
  */
+@Execution(ExecutionMode.CONCURRENT)
 public class FullRequestWithFragmentIT {
 
 	static GraphQLRequest boardsRequestWithGlobalFragments;

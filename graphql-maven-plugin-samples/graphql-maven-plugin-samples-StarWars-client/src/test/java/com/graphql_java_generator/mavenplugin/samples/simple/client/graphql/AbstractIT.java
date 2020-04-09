@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
@@ -24,6 +26,7 @@ import com.graphql_java_generator.samples.simple.client.Queries;
  * 
  * @author EtienneSF
  */
+@Execution(ExecutionMode.CONCURRENT)
 abstract class AbstractIT {
 
 	QueryType queryType;
