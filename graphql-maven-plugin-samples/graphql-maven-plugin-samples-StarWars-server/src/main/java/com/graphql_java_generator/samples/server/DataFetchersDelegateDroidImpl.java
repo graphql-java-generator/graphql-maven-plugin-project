@@ -31,9 +31,6 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 	@Resource
 	CharacterHelper characterHelper;
 
-	@Resource
-	GraphQLUtil graphQLUtil;
-
 	@Override
 	public List<Character> friends(DataFetchingEnvironment environment, Droid source) {
 		logger.debug("Executing droid.friends, with this droid: {}", source.getId().toString());

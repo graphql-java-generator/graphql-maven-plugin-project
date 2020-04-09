@@ -317,10 +317,6 @@ public class CodeGenerator {
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers"), "generating GraphQLDataFetchers", context,
 				resolveTemplate(CodeTemplate.DATAFETCHER));
 
-		pluginConfiguration.getLog().debug("Generating GraphQLUtil");
-		ret += generateOneFile(getJavaFile("GraphQLUtil"), "generating GraphQLUtil", context,
-				resolveTemplate(CodeTemplate.GRAPHQLUTIL));
-
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
 			pluginConfiguration.getLog().debug("Generating " + dataFetcherDelegate.getPascalCaseName());

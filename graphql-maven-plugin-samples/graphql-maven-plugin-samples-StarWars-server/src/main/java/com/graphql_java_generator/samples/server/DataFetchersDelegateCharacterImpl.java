@@ -26,9 +26,6 @@ public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCh
 	@Resource
 	CharacterHelper characterHelper;
 
-	@Resource
-	GraphQLUtil graphQLUtil;
-
 	@Override
 	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Character source) {
 		logger.debug("Executing character.friends, with this character: {}", source.getId().toString());

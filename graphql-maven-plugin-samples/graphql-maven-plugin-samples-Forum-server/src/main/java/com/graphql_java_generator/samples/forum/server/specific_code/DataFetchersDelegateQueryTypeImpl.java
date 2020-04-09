@@ -9,9 +9,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.samples.forum.server.Board;
 import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateQueryType;
-import com.graphql_java_generator.samples.forum.server.GraphQLUtil;
 import com.graphql_java_generator.samples.forum.server.Topic;
 import com.graphql_java_generator.samples.forum.server.jpa.BoardRepository;
 import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
@@ -30,11 +30,11 @@ public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQu
 	TopicRepository topicRepository;
 
 	@Resource
-	GraphQLUtil graphQLUtil;
+	GraphqlUtils graphqlUtils;
 
 	@Override
 	public List<Board> boards(DataFetchingEnvironment dataFetchingEnvironment) {
-		return graphQLUtil.iterableToList(boardRepository.findAll());
+		return graphqlUtils.iterableToList(boardRepository.findAll());
 	}
 
 	@Override

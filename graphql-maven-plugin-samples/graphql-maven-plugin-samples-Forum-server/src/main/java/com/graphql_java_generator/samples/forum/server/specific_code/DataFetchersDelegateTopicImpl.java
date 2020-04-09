@@ -16,8 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateTopic;
-import com.graphql_java_generator.samples.forum.server.GraphQLUtil;
 import com.graphql_java_generator.samples.forum.server.Member;
 import com.graphql_java_generator.samples.forum.server.Post;
 import com.graphql_java_generator.samples.forum.server.Topic;
@@ -51,7 +51,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	TopicRepository topicRepository;
 
 	@Resource
-	GraphQLUtil graphQLUtil;
+	GraphqlUtils graphqlUtils;
 
 	@Override
 	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
@@ -73,18 +73,18 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 			// since
 			if (memberId == null && memberName == null)
-				return graphQLUtil.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+				return graphqlUtils.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
 			// memberId, since
 			else if (memberName == null)
-				return graphQLUtil.iterableToList(
+				return graphqlUtils.iterableToList(
 						postRepository.findByTopicIdAndMemberIdAndSince(source.getId(), memberId, since));
 			// memberName,since
 			else if (memberId == null)
-				return graphQLUtil.iterableToList(
+				return graphqlUtils.iterableToList(
 						postRepository.findByTopicIdAndMemberNameAndSince(source.getId(), memberName, since));
 			// memberId, memberName, since
 			else
-				return graphQLUtil.iterableToList(postRepository
+				return graphqlUtils.iterableToList(postRepository
 						.findByTopicIdAndMemberIdAndMemberNameAndSince(source.getId(), memberId, memberName, since));
 
 		}

@@ -31,9 +31,6 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	@Resource
 	CharacterHelper characterHelper;
 
-	@Resource
-	GraphQLUtil graphQLUtil;
-
 	@Override
 	public List<Character> friends(DataFetchingEnvironment environment, Human source) {
 		logger.debug("Executing human.friends, with this human: {}", source.getId().toString());

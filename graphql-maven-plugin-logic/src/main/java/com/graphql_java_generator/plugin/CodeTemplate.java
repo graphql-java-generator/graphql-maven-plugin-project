@@ -36,7 +36,6 @@ public enum CodeTemplate {
 	BATCHLOADERDELEGATEIMPL(CodeTemplateScope.SERVER, "templates/server_BatchLoaderDelegateImpl.vm.java"), //
 	DATAFETCHER(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchers.vm.java"), //
 	DATAFETCHERDELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), //
-	GRAPHQLUTIL(CodeTemplateScope.SERVER, "templates/server_GraphQLUtil.vm.java"), //
 	PROVIDER(CodeTemplateScope.SERVER, "templates/server_GraphQLProvider.vm.java"), //
 	SERVER(CodeTemplateScope.SERVER, "templates/server_GraphQLServerMain.vm.java");
 
@@ -51,8 +50,5 @@ public enum CodeTemplate {
 	 */
 	@NonNull
 	private String defaultValue;
-
-	
-	
 
 }
