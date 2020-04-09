@@ -24,6 +24,9 @@ public class EnumValueImpl implements EnumValue {
 	 */
 	private String name;
 
+	/** The name of the package for this class */
+	private String packageName;
+
 	/** Returns the list of directives that have been defined for this field, in the GraphQL schema */
 	private List<AppliedDirective> appliedDirectives;
 }

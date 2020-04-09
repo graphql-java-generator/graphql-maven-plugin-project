@@ -36,6 +36,6 @@ public class ${objectName} {
 	}
 	
     public String toString() {
-        return "${objectName} {${query.name}: " + ${query.javaName} + "}";
+        return "${queryName} {${query.name}: " + ${query.javaName} + "}";
     }
 }

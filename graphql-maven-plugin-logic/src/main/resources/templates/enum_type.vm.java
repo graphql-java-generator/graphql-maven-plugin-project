@@ -1,4 +1,4 @@
-package ${pluginConfiguration.packageName};
+package ${object.packageName};
 
 import com.graphql_java_generator.annotation.GraphQLEnumType;
 

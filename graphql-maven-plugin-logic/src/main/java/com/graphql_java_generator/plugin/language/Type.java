@@ -35,6 +35,13 @@ public interface Type {
 		return GraphqlUtils.graphqlUtils.getJavaName(getName());
 	}
 
+	/**
+	 * Returns the package's name where the GraphQL objects from the GraphQL schema must be generated.
+	 * 
+	 * @return
+	 */
+	public String getPackageName();
+
 	/** Get the filename where this type must be created. Default is to return the name for the Type */
 	default public String getTargetFileName(String fileType) {
 		switch (fileType) {

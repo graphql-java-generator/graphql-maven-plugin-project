@@ -28,6 +28,13 @@ public interface EnumValue {
 		return GraphqlUtils.graphqlUtils.getJavaName(getName());
 	}
 
+	/**
+	 * Returns the package's name where the GraphQL objects from the GraphQL schema must be generated.
+	 * 
+	 * @return
+	 */
+	public String getPackageName();
+
 	/** Returns the list of directives that have been defined for this field, in the GraphQL schema */
 	public List<AppliedDirective> getAppliedDirectives();
 }

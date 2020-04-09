@@ -1,4 +1,4 @@
-package ${pluginConfiguration.packageName};
+package ${object.packageName};
 
 import java.util.List;
 #if (${pluginConfiguration.mode} == "server")

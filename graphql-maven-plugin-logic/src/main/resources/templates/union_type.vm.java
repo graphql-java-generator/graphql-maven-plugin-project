@@ -1,4 +1,4 @@
-package ${pluginConfiguration.packageName};
+package ${object.packageName};
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;

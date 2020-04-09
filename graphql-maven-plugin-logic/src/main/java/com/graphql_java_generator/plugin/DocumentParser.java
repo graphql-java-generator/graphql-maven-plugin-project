@@ -554,9 +554,9 @@ public class DocumentParser {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		ObjectType objectType = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
+		ObjectType objectType = new ObjectType(node.getName(), pluginConfiguration.getPackageName(),
+				pluginConfiguration.getMode());
 
-		objectType.setName(node.getName());
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's read all its fields
@@ -586,10 +586,10 @@ public class DocumentParser {
 	 */
 	ObjectType readInputObjectType(InputObjectTypeDefinition node) {
 
-		ObjectType objectType = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
+		ObjectType objectType = new ObjectType(node.getName(), pluginConfiguration.getPackageName(),
+				pluginConfiguration.getMode());
 		objectType.setInputType(true);
 
-		objectType.setName(node.getName());
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's read all its fields
@@ -616,10 +616,9 @@ public class DocumentParser {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		InterfaceType interfaceType = new InterfaceType(pluginConfiguration.getPackageName(),
+		InterfaceType interfaceType = new InterfaceType(node.getName(), pluginConfiguration.getPackageName(),
 				pluginConfiguration.getMode());
 
-		interfaceType.setName(node.getName());
 		interfaceType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's read all its fields
@@ -695,9 +694,9 @@ public class DocumentParser {
 	 * @return
 	 */
 	EnumType readEnumType(EnumTypeDefinition node) {
-		EnumType enumType = new EnumType(pluginConfiguration.getPackageName(), pluginConfiguration.getMode());
+		EnumType enumType = new EnumType(node.getName(), pluginConfiguration.getPackageName(),
+				pluginConfiguration.getMode());
 
-		enumType.setName(node.getName());
 		enumType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
