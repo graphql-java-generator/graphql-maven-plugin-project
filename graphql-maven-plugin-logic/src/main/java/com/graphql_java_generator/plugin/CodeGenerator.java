@@ -159,15 +159,15 @@ public class CodeGenerator {
 			break;
 		}
 
-		if (pluginConfiguration.isCopyGraphQLJavaSources()) {
-			copyGraphQLJavaSources();
+		if (pluginConfiguration.isCopyRuntimeSources()) {
+			copyRuntimeSources();
 		}
 
 		return i;
 
 	}
 
-	void copyGraphQLJavaSources() throws IOException {
+	void copyRuntimeSources() throws IOException {
 		final int NB_BYTES = 1000;
 		ClassPathResource res = new ClassPathResource("/graphql-java-runtime-sources.jar");
 		JarEntry entry;

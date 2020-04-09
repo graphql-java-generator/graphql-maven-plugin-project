@@ -208,17 +208,17 @@ class CodeGeneratorTest {
 
 	/**
 	 * Test to validate the code generation process copies runtime sources if
-	 * {@link PluginConfiguration#isCopyGraphQLJavaSources()} is set to true
+	 * {@link PluginConfiguration#isCopyRuntimeSources()} is set to true
 	 *
 	 * @throws IOException
 	 */
 	@Test
 	@DirtiesContext
-	void testGenerateCode_copySources() throws IOException {
+	void testGenerateCode_copyRuntimeSources() throws IOException {
 
 		pluginConfiguration.mode = PluginMode.client;
 		pluginConfiguration.packageName = "test.generatecode.enabled";
-		pluginConfiguration.copyGraphQLJavaSources = true;
+		pluginConfiguration.copyRuntimeSources = true;
 		pluginConfiguration.schemaFileFolder = new File("src/test/resources");
 		pluginConfiguration.schemaFilePattern = "basic.graphqls";
 		pluginConfiguration.targetSourceFolder = targetSourceFolder;
@@ -235,17 +235,17 @@ class CodeGeneratorTest {
 
 	/**
 	 * Test to validate the code generation process does not copy runtime sources if
-	 * {@link PluginConfiguration#isCopyGraphQLJavaSources()} is set to false
+	 * {@link PluginConfiguration#isCopyRuntimeSources()} is set to false
 	 *
 	 * @throws IOException
 	 */
 	@Test
 	@DirtiesContext
-	void testGenerateCode_skipCopySources() throws IOException {
+	void testGenerateCode_skipCopyRuntimeSources() throws IOException {
 
 		pluginConfiguration.mode = PluginMode.client;
 		pluginConfiguration.packageName = "test.generatecode.enabled";
-		pluginConfiguration.copyGraphQLJavaSources = false;
+		pluginConfiguration.copyRuntimeSources = false;
 		pluginConfiguration.schemaFileFolder = new File("src/test/resources");
 		pluginConfiguration.schemaFilePattern = "basic.graphqls";
 		pluginConfiguration.targetSourceFolder = targetSourceFolder;
@@ -262,7 +262,9 @@ class CodeGeneratorTest {
 	@DirtiesContext
 	protected void testResolveTemplateDefault() {
 		pluginConfiguration.templates.clear();
-		assertEquals(CodeTemplate.BATCHLOADERDELEGATE.getDefaultValue(), this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));;
+		assertEquals(CodeTemplate.BATCHLOADERDELEGATE.getDefaultValue(),
+				this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));
+		;
 	}
 
 	/**
@@ -273,7 +275,8 @@ class CodeGeneratorTest {
 	protected void testResolveTemplateCustom() {
 		pluginConfiguration.templates.clear();
 		pluginConfiguration.templates.put(CodeTemplate.BATCHLOADERDELEGATE.name(), "/my/custom/template");
-		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));;
+		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));
+		;
 	}
 
 	/**

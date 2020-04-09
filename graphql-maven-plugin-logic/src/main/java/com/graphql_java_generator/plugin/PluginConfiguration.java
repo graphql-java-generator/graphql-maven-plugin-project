@@ -25,14 +25,14 @@ import graphql.schema.GraphQLScalarType;
  */
 public interface PluginConfiguration {
 
-	String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
-	String DEFAULT_SOURCE_ENCODING = "UTF-8";
-	String DEFAULT_MODE = "client";// Must be a string, for maven plugin declaration
-	String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
-	String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
-	String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
-	String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
-																				// Dummy Java issue... :(
+	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
+	public final String DEFAULT_MODE = "client";// Must be a string, for maven plugin declaration
+	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
+	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
+	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
+	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
+	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
+	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
 
 	/**
 	 * List of custom scalars implemented by the project for its GraphQL schema. It's a map, where the key is the scalar
@@ -116,28 +116,33 @@ public interface PluginConfiguration {
 	public Map<String, String> getTemplates();
 
 	/**
-	 * Returns true if shall copy graphql sources (graphql-java-runtime) source code
+	 * Returns true if shall copy the runtuume sources (graphql-java-runtime) source code along with the files generates
+	 * by the plugin.
 	 *
 	 * @return
 	 */
-	boolean isCopyGraphQLJavaSources();
+	boolean isCopyRuntimeSources();
 
 	/** Logs all the configuration parameters, in the debug level */
 	default void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
 			getLog().debug("The graphql-java-generator Plugin Configuration is:");
-			getLog().debug("  Mode: " + getMode());
-			getLog().debug("  PackageName: " + getPackageName());
-			getLog().debug("  Packaging: " + getPackaging());
-			getLog().debug("  SchemaFileFolder: " + getSchemaFileFolder());
-			getLog().debug("  SchemaFilePattern: " + getSchemaFilePattern());
-			getLog().debug("  SchemaPersonalizationFile: " + getSchemaPersonalizationFile());
-			getLog().debug("  SourceEncoding: " + getMode());
-			getLog().debug("  TargetClassFolder: " + getTargetClassFolder());
-			getLog().debug("  TargetSourceFolder: " + getTargetSourceFolder());
-			getLog().debug("  CopyGraphQLJavaSources: " + isCopyGraphQLJavaSources());
-			getLog().debug("  Templates: " +  (Objects.nonNull(getTemplates())?
-					getTemplates().entrySet().stream().map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue())).collect(Collectors.joining(", ")): StringUtils.EMPTY) );
+			getLog().debug("  copyRuntimeSources: " + isCopyRuntimeSources());
+			getLog().debug("  mode: " + getMode());
+			getLog().debug("  packageName: " + getPackageName());
+			getLog().debug("  packaging: " + getPackaging());
+			getLog().debug("  schemaFileFolder: " + getSchemaFileFolder());
+			getLog().debug("  schemaFilePattern: " + getSchemaFilePattern());
+			getLog().debug("  schemaPersonalizationFile: " + getSchemaPersonalizationFile());
+			getLog().debug("  sourceEncoding: " + getMode());
+			getLog().debug("  targetClassFolder: " + getTargetClassFolder());
+			getLog().debug("  targetSourceFolder: " + getTargetSourceFolder());
+			getLog().debug("  Templates: "
+					+ (Objects.nonNull(getTemplates())
+							? getTemplates().entrySet().stream()
+									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+									.collect(Collectors.joining(", "))
+							: StringUtils.EMPTY));
 		}
 	}
 }

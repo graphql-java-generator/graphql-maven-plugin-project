@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -22,6 +24,10 @@
 					</execution>
 				</executions>
 				<configuration>
+					<!-- In this pom, we choose not to copy the runtime. It allows to replace 
+						it by another one, for instance one updated for your needs. You then need 
+						to add this runtime as a dependency -->
+					<copyGraphQLJavaSources>false</copyGraphQLJavaSources>
 					<mode>client</mode>
 					<packageName>org.allGraphQLCases.client</packageName>
 					<customScalars>
@@ -67,7 +73,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot server in the background during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot server in the background 
+					during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
@@ -113,7 +120,8 @@
 		</plugins>
 
 		<extensions>
-			<!-- Adding these extensions prevents the error below, with JDK 9 and higher: -->
+			<!-- Adding these extensions prevents the error below, with JDK 9 and 
+				higher: -->
 			<!-- NoSuchMethodError: 'java.lang.String javax.annotation.Resource.lookup()' -->
 			<extension>
 				<groupId>javax.annotation</groupId>
@@ -158,12 +166,19 @@
 			<artifactId>graphql-java-client-dependencies</artifactId>
 			<type>pom</type>
 		</dependency>
+		<!-- In this pom, we choose not to copy the runtime. It allows to replace 
+			it by another one, for instance one updated for your needs. You then need 
+			to add this runtime as a dependency -->
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-runtime</artifactId>
+		</dependency>
 		<!-- Complementary graphql dependencies -->
 		<dependency>
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-extended-scalars</artifactId>
 		</dependency>
-				
+
 		<!-- The logging framework -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

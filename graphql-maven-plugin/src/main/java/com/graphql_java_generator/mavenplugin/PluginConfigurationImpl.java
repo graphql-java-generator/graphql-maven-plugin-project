@@ -101,8 +101,8 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
-	public boolean isCopyGraphQLJavaSources() {
-		return this.mojo.copyGraphQLJavaSources;
+	public boolean isCopyRuntimeSources() {
+		return this.mojo.copyRuntimeSources;
 	}
 
 	@Override

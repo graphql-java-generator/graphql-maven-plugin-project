@@ -45,8 +45,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * provided the runtime in the pom dependencies. This allows you to create your own runtime, and change the
 	 * "standard" behavior. But of course, you'll have to check the compatibility with all the next versions.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyGraphQLJavaSources", defaultValue = "true")
-	boolean copyGraphQLJavaSources;
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyRuntimeSources", defaultValue = PluginConfiguration.DEFAULT_COPY_RUNTIME_SOURCES)
+	boolean copyRuntimeSources;
 
 	/**
 	 * This parameter contains the list of custom scalars implementations. One such implementation must be provided for

@@ -36,7 +36,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public String sourceEncoding = null;
 	public File targetClassFolder = null;
 	public File targetSourceFolder = null;
-	public boolean copyGraphQLJavaSources = false; // This will speed build time up (less classes to compile, and allow
+	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow
 													// to load several generated source folders in the IDE.
 	public Map<String, String> templates = new HashMap<String, String>();
 
@@ -54,8 +54,8 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	}
 
 	@Override
-	public boolean isCopyGraphQLJavaSources() {
-		return copyGraphQLJavaSources;
+	public boolean isCopyRuntimeSources() {
+		return copyRuntimeSources;
 	}
 
 }
