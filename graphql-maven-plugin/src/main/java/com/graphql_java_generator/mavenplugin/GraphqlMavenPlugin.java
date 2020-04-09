@@ -84,7 +84,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = "false")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = PluginConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION)
 	boolean generateJPAAnnotation;
 
 	Log log;

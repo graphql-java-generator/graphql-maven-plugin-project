@@ -26,6 +26,7 @@ import graphql.schema.GraphQLScalarType;
 public interface PluginConfiguration {
 
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
+	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
 	public final String DEFAULT_MODE = "client";// Must be a string, for maven plugin declaration
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
