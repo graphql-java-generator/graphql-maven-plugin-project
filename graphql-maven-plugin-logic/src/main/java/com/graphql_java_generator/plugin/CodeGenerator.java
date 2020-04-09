@@ -143,20 +143,14 @@ public class CodeGenerator {
 			i += generateGraphQLRequest();
 
 			// Files for Custom Scalars
-			VelocityContext context = new VelocityContext();
-			context.put("pluginConfiguration", pluginConfiguration);
-			context.put("customScalars", documentParser.customScalars);
 			pluginConfiguration.getLog().debug("Generating CustomScalarRegistryInitializer");
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
-					"Generating CustomScalarRegistryInitializer", context,
+					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
 			// Files for Directives
-			context = new VelocityContext();
-			context.put("pluginConfiguration", pluginConfiguration);
-			context.put("directives", documentParser.directives);
 			pluginConfiguration.getLog().debug("Generating DirectiveRegistryInitializer");
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer"), "Generating DirectiveRegistryInitializer",
-					context, resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
+					getVelocityContext(), resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
 			//
 			pluginConfiguration.getLog().debug("Generating " + FILE_TYPE_JACKSON_DESERIALIZER);
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
@@ -223,10 +217,9 @@ public class CodeGenerator {
 			File targetFile = getJavaFile(targetFileName);
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 
-			VelocityContext context = new VelocityContext();
+			VelocityContext context = getVelocityContext();
 			context.put("imports", getImportList());
 			context.put("object", object);
-			context.put("pluginConfiguration", pluginConfiguration);
 			context.put("targetFileName", targetFileName);
 			context.put("type", type);
 
@@ -252,8 +245,7 @@ public class CodeGenerator {
 				File targetFile = getJavaFile(objectName);
 				String msg = "Generating target for query " + query.getName() + " '" + objectName + "' into "
 						+ targetFile.getAbsolutePath();
-				VelocityContext context = new VelocityContext();
-				context.put("pluginConfiguration", pluginConfiguration);
+				VelocityContext context = getVelocityContext();
 				context.put("objectName", objectName);
 				context.put("query", query);
 
@@ -268,8 +260,7 @@ public class CodeGenerator {
 	 * which is compliant with the GraphQL specification
 	 */
 	int generateGraphQLRequest() {
-		VelocityContext context = new VelocityContext();
-		context.put("pluginConfiguration", pluginConfiguration);
+		VelocityContext context = getVelocityContext();
 
 		context.put("query", (documentParser.queryTypes.size() > 0) ? documentParser.queryTypes.get(0) : null);
 		context.put("mutation", (documentParser.mutationTypes.size() > 0) ? documentParser.mutationTypes.get(0) : null);
@@ -288,13 +279,11 @@ public class CodeGenerator {
 	 */
 	int generateServerFiles() throws IOException {
 
-		VelocityContext context = new VelocityContext();
-		context.put("pluginConfiguration", pluginConfiguration);
+		VelocityContext context = getVelocityContext();
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
 		context.put("unions", documentParser.getUnionTypes());
 		context.put("imports", getImportList());
-		context.put("customScalars", documentParser.customScalars);
 
 		// List of found schemas
 		List<String> schemaFiles = new ArrayList<>();
@@ -452,6 +441,20 @@ public class CodeGenerator {
 			}
 		}
 		return ret;
+	}
+
+	/**
+	 * Returns a {@link VelocityContext} with all default values filled.
+	 * 
+	 * @return
+	 */
+	VelocityContext getVelocityContext() {
+		VelocityContext context = new VelocityContext();
+		context.put("pluginConfiguration", pluginConfiguration);
+		context.put("packageUtilName", pluginConfiguration.getPackageName());
+		context.put("customScalars", documentParser.customScalars);
+		context.put("directives", documentParser.directives);
+		return context;
 	}
 
 	/**

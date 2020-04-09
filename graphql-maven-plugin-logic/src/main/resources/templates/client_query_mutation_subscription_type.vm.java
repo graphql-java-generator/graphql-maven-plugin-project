@@ -1,4 +1,4 @@
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 #macro(inputParams)#foreach ($inputParameter in $field.inputParameters), #if(${inputParameter.list})List<#end${inputParameter.type.classSimpleName}#if(${inputParameter.list})>#end ${inputParameter.javaName}#end#end
 
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end

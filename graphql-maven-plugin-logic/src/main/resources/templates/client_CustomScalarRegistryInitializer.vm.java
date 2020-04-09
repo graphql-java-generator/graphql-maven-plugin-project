@@ -1,4 +1,4 @@
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import com.graphql_java_generator.customscalars.CustomScalarRegistry;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;

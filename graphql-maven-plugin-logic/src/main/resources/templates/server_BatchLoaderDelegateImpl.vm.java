@@ -6,7 +6,7 @@
 ## package
 ## batchLoader
 ##
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import java.util.List;
 import java.util.UUID;

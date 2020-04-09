@@ -1,4 +1,4 @@
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import java.io.IOException;
 

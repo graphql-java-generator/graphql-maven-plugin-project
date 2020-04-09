@@ -5,7 +5,7 @@
 ## This template has these input:
 ## package
 ##
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import org.dataloader.BatchLoader;
 import org.dataloader.DataLoaderRegistry;
