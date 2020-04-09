@@ -6,12 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import graphql.mavenplugin_notscannedbyspring.Shopify_Server_SpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.Github_Server_SpringConfiguration;
 
-@Disabled // Generates a stack overflow in the Java Compiler! :(
+@Disabled
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { Shopify_Server_SpringConfiguration.class })
-class ShopifyServerTest extends AbstractIntegrationTest {
+@ContextConfiguration(classes = { Github_Server_SpringConfiguration.class })
+class GithubPublicSchemaServerTest extends AbstractIntegrationTest {
 
 	// Everything is in the AbstractIntegrationTest class.
 
@@ -19,7 +19,7 @@ class ShopifyServerTest extends AbstractIntegrationTest {
 
 	@BeforeEach
 	public void setUp() {
-		graphqlTestHelper.checkSchemaStringProvider("shopify.graphqls");
+		graphqlTestHelper.checkSchemaStringProvider("github.schema.public.graphqls");
 	}
 
 }

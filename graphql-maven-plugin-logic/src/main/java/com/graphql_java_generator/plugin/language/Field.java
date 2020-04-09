@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.graphql_java_generator.GraphqlUtils;
 
+import graphql.language.Value;
+
 /**
  * This interface describes one field of one object type (or interface...). It aims to be simple enough, so that the
  * Velocity template can easily generated the fields from it.<BR/>
@@ -88,9 +90,11 @@ public interface Field {
 
 	/**
 	 * Contains the default value.. Only used if this field is an input parameter. For enums, it contains the label of
-	 * the enum, not the value of the enum.
+	 * the enum, not the value of the enum.<BR/>
+	 * We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to check its
+	 * field, and obviously, we can"t instanciate any object or enum yet, as we dont't even generated any code.
 	 */
-	public Object getDefaultValue();
+	public Value<?> getDefaultValue();
 
 	/**
 	 * Returns the {@link Relation} description for this field.

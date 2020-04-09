@@ -9,6 +9,7 @@ import java.util.Map;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Directive;
 
+import graphql.language.Value;
 import lombok.Data;
 
 /**
@@ -21,6 +22,6 @@ public class AppliedDirectiveImpl implements AppliedDirective {
 	private Directive directive;
 
 	/** The map with all arguments values. It may not be null. */
-	Map<String, Object> argumentValues = new HashMap<>();
+	Map<String, Value<?>> argumentValues = new HashMap<>();
 
 }

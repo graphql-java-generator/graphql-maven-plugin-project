@@ -17,6 +17,7 @@ import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.Type;
 
+import graphql.language.Value;
 import lombok.Builder;
 import lombok.Data;
 
@@ -50,6 +51,7 @@ public class FieldImpl implements Field {
 	 * javax.persistence annotations for the id fields. Default value is false. This field is set to true for GraphQL
 	 * fields which are of 'ID' type.
 	 */
+	@Builder.Default
 	private boolean id = false;
 
 	/** All fields in an object may have parameters. A parameter is actually a field. */
@@ -57,33 +59,42 @@ public class FieldImpl implements Field {
 	private List<Field> inputParameters = new ArrayList<>();
 
 	/** Is this field a list? */
+	@Builder.Default
 	private boolean list = false;
 
 	/**
 	 * Is this field mandatory? If this field is a list, then mandatory indicates whether the list itself is mandatory,
 	 * or may be nullable
 	 */
+	@Builder.Default
 	private boolean mandatory = false;
 
 	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
+	@Builder.Default
 	private boolean itemMandatory = false;
 
 	/**
 	 * Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum, not
-	 * the value of the enum.
+	 * the value of the enum.<BR/>
+	 * We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to check its
+	 * field, and obviously, we can"t instanciate any object or enum yet, as we dont't even generated any code.
 	 */
-	private Object defaultValue = null;
+	@Builder.Default
+	private Value<?> defaultValue = null;
 
 	/** Contains the description of the relation that this field holds */
+	@Builder.Default
 	private Relation relation = null;
 
 	/**
 	 * The Java annotation to add to this type, ready to be added by the Velocity template. That is: one annotation per
 	 * line, each line starting at the beginning of the line
 	 */
+	@Builder.Default
 	private String annotation = "";
 
 	/** All directives that have been defined in the GraphQL schema for this field */
+	@Builder.Default
 	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
 
 	/** {@inheritDoc} */
@@ -140,7 +151,8 @@ public class FieldImpl implements Field {
 	 * 
 	 * @param annotationToAdd
 	 *            The annotation, that will be added to the current one
-	 * @parma replace if true, any existing annotation is first removed
+	 * @param replace
+	 *            if true, any existing annotation is first removed
 	 */
 	public void addAnnotation(String annotationToAdd, boolean replace) {
 		if (replace)

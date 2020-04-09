@@ -1,32 +1,6 @@
 scalar Date @testDirective(value:"on Scalar") @anotherTestDirective
 scalar Long
 
-# A test directive, that can be added anywhere
-directive @testDirective(
-  value: String! = "A value to test default values"
-  anotherValue: String
-  anInt: Int
-  aFloat: Float
-  aBoolean: Boolean
-  anID: ID
-  #anEnum: Episode = JEDI # not supported by graphql-java v14.0 on server side. It works Ok on client side
-  aCustomScalarDate: Date = "2000-12-31"
-) on
-# ExecutableDirectiveLocation
-# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
-	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
-# TypeSystemDirectiveLocation
-	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
-
-# Another test directive, to check that two directives can be added
-directive @anotherTestDirective
-on
-# ExecutableDirectiveLocation
-# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
-	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
-# TypeSystemDirectiveLocation
-	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
-
 schema @testDirective(value:"on Schema") {
 	#A comment on the query
     query: MyQueryType
@@ -38,8 +12,8 @@ type MyQueryType {
 	withoutParameters: [Character]!
     withOneOptionalParam(character: CharacterInput): Character
     withOneMandatoryParam(character: CharacterInput!): Character
-    #withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
-    #withTwoMandatoryParamDefaultVal(theHero: DroidInput!, num: Int = 45): Droid!
+    withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
+    withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num: Int = 45): Droid!
     withEnum(episode: Episode! = NEWHOPE): Character
     
     ################################################################################
@@ -231,30 +205,13 @@ interface Character @testDirective(value:"on Character interface") @anotherTestD
 union AnyCharacter @testDirective(value:"on Union")
 = Human | Droid
 
-input CharacterInput {
-    name: String!
-    friends: [CharacterInput]
-    appearsIn: [Episode]!
-    # type should be one of Human or Droid
-    type: String!
-}
+
 
 type Human implements Character & Commented &  WithID {
     id: ID!
     name(uppercase: Boolean): String!
     bestFriend: Character
     friends: [Character]
-	nbComments: Int
-    comments: [String]
-    appearsIn: [Episode]!
-    homePlanet: String
-}
-
-
-input HumanInput {
-    name: String!
-    bestFriend: CharacterInput
-    friends: [CharacterInput]
 	nbComments: Int
     comments: [String]
     appearsIn: [Episode]!
@@ -274,6 +231,61 @@ input DroidInput {
     friends: [CharacterInput]
     appearsIn: [Episode]!
     primaryFunction: String
+}
+
+##############################################################################################################
+#############  SOME DIRECTIVES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
+##############################################################################################################
+
+
+# A test directive, that can be added anywhere
+directive @testDirective(
+  value: String! = "A value to test default values"
+  anotherValue: String = null
+  anArray: [String!] = ["str1", "str2"]
+  anObject: CharacterInput = {name: "default name", appearsIn: [JEDI, NEWHOPE], type: "Human"}  
+  anInt: Int
+  aFloat: Float
+  aBoolean: Boolean
+  anID: ID
+  #anEnum: Episode = JEDI # not supported by graphql-java v14.0 on server side. It works Ok on client side
+  aCustomScalarDate: Date = "2000-12-31"
+) on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+# Another test directive, to check that two directives can be added
+directive @anotherTestDirective
+on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+
+##############################################################################################################
+############  SOME INPUT TYPES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
+##############################################################################################################
+
+input CharacterInput {
+    name: String!
+    friends: [CharacterInput]
+    appearsIn: [Episode]!
+    # type should be one of Human or Droid
+    type: String!
+} 
+input HumanInput {
+    name: String!
+    bestFriend: CharacterInput
+    friends: [CharacterInput]
+	nbComments: Int
+    comments: [String]
+    appearsIn: [Episode]!
+    homePlanet: String
 }
 
 ##############################################################################################################

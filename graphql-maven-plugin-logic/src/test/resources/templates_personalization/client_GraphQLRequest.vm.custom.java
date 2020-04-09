@@ -1,3 +1,4 @@
+/** This template is custom **/
 package ${pluginConfiguration.packageName};
 
 import java.util.Map;

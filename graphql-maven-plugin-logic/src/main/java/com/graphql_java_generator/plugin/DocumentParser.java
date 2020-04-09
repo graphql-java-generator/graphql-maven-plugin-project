@@ -71,7 +71,6 @@ import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.NullValue;
 import graphql.language.ObjectTypeDefinition;
-import graphql.language.ObjectValue;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
@@ -278,8 +277,8 @@ public class DocumentParser {
 		//
 		DirectiveImpl deprecated = new DirectiveImpl();
 		deprecated.setName("deprecated");
-		deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeName("String")
-				.defaultValue("No longer supported").build());
+		// deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeName("String")
+		// .defaultValue("No longer supported").build());
 		deprecated.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
 		directives.add(deprecated);
@@ -502,8 +501,10 @@ public class DocumentParser {
 				// Let's read its arguments
 				if (nodeDirective.getArguments() != null) {
 					for (Argument a : nodeDirective.getArguments()) {
-						d.getArgumentValues().put(a.getName(),
-								getValue(a.getValue(), "reading applied directive " + nodeDirective.getName()));
+						// We store the graphql.language.Value as we receive it. We may not have parsed the relevant
+						// Object to check its field, and obviously, we can"t instanciate any object or enum yet, as we
+						// dont't even generated any code.
+						d.getArgumentValues().put(a.getName(), a.getValue());
 					}
 				}
 				ret.add(d);
@@ -797,13 +798,11 @@ public class DocumentParser {
 
 		// For InputValueDefinition, we may have a default value
 		if (fieldDef instanceof InputValueDefinition) {
-			Value<?> defaultValue = ((InputValueDefinition) fieldDef).getDefaultValue();
-			if (defaultValue != null) {
-				field.setDefaultValue(getValue(defaultValue, "reading field " + field.getName()));
-			}
+			field.setDefaultValue(((InputValueDefinition) fieldDef).getDefaultValue());
 		}
 
 		return field;
+
 	}
 
 	/**
@@ -1321,10 +1320,16 @@ public class DocumentParser {
 	 * Get the internal value for a {@link Value} stored in the graphql-java AST.
 	 * 
 	 * @param value
+	 *            The value for which we need to extract the real value
+	 * @param graphqlTypeName
+	 *            The type name for this value, as defined in the GraphQL schema. This is used when it's an object
+	 *            value, to create an instance of the correct java class.
 	 * @param action
+	 *            The action that is executing, to generated an explicit error message. It can be for instance "Reading
+	 *            directive directiveName".
 	 * @return
 	 */
-	private Object getValue(Value<?> value, String action) {
+	private Object getValue_IsItReallyUsed(Value<?> value, String graphqlTypeName, String action) {
 		if (value instanceof StringValue) {
 			return ((StringValue) value).getValue();
 		} else if (value instanceof BooleanValue) {
@@ -1334,20 +1339,20 @@ public class DocumentParser {
 		} else if (value instanceof FloatValue) {
 			return ((FloatValue) value).getValue();
 		} else if (value instanceof graphql.language.EnumValue) {
-			// For enums, we can't retrive an instance of the enum value, as the enum class has not been created yet. So
-			// we just return the label of the enum, as a String.
+			// For enums, we can't retrieve an instance of the enum value, as the enum class has not been created yet.
+			// So we just return the label of the enum, as a String.
 			return ((graphql.language.EnumValue) value).getName();
 		} else if (value instanceof NullValue) {
-			return null;
-		} else if (value instanceof ObjectValue) {
 			return null;
 		} else if (value instanceof ArrayValue) {
 			List<Value> list = ((ArrayValue) value).getValues();
 			Object[] ret = new Object[list.size()];
 			for (int i = 0; i < list.size(); i += 1) {
-				ret[i] = getValue(list.get(i), action + ": ArrayValue(" + i + ")");
+				ret[i] = getValue_IsItReallyUsed(list.get(i), graphqlTypeName, action + ": ArrayValue(" + i + ")");
 			}
 			return ret;
+			// } else if (value instanceof ObjectValue) {
+			// return null;
 		} else {
 			throw new RuntimeException(
 					"Value of type " + value.getClass().getName() + " is not managed (" + action + ")");

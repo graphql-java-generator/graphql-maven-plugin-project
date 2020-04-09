@@ -3,13 +3,12 @@ package com.graphql_java_generator.plugin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.EnumValue;
@@ -33,14 +31,21 @@ import com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
-import com.ibm.icu.util.GregorianCalendar;
 
+import graphql.language.ArrayValue;
+import graphql.language.BooleanValue;
 import graphql.language.Definition;
 import graphql.language.DirectiveDefinition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
+import graphql.language.FloatValue;
+import graphql.language.IntValue;
+import graphql.language.ObjectField;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.ObjectValue;
 import graphql.language.SchemaDefinition;
+import graphql.language.StringValue;
+import graphql.language.Value;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
 
 /**
@@ -128,7 +133,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkField(objectType, j, "age", false, true, null, "Long", "java.lang.Long");
 		checkNbInputParameter(objectType, j, 1);
 		checkInputParameter(objectType, j, 0, "unit", false, false, null, "Unit",
-				pluginConfiguration.getPackageName() + ".Unit", "YEAR");
+				pluginConfiguration.getPackageName() + ".Unit", new graphql.language.EnumValue("YEAR"));
 		j += 1;
 		// date: Date
 		checkField(objectType, j, "date", false, false, null, "Date", "java.util.Date");
@@ -237,7 +242,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// On enum
 		checkDirectivesOnType(documentParser.getType("Episode"), true, "on Enum", "69", 666, (float) 666.666, true,
-				"00000000-0000-0000-0000-000000000002", null, new GregorianCalendar(2001, 2 - 1, 28).getTime(), false);
+				"00000000-0000-0000-0000-000000000002", null, "2001-02-28", false);
 		checkDirectivesOnType(documentParser.getType("Unit"), false, null, null, null, null, null, null, null, null,
 				false);
 		// On enum item
@@ -288,7 +293,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	 *            true if this type contains the anotherTestDirective
 	 */
 	private void checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
-			Integer anInt, Float aFloat, Boolean aBoolean, String anID, String anEnumName, Date aCustomScalarDate,
+			Integer anInt, Float aFloat, Boolean aBoolean, String anID, String anEnumName, String aCustomScalarDate,
 			boolean containsAnotherTestDirective) {
 
 		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
@@ -296,25 +301,32 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		if (containsTestDirective) {
 			assertEquals("testDirective", type.getAppliedDirectives().get(0).getDirective().getName());
 			// Check of the arguments
-			assertEquals(value, type.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			assertEquals(value,
+					((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("value")).getValue());
 			if (anotherValue != null)
-				assertEquals(anotherValue, type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+				assertEquals(anotherValue,
+						((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"))
+								.getValue());
 			if (anInt != null)
 				assertEquals(BigInteger.valueOf(anInt),
-						type.getAppliedDirectives().get(0).getArgumentValues().get("anInt"));
+						((IntValue) type.getAppliedDirectives().get(0).getArgumentValues().get("anInt")).getValue());
 			if (aFloat != null)
-				assertEquals(BigDecimal.valueOf(aFloat).floatValue(),
-						((BigDecimal) type.getAppliedDirectives().get(0).getArgumentValues().get("aFloat"))
-								.floatValue());
+				assertEquals(aFloat, ((FloatValue) type.getAppliedDirectives().get(0).getArgumentValues().get("aFloat"))
+						.getValue().floatValue());
 			if (aBoolean != null)
-				assertEquals(aBoolean, type.getAppliedDirectives().get(0).getArgumentValues().get("aBoolean"));
+				assertEquals(aBoolean,
+						((BooleanValue) type.getAppliedDirectives().get(0).getArgumentValues().get("aBoolean"))
+								.isValue());
 			if (anID != null)
-				assertEquals(anID, type.getAppliedDirectives().get(0).getArgumentValues().get("anID"));
+				assertEquals(anID,
+						((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("anID")).getValue());
 			if (anEnumName != null)
-				assertEquals(anEnumName, type.getAppliedDirectives().get(0).getArgumentValues().get("anEnum"));
+				assertEquals(anEnumName, ((graphql.language.EnumValue) type.getAppliedDirectives().get(0)
+						.getArgumentValues().get("anEnum")).getName());
 			if (aCustomScalarDate != null)
-				assertEquals(GraphQLScalarTypeDate.Date.getCoercing().serialize(aCustomScalarDate),
-						type.getAppliedDirectives().get(0).getArgumentValues().get("aCustomScalarDate"));
+				assertEquals(aCustomScalarDate,
+						((StringValue) type.getAppliedDirectives().get(0).getArgumentValues().get("aCustomScalarDate"))
+								.getValue());
 		}
 		if (containsAnotherTestDirective) {
 			assertEquals("anotherTestDirective", type.getAppliedDirectives().get(1).getDirective().getName());
@@ -355,7 +367,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		if (containsTestDirective) {
 			assertEquals("testDirective", field.getAppliedDirectives().get(0).getDirective().getName());
 			// check arguments
-			assertEquals(value, field.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			assertEquals(value,
+					((StringValue) field.getAppliedDirectives().get(0).getArgumentValues().get("value")).getValue());
 			if (anotherValue != null)
 				assertEquals(anotherValue, field.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
 		}
@@ -399,10 +412,12 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		if (containsTestDirective) {
 			assertEquals("testDirective", enumValue.getAppliedDirectives().get(0).getDirective().getName());
 			// check arguments
-			assertEquals(value, enumValue.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			assertEquals(value, ((StringValue) enumValue.getAppliedDirectives().get(0).getArgumentValues().get("value"))
+					.getValue());
 			if (anotherValue != null)
 				assertEquals(anotherValue,
-						enumValue.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
+						((StringValue) enumValue.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"))
+								.getValue());
 		}
 		if (containsAnotherTestDirective) {
 			int index = containsTestDirective ? 1 : 0;
@@ -458,7 +473,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		if (containsTestDirective) {
 			assertEquals("testDirective", parameter.getAppliedDirectives().get(0).getDirective().getName());
 			// check arguments
-			assertEquals(value, parameter.getAppliedDirectives().get(0).getArgumentValues().get("value"));
+			assertEquals(value, ((StringValue) parameter.getAppliedDirectives().get(0).getArgumentValues().get("value"))
+					.getValue());
 			if (anotherValue != null)
 				assertEquals(BigInteger.valueOf(anotherValue),
 						parameter.getAppliedDirectives().get(0).getArgumentValues().get("anotherValue"));
@@ -641,12 +657,22 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		documentParser.queryTypes = new ArrayList<>();
 
+		//
+		// We need this ObjectValue for one of the next tests:
+		List<Value> values = new ArrayList<>();
+		values.add(new graphql.language.EnumValue("JEDI"));
+		values.add(new graphql.language.EnumValue("NEWHOPE"));
+		List<ObjectField> objectFields = new ArrayList<>();
+		objectFields.add(new ObjectField("name", new StringValue("droid's name")));
+		objectFields.add(new ObjectField("appearsIn", new ArrayValue(values)));
+		ObjectValue objectValue = new ObjectValue(objectFields);
+
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(11, type.getFields().size());
+		assertEquals(13, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -669,25 +695,26 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput",
 				pluginConfiguration.getPackageName() + ".CharacterInput", null);
 		j += 1;
-		// // withOneMandatoryParamDefaultValue(character: Character! = "no one"): Character!
-		// checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
-		// pluginConfiguration.getPackageName() + ".Character");
-		// checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput",
-		// pluginConfiguration.getPackageName() + ".CharacterInput", null);
-		// j += 1;
-		// // withTwoMandatoryParamDefaultVal(theHero: Droid! = "A droid", index: int = "Not a number, but ok !!"):
-		// Droid!
-		// checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid",
-		// pluginConfiguration.getPackageName() + ".Droid");
-		// checkInputParameter(type, j, 0, "theHero", false, true, null, "DroidInput",
-		// pluginConfiguration.getPackageName() + ".DroidInput", null);
-		// checkInputParameter(type, j, 1, "index", false, false, null, "Int", "java.lang.Integer", null);
-		// j += 1;
+		// withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
+		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character",
+				pluginConfiguration.getPackageName() + ".Character");
+		checkInputParameter(type, j, 0, "nbResultat", false, true, null, "Int", "java.lang.Integer",
+				new IntValue(BigInteger.valueOf(13)));
+		j += 1;
+		// withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num:
+		// Int = 45): Droid!
+		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid",
+				pluginConfiguration.getPackageName() + ".Droid");
+		checkInputParameter(type, j, 0, "theHero", false, true, null, "DroidInput",
+				pluginConfiguration.getPackageName() + ".DroidInput", objectValue);
+		checkInputParameter(type, j, 1, "num", false, false, null, "Int", "java.lang.Integer",
+				new IntValue(BigInteger.valueOf(45)));
+		j += 1;
 		// withEnum(episode: Episode!): Character
 		checkField(type, j, "withEnum", false, false, null, "Character",
 				pluginConfiguration.getPackageName() + ".Character");
 		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode",
-				pluginConfiguration.getPackageName() + ".Episode", "NEWHOPE");
+				pluginConfiguration.getPackageName() + ".Episode", new graphql.language.EnumValue("NEWHOPE"));
 		j += 1;
 		// withList(name: String!, friends: [Character]!): [Characters]
 		checkField(type, j, "withList", true, false, false, "Character",
@@ -863,7 +890,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	private void checkInputParameter(ObjectType type, int j, int numParam, String name, boolean list, boolean mandatory,
-			Boolean itemMandatory, String typeName, String classname, String defaultValue) {
+			Boolean itemMandatory, String typeName, String classname, Value<?> defaultValue) {
 		Field inputValue = type.getFields().get(j).getInputParameters().get(numParam);
 
 		String intputParamDescForJUnitMessage = "Field n°" + j + " / input param n°" + numParam;
@@ -885,7 +912,49 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals(classname, fieldType.getClassFullName(),
 				"Class type is " + classname + " (for " + intputParamDescForJUnitMessage + ")");
 
-		assertEquals(defaultValue, inputValue.getDefaultValue(),
-				"Default Value is <" + defaultValue + "> (for " + intputParamDescForJUnitMessage + ")");
+		checkValue(defaultValue, inputValue.getDefaultValue(), intputParamDescForJUnitMessage);
+	}
+
+	private void checkValue(Value<?> defaultValue, Value<?> inputValue, String action) {
+		if (defaultValue == null) {
+			assertNull(inputValue, "Default Value is <" + defaultValue + "> (for " + action + ")");
+		} else if (defaultValue instanceof StringValue) {
+			assertEquals(((StringValue) defaultValue).getValue(), ((StringValue) inputValue).getValue(),
+					"Default Value is <" + defaultValue + "> (for " + action + ")");
+		} else if (defaultValue instanceof IntValue) {
+			assertEquals(((IntValue) defaultValue).getValue(), ((IntValue) inputValue).getValue(),
+					"Default Value is <" + defaultValue + "> (for " + action + ")");
+		} else if (defaultValue instanceof graphql.language.EnumValue) {
+			assertEquals(((graphql.language.EnumValue) defaultValue).getName(),
+					((graphql.language.EnumValue) inputValue).getName(),
+					"Default Value is <" + defaultValue + "> (for " + action + ")");
+		} else if (defaultValue instanceof ArrayValue) {
+			// Same number of items
+			assertEquals(((ArrayValue) defaultValue).getValues().size(), ((ArrayValue) inputValue).getValues().size());
+			// Check for each items. They must be in the same order.
+			for (int i = 0; i < ((ArrayValue) inputValue).getValues().size(); i += 1) {
+				checkValue(((ArrayValue) defaultValue).getValues().get(i), ((ArrayValue) inputValue).getValues().get(i),
+						action + "-" + i);
+			}
+		} else if (defaultValue instanceof ObjectValue) {
+			assertEquals(((ObjectValue) defaultValue).getObjectFields().size(),
+					((ObjectValue) inputValue).getObjectFields().size(), "same number of fields");
+			// Then check of each field
+			for (ObjectField f1 : ((ObjectValue) defaultValue).getObjectFields()) {
+				boolean found = false;
+				for (ObjectField f2 : ((ObjectValue) inputValue).getObjectFields()) {
+					if (f2.getName().contentEquals(f1.getName())) {
+						found = true;
+						checkValue(f1.getValue(), f2.getValue(), action + "-" + f1.getName());
+						break;
+					}
+				} // for f2
+				if (!found) {
+					fail("Could not find the " + f1.getName() + " field while " + action);
+				}
+			} // for f1
+		} else {
+			fail(defaultValue.getClass().getName() + " is not managed in unit tests");
+		}
 	}
 }

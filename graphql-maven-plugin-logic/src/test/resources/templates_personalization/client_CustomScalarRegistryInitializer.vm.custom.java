@@ -10,7 +10,7 @@ public class CustomScalarRegistryInitializer {
 	 * Initialization of the {@link CustomScalarRegistry} with all known custom scalars, that is with all custom scalars
 	 * defined in the project pom
 	 */
-	public void initCustomScalarRegistry() {
+	public static CustomScalarRegistry initCustomScalarRegistry() {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
 #foreach ($customScalar in $customScalars)
@@ -26,6 +26,7 @@ public class CustomScalarRegistryInitializer {
 #end
 
 		CustomScalarRegistryImpl.customScalarRegistry = customScalarRegistry;
+		return customScalarRegistry;
 	}
 
 }
