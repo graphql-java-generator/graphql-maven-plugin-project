@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin.compilation_tests;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -9,6 +10,7 @@ import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguratio
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { StarWars_Server_SpringConfiguration.class })
+@Tag("starwars")
 class StarWarsServerTest extends AbstractIntegrationTest {
 
 	// Everything is in the AbstractIntegrationTest class.

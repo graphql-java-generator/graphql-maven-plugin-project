@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +27,7 @@ import com.graphql_java_generator.exception.GraphQLResponseParseException;
  * 
  * @author EtienneSF
  */
+@Execution(ExecutionMode.CONCURRENT)
 class QueryExecutorImpl_Forum_Test {
 
 	QueryExecutorImpl queryExecutorImpl;

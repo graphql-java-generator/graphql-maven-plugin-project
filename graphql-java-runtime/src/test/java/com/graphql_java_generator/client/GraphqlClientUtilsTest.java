@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.allGraphQLCases._break;
 import com.graphql_java_generator.client.domain.allGraphQLCases._extends;
@@ -27,6 +29,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.schema.GraphQLScalarType;
 
+@Execution(ExecutionMode.CONCURRENT)
 class GraphqlClientUtilsTest {
 
 	GraphqlClientUtils graphqlClientUtils;

@@ -19,6 +19,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.client.domain.forum.PostInput;
@@ -31,6 +33,7 @@ import graphql.Scalars;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
 
+@Execution(ExecutionMode.CONCURRENT)
 class InputParameterTest {
 
 	@BeforeEach

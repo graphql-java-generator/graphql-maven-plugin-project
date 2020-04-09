@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.starwars.Character;
 import com.graphql_java_generator.client.domain.starwars.GraphQLRequest;
@@ -19,6 +21,7 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+@Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_StarWarsTest {
 
 	QueryType queryType;

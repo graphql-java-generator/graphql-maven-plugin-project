@@ -13,28 +13,27 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.forum.TopicInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 
+@Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {
 
-	GraphqlUtils graphqlUtils;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		graphqlUtils = new GraphqlUtils();
-	}
+	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getPascalCase() {
 		assertEquals("PascalCase", graphqlUtils.getPascalCase("pascalCase"));
 		assertEquals("PascalCase", graphqlUtils.getPascalCase("PascalCase"));
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getSetter() throws NoSuchFieldException, SecurityException {
 		// Preparation
 		Field field = TopicInput.class.getDeclaredField("input");
@@ -47,6 +46,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getGetter() throws NoSuchFieldException, SecurityException {
 		// Preparation
 		Field field = TopicInput.class.getDeclaredField("input");
@@ -59,6 +59,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_invokeGetter() throws NoSuchFieldException, SecurityException {
 		// Preparation
 		TopicPostInput topicPostInput = new TopicPostInput();
@@ -76,6 +77,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_invokeSetter() {
 		TopicPostInput topicPostInput = new TopicPostInput();
 
@@ -87,6 +89,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getInputObject() {
 		// Preparation
 		Map<String, Object> input = new LinkedHashMap<>();
@@ -113,6 +116,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getInput_emptyMap() {
 		// Preparation
 		Map<String, Object> map = new LinkedHashMap<>();
@@ -126,11 +130,13 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getInputObject_nullMap() {
 		assertNull(graphqlUtils.getInputObject(null, TopicInput.class), "A null map return a null object");
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getInputObjects() {
 		// Preparation
 		Map<String, Object> input1 = new LinkedHashMap<>();

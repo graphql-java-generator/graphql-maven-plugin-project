@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeRootResponse;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeResponse;
@@ -15,6 +17,7 @@ import com.graphql_java_generator.client.domain.forum.Post;
 import com.graphql_java_generator.client.domain.starwars.MutationTypeRootResponse;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+@Execution(ExecutionMode.CONCURRENT)
 class QueryFieldTest {
 
 	@Test
