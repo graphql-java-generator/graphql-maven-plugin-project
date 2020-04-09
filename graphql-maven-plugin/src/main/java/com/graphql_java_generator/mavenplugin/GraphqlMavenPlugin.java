@@ -26,12 +26,14 @@ import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
+import graphql.ThreadSafe;
 import graphql.schema.GraphQLScalarType;
 
 /**
  * @author EtienneSF
  */
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
+@ThreadSafe
 public class GraphqlMavenPlugin extends AbstractMojo {
 
 	/**
