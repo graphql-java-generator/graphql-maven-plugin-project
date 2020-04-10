@@ -130,6 +130,19 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
 	String schemaPersonalizationFile;
 
+	/**
+	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
+	 * generated in the same package than the classes that matches the GraphQL schema.<BR/>
+	 * That is: internal technical classes, java classes that contain the method to execute the
+	 * queries/mutations/subscriptions, Jackson deserializer for custom scalars...<BR/>
+	 * The default value is false, to maintain the previous behavior. In this case, all classes are generated in the
+	 * <I>packageName</I>, or the default package if this parameter is not defined.<BR/>
+	 * If true, the GraphQL classes are generated in the package defined in the <I>packageName</I> plugin parameter. And
+	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilClasses", defaultValue = PluginConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
+	boolean separateUtilClasses;
+
 	/** The encoding charset for the generated source files */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = PluginConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;

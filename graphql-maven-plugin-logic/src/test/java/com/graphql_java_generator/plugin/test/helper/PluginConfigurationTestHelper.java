@@ -26,18 +26,20 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	final Logger log;
 
+	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow
+	// to load several generated source folders in the IDE.
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
+	public boolean generateJPAAnnotation = true;
 	public PluginMode mode = null;
 	public String packageName = null;
 	public Packaging packaging = null;
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
+	public boolean separateUtilClasses = false;
 	public String sourceEncoding = null;
 	public File targetClassFolder = null;
 	public File targetSourceFolder = null;
-	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow
-													// to load several generated source folders in the IDE.
 	public Map<String, String> templates = new HashMap<String, String>();
 
 	/**
@@ -46,16 +48,6 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	 */
 	public PluginConfigurationTestHelper(Object caller) {
 		log = new Slf4jLogger(caller);
-	}
-
-	@Override
-	public boolean getGenerateJPAAnnotation() {
-		return true;
-	}
-
-	@Override
-	public boolean isCopyRuntimeSources() {
-		return copyRuntimeSources;
 	}
 
 }

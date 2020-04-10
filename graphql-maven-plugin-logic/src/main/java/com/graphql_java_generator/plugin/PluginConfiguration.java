@@ -31,6 +31,7 @@ public interface PluginConfiguration {
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
+	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "false";
 	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
@@ -43,12 +44,6 @@ public interface PluginConfiguration {
 	 * parameter.
 	 */
 	List<CustomScalarDefinition> getCustomScalars();
-
-	/**
-	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
-	 * Default value is false
-	 */
-	boolean getGenerateJPAAnnotation();
 
 	/**
 	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
@@ -123,6 +118,26 @@ public interface PluginConfiguration {
 	 * @return
 	 */
 	boolean isCopyRuntimeSources();
+
+	/**
+	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
+	 * Default value is false
+	 */
+	boolean isGenerateJPAAnnotation();
+
+	/**
+	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
+	 * generated in the same package than the classes that matches the GraphQL schema.<BR/>
+	 * That is: internal technical classes, java classes that contain the method to execute the
+	 * queries/mutations/subscriptions, Jackson deserializer for custom scalars...<BR/>
+	 * The default value is false, to maintain the previous behavior. In this case, all classes are generated in the
+	 * <I>packageName</I>, or the default package if this parameter is not defined.<BR/>
+	 * If true, the GraphQL classes are generated in the package defined in the <I>packageName</I> plugin parameter. And
+	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
+	 * 
+	 * @return
+	 */
+	boolean isSeparateUtilClasses();
 
 	/** Logs all the configuration parameters, in the debug level */
 	default void logConfiguration() {

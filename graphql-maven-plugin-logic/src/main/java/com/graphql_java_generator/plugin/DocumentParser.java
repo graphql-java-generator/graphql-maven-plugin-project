@@ -993,7 +993,7 @@ public class DocumentParser {
 	void addTypeAnnotationForServerMode(Type o) {
 
 		if (!o.isInputType()) {
-			if (pluginConfiguration.getGenerateJPAAnnotation() && o instanceof ObjectType
+			if (pluginConfiguration.isGenerateJPAAnnotation() && o instanceof ObjectType
 					&& !(o instanceof InterfaceType)) {
 				((AbstractType) o).addAnnotation("@Entity");
 			}
@@ -1059,7 +1059,7 @@ public class DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForServerMode(Field field) {
-		if (pluginConfiguration.getGenerateJPAAnnotation() && !field.getOwningType().isInputType()) {
+		if (pluginConfiguration.isGenerateJPAAnnotation() && !field.getOwningType().isInputType()) {
 			if (field.isId()) {
 				// We have found the identifier
 				((FieldImpl) field).addAnnotation("@Id");

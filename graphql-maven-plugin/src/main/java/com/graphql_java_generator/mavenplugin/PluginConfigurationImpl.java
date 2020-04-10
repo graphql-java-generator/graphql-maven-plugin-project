@@ -41,11 +41,6 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
-	public boolean getGenerateJPAAnnotation() {
-		return mojo.generateJPAAnnotation;
-	}
-
-	@Override
 	public Logger getLog() {
 		return log;
 	}
@@ -103,6 +98,16 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	@Override
 	public boolean isCopyRuntimeSources() {
 		return this.mojo.copyRuntimeSources;
+	}
+
+	@Override
+	public boolean isGenerateJPAAnnotation() {
+		return mojo.generateJPAAnnotation;
+	}
+
+	@Override
+	public boolean isSeparateUtilClasses() {
+		return this.mojo.separateUtilClasses;
 	}
 
 	@Override
