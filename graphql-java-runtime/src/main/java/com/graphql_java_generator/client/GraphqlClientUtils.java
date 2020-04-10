@@ -35,7 +35,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import graphql.schema.GraphQLScalarType;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class GraphqlClientUtils {

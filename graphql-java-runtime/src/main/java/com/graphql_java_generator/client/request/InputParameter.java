@@ -33,7 +33,7 @@ import graphql.schema.GraphQLScalarType;
  * A bind variable, which value must be provided when executing the query
  * <LI>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class InputParameter {
 

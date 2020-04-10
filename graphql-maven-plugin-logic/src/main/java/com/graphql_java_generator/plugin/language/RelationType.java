@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language;
 /**
  * The four kind of JPA Relations
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public enum RelationType {
 	// Standard JPA annotations

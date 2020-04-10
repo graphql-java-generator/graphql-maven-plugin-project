@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  * This class represents an Union, as defined in a GraphQL schema. In the generated classes, this needs to be an
  * interface, as an object type may be in several unions.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

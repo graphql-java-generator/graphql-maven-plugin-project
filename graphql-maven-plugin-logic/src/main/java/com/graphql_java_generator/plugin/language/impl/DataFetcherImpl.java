@@ -23,7 +23,7 @@ import lombok.Data;
  * to generate the code of the DataFechers, and their declaration in the GraphQLProvider.<BR/>
  * The arguments for the data fetcher are the arguments of its source field in the GraphQL schema.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 public class DataFetcherImpl implements DataFetcher {

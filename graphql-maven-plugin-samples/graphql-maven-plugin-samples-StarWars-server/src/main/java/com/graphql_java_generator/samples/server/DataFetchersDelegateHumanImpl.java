@@ -18,7 +18,7 @@ import com.graphql_java_generator.samples.server.jpa.HumanRepository;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman {

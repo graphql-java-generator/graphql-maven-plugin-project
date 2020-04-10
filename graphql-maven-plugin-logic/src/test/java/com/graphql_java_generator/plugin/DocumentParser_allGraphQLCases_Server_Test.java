@@ -50,7 +50,7 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })

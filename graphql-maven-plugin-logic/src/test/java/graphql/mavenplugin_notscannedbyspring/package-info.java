@@ -4,6 +4,6 @@
  * This package has been created, as all @Configuration in subpackages of com.graphql_java_generator.plugin where loaded. This put a
  * mess in context, and made junit test all be KO.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 package graphql.mavenplugin_notscannedbyspring;

@@ -23,7 +23,7 @@ import com.graphql_java_generator.GraphqlUtils;
  * <BR/>
  * The arguments for the data fetcher delegates are the arguments of its field.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface DataFetchersDelegate {
 

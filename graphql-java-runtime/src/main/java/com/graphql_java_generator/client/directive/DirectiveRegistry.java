@@ -11,7 +11,7 @@ import graphql.schema.GraphQLScalarType;
  * Registry for all GraphQL directives that are available, that is: the GraphQL standard directives and the ones that
  * are defined in the GraphQL schema.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface DirectiveRegistry {
 

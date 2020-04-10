@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * This annotation marks all generated classes that are queries/mutations/subscription, as defined in the GraphQL
  * schema.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })

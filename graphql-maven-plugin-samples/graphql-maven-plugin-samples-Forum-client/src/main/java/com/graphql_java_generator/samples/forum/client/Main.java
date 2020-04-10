@@ -11,7 +11,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRe
  * The main class, which executes the same queries, built by three different methods. See {@link PartialDirectRequests},
  * {@link PartialPreparedRequests}, {@link WithBuilder}
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class Main {
 

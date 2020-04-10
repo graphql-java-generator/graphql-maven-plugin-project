@@ -31,7 +31,7 @@ import lombok.Setter;
  * The Spring configuration used for JUnit tests. To use tit, just create a subclass, and provide the schemaFilePattern
  * to its constructor
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Configuration
 @Import({ JacksonAutoConfiguration.class })

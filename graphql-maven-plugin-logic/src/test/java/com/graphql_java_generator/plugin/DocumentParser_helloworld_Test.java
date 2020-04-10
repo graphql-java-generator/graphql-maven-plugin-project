@@ -24,7 +24,7 @@ import graphql.parser.Parser;
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { HelloWorld_Server_SpringConfiguration.class })

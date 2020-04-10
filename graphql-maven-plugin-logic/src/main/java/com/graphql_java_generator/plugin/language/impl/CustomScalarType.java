@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 @Data

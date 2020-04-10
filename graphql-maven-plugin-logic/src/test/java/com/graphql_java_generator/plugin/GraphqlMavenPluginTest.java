@@ -25,7 +25,7 @@ import graphql.language.TypeName;
 import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfiguration;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { HelloWorld_Server_SpringConfiguration.class })

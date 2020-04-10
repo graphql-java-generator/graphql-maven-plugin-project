@@ -4,7 +4,7 @@
 package com.graphql_java_generator.client.response;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class Location {
 

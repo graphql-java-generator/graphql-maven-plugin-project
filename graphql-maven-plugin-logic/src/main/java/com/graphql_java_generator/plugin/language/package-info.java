@@ -11,6 +11,6 @@
  * code generation that cover all existing use cases, data structure model, techonology...</LI>
  * </UL>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 package com.graphql_java_generator.plugin.language;

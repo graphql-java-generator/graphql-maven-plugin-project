@@ -26,7 +26,7 @@ import lombok.ToString;
  * }
  * </PRE>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

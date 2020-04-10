@@ -28,7 +28,7 @@ import com.graphql_java_generator.samples.simple.client.Queries;
  * valid.</LI>
  * </UL>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class PartialPreparedRequestsDeprecated implements Queries {
 

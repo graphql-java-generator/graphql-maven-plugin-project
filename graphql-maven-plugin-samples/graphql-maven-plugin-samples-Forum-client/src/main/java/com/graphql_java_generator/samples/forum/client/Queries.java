@@ -19,7 +19,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * com.graphql_java_generator.samples.forum.client.graphql, by three classes. These three classes show the three ways to
  * build and execute GraphQL Request with graphql-java-generator
  * 
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 public interface Queries {

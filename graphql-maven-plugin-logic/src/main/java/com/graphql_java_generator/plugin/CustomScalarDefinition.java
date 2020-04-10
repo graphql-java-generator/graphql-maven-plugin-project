@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 /**
  * This class contains all one definitions for a Custom Scalar type
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 @NoArgsConstructor

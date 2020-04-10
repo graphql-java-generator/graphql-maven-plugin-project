@@ -23,7 +23,7 @@ import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelp
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 
 class DocumentParserTest {

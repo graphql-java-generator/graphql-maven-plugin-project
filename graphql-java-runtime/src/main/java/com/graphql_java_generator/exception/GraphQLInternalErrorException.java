@@ -6,7 +6,7 @@ package com.graphql_java_generator.exception;
 /**
  * Thrown when an internal error of the GraphQL generator occurs
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class GraphQLInternalErrorException extends GraphQLRequestPreparationException {
 

@@ -14,7 +14,7 @@ import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedR
  * implemented in three ways in these classes: {@link PartialDirectRequests}, {@link WithBuilder}, {@link PartialPreparedRequests}.<BR/>
  * You can see use of these queries in the JUnit tests.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 public interface Queries {

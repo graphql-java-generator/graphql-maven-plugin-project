@@ -7,7 +7,7 @@ package com.graphql_java_generator.plugin.language;
  * A BatchLoader represents a {@link org.dataloader.BatchLoader}, and contains all the information to generate the code
  * to use it. A BatchLoader is actually created for each type in the GraphQL schema that has an ID.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface BatchLoader {
 

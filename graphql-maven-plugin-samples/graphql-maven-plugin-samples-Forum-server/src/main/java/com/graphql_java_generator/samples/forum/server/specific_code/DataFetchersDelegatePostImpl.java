@@ -23,7 +23,7 @@ import com.graphql_java_generator.samples.forum.server.jpa.PostRepository;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {

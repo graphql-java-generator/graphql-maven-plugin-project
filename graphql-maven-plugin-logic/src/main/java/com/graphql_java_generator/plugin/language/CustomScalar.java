@@ -10,7 +10,7 @@ import java.math.BigInteger;
  * All types found in the GraphQL schema(s), and discovered during the GraphQL parsing, are instance of
  * {@link CustomScalar}.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface CustomScalar extends Type {
 

@@ -90,7 +90,7 @@ import lombok.Getter;
  * actually trees. These structures are too hard too read in a Velocity template, and we need to parse down to a
  * properly structures way for that.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 @Getter

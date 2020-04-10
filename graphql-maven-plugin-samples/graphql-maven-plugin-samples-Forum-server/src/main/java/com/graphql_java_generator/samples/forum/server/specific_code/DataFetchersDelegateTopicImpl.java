@@ -32,7 +32,7 @@ import graphql.schema.DataFetchingEnvironment;
  * work to do. But all the GraphQL boilerplate is generated.<BR/>
  * The {@link GraphQLDataFetchersDelegate} interface is generated from the given schema
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic {

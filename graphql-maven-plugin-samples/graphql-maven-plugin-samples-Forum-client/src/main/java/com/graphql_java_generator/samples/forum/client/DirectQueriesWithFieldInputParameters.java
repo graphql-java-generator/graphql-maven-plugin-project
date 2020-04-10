@@ -13,7 +13,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 /**
  * Some samples (and tests) with direct queries having input parameters
  * 
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 public class DirectQueriesWithFieldInputParameters {

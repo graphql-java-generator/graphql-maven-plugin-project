@@ -21,7 +21,7 @@ import graphql.language.Document;
 import graphql.parser.Parser;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Configuration
 @Import({ JacksonAutoConfiguration.class })

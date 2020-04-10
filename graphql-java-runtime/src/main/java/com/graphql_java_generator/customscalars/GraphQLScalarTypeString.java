@@ -16,7 +16,7 @@ import graphql.schema.GraphQLScalarType;
  * tests of the plugin logic (like in the Shopify sample, to handle (badly) various scalar as based on strings).<BR/>
  * It's actually a bad management, as this custom scalars does nothing, but read basic strings. It's just for test.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class GraphQLScalarTypeString {
 

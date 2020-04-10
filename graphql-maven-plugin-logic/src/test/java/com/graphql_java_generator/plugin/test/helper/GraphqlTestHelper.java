@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class GraphqlTestHelper {

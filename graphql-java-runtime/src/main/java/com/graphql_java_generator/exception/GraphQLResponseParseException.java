@@ -10,7 +10,7 @@ package com.graphql_java_generator.exception;
  * {@link QueryExecutorImpl_Forum_Test#parseResponseForStarWarsSchema(String, String, graphql.java.client.request.ObjectResponse)}
  * method.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class GraphQLResponseParseException extends GraphQLRequestExecutionException {
 

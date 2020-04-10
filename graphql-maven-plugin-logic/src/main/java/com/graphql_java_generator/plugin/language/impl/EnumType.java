@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 /**
  * This class is the image for a graphql Enum
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -4,7 +4,7 @@
 package com.graphql_java_generator.plugin.test.compiler;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface GeneratedSourceCompiler {
 

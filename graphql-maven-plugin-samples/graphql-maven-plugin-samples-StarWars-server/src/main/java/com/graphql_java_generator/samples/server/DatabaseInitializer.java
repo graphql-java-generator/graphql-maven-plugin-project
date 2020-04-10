@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 /**
  * Various tools, specific to this project
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class DatabaseInitializer {

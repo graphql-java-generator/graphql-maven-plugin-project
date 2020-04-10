@@ -21,7 +21,7 @@ import graphql.schema.GraphQLScalarType;
 /**
  * Test of the allGraphQLCases without defining the necessary {@link GraphQLScalarType}
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration_KO.class })

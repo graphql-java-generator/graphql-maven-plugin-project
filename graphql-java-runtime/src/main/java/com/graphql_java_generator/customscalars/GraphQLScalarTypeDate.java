@@ -19,7 +19,7 @@ import graphql.schema.GraphQLScalarType;
  * This Scalar is proposed to be used, for integration testing (checks that the plugin correctly manages Custom Scalars,
  * see samples) and with more documentation to help people to create their own Custom Scalar implementations.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class GraphQLScalarTypeDate {
 

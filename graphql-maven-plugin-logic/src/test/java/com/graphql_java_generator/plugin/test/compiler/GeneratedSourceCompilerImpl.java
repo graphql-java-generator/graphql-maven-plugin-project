@@ -22,7 +22,7 @@ import com.graphql_java_generator.plugin.Logger;
 /**
  * This class allows to compile a given source code.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 

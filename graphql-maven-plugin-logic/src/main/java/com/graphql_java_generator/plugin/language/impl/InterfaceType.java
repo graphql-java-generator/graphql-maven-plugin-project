@@ -46,7 +46,7 @@ type Droid implements Character {
  * (CharacterImpl1, CharacterImpl2...)</LI>
  * </UL>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

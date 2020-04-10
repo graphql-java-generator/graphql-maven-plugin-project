@@ -26,7 +26,7 @@ import graphql.language.Value;
  * 
  * is a {@link Field} of name 'appearsIn', type 'Episode', is a list, is mandatory and its items are mandatory.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface Field {
 

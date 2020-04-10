@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
  * Repository is commented: so it's no more found by Spring<BR/>
  * TODO remove if really useless
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface EpisodeRepository {
 

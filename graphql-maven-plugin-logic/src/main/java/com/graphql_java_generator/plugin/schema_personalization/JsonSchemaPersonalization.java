@@ -34,7 +34,7 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
  * field...</LI>
  * </UL>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class JsonSchemaPersonalization {

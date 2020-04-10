@@ -23,7 +23,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 /**
  * This class implements the simplest way to call GraphQl partialQueries, with the GraphQL Java Generator
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class PartialDirectQueries implements PartialQueries {
 

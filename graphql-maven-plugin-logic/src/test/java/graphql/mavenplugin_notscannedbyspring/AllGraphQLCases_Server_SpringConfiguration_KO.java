@@ -14,7 +14,7 @@ import graphql.schema.GraphQLScalarType;
  * The Spring configuration used for JUnit tests. In this one, no {@link GraphQLScalarType} : used to check that this
  * lack is properly handled.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator")

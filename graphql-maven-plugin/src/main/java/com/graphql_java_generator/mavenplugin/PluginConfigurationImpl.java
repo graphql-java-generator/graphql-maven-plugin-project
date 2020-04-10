@@ -14,7 +14,7 @@ import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 public class PluginConfigurationImpl implements PluginConfiguration {

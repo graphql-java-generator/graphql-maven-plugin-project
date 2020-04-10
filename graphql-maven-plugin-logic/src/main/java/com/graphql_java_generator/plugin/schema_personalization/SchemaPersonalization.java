@@ -13,7 +13,7 @@ import lombok.Data;
  * It is not public, as only {@link JsonSchemaPersonalization} may use it.
  * 
  * @See {@link JsonSchemaPersonalization}
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 class SchemaPersonalization {

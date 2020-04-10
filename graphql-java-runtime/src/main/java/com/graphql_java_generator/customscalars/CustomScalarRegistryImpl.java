@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import graphql.schema.GraphQLScalarType;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 @Component

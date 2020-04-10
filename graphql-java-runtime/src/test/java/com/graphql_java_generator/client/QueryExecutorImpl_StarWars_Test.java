@@ -38,7 +38,7 @@ import com.graphql_java_generator.exception.GraphQLResponseParseException;
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
 class QueryExecutorImpl_StarWars_Test {

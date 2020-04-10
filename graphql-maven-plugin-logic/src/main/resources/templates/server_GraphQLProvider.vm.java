@@ -50,7 +50,7 @@ import $import;
  * <BR/><BR/>
  * Based on the https://www.graphql-java.com/tutorials/getting-started-with-spring-boot/ tutorial
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class GraphQLProvider {

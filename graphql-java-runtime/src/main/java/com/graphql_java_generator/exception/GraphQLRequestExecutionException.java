@@ -7,7 +7,7 @@ package com.graphql_java_generator.exception;
  * Thrown when an error occurs during the request execution. This is typically, when Bind Variable are mission, while
  * executing a request.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class GraphQLRequestExecutionException extends Exception {
 

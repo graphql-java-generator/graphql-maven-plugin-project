@@ -37,7 +37,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * valid.</LI>
  * </UL>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class PartialPreparedQueriesDeprecatedWay implements PartialQueries {
 

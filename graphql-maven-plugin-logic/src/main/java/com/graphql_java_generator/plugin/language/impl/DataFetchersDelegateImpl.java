@@ -33,7 +33,7 @@ import lombok.Data;
  * <BR/>
  * The arguments for the data fetcher delegates are the arguments of its field.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 public class DataFetchersDelegateImpl implements DataFetchersDelegate {

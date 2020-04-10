@@ -32,7 +32,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * Character character = queryType.withEnum("{id name appearsIn homePlanet friends{name}}", "180");
  * </PRE>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 public interface PartialQueries {

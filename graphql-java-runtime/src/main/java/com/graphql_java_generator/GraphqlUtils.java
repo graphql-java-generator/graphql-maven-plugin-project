@@ -20,7 +20,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class GraphqlUtils {

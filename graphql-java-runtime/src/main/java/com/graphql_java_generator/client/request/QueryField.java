@@ -28,7 +28,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * is parsed by the {@link #readTokenizerForInputParameters(StringTokenizer)}, then the <I>{id}</I> String is parsed by
  * {@link #readTokenizerForResponseDefinition(StringTokenizer)} .
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class QueryField {
 

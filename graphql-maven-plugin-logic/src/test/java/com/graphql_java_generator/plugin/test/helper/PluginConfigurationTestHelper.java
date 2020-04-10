@@ -17,7 +17,7 @@ import lombok.Setter;
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Getter
 @Setter

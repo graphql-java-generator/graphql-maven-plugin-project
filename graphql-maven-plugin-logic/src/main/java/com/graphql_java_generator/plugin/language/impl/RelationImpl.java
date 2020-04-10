@@ -14,7 +14,7 @@ import lombok.ToString;
 /**
  * The class that implements the {@link Relation} interface
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 @RequiredArgsConstructor

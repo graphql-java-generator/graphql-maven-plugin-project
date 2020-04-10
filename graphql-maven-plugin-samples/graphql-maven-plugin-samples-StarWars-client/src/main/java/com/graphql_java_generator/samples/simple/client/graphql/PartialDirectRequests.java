@@ -16,7 +16,7 @@ import com.graphql_java_generator.samples.simple.client.Queries;
 /**
  * This class implements the simplest way to call GraphQl queries, with the GraphQL Java Generator
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class PartialDirectRequests implements Queries {
 

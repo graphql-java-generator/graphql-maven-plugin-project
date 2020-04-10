@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
  * They are grouped into {@link DataFetchersDelegate}s (see {@link DataFetchersDelegate} doc for more information on
  * that).
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface DataFetcher {
 

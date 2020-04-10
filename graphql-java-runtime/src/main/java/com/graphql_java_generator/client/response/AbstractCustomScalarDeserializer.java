@@ -20,7 +20,7 @@ import graphql.schema.GraphQLScalarType;
 /**
  * Jackson Deserializer for Custom Scalar.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class AbstractCustomScalarDeserializer<T> extends StdDeserializer<T> {
 

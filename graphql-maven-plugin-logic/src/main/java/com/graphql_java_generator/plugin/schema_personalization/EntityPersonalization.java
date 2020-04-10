@@ -11,7 +11,7 @@ import lombok.Data;
 /**
  * Contains the changes that can be applied to an entity
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 public class EntityPersonalization {

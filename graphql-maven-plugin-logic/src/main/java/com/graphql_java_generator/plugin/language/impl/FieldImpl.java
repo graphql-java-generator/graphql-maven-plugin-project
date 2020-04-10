@@ -22,7 +22,7 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 @Builder(toBuilder = true)

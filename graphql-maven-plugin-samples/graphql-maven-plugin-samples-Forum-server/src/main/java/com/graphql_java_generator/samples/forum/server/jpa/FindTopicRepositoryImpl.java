@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
 import com.graphql_java_generator.samples.forum.server.Topic;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class FindTopicRepositoryImpl implements FindTopicRepository {
 

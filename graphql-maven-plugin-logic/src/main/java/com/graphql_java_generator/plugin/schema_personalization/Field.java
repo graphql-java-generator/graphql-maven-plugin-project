@@ -9,7 +9,7 @@ import lombok.Data;
  * The various attributes of the field, so that an existing GraphQL field can be personalized, or a new field can be
  * created.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Data
 public class Field {

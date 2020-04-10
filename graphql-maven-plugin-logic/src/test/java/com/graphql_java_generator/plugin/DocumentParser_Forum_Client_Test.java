@@ -23,7 +23,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { Forum_Client_SpringConfiguration.class })

@@ -16,7 +16,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, and return its
  * response as POJOs.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface QueryExecutor {
 

@@ -13,7 +13,7 @@ import org.springframework.data.repository.CrudRepository;
 import com.graphql_java_generator.samples.forum.server.Post;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface PostRepository extends CrudRepository<Post, UUID> {
 

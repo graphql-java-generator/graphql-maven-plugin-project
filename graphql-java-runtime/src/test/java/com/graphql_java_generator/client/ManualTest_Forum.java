@@ -16,7 +16,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * The automation for this test is done in the graphql-maven-plugin-samples-Forum-server module. This class is done for
  * manual testing of the client, before checking all around with the whole maven build of all modules.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class ManualTest_Forum {
 

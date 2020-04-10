@@ -15,7 +15,7 @@ import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectReq
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
  * the pom.xml file for details.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
 class PartialDirectRequestsIT extends AbstractIT {

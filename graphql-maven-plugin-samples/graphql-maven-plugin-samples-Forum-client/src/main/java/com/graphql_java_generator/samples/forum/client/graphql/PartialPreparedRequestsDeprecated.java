@@ -27,7 +27,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * valid.</LI>
  * </UL>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class PartialPreparedRequestsDeprecated implements Queries {
 

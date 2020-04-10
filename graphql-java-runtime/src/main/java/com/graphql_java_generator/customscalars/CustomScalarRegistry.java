@@ -10,7 +10,7 @@ import graphql.schema.GraphQLScalarType;
 /**
  * Registry for all {@link GraphQLScalarType} available.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface CustomScalarRegistry {
 

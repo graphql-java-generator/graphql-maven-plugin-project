@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * contains the type for this Scalar. This is useful only when this field is actually a list, as java has the type
  * erasure shit, and on Runtime, you can use java reflection to check the objects allowed in the list.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })

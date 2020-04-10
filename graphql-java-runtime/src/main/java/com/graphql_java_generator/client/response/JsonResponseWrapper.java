@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class JsonResponseWrapper {
 

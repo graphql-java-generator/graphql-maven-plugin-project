@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  * Overrides the {@link GraphQLJavaToolsAutoConfiguration#schemaStringProvider()} bean, to loads our graphqls files,
  * from the given schemaFilePattern plugin parameter
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class ResourceSchemaStringProvider {

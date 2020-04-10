@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 @Component

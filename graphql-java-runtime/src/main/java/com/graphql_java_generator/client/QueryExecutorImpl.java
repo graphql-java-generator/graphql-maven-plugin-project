@@ -28,7 +28,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * and subscription.<BR/>
  * It has one major parameter: the GraphQL endpoint. See the {@link #QueryExecutorImpl(String)} for more information.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class QueryExecutorImpl implements QueryExecutor {
 

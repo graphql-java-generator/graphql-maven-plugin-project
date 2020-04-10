@@ -10,7 +10,7 @@ import com.graphql_java_generator.GraphqlUtils;
 /**
  * All types found in the GraphQL schema(s), and discovered during the GraphQL parsing, are instance of {@link Type}.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface Type {
 

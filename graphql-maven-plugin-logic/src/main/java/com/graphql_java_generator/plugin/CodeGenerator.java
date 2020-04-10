@@ -43,7 +43,7 @@ import graphql.schema.GraphQLScalarType;
  * This class generates the code, from the classes coming from the com.graphql_java_generator.plugin.language package.
  * This classes have been created by {link {@link DocumentParser}
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class CodeGenerator {

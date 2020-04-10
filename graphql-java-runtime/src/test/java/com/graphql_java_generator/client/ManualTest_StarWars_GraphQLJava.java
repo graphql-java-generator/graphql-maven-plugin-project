@@ -27,7 +27,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
  * that graphql-generator hides.<BR/>
  * See {@link ManualTest_StarWars} for a sample.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class ManualTest_StarWars_GraphQLJava {
 

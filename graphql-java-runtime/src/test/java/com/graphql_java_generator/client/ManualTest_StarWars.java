@@ -22,7 +22,7 @@ import com.graphql_java_generator.client.domain.starwars.QueryType;
  * graphql-maven-plugin-samples-StarWars-server module. This class is done for manual testing of the client, before
  * checking all around with the maven build of all modules.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class ManualTest_StarWars {
 

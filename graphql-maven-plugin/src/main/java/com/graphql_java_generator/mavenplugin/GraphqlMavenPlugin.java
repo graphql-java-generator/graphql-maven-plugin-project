@@ -30,7 +30,7 @@ import graphql.ThreadSafe;
 import graphql.schema.GraphQLScalarType;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 @ThreadSafe

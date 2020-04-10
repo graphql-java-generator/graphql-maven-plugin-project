@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.graphql_java_generator.plugin.PluginMode;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 class ObjectTypeTest {

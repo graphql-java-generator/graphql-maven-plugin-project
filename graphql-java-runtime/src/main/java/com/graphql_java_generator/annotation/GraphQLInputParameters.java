@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * This class indicates that this field has at least one input parameter. It can be associated with field (for concrete
  * classes) or setter methods (for interfaces).<BR/>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD })

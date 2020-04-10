@@ -22,7 +22,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * optional argument, multiple queries must be implemented. In order to the sample to be properly coded, all must be
  * tested.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 @Execution(ExecutionMode.CONCURRENT)

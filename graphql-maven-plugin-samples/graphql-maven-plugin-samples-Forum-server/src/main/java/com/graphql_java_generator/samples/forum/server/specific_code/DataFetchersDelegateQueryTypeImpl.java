@@ -19,7 +19,7 @@ import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQueryType {

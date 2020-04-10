@@ -6,7 +6,7 @@ import com.graphql_java_generator.plugin.Logger;
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class MavenLogger implements Logger {
 

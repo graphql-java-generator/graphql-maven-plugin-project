@@ -11,7 +11,7 @@ import com.graphql_java_generator.plugin.PluginMode;
 /**
  * The Spring configuration used for JUnit tests
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator")

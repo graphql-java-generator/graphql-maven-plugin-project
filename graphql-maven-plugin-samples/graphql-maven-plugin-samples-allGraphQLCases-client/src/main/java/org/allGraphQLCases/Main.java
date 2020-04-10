@@ -10,7 +10,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * The main class, which executes the same partialQueries, built by three different methods. See
  * {@link PartialDirectQueries}, {@link PartialPreparedQueries}, {@link PartialWithBuilder}
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class Main {
 

@@ -28,7 +28,7 @@ import $import;
  * You can register your own BatchDataLoader, by just creating a class which implements BatchLoaderDelegate, and mark it
  * as a Spring Beean with the {@link Component} annotation. You just have to check that its name is unique.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 public interface BatchLoaderDelegate<K, V> extends BatchLoader<K, V> {

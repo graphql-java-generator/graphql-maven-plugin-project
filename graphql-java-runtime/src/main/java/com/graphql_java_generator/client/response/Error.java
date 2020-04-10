@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  * 
  * The error POJO, mapped from the GraphQL server response, when an error occurs
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class Error {
 

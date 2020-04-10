@@ -32,7 +32,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  * that everything works correctly, from the client to the server.<BR/>
  * This class generates the needed data on the fly.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
 public class DataGenerator {

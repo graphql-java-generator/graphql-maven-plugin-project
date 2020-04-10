@@ -21,7 +21,7 @@ import graphql.schema.GraphQLScalarType;
  * {@link Bean}s. These beans can then be reused in Spring Component, thank to Spring IoC and its dependency injection
  * capability.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface PluginConfiguration {
 

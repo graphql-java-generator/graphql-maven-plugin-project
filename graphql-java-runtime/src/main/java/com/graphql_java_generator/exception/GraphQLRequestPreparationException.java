@@ -8,7 +8,7 @@ package com.graphql_java_generator.exception;
  * with invalid values (non existing fields, field from other objects...) or when a call to a query is attempted with a
  * ObjectResponse build for another GraphQL type (for client mode)<BR/>
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public class GraphQLRequestPreparationException extends Exception {
 

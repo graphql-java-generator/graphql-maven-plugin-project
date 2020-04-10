@@ -5,7 +5,7 @@ package com.graphql_java_generator.plugin.language;
  * GraphQLProvider class, which declares every Data Fetchers, and the GraphQlDataFetchers, which contains these Data
  * Fetchers.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 public interface Relation {
 

@@ -19,7 +19,7 @@ import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguratio
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { StarWars_Server_SpringConfiguration.class })

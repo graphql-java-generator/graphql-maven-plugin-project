@@ -20,7 +20,7 @@ import graphql.parser.Parser;
 
 /**
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
 @SpringJUnitConfig(classes = { Basic_Server_SpringConfiguration.class })
 class DocumentParser_basic_Test {

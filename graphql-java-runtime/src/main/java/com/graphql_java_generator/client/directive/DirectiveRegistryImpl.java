@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  *
  */
 @Component
