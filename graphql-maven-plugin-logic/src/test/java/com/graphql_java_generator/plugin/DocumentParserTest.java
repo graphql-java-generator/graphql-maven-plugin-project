@@ -54,11 +54,11 @@ class DocumentParserTest {
 	public void test_addTypeAnnotationForClientMode() {
 		Type type;
 
-		type = new ObjectType("TheName", "the.package.name", PluginMode.client);
+		type = new ObjectType("TheName", "the.package.name", pluginConfiguration);
 		documentParser.addTypeAnnotationForClientMode(type);
 		assertEquals("@GraphQLObjectType(\"TheName\")", type.getAnnotation(), type.getClass().getName());
 
-		type = new InterfaceType("TheName", "the.package.name", PluginMode.client);
+		type = new InterfaceType("TheName", "the.package.name", pluginConfiguration);
 		documentParser.addTypeAnnotationForClientMode(type);
 		assertEquals(
 				"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)\n"
@@ -73,15 +73,15 @@ class DocumentParserTest {
 		Type type;
 		pluginConfiguration.mode = PluginMode.server;
 
-		type = new ObjectType("TheName", "the.package.name", PluginMode.server);
+		type = new ObjectType("TheName", "the.package.name", pluginConfiguration);
 		documentParser.addTypeAnnotationForServerMode(type);
 		assertEquals("@Entity\n\t\t@GraphQLObjectType(\"TheName\")", type.getAnnotation(), type.getClass().getName());
 
-		type = new InterfaceType("TheName", "the.package.name", PluginMode.server);
+		type = new InterfaceType("TheName", "the.package.name", pluginConfiguration);
 		documentParser.addTypeAnnotationForServerMode(type);
 		assertEquals("@GraphQLInterfaceType(\"TheName\")", type.getAnnotation(), type.getClass().getName());
 
-		type = new EnumType("TheName", "the.package.name", PluginMode.server);
+		type = new EnumType("TheName", "the.package.name", pluginConfiguration);
 		documentParser.addTypeAnnotationForServerMode(type);
 		assertEquals("", type.getAnnotation(), type.getClass().getName());
 	}
@@ -90,12 +90,12 @@ class DocumentParserTest {
 	public void test_initDataFetcherForOneObject() {
 		// Preparation
 		documentParser.types = new HashMap<>();
-		documentParser.types.put("Object1", new ObjectType("Object1", "package", PluginMode.server));
+		documentParser.types.put("Object1", new ObjectType("Object1", "package", pluginConfiguration));
 		documentParser.types.put("GraphQLScalar",
-				new ScalarType("GraphQLScalar", "packageName", "classSimpleName", PluginMode.server));
-		documentParser.types.put("Interface0", new InterfaceType("Interface0", "packageName", PluginMode.server));
-		documentParser.types.put("Enum0", new EnumType("Enum0", "packageName", PluginMode.server));
-		documentParser.types.put("Object2", new ObjectType("Object2", "package", PluginMode.server));
+				new ScalarType("GraphQLScalar", "packageName", "classSimpleName", pluginConfiguration));
+		documentParser.types.put("Interface0", new InterfaceType("Interface0", "packageName", pluginConfiguration));
+		documentParser.types.put("Enum0", new EnumType("Enum0", "packageName", pluginConfiguration));
+		documentParser.types.put("Object2", new ObjectType("Object2", "package", pluginConfiguration));
 
 		documentParser.objectTypes = new ArrayList<>();
 		documentParser.objectTypes.add((ObjectType) documentParser.getType("Object1"));
@@ -109,7 +109,7 @@ class DocumentParserTest {
 		documentParser.enumTypes = new ArrayList<>();
 		documentParser.enumTypes.add((EnumType) documentParser.getType("Enum0"));
 
-		ObjectType type = new ObjectType("Package name", PluginMode.client);
+		ObjectType type = new ObjectType("Package name", pluginConfiguration);
 		type.setName("NameOfTheType");
 
 		String[] fields = { "Object1", "GraphQLScalar", "Interface0", "Enum0", "Object2" };
@@ -143,8 +143,8 @@ class DocumentParserTest {
 		documentParser.dataFetchers = new ArrayList<>();
 		documentParser.dataFetchersDelegates = new ArrayList<>();
 		documentParser.queryTypes.add(type);
-		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
-		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
+		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", pluginConfiguration));
+		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration));
 		documentParser.scalarTypes.add((ScalarType) documentParser.getType("GraphQLScalar"));
 
 		// Go, go, go
@@ -183,8 +183,8 @@ class DocumentParserTest {
 		documentParser.dataFetchersDelegates = new ArrayList<>();
 		//
 		documentParser.objectTypes.add(type);
-		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
-		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
+		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", pluginConfiguration));
+		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration));
 		documentParser.scalarTypes.add((ScalarType) documentParser.getType("GraphQLScalar"));
 		documentParser.enumTypes.add((EnumType) documentParser.getType("Enum0"));
 		documentParser.fillTypesMap();
@@ -220,9 +220,9 @@ class DocumentParserTest {
 		documentParser.dataFetchers = new ArrayList<>();
 		documentParser.dataFetchersDelegates = new ArrayList<>();
 		//
-		documentParser.interfaceTypes.add(new InterfaceType("AnInterface", "a.package", PluginMode.server));
-		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", PluginMode.server));
-		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", PluginMode.server));
+		documentParser.interfaceTypes.add(new InterfaceType("AnInterface", "a.package", pluginConfiguration));
+		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", pluginConfiguration));
+		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration));
 
 		// Go, go, go
 		documentParser.initDataFetcherForOneObject(type, false);

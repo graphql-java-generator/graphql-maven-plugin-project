@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CompletableFuture;
 
+import javax.annotation.Resource;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,7 @@ import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
@@ -37,6 +40,8 @@ class DocumentParser_Forum_Server_Test {
 
 	@Autowired
 	DocumentParser documentParser;
+	@Resource
+	PluginConfigurationTestHelper pluginConfiguration;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -126,13 +131,13 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals(6, documentParser.dataFetchersDelegates.size());
 
 		// No DataFetchersDelegate creation
-		Type type = new ObjectType("my.package", "Test", PluginMode.server);
+		Type type = new ObjectType("my.package", "Test", pluginConfiguration);
 		DataFetchersDelegate dfd = documentParser.getDataFetchersDelegate(type, false);
 		assertNull(dfd, "No DataFetchersDelegate creation");
 		assertEquals(6, documentParser.dataFetchersDelegates.size());
 
 		// With DataFetchersDelegate creation
-		type = new ObjectType("my.package", "Test2", PluginMode.server);
+		type = new ObjectType("my.package", "Test2", pluginConfiguration);
 		dfd = documentParser.getDataFetchersDelegate(type, true);
 		assertNotNull(dfd, "With DataFetchersDelegate creation");
 		assertEquals(type, dfd.getType());

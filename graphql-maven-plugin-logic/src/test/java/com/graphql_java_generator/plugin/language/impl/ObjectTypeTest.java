@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
 
 /**
  * @author etienne-sf
@@ -23,13 +24,14 @@ class ObjectTypeTest {
 	PluginMode mode;
 
 	ObjectType objectType;
+	PluginConfigurationTestHelper pluginConfiguration = new PluginConfigurationTestHelper(this);
 
 	@BeforeEach
 	void setUp() {
 		name = "A name";
 		packageName = "a.package.name";
 		mode = PluginMode.server;
-		objectType = new ObjectType(name, packageName, mode);
+		objectType = new ObjectType(name, packageName, pluginConfiguration);
 
 		FieldImpl f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field1");

@@ -100,8 +100,8 @@ class CodeGeneratorTest {
 		codeGenerator.documentParser = mock(DocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
 
-		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName(), PluginMode.client);
-		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName(), PluginMode.client);
+		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
+		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
@@ -151,8 +151,8 @@ class CodeGeneratorTest {
 
 		pluginConfiguration.mode = PluginMode.server;
 
-		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName(), PluginMode.server);
-		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName(), PluginMode.server);
+		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
+		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
@@ -232,7 +232,7 @@ class CodeGeneratorTest {
 		file = codeGenerator.getJavaFile(name, true);
 		// Verification
 		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/'
-				+ CodeGenerator.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/') + ".java";
+				+ DocumentParser.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/') + ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 	}
