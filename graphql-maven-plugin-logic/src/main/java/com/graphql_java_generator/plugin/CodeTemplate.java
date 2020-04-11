@@ -29,6 +29,7 @@ public enum CodeTemplate {
 	JACKSON_DESERIALIZER(CodeTemplateScope.CLIENT, "templates/client_jackson_deserialize.vm.java"), //
 	QUERY_MUTATION_SUBSCRIPTION(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_type.vm.java"), //
 	QUERY_TARGET_TYPE(CodeTemplateScope.CLIENT, "templates/client_query_target_type.vm.java"), //
+	QUERY_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_response.vm.java"), //
 	ROOT_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_rootResponse.vm.java"), //
 
 	// Server files (alphabetic order)

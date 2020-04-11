@@ -5,7 +5,7 @@ package com.graphql_java_generator.plugin.language.impl;
 
 import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.PluginConfiguration;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -53,13 +53,14 @@ public class CustomScalarType extends ScalarType {
 	 *            The full path for the static field name that contains this GraphQLScalarType. Optional.
 	 * @param graphQLScalarTypeGetter
 	 *            The full path for the static method name that returns this GraphQLScalarType. Optional.
-	 * @param mode
-	 *            The current plugin mode
+	 * @param pluginConfiguration
+	 *            The current {@link PluginConfiguration}
 	 * @see CustomScalarDefinition
 	 */
 	public CustomScalarType(String name, String packageName, String classSimpleName, String graphQLScalarTypeClass,
-			String graphQLScalarTypeStaticField, String graphQLScalarTypeGetter, PluginMode mode) {
-		super(name, packageName, classSimpleName, mode);
+			String graphQLScalarTypeStaticField, String graphQLScalarTypeGetter,
+			PluginConfiguration pluginConfiguration) {
+		super(name, packageName, classSimpleName, pluginConfiguration);
 		this.graphQLScalarTypeClass = graphQLScalarTypeClass;
 		this.graphQLScalarTypeStaticField = graphQLScalarTypeStaticField;
 		this.graphQLScalarTypeGetter = graphQLScalarTypeGetter;

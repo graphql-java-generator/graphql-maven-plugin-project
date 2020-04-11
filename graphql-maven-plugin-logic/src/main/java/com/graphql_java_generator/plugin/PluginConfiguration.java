@@ -137,7 +137,7 @@ public interface PluginConfiguration {
 	 * 
 	 * @return
 	 */
-	boolean isSeparateUtilClasses();
+	boolean isSeparateUtilityClasses();
 
 	/** Logs all the configuration parameters, in the debug level */
 	default void logConfiguration() {

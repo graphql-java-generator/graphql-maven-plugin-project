@@ -110,7 +110,7 @@ class CodeGeneratorTest {
 		String templateFilename = "folder/a_template_for_test.vm";
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename);
+		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename, false);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
@@ -161,7 +161,7 @@ class CodeGeneratorTest {
 		String templateFilename = "folder/a_template_for_test.vm";
 
 		// Go, go, go
-		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename);
+		int i = codeGenerator.generateTargetFiles(objects, type, templateFilename, false);
 
 		// Verification
 		assertEquals(objects.size(), i, "Nb files generated");
@@ -194,14 +194,45 @@ class CodeGeneratorTest {
 		String name = "MyClass";
 		String packageName = "my.package";
 		pluginConfiguration.packageName = packageName;
+		pluginConfiguration.separateUtilityClasses = false;
 		pluginConfiguration.targetSourceFolder = targetSourceFolder;
 
-		// Go, go, go
-		File file = codeGenerator.getJavaFile(name);
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Go, go, go (separateUtilityClasses=false, isUtility=false)
+		File file = codeGenerator.getJavaFile(name, false);
 		// Verification
 		String expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name)
 				.replace('.', '/').replace('\\', '/') + ".java";
+		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
+				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Go, go, go (separateUtilityClasses=false, isUtility=true)
+		file = codeGenerator.getJavaFile(name, true);
+		// Verification
+		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name).replace('.', '/')
+				.replace('\\', '/') + ".java";
+		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
+				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
+
+		// separateUtilityClasses=true
+		pluginConfiguration.separateUtilityClasses = true;
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Go, go, go (separateUtilityClasses=true, isUtility=false)
+		file = codeGenerator.getJavaFile(name, false);
+		// Verification
+		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/' + name).replace('.', '/')
+				.replace('\\', '/') + ".java";
+		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
+				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Go, go, go (separateUtilityClasses=true, isUtility=true)
+		file = codeGenerator.getJavaFile(name, true);
+		// Verification
+		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/'
+				+ CodeGenerator.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/') + ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 	}

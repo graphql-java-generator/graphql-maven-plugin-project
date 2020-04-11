@@ -2,9 +2,11 @@ package com.graphql_java_generator.plugin.language.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Type;
 
@@ -16,11 +18,14 @@ public abstract class AbstractType implements Type {
 	/** The name of the object type */
 	private String name;
 
-	/** The current generation mode */
-	private PluginMode mode;
+	/** The current {@link PluginConfiguration} */
+	private PluginConfiguration pluginConfiguration;
 
 	/** The name of the package for this class */
 	private String packageName;
+
+	/** The list of imports for this object. It's an order Set, so that the generated java file is net */
+	private Set<String> imports = new TreeSet<>();
 
 	/**
 	 * Tha Java annotation(s) to add to this type, ready to be added by the Velocity template. That is: one annotation
@@ -34,9 +39,9 @@ public abstract class AbstractType implements Type {
 	/** The GraphQL type for this type */
 	final private GraphQlType graphQlType;
 
-	public AbstractType(String packageName, PluginMode mode, GraphQlType graphQlType) {
+	public AbstractType(String packageName, PluginConfiguration pluginConfiguration, GraphQlType graphQlType) {
 		this.packageName = packageName;
-		this.mode = mode;
+		this.pluginConfiguration = pluginConfiguration;
 		this.graphQlType = graphQlType;
 	}
 
@@ -87,6 +92,25 @@ public abstract class AbstractType implements Type {
 	@Deprecated
 	public void setAnnotation(String annotation) {
 		this.annotation = annotation;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void addImport(Class<?> clazz) {
+		addImport(clazz.getPackage().getName(), clazz.getSimpleName());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void addImport(String packageName, String classname) {
+		// No import for java.lang
+		if (!packageName.equals("java.lang")) {
+			// As we're in a type, we're not in a utility class. So the current type will generate a class in the
+			// pluginConfiguration's packageName
+			if (!getPackageName().equals(packageName)) {
+				imports.add(packageName + "." + classname);
+			}
+		}
 	}
 
 	/**

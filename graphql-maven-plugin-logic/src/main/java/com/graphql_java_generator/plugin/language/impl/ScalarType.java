@@ -3,9 +3,7 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
-import java.util.List;
-
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 
 import lombok.Data;
@@ -29,23 +27,14 @@ public class ScalarType extends AbstractType {
 	 *            The package where the Java type for this class is stored
 	 * @param classSimpleName
 	 *            The simple name for this class
-	 * @param mode
-	 *            The current plugin mode
+	 * @param pluginConfiguration
+	 *            The current {@link PluginConfiguration}
 	 */
-	public ScalarType(String name, String packageName, String classSimpleName, PluginMode mode) {
-		super(packageName, mode, GraphQlType.SCALAR);
+	public ScalarType(String name, String packageName, String classSimpleName,
+			PluginConfiguration pluginConfiguration) {
+		super(packageName, pluginConfiguration, GraphQlType.SCALAR);
 		setName(name);
 		this.classSimpleName = classSimpleName;
-	}
-
-	/**
-	 * A scalar has no fields.
-	 * 
-	 * @return null
-	 */
-	@Override
-	public List<Field> getFields() {
-		return null;
 	}
 
 	/**

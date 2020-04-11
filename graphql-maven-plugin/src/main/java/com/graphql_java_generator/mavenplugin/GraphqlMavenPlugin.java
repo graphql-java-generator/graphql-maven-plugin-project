@@ -140,8 +140,8 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * If true, the GraphQL classes are generated in the package defined in the <I>packageName</I> plugin parameter. And
 	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilClasses", defaultValue = PluginConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
-	boolean separateUtilClasses;
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilityClasses", defaultValue = PluginConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
+	boolean separateUtilityClasses;
 
 	/** The encoding charset for the generated source files */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = PluginConfiguration.DEFAULT_SOURCE_ENCODING)

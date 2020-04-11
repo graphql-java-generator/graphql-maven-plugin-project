@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 
 import lombok.Data;
@@ -65,33 +65,34 @@ public class ObjectType extends AbstractType {
 	 *            The name of this object type
 	 * @param packageName
 	 *            the package name where it must be created
-	 * @param mode
-	 *            The current {@link PluginMode}
+	 * @param pluginConfiguration
+	 *            The current {@link PluginConfiguration}
 	 */
-	public ObjectType(String name, String packageName, PluginMode mode) {
-		super(packageName, mode, GraphQlType.OBJECT);
+	public ObjectType(String name, String packageName, PluginConfiguration pluginConfiguration) {
+		super(packageName, pluginConfiguration, GraphQlType.OBJECT);
 		setName(name);
 	}
 
 	/**
 	 * @param packageName
 	 *            the package name where it must be created
-	 * @param mode
-	 *            The current {@link PluginMode}
+	 * @param pluginConfiguration
+	 *            The current {@link PluginConfiguration}
 	 */
-	public ObjectType(String packageName, PluginMode mode) {
-		super(packageName, mode, GraphQlType.OBJECT);
+	public ObjectType(String packageName, PluginConfiguration pluginConfiguration) {
+		super(packageName, pluginConfiguration, GraphQlType.OBJECT);
 	}
 
 	/**
 	 * This constructor is especially intended for subclasses, like {@link InterfaceType}
 	 * 
 	 * @param packageName
-	 * @param mode
+	 * @param pluginConfiguration
+	 *            The current {@link PluginConfiguration}
 	 * @param type
 	 */
-	protected ObjectType(String name, String packageName, PluginMode mode, GraphQlType type) {
-		super(packageName, mode, type);
+	protected ObjectType(String name, String packageName, PluginConfiguration pluginConfiguration, GraphQlType type) {
+		super(packageName, pluginConfiguration, type);
 		setName(name);
 	}
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.annotation.DirtiesContext;
@@ -15,6 +16,7 @@ import graphql.mavenplugin_notscannedbyspring.CustomTemplates_Client_SpringConfi
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { CustomTemplates_Client_SpringConfiguration.class })
+@Tag("customTemplates")
 class CustomTemplatesClientTest extends AbstractCustomTemplateIntegrationTest {
 
 	// Everything is in the AbstractIntegrationTest class.

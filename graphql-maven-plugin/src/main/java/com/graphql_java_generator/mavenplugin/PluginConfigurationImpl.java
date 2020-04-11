@@ -106,8 +106,8 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
-	public boolean isSeparateUtilClasses() {
-		return this.mojo.separateUtilClasses;
+	public boolean isSeparateUtilityClasses() {
+		return this.mojo.separateUtilityClasses;
 	}
 
 	@Override

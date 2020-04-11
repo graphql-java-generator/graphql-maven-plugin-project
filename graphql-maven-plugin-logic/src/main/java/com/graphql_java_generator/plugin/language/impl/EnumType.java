@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 
@@ -31,32 +31,22 @@ public class EnumType extends AbstractType {
 	 *            The name of this enum type
 	 * @param packageName
 	 *            the package name where it must be created
-	 * @param mode
-	 *            The current {@link PluginMode}
+	 * @param pluginConfiguration
+	 *            The current {@link PluginConfiguration}
 	 */
-	public EnumType(String name, String packageName, PluginMode mode) {
-		super(packageName, mode, GraphQlType.ENUM);
+	public EnumType(String name, String packageName, PluginConfiguration pluginConfiguration) {
+		super(packageName, pluginConfiguration, GraphQlType.ENUM);
 		setName(name);
 	}
 
 	/**
 	 * @param packageName
 	 *            the package name where it must be created
-	 * @param mode
-	 *            The current {@link PluginMode}
+	 * @param pluginConfiguration
+	 *            The current {@link PluginConfiguration}
 	 */
-	public EnumType(String packageName, PluginMode mode) {
-		super(packageName, mode, GraphQlType.ENUM);
-	}
-
-	/**
-	 * An enum has no fields.
-	 * 
-	 * @return null
-	 */
-	@Override
-	public List<Field> getFields() {
-		return null;
+	public EnumType(String packageName, PluginConfiguration pluginConfiguration) {
+		super(packageName, pluginConfiguration, GraphQlType.ENUM);
 	}
 
 	/**

@@ -36,7 +36,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
-	public boolean separateUtilClasses = false;
+	public boolean separateUtilityClasses = false;
 	public String sourceEncoding = null;
 	public File targetClassFolder = null;
 	public File targetSourceFolder = null;

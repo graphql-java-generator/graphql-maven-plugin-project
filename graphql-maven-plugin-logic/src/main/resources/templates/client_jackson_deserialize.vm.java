@@ -34,6 +34,8 @@ public class CustomScalarDeserializer${object.name}  extends AbstractCustomScala
 				${object.graphQLScalarTypeGetter}
 #else
 			${object.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
+			//
+			See https://graphql-maven-plugin-project.graphql-java-generator.com/customscalars.html
 #end
 				);
 	}

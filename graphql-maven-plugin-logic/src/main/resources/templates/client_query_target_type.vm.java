@@ -5,7 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-#foreach($import in $imports)
+#foreach($import in ${object.imports})
 import $import;
 #end
 

@@ -34,10 +34,7 @@ import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
-import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
-
-import graphql.schema.GraphQLScalarType;
 
 /**
  * This class generates the code, from the classes coming from the com.graphql_java_generator.plugin.language package.
@@ -90,14 +87,15 @@ public class CodeGenerator {
 
 		int i = 0;
 		pluginConfiguration.getLog().debug("Generating objects");
-		i += generateTargetFiles(documentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT));
+		i += generateTargetFiles(documentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT),
+				false);
 		pluginConfiguration.getLog().debug("Generating interfaces");
 		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface",
-				resolveTemplate(CodeTemplate.INTERFACE));
+				resolveTemplate(CodeTemplate.INTERFACE), false);
 		pluginConfiguration.getLog().debug("Generating unions");
-		i += generateTargetFiles(documentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION));
+		i += generateTargetFiles(documentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION), false);
 		pluginConfiguration.getLog().debug("Generating enums");
-		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM));
+		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM), false);
 
 		switch (pluginConfiguration.getMode()) {
 		case server:
@@ -109,34 +107,35 @@ public class CodeGenerator {
 			// Generation of the query/mutation/subscription classes
 			pluginConfiguration.getLog().debug("Generating query");
 			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION), true);
 			pluginConfiguration.getLog().debug("Generating mutation");
 			i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION), true);
 			pluginConfiguration.getLog().debug("Generating subscription");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION));
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION), true);
 
 			// Generation of the query/mutation/subscription response classes
 			pluginConfiguration.getLog().debug("Generating query response");
-			i += generateTargetFiles(documentParser.getQueryTypes(), "response", resolveTemplate(CodeTemplate.OBJECT));
+			i += generateTargetFiles(documentParser.getQueryTypes(), "response",
+					resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 			pluginConfiguration.getLog().debug("Generating mutation response");
 			i += generateTargetFiles(documentParser.getMutationTypes(), "response",
-					resolveTemplate(CodeTemplate.OBJECT));
+					resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 			pluginConfiguration.getLog().debug("Generating subscription response");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response",
-					resolveTemplate(CodeTemplate.OBJECT));
+					resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 
 			// Generation of the query/mutation/subscription root responses classes
 			pluginConfiguration.getLog().debug("Generating query root response");
 			i += generateTargetFiles(documentParser.getQueryTypes(), "root response",
-					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 			pluginConfiguration.getLog().debug("Generating mutation root response");
 			i += generateTargetFiles(documentParser.getMutationTypes(), "root response",
-					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 			pluginConfiguration.getLog().debug("Generating subscription root response");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
-					resolveTemplate(CodeTemplate.ROOT_RESPONSE));
+					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 
 			// Generation of the GraphQLRequest class
 			pluginConfiguration.getLog().debug("Generating GraphQL Request class");
@@ -144,18 +143,24 @@ public class CodeGenerator {
 
 			// Files for Custom Scalars
 			pluginConfiguration.getLog().debug("Generating CustomScalarRegistryInitializer");
-			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer"),
+			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer", true),
 					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
 			// Files for Directives
 			pluginConfiguration.getLog().debug("Generating DirectiveRegistryInitializer");
-			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer"), "Generating DirectiveRegistryInitializer",
-					getVelocityContext(), resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
+			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer", true),
+					"Generating DirectiveRegistryInitializer", getVelocityContext(),
+					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
 			//
 			pluginConfiguration.getLog().debug("Generating " + FILE_TYPE_JACKSON_DESERIALIZER);
 			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
-					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER));
-			i += generateQueryTargetType();
+					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER), true);
+
+			//
+			// Now useless? (to be confirmed after the first successful full build)
+			// pluginConfiguration.getLog().debug("Generating query target files");
+			// i += generateQueryTargetType();
+
 			break;
 		}
 
@@ -207,18 +212,20 @@ public class CodeGenerator {
 	 *            The kind of graphql object (object, query, mutation...), just for proper logging
 	 * @param templateFilename
 	 *            The absolute path for the template (or relative to the current path)
+	 * @param utilityClass
+	 *            true if this class is a utility class, false if it is not. A utility class it a class the is not
+	 *            directly the transposition of an item in the GraphQL schema (like object, interface, union, query...)
 	 * @throws IOException
 	 */
-	int generateTargetFiles(List<? extends Type> objects, String type, String templateFilename)
+	int generateTargetFiles(List<? extends Type> objects, String type, String templateFilename, boolean utilityClass)
 			throws RuntimeException {
 		int i = 0;
 		for (Type object : objects) {
 			String targetFileName = (String) execWithOneStringParam("getTargetFileName", object, type);
-			File targetFile = getJavaFile(targetFileName);
+			File targetFile = getJavaFile(targetFileName, utilityClass);
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 
 			VelocityContext context = getVelocityContext();
-			context.put("imports", getImportList());
 			context.put("object", object);
 			context.put("targetFileName", targetFileName);
 			context.put("type", type);
@@ -229,20 +236,21 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Generates one wrapper for each query, that will receive the response json.
+	 * Generates one wrapper for each query, that will receive the response json. These class are used in the generated
+	 * code, for partial queries.
 	 * 
 	 * @return
 	 */
-	int generateQueryTargetType() {
+	private int generateQueryTargetType() {
 		int i = 0;
-		List<ObjectType> types = new ArrayList<>(documentParser.getQueryTypes());
-		types.addAll(documentParser.getMutationTypes());
-		types.addAll(documentParser.getSubscriptionTypes());
+		List<ObjectType> requestTypes = new ArrayList<>(documentParser.getQueryTypes());
+		requestTypes.addAll(documentParser.getMutationTypes());
+		requestTypes.addAll(documentParser.getSubscriptionTypes());
 
-		for (ObjectType queryType : types) {
-			for (Field query : queryType.getFields()) {
-				String objectName = queryType.getClassSimpleName() + query.getPascalCaseName();
-				File targetFile = getJavaFile(objectName);
+		for (ObjectType requestType : requestTypes) {
+			for (Field query : requestType.getFields()) {
+				String objectName = requestType.getClassSimpleName() + query.getPascalCaseName();
+				File targetFile = getJavaFile(objectName, true);
 				String msg = "Generating target for query " + query.getName() + " '" + objectName + "' into "
 						+ targetFile.getAbsolutePath();
 				VelocityContext context = getVelocityContext();
@@ -267,7 +275,7 @@ public class CodeGenerator {
 		context.put("subscription",
 				(documentParser.subscriptionTypes.size() > 0) ? documentParser.subscriptionTypes.get(0) : null);
 
-		return generateOneFile(getJavaFile("GraphQLRequest"), "generating GraphQLRequest", context,
+		return generateOneFile(getJavaFile("GraphQLRequest", true), "generating GraphQLRequest", context,
 				resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
 	}
 
@@ -283,7 +291,6 @@ public class CodeGenerator {
 		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
 		context.put("interfaces", documentParser.getInterfaceTypes());
 		context.put("unions", documentParser.getUnionTypes());
-		context.put("imports", getImportList());
 
 		// List of found schemas
 		List<String> schemaFiles = new ArrayList<>();
@@ -295,34 +302,34 @@ public class CodeGenerator {
 		int ret = 0;
 
 		pluginConfiguration.getLog().debug("Generating GraphQLServerMain");
-		ret += generateOneFile(getJavaFile("GraphQLServerMain"), "generating GraphQLServerMain", context,
+		ret += generateOneFile(getJavaFile("GraphQLServerMain", true), "generating GraphQLServerMain", context,
 				resolveTemplate(CodeTemplate.SERVER));
 
 		pluginConfiguration.getLog().debug("Generating GraphQLProvider");
-		ret += generateOneFile(getJavaFile("GraphQLProvider"), "generating GraphQLProvider", context,
+		ret += generateOneFile(getJavaFile("GraphQLProvider", true), "generating GraphQLProvider", context,
 				resolveTemplate(CodeTemplate.PROVIDER));
 
 		pluginConfiguration.getLog().debug("Generating GraphQLDataFetchers");
-		ret += generateOneFile(getJavaFile("GraphQLDataFetchers"), "generating GraphQLDataFetchers", context,
+		ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
 				resolveTemplate(CodeTemplate.DATAFETCHER));
 
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
 			pluginConfiguration.getLog().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
-			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName()),
+			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
 					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 					resolveTemplate(CodeTemplate.DATAFETCHERDELEGATE));
 		}
 
 		pluginConfiguration.getLog().debug("Generating BatchLoaderDelegate");
-		ret += generateOneFile(getJavaFile("BatchLoaderDelegate"), "generating BatchLoaderDelegate", context,
+		ret += generateOneFile(getJavaFile("BatchLoaderDelegate", true), "generating BatchLoaderDelegate", context,
 				resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));
 
 		for (BatchLoader batchLoader : documentParser.batchLoaders) {
 			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
 			context.put("batchLoader", batchLoader);
 			pluginConfiguration.getLog().debug("Generating " + name);
-			ret += generateOneFile(getJavaFile(name), "generating " + name, context,
+			ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
 					resolveTemplate(CodeTemplate.BATCHLOADERDELEGATEIMPL));
 		}
 
@@ -378,10 +385,16 @@ public class CodeGenerator {
 	 * 
 	 * @param simpleClassname
 	 *            The classname, without the package
+	 * @param utilityClass
+	 *            true if this class is a utility class, false if it is not. A utility class it a class the is not
+	 *            directly the transposition of an item in the GraphQL schema (like object, interface, union, query...)
 	 * @return
 	 */
-	File getJavaFile(String simpleClassname) {
-		String relativePath = pluginConfiguration.getPackageName().replace('.', '/') + '/' + simpleClassname + ".java";
+	File getJavaFile(String simpleClassname, boolean utilityClass) {
+		String packageName = (utilityClass && pluginConfiguration.isSeparateUtilityClasses())
+				? documentParser.getUtilPackageName()
+				: pluginConfiguration.getPackageName();
+		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java";
 		File file = new File(pluginConfiguration.getTargetSourceFolder(), relativePath);
 		file.getParentFile().mkdirs();
 		return file;
@@ -428,22 +441,6 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Retrieves all the class that must be imported. This list is based on the list of Custom Scalars, that may need
-	 * specific import, for specific {@link GraphQLScalarType}.
-	 */
-	List<String> getImportList() {
-		List<String> ret = new ArrayList<>();
-		if (documentParser.customScalars != null) {
-			for (CustomScalarType customScalar : documentParser.customScalars) {
-				if (!customScalar.getPackageName().contentEquals("java.lang")) {
-					ret.add(customScalar.getClassFullName());
-				}
-			}
-		}
-		return ret;
-	}
-
-	/**
 	 * Returns a {@link VelocityContext} with all default values filled.
 	 * 
 	 * @return
@@ -451,7 +448,7 @@ public class CodeGenerator {
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
 		context.put("pluginConfiguration", pluginConfiguration);
-		context.put("packageUtilName", pluginConfiguration.getPackageName());
+		context.put("packageUtilName", documentParser.getUtilPackageName());
 		context.put("customScalars", documentParser.customScalars);
 		context.put("directives", documentParser.directives);
 		return context;

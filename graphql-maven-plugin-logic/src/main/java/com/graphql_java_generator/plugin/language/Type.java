@@ -3,7 +3,9 @@
  */
 package com.graphql_java_generator.plugin.language;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.graphql_java_generator.GraphqlUtils;
 
@@ -53,6 +55,35 @@ public interface Type {
 			return getJavaName();
 		}
 	}
+
+	/**
+	 * Get the list of imports for this object. It's an order Set, so that the generated java file is net.
+	 * 
+	 * @return
+	 */
+	public Set<String> getImports();
+
+	/**
+	 * Add the given class as an import for the current type. This import will be added only if the given class is not
+	 * in the same package as the java class for this type, and if it doesn't already exist in the imports set.<BR/>
+	 * classes from the <I>java.lang</I> package are not imported.
+	 * 
+	 * @param clazz
+	 *            The class that must be imported in the current type
+	 */
+	public void addImport(Class<?> clazz);
+
+	/**
+	 * Add the given class as an import for the current type. This import will be added only if the given class is not
+	 * in the same package as the java class for this type, and if it doesn't already exist in the imports set.<BR/>
+	 * classes from the <I>java.lang</I> package are not imported.
+	 * 
+	 * @param packageName
+	 *            The package where the class to import is located
+	 * @param classname
+	 *            The simple class name (String for instance) of the class
+	 */
+	public void addImport(String packageName, String classname);
 
 	/**
 	 * Returns the annotation or annotations that must be added to this type.
@@ -125,9 +156,12 @@ public interface Type {
 	 * Returns the list of {@link Field}s for this type. Or null, if this field can't have any field, like a
 	 * GraphQLScalar for instance
 	 * 
-	 * @return
+	 * @return It returns the list of Fields, or an empty list of there are not fields. It should never be null. The
+	 *         interface returns, by default, an empty list.
 	 */
-	public List<Field> getFields();
+	default public List<Field> getFields() {
+		return new ArrayList<Field>();
+	}
 
 	/**
 	 * Returns the identifier for this type. Typically : the field which has an ID as a type.
@@ -148,4 +182,5 @@ public interface Type {
 
 	/** Returns the list of directives that have been defined for this type, in the GraphQL schema */
 	public List<AppliedDirective> getAppliedDirectives();
+
 }
