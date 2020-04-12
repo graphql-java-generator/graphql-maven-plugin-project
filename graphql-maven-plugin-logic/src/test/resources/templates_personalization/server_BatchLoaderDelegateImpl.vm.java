@@ -1,3 +1,4 @@
+/** This template is custom **/
 ##
 ## Velocity template for the BatchLoaderDelegateXxxxImpl classes, where Xxxx successively every object in the GraphQL schema
 ## which has an ID.
@@ -6,8 +7,7 @@
 ## package
 ## batchLoader
 ##
-/** This template is custom **/
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import java.util.List;
 import java.util.UUID;

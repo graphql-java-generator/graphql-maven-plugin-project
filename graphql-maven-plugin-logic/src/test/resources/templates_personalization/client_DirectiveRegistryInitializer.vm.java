@@ -1,5 +1,5 @@
 /** This template is custom **/
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.client.directive.DirectiveLocation;
@@ -25,7 +25,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("${directive.name}");
-		directive.setPackageName("${pluginConfiguration.packageName}");
+		directive.setPackageName("${packageUtilName}");
 #foreach ($argument in $directive.arguments)
 		param = InputParameter.newHardCodedParameter("${argument.name}", null, ${argument.mandatory},
 #if ($argument.graphQLTypeName == "BigDecimal" || 

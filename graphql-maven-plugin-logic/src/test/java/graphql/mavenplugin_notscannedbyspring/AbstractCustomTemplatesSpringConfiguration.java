@@ -56,8 +56,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	}
 
 	/**
-	 * Helper method to build customize templates map for given scope The customized templaes are located at
-	 * src/test/resources/templates_personalization Also {@link CodeTemplateScope#COMMON} tempaltes are addedd
+	 * Helper method to build customize templates map for given scope The customized templates are located at
+	 * src/test/resources/templates_personalization Also {@link CodeTemplateScope#COMMON} templates are added
 	 * 
 	 * @param scope
 	 * @return
@@ -70,7 +70,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 					Matcher matcher = templatePattern.matcher(codeTemplate.getDefaultValue());
 					if (matcher.matches()) {
 						return new Pair<CodeTemplate, String>(codeTemplate,
-								String.format("templates_personalization/%s.vm.custom.java", matcher.group(1)));
+								String.format("templates_personalization/%s.vm.java", matcher.group(1)));
 					} else {
 						throw new RuntimeException(String.format("Template does not match expected pattenr: %s - %s",
 								codeTemplate, codeTemplate.getDefaultValue()));

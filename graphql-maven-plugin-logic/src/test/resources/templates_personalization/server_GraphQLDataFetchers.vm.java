@@ -1,5 +1,5 @@
 /** This template is custom **/
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import java.util.List;
 import java.util.Map;
@@ -54,22 +54,22 @@ public class GraphQLDataFetchers {
 ## $argument is an instance of Field
 #if ($argument.type.class.simpleName == "EnumType")
 #if ($argument.mandatory)
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.javaName}"));
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.javaName}"));
 #else
-			${argument.type.classSimpleName} ${argument.camelCaseName} = null;
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = null;
 			if (dataFetchingEnvironment.getArgument("${argument.name}") != null)
-				${argument.camelCaseName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
+				${argument.javaName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
 #end
 #elseif (${argument.type.inputType})
 #if(${argument.list})
-			List<${argument.type.classSimpleName}> ${argument.camelCaseName} = graphqlUtils.getListInputObjects((List<Map<String, Object>>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
+			List<${argument.type.classSimpleName}> ${argument.javaName} = graphqlUtils.getListInputObjects((List<Map<String, Object>>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
 #else
-			${argument.type.classSimpleName} ${argument.camelCaseName} = graphqlUtils.getInputObject((Map<String, Object>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
+			${argument.type.classSimpleName} ${argument.javaName} = graphqlUtils.getInputObject((Map<String, Object>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
 #end
 #elseif (${argument.type.classSimpleName} == "UUID")
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = (dataFetchingEnvironment.getArgument("${argument.name}") == null) ? null : UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = (dataFetchingEnvironment.getArgument("${argument.name}") == null) ? null : UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
 #else
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.camelCaseName} = dataFetchingEnvironment.getArgument("${argument.name}");
+			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end
 #end  ##Foreach
 #if($dataFetcher.sourceName)
@@ -79,24 +79,24 @@ public class GraphQLDataFetchers {
 #if (${dataFetcher.completableFuture})
 			DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader = dataFetchingEnvironment.getDataLoader("${dataFetcher.field.type.classSimpleName}"); 
 			
-			return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+			return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 #elseif (${dataFetcher.field.list})
-			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			logger.debug("${dataFetcher.name}: {} found rows", (ret==null) ? 0 : ret.size());
 
 			return ret;
 #else
 			${dataFetcher.field.type.classSimpleName} ret = null;
 			try {
-				ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.camelCaseName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.camelCaseName}#end);
+				ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			} catch (NoSuchElementException e) {
 				// There was no items in the Optional
 			}
 
 			if (ret != null)
-				logger.debug("human: 1 result found");
+				logger.debug("${dataFetcher.name}: 1 result found");
 			else
-				logger.debug("human: no result found");
+				logger.debug("${dataFetcher.name}: no result found");
 
 			return ret;
 #end

@@ -5,6 +5,8 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.graphql_java_generator.GraphqlUtils;
+
 /**
  * This class represents a GraphQL Data Fetcher. It's a piece of code that reads non scalar fields on GraphQL objects,
  * which includes: all fields for queries, mutations and subscriptions, and all non scalar fields for regular GraphQL
@@ -24,6 +26,16 @@ public interface DataFetcher {
 	 * @return
 	 */
 	public String getName();
+
+	/**
+	 * The name of the DataFetcher, as it can be used in the Java code. If the name is a java keyword (class, default,
+	 * break...), the java name it prefixed by an underscore.
+	 * 
+	 * @return The name of the DataFetcher, as it can be used in Java code
+	 */
+	default public String getJavaName() {
+		return GraphqlUtils.graphqlUtils.getJavaName(getName());
+	}
 
 	/**
 	 * The name of the DataFetcher, in camelCase.

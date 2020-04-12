@@ -1,5 +1,5 @@
 /** This template is custom **/
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import java.io.IOException;
 
@@ -27,14 +27,16 @@ public class CustomScalarDeserializer${object.name}  extends AbstractCustomScala
 
 	protected CustomScalarDeserializer${object.name}() {
 		super(${object.classFullName}.class,
-#if (${object.graphQLScalarTypeClass})
-				new ${object.graphQLScalarTypeClass}()
-#elseif (${object.graphQLScalarTypeStaticField})
-				${object.graphQLScalarTypeStaticField}
-#elseif (${object.graphQLScalarTypeGetter})
-				${object.graphQLScalarTypeGetter}
+#if (${object.customScalarDefinition.graphQLScalarTypeClass})
+				new ${object.customScalarDefinition.graphQLScalarTypeClass}()
+#elseif (${object.customScalarDefinition.graphQLScalarTypeStaticField})
+				${object.customScalarDefinition.graphQLScalarTypeStaticField}
+#elseif (${object.customScalarDefinition.graphQLScalarTypeGetter})
+				${object.customScalarDefinition.graphQLScalarTypeGetter}
 #else
 			${object.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
+			//
+			See https://graphql-maven-plugin-project.graphql-java-generator.com/customscalars.html
 #end
 				);
 	}

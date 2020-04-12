@@ -6,7 +6,7 @@
 ## package
 ##
 /** This template is custom **/
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import org.dataloader.BatchLoader;
 import org.dataloader.DataLoaderRegistry;

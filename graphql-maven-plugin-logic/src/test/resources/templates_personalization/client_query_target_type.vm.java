@@ -1,12 +1,12 @@
 /** This template is custom **/
-package ${pluginConfiguration.packageName};
+package ${packageUtilName};
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-#foreach($import in $imports)
+#foreach($import in ${object.imports})
 import $import;
 #end
 
@@ -37,6 +37,6 @@ public class ${objectName} {
 	}
 	
     public String toString() {
-        return "${objectName} {${query.name}: " + ${query.javaName} + "}";
+        return "${queryName} {${query.name}: " + ${query.javaName} + "}";
     }
 }
