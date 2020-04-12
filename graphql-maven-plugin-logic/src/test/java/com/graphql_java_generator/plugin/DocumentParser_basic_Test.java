@@ -10,7 +10,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
 
@@ -52,9 +51,12 @@ class DocumentParser_basic_Test {
 		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
 
 		// Go, go, go
-		int i = documentParser.parseOneDocument(doc);
+		documentParser.parseOneDocument(doc);
 
 		// Verification
-		assertEquals(1, i);
+		int nbClasses = documentParser.queryTypes.size() + documentParser.subscriptionTypes.size()
+				+ documentParser.mutationTypes.size() + documentParser.objectTypes.size()
+				+ documentParser.enumTypes.size() + documentParser.interfaceTypes.size();
+		assertEquals(2, nbClasses);
 	}
 }

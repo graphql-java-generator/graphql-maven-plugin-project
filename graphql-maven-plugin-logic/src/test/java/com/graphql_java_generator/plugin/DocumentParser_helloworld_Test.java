@@ -14,8 +14,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 
 import graphql.language.Document;
@@ -62,7 +60,7 @@ class DocumentParser_helloworld_Test {
 		int i = documentParser.parseDocuments();
 
 		// Verification
-		assertEquals(3, i, "3 classes expected");
+		assertEquals(4, i, "3 classes expected (basic + helloworld)");
 	}
 
 	@Test
@@ -73,10 +71,13 @@ class DocumentParser_helloworld_Test {
 		Document doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
 
 		// Go, go, go
-		int i = documentParser.parseOneDocument(doc);
+		documentParser.parseOneDocument(doc);
 
 		// Verification
-		assertEquals(1, i, "One classe is generated (the query)");
+		int nbClasses = documentParser.queryTypes.size() + documentParser.subscriptionTypes.size()
+				+ documentParser.mutationTypes.size() + documentParser.objectTypes.size()
+				+ documentParser.enumTypes.size() + documentParser.interfaceTypes.size();
+		assertEquals(2, nbClasses, "Two classes ares generated (the query and the object for the query)");
 	}
 
 }

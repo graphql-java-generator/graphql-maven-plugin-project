@@ -338,8 +338,11 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+## Note: we must use the ${query.type.classFullName}, as when the GraphQL schema uses request that return the query type, and 
+## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
+## the current name and the query type object: they have the same name, but are in different packages 
 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Map<String, Object> parameters)
+	public #if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -379,8 +382,10 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}(String queryResponseDef#inputParams(), Object... paramsAndValues)
+## Note: we must use the ${query.type.classFullName}, as when the GraphQL schema uses request that return the query type, and 
+## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
+## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
+	public #if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end ${field.name}(String queryResponseDef#inputParams(), Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -424,8 +429,11 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+## Note: we must use the ${query.type.classFullName}, as when the GraphQL schema uses request that return the query type, and 
+## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
+## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.name}WithBindValues(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
+	public #if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end ${field.name}WithBindValues(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing of ${object.requestType} '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end);
@@ -487,8 +495,11 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+## Note: we must use the ${query.type.classFullName}, as when the GraphQL schema uses request that return the query type, and 
+## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
+## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}(ObjectResponse objectResponse#inputParams(), Object... paramsAndValues)
+	public #if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end ${field.javaName}(ObjectResponse objectResponse#inputParams(), Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();

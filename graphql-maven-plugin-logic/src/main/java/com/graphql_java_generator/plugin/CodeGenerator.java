@@ -12,6 +12,8 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -65,6 +67,9 @@ public class CodeGenerator {
 
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
+
+	/** The context for server mode. Stored here, so that it is calculated only once */
+	VelocityContext serverContext = null;
 
 	public CodeGenerator() {
 		// Initialization for Velocity
@@ -287,10 +292,7 @@ public class CodeGenerator {
 	 */
 	int generateServerFiles() throws IOException {
 
-		VelocityContext context = getVelocityContext();
-		context.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
-		context.put("interfaces", documentParser.getInterfaceTypes());
-		context.put("unions", documentParser.getUnionTypes());
+		VelocityContext context = getVelocityServerContext();
 
 		// List of found schemas
 		List<String> schemaFiles = new ArrayList<>();
@@ -452,6 +454,30 @@ public class CodeGenerator {
 		context.put("customScalars", documentParser.customScalars);
 		context.put("directives", documentParser.directives);
 		return context;
+	}
+
+	/**
+	 * @return
+	 */
+	private VelocityContext getVelocityServerContext() {
+		if (serverContext == null) {
+			serverContext = getVelocityContext();
+			serverContext.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
+			serverContext.put("interfaces", documentParser.getInterfaceTypes());
+			serverContext.put("unions", documentParser.getUnionTypes());
+
+			Set<String> imports = new ConcurrentSkipListSet<>();
+			// Let's calculate the list of imports for all the GraphQL schema object, input types, interfaces and unions
+			if (pluginConfiguration.isSeparateUtilityClasses()) {
+				// ConcurrentSkipListSet: We need to be thread safe, for the parallel stream we use to fill it
+				documentParser.types.values().parallelStream()
+						.forEach(o -> imports.add(o.getPackageName() + "." + o.getClassSimpleName()));
+			}
+			documentParser.customScalars.parallelStream()
+					.forEach(o -> imports.add(o.getPackageName() + "." + o.getClassSimpleName()));
+			serverContext.put("imports", imports);
+		}
+		return serverContext;
 	}
 
 	/**

@@ -1,4 +1,6 @@
 Here are the next tasks listed, as a TODO list:
+* Remove sourceName from data fetchers. Its value is the type name...
+* Remove defaultImplementationForInterface in ObjectType (now useless)
 * [server side] Check graphql-java correction for issue 1844 (Directive values of type 'EnumValue' are not supported yet)
 * enum values may currently not be a java keyword (seems to be a graphql-java limitation). issue to raise in the graphql-java project
 * Check compatibility with the schema.public.graphqls (available in the plugin logic test resources folder)

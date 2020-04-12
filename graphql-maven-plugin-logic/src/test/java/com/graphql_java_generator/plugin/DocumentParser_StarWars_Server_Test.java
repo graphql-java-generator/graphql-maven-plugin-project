@@ -45,17 +45,20 @@ class DocumentParser_StarWars_Server_Test {
 		assertEquals(12, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
-		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "hero", "QueryType", "hero", "Character", false, null);
+		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, sourceName
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "hero", "QueryType", "hero", "Character", false,
+				"QueryType");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "characters", "QueryType", "characters", "Character",
-				true, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "human", "QueryType", "human", "Human", false, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "droid", "QueryType", "droid", "Droid", false, null);
+				true, "QueryType");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "human", "QueryType", "human", "Human", false,
+				"QueryType");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "droid", "QueryType", "droid", "Droid", false,
+				"QueryType");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createHuman", "MutationType", "createHuman", "Human",
-				false, null);
+				false, "MutationType");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "addFriend", "MutationType", "addFriend", "Character",
-				false, null);
+				false, "MutationType");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Human", "friends", "Character", true,
 				"Human");

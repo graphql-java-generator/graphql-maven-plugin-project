@@ -1,31 +1,6 @@
 package ${object.packageName};
 
-import java.util.List;
-
-#if (${pluginConfiguration.mode} == "server")
-import java.util.UUID;
-
-#if (${pluginConfiguration.generateJPAAnnotation})
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
-#end
-#end
-
-#if (${pluginConfiguration.mode} == "client")
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-#end
-
-import com.graphql_java_generator.annotation.GraphQLInputParameters;
-import com.graphql_java_generator.annotation.GraphQLInterfaceType;
-import com.graphql_java_generator.annotation.GraphQLNonScalar;
-import com.graphql_java_generator.annotation.GraphQLScalar;
-
-#foreach($import in $imports)
+#foreach($import in ${object.imports})
 import $import;
 #end
 

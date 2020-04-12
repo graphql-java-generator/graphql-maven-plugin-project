@@ -128,12 +128,12 @@ public class GraphQLProvider {
 		// https://github.com/graphql-java/graphql-java-examples/tree/master/http-example
 		return RuntimeWiring.newRuntimeWiring()
 #foreach ($customScalar in $customScalars)
-#if (${customScalar.graphQLScalarTypeClass})
-			.scalar(new ${customScalar.graphQLScalarTypeClass}())
-#elseif (${customScalar.graphQLScalarTypeStaticField})
-			.scalar(${customScalar.graphQLScalarTypeStaticField})
-#elseif (${customScalar.graphQLScalarTypeGetter})
-			.scalar(${customScalar.graphQLScalarTypeGetter})
+#if (${customScalar.customScalarDefinition.graphQLScalarTypeClass})
+			.scalar(new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}())
+#elseif (${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
+			.scalar(${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
+#elseif (${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
+			.scalar(${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
 #else
 		.scalar(): ${customScalar.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end

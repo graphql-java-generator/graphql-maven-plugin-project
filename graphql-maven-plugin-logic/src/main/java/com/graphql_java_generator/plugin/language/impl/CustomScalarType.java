@@ -3,9 +3,11 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.language.CustomScalar;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,28 +18,9 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class CustomScalarType extends ScalarType {
+public class CustomScalarType extends ScalarType implements CustomScalar {
 
-	/**
-	 * The full class name for this GraphQLScalarType. Optional.
-	 * 
-	 * @see CustomScalarDefinition
-	 */
-	String graphQLScalarTypeClass;
-
-	/**
-	 * The full path for the static field name that contains this GraphQLScalarType. Optional.
-	 * 
-	 * @see CustomScalarDefinition
-	 */
-	String graphQLScalarTypeStaticField;
-
-	/**
-	 * The full path for the static method name that returns this GraphQLScalarType. Optional.
-	 * 
-	 * @see CustomScalarDefinition
-	 */
-	String graphQLScalarTypeGetter;
+	final CustomScalarDefinition customScalarDefinition;
 
 	/**
 	 * 
@@ -57,13 +40,12 @@ public class CustomScalarType extends ScalarType {
 	 *            The current {@link PluginConfiguration}
 	 * @see CustomScalarDefinition
 	 */
-	public CustomScalarType(String name, String packageName, String classSimpleName, String graphQLScalarTypeClass,
-			String graphQLScalarTypeStaticField, String graphQLScalarTypeGetter,
-			PluginConfiguration pluginConfiguration) {
-		super(name, packageName, classSimpleName, pluginConfiguration);
-		this.graphQLScalarTypeClass = graphQLScalarTypeClass;
-		this.graphQLScalarTypeStaticField = graphQLScalarTypeStaticField;
-		this.graphQLScalarTypeGetter = graphQLScalarTypeGetter;
+	public CustomScalarType(CustomScalarDefinition customScalarDefinition, PluginConfiguration pluginConfiguration) {
+		super(customScalarDefinition.getGraphQLTypeName(),
+				GraphqlUtils.graphqlUtils.getPackageName(customScalarDefinition.getJavaType()),
+				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()),
+				pluginConfiguration);
+		this.customScalarDefinition = customScalarDefinition;
 	}
 
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.allGraphQLCases.introspection;
+package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,13 +9,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.allGraphQLCases.Main;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client.__Schema;
 import org.allGraphQLCases.client.__Type;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -70,7 +68,6 @@ public class IntrospectionIT {
 		assertEquals("AllFieldCases", ret.get__typename());
 	}
 
-	@Disabled // Not ready yet for interfaces
 	@Test
 	void test__datatype_withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {

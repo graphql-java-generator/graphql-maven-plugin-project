@@ -98,7 +98,7 @@ class DocumentParser_Forum_Server_Test {
 		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
 
 		// Verification
-		assertEquals("@Entity\n\t\t@GraphQLObjectType(\"Topic\")", topic.getAnnotation(), "Entity annotation");
+		assertEquals("@Entity\n@GraphQLObjectType(\"Topic\")", topic.getAnnotation(), "Entity annotation");
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
 				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", javaClass = UUID.class)");
@@ -157,25 +157,25 @@ class DocumentParser_Forum_Server_Test {
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, completableFuture, sourceName,
 		// list of input parameters
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, false,
-				null);
+				"QueryType");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "QueryType", "nbBoards", "Int", false, false,
-				null);
+				"QueryType");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, false,
-				null, "boardName");
+				"QueryType", "boardName");
 		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "QueryType",
-				"findTopics", "Topic", true, false, null, "boardName", "keyword");
+				"findTopics", "Topic", true, false, "QueryType", "boardName", "keyword");
 		// Let's check the input parameters for this dataFetcher
 		assertFalse(dataFetcher.getField().getInputParameters().get(0).isList());
 		assertTrue(dataFetcher.getField().getInputParameters().get(1).isList());
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
-				false, false, null, "name", "publiclyAvailable");
+				false, false, "MutationType", "name", "publiclyAvailable");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic",
-				false, false, null, "topic");
+				false, false, "MutationType", "topic");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post",
-				false, false, null, "post");
+				false, false, "MutationType", "post");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post",
-				true, false, null, "spam");
+				true, false, "MutationType", "spam");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, false,
 				"Board", "since");

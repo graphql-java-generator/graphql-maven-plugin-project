@@ -1,6 +1,5 @@
 package ${object.packageName};
 
-
 #foreach($import in ${object.imports})
 import $import;
 #end

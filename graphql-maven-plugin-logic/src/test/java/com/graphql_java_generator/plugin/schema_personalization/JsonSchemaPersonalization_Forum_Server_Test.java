@@ -56,7 +56,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 
 		// Verification
 		ObjectType member = jsonSchemaPersonalization.findObjectTypeFromName("Member");
-		assertEquals("@Entity\n\t\t@GraphQLObjectType(\"Member\")\n\t\t@MyAdditionalAnnotation", member.getAnnotation(),
+		assertEquals("@Entity\n@GraphQLObjectType(\"Member\")\n@MyAdditionalAnnotation", member.getAnnotation(),
 				"member annotation");
 		//
 		Field age = jsonSchemaPersonalization.findFieldFromName(member, "age");

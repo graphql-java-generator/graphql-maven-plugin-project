@@ -13,12 +13,12 @@ public class CustomScalarRegistryInitializer {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
 #foreach ($customScalar in $customScalars)
-#if (${customScalar.graphQLScalarTypeClass})
-		customScalarRegistry.registerGraphQLScalarType(new ${customScalar.graphQLScalarTypeClass}());
-#elseif (${customScalar.graphQLScalarTypeStaticField})
-		customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeStaticField});
-#elseif (${customScalar.graphQLScalarTypeGetter})
-		customScalarRegistry.registerGraphQLScalarType(${customScalar.graphQLScalarTypeGetter});
+#if (${customScalar.customScalarDefinition.graphQLScalarTypeClass})
+		customScalarRegistry.registerGraphQLScalarType(new ${customScalar.customScalarDefinition.graphQLScalarTypeClass}());
+#elseif (${customScalar.customScalarDefinition.graphQLScalarTypeStaticField})
+		customScalarRegistry.registerGraphQLScalarType(${customScalar.customScalarDefinition.graphQLScalarTypeStaticField});
+#elseif (${customScalar.customScalarDefinition.graphQLScalarTypeGetter})
+		customScalarRegistry.registerGraphQLScalarType(${customScalar.customScalarDefinition.graphQLScalarTypeGetter});
 #else
 		customScalarRegistry.registerGraphQLScalarType: ${customScalar.javaName} : you must define one of graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter (in the POM parameters for CustomScalars)
 #end

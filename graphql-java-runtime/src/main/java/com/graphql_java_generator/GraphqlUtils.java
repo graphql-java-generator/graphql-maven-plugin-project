@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Component;
 
@@ -525,6 +526,55 @@ public class GraphqlUtils {
 	 */
 	public boolean isJavaReservedWords(String name) {
 		return javaKeywords.contains(name);
+	}
+
+	/**
+	 * Extract the simple name for a class (without the package name), from its full class name (with the package name)
+	 * 
+	 * @param classFullName
+	 *            The full class name, for instance java.util.Date
+	 * @return The simple class name (in the above sample: Date)
+	 */
+	public String getClassSimpleName(String classFullName) {
+		int lstPointPosition = classFullName.lastIndexOf('.');
+		return classFullName.substring(lstPointPosition + 1);
+	}
+
+	/**
+	 * Extract the package name for a class, from its full class name (with the package name)
+	 * 
+	 * @param classFullName
+	 *            The full class name, for instance java.util.Date
+	 * @return The simple class name (in the above sample: java.util)
+	 */
+	public String getPackageName(String classFullName) {
+		int lstPointPosition = classFullName.lastIndexOf('.');
+		return classFullName.substring(0, lstPointPosition);
+	}
+
+	/**
+	 * Concatenate a non limited number of lists into a stream.
+	 * 
+	 * @param <T>
+	 * @param clazz
+	 *            The T class
+	 * @param parallelStreams
+	 *            true if the returned stream should be a parallel one
+	 * @param lists
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Stream<T> concateStreams(Class<T> clazz, boolean parallelStreams, List<?>... lists) {
+		if (lists.length == 0) {
+			// Let's return an empty stream
+			return new ArrayList<T>().stream();
+		} else {
+			Stream<T> ret = (Stream<T>) lists[0].stream();
+			for (int i = 1; i < lists.length; i += 1) {
+				ret = (Stream<T>) Stream.concat(ret, lists[i].stream());
+			}
+			return parallelStreams ? ret.parallel() : ret;
+		}
 	}
 
 }

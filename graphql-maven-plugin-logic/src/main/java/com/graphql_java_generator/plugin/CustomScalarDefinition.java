@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * This class contains all one definitions for a Custom Scalar type
+ * This class contains onedefinitions for a Custom Scalar type
  * 
  * @author etienne-sf
  */

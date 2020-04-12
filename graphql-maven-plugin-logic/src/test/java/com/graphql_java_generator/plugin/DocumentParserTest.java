@@ -62,8 +62,8 @@ class DocumentParserTest {
 		documentParser.addTypeAnnotationForClientMode(type);
 		assertEquals(
 				"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)\n"
-						+ "		@JsonSubTypes({ })" //
-						+ "\n\t\t@GraphQLInterfaceType(\"TheName\")",
+						+ "@JsonSubTypes({ })\n" //
+						+ "@GraphQLInterfaceType(\"TheName\")",
 				type.getAnnotation(), type.getClass().getName());
 		// Ok, that won't compile, as there is no sub types. But the JUnit test is OK ;-)
 	}
@@ -75,7 +75,7 @@ class DocumentParserTest {
 
 		type = new ObjectType("TheName", "the.package.name", pluginConfiguration);
 		documentParser.addTypeAnnotationForServerMode(type);
-		assertEquals("@Entity\n\t\t@GraphQLObjectType(\"TheName\")", type.getAnnotation(), type.getClass().getName());
+		assertEquals("@Entity\n@GraphQLObjectType(\"TheName\")", type.getAnnotation(), type.getClass().getName());
 
 		type = new InterfaceType("TheName", "the.package.name", pluginConfiguration);
 		documentParser.addTypeAnnotationForServerMode(type);
@@ -147,23 +147,25 @@ class DocumentParserTest {
 		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration));
 		documentParser.scalarTypes.add((ScalarType) documentParser.getType("GraphQLScalar"));
 
+		type.setRequestType("AQuery");
+
 		// Go, go, go
-		documentParser.initDataFetcherForOneObject(type, true);
+		documentParser.initDataFetcherForOneObject(type);
 
 		// Verification
 		int i = 0;
 		assertEquals(5, documentParser.dataFetchers.size(), "size");
 		//
 		// For query types, there must be a Data Fetcher for each field.
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field0", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field0", true, type, "NameOfTheType",
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field1", false, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field1", false, type, "NameOfTheType",
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field2", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field2", true, type, "NameOfTheType",
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field3", false, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field3", false, type, "NameOfTheType",
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", true, type, "NameOfTheType",
 				type.getFields().get(i++).getInputParameters());
 		//
 		// There should be one DataFetchersDelegate, as we have only one type.
@@ -189,8 +191,10 @@ class DocumentParserTest {
 		documentParser.enumTypes.add((EnumType) documentParser.getType("Enum0"));
 		documentParser.fillTypesMap();
 
+		type.setRequestType(null);
+
 		// Go, go, go
-		documentParser.initDataFetcherForOneObject(type, false);
+		documentParser.initDataFetcherForOneObject(type);
 
 		// Verification
 		i = 0;
@@ -224,8 +228,10 @@ class DocumentParserTest {
 		documentParser.enumTypes.add(new EnumType("AnEnumType", "packageName", pluginConfiguration));
 		documentParser.scalarTypes.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration));
 
+		type.setRequestType(null);
+
 		// Go, go, go
-		documentParser.initDataFetcherForOneObject(type, false);
+		documentParser.initDataFetcherForOneObject(type);
 
 		// Verification
 		i = 0;

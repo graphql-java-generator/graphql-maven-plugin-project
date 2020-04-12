@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
+import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 
 import lombok.Data;
@@ -97,14 +98,42 @@ public abstract class AbstractType implements Type {
 	/** {@inheritDoc} */
 	@Override
 	public void addImport(Class<?> clazz) {
-		addImport(clazz.getPackage().getName(), clazz.getSimpleName());
+		// For classes defined in a class, the simple name is the name of like this: "MainClassname$InnerClassname"
+		// For them, we do like if the packagename is : package.name.MainClassname
+		// and the simple name is InnerClassname
+		String classFullname = clazz.getName();
+		int dollarPos = classFullname.indexOf('$');
+		if (dollarPos > 0) {
+			String packageName = classFullname.substring(0, dollarPos);
+			String classname = classFullname.substring(dollarPos + 1);
+			addImport(packageName, classname);
+		} else {
+			addImport(clazz.getPackage().getName(), clazz.getSimpleName());
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void addImport(String packageName, String classname) {
+		// For inner class, the classname is "MainClassname$InnerClassname". And the inner class must be imported, even
+		// if we are in the same package
+		int dollarPos = classname.indexOf('$');
+		if (dollarPos > 0) {
+			packageName = packageName + "." + classname.substring(0, dollarPos);
+			classname = classname.substring(dollarPos + 1);
+		}
+
+		// For inner classes, the classname may be sent as "MainClassname.InnerClassname"
+		int dotPos = classname.indexOf('.');
+		if (dotPos > 0) {
+			packageName = packageName + "." + classname.substring(0, dotPos);
+			classname = classname.substring(dotPos + 1);
+		}
+
 		// No import for java.lang
-		if (!packageName.equals("java.lang")) {
+		// And no import if the classname is the same as the current object: there would be a name conflict.
+		// In this case, the import "silently fails": the class is not imported in the imports list.
+		if (!packageName.equals("java.lang") && !getJavaName().equals(classname)) {
 			// As we're in a type, we're not in a utility class. So the current type will generate a class in the
 			// pluginConfiguration's packageName
 			if (!getPackageName().equals(packageName)) {
@@ -126,7 +155,8 @@ public abstract class AbstractType implements Type {
 			this.annotation = annotationToAdd;
 		} else {
 			// We add this annotation on a next line.
-			this.annotation = this.annotation + "\n\t\t" + annotationToAdd;
+			// Add indentation only for fields (not types)
+			this.annotation = this.annotation + ((this instanceof Field) ? "\n\t\t" : "\n") + annotationToAdd;
 		}
 
 	}

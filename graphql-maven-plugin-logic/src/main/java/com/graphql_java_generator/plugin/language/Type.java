@@ -66,7 +66,9 @@ public interface Type {
 	/**
 	 * Add the given class as an import for the current type. This import will be added only if the given class is not
 	 * in the same package as the java class for this type, and if it doesn't already exist in the imports set.<BR/>
-	 * classes from the <I>java.lang</I> package are not imported.
+	 * classes from the <I>java.lang</I> package are not imported.<BR/>
+	 * Note: it is not allowed to import a class of the same name as the current class: there would be a name conflict.
+	 * In this case, the import "silently fails": the class is not imported in the imports list.
 	 * 
 	 * @param clazz
 	 *            The class that must be imported in the current type
@@ -76,7 +78,11 @@ public interface Type {
 	/**
 	 * Add the given class as an import for the current type. This import will be added only if the given class is not
 	 * in the same package as the java class for this type, and if it doesn't already exist in the imports set.<BR/>
-	 * classes from the <I>java.lang</I> package are not imported.
+	 * classes from the <I>java.lang</I> package are not imported.<BR/>
+	 * Note1: for inner class, the classname may be "MainClassname$InnerClassname" (as returned by the
+	 * {@link Class#getName()} method), par as "MainClassname.InnerClassname".<BR/>
+	 * Note2: it is not allowed to import a class of the same name as the current class: there would be a name conflict.
+	 * In this case, the import "silently fails": the class is not imported in the imports list.
 	 * 
 	 * @param packageName
 	 *            The package where the class to import is located
