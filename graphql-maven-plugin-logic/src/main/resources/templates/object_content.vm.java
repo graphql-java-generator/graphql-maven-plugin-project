@@ -4,12 +4,6 @@
 	}
 
 #foreach ($field in $object.fields)
-#if (${field.inputParameters.size()} > 0)
-	@GraphQLInputParameters(names = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.name}"#if($foreach.hasNext), #end#end}, types = {#foreach ($inputParameter in $field.inputParameters)"${inputParameter.type.name}"#if($foreach.hasNext), #end#end})
-#end
-#if (${pluginConfiguration.mode} == "client")
-	@JsonProperty("${field.name}")
-#end
 	${field.annotation}
 	#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
 

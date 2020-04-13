@@ -20,6 +20,14 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+import graphql.language.ArrayValue;
+import graphql.language.BooleanValue;
+import graphql.language.FloatValue;
+import graphql.language.IntValue;
+import graphql.language.NullValue;
+import graphql.language.StringValue;
+import graphql.language.Value;
+
 /**
  * @author etienne-sf
  */
@@ -334,6 +342,46 @@ public class GraphqlUtils {
 	}
 
 	/**
+	 * Returns a {@link Field} from the given class.
+	 * 
+	 * @param owningClass
+	 *            The class that should contain this field. If the class's name finishes by Response, as an empty
+	 *            XxxResponse class is created for each Query/Mutation/Subscription (to be compatible with previsous
+	 *            version), then this method also looks in the owningClass's superclass.
+	 * @param fieldName
+	 *            The name of the searched field
+	 * @param mustFindField
+	 *            If true and the field is not found, a {@link GraphQLRequestPreparationException} is thrown.<BR/>
+	 *            If false an the field is not found, the method returns null
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public Field getDeclaredField(Class<?> owningClass, String fieldName, boolean mustFindField)
+			throws GraphQLRequestPreparationException {
+
+		try {
+			return owningClass.getDeclaredField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e1) {
+			// If the classname finishes by "Response", we take a look at the superclass, as the XxxResponse classes are
+			// built as just inheriting from the query/mutation/subscription class
+			if (owningClass.getSimpleName().endsWith("Response")) {
+				try {
+					return owningClass.getSuperclass().getDeclaredField(fieldName);
+				} catch (NoSuchFieldException | SecurityException e2) {
+					if (mustFindField)
+						throw new GraphQLRequestPreparationException("Could not find fied '" + fieldName + "' in "
+								+ owningClass.getName() + ", nor in " + owningClass.getSuperclass().getName(), e1);
+				}
+			}
+
+			if (mustFindField)
+				throw new GraphQLRequestPreparationException(
+						"Could not find fied '" + fieldName + "' in " + owningClass.getName(), e1);
+		}
+		return null;
+	}
+
+	/**
 	 * Retrieves the setter for the given field on the given field
 	 * 
 	 * @param <T>
@@ -564,7 +612,7 @@ public class GraphqlUtils {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Stream<T> concateStreams(Class<T> clazz, boolean parallelStreams, List<?>... lists) {
+	public <T> Stream<T> concatStreams(Class<T> clazz, boolean parallelStreams, List<?>... lists) {
 		if (lists.length == 0) {
 			// Let's return an empty stream
 			return new ArrayList<T>().stream();
@@ -577,4 +625,47 @@ public class GraphqlUtils {
 		}
 	}
 
+	/**
+	 * Get the internal value for a {@link Value} stored in the graphql-java AST.
+	 * 
+	 * @param value
+	 *            The value for which we need to extract the real value
+	 * @param graphqlTypeName
+	 *            The type name for this value, as defined in the GraphQL schema. This is used when it's an object
+	 *            value, to create an instance of the correct java class.
+	 * @param action
+	 *            The action that is executing, to generated an explicit error message. It can be for instance "Reading
+	 *            directive directiveName".
+	 * @return
+	 */
+	Object getValue(Value<?> value, String graphqlTypeName, String action) {
+		if (value instanceof StringValue) {
+			return ((StringValue) value).getValue();
+		} else if (value instanceof BooleanValue) {
+			return ((BooleanValue) value).isValue();
+		} else if (value instanceof IntValue) {
+			return ((IntValue) value).getValue();
+		} else if (value instanceof FloatValue) {
+			return ((FloatValue) value).getValue();
+		} else if (value instanceof graphql.language.EnumValue) {
+			// For enums, we can't retrieve an instance of the enum value, as the enum class has not been created yet.
+			// So we just return the label of the enum, as a String.
+			return ((graphql.language.EnumValue) value).getName();
+		} else if (value instanceof NullValue) {
+			return null;
+		} else if (value instanceof ArrayValue) {
+			@SuppressWarnings("rawtypes")
+			List<Value> list = ((ArrayValue) value).getValues();
+			Object[] ret = new Object[list.size()];
+			for (int i = 0; i < list.size(); i += 1) {
+				ret[i] = getValue(list.get(i), graphqlTypeName, action + ": ArrayValue(" + i + ")");
+			}
+			return ret;
+			// } else if (value instanceof ObjectValue) {
+			// return null;
+		} else {
+			throw new RuntimeException(
+					"Value of type " + value.getClass().getName() + " is not managed (" + action + ")");
+		}
+	}
 }

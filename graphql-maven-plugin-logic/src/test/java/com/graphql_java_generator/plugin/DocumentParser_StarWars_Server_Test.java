@@ -46,19 +46,16 @@ class DocumentParser_StarWars_Server_Test {
 
 		int i = 0;
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, sourceName
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "hero", "QueryType", "hero", "Character", false,
-				"QueryType");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "hero", "QueryType", "hero", "Character", false, null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "characters", "QueryType", "characters", "Character",
-				true, "QueryType");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "human", "QueryType", "human", "Human", false,
-				"QueryType");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "droid", "QueryType", "droid", "Droid", false,
-				"QueryType");
+				true, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "human", "QueryType", "human", "Human", false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "droid", "QueryType", "droid", "Droid", false, null);
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createHuman", "MutationType", "createHuman", "Human",
-				false, "MutationType");
+				false, null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "addFriend", "MutationType", "addFriend", "Character",
-				false, "MutationType");
+				false, null);
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Human", "friends", "Character", true,
 				"Human");
@@ -77,13 +74,13 @@ class DocumentParser_StarWars_Server_Test {
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,
-			String returnedTypeName, boolean list, String sourceName) {
+			String returnedTypeName, boolean list, String graphQLOriginType) {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
-		assertEquals(sourceName, dataFetcher.getSourceName(), "sourceName");
+		assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType(), "graphQLOriginType");
 	}
 
 	@Test

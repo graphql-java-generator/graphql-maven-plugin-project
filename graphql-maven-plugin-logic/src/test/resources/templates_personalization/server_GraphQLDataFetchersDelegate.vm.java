@@ -33,26 +33,32 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 * You can implements this method like this:
 	 * <PRE>
 	 * @Override
-	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, Human source) {
-	 *     List<UUID> friendIds = source.getFriendIds();
+	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, Human origin) {
+	 *     List<UUID> friendIds = origin.getFriendIds();
 	 *     DataLoader<UUID, CharacterImpl> dataLoader = environment.getDataLoader("Character");
 	 *     return dataLoader.loadMany(friendIds);
 	 * }
 	 * </PRE>
 	 * <BR/>
 	 * 
-	 * @param dataFetchingEnvironment The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher 
-#if($dataFetcher.sourceName)
-	 * @param source The object from which the field is fetch. It typically contains the id to use in the query.
+	 * @param dataFetchingEnvironment 
+	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher 
+#if($dataFetcher.graphQLOriginType)
+	 * @param origin 
+	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the ${dataFetcher.name} attribute
+	 *    of the <I>origin</I>, which is an instance of {$dataFetcher.graphQLOriginType}. It depends on your data modle, but it typically contains 
+	 *    the id to use in the query.
 #end
 #foreach($argument in $dataFetcher.field.inputParameters)
-	 * @param ${argument.camelCaseName} The input parameter sent in the query by the GraphQL consumer
+	 * @param ${argument.camelCaseName} 
+	 *     The input parameter sent in the query by the GraphQL consumer, as defined in the GraphQL schema.
 #end
-	 * @throws NoSuchElementException This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
-	 * by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
-	 * wheter or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
+	 * @throws NoSuchElementException 
+	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
+	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
+	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
-	public #if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.completableFuture})>#end ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if(${dataFetcher.completableFuture}), DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader#end#if($dataFetcher.sourceName), ${dataFetcher.sourceName} source#end#foreach($argument in $dataFetcher.field.inputParameters), #if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end  ${argument.javaName}#end);
+	public #if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.completableFuture})>#end ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if(${dataFetcher.completableFuture}), DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader#end#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), #if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end  ${argument.javaName}#end);
 	
 #end
 #foreach ($batchLoader in $dataFetcherDelegate.batchLoaders)

@@ -181,7 +181,7 @@ public class GraphqlClientUtils {
 			// Ok, at least on of GraphQLScalar and GraphQLNonScalar annotation is set.
 			return fieldOrMethod.getAnnotation(GraphQLScalar.class) != null;
 		} else {
-			// No GraphQLScalar or GraphQLNonScalar annotation: let's thrown an internal error.
+			// No GraphQLScalar or GraphQLNonScalar annotation: let's throw an internal error.
 			if (fieldOrMethod instanceof Field) {
 				Field field = (Field) fieldOrMethod;
 				throw new GraphQLRequestPreparationException("The field <" + field.getName() + "> of the class <"
@@ -251,17 +251,16 @@ public class GraphqlClientUtils {
 
 		// Let's check that this fieldName is either a method name or a field of the class for this ObjectResponse.
 		Class<?> fieldClass = null;
-		for (java.lang.reflect.Field field : owningClass.getDeclaredFields()) {
-			if (field.getName().equals(graphqlUtils.getJavaName(name))) {
-				// If we need to check that this field is (or is not) a scalar
-				fieldClass = checkIsScalar(field, shouldBeScalar);
-				break;
-			}
+
+		Field field = graphqlUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(name), false);
+		if (field != null) {
+			// If we need to check that this field is (or is not) a scalar
+			fieldClass = checkIsScalar(field, shouldBeScalar);
 		}
 		if (fieldClass == null && !owningClass.isInterface()) {
 			// This class is a concrete class (not an interface). As the search field is not an attribute, the
 			// owningClass should be a Query, a Mutation or a Subscription
-			for (Method method : owningClass.getDeclaredMethods()) {
+			for (Method method : owningClass.getMethods()) {
 				if (method.getName().equals(name)) {
 					// If we need to check that this field is (or is not) a scalar
 					fieldClass = checkIsScalar(name, method, shouldBeScalar);
@@ -436,8 +435,18 @@ public class GraphqlClientUtils {
 					Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 					inputParams = field.getAnnotation(GraphQLInputParameters.class);
 				} catch (NoSuchFieldException | SecurityException e) {
-					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-							+ "> in the class '" + owningClass.getName() + "'", e);
+					// We may be in the XxxResponse class. ITs has no field, and all the relevant fields are in its
+					// superclass. Let's recurse once.
+					try {
+						Field field = owningClass.getSuperclass().getDeclaredField(graphqlUtils.getJavaName(fieldName));
+						inputParams = field.getAnnotation(GraphQLInputParameters.class);
+					} catch (NoSuchFieldException | SecurityException e2) {
+						// We may be in the XxxResponse class. ITs has no field, and all the relevant fields are in its
+						// superclass. Let's recurse once.
+						throw new GraphQLRequestPreparationException("Error while looking for the the field <"
+								+ fieldName + "> in the class '" + owningClass.getName() + "', not in its superclass: "
+								+ owningClass.getSuperclass().getName(), e);
+					}
 				}
 			}
 

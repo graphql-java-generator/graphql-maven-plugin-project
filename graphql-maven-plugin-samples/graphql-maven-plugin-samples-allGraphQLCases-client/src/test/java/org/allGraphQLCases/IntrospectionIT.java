@@ -5,7 +5,6 @@ package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
@@ -75,12 +74,11 @@ public class IntrospectionIT {
 		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
-		List<Character> ret = queryType.withoutParameters("{withoutParameters {id __typename}}");
+		List<Character> ret = queryType.withoutParameters(" {id __typename}");
 
 		// Verification
 		assertTrue(ret.size() >= 10);
-		fail("not properly tested");
-		// assertEquals("Droid", ret.get(0).get__typename());
+		assertEquals("Droid", ret.get(0).get__typename());
 	}
 
 }

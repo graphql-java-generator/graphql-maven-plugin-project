@@ -32,7 +32,20 @@ public class DataFetcherImpl implements DataFetcher {
 
 	private DataFetchersDelegate dataFetcherDelegate;
 
-	private String sourceName = null;
+	/**
+	 * Retrieves the origin of this {@link DataFetcher}, that is: the name of the object which contains the field to
+	 * fetch.<BR/>
+	 * There are two kinds of {@link DataFetcher}:
+	 * <UL>
+	 * <LI>{@link DataFetcher} for fields of object, interface(...). These {@link DataFetcher} need to have access to
+	 * the object instance, that contains the field (or attribute) it fetches. This instance is the orgin, and will be a
+	 * parameter in the DataFetcher call, that contains the instance of the object, for which this field is
+	 * fetched.</LI>
+	 * <LI>{@link DataFetcher} for query/mutation/subscription. In these case, the field that is fetched by this
+	 * {@link DataFetcher} has no origin: it's the start of the request.</LI>
+	 * </UL>
+	 */
+	private String graphQLOriginType = null;
 
 	private boolean completableFuture = false;
 

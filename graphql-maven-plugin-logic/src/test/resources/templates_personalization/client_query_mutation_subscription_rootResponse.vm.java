@@ -19,7 +19,7 @@ public class ${object.javaName}RootResponse {
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public ${object.javaName}Response get${object.requestTypePascalCase}PascalCase() {
+	public ${object.javaName}Response get${object.requestTypePascalCase}() {
 		return ${object.requestType};
 	}
 

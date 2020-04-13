@@ -17,6 +17,7 @@ import org.allGraphQLCases.server.DroidInput;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanInput;
+import org.allGraphQLCases.server.MyQueryType;
 import org.allGraphQLCases.server._break;
 import org.allGraphQLCases.server._extends;
 import org.dozer.DozerBeanMapper;
@@ -253,5 +254,25 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		droid.setId(UUID.randomUUID());
 		droid.setPrimaryFunction("a primary function");
 		return droid;
+	}
+
+	@Override
+	public Character withOneMandatoryParamDefaultValue(DataFetchingEnvironment dataFetchingEnvironment,
+			Integer nbResultat) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Droid withTwoMandatoryParamDefaultVal(DataFetchingEnvironment dataFetchingEnvironment, DroidInput theHero,
+			Integer num) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MyQueryType relay(DataFetchingEnvironment dataFetchingEnvironment) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

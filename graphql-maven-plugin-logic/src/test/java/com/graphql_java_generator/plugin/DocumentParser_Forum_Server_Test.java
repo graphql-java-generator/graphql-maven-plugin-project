@@ -157,25 +157,25 @@ class DocumentParser_Forum_Server_Test {
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, completableFuture, sourceName,
 		// list of input parameters
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, false,
-				"QueryType");
+				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "QueryType", "nbBoards", "Int", false, false,
-				"QueryType");
+				null);
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, false,
-				"QueryType", "boardName");
+				null, "boardName");
 		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "QueryType",
-				"findTopics", "Topic", true, false, "QueryType", "boardName", "keyword");
+				"findTopics", "Topic", true, false, null, "boardName", "keyword");
 		// Let's check the input parameters for this dataFetcher
 		assertFalse(dataFetcher.getField().getInputParameters().get(0).isList());
 		assertTrue(dataFetcher.getField().getInputParameters().get(1).isList());
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
-				false, false, "MutationType", "name", "publiclyAvailable");
+				false, false, null, "name", "publiclyAvailable");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic",
-				false, false, "MutationType", "topic");
+				false, false, null, "topic");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post",
-				false, false, "MutationType", "post");
+				false, false, null, "post");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post",
-				true, false, "MutationType", "spam");
+				true, false, null, "spam");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, false,
 				"Board", "since");
@@ -274,7 +274,7 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(completableFuture, dataFetcher.isCompletableFuture(), "completableFuture");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
-		assertEquals(sourceName, dataFetcher.getSourceName(), "sourceName");
+		assertEquals(sourceName, dataFetcher.getGraphQLOriginType(), "sourceName");
 
 		// Check of the data fetcher input parameters
 		assertEquals(inputParameters.length, dataFetcher.getField().getInputParameters().size(),

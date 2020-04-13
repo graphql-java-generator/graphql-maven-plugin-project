@@ -69,11 +69,21 @@ public interface DataFetcher {
 	public DataFetchersDelegate getDataFetcherDelegate();
 
 	/**
-	 * Retrieves the source name, that is: the name of the object which contains the field to fetch.
+	 * Retrieves the origin of this {@link DataFetcher}, that is: the name of the object which contains the field to
+	 * fetch.<BR/>
+	 * There are two kinds of {@link DataFetcher}:
+	 * <UL>
+	 * <LI>{@link DataFetcher} for fields of object, interface(...). These {@link DataFetcher} need to have access to
+	 * the object instance, that contains the field (or attribute) it fetches. This instance is the orgin, and will be a
+	 * parameter in the DataFetcher call, that contains the instance of the object, for which this field is
+	 * fetched.</LI>
+	 * <LI>{@link DataFetcher} for query/mutation/subscription. In these case, the field that is fetched by this
+	 * {@link DataFetcher} has no origin: it's the start of the request.</LI>
+	 * </UL>
 	 * 
-	 * @return the source name (the object which contains the field to fetch)
+	 * @return the GraphQL name of the type that contains this field, or null if this is a request ()
 	 */
-	public String getSourceName();
+	public String getGraphQLOriginType();
 
 	/**
 	 * Returns true if this DataFetcher returns a {@link CompletableFuture}, which will be used within a

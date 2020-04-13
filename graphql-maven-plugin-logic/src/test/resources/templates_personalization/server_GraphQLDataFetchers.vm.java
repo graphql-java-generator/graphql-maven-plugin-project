@@ -72,23 +72,23 @@ public class GraphQLDataFetchers {
 			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = dataFetchingEnvironment.getArgument("${argument.name}");
 #end
 #end  ##Foreach
-#if($dataFetcher.sourceName)
-			${dataFetcher.sourceName} source = dataFetchingEnvironment.getSource();
+#if($dataFetcher.graphQLOriginType)
+			${dataFetcher.graphQLOriginType} source = dataFetchingEnvironment.getSource();
 #end
 
 #if (${dataFetcher.completableFuture})
 			DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader = dataFetchingEnvironment.getDataLoader("${dataFetcher.field.type.classSimpleName}"); 
 			
-			return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+			return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 #elseif (${dataFetcher.field.list})
-			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			logger.debug("${dataFetcher.name}: {} found rows", (ret==null) ? 0 : ret.size());
 
 			return ret;
 #else
 			${dataFetcher.field.type.classSimpleName} ret = null;
 			try {
-				ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.sourceName), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+				ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			} catch (NoSuchElementException e) {
 				// There was no items in the Optional
 			}

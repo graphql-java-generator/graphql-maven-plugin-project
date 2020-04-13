@@ -157,15 +157,15 @@ class DocumentParserTest {
 		assertEquals(5, documentParser.dataFetchers.size(), "size");
 		//
 		// For query types, there must be a Data Fetcher for each field.
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field0", true, type, "NameOfTheType",
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field0", true, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field1", false, type, "NameOfTheType",
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field1", false, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field2", true, type, "NameOfTheType",
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field2", true, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field3", false, type, "NameOfTheType",
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field3", false, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", true, type, "NameOfTheType",
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", true, type, null,
 				type.getFields().get(i++).getInputParameters());
 		//
 		// There should be one DataFetchersDelegate, as we have only one type.
@@ -251,13 +251,13 @@ class DocumentParserTest {
 				"nb DataFetchers in the DataFetchersDelegate");
 	}
 
-	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type, String sourceName,
-			List<Field> inputParameters) {
+	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type,
+			String graphQLOriginType, List<Field> inputParameters) {
 		assertEquals(name, dataFetcher.getName(), "name");
 		assertEquals(list, dataFetcher.getField().isList(), "list");
 		assertEquals(type, dataFetcher.getField().getOwningType(), "type");
 		assertEquals(inputParameters, dataFetcher.getField().getInputParameters(), "arguments");
-		assertEquals(sourceName, dataFetcher.getSourceName(), "sourceName");
+		assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType(), "graphQLOriginType");
 	}
 
 }

@@ -64,31 +64,24 @@ import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPerson
 
 import graphql.language.AbstractNode;
 import graphql.language.Argument;
-import graphql.language.ArrayValue;
-import graphql.language.BooleanValue;
 import graphql.language.Definition;
 import graphql.language.DirectiveDefinition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.EnumValueDefinition;
 import graphql.language.FieldDefinition;
-import graphql.language.FloatValue;
 import graphql.language.InputObjectTypeDefinition;
 import graphql.language.InputValueDefinition;
-import graphql.language.IntValue;
 import graphql.language.InterfaceTypeDefinition;
 import graphql.language.ListType;
 import graphql.language.Node;
 import graphql.language.NonNullType;
-import graphql.language.NullValue;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
-import graphql.language.StringValue;
 import graphql.language.TypeName;
 import graphql.language.UnionTypeDefinition;
-import graphql.language.Value;
 import graphql.parser.Parser;
 import lombok.Getter;
 
@@ -930,22 +923,20 @@ public class DocumentParser {
 		switch (pluginConfiguration.getMode()) {
 		case client:
 			// Type annotations
-			graphqlUtils.concateStreams(Type.class, true, interfaceTypes, objectTypes, unionTypes)
-					.forEach(o -> addTypeAnnotationForClientMode(o));
-
-			// Add the GraphQLQuery annotation
-			graphqlUtils.concateStreams(ObjectType.class, true, queryTypes, mutationTypes, subscriptionTypes)
-					.forEach(f -> addQueryAnnotationForClientMode(f, RequestType.subscription));
+			graphqlUtils.concatStreams(Type.class, true, interfaceTypes, objectTypes, unionTypes, queryTypes,
+					mutationTypes, subscriptionTypes).forEach(o -> addTypeAnnotationForClientMode(o));
 
 			// Field annotations
-			graphqlUtils.concateStreams(Type.class, true, objectTypes, interfaceTypes)
-					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode(f));
+			graphqlUtils
+					.concatStreams(Type.class, true, objectTypes, interfaceTypes, queryTypes, mutationTypes,
+							subscriptionTypes)
+					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode((FieldImpl) f));
 
 			break;
 		case server:
-			graphqlUtils.concateStreams(ObjectType.class, true, objectTypes, interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, objectTypes, interfaceTypes)
 					.forEach(o -> addTypeAnnotationForServerMode(o));
-			graphqlUtils.concateStreams(ObjectType.class, true, objectTypes, interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, objectTypes, interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForServerMode(f));
 			break;
 		}
@@ -953,63 +944,59 @@ public class DocumentParser {
 	}
 
 	/**
-	 * Add the {@link GraphQLQuery} annotation to the given query/mutation/subscription
-	 * 
-	 * @param f
-	 *            The query/mutation/subscription, for the annotation must be added.
-	 * @param type
-	 *            The kind of request
-	 */
-	private void addQueryAnnotationForClientMode(ObjectType f, RequestType type) {
-		f.addImport(GraphQLQuery.class);
-		f.addImport(RequestType.class);
-		f.addAnnotation("@GraphQLQuery(name = \"" + f.getName() + "\", type = RequestType." + type.name() + ")");
-	}
-
-	/**
 	 * This method add the needed annotation(s) to the given type, when in client mode
 	 * 
-	 * @param o
+	 * @param type
 	 */
-	void addTypeAnnotationForClientMode(Type o) {
+	void addTypeAnnotationForClientMode(Type type) {
 		// No specific annotation for objects and interfaces when in client mode.
 
-		if (o instanceof InterfaceType || o instanceof UnionType) {
-			o.addImport(JsonTypeInfo.class);
-			o.addImport(JsonTypeInfo.Id.class);
-			o.addAnnotation(
+		if (type instanceof InterfaceType || type instanceof UnionType) {
+			type.addImport(JsonTypeInfo.class);
+			type.addImport(JsonTypeInfo.Id.class);
+			type.addAnnotation(
 					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)");
 
 			// jsonSubTypes annotation looks like this:
 			// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name = "Human") })
 			StringBuffer jsonSubTypes = new StringBuffer();
-			o.addImport(JsonSubTypes.class);
-			o.addImport(JsonSubTypes.Type.class);
+			type.addImport(JsonSubTypes.class);
+			type.addImport(JsonSubTypes.Type.class);
 			jsonSubTypes.append("@JsonSubTypes({");
 			boolean addSeparator = false;
 
 			List<ObjectType> types;
-			if (o instanceof InterfaceType)
-				types = ((InterfaceType) o).getImplementingTypes();
+			if (type instanceof InterfaceType)
+				types = ((InterfaceType) type).getImplementingTypes();
 			else
-				types = ((UnionType) o).getMemberTypes();
+				types = ((UnionType) type).getMemberTypes();
 
-			for (ObjectType type : types) {
+			for (ObjectType t : types) {
 				// No separator for the first iteration
 				if (addSeparator)
 					jsonSubTypes.append(",");
 				else
 					addSeparator = true;
-				jsonSubTypes.append(" @Type(value = ").append(type.getName()).append(".class, name = \"")
-						.append(type.getName()).append("\")");
+				jsonSubTypes.append(" @Type(value = ").append(t.getName()).append(".class, name = \"")
+						.append(t.getName()).append("\")");
 			}
 			jsonSubTypes.append(" })");
 
-			o.addAnnotation(jsonSubTypes.toString());
+			type.addAnnotation(jsonSubTypes.toString());
+		}
+
+		// Add the GraphQLQuery annotation fpr query/mutation/subscription and for objects that are a
+		// query/mutation/subscription
+		if (type instanceof ObjectType && ((ObjectType) type).getRequestType() != null) {
+			type.addImport(GraphQLQuery.class);
+			type.addImport(RequestType.class);
+			type.addAnnotation("@GraphQLQuery(name = \"" + type.getName() + "\", type = RequestType."
+					+ ((ObjectType) type).getRequestType() + ")");
+
 		}
 
 		// Let's add the annotations, that are common to both the client and the server mode
-		addTypeAnnotationForBothClientAndServerMode(o);
+		addTypeAnnotationForBothClientAndServerMode(type);
 	}
 
 	/**
@@ -1020,12 +1007,15 @@ public class DocumentParser {
 	 */
 	void addTypeAnnotationForServerMode(Type o) {
 
-		if (!o.isInputType()) {
-			if (pluginConfiguration.isGenerateJPAAnnotation() && o instanceof ObjectType
-					&& !(o instanceof InterfaceType)) {
-				o.addImport(Entity.class);
-				((AbstractType) o).addAnnotation("@Entity");
-			}
+		// We generates the @Entity annotation when:
+		// 1) It's asked in the plugin configuration
+		// 2) The object is a regular object (not an input type)
+		// 3) It's not an object that is a query/mutation/subscription
+		if (pluginConfiguration.isGenerateJPAAnnotation() && o instanceof ObjectType && !(o instanceof InterfaceType)
+				&& !(o instanceof UnionType) && !((ObjectType) o).isInputType()
+				&& ((ObjectType) o).getRequestType() == null) {
+			o.addImport(Entity.class);
+			((AbstractType) o).addAnnotation("@Entity");
 		}
 
 		// Let's add the annotations, that are common to both the client and the server mode
@@ -1065,7 +1055,7 @@ public class DocumentParser {
 	 * 
 	 * @param field
 	 */
-	void addFieldAnnotationForClientMode(Field field) {
+	void addFieldAnnotationForClientMode(FieldImpl field) {
 		// No json field annotation for interfaces or unions. The json annotation is directly on the interface or union
 		// type.
 		String contentAs = null;
@@ -1081,8 +1071,25 @@ public class DocumentParser {
 		}
 		if (contentAs != null || using != null) {
 			field.getOwningType().addImport(JsonDeserialize.class);
-			((FieldImpl) field).addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
+			field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
 		}
+
+		if (field.getInputParameters().size() > 0) {
+			// Let's add the @GraphQLInputParameters annotation
+			field.getOwningType().addImport(GraphQLInputParameters.class);
+			StringBuilder names = new StringBuilder();
+			StringBuilder types = new StringBuilder();
+			String separator = "";
+			for (Field param : field.getInputParameters()) {
+				names.append(separator).append('"').append(param.getName()).append('"');
+				types.append(separator).append('"').append(param.getGraphQLTypeName()).append('"');
+				separator = ", ";
+			}
+			field.addAnnotation("@GraphQLInputParameters(names = {" + names + "}, types = {" + types + "})");
+		}
+
+		field.getOwningType().addImport(JsonProperty.class);
+		field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
 
 		addFieldAnnotationForBothClientAndServerMode(field);
 	}
@@ -1170,8 +1177,9 @@ public class DocumentParser {
 				if (type.getRequestType() != null) {
 					// For query/mutation/subscription, we take the argument read in the schema as is: all the needed
 					// informations is already parsed.
+					// There is no source for requests, as they are the root of the hierarchy
 					dataFetcher = new DataFetcherImpl(field, false);
-					dataFetcher.setSourceName(type.getName());
+					dataFetcher.setGraphQLOriginType(null);
 				} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
 						(field.isList() || field.getType() instanceof ObjectType
 								|| field.getType() instanceof InterfaceType))) {
@@ -1197,7 +1205,7 @@ public class DocumentParser {
 					boolean useBatchLoader = (field.getType().getIdentifier() != null) && (!field.isList());
 
 					dataFetcher = new DataFetcherImpl(newField, useBatchLoader);
-					dataFetcher.setSourceName(type.getName());
+					dataFetcher.setGraphQLOriginType(type.getName());
 				}
 
 				// If we found a DataFether, let's register it.
@@ -1339,20 +1347,14 @@ public class DocumentParser {
 
 			// We add the introspection capability into each query (but there should be only one)
 			for (ObjectType query : queryTypes) {
-				FieldImpl __schema = FieldImpl.builder().documentParser(this).name("__schema")
-						.graphQLTypeName("__Schema").owningType(query).mandatory(true).build();
-				//
-				FieldImpl __type = FieldImpl.builder().documentParser(this).name("__type").graphQLTypeName("__Type")
-						.owningType(query).mandatory(true).build();
-				__type.getInputParameters().add(FieldImpl.builder().documentParser(this).name("name")
-						.graphQLTypeName("String").mandatory(true).build());
-				//
-				query.getFields().add(__schema);
-				query.getFields().add(__type);
+				query.getFields().add(get__SchemaField(query));
+				query.getFields().add(get__TypeField(query));
 
-				// We also need to add the relevant fields into the regular object that matches the query
-				getType(query.getName()).getFields().add(__schema);
-				getType(query.getName()).getFields().add(__type);
+				// We also need to add the relevant fields into the regular object that matches the query.
+				// But they must be a separate instance, otherwise their annotation is added twice.
+				Type objectQuery = getType(query.getName());
+				objectQuery.getFields().add(get__SchemaField(objectQuery));
+				objectQuery.getFields().add(get__TypeField(objectQuery));
 			}
 
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1370,6 +1372,28 @@ public class DocumentParser {
 						.graphQLTypeName("String").owningType(type).mandatory(false).build());
 			}
 		}
+	}
+
+	/**
+	 * @param o
+	 * @return
+	 */
+	private FieldImpl get__TypeField(Type o) {
+		FieldImpl __type = FieldImpl.builder().documentParser(this).name("__type").graphQLTypeName("__Type")
+				.owningType(o).mandatory(true).build();
+		__type.getInputParameters().add(FieldImpl.builder().documentParser(this).name("name").graphQLTypeName("String")
+				.mandatory(true).build());
+		return __type;
+	}
+
+	/**
+	 * @param o
+	 * @return
+	 */
+	private FieldImpl get__SchemaField(Type o) {
+		FieldImpl __schema = FieldImpl.builder().documentParser(this).name("__schema").graphQLTypeName("__Schema")
+				.owningType(o).mandatory(true).build();
+		return __schema;
 	}
 
 	/**
@@ -1437,46 +1461,4 @@ public class DocumentParser {
 		}
 	}
 
-	/**
-	 * Get the internal value for a {@link Value} stored in the graphql-java AST.
-	 * 
-	 * @param value
-	 *            The value for which we need to extract the real value
-	 * @param graphqlTypeName
-	 *            The type name for this value, as defined in the GraphQL schema. This is used when it's an object
-	 *            value, to create an instance of the correct java class.
-	 * @param action
-	 *            The action that is executing, to generated an explicit error message. It can be for instance "Reading
-	 *            directive directiveName".
-	 * @return
-	 */
-	private Object getValue_IsItReallyUsed(Value<?> value, String graphqlTypeName, String action) {
-		if (value instanceof StringValue) {
-			return ((StringValue) value).getValue();
-		} else if (value instanceof BooleanValue) {
-			return ((BooleanValue) value).isValue();
-		} else if (value instanceof IntValue) {
-			return ((IntValue) value).getValue();
-		} else if (value instanceof FloatValue) {
-			return ((FloatValue) value).getValue();
-		} else if (value instanceof graphql.language.EnumValue) {
-			// For enums, we can't retrieve an instance of the enum value, as the enum class has not been created yet.
-			// So we just return the label of the enum, as a String.
-			return ((graphql.language.EnumValue) value).getName();
-		} else if (value instanceof NullValue) {
-			return null;
-		} else if (value instanceof ArrayValue) {
-			List<Value> list = ((ArrayValue) value).getValues();
-			Object[] ret = new Object[list.size()];
-			for (int i = 0; i < list.size(); i += 1) {
-				ret[i] = getValue_IsItReallyUsed(list.get(i), graphqlTypeName, action + ": ArrayValue(" + i + ")");
-			}
-			return ret;
-			// } else if (value instanceof ObjectValue) {
-			// return null;
-		} else {
-			throw new RuntimeException(
-					"Value of type " + value.getClass().getName() + " is not managed (" + action + ")");
-		}
-	}
 }

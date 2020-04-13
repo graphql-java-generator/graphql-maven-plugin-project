@@ -332,13 +332,7 @@ public class InputParameter {
 	 */
 	private static Object parseInputParameterValue(Class<?> owningClass, String fieldName, String parameterName,
 			String parameterValue) throws GraphQLRequestPreparationException {
-		Field field;
-		try {
-			field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
-		} catch (NoSuchFieldException | SecurityException e) {
-			throw new GraphQLRequestPreparationException("Couldn't find the value for the parameter '" + parameterName
-					+ "' of the field '" + fieldName + "'", e);
-		}
+		Field field = graphqlUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(fieldName), true);
 
 		GraphQLInputParameters graphQLInputParameters = field.getDeclaredAnnotation(GraphQLInputParameters.class);
 		if (graphQLInputParameters == null) {

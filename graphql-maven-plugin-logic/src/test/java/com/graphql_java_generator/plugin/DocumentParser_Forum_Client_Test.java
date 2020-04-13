@@ -73,10 +73,10 @@ class DocumentParser_Forum_Client_Test {
 		}
 	}
 
-	/** Tests the annotation. We're in Server mode, thanks to the Spring Configuration used for this test */
+	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
 	@Test
 	@DirtiesContext
-	void test_addAnnotations_client() {
+	void test_addAnnotations_Topic_client() {
 		// Preparation
 		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
 
@@ -84,22 +84,67 @@ class DocumentParser_Forum_Client_Test {
 		assertEquals("@GraphQLObjectType(\"Topic\")", topic.getAnnotation());
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", javaClass = String.class)");
-		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@JsonDeserialize(using = CustomScalarDeserializerDate.class)\n"
-						+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", javaClass = Date.class)");
-		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", javaClass = Member.class)");
-		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
-				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
-		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts",
-				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", javaClass = Integer.class)");
-		checkFieldAnnotation(topic.getFields().get(i++), "title",
-				"@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", javaClass = String.class)");
-		checkFieldAnnotation(topic.getFields().get(i++), "content",
-				"@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", javaClass = String.class)");
-		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@JsonDeserialize(contentAs = Post.class)\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", javaClass = Post.class)");
+				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", javaClass = String.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "date", ""//
+				+ "@JsonDeserialize(using = CustomScalarDeserializerDate.class)\n" //
+				+ "\t@JsonProperty(\"date\")\n" //
+				+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", javaClass = Date.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "author", "@JsonProperty(\"author\")\n"//
+				+ "\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", javaClass = Member.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable", ""//
+				+ "@JsonProperty(\"publiclyAvailable\")\n"//
+				+ "\t@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts", "" //
+				+ "@JsonProperty(\"nbPosts\")\n"//
+				+ "\t@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", javaClass = Integer.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "title", ""//
+				+ "@JsonProperty(\"title\")\n"//
+				+ "\t@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", javaClass = String.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "content", ""//
+				+ "@JsonProperty(\"content\")\n"//
+				+ "\t@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", javaClass = String.class)");
+		checkFieldAnnotation(topic.getFields().get(i++), "posts", ""//
+				+ "@JsonDeserialize(contentAs = Post.class)\n"//
+				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"})\n"
+				+ "\t@JsonProperty(\"posts\")\n"//
+				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", javaClass = Post.class)");
+	}
+
+	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
+	@Test
+	@DirtiesContext
+	void test_addAnnotations_Mutation1_client() {
+		// Preparation
+		Type mutation = documentParser.objectTypes.stream().filter(o -> o.getName().equals("MutationType")).findFirst()
+				.get();
+
+		// Verification
+		assertEquals(""//
+				+ "@GraphQLQuery(name = \"MutationType\", type = RequestType.mutation)\n"
+				+ "@GraphQLObjectType(\"MutationType\")", mutation.getAnnotation());
+		int i = 0;
+		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
+				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
+						+ "	@JsonProperty(\"createBoard\")\n"
+						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", javaClass = Board.class)");
+	}
+
+	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
+	@Test
+	@DirtiesContext
+	void test_addAnnotations_Mutation2_client() {
+		// Preparation
+		Type mutation = documentParser.mutationTypes.get(0);
+
+		// Verification
+		assertEquals("" //
+				+ "@GraphQLQuery(name = \"MutationType\", type = RequestType.mutation)\n"
+				+ "@GraphQLObjectType(\"MutationType\")", mutation.getAnnotation());
+		int i = 0;
+		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
+				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
+						+ "	@JsonProperty(\"createBoard\")\n"
+						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", javaClass = Board.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {

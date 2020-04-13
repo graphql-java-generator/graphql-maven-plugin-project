@@ -36,8 +36,8 @@ public class IntrospectionIT {
 		__Schema schema = myQuery.__schema("{types {name fields {name type {name}}}}");
 
 		// Verification
-		assertEquals(44, schema.getTypes().size());
-		assertEquals("AllFieldCases", schema.getTypes().get(0).getName());
+		assertEquals(23, schema.getTypes().size());
+		assertEquals("Board", schema.getTypes().get(0).getName());
 		assertEquals("id", schema.getTypes().get(0).getFields().get(0).getName());
 	}
 
@@ -45,10 +45,10 @@ public class IntrospectionIT {
 	void testType() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		__Type type = myQuery.__type("{name fields {name type {name}}}", "AllFieldCases");
+		__Type type = myQuery.__type("{name fields {name type {name}}}", "Board");
 
 		// Verification
-		assertEquals("AllFieldCases", type.getName());
+		assertEquals("Board", type.getName());
 		assertEquals("id", type.getFields().get(0).getName());
 	}
 
