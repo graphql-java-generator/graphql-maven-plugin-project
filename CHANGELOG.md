@@ -3,7 +3,11 @@
 Both modes (client and server):
 * Default value for input parameters (fields and directives) that are null, array or an object are now properly managed.
 * Plugin parameter _copyGraphQLJavaSources_ renamed to _copyRuntimeSources_
-* New Plugin parameter _separateUtilityClasses_: it allows to separate the generated utility classes (including GraphQLRequest, query/mutation/subscription) in a subfolder. This avoids collision in the generated code, between utility classes and the classes directly generated from the GraphQL schema.  
+* New Plugin parameter _separateUtilityClasses_: it allows to separate the generated utility classes (including GraphQLRequest, query/mutation/subscription) in a subfolder. This avoids collision in the generated code, between utility classes and the classes directly generated from the GraphQL schema.
+
+Client mode:
+* Thanks to the _separateUtilityClasses_ plugin parameter, the plugin can generate the code for the shopify and github GraphQL schema (needs some additional tests: tester need here...)
+   
 
 # 1.6.0
 

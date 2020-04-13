@@ -1159,13 +1159,8 @@ public class DocumentParser {
 	 */
 	void initDataFetcherForOneObject(ObjectType type) {
 
-		// No DataFetcher for :
-		// 1) the "artificial" Object Type created to instanciate an Interface. This "artificial" Object
-		// Type is for internal usage only, and to be used in Client mode to allow instanciation of the server response
-		// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no DataFetchersDelegate.
-		// 2) the input type
-		// 3) query/mutation/subscription types
-		if (type.getDefaultImplementationForInterface() == null && !type.isInputType()) {
+		// No DataFetcher for input types
+		if (!type.isInputType()) {
 
 			// Creation of the DataFetchersDelegate. It will be added to the list only if it contains at least one
 			// DataFetcher.
@@ -1256,16 +1251,10 @@ public class DocumentParser {
 		if (type.getRequestType() == null) {
 
 			pluginConfiguration.getLog().debug("Init batch loader for " + type.getName());
-			// No BatchLoader for the "artificial" Object Type created to instanciate an Interface. This "artificial"
-			// Object
-			// Type is for internal usage only, and to be used in Client mode to allow instanciation of the server
-			// response
-			// interface object. It doesn't exist in the GraphQL Schema. Thus, it must have no BatchLoader.
-			if (type.getDefaultImplementationForInterface() == null) {
-				Field id = type.getIdentifier();
-				if (id != null) {
-					batchLoaders.add(new BatchLoaderImpl(type, getDataFetchersDelegate(type, true)));
-				}
+
+			Field id = type.getIdentifier();
+			if (id != null) {
+				batchLoaders.add(new BatchLoaderImpl(type, getDataFetchersDelegate(type, true)));
 			}
 
 		} // if
