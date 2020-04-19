@@ -29,12 +29,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
 			<exclusions>
-				<!-- Exclusion needed to remove logback and allow log4j -->
+				<!-- Exclusion needed to remove logback and allow slf4j -->
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
@@ -43,8 +39,27 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<!-- Exclusion needed to remove logback and allow slf4j -->
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
+				
+		<!-- When building from the gradle plugin, this next dependency is mandatory for code execution -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+		
 		<dependency>
 			<!-- You need to provide in your pom the fact the this dependency is provided. This is to ensure that the embedded servlet 
 				container does not interfere with the servlet container to which the war file is deployed -->

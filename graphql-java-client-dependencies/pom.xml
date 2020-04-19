@@ -47,7 +47,13 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 		</dependency>
-
+		
+		<!-- When building from the gradle plugin, this next dependency is mandatory for code execution -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+		
 		<!-- Other dependencies -->
 		<dependency>
 			<groupId>org.slf4j</groupId>

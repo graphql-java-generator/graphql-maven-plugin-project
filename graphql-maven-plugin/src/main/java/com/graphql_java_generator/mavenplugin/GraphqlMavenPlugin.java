@@ -147,7 +147,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = PluginConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;
 
-	/** The folder where the generated classes will be generated */
+	/** The folder where source code for the generated classes will be generated */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = PluginConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	String targetSourceFolder;
 
