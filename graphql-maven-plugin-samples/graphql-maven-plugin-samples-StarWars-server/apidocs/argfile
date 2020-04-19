@@ -49,5 +49,6 @@
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server/target/generated-sources/graphql-maven-plugin/com/graphql_java_generator/samples/server/GraphQLDataFetchers.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server/target/generated-sources/graphql-maven-plugin/com/graphql_java_generator/samples/server/GraphQLProvider.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server/target/generated-sources/graphql-maven-plugin/com/graphql_java_generator/samples/server/GraphQLServerMain.java'
-'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server/target/generated-sources/graphql-maven-plugin/com/graphql_java_generator/samples/server/GraphQLUtil.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server/target/generated-sources/graphql-maven-plugin/com/graphql_java_generator/samples/server/Human.java'
+'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server/target/generated-sources/graphql-maven-plugin/com/graphql_java_generator/samples/server/MutationType.java'
+'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server/target/generated-sources/graphql-maven-plugin/com/graphql_java_generator/samples/server/QueryType.java'
