@@ -1,4 +1,4 @@
-# Not released yet
+# 1.6.1
 
 Both modes (client and server):
 * Default value for input parameters (fields and directives) that are null, array or an object are now properly managed.
