@@ -37,28 +37,40 @@ import graphql.schema.GraphQLScalarType;
 public class GraphqlMavenPlugin extends AbstractMojo {
 
 	/**
+	 * <P>
 	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory. It allows to
-	 * control whether the runtime code is embedded in the generated code or not. <BR/>
+	 * control whether the runtime code is embedded in the generated code or not.
+	 * </P>
+	 * <P>
 	 * The default behavior is the old one, that is: the runtime code is embedded. This means that when you upgrade the
-	 * plugin version, just build the project and everything is coherent.<BR/>
+	 * plugin version, just build the project and everything is coherent.
+	 * </P>
+	 * <P>
 	 * If you set this parameter to false, the runtime is no more copied with the generated code. it's up to you to
 	 * provided the runtime in the pom dependencies. This allows you to create your own runtime, and change the
 	 * "standard" behavior. But of course, you'll have to check the compatibility with all the next versions.
+	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyRuntimeSources", defaultValue = PluginConfiguration.DEFAULT_COPY_RUNTIME_SOURCES)
 	boolean copyRuntimeSources;
 
 	/**
+	 * <P>
 	 * This parameter contains the list of custom scalars implementations. One such implementation must be provided for
 	 * each custom scalar defined in the GraphQL implemented by the project for its GraphQL schema. It's a list, where
 	 * the key is the scalar name, as defined in the GraphQL schema, and the value is the full class name of the
-	 * implementation of {@link GraphQLScalarType}. <BR/>
+	 * implementation of {@link GraphQLScalarType}.
+	 * </P>
+	 * <P>
 	 * This parameter is a list of customScalars. For each one, you must define the name, the javaType and exactly one
-	 * of these fields: graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter.<BR/>
+	 * of these fields: graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter.
+	 * </P>
+	 * <P>
 	 * Here is the detail:
+	 * </P>
 	 * <UL>
-	 * <LI><B>graphQLTypeName: The type name, as defined in the GraphQL schema, for instance <I>Date</I></LI>
-	 * <LI><B>javaType: The full class name for the java type that contains the data for this type, once in the Java
+	 * <LI><B>graphQLTypeName</B>: The type name, as defined in the GraphQL schema, for instance <I>Date</I></LI>
+	 * <LI><B>javaType</B>: The full class name for the java type that contains the data for this type, once in the Java
 	 * code, for instance <I>java.util.Date</I></LI>
 	 * <LI><B>graphQLScalarTypeClass</B>: The full class name for the {@link GraphQLScalarType} that will manage this
 	 * Custom Scalar. This class must be a subtype of {@link GraphQLScalarType}. Bu the constructor of
@@ -73,10 +85,12 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * <I>org.mycompany.MyScalars.getGraphQLLong()</I> or
 	 * <I>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</I>. This call may contain parameters, provided
 	 * that this a valid java command.</LI>
-	 * <UL>
+	 * </UL>
+	 * <P>
 	 * Please have a look at the allGraphQLCases (both client and server) samples for more information. The <A HREF=
 	 * "https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/pom.xml">allGraphQLCases
 	 * client pom</A> is a good sample.
+	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars")
 	List<CustomScalarDefinition> customScalars = null;
@@ -119,26 +133,38 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	String schemaFilePattern;
 
 	/**
+	 * <P>
 	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
 	 * apply before generating the code. This applies to the <B>server</B> mode only. See
 	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">the doc on
-	 * the plugin web site</A> for more details.<BR/>
+	 * the plugin web site</A> for more details.
+	 * </P>
+	 * <P>
 	 * The standard file would be something like /src/main/graphql/schemaPersonalizationFile.json, which avoids to embed
 	 * this compile time file within your maven artifact (as it is not in the /src/main/java nor in the
 	 * /src/main/resources folders).
+	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
 	String schemaPersonalizationFile;
 
 	/**
+	 * <P>
 	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
-	 * generated in the same package than the classes that matches the GraphQL schema.<BR/>
+	 * generated in the same package than the classes that matches the GraphQL schema.
+	 * </P>
+	 * <P>
 	 * That is: internal technical classes, java classes that contain the method to execute the
-	 * queries/mutations/subscriptions, Jackson deserializer for custom scalars...<BR/>
+	 * queries/mutations/subscriptions, Jackson deserializer for custom scalars...
+	 * </P>
+	 * <P>
 	 * The default value is false, to maintain the previous behavior. In this case, all classes are generated in the
-	 * <I>packageName</I>, or the default package if this parameter is not defined.<BR/>
+	 * <I>packageName</I>, or the default package if this parameter is not defined.
+	 * </P>
+	 * <P>
 	 * If true, the GraphQL classes are generated in the package defined in the <I>packageName</I> plugin parameter. And
 	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
+	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilityClasses", defaultValue = PluginConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
 	boolean separateUtilityClasses;
@@ -152,18 +178,26 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	String targetSourceFolder;
 
 	/**
+	 * <P>
 	 * Map of the code templates to be used: this allows to override the default templates, and control exactly what
-	 * code is generated by the plugin.<BR/>
+	 * code is generated by the plugin.
+	 * </P>
+	 * <P>
 	 * You can override any of the Velocity templates of the project. The list of templates is defined in the enum
 	 * CodeTemplate, that you can <A HREF=
 	 * "https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-logic/src/main/java/com/graphql_java_generator/plugin/CodeTemplate.java">check
-	 * here</A>.<BR/>
+	 * here</A>.
+	 * </P>
+	 * <P>
 	 * You can find a sample in the <A HREF=
 	 * "https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-CustomTemplates-client/pom.xml">CustomTemplates
-	 * client sample</A>.<BR/>
+	 * client sample</A>.
+	 * </P>
+	 * <P>
 	 * <B>Important notice:</B> Please note that the default templates may change in the future. And some of these
 	 * modifications would need to be reported into the custom templates. We'll try to better expose a stable public API
 	 * in the future.
+	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.templates")
 	Map<String, String> templates;
