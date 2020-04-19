@@ -19,7 +19,7 @@ Please, take a look at the projects that are within the graphql-maven-plugin-sam
 __The interesting part is that graphql-java-generator is just an accelerator: you don't depend on any library from graphql-java-generator__. So, it just helps you to build application based on [graphql-java](https://www.graphql-java.com) .
 If the generated code doesn't fully suit your needs, you can take what's generated as a full sample for graphql-java usage, based on your use case. You can then update the generated code, where it's not compliant for you. And that's it. The only thing, there, is that we would like to know what was not correct for your use case, so that we can embed it into next versions. Or perhaps, if it's just a matter of documentation, to better explain how to use it...
 
-The generator is currently available as a maven plugin. A Gradle plugin will come soon.
+The generator is currently available as a maven plugin. A __Gradle plugin__ is available in the [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
 
 
 ## Aim of this project
@@ -247,7 +247,6 @@ The avialable template IDs that can be configured for customization are:
 
 You'll find below the main changes, that are planned in the near future:
 - Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
-- Add a gradle plugin (work in progress)
 - Manage enum values that are java keyword. Currently, it generates a compilation error.
 - Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 
