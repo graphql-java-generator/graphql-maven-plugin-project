@@ -1,5 +1,7 @@
 # GraphQL Java Generator
 
+## What is it?
+
 The GraphQL Java Generator makes it easy to work in Java with graphQL in a schema first approach.
 
 This project is an accelerator to develop __GraphQL clients__ and __GraphQL servers__ in java.
@@ -19,7 +21,11 @@ Please, take a look at the projects that are within the graphql-maven-plugin-sam
 __The interesting part is that graphql-java-generator is just an accelerator: you don't depend on any library from graphql-java-generator__. So, it just helps you to build application based on [graphql-java](https://www.graphql-java.com) .
 If the generated code doesn't fully suit your needs, you can take what's generated as a full sample for graphql-java usage, based on your use case. You can then update the generated code, where it's not compliant for you. And that's it. The only thing, there, is that we would like to know what was not correct for your use case, so that we can embed it into next versions. Or perhaps, if it's just a matter of documentation, to better explain how to use it...
 
-The generator is currently available as a maven plugin. A __Gradle plugin__ is available in the [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
+## Availibility
+
+The generator is currently available both as a Maven plugin and as a Gradle plugin:
+* The __Maven plugin__ is available in the project ([graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project)) 
+* A __Gradle plugin__ is available in the project [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
 
 
 ## Aim of this project
@@ -170,9 +176,11 @@ You'll find all the info on the [server](https://graphql-maven-plugin-project.gr
 
 ### Custom code templates
 
-If for any reason you may need to customize the template to modify the generated code this can be donde using the parameter **tempaltes**
+Customizing the templates allows you to modify the generated code, in the way you want. 
 
-Here there's an exmaple of plugin configuration to use customized templates
+So, if for any reason you may need to customize the generated code, you can replace the default templates by your own, by using the parameter **templates**
+
+Here there's an example of plugin configuration to use customized templates
 
 ```
 <project ...>
@@ -215,32 +223,13 @@ Here there's an exmaple of plugin configuration to use customized templates
 ...
 </project>
 ```
-**templates** param is a map where the key is the ID of the template to customize
-and the value is a classpath entry to the resources containing the customized tempalte
+The **templates** plugin parameter is a map where the key is the ID of the template to customize and the value is a classpath entry to the resources containing the customized template.
 
-Customize templates shall be provided in a depdency configured in the plugin
+Customize templates shall be provided in a dependency configured in the plugin.
 
 Both client and server templates can be customized. 	
 
-The avialable template IDs that can be configured for customization are:
-
-| ID | Scope | Default template |
-| --- | --- |
-| OBJECT | COMMON | [templates/object_type.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/object_type.vm.java) |
-| INTERFACE | COMMON | [templates/interface_type.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/interface_type.vm.java) |
-| ENUM | COMMON | [templates/enum_type.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/enum_type.vm.java) |
-| UNION | COMMON | [templates/union_type.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/union_type.vm.java) |
-| CUSTOM_SCALAR_REGISTRY_INITIALIZER | CLIENT | [templates/client_CustomScalarRegistryInitializer.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_CustomScalarRegistryInitializer.vm.java) |
-| QUERY_MUTATION_SUBSCRIPTION | CLIENT | [templates/client_query_mutation_subscription_type.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_query_mutation_subscription_type.vm.java) |
-| QUERY_TARGET_TYPE | CLIENT | [templates/client_query_target_type.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_query_target_type.vm.java) |
-| JACKSON_DESERIALIZER | CLIENT | [templates/client_jackson_deserialize.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_jackson_deserialize.vm.java) |
-| BATCHLOADERDELEGATE | SERVER | [templates/server_BatchLoaderDelegate.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_BatchLoaderDelegate.vm.java) |
-| BATCHLOADERDELEGATEIMPL | SERVER | [templates/server_BatchLoaderDelegateImpl.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_BatchLoaderDelegateImpl.vm.java) |
-| DATAFETCHER | SERVER | [templates/server_GraphQLDataFetchers.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLDataFetchers.vm.java) |
-| DATAFETCHERDELEGATE | SERVER | [templates/server_GraphQLDataFetchersDelegate.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLDataFetchersDelegate.vm.java) |
-| GRAPHQLUTIL | SERVER | [templates/server_GraphQLUtil.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLUtil.vm.java) |
-| PROVIDER | SERVER | [templates/server_GraphQLProvider.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLProvider.vm.java) |
-| SERVER | SERVER | [templates/server_GraphQLServerMain.vm.java](http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLServerMain.vm.java) |
+The available templates are described in the [Customizing code templates](https://graphql-maven-plugin-project.graphql-java-generator.com/customtemplates.html) page.
 
 
 # Main evolutions for the near future
@@ -258,9 +247,11 @@ The Change Log is available [here](CHANGELOG.md)
 
 # Note for contributors
 
-This project is a maven plugin project. 
+All the plugin logic is stored in the [graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project) project.
 
-If you want to compile it, you'll have to add the lombok.jar file in your IDE. Please see the relevant section, in the Install menu of the [https://projectlombok.org/](https://projectlombok.org/) home page. This very nice tools generates all java boiler plate code, like setters, getters, constructors from fields...
+The Maven plugin and the Gradle plugin are just wrapper for the plugin logic, available in the __graphql-maven-plugin-logic__ module of the maven project. 
+
+If you want to compile the maven project, you'll have to add the lombok.jar file in your IDE. Please see the relevant section, in the Install menu of the [https://projectlombok.org/](https://projectlombok.org/) home page. This very nice tools generates all java boiler plate code, like setters, getters, constructors from fields...
 
 If you use eclipse, please use the __code formatter__ given with the project (file _graphql-java-generator (eclipse code formatter).xml_ at the root of the project). This allows to have the sample code formatting: the code is then homogeneous, and the comparison between versions is simpler. To do this, go to the eclipse preferences, select Java/Code Style/Formatter, and import this file. Then, in the Java/Editor/Save Actions, check the "Perform the selected action on save", "Format source code", "Format all lines", "Organize imports" and "Additional actions" which its default content
 
