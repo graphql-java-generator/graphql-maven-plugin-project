@@ -20,6 +20,8 @@ And of course, if it can be useful for anyone to publish a site, then, it's nice
 
 The maven plugin should be stored in the OSSRH repository, waiting to be replicated into the central repository. This can be checked by browsing into it: [https://repo1.maven.org/maven2/com/graphql-java-generator/graphql-maven-plugin/](https://repo1.maven.org/maven2/com/graphql-java-generator/graphql-maven-plugin/).
 
+At the end of the process, the plugin should be available [https://mvnrepository.com/artifact/com.graphql-java-generator/graphql-maven-plugin](https://mvnrepository.com/artifact/com.graphql-java-generator/graphql-maven-plugin).
+
 ## Configuring the domain name
 
 The standard way of publishing a web site on github, is to push the site on the gh-pages branch of the project. Then, check the settings of the project. At this stage, the project site is available at this URL: [https://graphql-java-generator.github.io/graphql-maven-plugin-project/](https://graphql-java-generator.github.io/graphql-maven-plugin-project/).
