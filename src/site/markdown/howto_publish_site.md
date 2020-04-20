@@ -6,7 +6,7 @@ And of course, if it can be useful for anyone to publish a site, then, it's nice
 
 ## Check list
 
-Before publishing:
+### Before publishing:
 
 * Check that the user has access on the owner of the git repository, as the last step works only if connected on githib with the owner of the repository.
 
@@ -16,6 +16,9 @@ Before publishing:
     * Check the version for the updates being released
     * Check that all the done job is described 
 
+### After publishing
+
+The maven plugin should be stored in the OSSRH repository, waiting to be replicated into the central repository. This can be checked by browsing into it: [https://repo1.maven.org/maven2/com/graphql-java-generator/graphql-maven-plugin/](https://repo1.maven.org/maven2/com/graphql-java-generator/graphql-maven-plugin/).
 
 ## Configuring the domain name
 
