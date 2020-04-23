@@ -1,13 +1,12 @@
 package com.graphql_java_generator.samples.forum.client;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 
@@ -22,15 +21,12 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 public class PreparedQueriesWithFieldInputParameters {
 
 	final QueryType queryType;
-	final ObjectResponse topicAuthorPostAuthorResponse;
-
-	final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	final GraphQLRequest topicAuthorPostAuthorResponse;
 
 	public PreparedQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {
 		queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
-		topicAuthorPostAuthorResponse = queryType.getTopicsResponseBuilder().withQueryResponseDef(
-				"{id date author{name email alias id type} nbPosts title content posts(memberId:?memberId, memberName:?memberName, since:?since){id date author{name email alias} title content}}")
-				.build();
+		topicAuthorPostAuthorResponse = queryType.getTopicsGraphQLRequest(
+				"{id date author{name email alias id type} nbPosts title content posts(memberId:?memberId, memberName:?memberName, since:?since){id date author{name email alias} title content}}");
 	}
 
 	/**
