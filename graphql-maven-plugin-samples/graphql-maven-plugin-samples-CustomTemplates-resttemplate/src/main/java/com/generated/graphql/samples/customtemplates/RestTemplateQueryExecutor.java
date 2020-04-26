@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -55,12 +55,12 @@ public class RestTemplateQueryExecutor implements QueryExecutor {
 	// }
 
 	@Override
-	public <T> T execute(ObjectResponse objectResponse, Map<String, Object> parameters, Class<T> valueType)
+	public <T> T execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters, Class<T> valueType)
 			throws GraphQLRequestExecutionException {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
-			request = objectResponse.buildRequest(parameters);
+			request = graphQLRequest.buildRequest(parameters);
 			logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
 			return doJsonRequestExecution(request, valueType);
@@ -69,16 +69,6 @@ public class RestTemplateQueryExecutor implements QueryExecutor {
 					"Error when executing query <" + request + ">: " + e.getMessage(), e);
 		}
 
-	}
-
-	@Override
-	public <T> T execute(String graphqlQuery, Class<T> valueType) throws GraphQLRequestExecutionException {
-		try {
-			return doJsonRequestExecution(graphqlQuery, valueType);
-		} catch (IOException | GraphQLRequestExecutionException e) {
-			throw new GraphQLRequestExecutionException(
-					"Error when executing query <" + graphqlQuery + ">: " + e.getMessage(), e);
-		}
 	}
 
 	protected <T> T doJsonRequestExecution(String jsonRequest, Class<T> valueType)
