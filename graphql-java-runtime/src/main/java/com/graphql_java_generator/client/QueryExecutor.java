@@ -47,14 +47,15 @@ public interface QueryExecutor {
 			throws GraphQLRequestExecutionException;
 
 	/**
-	 * Execution of the given <B>subscription</B> GraphQL request, and return its response mapped in the relevant POJO.
-	 * This method executes a partial GraphQL query, or a full GraphQL request.<BR/>
+	 * Executes the given <B>subscription</B> GraphQL request, and returns the relevant {@link WebSocketClient}. The
+	 * given <I>subscriptionCallback</I> will receive the notifications that have been subscribed by this subscription.
+	 * Only one Subscription may be executed at a time: it may be a partial Request (always limited to one query), or a
+	 * full request that contains only one subscription.<BR/>
 	 * <B>Note:</B> Don't forget to free the server's resources by calling the {@link WebSocketClient#stop()} method of
 	 * the returned object.
 	 * 
 	 * @param <T>
 	 *            The type that must be returned by the query or mutation
-	 * 
 	 * @param graphQLRequest
 	 *            Defines what response is expected from the server.
 	 * @param subscriptionCallback
@@ -62,7 +63,8 @@ public interface QueryExecutor {
 	 *            provided by the application. It contains the callback methods that allow it to receive the GraphQL
 	 *            notifications it has subscribed to, and manage errors.
 	 * @param parameters
-	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
+	 *            The input parameters for this subscription. If the query has no parameters, it may be null or an empty
+	 *            list.
 	 * @param t
 	 *            The type of the POJO which should be returned. It must be the query or the mutation class, generated
 	 *            by the plugin
