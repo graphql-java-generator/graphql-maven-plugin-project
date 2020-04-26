@@ -29,6 +29,8 @@ public class Builder {
 	final String fieldName;
 	/** The request type, that will be sent when creating the {@link AbstractGraphQLRequest} */
 	final RequestType requestType;
+	/** True if this build will build a Full Request, false for Partial Request. */
+	final boolean fullRequest;
 	/** The list of input types for this query or mutation */
 	final InputParameter[] inputParams;
 
@@ -47,7 +49,8 @@ public class Builder {
 	public Builder(Class<? extends AbstractGraphQLRequest> graphQLRequestClass) {
 		this.graphQLRequestClass = graphQLRequestClass;
 		this.fieldName = null;
-		this.requestType = null;
+		this.requestType = null; // It will be calculated by the QLRequest instance, from the request
+		this.fullRequest = true;
 		this.inputParams = null;
 	}
 
@@ -78,7 +81,12 @@ public class Builder {
 		this.graphQLRequestClass = graphQLRequestClass;
 		this.fieldName = fieldName;
 		this.requestType = requestType;
+		this.fullRequest = false;
 		this.inputParams = (inputParams == null) ? new InputParameter[0] : inputParams;
+
+		if (requestType == null) {
+			throw new NullPointerException("The requestType is mandatory");
+		}
 	}
 
 	/**
@@ -102,18 +110,12 @@ public class Builder {
 		String genericErrorMessage = null;
 
 		try {
-
 			// Is it a full request ?
-			if (requestType == null) {
-
-				// Yes, it's a Full request
+			if (fullRequest) {
 				genericErrorMessage = "Could not create an instance of GraphQLRequest (for a Full request)";
-
 				objectResponse = (ObjectResponse) graphQLRequestClass.getConstructor(String.class)
 						.newInstance(queryResponseDef);
-
 			} else {
-
 				// No, it's a Partial request
 				genericErrorMessage = "Could not create an instance of GraphQLRequest (for a Partial request)";
 
@@ -151,7 +153,7 @@ public class Builder {
 	public ObjectResponse build() throws GraphQLRequestPreparationException {
 		if (objectResponse == null) {
 			// Is it a full request ?
-			if (requestType == null) {
+			if (fullRequest) {
 				// No query has been defined. That's not allowed for Full Request (we can't guess what to do)
 				throw new GraphQLRequestPreparationException(
 						"Empty request are not allowed for Full Request. Please call the Builder.withQueryResponseDef(String) method to defined the GraphQL request");

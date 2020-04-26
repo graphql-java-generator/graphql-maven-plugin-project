@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.client.request;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -10,9 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jetty.websocket.client.WebSocketClient;
+
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -60,11 +64,19 @@ public abstract class AbstractGraphQLRequest {
 	final String graphQLRequest;
 
 	/**
+	 * The class that manages the Web Socket callback, when the request is a subscription. This class is provided by the
+	 * application, and allow it to receive the GraphQL notifications it has subscribed to, and manage errors.
+	 * 
+	 * @See {@link SubscriptionCallback}
+	 */
+	SubscriptionCallback<?> subscriptionCallback = null;
+
+	/**
 	 * Null if the request is a full request. Mandatory if the request is a partial request. When this GraphQLRequest is
 	 * built for a partial query, that is for a particular query/mutation/subscription, then fieldName states whether
 	 * this queryName is actually a query, a mutation or a subscription.
 	 */
-	final RequestType requestType;
+	RequestType requestType;
 	/**
 	 * Null if the request is a full request. Mandatory if the request is a partial request.<BR/>
 	 * When this GraphQLRequest is built for a partial query, that is for a particular query/mutation/subscription, then
@@ -112,6 +124,7 @@ public abstract class AbstractGraphQLRequest {
 		this.queryName = queryName;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = this.getClass().getPackage().getName();
+		this.subscriptionCallback = subscriptionCallback;
 
 		QueryField field;
 		switch (requestType) {
@@ -181,15 +194,15 @@ public abstract class AbstractGraphQLRequest {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public AbstractGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
-		this.requestType = null;
 		this.queryName = null;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = this.getClass().getPackage().getName();
+		this.requestType = RequestType.query; // query is the default value, as if there is no query, mutation or
+												// subscription keyword, then it must be a query.
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
 		QueryTokenizer qt = new QueryTokenizer(this.graphQLRequest);
-		RequestType requestType = RequestType.query; // query is the default value
 
 		// We scan the input string. It may contain fragment definition and query/mutation/subscription
 		while (qt.hasMoreTokens()) {
@@ -238,13 +251,64 @@ public abstract class AbstractGraphQLRequest {
 		finishRequestPreparation();
 	}
 
+	/**
+	 * This method executes the current GraphQL as a <B>query</B> or <B>mutation</B> GraphQL request, and return its
+	 * response mapped in the relevant POJO. This method executes a partial GraphQL query, or a full GraphQL
+	 * request.<BR/>
+	 * <B>Note:</B> Don't forget to free the server's resources by calling the {@link WebSocketClient#stop()} method of
+	 * the returned object.
+	 * 
+	 * @param <T>
+	 * @param t
+	 *            The type of the POJO which should be returned. It must be the query or the mutation class, generated
+	 *            by the plugin
+	 * @param params
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
 	public <T> T exec(Class<T> t, Map<String, Object> params) throws GraphQLRequestExecutionException {
-		String request = buildRequest(params);
-
 		if (instanceConfiguration != null) {
 			return instanceConfiguration.getQueryExecutor().execute(this, params, t);
 		} else if (staticConfiguration != null) {
 			return staticConfiguration.getQueryExecutor().execute(this, params, t);
+		} else {
+			throw new GraphQLRequestExecutionException(
+					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "
+							+ "Please set either the GraphQL instance configuration "
+							+ "or the GraphQL static configuration before executing a GraphQL request");
+		}
+	}
+
+	/**
+	 * Execution of the given <B>subscription</B> GraphQL request, and return its response mapped in the relevant POJO.
+	 * This method executes a partial GraphQL query, or a full GraphQL request.<BR/>
+	 * <B>Note:</B> Don't forget to free the server's resources by calling the {@link WebSocketClient#stop()} method of
+	 * the returned object.
+	 * 
+	 * @param <T>
+	 *            The type that must be returned by the query or mutation
+	 * @param t
+	 *            The type of the POJO which should be returned. It must be the query or the mutation class, generated
+	 *            by the plugin
+	 * @param params
+	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
+	 * @param subscriptionCallback
+	 *            The object that manages the Web Socket callback, when the request is a subscription. This object is
+	 *            provided by the application. It contains the callback methods that allow it to receive the GraphQL
+	 *            notifications it has subscribed to, and manage errors.
+	 * @return The Web Socket client. This client allows to stop the subscription, by executing its
+	 *         {@link WebSocketClient#stop()} method.
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 * @throws IOException
+	 */
+	public <T> WebSocketClient exec(Class<T> t, Map<String, Object> params,
+			SubscriptionCallback<T> subscriptionCallback) throws GraphQLRequestExecutionException {
+		if (instanceConfiguration != null) {
+			return instanceConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, t);
+		} else if (staticConfiguration != null) {
+			return staticConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, t);
 		} else {
 			throw new GraphQLRequestExecutionException(
 					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "
@@ -454,6 +518,10 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	public void setInstanceConfiguration(GraphQLConfiguration instanceConfiguration) {
 		this.instanceConfiguration = instanceConfiguration;
+	}
+
+	public SubscriptionCallback<?> getSubscriptionCallback() {
+		return subscriptionCallback;
 	}
 
 }
