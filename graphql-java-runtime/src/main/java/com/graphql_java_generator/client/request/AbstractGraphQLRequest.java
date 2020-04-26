@@ -189,7 +189,7 @@ public abstract class AbstractGraphQLRequest {
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
 		QueryTokenizer qt = new QueryTokenizer(this.graphQLRequest);
-		RequestType requestType = RequestType.query; // If not precised, then it's a query
+		RequestType requestType = RequestType.query; // query is the default value
 
 		// We scan the input string. It may contain fragment definition and query/mutation/subscription
 		while (qt.hasMoreTokens()) {
@@ -242,9 +242,9 @@ public abstract class AbstractGraphQLRequest {
 		String request = buildRequest(params);
 
 		if (instanceConfiguration != null) {
-			return instanceConfiguration.getQueryExecutor().execute(request, t);
+			return instanceConfiguration.getQueryExecutor().execute(this, params, t);
 		} else if (staticConfiguration != null) {
-			return staticConfiguration.getQueryExecutor().execute(request, t);
+			return staticConfiguration.getQueryExecutor().execute(this, params, t);
 		} else {
 			throw new GraphQLRequestExecutionException(
 					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "

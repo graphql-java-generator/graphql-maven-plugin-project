@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -101,26 +101,17 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(ObjectResponse objectResponse, Map<String, Object> parameters, Class<T> valueType)
+	public <T> T execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters, Class<T> valueType)
 			throws GraphQLRequestExecutionException {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
-			request = objectResponse.buildRequest(parameters);
+			request = graphQLRequest.buildRequest(parameters);
+
 			return doJsonRequestExecution(request, valueType);
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + request + ">: " + e.getMessage(), e);
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <T> T execute(String query, Class<T> valueType) throws GraphQLRequestExecutionException {
-		try {
-			return doJsonRequestExecution(query, valueType);
-		} catch (IOException e) {
-			throw new GraphQLRequestExecutionException(e.getMessage(), e);
 		}
 	}
 
