@@ -194,27 +194,6 @@ public class JsonSchemaPersonalization {
 								+ "' is invalid. See the logs for details");
 			}
 
-			// // with org.everit.json.schema, we got a org.json.JSONTokener.<init>(Ljava/io/InputStream;), unless
-			// android-json
-			// // is removed from spring boots test dependencies (see the pom)
-			// try (InputStream inputStream = getClass().getResourceAsStream("/" + JSON_SCHEMA_FILENAME)) {
-			// JSONObject rawSchema = new JSONObject(new JSONTokener(inputStream));
-			// Schema schema = SchemaLoader.load(rawSchema);
-			// schema.validate(new JSONObject(new FileInputStream(pluginConfiguration.getSchemaPersonalizationFile())));
-			// } catch (ValidationException e) {
-			// e.getCausingExceptions().stream().map(ValidationException::getAllMessages).forEach(this::logErrors);
-			// throw new RuntimeException("The json file " + jsonUserFilename + " is not valid: " + e.getMessage(), e);
-			// }
-
-			// // Validation with com.github.java-json-tools#json-schema-validator
-			// logger.debug("checking validity for file {} against the json schema {}", jsonUserFilename,
-			// JSON_SCHEMA_FILENAME);
-			// final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
-			// final com.github.fge.jsonschema.main.JsonSchema schema = factory
-			// .getJsonSchema("resource:/" + JSON_SCHEMA_FILENAME);
-			// JsonNode json = JsonLoader.fromResource("/" + jsonUserFilename);
-			// schema.validate(json);
-
 			// Let's read the flow definition
 			pluginConfiguration.getLog()
 					.info("Loading file " + pluginConfiguration.getSchemaPersonalizationFile().getAbsolutePath());
