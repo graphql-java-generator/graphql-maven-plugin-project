@@ -17,6 +17,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.SubscriptionCallback;
+import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -62,14 +63,6 @@ public abstract class AbstractGraphQLRequest {
 
 	/** The string that has been used to create this GraphQL request */
 	final String graphQLRequest;
-
-	/**
-	 * The class that manages the Web Socket callback, when the request is a subscription. This class is provided by the
-	 * application, and allow it to receive the GraphQL notifications it has subscribed to, and manage errors.
-	 * 
-	 * @See {@link SubscriptionCallback}
-	 */
-	SubscriptionCallback<?> subscriptionCallback = null;
 
 	/**
 	 * Null if the request is a full request. Mandatory if the request is a partial request. When this GraphQLRequest is
@@ -124,7 +117,6 @@ public abstract class AbstractGraphQLRequest {
 		this.queryName = queryName;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = this.getClass().getPackage().getName();
-		this.subscriptionCallback = subscriptionCallback;
 
 		QueryField field;
 		switch (requestType) {
@@ -285,30 +277,45 @@ public abstract class AbstractGraphQLRequest {
 	 * <B>Note:</B> Don't forget to free the server's resources by calling the {@link WebSocketClient#stop()} method of
 	 * the returned object.
 	 * 
+	 * @param <R>
+	 *            The class that is generated from the subscription definition in the GraphQL schema. It contains one
+	 *            attribute, for each available subscription. The data tag of the GraphQL server response will be mapped
+	 *            into an instance of this class.
 	 * @param <T>
-	 *            The type that must be returned by the query or mutation
+	 *            The type that must is returned by the subscription in the GraphQL schema, which is actually the type
+	 *            that will be sent in each notification received from this subscription.
 	 * @param t
 	 *            The type of the POJO which should be returned. It must be the query or the mutation class, generated
 	 *            by the plugin
 	 * @param params
 	 *            the input parameters for this query. If the query has no parameters, it may be null or an empty list.
 	 * @param subscriptionCallback
-	 *            The object that manages the Web Socket callback, when the request is a subscription. This object is
-	 *            provided by the application. It contains the callback methods that allow it to receive the GraphQL
-	 *            notifications it has subscribed to, and manage errors.
-	 * @return The Web Socket client. This client allows to stop the subscription, by executing its
-	 *         {@link WebSocketClient#stop()} method.
+	 *            The object that will be called each time a message is received, or an error on the subscription
+	 *            occurs. This object is provided by the application.
+	 * @param subscriptionName
+	 *            The name of the subscription that should be subscribed by this method call. It will be used to check
+	 *            that the correct GraphQLRequest has been provided by the caller.
+	 * @param subscriptionType
+	 *            The R class
+	 * @param messageType
+	 *            The T class
+	 * @return The Subscription client. It allows to stop the subscription, by executing its
+	 *         {@link SubscriptionClient#unsubscribe()} method. This will stop the incoming notification flow, and will
+	 *         free resources on both the client and the server.
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <T> WebSocketClient exec(Class<T> t, Map<String, Object> params,
-			SubscriptionCallback<T> subscriptionCallback) throws GraphQLRequestExecutionException {
+	public <R, T> SubscriptionClient exec(Map<String, Object> params, SubscriptionCallback<T> subscriptionCallback,
+			String subscriptionName, Class<R> subscriptionType, Class<T> messageType)
+			throws GraphQLRequestExecutionException {
 		if (instanceConfiguration != null) {
-			return instanceConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, t);
+			return instanceConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback,
+					subscriptionName, subscriptionType, messageType);
 		} else if (staticConfiguration != null) {
-			return staticConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, t);
+			return staticConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, subscriptionName,
+					subscriptionType, messageType);
 		} else {
 			throw new GraphQLRequestExecutionException(
 					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "
@@ -518,10 +525,6 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	public void setInstanceConfiguration(GraphQLConfiguration instanceConfiguration) {
 		this.instanceConfiguration = instanceConfiguration;
-	}
-
-	public SubscriptionCallback<?> getSubscriptionCallback() {
-		return subscriptionCallback;
 	}
 
 }

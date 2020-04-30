@@ -3,7 +3,6 @@ package com.generated.graphql.samples.customtemplates;
 import java.io.IOException;
 import java.util.Map;
 
-import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.SubscriptionCallback;
+import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -114,9 +114,10 @@ public class RestTemplateQueryExecutor implements QueryExecutor {
 	}
 
 	@Override
-	public <T> WebSocketClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			SubscriptionCallback<T> subscriptionCallback, Class<T> t) throws GraphQLRequestExecutionException {
-		// No subscription in this sample, so we don't really car of this implementation.
+	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
+			Class<T> messageType) throws GraphQLRequestExecutionException {
+		// No subscription in this sample, so we don't really care of this implementation.
 		return null;
 	}
 

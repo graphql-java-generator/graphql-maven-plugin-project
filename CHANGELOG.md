@@ -1,3 +1,9 @@
+# Not released yet
+
+Both modes (client and server):
+* The plugin now manages subscription
+
+
 # 1.6.1
 
 Both modes (client and server):

@@ -22,6 +22,7 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
@@ -109,8 +110,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> T execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters, Class<T> valueType)
-			throws GraphQLRequestExecutionException {
+	public <R> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+			Class<R> dataResponseType) throws GraphQLRequestExecutionException {
 
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");
@@ -127,34 +128,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 			JsonResponseWrapper response = invocationBuilder
 					.post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON), JsonResponseWrapper.class);
 
-			if (logger.isTraceEnabled()) {
-				logger.trace("Response data: {}", objectMapper.writeValueAsString(response.data));
-				logger.trace("Response errors: {}", objectMapper.writeValueAsString(response.errors));
-			}
-
-			if (response.errors == null || response.errors.size() == 0) {
-				// No errors. Let's parse the data
-				return objectMapper.treeToValue(response.data, valueType);
-			} else {
-				int nbErrors = 0;
-				String agregatedMessage = null;
-				for (com.graphql_java_generator.client.response.Error error : response.errors) {
-					String msg = error.toString();
-					nbErrors += 1;
-					logger.error(GRAPHQL_MARKER, msg);
-					if (agregatedMessage == null) {
-						agregatedMessage = msg;
-					} else {
-						agregatedMessage += ", ";
-						agregatedMessage += msg;
-					}
-				}
-				if (nbErrors == 0) {
-					throw new GraphQLRequestExecutionException("An unknown error occured");
-				} else {
-					throw new GraphQLRequestExecutionException(nbErrors + " errors occured: " + agregatedMessage);
-				}
-			}
+			return parseDataFromGraphQLServerResponse(objectMapper, response, dataResponseType);
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + jsonRequest + ">: " + e.getMessage(), e);
@@ -163,31 +137,57 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <T> WebSocketClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			SubscriptionCallback<T> subscriptionCallback, Class<T> valueType) throws GraphQLRequestExecutionException {
+	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
+			Class<T> messageType) throws GraphQLRequestExecutionException {
 
+		// This method accepts only subscription at a time (no query and no mutation)
 		if (!graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions");
 
-		// Let
-		String request = graphQLRequest.buildRequest(parameters);
-		logger.trace(GRAPHQL_MARKER, "Executing GraphQL subscription on Web Socket: {}", request);
+		// Subscription may be subscribed only once at a time, as this method allows only one subscriptionCallback
+		if (graphQLRequest.getSubscription().getFields().size() != 1) {
+			throw new GraphQLRequestExecutionException(
+					"This method may be called only for one subscription at a time, but there was "
+							+ graphQLRequest.getSubscription().getFields().size()
+							+ " subscriptions in this GraphQLRequest");
+		}
 
+		// The subscription name must be the good one
+		if (!graphQLRequest.getSubscription().getFields().get(0).getName().equals(subscriptionName)) {
+			throw new GraphQLRequestExecutionException("The subscription provided in the GraphQLRequest is "
+					+ graphQLRequest.getSubscription().getFields().get(0).getName() + " but it should be "
+					+ subscriptionName);
+		}
+
+		// The returned type of this subscription must be the provided messageType
+		if (!graphQLRequest.getSubscription().getFields().get(0).getClazz().equals(messageType)) {
+			throw new GraphQLRequestExecutionException("This provided message type shoud be "
+					+ graphQLRequest.getSubscription().getFields().get(0).getClazz().getName() + " but is "
+					+ messageType.getName());
+		}
+
+		String request = graphQLRequest.buildRequest(parameters);
+		logger.trace(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
+
+		// Let's create and start the Web Socket
 		WebSocketClient client = new WebSocketClient();
-		SubscriptionClientWebSocket<T> subscriptionClientWebSocket = new SubscriptionClientWebSocket<T>(request,
-				subscriptionCallback);
+		SubscriptionClientWebSocket<R, T> subscriptionClientWebSocket = new SubscriptionClientWebSocket<R, T>(request,
+				subscriptionName, subscriptionCallback, subscriptionType, messageType);
 		URI uri = getWebSocketURI();
 		try {
 			client.start();
 			ClientUpgradeRequest clientUpgradeRequest = new ClientUpgradeRequest();
 			client.connect(subscriptionClientWebSocket, uri, clientUpgradeRequest);
-			logger.debug("Connecting to : %s%n", uri);
+			logger.debug("Connecting to {}", uri);
 		} catch (Exception e) {
-			throw new GraphQLRequestExecutionException("Error while opening the Web Socket connection to " + uri, e);
+			String msg = "Error while opening the Web Socket connection to " + uri;
+			logger.error(msg);
+			throw new GraphQLRequestExecutionException(msg, e);
 		}
 
 		// Let's return the Web Socket client, so that the caller can stop it, when needed.
-		return client;
+		return new SubscriptionClientImpl(client);
 	}
 
 	/**
@@ -212,4 +212,47 @@ public class QueryExecutorImpl implements QueryExecutor {
 				"non managed protocol for endpoint " + graphqlEndpoint + ". This method manages only http and https");
 	}
 
+	/**
+	 * Extract the data from the {@link JsonResponseWrapper#data} json node, and return it as a T instance.
+	 * 
+	 * @param <T>
+	 * @param response
+	 *            The json response, read from the GraphQL response
+	 * @param valueType
+	 *            The expected T class
+	 * @return
+	 * @throws JsonProcessingException
+	 * @throws GraphQLRequestExecutionException
+	 */
+	static <T> T parseDataFromGraphQLServerResponse(ObjectMapper objectMapper, JsonResponseWrapper response,
+			Class<T> valueType) throws GraphQLRequestExecutionException, JsonProcessingException {
+		if (logger.isTraceEnabled()) {
+			logger.trace("Response data: {}", objectMapper.writeValueAsString(response.data));
+			logger.trace("Response errors: {}", objectMapper.writeValueAsString(response.errors));
+		}
+
+		if (response.errors == null || response.errors.size() == 0) {
+			// No errors. Let's parse the data
+			return objectMapper.treeToValue(response.data, valueType);
+		} else {
+			int nbErrors = 0;
+			String agregatedMessage = null;
+			for (com.graphql_java_generator.client.response.Error error : response.errors) {
+				String msg = error.toString();
+				nbErrors += 1;
+				logger.error(GRAPHQL_MARKER, msg);
+				if (agregatedMessage == null) {
+					agregatedMessage = msg;
+				} else {
+					agregatedMessage += ", ";
+					agregatedMessage += msg;
+				}
+			}
+			if (nbErrors == 0) {
+				throw new GraphQLRequestExecutionException("An unknown error occured");
+			} else {
+				throw new GraphQLRequestExecutionException(nbErrors + " errors occured: " + agregatedMessage);
+			}
+		}
+	}
 }

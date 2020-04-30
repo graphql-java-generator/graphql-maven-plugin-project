@@ -416,8 +416,8 @@ public class QueryField {
 	 */
 	public boolean isQueryLevel() {
 		if (queryLevel == null) {
-			queryLevel = name != null
-					&& (name.equals("query") || name.equals("mutation") || name.equals("subscription"));
+			queryLevel = name != null && (name.equals("data") || name.equals("query") || name.equals("mutation")
+					|| name.equals("subscription"));
 		}
 		return queryLevel;
 	}
@@ -438,6 +438,10 @@ public class QueryField {
 		}
 		// No field of this name has been found
 		return null;
+	}
+
+	public List<QueryField> getFields() {
+		return fields;
 	}
 
 	public Class<?> getOwningClazz() {

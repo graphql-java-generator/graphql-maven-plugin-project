@@ -6,24 +6,23 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
-import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.Error;
 
 public class AnotherMutationTypeRootResponse {
 
-	@JsonProperty("mutation")
-	@GraphQLNonScalar(fieldName = "AnotherMutationType", graphQLTypeName = "AnotherMutationType", javaClass = AnotherMutationTypeResponse.class)
-	AnotherMutationTypeResponse mutation;
+	@JsonProperty("data")
+	@GraphQLNonScalar(fieldName = "AnotherMutationType", graphQLTypeName = "AnotherMutationType", javaClass = AnotherMutationType.class)
+	AnotherMutationType mutation;
 
 	@JsonProperty("errors")
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public AnotherMutationTypeResponse getMutation() {
+	public AnotherMutationType getData() {
 		return mutation;
 	}
 
-	public void setMutation(AnotherMutationTypeResponse mutation) {
+	public void setData(AnotherMutationType mutation) {
 		this.mutation = mutation;
 	}
 

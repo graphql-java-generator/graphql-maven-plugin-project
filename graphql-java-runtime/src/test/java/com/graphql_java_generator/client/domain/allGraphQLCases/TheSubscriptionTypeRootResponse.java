@@ -6,24 +6,23 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
-import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.Error;
 
 public class TheSubscriptionTypeRootResponse {
 
-	@JsonProperty("subscription")
-	@GraphQLNonScalar(fieldName = "TheSubscriptionType", graphQLTypeName = "TheSubscriptionType", javaClass = TheSubscriptionTypeResponse.class)
-	TheSubscriptionTypeResponse subscription;
+	@JsonProperty("data")
+	@GraphQLNonScalar(fieldName = "TheSubscriptionType", graphQLTypeName = "TheSubscriptionType", javaClass = TheSubscriptionType.class)
+	TheSubscriptionType subscription;
 
 	@JsonProperty("errors")
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public TheSubscriptionTypeResponse getSubscription() {
+	public TheSubscriptionType getSubscription() {
 		return subscription;
 	}
 
-	public void setSubscription(TheSubscriptionTypeResponse subscription) {
+	public void setSubscription(TheSubscriptionType subscription) {
 		this.subscription = subscription;
 	}
 

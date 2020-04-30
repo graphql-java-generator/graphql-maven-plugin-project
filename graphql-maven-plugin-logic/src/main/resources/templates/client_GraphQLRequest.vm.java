@@ -6,8 +6,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.client.SubscriptionCallback;
+import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.request.QueryField;
@@ -23,6 +26,7 @@ public class GraphQLRequest extends ObjectResponse {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(GraphQLRequest.class);
 
+	final com.graphql_java_generator.GraphqlUtils graphqlUtils = new GraphqlUtils();
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	// This initialization must occur before the execution of the constructors, in order to properly parse the GraphQL request
@@ -44,10 +48,11 @@ public class GraphQLRequest extends ObjectResponse {
 
 #if ($query)
 	/**
-	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
-	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
-	 * its parameters (if in trace mode).<BR/>
-	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * This method executes the current GraphQL request as a full query request. It offers a logging of 
+	 * the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the 
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">graphql-java-generator website</A> 
+	 * for more information):
 	 * 
 	 * <PRE>
 	 * GraphQLRequest request;
@@ -83,10 +88,11 @@ public class GraphQLRequest extends ObjectResponse {
 	}
 
 	/**
-	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
-	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
-	 * its parameters (if in trace mode).<BR/>
-	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * This method executes the current GraphQL request as a full query request. It offers a logging of 
+	 * the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the 
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">graphql-java-generator website</A> 
+	 * for more information):
 	 * 
 	 * <PRE>
 	 * GraphQLRequest request;
@@ -105,9 +111,12 @@ public class GraphQLRequest extends ObjectResponse {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param parameters
-	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
-	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
@@ -119,10 +128,11 @@ public class GraphQLRequest extends ObjectResponse {
 #end
 #if ($mutation)
 	/**
-	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
-	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
-	 * its parameters (if in trace mode).<BR/>
-	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * This method executes the current GraphQL request as a full mutation request. It offers a logging of 
+	 * the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">graphql-java-generator website</A> 
+	 * for more information):
 	 * 
 	 * <PRE>
 	 * GraphQLRequest request;
@@ -159,10 +169,11 @@ public class GraphQLRequest extends ObjectResponse {
 	}
 
 	/**
-	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
-	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
-	 * its parameters (if in trace mode).<BR/>
-	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * This method executes the current GraphQL request as a full mutation request. It offers a logging of 
+	 * the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * Here is a sample (and please have a look to the
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">graphql-java-generator website</A> 
+	 * for more information):
 	 * 
 	 * <PRE>
 	 * GraphQLRequest request;
@@ -181,9 +192,12 @@ public class GraphQLRequest extends ObjectResponse {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param parameters
-	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
-	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
@@ -195,9 +209,15 @@ public class GraphQLRequest extends ObjectResponse {
 #end
 #if ($subscription)
 	/**
-	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
-	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
-	 * its parameters (if in trace mode).<BR/>
+	 * This method executes the current GraphQL request as a full subscription request. It offers a logging of 
+	 * the call (if in debug mode), or of the call and its parameters (if in trace mode). You can to the 
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">graphql-java-generator website</A> 
+	 * to read more information.<BR/>
+	 * <B>Please note:</B>
+	 * <UL>
+	 * <LI>Using partial request is easier</LI>
+	 * <LI>The full request may bot contain more than one subscription at a time</LI>
+	 * </UL>
 	 * Here is a sample (and please have a look to the GraphQL site for more information):
 	 * 
 	 * <PRE>
@@ -221,22 +241,43 @@ public class GraphQLRequest extends ObjectResponse {
 	 * }
 	 * </PRE>
 	 * 
+	 * @param <T>
+	 *            The type that must is returned by the subscription in the GraphQL schema, which is actually the type
+	 *            that will be sent in each notification received from this subscription.
+	 * @param subscriptionCallback
+	 *            The object that will be called each time a message is received, or an error on the subscription
+	 *            occurs. This object is provided by the application.
+	 * @param subscriptionName
+	 *            The name of the subscription that should be subscribed by this method call. It will be used to check
+	 *            that the correct GraphQLRequest has been provided by the caller.
+	 * @param messageType
+	 *            The T class
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
 	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @return The Subscription client. It allows to stop the subscription, by executing its
+	 *         {@link SubscriptionClient#unsubscribe()} method. This will stop the incoming notification flow, and will
+	 *         free resources on both the client and the server.
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${subscription.name}Response execSubscription(Map<String, Object> parameters)
+	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, String subscriptionName,
+			Class<T> messageType, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
-		throw new GraphQLRequestExecutionException("Subscriptions are not managed yet");
+		return exec(parameters, subscriptionCallback, subscriptionName, ${subscription.classSimpleName}.class, messageType);
 	}
 
 	/**
-	 * This method executes the current GraphQL request as a query request.is expected by the graphql-java framework. It
-	 * will be called when this query is called. It offers a logging of the call (if in debug mode), or of the call and
-	 * its parameters (if in trace mode).<BR/>
+	 * This method executes the current GraphQL request as a full subscription request. It offers a logging of 
+	 * the call (if in debug mode), or of the call and its parameters (if in trace mode). You can to the 
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">graphql-java-generator website</A> 
+	 * to read more information.<BR/>
+	 * <B>Please note:</B>
+	 * <UL>
+	 * <LI>Using partial request is easier</LI>
+	 * <LI>The full request may bot contain more than one subscription at a time</LI>
+	 * </UL>
 	 * Here is a sample (and please have a look to the GraphQL site for more information):
 	 * 
 	 * <PRE>
@@ -256,15 +297,34 @@ public class GraphQLRequest extends ObjectResponse {
 	 * }
 	 * </PRE>
 	 * 
-	 * @param parameters
-	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
-	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @param <T>
+	 *            The type that must is returned by the subscription in the GraphQL schema, which is actually the type
+	 *            that will be sent in each notification received from this subscription.
+	 * @param subscriptionCallback
+	 *            The object that will be called each time a message is received, or an error on the subscription
+	 *            occurs. This object is provided by the application.
+	 * @param subscriptionName
+	 *            The name of the subscription that should be subscribed by this method call. It will be used to check
+	 *            that the correct GraphQLRequest has been provided by the caller.
+	 * @param messageType
+	 *            The T class
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @return The Subscription client. It allows to stop the subscription, by executing its
+	 *         {@link SubscriptionClient#unsubscribe()} method. This will stop the incoming notification flow, and will
+	 *         free resources on both the client and the server.
 	 * @throws GraphQLRequestExecutionException
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${subscription.name}Response execSubscription(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		throw new GraphQLRequestExecutionException("Subscriptions are not managed yet");
+	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, String subscriptionName,
+			Class<T> messageType, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+		return exec(graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), 
+				subscriptionCallback, subscriptionName, ${subscription.classSimpleName}.class, messageType);
 	}
 
 #end
@@ -316,7 +376,12 @@ public class GraphQLRequest extends ObjectResponse {
 
 	@Override
 	public QueryField getSubscriptionContext() throws GraphQLRequestPreparationException {
-		throw new GraphQLRequestPreparationException("Subscriptions are not managed yet");
+#if ($subscription)
+		return new QueryField(${subscription.name}RootResponse.class, "subscription");
+#else
+	// No subscription in this GraphQL schema
+	return null;
+#end
 	}
 
 }

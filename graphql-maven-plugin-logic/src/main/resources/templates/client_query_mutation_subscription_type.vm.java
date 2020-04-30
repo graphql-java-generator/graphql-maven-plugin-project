@@ -30,7 +30,7 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 ${object.annotation}
-public class ${object.javaName} {
+public class ${object.classSimpleName} {
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(${object.name}.class);
@@ -51,7 +51,7 @@ public class ${object.javaName} {
 	 * @param graphqlEndpoint
 	 *            the http URI for the GraphQL endpoint
 	 */
-	public ${object.javaName}(String graphqlEndpoint) {
+	public ${object.classSimpleName}(String graphqlEndpoint) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
@@ -70,7 +70,7 @@ public class ${object.javaName} {
 	 * @param sslContext
 	 * @param hostnameVerifier
 	 */
-	public ${object.javaName}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+	public ${object.classSimpleName}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
@@ -88,7 +88,7 @@ public class ${object.javaName} {
 	 * @param objectMapper
 	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
-	public ${object.javaName}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public ${object.classSimpleName}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
@@ -131,9 +131,9 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.javaName}Response execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+	public ${object.classSimpleName}Response execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing of ${object.requestType} {} ", queryResponseDef);
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return exec(objectResponse, parameters);
 	}
@@ -170,9 +170,9 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.javaName}Response exec(String queryResponseDef, Object... paramsAndValues)
+	public ${object.classSimpleName}Response exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing of ${object.requestType} {} ", queryResponseDef);
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
@@ -211,13 +211,13 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.javaName}Response execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+	public ${object.classSimpleName}Response execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			if (parameters == null) {
-				logger.trace("Executing of ${object.requestType} without parameters");
+				logger.trace("Executing ${object.requestType} without parameters");
 			} else {
-				StringBuffer sb = new StringBuffer("Executing of root ${object.requestType} with parameters: ");
+				StringBuffer sb = new StringBuffer("Executing root ${object.requestType} with parameters: ");
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
@@ -228,13 +228,13 @@ public class ${object.javaName} {
 				logger.trace(sb.toString());
 			}
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing of ${object.requestType} '${object.name}'");
+			logger.debug("Executing ${object.requestType} '${object.name}'");
 		}
 
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, ${object.javaName}Response.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, ${object.classSimpleName}Response.class);
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class ${object.javaName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.javaName}Response exec(ObjectResponse objectResponse, Object... paramsAndValues)
+	public ${object.classSimpleName}Response exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
@@ -345,7 +345,7 @@ public class ${object.javaName} {
 #if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	public #if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end ${field.name}WithBindValues(String queryResponseDef#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
+		logger.debug("Executing query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return ${field.javaName}(objectResponse#inputValues(), parameters);
 	}
@@ -389,7 +389,7 @@ public class ${object.javaName} {
 #if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeName = "${field.graphQLTypeName}", javaClass = ${field.type.classSimpleName}.class)
 	public #if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end ${field.name}(String queryResponseDef#inputParams(), Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing of query '${field.name}' in query mode: {} ", queryResponseDef);
+		logger.debug("Executing query '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return ${field.javaName}WithBindValues(objectResponse#inputValues(), graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
@@ -438,9 +438,9 @@ public class ${object.javaName} {
 	public #if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end ${field.name}WithBindValues(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
-			logger.trace("Executing of ${object.requestType} '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end);
+			logger.trace("Executing ${object.requestType} '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end);
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing of ${object.requestType} '${field.name}'");
+			logger.debug("Executing ${object.requestType} '${field.name}'");
 		}
 	
 		// Given values for the BindVariables
@@ -505,7 +505,7 @@ public class ${object.javaName} {
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
-			sb.append("Executing of query '${field.name}' with bind variables: ");
+			sb.append("Executing query '${field.name}' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
 				if (o != null) {
@@ -517,7 +517,7 @@ public class ${object.javaName} {
 			}
 			logger.trace(sb.toString());
 		} else if (logger.isDebugEnabled()) {
-			logger.debug("Executing of query '${field.name}' (with bind variables)");
+			logger.debug("Executing query '${field.name}' (with bind variables)");
 		}
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);

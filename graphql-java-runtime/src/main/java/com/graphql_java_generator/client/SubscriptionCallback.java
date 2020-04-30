@@ -11,6 +11,14 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
  * This interface will receive the notification for each message that comes from a subscription. The message sent by the
  * server is mapped on the T class.
  * 
+ * @param <T>
+ *            The java class that maps to the GraphQL type returned by the subscription.<BR/>
+ *            For instance, for the subscription the T parameter should be <I>Human</I>
+ * 
+ *            <PRE>
+ *            subscribeNewHumanForEpisode(episode: Episode!): Human!
+ *            </PRE>
+ * 
  * @author etienne-sf
  */
 public interface SubscriptionCallback<T> {

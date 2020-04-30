@@ -10,7 +10,9 @@ import $import;
 #end
 
 /**
- * This class is deprecated. Please use the #if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${object.javaName} instead
+ * This class is deprecated. Please use the #if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${object.javaName} instead.<BR/>
+ * It is still generated, for compatibility reason: removing it would break existing application's code. <BR/>
+ * It will be removed in 2.0 version
  * 
  * @author etienne-sf
  */

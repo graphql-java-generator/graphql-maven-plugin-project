@@ -11,19 +11,21 @@ import com.graphql_java_generator.client.response.Error;
 
 public class ${object.javaName}RootResponse {
 
-	@JsonProperty("${object.requestType}")
-	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeName = "${object.javaName}", javaClass = ${object.javaName}Response.class)
-	${object.javaName}Response ${object.requestType};
+	@JsonProperty("data")
+	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeName = "${object.javaName}", javaClass = ${object.classSimpleName}.class)
+	${object.classSimpleName} ${object.requestType};
 
 	@JsonProperty("errors")
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public ${object.javaName}Response get${object.requestTypePascalCase}() {
-		return ${object.requestType};
+	// This getter is needed for the Json serialization
+	public ${object.classSimpleName} getData() {
+		return this.${object.requestType};
 	}
 
-	public void set${object.requestTypePascalCase}(${object.javaName}Response ${object.requestType}) {
+	// This setter is needed for the Json deserialization
+	public void setData(${object.classSimpleName} ${object.requestType}) {
 		this.${object.requestType} = ${object.requestType};
 	}
 

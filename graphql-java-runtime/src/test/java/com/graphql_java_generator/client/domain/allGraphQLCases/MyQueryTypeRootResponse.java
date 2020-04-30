@@ -6,24 +6,23 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
-import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.Error;
 
 public class MyQueryTypeRootResponse {
 
-	@JsonProperty("query")
-	@GraphQLNonScalar(fieldName = "MyQueryType", graphQLTypeName = "MyQueryType", javaClass = MyQueryTypeResponse.class)
-	MyQueryTypeResponse query;
+	@JsonProperty("data")
+	@GraphQLNonScalar(fieldName = "MyQueryType", graphQLTypeName = "MyQueryType", javaClass = MyQueryType.class)
+	MyQueryType query;
 
 	@JsonProperty("errors")
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public MyQueryTypeResponse getQuery() {
+	public MyQueryType getData() {
 		return query;
 	}
 
-	public void setQuery(MyQueryTypeResponse query) {
+	public void setData(MyQueryType data) {
 		this.query = query;
 	}
 
