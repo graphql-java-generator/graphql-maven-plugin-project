@@ -3,6 +3,7 @@ scalar Date
 schema {
     query: QueryType
     mutation: MutationType
+    subscription: SubscriptionType
 }
 
 type QueryType {
@@ -17,6 +18,10 @@ type MutationType {
 	createTopic(topic: TopicInput): Topic!
 	createPost(post: PostInput!): Post!
 	createPosts(spam: [PostInput!]!): [Post!]!
+}
+
+type SubscriptionType {
+	subscribeToNewPost(boardName: String!): Post!
 }
 
 enum MemberType {

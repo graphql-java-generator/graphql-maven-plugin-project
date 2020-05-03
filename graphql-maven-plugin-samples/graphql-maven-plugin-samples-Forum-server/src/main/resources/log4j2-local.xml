@@ -13,7 +13,8 @@
 	</Appenders>
 
 	<Loggers>
-		<Logger name="com.graphql-java-generator" level="debug" />
+		<Logger name="com.graphql_java_generator" level="debug" />
+		<Logger name="org.springframework.web" level="debug" />
 		<Logger name="graphql" level="info" />
 		<Logger name="graphql.execution" level="info" />
 		<Logger name="org.dbunit" level="info" />

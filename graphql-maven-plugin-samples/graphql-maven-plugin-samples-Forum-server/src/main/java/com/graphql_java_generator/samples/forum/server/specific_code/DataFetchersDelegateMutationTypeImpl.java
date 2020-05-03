@@ -33,6 +33,8 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	TopicRepository topicRepository;
 	@Resource
 	PostRepository postRepository;
+	@Resource
+	PostPublisher postPublisher;
 
 	@Override
 	public Board createBoard(DataFetchingEnvironment dataFetchingEnvironment, String name, Boolean publiclyAvailable) {
@@ -68,6 +70,10 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 		newPost.setTitle(postParam.getInput().getTitle());
 		newPost.setContent(postParam.getInput().getContent());
 		postRepository.save(newPost);
+
+		// Let's publish that new post, in case someone subscribed to the subscribeToNewPost GraphQL subscription
+		postPublisher.onNext(newPost);
+
 		return newPost;
 	}
 

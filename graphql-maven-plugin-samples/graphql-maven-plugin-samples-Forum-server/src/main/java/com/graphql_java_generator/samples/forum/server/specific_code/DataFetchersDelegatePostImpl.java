@@ -4,14 +4,15 @@
 package com.graphql_java_generator.samples.forum.server.specific_code;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
+import org.dataloader.DataLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.samples.forum.server.DataFetchersDelegatePost;
@@ -46,5 +47,12 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 	public List<Post> batchLoader(List<UUID> keys) {
 		logger.debug("Batch loading {} posts", keys.size());
 		return postRepository.findByIds(keys);
+	}
+
+	@Override
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
+		logger.debug("Batch loading {} posts", id);
+		Optional<Member> ret = memberRepository.findById(id);
+		return (ret.isPresent()) ? ret.get() : null;
 	}
 }

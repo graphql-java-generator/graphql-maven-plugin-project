@@ -1,4 +1,6 @@
 Here are the next tasks listed, as a TODO list:
+* Check subscription that returns list
+* Check subscription returning sub objects ({id date author publiclyAvailable title content})
 * Test subscription with Custom Scalars, input types...
 * Change the JsonResponseWrapper as an interface, implemented by the XxxRootResponse classes
 * Allow aliases for query/mutation fields

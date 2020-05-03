@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -14,12 +16,14 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Needed to properly package the jar or war, so that spring can link all resources together -->
+				<!-- Needed to properly package the jar or war, so that spring can link 
+					all resources together -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- This is core of graphql-java-generator: it generates the boilerplate code for you -->
+				<!-- This is core of graphql-java-generator: it generates the boilerplate 
+					code for you -->
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
@@ -47,7 +51,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<inherited>true</inherited>
-			</plugin>			
+			</plugin>
 			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -58,7 +62,8 @@
 		</plugins>
 
 		<extensions>
-			<!-- Adding these extensions prevents the error below, with JDK 9 and higher: -->
+			<!-- Adding these extensions prevents the error below, with JDK 9 and 
+				higher: -->
 			<!-- NoSuchMethodError: 'java.lang.String javax.annotation.Resource.lookup()' -->
 			<extension>
 				<groupId>javax.annotation</groupId>
@@ -115,6 +120,22 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
+		</dependency>
+
+
+		<!-- Added for websockets (for subscription). Still WIP: some of these 
+			should be added to the server dependencies module -->
+		<dependency>
+			<groupId>io.reactivex.rxjava2</groupId>
+			<artifactId>rxjava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
 		</dependency>
 	</dependencies>
 

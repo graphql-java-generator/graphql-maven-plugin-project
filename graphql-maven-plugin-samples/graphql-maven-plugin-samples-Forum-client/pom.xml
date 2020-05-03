@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -52,7 +54,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot Forum-server in the background during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot Forum-server in the background 
+					during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
@@ -98,7 +101,8 @@
 		</plugins>
 
 		<extensions>
-			<!-- Adding these extensions prevents the error below, with JDK 9 and higher: -->
+			<!-- Adding these extensions prevents the error below, with JDK 9 and 
+				higher: -->
 			<!-- NoSuchMethodError: 'java.lang.String javax.annotation.Resource.lookup()' -->
 			<extension>
 				<groupId>javax.annotation</groupId>
@@ -147,6 +151,31 @@
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-dependencies</artifactId>
 			<type>pom</type>
+		</dependency>
+
+
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- dependency> <groupId>org.glassfish.tyrus</groupId> <artifactId>tyrus-client</artifactId> 
+			<version>1.16</version> </dependency -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.websocket</groupId>
+			<artifactId>javax-websocket-server-impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-annotations</artifactId>
 		</dependency>
 	</dependencies>
 
