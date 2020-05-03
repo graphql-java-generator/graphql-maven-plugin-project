@@ -67,7 +67,6 @@ class SubscriptionClientWebSocket_allGraphQLCasesTest {
 		// Go, go, go
 		subscriptionClientWebSocket.onMessage("" //
 				+ "{" //
-				+ "  \"data\": {" //
 				+ "    \"subscribeNewHumanForEpisode\": {" //
 				+ "      \"id\": \"7ecfeafa-98e0-4072-922d-f94fa7d07aa0\"," //
 				+ "      \"name\": \"human's name\"," //
@@ -88,7 +87,6 @@ class SubscriptionClientWebSocket_allGraphQLCasesTest {
 				+ "        }"//
 				+ "      ]" //
 				+ "    }" //
-				+ "  }" //
 				+ "}");
 
 		// Verification

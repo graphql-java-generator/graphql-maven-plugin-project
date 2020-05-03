@@ -13,7 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
-import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -112,8 +111,7 @@ public class SubscriptionClientWebSocket<R, T> {
 
 		try {
 
-			JsonResponseWrapper jsonResponse = objectMapper.readValue(msg, JsonResponseWrapper.class);
-			R r = QueryExecutorImpl.parseDataFromGraphQLServerResponse(objectMapper, jsonResponse, subscriptionType);
+			R r = objectMapper.readValue(msg, subscriptionType);
 			@SuppressWarnings("unchecked")
 			T t = (T) graphqlUtils.invokeGetter(r, subscriptionName);
 			subscriptionCallback.onMessage(t);
@@ -127,8 +125,6 @@ public class SubscriptionClientWebSocket<R, T> {
 			logger.error(errorMsg);
 			// Let's tell the application that an error occurs while reading a message
 			subscriptionCallback.onError(new GraphQLRequestExecutionException(errorMsg, e));
-		} catch (GraphQLRequestExecutionException e) {
-			subscriptionCallback.onError(e);
 		}
 	}
 
