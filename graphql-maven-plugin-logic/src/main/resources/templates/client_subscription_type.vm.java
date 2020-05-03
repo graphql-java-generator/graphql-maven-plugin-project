@@ -28,7 +28,6 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 
@@ -109,33 +108,49 @@ public class ${object.classSimpleName} {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
-
-	Commentaires à finir
 	
 #foreach ($field in $object.fields)
 	/**
-	 * This method register a subscription, by executin a partial request against the GraphQL server. That is, the subscription that is one of the queries
-	 * defined in the GraphQL subscription object. The queryResponseDef contains the part of the subscription that <B><U>is
-	 * after</U></B> the subscription name.<BR/>
-	 * For instance, if the subscription hero has one parameter (as defined in the GraphQL schema):
+	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
+	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
+	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
+	 * "{id name}" if you want these two fields to be sent in the notifications you'll receive for this
+	 * subscription.<BR/>
+	 * You must also provide a callback instance of the {@link SubscriptionCallback}, and the parameter for the
+	 * subscription as parameter for this method. For instance, if the subscription subscribeToNewPost has one parameter
+	 * <I>boardName</I> (as defined in the GraphQL schema):
 	 * 
 	 * <PRE>
-	 * Map<String, Object> params = new HashMap<>();
-	 * params.put("skip", Boolean.FALSE);
-	 *
-	 * #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end c = myQyeryType.${field.name}WithBindValues("{id name @skip(if: false) appearsIn friends {id name}}"#inputValues, params);
-	 * </PRE>
+	 * SubscriptionClient client;
 	 * 
-	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method takes care of writing the subscription name, and the parameter(s) for the subscription. The given queryResponseDef
-	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
-	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
-	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.
+	 * void setup() {
+	 * 	subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
+	 * }
+	 * 
+	 * void exec() {
+	 * 	Map<String, Object> params = new HashMap<>();
+	 * 	params.put("anOptionalParam", "a param value");
+	 * 	// PostSubscriptionCallback implement SubscriptionCallback<Post>, as Post is the returned type for the
+	 * 	// subscribeToNewPost subscription. Its onMessage(T) method will be called for each notification of this
+	 * 	// subscription.
+	 * 	client = subscriptionType.subscribeToNewPost(
+	 * 			"{id date author publiclyAvailable title(param: ?anOptionalParam) content}",
+	 * 			new PostSubscriptionCallback(), 
+	 *          "Board name 1", // The parameter(s) of the subscription if any, are directly sent as parameter for this method
+	 *          params // The bind variable you defined in your query are in this map.  
+	 *          );
+	 * }
+	 * 
+	 * void freeResources() {
+	 * 	client.unsubscribe();
+	 * }
+	 * </PRE>
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the subscription, in the native GraphQL format (see here above)
+	 * @param subscriptionCallback
+	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
+	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
 	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
 #end
@@ -160,25 +175,44 @@ public class ${object.classSimpleName} {
 	}
 
 	/**
-	 * This method executes a partial subscription against the GraphQL server. That is, the subscription that is one of the queries
-	 * defined in the GraphQL subscription object. The queryResponseDef contains the part of the subscription that <B><U>is
-	 * after</U></B> the subscription name.<BR/>
-	 * For instance, if the subscription hero has one parameter (as defined in the GraphQL schema):
+	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
+	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
+	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
+	 * "{id name}" if you want these two fields to be sent in the notifications you'll receive for this
+	 * subscription.<BR/>
+	 * You must also provide a callback instance of the {@link SubscriptionCallback}, and the parameter for the
+	 * subscription as parameter for this method. For instance, if the subscription subscribeToNewPost has one parameter
+	 * <I>boardName</I> (as defined in the GraphQL schema):
 	 * 
 	 * <PRE>
-	 * #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end c = myQyeryType.${field.name}("{id name @skip(if: false) appearsIn friends {id name}}"#inputValues, "skip", Boolean.FALSE);
-	 * </PRE>
+	 * SubscriptionClient client;
 	 * 
-	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method takes care of writing the subscription name, and the parameter(s) for the subscription. The given queryResponseDef
-	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
-	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
-	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
-	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.
+	 * void setup() {
+	 * 	subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
+	 * }
+	 * 
+	 * void exec() {
+	 * 	// PostSubscriptionCallback implement SubscriptionCallback<Post>, as Post is the returned type for the
+	 * 	// subscribeToNewPost subscription. Its onMessage(T) method will be called for each notification of this
+	 * 	// subscription.
+	 * 	client = subscriptionType.subscribeToNewPost(
+	 * 			"{id date author publiclyAvailable title(param: ?anOptionalParam) content}",
+	 * 			new PostSubscriptionCallback(), 
+	 *          "Board name 1", // The parameter(s) of the subscription if any, are directly sent as parameter for this method
+	 *          "anOptionalParam", "a param value" // The bind variables that you've defined in your query are given as a listof couple of (name, value)  
+	 *          );
+	 * }
+	 * 
+	 * void freeResources() {
+	 * 	client.unsubscribe();
+	 * }
+	 * </PRE>
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the subscription, in the native GraphQL format (see here above)
+	 * @param subscriptionCallback
+	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
+	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
 	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
 #end
@@ -196,36 +230,53 @@ public class ${object.classSimpleName} {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing subscription '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
-		return ${field.javaName}WithBindValues(objectResponse#inputValues(), subscriptionCallback, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+		return ${field.javaName}WithBindValues(objectResponse, subscriptionCallback#inputValues(), graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this subscription is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.<BR/>
-	 * Here is a sample:
+	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
+	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
+	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
+	 * "{id name}" if you want these two fields to be sent in the notifications you'll receive for this
+	 * subscription.<BR/>
+	 * You must also provide a callback instance of the {@link SubscriptionCallback}, and the parameter for the
+	 * subscription as parameter for this method. For instance, if the subscription subscribeToNewPost has one parameter
+	 * <I>boardName</I> (as defined in the GraphQL schema):
 	 * 
 	 * <PRE>
-	 * ObjectResponse response;
-	 * public void setup() {
-	 * 	// Preparation of the subscription
-	 * 	response = queryType.getBoardsResponseBuilder()
-	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * SubscriptionClient client;
+	 * GraphQLRequest subscriptionRequest;
+	 * 
+	 * void setup() {
+	 * 	subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
+	 *  subscriptionRequest = subscriptionType
+	 *			.getSubscribeToNewPostGraphQLRequest("{id date author publiclyAvailable title(param: ?anOptionalParam) content}");
 	 * }
 	 * 
-	 * public void doTheJob() {
-	 * ..
-	 * Map<String, Object> params = new HashMap<>();
-	 * params.put("sinceParam", sinceValue);
-	 * // This will set the value sinceValue to the sinceParam field parameter
-	 * #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ret = queryType.${field.name}WithBindValues(response#inputValues, params);
-	 * ...
+	 * void exec() {
+	 * 	Map<String, Object> params = new HashMap<>();
+	 * 	params.put("anOptionalParam", "a param value");
+	 * 	// PostSubscriptionCallback implement SubscriptionCallback<Post>, as Post is the returned type for the
+	 * 	// subscribeToNewPost subscription. Its onMessage(T) method will be called for each notification of this
+	 * 	// subscription.
+	 * 	client = subscriptionType.subscribeToNewPost(
+	 * 			subscriptionRequest,
+	 * 			new PostSubscriptionCallback(), 
+	 *          "Board name 1", // The parameter(s) of the subscription if any, are directly sent as parameter for this method
+	 *          params // The bind variable you defined in your query are in this map.  
+	 *          );
+	 * }
+	 * 
+	 * void freeResources() {
+	 * 	client.unsubscribe();
 	 * }
 	 * </PRE>
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param subscriptionCallback
+	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
+	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
 	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
 #end
@@ -254,34 +305,54 @@ public class ${object.classSimpleName} {
 #end
 
 		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", 
-				${object.classSimpleName}.class, #if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${field.owningType.classSimpleName}.class);
+				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${object.classSimpleName}.class, 
+				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${field.type.classSimpleName}.class);
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this subscription is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.<BR/>
-	 * Here is a sample:
+	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
+	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
+	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
+	 * "{id name}" if you want these two fields to be sent in the notifications you'll receive for this
+	 * subscription.<BR/>
+	 * You must also provide a callback instance of the {@link SubscriptionCallback}, and the parameter for the
+	 * subscription as parameter for this method. For instance, if the subscription subscribeToNewPost has one parameter
+	 * <I>boardName</I> (as defined in the GraphQL schema):
 	 * 
 	 * <PRE>
-	 * ObjectResponse response;
-	 * public void setup() {
-	 * 	// Preparation of the subscription
-	 * 	response = queryType.getBoardsResponseBuilder()
-	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * SubscriptionClient client;
+	 * GraphQLRequest subscriptionRequest;
+	 * 
+	 * void setup() {
+	 * 	subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
+	 *  subscriptionRequest = subscriptionType
+	 *			.getSubscribeToNewPostGraphQLRequest("{id date author publiclyAvailable title(param: ?anOptionalParam) content}");
 	 * }
 	 * 
-	 * public void doTheJob() {
-	 * ..
-	 * // This will set the value sinceValue to the sinceParam field parameter
-	 * #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ret = queryType.${field.javaName}(response#inputValues, "sinceParam", sinceValue);
-	 * ...
+	 * void exec() {
+	 * 	Map<String, Object> params = new HashMap<>();
+	 * 	params.put("anOptionalParam", "a param value");
+	 * 	// PostSubscriptionCallback implement SubscriptionCallback<Post>, as Post is the returned type for the
+	 * 	// subscribeToNewPost subscription. Its onMessage(T) method will be called for each notification of this
+	 * 	// subscription.
+	 * 	client = subscriptionType.subscribeToNewPost(
+	 * 			subscriptionRequest,
+	 * 			new PostSubscriptionCallback(), 
+	 *          "Board name 1", // The parameter(s) of the subscription if any, are directly sent as parameter for this method
+	 *          "anOptionalParam", "a param value" // The bind variables that you've defined in your query are given as a listof couple of (name, value)  
+	 *          );
+	 * }
+	 * 
+	 * void freeResources() {
+	 * 	client.unsubscribe();
 	 * }
 	 * </PRE>
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param subscriptionCallback
+	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
+	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
 	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
 #end
@@ -323,7 +394,8 @@ public class ${object.classSimpleName} {
 #end
 		
 		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", 
-				${object.classSimpleName}.class, #if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${field.owningType.classSimpleName}.class);
+				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${object.classSimpleName}.class, 
+				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${field.type.classSimpleName}.class);
 	}
 
 	/**

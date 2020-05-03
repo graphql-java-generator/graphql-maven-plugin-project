@@ -112,13 +112,13 @@ public class CodeGenerator {
 			// Generation of the query/mutation/subscription classes
 			pluginConfiguration.getLog().debug("Generating query");
 			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION), true);
+					resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
 			pluginConfiguration.getLog().debug("Generating mutation");
 			i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION), true);
+					resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
 			pluginConfiguration.getLog().debug("Generating subscription");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
-					resolveTemplate(CodeTemplate.QUERY_MUTATION_SUBSCRIPTION), true);
+					resolveTemplate(CodeTemplate.SUBSCRIPTION), true);
 
 			// Generation of the query/mutation/subscription response classes
 			pluginConfiguration.getLog().debug("Generating query response");

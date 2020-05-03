@@ -91,7 +91,7 @@ public class ${object.classSimpleName} {
 
 	/**
 	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
-	 * that gives the opportunity to customise the REST request<BR/>
+	 * that gives the opportunity to customize the REST request<BR/>
 	 * For example: http://my.server.com/graphql
 	 *
 	 * @param graphqlEndpoint

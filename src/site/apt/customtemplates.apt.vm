@@ -47,7 +47,7 @@ Customizing code templates
 			<configuration>
 				<mode>client</mode>
 				<templates>
-					<QUERY_MUTATION_SUBSCRIPTION>classpath/entry/to/cutomtemplate.java.vm</QUERY_MUTATION_SUBSCRIPTION>
+					<QUERY_MUTATION>classpath/entry/to/customtemplate.java.vm</QUERY_MUTATION>
 				</templates>
 			</configuration>
 			<dependencies>
@@ -90,11 +90,13 @@ Customizing code templates
 *--+--+--+
 | CUSTOM_SCALAR_REGISTRY_INITIALIZER | CLIENT | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_CustomScalarRegistryInitializer.vm.java}templates/client_CustomScalarRegistryInitializer.vm.java}} |
 *--+--+--+
-| QUERY_MUTATION_SUBSCRIPTION | CLIENT | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_query_mutation_subscription_type.vm.java}templates/client_query_mutation_subscription_type.vm.java}} |
+| QUERY_MUTATION | CLIENT | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_query_mutation_type.vm.java}templates/client_query_mutation_type.vm.java}} |
 *--+--+--+
 | QUERY_TARGET_TYPE | CLIENT | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_query_target_type.vm.java}templates/client_query_target_type.vm.java}} |
 *--+--+--+
 | JACKSON_DESERIALIZER | CLIENT | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_jackson_deserialize.vm.java}templates/client_jackson_deserialize.vm.java}} |
+*--+--+--+
+| SUBSCRIPTION | CLIENT | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/client_subscription_type.vm.java}templates/client_subscription_type.vm.java}} |
 *--+--+--+
 | BATCHLOADERDELEGATE | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_BatchLoaderDelegate.vm.java}templates/server_BatchLoaderDelegate.vm.java}} |
 *--+--+--+
