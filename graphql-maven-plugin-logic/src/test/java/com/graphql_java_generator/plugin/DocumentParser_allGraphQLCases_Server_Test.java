@@ -92,18 +92,23 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("subscription", documentParser.subscriptionTypes.get(0).getRequestType());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Checks if the boolean completableFuture is set correctly
-		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType");
-		assertTrue(dataFetcher.isCompletableFuture(), "oneWithIdSubType");
+		// Checks if the boolean completableFuture is set correctly:
+		// - the first one is the basic one
+		// - the second one is the "dataLoader" one
+		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 1);
+		assertFalse(dataFetcher.isCompletableFuture(), "oneWithIdSubType: the standard one");
+
+		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 2);
+		assertTrue(dataFetcher.isCompletableFuture(), "oneWithIdSubType: the dataLoader one");
 		//
-		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithIdSubTypes");
-		assertFalse(dataFetcher.isCompletableFuture(), "listWithIdSubTypes");
+		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithIdSubTypes", 1);
+		assertFalse(dataFetcher.isCompletableFuture(), "listWithIdSubTypes (only standard dataFethcher here)");
 		//
-		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithoutIdSubType");
-		assertFalse(dataFetcher.isCompletableFuture(), "oneWithoutIdSubType");
+		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithoutIdSubType", 1);
+		assertFalse(dataFetcher.isCompletableFuture(), "oneWithoutIdSubType (only standard dataFethcher here)");
 		//
-		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithoutIdSubTypes");
-		assertFalse(dataFetcher.isCompletableFuture(), "listWithoutIdSubTypes");
+		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithoutIdSubTypes", 1);
+		assertFalse(dataFetcher.isCompletableFuture(), "listWithoutIdSubTypes (only standard dataFethcher here)");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks if input types for the AllFieldCases object are correctly read
@@ -844,11 +849,23 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private DataFetcherImpl findDataFetcher(String delegateName, String name) {
+	/**
+	 * 
+	 * @param delegateName
+	 *            The name of the delegate in which we search this data fetcher
+	 * @param name
+	 *            The name of the searched data fetcher
+	 * @param occurrenceNumber
+	 *            The occurrence number that is searched: 1 for the first occurrence, 2 for the second one...
+	 * @return
+	 */
+	private DataFetcherImpl findDataFetcher(String delegateName, String name, int occurrenceNumber) {
 		DataFetchersDelegateImpl delegate = findDataFetcherDelegate(delegateName);
 		for (DataFetcher fetcher : delegate.getDataFetchers()) {
-			if (fetcher.getName().equals(name))
-				return (DataFetcherImpl) fetcher;
+			if (fetcher.getName().equals(name)) {
+				if (--occurrenceNumber == 0)
+					return (DataFetcherImpl) fetcher;
+			}
 		}
 		fail("DataFetcherImpl '" + delegateName + "." + name + "' not found");
 		return null;

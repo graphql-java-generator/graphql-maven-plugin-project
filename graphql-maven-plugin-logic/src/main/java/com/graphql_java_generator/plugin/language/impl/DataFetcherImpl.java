@@ -53,12 +53,39 @@ public class DataFetcherImpl implements DataFetcher {
 	 * 
 	 * @param field
 	 *            The field that this data fetcher must fill
+	 * @param dataFetcherDelegate
+	 *            The {@link DataFetchersDelegate} that contains this data fetcher. This constructor attached the newly
+	 *            created data fetcher into the given {@link DataFetchersDelegate}
+	 * @param declareInGraphQLProvider
+	 *            true if this data fetcher must be declared to the graphql-java framework. This value is generally
+	 *            true. It should be false only when two data fetchers of the same exist, for instance when the
+	 *            {@link DataFetchersDelegate} should implement one such data fetcher with a data loader and one
+	 *            without. In this case, one data fetcher is registered in the GraphQLProvider. And this data fetcher is
+	 *            also declared in the GraphQLDataFetchers class, and is responsible to all the relevant method in the
+	 *            {@link DataFetchersDelegate}.
 	 * @param completableFuture
 	 *            indicates that this DataFetcher will be actually loaded later, with the help of a {@link BatchLoader}.
+	 * @param graphQLOriginType
+	 *            The origin of this {@link DataFetcher}, that is: the name of the object which contains the field to
+	 *            fetch.<BR/>
+	 *            There are two kinds of {@link DataFetcher}:
+	 *            <UL>
+	 *            <LI>{@link DataFetcher} for fields of object, interface(...). These {@link DataFetcher} need to have
+	 *            access to the object instance, that contains the field (or attribute) it fetches. This instance is the
+	 *            orgin, and will be a parameter in the DataFetcher call, that contains the instance of the object, for
+	 *            which this field is fetched.</LI>
+	 *            <LI>{@link DataFetcher} for query/mutation/subscription. In these case, the field that is fetched by
+	 *            this {@link DataFetcher} has no origin: it's the start of the request.</LI>
+	 *            </UL>
 	 */
-	public DataFetcherImpl(Field field, boolean completableFuture) {
+	public DataFetcherImpl(Field field, DataFetchersDelegate dataFetcherDelegate, boolean declareInGraphQLProvider,
+			boolean completableFuture, String graphQLOriginType) {
 		this.field = field;
+		this.dataFetcherDelegate = dataFetcherDelegate;
 		this.completableFuture = completableFuture;
+		this.graphQLOriginType = graphQLOriginType;
+
+		dataFetcherDelegate.getDataFetchers().add(this);
 	}
 
 	@Override

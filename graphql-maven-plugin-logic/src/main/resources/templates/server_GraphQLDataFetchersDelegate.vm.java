@@ -42,7 +42,14 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 * <BR/>
 	 * 
 	 * @param dataFetchingEnvironment 
-	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher 
+	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
+#if(${dataFetcher.completableFuture}) 
+	 * @param dataLoader
+	 *            The {@link DataLoader} allows to load several data in one query. It allows to solve the (n+1) queries
+	 *            issues, and greatly optimizes the response time.<BR/>
+	 *            You'll find more informations here: <A HREF=
+	 *            "https://github.com/graphql-java/java-dataloader">https://github.com/graphql-java/java-dataloader</A>
+#end
 #if($dataFetcher.graphQLOriginType)
 	 * @param origin 
 	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the ${dataFetcher.name} attribute
@@ -58,6 +65,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
+## If this dataFetcher is a completableFuture, we add a DataLoader parameter
 	public #if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.completableFuture})>#end ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if(${dataFetcher.completableFuture}), DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader#end#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), #if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end  ${argument.javaName}#end);
 	
 #end

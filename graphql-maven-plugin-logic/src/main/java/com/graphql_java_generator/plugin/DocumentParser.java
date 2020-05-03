@@ -1167,19 +1167,17 @@ public class DocumentParser {
 			DataFetchersDelegate dataFetcherDelegate = new DataFetchersDelegateImpl(type);
 
 			for (Field field : type.getFields()) {
-				DataFetcherImpl dataFetcher = null;
 
 				if (type.getRequestType() != null) {
 					// For query/mutation/subscription, we take the argument read in the schema as is: all the needed
 					// informations is already parsed.
 					// There is no source for requests, as they are the root of the hierarchy
-					dataFetcher = new DataFetcherImpl(field, false);
-					dataFetcher.setGraphQLOriginType(null);
+					dataFetchers.add(new DataFetcherImpl(field, dataFetcherDelegate, true, false, null));
 				} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
 						(field.isList() || field.getType() instanceof ObjectType
 								|| field.getType() instanceof InterfaceType))) {
 					// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to
-					// manage the relations with GraphQL, and not via JPA. The aim is to use the GraphQL data loader :
+					// manage the relations with GraphQL. The aim is to use the GraphQL data loader :
 					// very important to limit the number of subqueries, when subobjects are queried. In these case, we
 					// need to create a new field that add the object ID as a parameter of the Data Fetcher
 					FieldImpl newField = FieldImpl.builder().documentParser(this).name(field.getName())
@@ -1192,22 +1190,28 @@ public class DocumentParser {
 						list.add(inputParameter);
 					}
 
-					// We'll use a Batch Loader if:
+					// We'll add a data fetcher with a data loader, to use a Batch Loader, if:
 					// 1) It's a Data Fetcher from an object to another one (we're already in this case)
 					// 2) That target object has an id (it can be either a list or a single object)
 					// 3) The Relation toward the target object is OneToOne or ManyToOne. That is this field is not a
 					// list
-					boolean useBatchLoader = (field.getType().getIdentifier() != null) && (!field.isList());
+					// graphql-java will then determines at runtime if a dataloader is needed in the running case, or
+					// not
+					boolean withDataLoader = field.getType().getIdentifier() != null && !field.isList();
 
-					dataFetcher = new DataFetcherImpl(newField, useBatchLoader);
-					dataFetcher.setGraphQLOriginType(type.getName());
-				}
-
-				// If we found a DataFether, let's register it.
-				if (dataFetcher != null) {
-					dataFetcher.setDataFetcherDelegate(dataFetcherDelegate);
-					dataFetcherDelegate.getDataFetchers().add(dataFetcher);
-					dataFetchers.add(dataFetcher);
+					if (withDataLoader) {
+						// We always have the 'standard' data fetcher in the DataFetcherDelegate. But only the one with
+						// the data loader is declared in the GraphQLProvider and the GraphQLDataFetchers classes.
+						dataFetchers
+								.add(new DataFetcherImpl(newField, dataFetcherDelegate, false, false, type.getName()));
+						// Then the datafetcher with the data loader
+						dataFetchers
+								.add(new DataFetcherImpl(newField, dataFetcherDelegate, true, true, type.getName()));
+					} else {
+						// We always have the 'standard' data fetcher
+						dataFetchers
+								.add(new DataFetcherImpl(newField, dataFetcherDelegate, true, false, type.getName()));
+					}
 				}
 			} // for
 
