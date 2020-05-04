@@ -2,7 +2,11 @@
 
 Both modes (client and server):
 * The plugin now manages subscription
+* For custom templates: the QUERY_MUTATION_SUBSCRIPTION template has been split into two templates, QUERY_MUTATION and SUBSCRIPTION
 
+Server mode:
+* In some cases, the DataFetcherDelegate now have another DataFetcher that must be implemented
+ 
 
 # 1.6.1
 

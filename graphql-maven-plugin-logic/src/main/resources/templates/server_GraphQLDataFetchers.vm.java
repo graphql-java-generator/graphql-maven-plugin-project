@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dataloader.BatchLoader;
 import org.dataloader.DataLoader;
+import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
@@ -48,7 +49,7 @@ public class GraphQLDataFetchers {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.completableFuture})>#end> ${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}#if(${dataFetcher.completableFuture})WithDataLoader#end() {
+	public DataFetcher<#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end#if(${dataFetcher.completableFuture})>#end> ${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}#if(${dataFetcher.completableFuture})WithDataLoader#end() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)          
 ## $argument is an instance of Field
@@ -86,12 +87,12 @@ public class GraphQLDataFetchers {
 				return new CompletableFuture<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end>().completeAsync(
 						() -> ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end));
 #elseif (${dataFetcher.field.list})
-			List<${dataFetcher.field.type.classSimpleName}> ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end List<${dataFetcher.field.type.classSimpleName}>#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			logger.debug("${dataFetcher.name}: {} found rows", (ret==null) ? 0 : ret.size());
 
 			return ret;
 #else
-			${dataFetcher.field.type.classSimpleName} ret = null;
+			#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = null;
 			try {
 				ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			} catch (NoSuchElementException e) {

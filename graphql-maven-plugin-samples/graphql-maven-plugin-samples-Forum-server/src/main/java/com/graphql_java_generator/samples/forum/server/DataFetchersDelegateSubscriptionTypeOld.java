@@ -12,7 +12,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @see <a href=
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
-public interface DataFetchersDelegateSubscriptionType {
+public interface DataFetchersDelegateSubscriptionTypeOld {
 
 	// Below is a copy of the DataFetcher declaration, in the GraphQLDataFetchers class
 	// public DataFetcher<Publisher<Post>> dataFetchersDelegateSubscriptionSubscribeToNewPost() {

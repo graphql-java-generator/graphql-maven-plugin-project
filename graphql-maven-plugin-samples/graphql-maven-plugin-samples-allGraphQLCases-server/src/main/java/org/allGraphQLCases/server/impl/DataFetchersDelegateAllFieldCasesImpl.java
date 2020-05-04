@@ -69,6 +69,12 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	}
 
 	@Override
+	public AllFieldCasesWithIdSubtype oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
+			AllFieldCases origin) {
+		return generator.generateInstance(AllFieldCasesWithIdSubtype.class);
+	}
+
+	@Override
 	public List<AllFieldCasesWithIdSubtype> listWithIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCases source, Long nbItems, Date date, List<Date> dates, Boolean uppercaseName,
 			String textToAppendToTheForname) {

@@ -32,7 +32,7 @@
 						</customScalar>
 					</customScalars>
 					<templates>
-						<QUERY_MUTATION_SUBSCRIPTION>templates/resttemplate/client_query_mutation_subscription_type.vm.java</QUERY_MUTATION_SUBSCRIPTION>
+						<QUERY_MUTATION>templates/resttemplate/client_query_mutation_type.vm.java</QUERY_MUTATION>
 					</templates>
 				</configuration>
 				<dependencies>

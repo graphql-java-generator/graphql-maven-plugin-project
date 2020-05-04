@@ -6,6 +6,7 @@ package com.graphql_java_generator.samples.forum.server.specific_code;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -57,6 +58,13 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<UUID, Member> dataLoader, Topic source) {
 		return dataLoader.load(source.getAuthorId());
+	}
+
+	@Override
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
+		logger.debug("Loading author of topic {}", origin.getId());
+		Optional<Member> ret = memberRepository.findById(origin.getAuthorId());
+		return (ret.isPresent()) ? ret.get() : null;
 	}
 
 	@Override

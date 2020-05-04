@@ -90,6 +90,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.graphql_java_generator.samples.forum.client.Main</mainClass>
+				</configuration>
 			</plugin>
 			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->

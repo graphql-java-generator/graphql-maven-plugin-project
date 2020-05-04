@@ -50,9 +50,9 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 	}
 
 	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
-		logger.debug("Batch loading {} posts", id);
-		Optional<Member> ret = memberRepository.findById(id);
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin) {
+		logger.debug("Loading author for post ", origin.getId());
+		Optional<Member> ret = memberRepository.findById(origin.getAuthorId());
 		return (ret.isPresent()) ? ret.get() : null;
 	}
 }

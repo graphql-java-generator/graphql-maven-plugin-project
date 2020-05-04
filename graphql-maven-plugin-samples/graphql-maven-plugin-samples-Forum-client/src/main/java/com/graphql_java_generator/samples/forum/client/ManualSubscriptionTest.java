@@ -51,8 +51,8 @@ public class ManualSubscriptionTest {
 	private void exec() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		System.out.println("Subscribing to the GraphQL subscription");
-		SubscriptionClient client = subscriptionType.subscribeToNewPost(
-				"{id date author publiclyAvailable title content}", new PostSubscriptionCallback(), "Board name 1");
+		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest,
+				new PostSubscriptionCallback(), "Board name 1");
 
 		// Let's wait 10 minutes (600 seconds), so that we display the received notifications during this time
 		try {

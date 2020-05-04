@@ -1,7 +1,10 @@
 Here are the next tasks listed, as a TODO list:
+* Generate the WebSocketConfig and WebSocketHandler classes
+* Document the subscription
 * Check subscription that returns list
 * Check subscription returning sub objects ({id date author publiclyAvailable title content})
 * Test subscription with Custom Scalars, input types...
+* Specifying an unknown template in the pom should raise an error
 * Change the JsonResponseWrapper as an interface, implemented by the XxxRootResponse classes
 * Allow aliases for query/mutation fields
 * Interface that implements Interface (waiting for graphql-java v15)

@@ -126,6 +126,16 @@ public interface Type {
 	public GraphQlType getGraphQlType();
 
 	/**
+	 * Returns "query", "mutation" or "subscription" if this type is a query, mutation or subscription. And null
+	 * otherwise.
+	 * 
+	 * @return
+	 */
+	default public String getRequestType() {
+		return null;
+	}
+
+	/**
 	 * The java class simple name for this type. It may be and interface or a concrete class. <BR/>
 	 * 
 	 * @return The java classname is usually the name of the type. But in some case, collision my occur with the Java

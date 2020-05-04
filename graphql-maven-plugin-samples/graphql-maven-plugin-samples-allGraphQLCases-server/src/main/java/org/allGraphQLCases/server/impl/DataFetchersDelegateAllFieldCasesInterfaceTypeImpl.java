@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import javax.annotation.Resource;
+
 import org.allGraphQLCases.server.AllFieldCasesInterfaceType;
 import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
@@ -20,6 +22,9 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 		implements DataFetchersDelegateAllFieldCasesInterfaceType {
+
+	@Resource
+	DataGenerator generator;
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInterfaceType source) {
@@ -71,6 +76,12 @@ public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 			DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
 			AllFieldCasesInterfaceType source) {
 		return dataLoader.load(UUID.randomUUID());
+	}
+
+	@Override
+	public AllFieldCasesWithIdSubtype oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
+			AllFieldCasesInterfaceType origin) {
+		return generator.generateInstance(AllFieldCasesWithIdSubtype.class);
 	}
 
 	@Override

@@ -33,6 +33,11 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	}
 
 	@Override
+	public Character bestFriend(DataFetchingEnvironment dataFetchingEnvironment, Human origin) {
+		return generator.generateInstance(Character.class);
+	}
+
+	@Override
 	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
 		return generator.generateInstanceList(Character.class, 6);
 	}

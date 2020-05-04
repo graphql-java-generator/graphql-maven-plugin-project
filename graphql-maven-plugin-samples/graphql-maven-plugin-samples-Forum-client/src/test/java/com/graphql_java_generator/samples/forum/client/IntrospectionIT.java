@@ -36,7 +36,7 @@ public class IntrospectionIT {
 		__Schema schema = myQuery.__schema("{types {name fields {name type {name}}}}");
 
 		// Verification
-		assertEquals(23, schema.getTypes().size());
+		assertEquals(24, schema.getTypes().size());
 		assertEquals("Board", schema.getTypes().get(0).getName());
 		assertEquals("id", schema.getTypes().get(0).getFields().get(0).getName());
 	}

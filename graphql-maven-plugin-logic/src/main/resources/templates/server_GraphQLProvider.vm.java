@@ -65,6 +65,7 @@ public class GraphQLProvider {
 	@Autowired
 	GraphQLDataFetchers graphQLDataFetchers;
 
+	private GraphQLSchema graphQLSchema;
 	private GraphQL graphQL;
 
 	@Bean
@@ -118,7 +119,12 @@ public class GraphQLProvider {
 
 		RuntimeWiring runtimeWiring = buildWiring();
 		SchemaGenerator schemaGenerator = new SchemaGenerator();
-		return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
+		graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
+		return graphQLSchema;
+	}
+	
+	public GraphQLSchema getGraphQLSchema() {
+		return graphQLSchema;
 	}
 
 	private RuntimeWiring buildWiring() {
