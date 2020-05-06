@@ -20,9 +20,17 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
 
+	/** Indicates whether the Web Socket is connected or not */
+	boolean connected = false;
+
 	T lastReceivedPost = null;
 	String lastReceivedClose = null;
 	Throwable lastReceivedError = null;
+
+	@Override
+	public void onConnect() {
+		connected = true;
+	}
 
 	@Override
 	public void onMessage(T t) {
@@ -33,12 +41,14 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 
 	@Override
 	public void onClose(int statusCode, String reason) {
+		connected = false;
 		lastReceivedClose = statusCode + "-" + reason;
 		logger.debug("Received onClose: {}", lastReceivedClose);
 	}
 
 	@Override
 	public void onError(Throwable cause) {
+		connected = false;
 		lastReceivedError = cause;
 		logger.debug("Received onError: {}", cause);
 	}

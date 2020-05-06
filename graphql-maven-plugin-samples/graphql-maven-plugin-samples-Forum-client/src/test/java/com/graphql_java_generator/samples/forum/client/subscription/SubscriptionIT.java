@@ -74,8 +74,13 @@ class SubscriptionIT {
 		logger.debug("Creating the post, for which we should receice the notification");
 		CompletableFuture<Post> createdPostASync = new CompletableFuture<Post>().completeAsync(() -> {
 			try {
-				// We need to wait a little, to be sure the subscription is done, before creating the post
-				Thread.sleep(500);
+				// We need to wait a little, to be sure the subscription is done, before creating the post.
+				// But we wait as little as possible
+				for (int i = 0; i < 100; i += 1) {
+					Thread.sleep(10);
+					if (postSubscriptionCallback.connected)
+						break;
+				}
 				return mutationType.createPost(createPostRequest, postInput);
 			} catch (GraphQLRequestExecutionException | InterruptedException e) {
 				throw new RuntimeException(e.getMessage(), e);
@@ -98,7 +103,9 @@ class SubscriptionIT {
 		assertNotNull(postSubscriptionCallback.lastReceivedPost, "We should have received a post");
 
 		Post createdPost = createdPostASync.get();
-		assertEquals(createdPost.getId(), postSubscriptionCallback.lastReceivedPost.getId());
+		assertEquals(createdPost.getId(), postSubscriptionCallback.lastReceivedPost.getId(), "Is it 'our' new Post?");
+		assertEquals(new GregorianCalendar(2020, 11 - 1, 21).getTime(),
+				postSubscriptionCallback.lastReceivedPost.getDate(), "Check of a custom scalar");
 
 		// We must free the server resource at the end
 		client.unsubscribe();

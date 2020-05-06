@@ -24,7 +24,14 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 public interface SubscriptionCallback<T> {
 
 	/**
-	 * This method is called each time a message is sent by the server, for this subscription.
+	 * This method is called once the subscription has been submitted to the GraphQL server. It's an information call:
+	 * no special action is expected.
+	 */
+	public void onConnect();
+
+	/**
+	 * This method is called each time a message is sent by the server, for this subscription. It's an information call:
+	 * no special action is expected.
 	 * 
 	 * @param t
 	 * @see {@link OnWebSocketMessage}
@@ -32,7 +39,8 @@ public interface SubscriptionCallback<T> {
 	public void onMessage(T t);
 
 	/**
-	 * A callback to make the program aware of the end of the subscription channel
+	 * A callback to make the program aware of the end of the subscription channel. It's an information call: no special
+	 * action is expected.
 	 * 
 	 * @param statusCode
 	 * @param reason
@@ -41,7 +49,8 @@ public interface SubscriptionCallback<T> {
 	public void onClose(int statusCode, String reason);
 
 	/**
-	 * Whenever an error occurs, at any time of the subscription processing
+	 * Whenever an error occurs, at any time of the subscription processing. It's an information call: no special action
+	 * is expected.
 	 * 
 	 * @param cause
 	 * @see {@link OnWebSocketError}

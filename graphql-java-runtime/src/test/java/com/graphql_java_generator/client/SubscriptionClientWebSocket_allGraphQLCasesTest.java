@@ -29,6 +29,11 @@ class SubscriptionClientWebSocket_allGraphQLCasesTest {
 		List<Throwable> errors = new ArrayList<>();
 
 		@Override
+		public void onConnect() {
+			// No action
+		}
+
+		@Override
 		public void onMessage(Human t) {
 			messages.add(t);
 		}

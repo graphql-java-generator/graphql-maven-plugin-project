@@ -28,6 +28,11 @@ public class ManualPostSubscriptionCallback implements SubscriptionCallback<Post
 	List<Throwable> receivedErrors = new ArrayList<>();
 
 	@Override
+	public void onConnect() {
+		// No action
+	}
+
+	@Override
 	public void onMessage(Post t) {
 		logger.debug("Received Post: {}", t.toString());
 		receivedMessages.add(t);
