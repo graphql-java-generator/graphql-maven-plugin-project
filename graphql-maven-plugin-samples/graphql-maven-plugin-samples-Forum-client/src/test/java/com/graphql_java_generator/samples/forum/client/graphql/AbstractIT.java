@@ -245,7 +245,7 @@ abstract class AbstractIT {
 		PostInput postInput = new PostInput();
 		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
 		postInput.setInput(getTopicPostInput(author, "Some other content",
-				new GregorianCalendar(2009, 11 - 1, 21).getTime(), false, "The good title for a post"));
+				new GregorianCalendar(2019, 11 - 1, 21).getTime(), false, "The good title for a post"));
 
 		// Go, go, go
 		Post post = queries.createPost(postInput);
@@ -253,7 +253,7 @@ abstract class AbstractIT {
 		// Verification
 		assertNotNull(post.getId());
 		assertEquals("Some other content", post.getContent());
-		assertEquals(new GregorianCalendar(2009, 11 - 1, 21).getTime(), post.getDate());
+		assertEquals(new GregorianCalendar(2019, 11 - 1, 21).getTime(), post.getDate());
 		assertEquals(false, post.getPubliclyAvailable());
 		assertEquals("The good title for a post", post.getTitle());
 	}

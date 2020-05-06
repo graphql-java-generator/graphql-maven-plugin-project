@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.client;
+package com.graphql_java_generator.samples.forum.client.subscription;
 
 import java.net.URI;
 
@@ -52,7 +52,7 @@ public class ManualSubscriptionTest {
 
 		System.out.println("Subscribing to the GraphQL subscription");
 		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest,
-				new PostSubscriptionCallback(), "Board name 1");
+				new ManualPostSubscriptionCallback(), "Board name 1");
 
 		// Let's wait 10 minutes (600 seconds), so that we display the received notifications during this time
 		try {
@@ -72,7 +72,7 @@ public class ManualSubscriptionTest {
 		String uri;
 		uri = "ws://localhost:8080/stockticker";
 		uri = "ws://localhost:8180/graphql";
-		try (Session session = container.connectToServer(PostSubscriptionCallback.class, URI.create(uri))) {
+		try (Session session = container.connectToServer(ManualPostSubscriptionCallback.class, URI.create(uri))) {
 			System.out.println("Sending request");
 			session.getBasicRemote().sendObject("A test");
 		}
