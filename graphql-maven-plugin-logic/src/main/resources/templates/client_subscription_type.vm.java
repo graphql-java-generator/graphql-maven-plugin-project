@@ -226,7 +226,10 @@ public class ${object.classSimpleName} {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public SubscriptionClient ${field.name}(String queryResponseDef#inputParams(), SubscriptionCallback<#if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end> subscriptionCallback, Object... paramsAndValues)
+	public SubscriptionClient ${field.name}(String queryResponseDef, 
+			SubscriptionCallback<#if(${field.list})List<#end${field.type.classFullName}#if(${field.list})>#end> subscriptionCallback
+			#inputParams(), 
+			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing subscription '${field.name}' in query mode: {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();

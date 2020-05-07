@@ -12,7 +12,6 @@ import javax.websocket.WebSocketContainer;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionType;
 
 /**
@@ -33,8 +32,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Subs
  */
 public class ManualSubscriptionTest {
 
-	SubscriptionType subscriptionType;
-	GraphQLRequest subscriptionRequest;
+	SubscriptionType subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
 	public static Thread currentThread;
 
 	public static void main(String... args) throws Exception {
@@ -42,17 +40,15 @@ public class ManualSubscriptionTest {
 	}
 
 	ManualSubscriptionTest() throws GraphQLRequestPreparationException {
-		subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
-		subscriptionRequest = subscriptionType
-				.getSubscribeToNewPostGraphQLRequest("{id date author publiclyAvailable title content}");
 		currentThread = Thread.currentThread();
 	}
 
 	private void exec() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		System.out.println("Subscribing to the GraphQL subscription");
-		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest,
-				new ManualPostSubscriptionCallback(), "Board name 1");
+		SubscriptionClient client = subscriptionType.subscribeToNewPost(
+				"{id date author publiclyAvailable title content}", new ManualPostSubscriptionCallback(),
+				"Board name 1");
 
 		// Let's wait 10 minutes (600 seconds), so that we display the received notifications during this time
 		try {
