@@ -71,6 +71,9 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, UUID memberId,
 			String memberName, Date since) {
 
+		logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
+				memberId, memberName, since);
+
 		if (since == null) {
 			// This should not happen, as since is mandatory
 			throw new NullPointerException("since may not be null");
@@ -80,21 +83,31 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 			// So there are 4 combinations for the request:
 
 			// since
-			if (memberId == null && memberName == null)
+			if (memberId == null && memberName == null) {
+				logger.debug("Loading posts of topic {}, with since={}", source.getId(), since);
 				return graphqlUtils.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+			}
 			// memberId, since
-			else if (memberName == null)
+			else if (memberName == null) {
+				logger.debug("Loading posts of topic {}, with memberId={} and since={}", source.getId(), memberId,
+						since);
 				return graphqlUtils.iterableToList(
 						postRepository.findByTopicIdAndMemberIdAndSince(source.getId(), memberId, since));
+			}
 			// memberName,since
-			else if (memberId == null)
+			else if (memberId == null) {
+				logger.debug("Loading posts of topic {}, with memberName={} and since={}", source.getId(), memberName,
+						since);
 				return graphqlUtils.iterableToList(
 						postRepository.findByTopicIdAndMemberNameAndSince(source.getId(), memberName, since));
+			}
 			// memberId, memberName, since
-			else
+			else {
+				logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
+						memberId, memberName, since);
 				return graphqlUtils.iterableToList(postRepository
 						.findByTopicIdAndMemberIdAndMemberNameAndSince(source.getId(), memberId, memberName, since));
-
+			}
 		}
 	}
 
