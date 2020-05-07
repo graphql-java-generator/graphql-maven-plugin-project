@@ -30,7 +30,7 @@ public class PostPublisher {
 
 	public PostPublisher() {
 		// in debug mode, we'll log each new entry in this subject, to check that the subject properly received the
-		// events, and that the subcribers to receive them
+		// events, and that the subscribers to receive them
 		if (logger.isDebugEnabled()) {
 			subject.subscribe(new Observer<Post>() {
 

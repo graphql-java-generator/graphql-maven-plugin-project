@@ -1,5 +1,6 @@
 Here are the next tasks listed, as a TODO list:
 * Generate the WebSocketConfig and WebSocketHandler classes
+* Document how to change the GraphQL server path (for query/mutation and for subscription)
 * Document the subscription
 * Check subscription that returns list
 * Check subscription returning sub objects ({id date author publiclyAvailable title content})

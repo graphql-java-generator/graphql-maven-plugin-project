@@ -1,5 +1,5 @@
                ------------------------------------------
-               GraphQL Maven Plugin (client mode)
+               GraphQL Maven and Gradle Plugin (client mode)
                ------------------------------------------
                ------------------------------------------
                ------------------------------------------
@@ -23,7 +23,7 @@ Client mode usage description
   
   []
   
-  It manages two way of executing the request:
+  It manages two ways of executing the request:
   
   * The <<direct execution>>: you call the generated method with the GraphQL request (partial or full), and you receive the result into Java objects. This is simpler, but slower: for technical reasons, the plugin has two analyze the content of the request. And it will do that at each execution. The main reason for that is to allow proper deserialization of GraphQL interfaces and unions: the __typename is injected into the query, for all returned object, union and interface types.
   
@@ -136,6 +136,8 @@ Client mode usage description
   
 ** {Full requests}
 ~~~~~~~~~~~~~~~~~~~
+
+  Full requests are only valid for queries and mutations. Subscriptions work only with Partial Request. See the {{{./client_subscription.html}Client Subscription page}.
   
   For each query/mutation/subscription in the GraphQL schema, a Java class is generated.
   
@@ -145,7 +147,7 @@ Client mode usage description
   
   * You want to execute several queries into one call toward the server
   
-  * You want to add directives to the query/mutation/subscription itself
+  * You want to add directives to the query/mutation itself
   
   * You want to use GraphQL global fragments into your query (by global, we mean not inline fragment)
   
@@ -167,17 +169,18 @@ Client mode usage description
   
   * Then execute one or several time the query, possibly with different bind parameter values.
   
-  * Retrieves from the query/mutation/subscription response, the field the contains the structure for the query(ies)/mutation(s)/subsription(s) you called. All the server response is stored in POJOs that have been generated from the GraphQL schema, including object types, input types, enums, interfaces, unions (as Java interfaces)...
+  * Retrieves from the query/mutation response, the field the contains the structure for the query(ies)/mutation(s) you called. All the server response is stored in POJOs that have been generated from the GraphQL schema, including object types, input types, enums, interfaces, unions (as Java interfaces)...
   
   []
   
-  To execute the request, you must use the <execQuery>/<execMutation>/<execSubscription> method of your <GraphQLRequest> instance, to get the proper response. This response is the query/mutation/subscription response type. So, to get the real result from the server, you must call the getter that is link to your request, <getBoards()> in the above sample.
+  To execute the request, you must use the <execQuery>/<execMutation> method of your <GraphQLRequest> instance, to get the proper response. This response is the query/mutation response type. So, to get the real result from the server, you must call the getter that is link to your request, <getBoards()> in the above sample.
   
 +--------------------------------------------------------------------------------------------
 GraphQLRequest request;
 
 void setup() {
 		// If you have one GraphQL endpoint, use the static configuration.
+		// The classname of the Query or Mutation is the type name, as defined in the GraphQL schema
 		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT_URL));
 		
 		// Create the GraphQL request
@@ -206,7 +209,7 @@ void exec(Date since) {
   
   * Union, or interface types
   
-  * input parameters for query/mutation/subscription and field input parameters, or in directives arguments. The given value for these input parameters may be:
+  * input parameters for query/mutation and field input parameters, or in directives arguments. The given value for these input parameters may be:
   
     * Hard coded value in your GraphQL query. That is: the literal value for the input parameter, like for the <memberName> parameter in the above sample.
   
@@ -218,7 +221,7 @@ void exec(Date since) {
 
 
 
-  Please note that the bind parameters can be provided as a map, where the key is the parameter name, by using the <xxxWithBindValues(GraphQLRequest, [xxx], Map)>, where [xxx] is the list of values for the query/mutation/subscription.
+  Please note that the bind parameters can be provided as a map, where the key is the parameter name, by using the <xxxWithBindValues(GraphQLRequest, [xxx], Map)>, where [xxx] is the list of values for the query/mutation.
   
   The previous sample then becomes:
 
@@ -227,6 +230,7 @@ GraphQLRequest request;
 
 void setup() {
 		// If you have one GraphQL endpoint, use the static configuration.
+		// The classname of the Query or Mutation is the type name, as defined in the GraphQL schema		
 		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT_URL));
 		
 		// Create the GraphQL request
@@ -255,30 +259,37 @@ void exec(Date since, String memberName, String memberId) {
 ** {Partial requests}
 ~~~~~~~~~~~~~~~~~~~
 
-  In each query/mutation/subscription object, the plugin also generates <Xxxx> and <XxxxWithBindValues> methods, where <Xxxx> is successively each query/mutation/subscription defined in this query/mutation/subscription object. 
+  In each query/mutation/subscription class, the plugin also generates <Xxxx> and <XxxxWithBindValues> methods, where <Xxxx> is successively each query/mutation/subscription defined in this query/mutation/subscription object.
+  
+  As subscriptions work differently, it is documented in the {{{./client_subscription.html}Client Subscription page}. 
   
   These methods are easier to use as:
   
-  * The query/mutation/subscription parameters are parameter from the generated java method. So you don't need to define bind parameters for them.
+  * The query/mutation/subscription parameters (as defined in the GraphQL schema) become parameters of the relevant generated java methods. So you don't need to define and map bind parameters for them.
   
     * But you can still use bind parameters for input parameters of the fields you request, of course
   
-  * The method returns directly the response for the query/mutation/subscription: you don't need to call a getter to retrieve it. You can then use that returned data, that is stored in POJOs that have been generated from the GraphQL schema, including object types, input types, enums, interfaces, unions (as Java interfaces)...
+  * The methods return directly the response for the query/mutation/subscription: you don't need to call a getter to retrieve it. The returned data is stored in the POJOs that have been generated from the GraphQL schema. This includes the object types, input types, enums, interfaces, unions (as Java interfaces)...
   
   [] 
   
+  Below is a sample of the client code:
+  
 +--------------------------------------------------------------------------------------------
-QueryType queryType = new QueryType("https://your.server/graphql");
+QueryType queryType;
 GraphQLRequest topicsRequest;
 
-void setup() {		
+void setup() {
+		// Instanciate a Query type, with the relevant GraphQL endpoint
+		queryType = new QueryType("https://your.server/graphql");
+				
 		// Create the GraphQL request
-		// This below will execute: topics{id date author{name email alias id type} nbPosts}
+		// This prepares a GraphQ Request that will execute: topics{id date author{name email alias id type} nbPosts}
 		topicsRequest = queryType.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts}");
 }
 
 void exec() {
-	// The topic query accept one parameter. If you don't want to provide it, you can give the null value
+	// The topic query accepts one parameter. If you don't want to provide it, you can give it the null value
 	List<Topic> topics = queryType.topics(topicsRequest, "a board name");
 
 	// Do something with topics
@@ -287,26 +298,33 @@ void exec() {
 +--------------------------------------------------------------------------------------------
 
 
-  This method generates less code. 
+  This method needs less code, in your application.
   
-  But directives can't be added on the query/mutation/subscription level. Of course, they can still be added in the given queries, that is on fields and fragments.
+  Directives can be defined for the requested fields, or their parameters. If you need to define directives at the query/mutation/subscription level, you need to execute a Full Request (see here above).
   
   The bind variables works as specified for the Full queries.
   
-  Of course, you can use input parameters for field or directives:
+  Of course, you can use input parameters for field or directives.
+  
+  Below is a sample of a request, with Bind Variables:
   
 +--------------------------------------------------------------------------------------------
 QueryType queryType = new QueryType("https://your.server/graphql");
 GraphQLRequest topicsRequest;
 
 void setup() {
+		// ?memberId is an optional bind parameter, of name "memberId"
+		// ?memberName is an optional bind parameter, of name "memberName"
+		// ?sinceParam is an optional bind parameter, of name "sinceParam": you must provide it at execution time, or
+		// a GraphQLRequestExecutionException will be thrown.
 		topicsRequest = queryType.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts "
 			+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias}}}");
 }
 
 void exec(Date since, String memberName, String memberId) {
-	// The topic query accept one parameter.
-	// You can then as many couples ("bindParameterName", bindParameterValue) that you want.
+	// The topic query, as defined in the GraphQL schema, has one parameter: the board name.
+	// This parameter is a paremeter of the topics method
+	// You can then as many couples ("bindParameterName", bindParameterValue) that you want, in any order
 	List<Topic> topics = queryType.topics(topicsRequest, "a board name","sinceParam", since, "memberName", memberName, "memberId", memberId);
 
 	// Do something with topics
@@ -333,8 +351,8 @@ void exec(Date since, String memberName, String memberId) {
 	params.put("memberName", memberName);
 	params.put("memberId", memberId);
 	
-	// The topic query accept one parameter.
-	// You can then as many couples ("bindParameterName", bindParameterValue) that you want.
+	// The topic query, as defined in the GraphQL schema, has one parameter: the board name
+	// This parameter is a paremeter of the topics method
 	List<Topic> topics = queryType.topicsWithBindValues(topicsRequest, "a board name", params);
 
 	// Do something with topics
@@ -345,7 +363,7 @@ void exec(Date since, String memberName, String memberId) {
 * {Use direct queries}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  If you don't want to store the <GraphQLRequest>, you can avoid that, by using direct queries. But please not that there is an overhead, as the uery must be analyzed at runtime by the plugin to manage input parameters, and add the <__typename> GraphQL introspection attribute where it is missing, to insure proper java deserialization of the response.
+  If you don't want to store the <GraphQLRequest>, you can avoid that, by using direct queries. But please not that there is an overhead, as the query must be analyzed at runtime by the plugin to manage input parameters, and add the <__typename> GraphQL introspection attribute where it is missing, to insure proper java deserialization of the response.
   
   So using direct queries generates an overhead at each execution, whereas with prepared queries, the request analysis is done only once.
   
