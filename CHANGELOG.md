@@ -1,4 +1,4 @@
-# 1.7
+# 1.7.0
 
 Both modes (client and server):
 * The plugin now manages __subscription__
