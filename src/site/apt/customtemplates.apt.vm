@@ -122,10 +122,10 @@ Customizing code templates
 
   Available on the project there is an example of this behavior:
 
-  * {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-customtemplates-client}graphql-maven-plugin-samples-customtemplates-resttemplate}}:
+  * {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-CustomTemplates-resttemplate}graphql-maven-plugin-samples-customtemplates-resttemplate}}:
 		Contains an example of a template customization for QUERY_MUTATION_SUBSCRIPTION template. Code generated uses a Spring implementation of {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/QueryExecutor.java}com.graphql_java_generator.client.QueryExecutor}} that uses RestTemplate as the client
 
-  * {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-customtemplates-client}graphql-maven-plugin-samples-customtemplates-client}} :
+  * {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-CustomTemplates-client}graphql-maven-plugin-samples-customtemplates-client}} :
 		A Spring-based client generated with the previous customized template.
 
   []

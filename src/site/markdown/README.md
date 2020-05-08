@@ -242,7 +242,7 @@ You'll find below the main changes, that are planned in the near future:
 
 # Change log
 
-The Change Log is available [here](CHANGELOG.md)
+The Change Log is available [here](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/CHANGELOG.md)
 
 
 # Note for contributors

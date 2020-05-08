@@ -137,7 +137,7 @@ Client mode usage description
 ** {Full requests}
 ~~~~~~~~~~~~~~~~~~~
 
-  Full requests are only valid for queries and mutations. Subscriptions work only with Partial Request. See the {{{./client_subscription.html}Client Subscription page}.
+  Full requests are only valid for queries and mutations. Subscriptions work only with Partial Request. See the {{{./client_subscription.html}Client Subscription page}}.
   
   For each query/mutation/subscription in the GraphQL schema, a Java class is generated.
   
@@ -261,7 +261,7 @@ void exec(Date since, String memberName, String memberId) {
 
   In each query/mutation/subscription class, the plugin also generates <Xxxx> and <XxxxWithBindValues> methods, where <Xxxx> is successively each query/mutation/subscription defined in this query/mutation/subscription object.
   
-  As subscriptions work differently, it is documented in the {{{./client_subscription.html}Client Subscription page}. 
+  As subscriptions work differently, it is documented in the {{{./client_subscription.html}Client Subscription page}}. 
   
   These methods are easier to use as:
   

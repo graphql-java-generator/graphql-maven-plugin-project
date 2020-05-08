@@ -33,11 +33,11 @@ The parameters for the server are stored in the _application.properties_ file.
 
 You can have a look at this file, in the given server samples. It's a standard spring boot configuration file, so you'll find all the needed information on the net.
 
-If you want to expose your Spring Boot app in https, take a look at the doc on the net. All parameters will go in the _application.properties_. For instance, {{{https://www.thomasvitale.com/https-spring-boot-ssl-certificate/}Thomas Vitale}} provides a doc for that.
+If you want to expose your Spring Boot app in __https__, take a look at the doc on the net. All parameters will go in the _application.properties_. For instance, [Thomas Vitale](https://www.thomasvitale.com/https-spring-boot-ssl-certificate/) provides a doc for that.
 
 The important parameter is: __server.port__ (for instance <server.port = 8180>), which determines the app port, when running as a spring boot app, that is, when it's packaged as a jar.
 
-The path depends on the way the GraphQL is run:
+The __path__ depends on the way the GraphQL is run:
 
 * If packaged as a jar: the path is /graphql
   
