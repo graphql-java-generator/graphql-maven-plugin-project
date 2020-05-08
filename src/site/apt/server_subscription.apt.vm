@@ -48,12 +48,14 @@ Subscription in server mode
     
   * All post creation is notified to the <onNext(Post)> method of this Subject.
   
-    * The relevant Data Fetcher is the mutation one, {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/com/graphql_java_generator/samples/forum/server/specific_code/DataFetchersDelegateMutationTypeImpl.java}available on github}}. Take a look at the end of the <createPost> method.
+    * As of data creation, the relevant Data Fetcher is the mutation one, {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/com/graphql_java_generator/samples/forum/server/specific_code/DataFetchersDelegateMutationTypeImpl.java}available on github}}. Take a look at the end of the <createPost> method.
   
     * So this Subject is aware of each post creation
     
-  * When <subscribeToNewPost> subscription arrived, the subscription datafetcher returns a new Publisher from the subject.
+  * When <subscribeToNewPost> subscription arrived, the subscription datafetcher returns a new Publisher from this subject.
   
-    * This new Publisher will automagicaly receive each newly created post.
+    * You can check the Data Fetcher code for this subscription {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/com/graphql_java_generator/samples/forum/server/specific_code/DataFetchersDelegateSubscriptionTypeImpl.java}on this page}}.
+  
+    * This new Publisher will automagicaly receive each newly created post, as it is created from the Subject that receives the new Post, from the mutation Data Fetecher (see above).
     
     * Then graphql-java will transmit on the Web Socket that has been created, when the subscription was submitted.    	
