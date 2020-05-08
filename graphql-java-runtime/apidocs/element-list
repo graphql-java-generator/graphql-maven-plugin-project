@@ -6,3 +6,4 @@ com.graphql_java_generator.client.request
 com.graphql_java_generator.client.response
 com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
+com.graphql_java_generator.server.util

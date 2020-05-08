@@ -9,3 +9,4 @@ com.graphql_java_generator.exception
 com.graphql_java_generator.samples.forum.client
 com.graphql_java_generator.samples.forum.client.graphql
 com.graphql_java_generator.samples.forum.client.graphql.forum.client
+com.graphql_java_generator.samples.forum.client.subscription

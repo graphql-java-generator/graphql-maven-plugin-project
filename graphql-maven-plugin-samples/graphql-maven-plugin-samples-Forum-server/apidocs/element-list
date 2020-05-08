@@ -5,3 +5,4 @@ com.graphql_java_generator.exception
 com.graphql_java_generator.samples.forum.server
 com.graphql_java_generator.samples.forum.server.jpa
 com.graphql_java_generator.samples.forum.server.specific_code
+com.graphql_java_generator.server.util
