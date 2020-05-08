@@ -27,7 +27,15 @@ Subscription in server mode
   
   The consequence for GraphQL server is that a Java server can not serve both standard HTTP request (POST/GET) and WebSocket request on the same URL.
   
-  As a consequence, Subscription must be exposed on a specific path, for instance /graphql/subscription
+  As a consequence, Subscription must be exposed on a specific path.
+  
+  As a consequence, this plugin exposes the subscription on this URL:
+  
+  * If packaged as a jar: the path is /graphql/subscription
+  
+  * If packaged as a war: the paths is /{WebAppContext}/graphql/subscription
+  
+  []
 	
 * {Sample explanation}
 ~~~~~~~~~~~~~~~~~~~
