@@ -8,7 +8,7 @@ This project is an accelerator to develop __GraphQL clients__ and __GraphQL serv
 
 That is: graphql-java-generator generates the boilerplate code, and lets you concentrate on what's specific to your use case. Then, the running code __doesn't depend on any dependencies from graphql-java-generator__. So you can get rid of graphql-java-generator at any time: just put the generated code in your SCM, and that's it.
 
-* In __client mode__ : graphql-java-generator generates a class for each query and mutation type (subscriptions are not managed yet). These classes contain the methods to call the queries and mutations. That is, to call the GraphQL server, you just call one of this method.
+* In __client mode__ : graphql-java-generator generates a class for each query, mutation and subscription. These classes contain the methods to call the queries, mutations and subscriptions defined in the GraphQL schema. That is, to call the GraphQL server, you just call one of this method.
     * graphql-java-generator also generates the POJOs from the GraphQL schema. The __GraphQL response is stored in these POJOs__, for easy and standard use in Java.
 * In __server mode__ : graphql-java-generator generates the whole heart of the GraphQL server. The developer has only to develop request to the data. That is :
     * graphql-java-generator generates the main method (in a jar project) or the main servler (in a war project), and all the Spring wiring, based on [graphql-java-spring](https://github.com/graphql-java/graphql-java-spring), itself being build on top of [graphql-java](https://www.graphql-java.com/).
@@ -235,7 +235,7 @@ The available templates are described in the [Customizing code templates](https:
 # Main evolutions for the near future
 
 You'll find below the main changes, that are planned in the near future:
-- Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
+- Accept interface that implements interface. We're waiting for graphql-java next version (v15).
 - Manage enum values that are java keyword. Currently, it generates a compilation error.
 - Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 

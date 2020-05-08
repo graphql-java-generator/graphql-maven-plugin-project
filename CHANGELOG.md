@@ -1,7 +1,7 @@
-# Not released yet
+# 1.7
 
 Both modes (client and server):
-* The plugin now manages subscription
+* The plugin now manages __subscription__
 * For custom templates: the QUERY_MUTATION_SUBSCRIPTION template has been split into two templates, QUERY_MUTATION and SUBSCRIPTION
 
 Server mode:

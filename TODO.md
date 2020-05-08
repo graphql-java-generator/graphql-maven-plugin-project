@@ -1,11 +1,6 @@
 Here are the next tasks listed, as a TODO list:
-* Check subscription that returns list
-* Check subscription against a war project
-* Document how to change the GraphQL server path (for query/mutation and for subscription)
-* [WIP] Document the subscription
-* Check subscription returning sub objects ({id date author publiclyAvailable title content})
-* Test subscription with Custom Scalars, input types...
 * Specifying an unknown template in the pom should raise an error
+* Allow to change the GraphQL server path (for query/mutation and for subscription)
 * Change the JsonResponseWrapper as an interface, implemented by the XxxRootResponse classes
 * Allow aliases for query/mutation fields
 * Interface that implements Interface (waiting for graphql-java v15)
