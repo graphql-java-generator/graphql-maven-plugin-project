@@ -1,8 +1,8 @@
 Here are the next tasks listed, as a TODO list:
-* Generate the WebSocketConfig and WebSocketHandler classes
-* Document how to change the GraphQL server path (for query/mutation and for subscription)
-* Document the subscription
 * Check subscription that returns list
+* Check subscription against a war project
+* Document how to change the GraphQL server path (for query/mutation and for subscription)
+* [WIP] Document the subscription
 * Check subscription returning sub objects ({id date author publiclyAvailable title content})
 * Test subscription with Custom Scalars, input types...
 * Specifying an unknown template in the pom should raise an error

@@ -67,7 +67,7 @@
 					<container>
 						<containerId>tomcat9x</containerId>
 						<zipUrlInstaller>
-							<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/9.0.20/tomcat-9.0.20.zip</url>
+							<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/9.0.34/tomcat-9.0.34.zip</url>
 							<downloadDir>${project.basedir}/downloads</downloadDir>
 						</zipUrlInstaller>
 					</container>

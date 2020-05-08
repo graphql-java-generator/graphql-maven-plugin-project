@@ -1,4 +1,4 @@
-package com.graphql_java_generator.samples.forum.server.temp.util;
+package com.graphql_java_generator.server.util;
 
 import java.util.Collections;
 import java.util.Map;

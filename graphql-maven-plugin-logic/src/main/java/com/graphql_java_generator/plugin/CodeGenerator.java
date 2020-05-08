@@ -34,9 +34,7 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
-import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
-import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
 /**
  * This class generates the code, from the classes coming from the com.graphql_java_generator.plugin.language package.
@@ -189,8 +187,10 @@ public class CodeGenerator {
 				boolean metaInf = entry.getName().startsWith("META-INF");
 				boolean serverAndIsClientFile = entry.getName().contains("com/graphql_java_generator/client")
 						&& pluginConfiguration.getMode().equals(PluginMode.server);
+				boolean clientAndIsServerFile = entry.getName().contains("com/graphql_java_generator/server")
+						&& pluginConfiguration.getMode().equals(PluginMode.client);
 
-				if (!metaInf && !serverAndIsClientFile) {
+				if (!metaInf && !serverAndIsClientFile & !clientAndIsServerFile) {
 					java.io.File file = new java.io.File(pluginConfiguration.getTargetSourceFolder(), entry.getName());
 
 					if (entry.isDirectory()) {
@@ -241,34 +241,6 @@ public class CodeGenerator {
 	}
 
 	/**
-	 * Generates one wrapper for each query, that will receive the response json. These class are used in the generated
-	 * code, for partial queries.
-	 * 
-	 * @return
-	 */
-	private int generateQueryTargetType() {
-		int i = 0;
-		List<ObjectType> requestTypes = new ArrayList<>(documentParser.getQueryTypes());
-		requestTypes.addAll(documentParser.getMutationTypes());
-		requestTypes.addAll(documentParser.getSubscriptionTypes());
-
-		for (ObjectType requestType : requestTypes) {
-			for (Field query : requestType.getFields()) {
-				String objectName = requestType.getClassSimpleName() + query.getPascalCaseName();
-				File targetFile = getJavaFile(objectName, true);
-				String msg = "Generating target for query " + query.getName() + " '" + objectName + "' into "
-						+ targetFile.getAbsolutePath();
-				VelocityContext context = getVelocityContext();
-				context.put("objectName", objectName);
-				context.put("query", query);
-
-				i += generateOneFile(targetFile, msg, context, resolveTemplate(CodeTemplate.QUERY_TARGET_TYPE));
-			}
-		}
-		return i;
-	}
-
-	/**
 	 * Generates the GraphQLRequest class . This method expects at most one query, one mutation and one subscription,
 	 * which is compliant with the GraphQL specification
 	 */
@@ -313,27 +285,35 @@ public class CodeGenerator {
 
 		pluginConfiguration.getLog().debug("Generating GraphQLDataFetchers");
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
-				resolveTemplate(CodeTemplate.DATAFETCHER));
+				resolveTemplate(CodeTemplate.DATA_FETCHER));
 
 		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
 			pluginConfiguration.getLog().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
 			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
 					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
-					resolveTemplate(CodeTemplate.DATAFETCHERDELEGATE));
+					resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
 		}
 
 		pluginConfiguration.getLog().debug("Generating BatchLoaderDelegate");
 		ret += generateOneFile(getJavaFile("BatchLoaderDelegate", true), "generating BatchLoaderDelegate", context,
-				resolveTemplate(CodeTemplate.BATCHLOADERDELEGATE));
+				resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE));
 
 		for (BatchLoader batchLoader : documentParser.batchLoaders) {
 			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
 			context.put("batchLoader", batchLoader);
 			pluginConfiguration.getLog().debug("Generating " + name);
 			ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
-					resolveTemplate(CodeTemplate.BATCHLOADERDELEGATEIMPL));
+					resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE_IMPL));
 		}
+
+		pluginConfiguration.getLog().debug("Generating WebSocketConfig");
+		ret += generateOneFile(getJavaFile("WebSocketConfig", true), "generating WebSocketConfig", context,
+				resolveTemplate(CodeTemplate.WEB_SOCKET_CONFIG));
+
+		pluginConfiguration.getLog().debug("Generating WebSocketHandler");
+		ret += generateOneFile(getJavaFile("WebSocketHandler", true), "generating WebSocketHandler", context,
+				resolveTemplate(CodeTemplate.WEB_SOCKET_HANDLER));
 
 		return ret;
 

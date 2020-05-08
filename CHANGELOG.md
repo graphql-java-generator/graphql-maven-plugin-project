@@ -6,7 +6,7 @@ Both modes (client and server):
 
 Server mode:
 * In some cases, the DataFetcherDelegate now have another DataFetcher that must be implemented
- 
+* Some server templates rename, to respect java standards. An underscore has been added to these templates name: BATCH_LOADER_DELEGATE, BATCH_LOADER_DELEGATE_IMPL, DATA_FETCHER and DATA_FETCHER_DELEGATE
 
 # 1.6.1
 
