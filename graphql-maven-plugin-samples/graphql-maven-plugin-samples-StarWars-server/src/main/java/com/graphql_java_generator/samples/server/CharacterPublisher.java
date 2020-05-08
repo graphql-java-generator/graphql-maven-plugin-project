@@ -1,14 +1,12 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.server.specific_code;
+package com.graphql_java_generator.samples.server;
 
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.graphql_java_generator.samples.forum.server.Post;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observer;
@@ -16,24 +14,24 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
 /**
- * This class is responsible for Publishing new Posts. This allows to send the notifications, when an application
- * subscribed to the <I>subscribeToNewPost</I> subscription.
+ * This class is responsible for Publishing new Characters. This allows to send the notifications, when an application
+ * subscribed to the <I>newCharacter</I> subscription.
  * 
  * @author etienne-sf
  */
 @Component
-public class PostPublisher {
+public class CharacterPublisher {
 
 	/** The logger for this instance */
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	PublishSubject<Post> subject = PublishSubject.create();
+	PublishSubject<Character> subject = PublishSubject.create();
 
-	public PostPublisher() {
+	public CharacterPublisher() {
 		// in debug mode, we'll log each new entry in this subject, to check that the subject properly received the
 		// events, and that the subscribers to receive them
 		if (logger.isDebugEnabled()) {
-			subject.subscribe(new Observer<Post>() {
+			subject.subscribe(new Observer<Character>() {
 
 				@Override
 				public void onSubscribe(Disposable d) {
@@ -41,7 +39,7 @@ public class PostPublisher {
 				}
 
 				@Override
-				public void onNext(Post t) {
+				public void onNext(Character t) {
 					logger.debug("[Debug subscriber] onNext: " + t);
 				}
 
@@ -59,13 +57,13 @@ public class PostPublisher {
 	}
 
 	/**
-	 * Let's emit this new {@link Post}
+	 * Let's emit this new {@link Character}
 	 * 
 	 * @param post
 	 */
-	void onNext(Post post) {
-		logger.debug("Emitting suscription notification for {}", post);
-		subject.onNext(post);
+	void onNext(Character c) {
+		logger.debug("Emitting suscription notification for {}", c);
+		subject.onNext(c);
 	}
 
 	/**
@@ -73,8 +71,8 @@ public class PostPublisher {
 	 * 
 	 * @return
 	 */
-	Publisher<Post> getPublisher(String boardName) {
-		logger.debug("Executing Suscription for {}", boardName);
+	Publisher<Character> getPublisher() {
+		logger.debug("Executing Suscription");
 		return subject.toFlowable(BackpressureStrategy.BUFFER);
 	}
 

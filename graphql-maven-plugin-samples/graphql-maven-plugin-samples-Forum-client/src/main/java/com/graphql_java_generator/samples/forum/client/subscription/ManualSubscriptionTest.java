@@ -3,12 +3,6 @@
  */
 package com.graphql_java_generator.samples.forum.client.subscription;
 
-import java.net.URI;
-
-import javax.websocket.ContainerProvider;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -61,26 +55,4 @@ public class ManualSubscriptionTest {
 		System.out.println("Stopped listening");
 	}
 
-	private void exec2() throws Exception {
-		System.out.println("Creating container");
-		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-		System.out.println("Connecting");
-		String uri;
-		uri = "ws://localhost:8080/stockticker";
-		uri = "ws://localhost:8180/graphql";
-		try (Session session = container.connectToServer(ManualPostSubscriptionCallback.class, URI.create(uri))) {
-			System.out.println("Sending request");
-			session.getBasicRemote().sendObject("A test");
-		}
-
-		// Let's wait 10 minutes (600 seconds), so that we display the received notifications during this time
-		try {
-			Thread.sleep(600 * 1000);
-		} catch (InterruptedException e) {
-			System.out.println("Got interrupted");
-		}
-
-		// client.unsubscribe();
-		System.out.println("Stopped listening");
-	}
 }

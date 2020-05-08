@@ -1,13 +1,14 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.client.subscription;
+package com.graphql_java_generator.mavenplugin.samples.simple.client.subscription;
 
 import javax.websocket.ClientEndpoint;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.generated.graphql.Character;
 import com.graphql_java_generator.client.SubscriptionCallback;
 
 /**
@@ -15,15 +16,15 @@ import com.graphql_java_generator.client.SubscriptionCallback;
  */
 // The class that'll receive the notification from the GraphQL subscription
 @ClientEndpoint
-public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
+public class CharacterSubscriptionCallback implements SubscriptionCallback<Character> {
 
-	/** The logger for this class */
-	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
+	/** The logger for this instance */
+	static protected Logger logger = LoggerFactory.getLogger(CharacterSubscriptionCallback.class);
 
 	/** Indicates whether the Web Socket is connected or not */
 	boolean connected = false;
 
-	T lastReceivedMessage = null;
+	Character lastReceivedMessage = null;
 	String lastReceivedClose = null;
 	Throwable lastReceivedError = null;
 
@@ -33,7 +34,7 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	}
 
 	@Override
-	public void onMessage(T t) {
+	public void onMessage(Character t) {
 		this.lastReceivedMessage = t;
 		logger.debug("Received {} {}", t.getClass().getSimpleName(), t);
 		SubscriptionIT.currentThread.interrupt();

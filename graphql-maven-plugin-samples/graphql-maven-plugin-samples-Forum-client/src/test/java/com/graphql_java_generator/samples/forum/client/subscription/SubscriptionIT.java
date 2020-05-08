@@ -100,12 +100,12 @@ class SubscriptionIT {
 				"We should have received no close message (" + postSubscriptionCallback.lastReceivedClose + ")");
 		assertNull(postSubscriptionCallback.lastReceivedError,
 				"We should have received no error (" + postSubscriptionCallback.lastReceivedError + ")");
-		assertNotNull(postSubscriptionCallback.lastReceivedPost, "We should have received a post");
+		assertNotNull(postSubscriptionCallback.lastReceivedMessage, "We should have received a post");
 
 		Post createdPost = createdPostASync.get();
-		assertEquals(createdPost.getId(), postSubscriptionCallback.lastReceivedPost.getId(), "Is it 'our' new Post?");
+		assertEquals(createdPost.getId(), postSubscriptionCallback.lastReceivedMessage.getId(), "Is it 'our' new Post?");
 		assertEquals(new GregorianCalendar(2020, 11 - 1, 21).getTime(),
-				postSubscriptionCallback.lastReceivedPost.getDate(), "Check of a custom scalar");
+				postSubscriptionCallback.lastReceivedMessage.getDate(), "Check of a custom scalar");
 
 		// We must free the server resource at the end
 		client.unsubscribe();

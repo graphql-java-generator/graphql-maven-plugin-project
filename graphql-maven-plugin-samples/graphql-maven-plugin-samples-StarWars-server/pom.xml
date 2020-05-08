@@ -127,6 +127,12 @@
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 		</dependency>
+
+		<!-- Added Reactive stuff, to manage subscriptions -->
+		<dependency>
+			<groupId>io.reactivex.rxjava2</groupId>
+			<artifactId>rxjava</artifactId>
+		</dependency>
 	</dependencies>
 
 	<reporting>

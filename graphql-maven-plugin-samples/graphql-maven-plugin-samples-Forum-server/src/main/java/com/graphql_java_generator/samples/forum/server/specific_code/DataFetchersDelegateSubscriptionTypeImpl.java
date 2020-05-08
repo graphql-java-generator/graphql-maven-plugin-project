@@ -17,6 +17,7 @@ import com.graphql_java_generator.samples.forum.server.jpa.PostRepository;
 import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
 
 import graphql.schema.DataFetchingEnvironment;
+import io.reactivex.subjects.Subject;
 
 /**
  * @author etienne-sf
@@ -33,6 +34,11 @@ public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDel
 	TopicRepository topicRepository;
 	@Resource
 	PostRepository postRepository;
+
+	/**
+	 * This {@link Subject} will be notified for each Human or Droid creation. This is the basis for the
+	 * <I>subscribeToNewPost</I> subscription
+	 */
 	@Resource
 	PostPublisher postPublisher;
 

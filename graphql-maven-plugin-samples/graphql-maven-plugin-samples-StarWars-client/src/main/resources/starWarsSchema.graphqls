@@ -1,6 +1,7 @@
 schema {
     query: QueryType
     mutation: MutationType
+    subscription: SubscriptionType
 }
 
 type QueryType {
@@ -14,6 +15,10 @@ type QueryType {
 type MutationType {
 	createHuman(name: String!, homePlanet: String): Human
 	addFriend(idCharacter: String!, idNewFriend: String!): Character
+}
+
+type SubscriptionType {
+	newCharacter: Character
 }
 
 

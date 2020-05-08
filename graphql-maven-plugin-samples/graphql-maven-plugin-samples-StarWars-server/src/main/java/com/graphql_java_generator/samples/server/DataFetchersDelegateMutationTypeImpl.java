@@ -13,6 +13,7 @@ import com.graphql_java_generator.samples.server.jpa.DroidRepository;
 import com.graphql_java_generator.samples.server.jpa.HumanRepository;
 
 import graphql.schema.DataFetchingEnvironment;
+import io.reactivex.subjects.Subject;
 
 /**
  * @author etienne-sf
@@ -27,12 +28,22 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	@Resource
 	CharacterHelper characterHelper;
 
+	/**
+	 * This {@link Subject} will be notified for each Human or Droid creation. This is the basis for the
+	 * <I>newCharacter</I> subscription
+	 */
+	@Resource
+	CharacterPublisher characterPublisher;
+
 	@Override
 	public Human createHuman(DataFetchingEnvironment dataFetchingEnvironment, String name, String homePlanet) {
 		Human human = new Human();
 		human.setName(name);
 		human.setHomePlanet(homePlanet);
 		humanRepository.save(human);
+
+		characterPublisher.onNext(human);
+
 		return human;
 	}
 

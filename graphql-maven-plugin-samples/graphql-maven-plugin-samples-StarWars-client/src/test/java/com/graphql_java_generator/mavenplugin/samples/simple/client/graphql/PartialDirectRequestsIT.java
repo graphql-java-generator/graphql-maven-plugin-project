@@ -23,8 +23,14 @@ class PartialDirectRequestsIT extends AbstractIT {
 	@BeforeEach
 	void setUp() throws Exception {
 		Main main = new Main();
+
+		// As we don't have a proper certificate (it's a self-signed one), we must avoid SSL checks.
+		//
+		// DO NOT DO THIS IN PRODUCTION
+		//
 		SSLContext sslContext = main.getNoCheckSslContext();
 		HostnameVerifier hostNameVerifier = main.getHostnameVerifier();
+
 		// For some tests, we need to execute additional queries
 		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);
 

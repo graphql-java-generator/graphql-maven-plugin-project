@@ -17,6 +17,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;
@@ -85,9 +86,11 @@ public class QueryExecutorImpl implements QueryExecutor {
 			throw new IllegalArgumentException(
 					"This GraphQL endpoint is an http one. Please use the relevant Query/Mutation/Subscription constructor (without the SSLContext and HostnameVerifier parameters)");
 		}
-		client = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(hostnameVerifier).build();
-		objectMapper = new ObjectMapper();
-		webTarget = client.target(graphqlEndpoint);
+
+		this.client = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(hostnameVerifier).build();
+		this.graphqlEndpoint = graphqlEndpoint;
+		this.objectMapper = new ObjectMapper();
+		this.webTarget = client.target(graphqlEndpoint);
 	}
 
 	/**
@@ -104,6 +107,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 */
 	public QueryExecutorImpl(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.client = client;
+		this.graphqlEndpoint = graphqlEndpoint;
 		this.objectMapper = objectMapper;
 		this.webTarget = client.target(graphqlEndpoint);
 	}
@@ -171,7 +175,14 @@ public class QueryExecutorImpl implements QueryExecutor {
 		logger.trace(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 
 		// Let's create and start the Web Socket
-		WebSocketClient client = new WebSocketClient();
+		//
+		// For internal test, we have a self-signed certificate. So we need to short cut certificate check.
+		// DO NOT DO THAT IN PRODUCTION!
+		boolean trustAll = (System.getProperty("com.graphql-java-generator.websocket.nosslcheck") != null);
+		org.eclipse.jetty.util.ssl.SslContextFactory.Client sslContextFactory = new org.eclipse.jetty.util.ssl.SslContextFactory.Client(
+				trustAll);
+		HttpClient httpClient = new HttpClient(sslContextFactory);
+		WebSocketClient client = new WebSocketClient(httpClient);
 		SubscriptionClientWebSocket<R, T> subscriptionClientWebSocket = new SubscriptionClientWebSocket<R, T>(request,
 				subscriptionName, subscriptionCallback, subscriptionType, messageType);
 		URI uri = getWebSocketURI();

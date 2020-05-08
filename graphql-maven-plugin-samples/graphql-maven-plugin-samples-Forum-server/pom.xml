@@ -122,9 +122,7 @@
 			<artifactId>log4j-slf4j-impl</artifactId>
 		</dependency>
 
-
-		<!-- Added for websockets (for subscription). Still WIP: some of these 
-			should be added to the server dependencies module -->
+		<!-- Added Reactive stuff, to manage subscriptions -->
 		<dependency>
 			<groupId>io.reactivex.rxjava2</groupId>
 			<artifactId>rxjava</artifactId>
