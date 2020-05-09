@@ -223,7 +223,7 @@ If you use eclipse, please use the __code formatter__ given with the project (fi
 
 
 
-# Full projet documentation
+# Full project documentation
 
 For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/)
 
