@@ -27,6 +27,9 @@ The generator is currently available both as a Maven plugin and as a Gradle plug
 * The __Maven plugin__ is available in the project ([graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project)) 
 * A __Gradle plugin__ is available in the project [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
 
+## Full documentation
+
+The [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
 
 ## Aim of this project
 
@@ -40,7 +43,7 @@ The aim of this project is to:
 
 ## How to use it?
 
-### Full projet documentation
+### Full project documentation
 
 You'll find below a quick presentation of the plugin.
 
@@ -65,11 +68,13 @@ You'll find the following samples in the project. For all of these samples, ther
     * The server uses the schema personalization, to override the default code generation
     * The GraphQL model maps to the database model
     * The Forum client project shows implementation of the same queries in the XxxQueries classes.
+    * This sample contains a subscription, on both the client and the server side 
 * StarWars (only in the [Maven plugin](https://github.com/graphql-java-generator/graphql-maven-plugin-project) project)
     * The server is packaged as a war
     * The GraphQL server exposes https
     * The GraphQL interfaces in this model (character, and friends relation) makes it difficult to map to native RDBMS data model. This project uses JPA native queries to overcome this.
     * The StarWars client project shows implementation of the same queries in the XxxQueries classes.
+    * This sample contains a subscription, on both the client and the server side 
  * CustomTemplates (only in the [Maven plugin](https://github.com/graphql-java-generator/graphql-maven-plugin-project) project)
     * An example related on how to customize code templates
 		* graphql-maven-plugin-samples-CustomTemplates-resttemplate project offers a customize template for Query/Mutation/Subscriptino client class and offer a Spring-base RestTemplate implementation for QueryExecutor template
@@ -185,7 +190,7 @@ All the documentation, and the list of available templates is available in the [
 # Compatibility with GraphQL
 
 This plugin respects quite all the GraphQL specification:
-- queries and mutations
+- queries, mutations and subscriptions
 - introspection
 - custom scalars
 - input types
@@ -194,11 +199,10 @@ This plugin respects quite all the GraphQL specification:
 - fragments (global and inline)
 - input parameters (for fields and directives)
 - Use of Bind Parameters to map Java variables with input parameters
-- easy execution of just a query/mutation (one field of the query or mutation type) as a standard method call
+- easy execution of just a query/mutation/subscription (one field of the query, mutation or subscription type) as a standard method call
 - execution of a full GraphQL request, which allows to execute several queries or several mutations at once
 
 You'll find below the main changes, that are planned in the near future:
-- Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 - Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 
 
