@@ -149,7 +149,7 @@ public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetch
 			AllFieldCasesInterfaceType item = new AllFieldCasesInterfaceType();
 			item.setId(key);
 			item.setName("Name for " + key.toString());
-			item.setAge((int) (Math.random() * Integer.MAX_VALUE));
+			item.setAge((long) (Math.random() * Long.MAX_VALUE));
 			item.setAliases(new ArrayList<String>());
 			item.setPlanets(new ArrayList<String>());
 		}

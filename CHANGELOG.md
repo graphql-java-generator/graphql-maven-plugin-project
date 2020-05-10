@@ -1,3 +1,9 @@
+# Not released yet
+
+Both mode (client and server):
+* Corrected issue #39: GraphQL Float was mapped to Float, instead of Double
+
+
 # 1.7.0
 
 Both modes (client and server):

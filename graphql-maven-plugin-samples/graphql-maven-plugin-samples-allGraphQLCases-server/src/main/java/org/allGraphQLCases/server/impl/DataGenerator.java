@@ -143,23 +143,25 @@ public class DataGenerator {
 
 	@SuppressWarnings("deprecation")
 	private Object generateValue(Class<?> type) {
-		if (type == String.class) {
-			return "Random String (" + RANDOM.nextInt(99999999) + ")";
-		} else if (type == UUID.class) {
-			return UUID.randomUUID();
+		if (type == Boolean.class) {
+			return RANDOM.nextBoolean();
+		} else if (type == Date.class) {
+			return new Date(RANDOM.nextInt(3000), RANDOM.nextInt(12), RANDOM.nextInt(29));
+		} else if (type == Double.class) {
+			return (double) (Math.random() * Double.MAX_VALUE);
+		} else if (type.isEnum()) {
+			int x = RANDOM.nextInt(type.getEnumConstants().length);
+			return type.getEnumConstants()[x];
+		} else if (type == Float.class) {
+			return (float) (Math.random() * Float.MAX_VALUE);
 		} else if (type == Integer.class) {
 			return RANDOM.nextInt();
 		} else if (type == Long.class) {
 			return RANDOM.nextLong();
-		} else if (type == Float.class) {
-			return (float) (Math.random() * Float.MAX_VALUE);
-		} else if (type == Boolean.class) {
-			return RANDOM.nextBoolean();
-		} else if (type == Date.class) {
-			return new Date(RANDOM.nextInt(3000), RANDOM.nextInt(12), RANDOM.nextInt(29));
-		} else if (type.isEnum()) {
-			int x = RANDOM.nextInt(type.getEnumConstants().length);
-			return type.getEnumConstants()[x];
+		} else if (type == String.class) {
+			return "Random String (" + RANDOM.nextInt(99999999) + ")";
+		} else if (type == UUID.class) {
+			return UUID.randomUUID();
 		} else {
 			throw new RuntimeException("Non managed Scalar type, when generating data: " + type.getName());
 		}

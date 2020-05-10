@@ -140,6 +140,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkInputParameter(objectType, j, 0, "unit", false, false, null, "Unit",
 				pluginConfiguration.getPackageName() + ".Unit", new graphql.language.EnumValue("YEAR"));
 		j += 1;
+		// aFloat: Float
+		checkField(objectType, j, "aFloat", false, false, null, "Float", "java.lang.Double");
+		checkNbInputParameter(objectType, j, 0);
+		j += 1;
 		// date: Date
 		checkField(objectType, j, "date", false, false, null, "Date", "java.util.Date");
 		checkNbInputParameter(objectType, j, 0);

@@ -121,6 +121,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     name: String!
     forname(uppercase: Boolean @testDirective(value:"on Argument"), textToAppendToTheForname: String): String
     age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
+    aFloat: Float
     date: Date
     dates: [Date]!
     nbComments: Int
@@ -141,7 +142,7 @@ interface AllFieldCasesInterface {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
-    age: Int!
+    age: Long!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]
@@ -159,7 +160,7 @@ type AllFieldCasesInterfaceType implements AllFieldCasesInterface {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
-    age: Int!
+    age: Long!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]

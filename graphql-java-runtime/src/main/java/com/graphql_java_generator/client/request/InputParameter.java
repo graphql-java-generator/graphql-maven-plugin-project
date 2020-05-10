@@ -413,7 +413,8 @@ public class InputParameter {
 		} else if (parameterType.equals("ID")) {
 			return parameterValue;
 		} else if (parameterType.equals("Float")) {
-			return Float.parseFloat(parameterValue);
+			// GraphQL Float are double precision numbers
+			return Double.parseDouble(parameterValue);
 		} else if (parameterType.equals("Int")) {
 			return Integer.parseInt(parameterValue);
 		} else if (parameterType.equals("Long")) {

@@ -240,8 +240,10 @@ public class DocumentParser {
 		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", pluginConfiguration));
 		scalarTypes.add(new ScalarType("int", "java.lang", "Integer", pluginConfiguration));
 		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", pluginConfiguration));
-		scalarTypes.add(new ScalarType("Float", "java.lang", "Float", pluginConfiguration));
-		scalarTypes.add(new ScalarType("float", "java.lang", "Float", pluginConfiguration));
+
+		// GraphQL Float is a double precision number
+		scalarTypes.add(new ScalarType("Float", "java.lang", "Double", pluginConfiguration));
+		scalarTypes.add(new ScalarType("float", "java.lang", "Double", pluginConfiguration));
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL custom scalar implementations must be provided by the plugin configuration
