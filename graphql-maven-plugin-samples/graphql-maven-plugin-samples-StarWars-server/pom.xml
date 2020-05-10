@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -14,12 +16,14 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Needed to properly package the jar or war, so that spring can link all resources together -->
+				<!-- Needed to properly package the jar or war, so that spring can link 
+					all resources together -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- This is core of graphql-java-generator: it generates the boilerplate code for you -->
+				<!-- This is core of graphql-java-generator: it generates the boilerplate 
+					code for you -->
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
@@ -39,7 +43,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<inherited>true</inherited>
-			</plugin>			
+			</plugin>
 			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -50,7 +54,8 @@
 		</plugins>
 
 		<extensions>
-			<!-- Adding these extensions prevents the error below, with JDK 9 and higher: -->
+			<!-- Adding these extensions prevents the error below, with JDK 9 and 
+				higher: -->
 			<!-- NoSuchMethodError: 'java.lang.String javax.annotation.Resource.lookup()' -->
 			<extension>
 				<groupId>javax.annotation</groupId>
@@ -101,11 +106,6 @@
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-spring-webmvc</artifactId>
 		</dependency>
-		<dependency>
-			<!-- This dependency should come from graphql-java spring stuff -->
-			<groupId>com.graphql-java</groupId>
-			<artifactId>java-dataloader</artifactId>
-		</dependency>
 
 		<!-- Dependencies that are specific to this project -->
 		<dependency>
@@ -113,17 +113,15 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<!-- Needed only for this project as a sample: we store the data in a H2 in-memory database -->
+			<!-- Needed only for this project as a sample: we store the data in a 
+				H2 in-memory database -->
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-		</dependency>
-		<dependency>
-			<!-- Needed only for this project as a sample: we load the data into the database, from csv files -->
+			<!-- Needed only for this project as a sample: we load the data into the 
+				database, from csv files -->
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 		</dependency>
