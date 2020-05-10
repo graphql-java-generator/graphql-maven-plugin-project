@@ -14,8 +14,8 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 public interface SubscriptionClient {
 
 	/**
-	 * Allows the client application to unsubscribe from the previously subscribed subscription. No more notification
-	 * will be sent for this subscription. <BR/>
+	 * Allows the client application to unsubscribe from a previously subscribed subscription. No more notification will
+	 * be sent for this subscription. <BR/>
 	 * This will free resources on both the client and the server.
 	 * 
 	 * @throws GraphQLRequestExecutionException
