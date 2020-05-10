@@ -1,4 +1,7 @@
 Here are the next tasks listed, as a TODO list:
+* Allow builder, like proposed in the issue #30
+* Add Tutorial to describe the best way to use the plugin
+* Do a sample project based on the github GraphQL schema
 * Specifying an unknown template in the pom should raise an error
 * Allow to change the GraphQL server path (for query/mutation and for subscription)
 * Change the JsonResponseWrapper as an interface, implemented by the XxxRootResponse classes
@@ -9,7 +12,6 @@ Here are the next tasks listed, as a TODO list:
 * Check compatibility with the schema.public.graphqls (available in the plugin logic test resources folder)
 * Check InputObjectType with fields that are lists
 * Document generateJPAAnnotation 
-* Subscriptions. Currently, GraphQL Java Generator manages queries and mutations.
 * Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 
 TODO List for 2.0 version:
