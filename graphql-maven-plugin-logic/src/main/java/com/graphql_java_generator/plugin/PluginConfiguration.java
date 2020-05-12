@@ -178,9 +178,13 @@ public interface PluginConfiguration {
 	 * plugin version, just build the project and everything is coherent.
 	 * </P>
 	 * <P>
-	 * If you set this parameter to false, the runtime is no more copied with the generated code. it's up to you to
-	 * provided the runtime in the pom dependencies. This allows you to create your own runtime, and change the
-	 * "standard" behavior. But of course, you'll have to check the compatibility with all the next versions.
+	 * If you set this parameter to false, the runtime is no more copied with the generated code. You then have to add
+	 * the runtime dependency in the pom dependencies: it's the com.graphql-java-generator:graphql-java-runtime
+	 * dependency, with the exact same version as the plugin version.
+	 * </P>
+	 * <P>
+	 * This also allows you to create your own runtime, and change the "standard" behavior. But of course, you'll have
+	 * to check the compatibility with all the next versions.
 	 * </P>
 	 *
 	 * @return
