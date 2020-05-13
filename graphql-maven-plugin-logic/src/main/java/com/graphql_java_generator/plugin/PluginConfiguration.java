@@ -26,15 +26,14 @@ import graphql.schema.GraphQLScalarType;
 public interface PluginConfiguration {
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
+	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
+
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
-	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
-	// Enum must be in a string constant, for maven plugin declaration (see the GraphqlMavenPlugin class)
 	public final String DEFAULT_MODE = "client";
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
-	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "false";
 	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
@@ -218,6 +217,18 @@ public interface PluginConfiguration {
 	 * @return
 	 */
 	boolean isSeparateUtilityClasses();
+
+	/**
+	 * <P>
+	 * Indicates whether the query, mutation and subscription generated utility classes should be suffixed by
+	 * <I>Executor</I>. This classes are the ones that contain the method that allow to execute these queries, mutations
+	 * and subscriptions. This allows to better distinguish the classes that map to the GraphQL schema, and the one that
+	 * are pure utility classes.
+	 * </P>
+	 * 
+	 * @return
+	 */
+	boolean suffixRequestExecutor();
 
 	/** Logs all the configuration parameters, in the debug level */
 	default void logConfiguration() {
