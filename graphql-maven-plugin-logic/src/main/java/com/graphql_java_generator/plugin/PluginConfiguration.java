@@ -218,18 +218,6 @@ public interface PluginConfiguration {
 	 */
 	boolean isSeparateUtilityClasses();
 
-	/**
-	 * <P>
-	 * Indicates whether the query, mutation and subscription generated utility classes should be suffixed by
-	 * <I>Executor</I>. This classes are the ones that contain the method that allow to execute these queries, mutations
-	 * and subscriptions. This allows to better distinguish the classes that map to the GraphQL schema, and the one that
-	 * are pure utility classes.
-	 * </P>
-	 * 
-	 * @return
-	 */
-	boolean suffixRequestExecutor();
-
 	/** Logs all the configuration parameters, in the debug level */
 	default void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
