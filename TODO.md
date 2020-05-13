@@ -17,11 +17,13 @@ Here are the next tasks listed, as a TODO list:
 * Check InputObjectType with fields that are lists
 * Document generateJPAAnnotation 
 * Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
+* Stop generating SubscriptionTypeResponse and SubscriptionTypeRootResponse ?
 
 TODO List for 2.0 version:
 * Remove the query/mutation/subscription Response type (currently deprecated)
+* copyRuntimeSources: false should be the default value (change to be done in the tutorial and the client-dependency)
 * separateUtilityClasses: true should be the default value
-
+* Add a generateDeprecatedRequestResponse plugin parameter. Default value to true (no more XxxxResponse would be generated). With a value of true, the XxxxResponse would still be generated for compatibility with old code.
 
 
 
