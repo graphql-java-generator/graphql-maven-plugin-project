@@ -53,6 +53,7 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<!-- This helps by adding the generated source in the build path of your IDE -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<inherited>true</inherited>
