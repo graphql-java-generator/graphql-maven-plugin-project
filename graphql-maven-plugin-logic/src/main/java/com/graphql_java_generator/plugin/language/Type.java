@@ -47,6 +47,8 @@ public interface Type {
 	/** Get the filename where this type must be created. Default is to return the name for the Type */
 	default public String getTargetFileName(String fileType) {
 		switch (fileType) {
+		case "executor":
+			return getJavaName() + "Executor";
 		case "response":
 			return getJavaName() + "Response";
 		case "root response":

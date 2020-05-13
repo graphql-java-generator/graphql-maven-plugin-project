@@ -15,7 +15,7 @@ Subscription in client mode
 
   The client mode makes it easy for a Java GraphQL client-side application, to execute subscriptions against a GraphQL server. The graphql-maven-plugin generates all the necessary code, so that a Java application can call a GraphQL server by simply calling the relevant Java method.
   
-  The subscription works only with Partial Request, as a Callback class must be given for each Subscription. You'll find the difference between Full and Partial requests on the {{{./client.html}client page}}.
+  The subscription works only with <<Partial Request>> , as a Callback class must be given for each Subscription. You'll find the difference between Full and Partial requests on the {{{./client.html}client page}}.
     
   As for queries and mutations, subscription can be executed in two ways:
   
@@ -64,19 +64,19 @@ Subscription in client mode
   Below is a sample of the client code:
   
 +--------------------------------------------------------------------------------------------
-SubscriptionType subscriptionType;
+SubscriptionTypeExecutor subscriptionExecutor;
 GraphQLRequest subscriptionRequest;
 SubscriptionClient client;
 
 void setup() {
-		// Instantiate a Subscription type, with the relevant GraphQL endpoint.
+		// Instantiate a Subscription executor, with the relevant GraphQL endpoint.
 		// The classname of the Subscription is the type name, as defined in the GraphQL schema 
-		subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
+		subscriptionExecutor = new SubscriptionTypeExecutor("http://localhost:8180/graphql/subscription");
 				
 		// Create the GraphQL request
 		// The expected notifications are Post, with these fields: {id date author publiclyAvailable title content}
 		// As author is an object without fields defined, all its fields will be returned
-		subscriptionRequest = subscriptionType
+		subscriptionRequest = subscriptionExecutor
 				.getSubscribeToNewPostGraphQLRequest("{id date author publiclyAvailable title content}");
 }
 
@@ -86,7 +86,7 @@ void subscribe() {
 	PostSubscriptionCallback<Post> postSubscriptionCallback = new PostSubscriptionCallback<>();
 	
 	// The subscription request accepts one parameter. If you don't want to provide it, you can give it the null value
-	client = subscriptionType.subscribeToNewPost(subscriptionRequest, postSubscriptionCallback, "Board name 1");
+	client = subscriptionExecutor.subscribeToNewPost(subscriptionRequest, postSubscriptionCallback, "Board name 1");
 
 }
 +--------------------------------------------------------------------------------------------
@@ -113,13 +113,13 @@ void subscribe() {
   Here is a sample with the bind parameters value given as method parameters: 
 
 +--------------------------------------------------------------------------------------------
-SubscriptionType subscriptionType;
+SubscriptionTypeExecutor subscriptionExecutor;
 SubscriptionClient client;
 
 void setup() {
-		// Instantiate a Subscription type, with the relevant GraphQL endpoint.
-		// The classname of the Subscription is the type name, as defined in the GraphQL schema 
-		subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
+		// Instantiate a Subscription executor, with the relevant GraphQL endpoint.
+		// The classname of the Subscription is the type name (as defined in the GraphQL schema) suffixed by Executor
+		subscriptionExecutor = new SubscriptionTypeExecutor("http://localhost:8180/graphql/subscription");
 }
 
 void subscribe() {
@@ -128,7 +128,7 @@ void subscribe() {
 	PostSubscriptionCallback<Post> postSubscriptionCallback = new PostSubscriptionCallback<>();
 	
 	// The subscription request accepts one parameter. If you don't want to provide it, you can give it the null value
-	client = subscriptionType.subscribeToNewPost("{id date author publiclyAvailable title content}", postSubscriptionCallback, "Board name 1");
+	client = subscriptionExecutor.subscribeToNewPost("{id date author publiclyAvailable title content}", postSubscriptionCallback, "Board name 1");
 
 }
 +--------------------------------------------------------------------------------------------

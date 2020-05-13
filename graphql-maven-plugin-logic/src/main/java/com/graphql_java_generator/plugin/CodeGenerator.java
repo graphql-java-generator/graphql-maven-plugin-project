@@ -107,6 +107,7 @@ public class CodeGenerator {
 			break;
 		case client:
 			pluginConfiguration.getLog().debug("Starting client specific code generation");
+
 			// Generation of the query/mutation/subscription classes
 			pluginConfiguration.getLog().debug("Generating query");
 			i += generateTargetFiles(documentParser.getQueryTypes(), "query",
@@ -117,6 +118,17 @@ public class CodeGenerator {
 			pluginConfiguration.getLog().debug("Generating subscription");
 			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
 					resolveTemplate(CodeTemplate.SUBSCRIPTION), true);
+
+			// Generation of the query/mutation/subscription executor classes
+			pluginConfiguration.getLog().debug("Generating query executors");
+			i += generateTargetFiles(documentParser.getQueryTypes(), "executor",
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
+			pluginConfiguration.getLog().debug("Generating mutation executors");
+			i += generateTargetFiles(documentParser.getMutationTypes(), "executor",
+					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
+			pluginConfiguration.getLog().debug("Generating subscription executors");
+			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "executor",
+					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
 			pluginConfiguration.getLog().debug("Generating query response");

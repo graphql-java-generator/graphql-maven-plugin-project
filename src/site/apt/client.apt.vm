@@ -259,9 +259,9 @@ void exec(Date since, String memberName, String memberId) {
 ** {Partial requests}
 ~~~~~~~~~~~~~~~~~~~
 
-  In each query/mutation/subscription class, the plugin also generates <Xxxx> and <XxxxWithBindValues> methods, where <Xxxx> is successively each query/mutation/subscription defined in this query/mutation/subscription object.
+  For each query/mutation/subscription class, the plugin also generates XxxxEXecutor classes, where Xxxx is the query/mutation/subscription GraphQL type name. These classes contain <Yyyy> and <YyyyWithBindValues> methods, where <Yyyy> is successively each query/mutation/subscription defined in this query/mutation/subscription object.
   
-  As subscriptions work differently, it is documented in the {{{./client_subscription.html}Client Subscription page}}. 
+  As subscriptions work differently, they are documented in the {{{./client_subscription.html}Client Subscription page}}. 
   
   These methods are easier to use as:
   
@@ -276,21 +276,21 @@ void exec(Date since, String memberName, String memberId) {
   Below is a sample of the client code:
   
 +--------------------------------------------------------------------------------------------
-QueryType queryType;
+QueryTypeExecutor queryExecutor;
 GraphQLRequest topicsRequest;
 
 void setup() {
-		// Instanciate a Query type, with the relevant GraphQL endpoint
-		queryType = new QueryType("https://your.server/graphql");
+		// Instanciate a Query executor, with the relevant GraphQL endpoint
+		queryExecutor = new QueryTypeExecutor("https://your.server/graphql");
 				
 		// Create the GraphQL request
 		// This prepares a GraphQ Request that will execute: topics{id date author{name email alias id type} nbPosts}
-		topicsRequest = queryType.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts}");
+		topicsRequest = queryExecutor.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts}");
 }
 
 void exec() {
 	// The topic query accepts one parameter. If you don't want to provide it, you can give it the null value
-	List<Topic> topics = queryType.topics(topicsRequest, "a board name");
+	List<Topic> topics = queryExecutor.topics(topicsRequest, "a board name");
 
 	// Do something with topics
 	...
@@ -309,7 +309,7 @@ void exec() {
   Below is a sample of a request, with Bind Variables:
   
 +--------------------------------------------------------------------------------------------
-QueryType queryType = new QueryType("https://your.server/graphql");
+QueryTypeExecutor queryExecutor = new QueryTypeExecutor("https://your.server/graphql");
 GraphQLRequest topicsRequest;
 
 void setup() {
@@ -317,7 +317,7 @@ void setup() {
 		// ?memberName is an optional bind parameter, of name "memberName"
 		// ?sinceParam is an optional bind parameter, of name "sinceParam": you must provide it at execution time, or
 		// a GraphQLRequestExecutionException will be thrown.
-		topicsRequest = queryType.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts "
+		topicsRequest = queryExecutor.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts "
 			+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias}}}");
 }
 
@@ -325,7 +325,7 @@ void exec(Date since, String memberName, String memberId) {
 	// The topic query, as defined in the GraphQL schema, has one parameter: the board name.
 	// This parameter is a paremeter of the topics method
 	// You can then as many couples ("bindParameterName", bindParameterValue) that you want, in any order
-	List<Topic> topics = queryType.topics(topicsRequest, "a board name","sinceParam", since, "memberName", memberName, "memberId", memberId);
+	List<Topic> topics = queryExecutor.topics(topicsRequest, "a board name","sinceParam", since, "memberName", memberName, "memberId", memberId);
 
 	// Do something with topics
 	...
@@ -337,11 +337,11 @@ void exec(Date since, String memberName, String memberId) {
   The previous sample then becomes:
 
 +--------------------------------------------------------------------------------------------
-QueryType queryType = new QueryType("https://your.server/graphql");
+QueryTypeExecutor queryExecutor = new QueryTypeExecutor("https://your.server/graphql");
 GraphQLRequest topicsRequest;
 
 void setup() {
-		topicsRequest = queryType.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts "
+		topicsRequest = queryExecutor.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts "
 			+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias}}}");
 }
 
@@ -353,7 +353,7 @@ void exec(Date since, String memberName, String memberId) {
 	
 	// The topic query, as defined in the GraphQL schema, has one parameter: the board name
 	// This parameter is a paremeter of the topics method
-	List<Topic> topics = queryType.topicsWithBindValues(topicsRequest, "a board name", params);
+	List<Topic> topics = queryExecutor.topicsWithBindValues(topicsRequest, "a board name", params);
 
 	// Do something with topics
 	...
@@ -376,13 +376,13 @@ void exec(Date since, String memberName, String memberId) {
   Here is a sample with the bind parameters value given as method parameters: 
 
 +--------------------------------------------------------------------------------------------
-QueryType queryType = new QueryType("https://your.server/graphql");
+QueryTypeExecutor queryExecutor = new QueryTypeExecutor("https://your.server/graphql");
 
 void exec(Date since, String memberName, String memberId) {
 	
 	// The topic query accept one parameter.
 	// You can then as many couples ("bindParameterName", bindParameterValue) that you want.
-	List<Topic> topics = queryType.topicsWithBindValues("{id date author{name email alias id type} nbPosts "
+	List<Topic> topics = queryExecutor.topicsWithBindValues("{id date author{name email alias id type} nbPosts "
 			+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias}}}",
 			// One parameter for this query, in the GraphQL schema 
 			"a board name", 
@@ -399,7 +399,7 @@ void exec(Date since, String memberName, String memberId) {
   Here is a sample with the bind parameters value given as a map: 
 
 +--------------------------------------------------------------------------------------------
-QueryType queryType = new QueryType("https://your.server/graphql");
+QueryTypeExecutor queryExecutor = new QueryTypeExecutor("https://your.server/graphql");
 
 void exec(Date since, String memberName, String memberId) {
 	Map<String, Object> params = new HashMap<>();
@@ -409,7 +409,7 @@ void exec(Date since, String memberName, String memberId) {
 	
 	// The topic query accept one parameter.
 	// You can then as many couples ("bindParameterName", bindParameterValue) that you want.
-	List<Topic> topics = queryType.topicsWithBindValues("{id date author{name email alias id type} nbPosts "
+	List<Topic> topics = queryExecutor.topicsWithBindValues("{id date author{name email alias id type} nbPosts "
 			+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias}}}", 
 			// One parameter for this query, in the GraphQL schema 
 			"a board name",
@@ -431,7 +431,7 @@ void exec(Date since, String memberName, String memberId) {
   You can use a preconfigured Jersey client instance to support customization of the rest request:
 
 +--------------------------------------------------------------------------------------------
-    public QueryType(String graphqlEndpoint, Client client, ObjectMapper objectMapper)
+    public QueryTypeExecutor(String graphqlEndpoint, Client client, ObjectMapper objectMapper)
 +--------------------------------------------------------------------------------------------  
 
 ** {Use your own code templates}
