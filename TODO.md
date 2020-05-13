@@ -1,5 +1,4 @@
 Here are the next tasks listed, as a TODO list:
-* Integrate local stashed commit (pom and dependencies update)
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Correct the wrong https://github.com/graphql-java-generator/graphql-java-generator link in the generated code
 * Add integration tests to check the Executor behavior 
