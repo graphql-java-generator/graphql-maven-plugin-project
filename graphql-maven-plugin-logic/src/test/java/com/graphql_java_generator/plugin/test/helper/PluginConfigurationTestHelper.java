@@ -29,6 +29,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow
 	// to load several generated source folders in the IDE.
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
+	public boolean generateDeprecatedRequestResponse = true;
 	public boolean generateJPAAnnotation = true;
 	public PluginMode mode = null;
 	public String packageName = null;

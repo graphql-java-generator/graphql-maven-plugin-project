@@ -15,6 +15,7 @@ import $import;
  * It will be removed in 2.0 version
  * 
  * @author etienne-sf
+ * @deprecated Please use the {@link ${object.javaName}} class instead.
  */
 @Deprecated
 ${object.annotation}

@@ -302,11 +302,11 @@ void exec() {
   
   Directives can be defined for the requested fields, or their parameters. If you need to define directives at the query/mutation/subscription level, you need to execute a Full Request (see here above).
   
-  The bind variables works as specified for the Full queries.
+  The bind parameters works as specified for the Full queries.
   
   Of course, you can use input parameters for field or directives.
   
-  Below is a sample of a request, with Bind Variables:
+  Below is a sample of a request, with bind parameters:
   
 +--------------------------------------------------------------------------------------------
 QueryTypeExecutor queryExecutor = new QueryTypeExecutor("https://your.server/graphql");

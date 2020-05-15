@@ -1,4 +1,7 @@
 Here are the next tasks listed, as a TODO list:
+
+
+## TODO list for the current version
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Correct the wrong https://github.com/graphql-java-generator/graphql-java-generator link in the generated code
 * Add integration tests to check the Executor behavior 
@@ -18,7 +21,7 @@ Here are the next tasks listed, as a TODO list:
 * Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 * Stop generating SubscriptionTypeResponse and SubscriptionTypeRootResponse ?
 
-TODO List for 2.0 version:
+## TODO List for 2.0 version:
 * Remove the query/mutation/subscription Response type (currently deprecated)
 * copyRuntimeSources: false should be the default value (change to be done in the tutorial and the client-dependency)
 * separateUtilityClasses: true should be the default value

@@ -39,6 +39,14 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 
+## When seperateUtilityClasses is set to true, the current class is generated in a util subpackage.
+## So we need to import the object.classSimpleName
+#if(${pluginConfiguration.separateUtilityClasses})
+// Utility classes are generated in the util subpackage. We need to import the ${object.classSimpleName} from the 'main' package
+import ${pluginConfiguration.packageName}.${object.classSimpleName};
+#end
+
+
 /**
  * This class contains the methods that allows the execution of the subscriptions that are defined in the ${object.name} of the GraphQL schema.<BR/>
  * These methods allows:
@@ -62,7 +70,8 @@ public class ${object.classSimpleName}Executor {
 	GraphQLConfiguration configuration;
 
 	/**
-	 * This default constructor is there for compatibility reasons. It will be removed in 2.x releases. 
+	 * This default constructor is there for compatibility reasons. It will be removed in 2.x releases.  
+	 * @deprecated This constructor should be used by Jackson deserializer only
 	 */
 	@Deprecated(forRemoval = true)
 	public ${object.classSimpleName}Executor() {

@@ -37,6 +37,14 @@ import $import;
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 
+## When seperateUtilityClasses is set to true, the current class is generated in a util subpackage.
+## So we need to import the object.classSimpleName
+#if(${pluginConfiguration.separateUtilityClasses})
+// Utility classes are generated in the util subpackage. We need to import the ${object.classSimpleName} from the 'main' package
+import ${pluginConfiguration.packageName}.${object.classSimpleName};
+#end
+
+
 /**
  * This class contains the methods that allows the execution of the queries or mutations that are defined in the ${object.name} of the GraphQL schema.<BR/>
  * These methods allows:
@@ -64,6 +72,7 @@ public class ${object.classSimpleName}Executor {
 
 	/**
 	 * This default constructor is there for compatibility reasons. It will be removed in 2.x releases. 
+	 * @deprecated This constructor should be used by Jackson deserializer only
 	 */
 	@Deprecated(forRemoval = true)
 	public ${object.classSimpleName}Executor() {
@@ -122,8 +131,9 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
-	 * This method takes a full query definition, and executes the GraphQL request against the GraphQL server. That is,
+	 * This method takes a <B>full request</B> definition, and executes the it against the GraphQL server. That is,
 	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * For instance:
 	 * 
 	 * <PRE>
@@ -131,14 +141,11 @@ public class ${object.classSimpleName}Executor {
 	 * params.put("heroParam", heroParamValue);
 	 * params.put("skip", Boolean.FALSE);
 	 * 
-	 * Character c = myQyeryType.execWithBindValues(
+	 * MyQueryType response = myQueryType.execWithBindValues(
 	 * 		"{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}",
 	 * 		params);
+	 * Character c = response.getHero();
 	 * </PRE>
-	 * 
-	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the ${object.requestType}, in the native GraphQL format (see here above). It must ommit the
@@ -158,7 +165,7 @@ public class ${object.classSimpleName}Executor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}Response execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+	public ${object.classSimpleName}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -166,19 +173,17 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
-	 * This method takes a full query definition, and executes the GraphQL request against the GraphQL server. That is,
+	 * This method takes a <B>full request</B> definition, and executes it against the GraphQL server. That is,
 	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * For instance:
 	 * 
 	 * <PRE>
-	 * Character c = myQyeryType.execWithBindValues(
+	 * MyQueryType response = myQueryType.execWithBindValues(
 	 * 		"{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}",
 	 * 		"heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * Character c = response.getHero();
 	 * </PRE>
-	 * 
-	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above). It must ommit the
@@ -197,7 +202,7 @@ public class ${object.classSimpleName}Executor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}Response exec(String queryResponseDef, Object... paramsAndValues)
+	public ${object.classSimpleName}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -205,9 +210,10 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
-	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
-	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
-	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * This method takes a <B>full request</B> definition, and executes it against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * For instance:
 	 * 
 	 * <PRE>
 	 * ObjectResponse response;
@@ -224,7 +230,8 @@ public class ${object.classSimpleName}Executor {
 	 * params.put("heroParam", heroParamValue);
 	 * params.put("skip", Boolean.FALSE);
 	 * // This will set the value sinceValue to the sinceParam field parameter
-	 * List<Board> boards = queryType.execWithBindValues(objectResponse, params);
+	 * MyQueryType response = queryType.execWithBindValues(objectResponse, params);
+	 * Character c = response.getHero();
 	 * ...
 	 * }
 	 * </PRE>
@@ -238,7 +245,7 @@ public class ${object.classSimpleName}Executor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}Response execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+	public ${object.classSimpleName}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			if (parameters == null) {
@@ -261,14 +268,14 @@ public class ${object.classSimpleName}Executor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, ${object.classSimpleName}Response.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, ${object.classSimpleName}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end.class);
 	}
 
 	/**
-	 * This method takes a predefined {@link ObjectResponse} as the definition for the GraphQL request, and executes the
-	 * GraphQL request against the GraphQL server. It offers a logging of the call (if in debug mode), or of the call
-	 * and its parameters (if in trace mode).<BR/>
-	 * Here is a sample (and please have a look to the GraphQL site for more information):
+	 * This method takes a <B>full request</B> definition, and executes it against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * For instance:
 	 * 
 	 * <PRE>
 	 * ObjectResponse response;
@@ -282,7 +289,8 @@ public class ${object.classSimpleName}Executor {
 	 * public void doTheJob() {
 	 * ..
 	 * // This will set the value sinceValue to the sinceParam field parameter
-	 * List<Board> boards = queryType.exec(objectResponse, "heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * MyQueryType response = queryType.exec(objectResponse, "heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * Character c = response.getHero();
 	 * ...
 	 * }
 	 * </PRE>
@@ -299,14 +307,14 @@ public class ${object.classSimpleName}Executor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}Response exec(ObjectResponse objectResponse, Object... paramsAndValues)
+	public ${object.classSimpleName}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 	/**
-	 * Get the {@link com.graphql_java_generator.client.request.Builder} for the full query, as expected by the exec and execWithBindValues
-	 * methods.
+	 * Get the {@link com.graphql_java_generator.client.request.Builder} for a <B>full request</B>, as expected by the exec 
+	 * and execWithBindValues methods.
 	 * 
 	 * @return
 	 * @throws GraphQLRequestPreparationException
@@ -316,7 +324,7 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
-	 * Get the {@link GraphQLRequest} for Full request. It's easier to directly execute:
+	 * Get the {@link GraphQLRequest} for <B>full request</B>. For instance:
 	 * <PRE>
 	 * GraphQLRequest request = new GraphQLRequest(fullRequest);
 	 * </PRE>

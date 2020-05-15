@@ -101,6 +101,11 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
+	public boolean isGenerateDeprecatedRequestResponse() {
+		return mojo.generateDeprecatedRequestResponse;
+	}
+
+	@Override
 	public boolean isGenerateJPAAnnotation() {
 		return mojo.generateJPAAnnotation;
 	}

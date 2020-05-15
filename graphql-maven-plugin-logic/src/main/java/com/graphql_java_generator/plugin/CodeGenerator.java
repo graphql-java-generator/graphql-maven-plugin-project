@@ -131,15 +131,17 @@ public class CodeGenerator {
 					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
-			pluginConfiguration.getLog().debug("Generating query response");
-			i += generateTargetFiles(documentParser.getQueryTypes(), "response",
-					resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
-			pluginConfiguration.getLog().debug("Generating mutation response");
-			i += generateTargetFiles(documentParser.getMutationTypes(), "response",
-					resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
-			pluginConfiguration.getLog().debug("Generating subscription response");
-			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response",
-					resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
+			if (pluginConfiguration.isGenerateDeprecatedRequestResponse()) {
+				pluginConfiguration.getLog().debug("Generating query response");
+				i += generateTargetFiles(documentParser.getQueryTypes(), "response",
+						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
+				pluginConfiguration.getLog().debug("Generating mutation response");
+				i += generateTargetFiles(documentParser.getMutationTypes(), "response",
+						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
+				pluginConfiguration.getLog().debug("Generating subscription response");
+				i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response",
+						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
+			}
 
 			// Generation of the query/mutation/subscription root responses classes
 			pluginConfiguration.getLog().debug("Generating query root response");

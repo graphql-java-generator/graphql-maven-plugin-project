@@ -29,6 +29,7 @@ public interface PluginConfiguration {
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
+	public final String DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE = "true";
 	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
 	public final String DEFAULT_MODE = "client";
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
@@ -191,8 +192,27 @@ public interface PluginConfiguration {
 	boolean isCopyRuntimeSources();
 
 	/**
+	 * <P>
+	 * <I>Since 1.7.1 version</I>
+	 * </P>
+	 * <P>
+	 * Generates a XxxxResponse class, for each query/mutation/subscription. This allows to keep compatibility with code
+	 * Developed with the 1.x versions of the plugin.
+	 * </P>
+	 * <P>
+	 * The best way to use the plugin is to directly use the Xxxx query/mutation/subscription classes, where Xxxx is the
+	 * query/mutation/subscription name defined in the GraphQL schema.
+	 * </P>
+	 */
+	boolean isGenerateDeprecatedRequestResponse();
+
+	/**
+	 * <P>
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
-	 * Default value is false
+	 * </P>
+	 * <P>
+	 * <B><I>Default value is false</I></B>
+	 * </P>
 	 */
 	boolean isGenerateJPAAnnotation();
 
