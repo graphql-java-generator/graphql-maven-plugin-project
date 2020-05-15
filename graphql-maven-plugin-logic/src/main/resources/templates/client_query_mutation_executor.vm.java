@@ -37,7 +37,7 @@ import $import;
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 
-## When seperateUtilityClasses is set to true, the current class is generated in a util subpackage.
+## When seperateUtilityClasses is set to true, the current class is generated in the util subpackage.
 ## So we need to import the object.classSimpleName
 #if(${pluginConfiguration.separateUtilityClasses})
 // Utility classes are generated in the util subpackage. We need to import the ${object.classSimpleName} from the 'main' package

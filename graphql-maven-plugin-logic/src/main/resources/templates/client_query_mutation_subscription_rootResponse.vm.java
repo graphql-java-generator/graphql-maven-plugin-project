@@ -9,7 +9,11 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.Error;
 
-public class ${object.javaName}RootResponse {
+#if(${pluginConfiguration.separateUtilityClasses})
+import ${pluginConfiguration.packageName}.${object.classSimpleName};
+#end
+
+public class ${object.classSimpleName}RootResponse {
 
 	@JsonProperty("data")
 	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeName = "${object.javaName}", javaClass = ${object.classSimpleName}.class)
