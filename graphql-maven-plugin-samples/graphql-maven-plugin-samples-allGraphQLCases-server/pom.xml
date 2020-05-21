@@ -67,21 +67,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-
-		<extensions>
-			<!-- Prevents this error, with JDK 13: -->
-			<!-- NoSuchMethodError: 'java.lang.String javax.annotation.Resource.lookup()' -->
-			<extension>
-				<groupId>javax.annotation</groupId>
-				<artifactId>javax.annotation-api</artifactId>
-				<version>1.3.2</version>
-			</extension>
-			<extension>
-				<groupId>javax.annotation</groupId>
-				<artifactId>jsr250-api</artifactId>
-				<version>1.0</version>
-			</extension>
-		</extensions>
 	</build>
 
 	<dependencies>
