@@ -25,7 +25,7 @@
 
 		<menu name="Client mode">
 			<item name="Client usage" href="client.html" />
-			<item name="Subcsription" href="client_subscription.html" />
+			<item name="Subscription" href="client_subscription.html" />
 			<item name="Introspection" href="introspection.html" />
 			<item name="Runtime Classes" href="runtimeclasses.html" />
 		</menu>
