@@ -223,4 +223,9 @@ public class GraphQLRequest extends ObjectResponse {
 		throw new GraphQLRequestPreparationException("Subscriptions are not managed yet");
 	}
 
+	@Override
+	protected String getGraphQLClassesPackageName() {
+		return "com.graphql_java_generator.client.domain.starwars";
+	}
+
 }

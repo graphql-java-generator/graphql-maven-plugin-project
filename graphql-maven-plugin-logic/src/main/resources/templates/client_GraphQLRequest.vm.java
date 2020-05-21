@@ -50,12 +50,10 @@ public class GraphQLRequest extends ObjectResponse {
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
-	/** {@inheritDoc} */
 	public GraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 		super(graphQLRequest);
 	}
 	
-	/** {@inheritDoc} */
 	public GraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
 		super(graphQLRequest, requestType, queryName, inputParams);
@@ -367,6 +365,16 @@ public class GraphQLRequest extends ObjectResponse {
 		} else if (logger.isDebugEnabled()) {
 			logger.debug("Executing of mutation 'MutationType'");
 		}
+	}
+
+	/**
+	 * This method returns the package name, where the GraphQL generated classes are. It's used to load the class
+	 * definition, and get the GraphQL metadata coming from the GraphQL schema.
+	 * 
+	 * @return
+	 */
+	protected String getGraphQLClassesPackageName() {
+		return "${pluginConfiguration.packageName}";
 	}
 
 	@Override

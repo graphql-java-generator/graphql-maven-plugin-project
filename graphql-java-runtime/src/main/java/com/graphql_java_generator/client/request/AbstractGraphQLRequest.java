@@ -78,8 +78,8 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	final String queryName;
 	/**
-	 * The package name, where the generated classes are. It's used to load the class definition, and get the GraphQL
-	 * metadata coming from the GraphQL schema
+	 * The package name, where the GraphQL generated classes are. It's used to load the class definition, and get the
+	 * GraphQL metadata coming from the GraphQL schema.
 	 */
 	protected final String packageName;
 
@@ -116,7 +116,7 @@ public abstract class AbstractGraphQLRequest {
 		this.requestType = requestType;
 		this.queryName = queryName;
 		this.graphQLRequest = graphQLRequest;
-		this.packageName = this.getClass().getPackage().getName();
+		this.packageName = getGraphQLClassesPackageName();
 
 		QueryField field;
 		switch (requestType) {
@@ -188,7 +188,7 @@ public abstract class AbstractGraphQLRequest {
 	public AbstractGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
 		this.queryName = null;
 		this.graphQLRequest = graphQLRequest;
-		this.packageName = this.getClass().getPackage().getName();
+		this.packageName = getGraphQLClassesPackageName();
 		this.requestType = RequestType.query; // query is the default value, as if there is no query, mutation or
 												// subscription keyword, then it must be a query.
 
@@ -435,6 +435,14 @@ public abstract class AbstractGraphQLRequest {
 
 		return sb.toString();
 	}
+
+	/**
+	 * This method returns the package name, where the GraphQL generated classes are. It's used to load the class
+	 * definition, and get the GraphQL metadata coming from the GraphQL schema.
+	 * 
+	 * @return
+	 */
+	protected abstract String getGraphQLClassesPackageName();
 
 	/**
 	 * Retrieved the {@link QueryField} for the query (that is the query type coming from the GraphQL schema) from the

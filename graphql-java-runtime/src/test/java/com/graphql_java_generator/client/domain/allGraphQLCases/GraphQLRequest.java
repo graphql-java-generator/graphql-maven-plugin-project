@@ -326,4 +326,9 @@ public class GraphQLRequest extends ObjectResponse {
 		return new QueryField(TheSubscriptionTypeRootResponse.class, "subscription");
 	}
 
+	@Override
+	protected String getGraphQLClassesPackageName() {
+		return "com.graphql_java_generator.client.domain.allGraphQLCases";
+	}
+
 }
