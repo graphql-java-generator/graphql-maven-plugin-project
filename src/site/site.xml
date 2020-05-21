@@ -18,6 +18,7 @@
 
 		<menu name="Plugin Usage">
 			<item name="Introduction" href="README.html" />
+			<item name="Change Log" href="change_log.html" />
 			<item name="Custom Scalars" href="customscalars.html" />
 			<item name="Custom Code Templates" href="customtemplates.html" />
 		</menu>
