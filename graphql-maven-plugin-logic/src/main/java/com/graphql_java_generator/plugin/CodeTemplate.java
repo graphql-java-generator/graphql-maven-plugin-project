@@ -36,6 +36,7 @@ public enum CodeTemplate {
 	SUBSCRIPTION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_subscription_executor.vm.java"), //
 
 	// Server files (alphabetic order)
+	BATCH_LOADER_DELEGATE_IMPL(CodeTemplateScope.SERVER, "templates/server_BatchLoaderDelegateImpl.vm.java"), //
 	DATA_FETCHER(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchers.vm.java"), //
 	DATA_FETCHER_DELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), //
 	PROVIDER(CodeTemplateScope.SERVER, "templates/server_GraphQLProvider.vm.java"), //

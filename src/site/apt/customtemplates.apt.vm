@@ -100,6 +100,8 @@ Customizing code templates
 *--+--+--+
 | DATA_FETCHER | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLDataFetchers.vm.java}templates/server_GraphQLDataFetchers.vm.java}} |
 *--+--+--+
+| BATCH_LOADER_DELEGATE_IMPL | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_BatchLoaderDelegateImpl.vm.java}templates/server_BatchLoaderDelegateImpl.vm.java}} |
+*--+--+--+
 | DATA_FETCHER_DELEGATE | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLDataFetchersDelegate.vm.java}templates/server_GraphQLDataFetchersDelegate.vm.java}} |
 *--+--+--+
 | GRAPHQLUTIL | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLUtil.vm.java}templates/server_GraphQLUtil.vm.java}} |

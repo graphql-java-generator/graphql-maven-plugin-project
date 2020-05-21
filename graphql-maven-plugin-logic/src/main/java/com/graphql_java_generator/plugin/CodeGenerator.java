@@ -32,6 +32,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
 
@@ -309,6 +310,14 @@ public class CodeGenerator {
 			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
 					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 					resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
+		}
+
+		for (BatchLoader batchLoader : documentParser.batchLoaders) {
+			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
+			context.put("batchLoader", batchLoader);
+			pluginConfiguration.getLog().debug("Generating " + name);
+			ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
+					resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE_IMPL));
 		}
 
 		pluginConfiguration.getLog().debug("Generating WebSocketConfig");
