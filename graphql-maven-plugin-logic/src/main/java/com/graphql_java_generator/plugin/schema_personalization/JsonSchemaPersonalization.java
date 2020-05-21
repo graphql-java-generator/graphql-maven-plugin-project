@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 
-import javax.annotation.Resource;
 import javax.json.JsonReader;
 import javax.ws.rs.ProcessingException;
 
 import org.leadpony.justify.api.JsonSchema;
 import org.leadpony.justify.api.JsonValidationService;
 import org.leadpony.justify.api.ProblemHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,10 +41,10 @@ public class JsonSchemaPersonalization {
 
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 
-	@Resource
+	@Autowired
 	DocumentParser documentParser;
 
-	@Resource
+	@Autowired
 	PluginConfiguration pluginConfiguration;
 
 	/** The class where the content of the configuration file will be loaded */

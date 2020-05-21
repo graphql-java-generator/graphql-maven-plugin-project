@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -23,7 +25,7 @@
 				</executions>
 				<configuration>
 					<mode>client</mode>
-					<packageName>com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client</packageName>					
+					<packageName>com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client</packageName>
 					<customScalars>
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>
@@ -36,7 +38,8 @@
 					</templates>
 				</configuration>
 				<dependencies>
-					<!-- Dependency contains the custom template parametrized in plugin and a QueryExecutor bases on Spring Rest Template -->
+					<!-- Dependency contains the custom template parametrized in plugin 
+						and a QueryExecutor bases on Spring Rest Template -->
 					<dependency>
 						<groupId>com.graphql-java-generator</groupId>
 						<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>
@@ -46,9 +49,10 @@
 			</plugin>
 
 
-			
+
 			<plugin>
-				<!-- This helps by adding the generated source in the build path of your IDE -->
+				<!-- This helps by adding the generated source in the build path of your 
+					IDE -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<inherited>true</inherited>
@@ -67,7 +71,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot Forum-server in the background during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot Forum-server in the background 
+					during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
@@ -107,27 +112,11 @@
 				</configuration>
 			</plugin>
 		</plugins>
-
-		<extensions>
-			<!-- Adding these extensions prevents the error below, with JDK 9 and higher: -->
-			<!-- NoSuchMethodError: 'java.lang.String javax.annotation.Resource.lookup()' -->
-			<extension>
-				<groupId>javax.annotation</groupId>
-				<artifactId>javax.annotation-api</artifactId>
-				<version>1.3.2</version>
-			</extension>
-			<extension>
-				<groupId>javax.annotation</groupId>
-				<artifactId>jsr250-api</artifactId>
-				<version>1.0</version>
-			</extension>
-		</extensions>
-
-
 	</build>
 
 	<dependencies>
-		<!-- Dependency contains the custom template parametrized in plugin and a QueryExecutor bases on Spring Rest Template -->
+		<!-- Dependency contains the custom template parametrized in plugin and 
+			a QueryExecutor bases on Spring Rest Template -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>
@@ -136,9 +125,9 @@
 
 		<!-- Dependencies for tests -->
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-test</artifactId>
-		    <scope>test</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -150,16 +139,16 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

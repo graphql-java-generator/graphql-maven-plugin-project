@@ -3,6 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * Update the README with the XxxxExecutor classes, when the next version is released
+* Analyse and response to issue #39 (@connection for relay)
 * Correct the wrong https://github.com/graphql-java-generator/graphql-java-generator link in the generated code
 * Add integration tests to check the Executor behavior 
 * Allow builder, like proposed in the issue #30

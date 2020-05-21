@@ -15,7 +15,8 @@ Client mode:
 * a XxxxExecutor class is now generated for each query, mutation and subscription types, for better separation of __GraphQL objects and utility classes__ . They contains the methods to prepare and execute the queries/mutations/subscriptions that were in the query/mutation/subscription classes. These the query/mutation/subscription classes are still generated, but their use to prepare and execute the queries/mutations/subscriptions is now deprecated.
     * In other word: existing code CAN remain as is. It'll continue to work.
     * New code SHOULD use the XxxExecutor classes.
-* Add of the generateDeprecatedRequestResponse. Default value is true, which makes it transparent for existing code. If set to false, the XxxResponse classes are not generated (where Xxx is the GraphQL name for the query, mutation and subscription objects), nor the Xxxx classes in the util subpackage (only if separateUtilityClasses is true). If generated, these classes are marked as Deprecated, and should not be used any more. 
+* Add of the generateDeprecatedRequestResponse. Default value is true, which makes it transparent for existing code. If set to false, the XxxResponse classes are not generated (where Xxx is the GraphQL name for the query, mutation and subscription objects), nor the Xxxx classes in the util subpackage (only if separateUtilityClasses is true). If generated, these classes are marked as Deprecated, and should not be used any more.
+* Solved issue #44: no more need to add an _extension_ bloc in the _build_ pom's bloc, to make the plugin work. 
 
 # 1.7.0
 

@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +37,7 @@ public class ResourceSchemaStringProvider {
 	 * <BR/>
 	 * It adds the introspection GraphQL schema to the list of documents to read
 	 */
-	@Resource
+	@Autowired
 	PluginConfiguration pluginConfiguration;
 
 	public List<org.springframework.core.io.Resource> schemas() throws IOException {
