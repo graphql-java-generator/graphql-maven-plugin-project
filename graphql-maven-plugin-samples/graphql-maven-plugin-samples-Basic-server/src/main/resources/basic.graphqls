@@ -1,6 +1,0 @@
-type Query {
-    hello(name : String) : String
-    
-    # Error will always thrown an error. This very interesting query is used to check that errors are properly managed, in integration tests.  
-    error : String!
-}
