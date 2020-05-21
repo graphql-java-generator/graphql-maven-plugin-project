@@ -42,6 +42,8 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 
+import com.graphql_java_generator.server.util.BatchLoaderDelegate;
+
 #foreach($import in $imports)
 import $import;
 #end

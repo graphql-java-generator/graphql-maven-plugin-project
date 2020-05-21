@@ -294,8 +294,8 @@ class CodeGeneratorTest {
 	@DirtiesContext
 	protected void testResolveTemplateDefault() {
 		pluginConfiguration.templates.clear();
-		assertEquals(CodeTemplate.BATCH_LOADER_DELEGATE.getDefaultValue(),
-				this.codeGenerator.resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE));
+		assertEquals(CodeTemplate.PROVIDER.getDefaultValue(),
+				this.codeGenerator.resolveTemplate(CodeTemplate.PROVIDER));
 		;
 	}
 
@@ -306,8 +306,8 @@ class CodeGeneratorTest {
 	@DirtiesContext
 	protected void testResolveTemplateCustom() {
 		pluginConfiguration.templates.clear();
-		pluginConfiguration.templates.put(CodeTemplate.BATCH_LOADER_DELEGATE.name(), "/my/custom/template");
-		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE));
+		pluginConfiguration.templates.put(CodeTemplate.PROVIDER.name(), "/my/custom/template");
+		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.PROVIDER));
 		;
 	}
 
