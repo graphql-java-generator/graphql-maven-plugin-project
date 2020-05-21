@@ -17,6 +17,7 @@ Client mode:
     * New code SHOULD use the XxxExecutor classes.
 * Add of the generateDeprecatedRequestResponse. Default value is true, which makes it transparent for existing code. If set to false, the XxxResponse classes are not generated (where Xxx is the GraphQL name for the query, mutation and subscription objects), nor the Xxxx classes in the util subpackage (only if separateUtilityClasses is true). If generated, these classes are marked as Deprecated, and should not be used any more.
 * Solved issue #44: no more need to add an _extension_ bloc in the _build_ pom's bloc, to make the plugin work. 
+* Named Fragments would not work if seperateUtilityClass was false
 
 # 1.7.0
 
