@@ -36,7 +36,8 @@
 				<configuration>
 					<mode>server</mode>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
-					<packageName>com.graphql_java_generator.samples.forum.server</packageName>
+					<packageName>org.forum.server.graphql</packageName>
+					<scanBasePackages>org.forum.server.jpa ,  org.forum.server.specific_code </scanBasePackages>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
 					<customScalars>
 						<customScalar>

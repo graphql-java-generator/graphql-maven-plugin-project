@@ -141,6 +141,24 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	@Parameter(defaultValue = "${project}", readonly = true, required = true)
 	MavenProject project;
 
+	/**
+	 * <P>
+	 * (only for server mode) A comma separated list of package names, <B>without</B> double quotes, that will also be
+	 * parsed by Spring, to discover Spring beans, Spring repositories and JPA entities when the server starts. You
+	 * should use this parameter only for packages that are not subpackage of the package defined in the _packageName_
+	 * parameter and not subpackage of <I>com.graphql_java_generator</I>
+	 * </P>
+	 * <P>
+	 * This allows for instance, to set <I>packageName</I> to <I>your.app.package.graphql</I>, and to define your Spring
+	 * beans, like the
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/server.html">DataFetcherDelegates</A> or
+	 * your Spring data repositories in any other folder, by setting for instance scanBasePackages to
+	 * <I>your.app.package.impl, your.app.package.graphql</I>, or just <I>your.app.package</I>
+	 * </P>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.scanBasePackages", defaultValue = PluginConfiguration.DEFAULT_SCAN_BASE_PACKAGES)
+	String scanBasePackages;
+
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
 	String schemaFileFolder;

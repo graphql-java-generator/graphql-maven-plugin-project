@@ -111,6 +111,11 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 	}
 
 	@Override
+	public String getScanBasePackages() {
+		return mojo.scanBasePackages;
+	}
+
+	@Override
 	public boolean isSeparateUtilityClasses() {
 		return this.mojo.separateUtilityClasses;
 	}

@@ -34,6 +34,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	public PluginMode mode = null;
 	public String packageName = null;
 	public Packaging packaging = null;
+	public String scanBasePackages = "null";
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;

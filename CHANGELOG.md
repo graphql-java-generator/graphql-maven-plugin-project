@@ -19,6 +19,11 @@ Client mode:
 * Solved issue #44: no more need to add an _extension_ bloc in the _build_ pom's bloc, to make the plugin work. 
 * Named Fragments would not work if seperateUtilityClass was false
 
+Server mode:
+* Added the _scanBasePackages_ plugin parameter. It allows to create our Spring Beans, including the DataFetchersDelegateXxx implementation in another place than a subpackage of the package define in the _packageName_ plugin parameter
+
+# TODO  A IMPLEMENTER !
+
 # 1.7.0
 
 Both modes (client and server):

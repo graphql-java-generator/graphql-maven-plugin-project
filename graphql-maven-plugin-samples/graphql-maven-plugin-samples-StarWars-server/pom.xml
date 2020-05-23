@@ -36,7 +36,7 @@
 				<configuration>
 					<mode>server</mode>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
-					<packageName>com.graphql_java_generator.samples.server</packageName>
+					<packageName>org.starwars.server</packageName>
 				</configuration>
 			</plugin>
 			<plugin>
