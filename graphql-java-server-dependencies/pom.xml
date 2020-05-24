@@ -21,6 +21,12 @@
 			<!-- The needed runtime to link graphql-java to the spring boot stuff -->
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-autoconfigure</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Other dependencies -->
