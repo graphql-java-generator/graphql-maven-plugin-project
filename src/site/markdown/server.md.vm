@@ -17,7 +17,6 @@ Please note that the generated code uses dataloader to gratly improve the server
 
 Once all this is generated, you'll have to implement the DataFetchersDelegate interfaces. The DataFetchersDelegate implementation is the only work that remains on your side. They are the link between the GraphQL schema and your data storage. See below for more details.    
 
-
 ## A war or a Spring Boot application
 
 Depending on your use case, you can set the maven packaging to jar or war, in your pom. This changes the generated code. But your specific code is exactly the same. That is: __you can change the packaging at any time__, and it will still produce a ready-to-go product without any other modification from you.  
