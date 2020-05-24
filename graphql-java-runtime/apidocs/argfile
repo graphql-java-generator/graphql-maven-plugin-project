@@ -50,5 +50,6 @@
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/exception/GraphQLResponseParseException.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/GraphQLField.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/GraphqlUtils.java'
+'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/server/util/BatchLoaderDelegate.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/server/util/JsonKit.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/server/util/QueryParameters.java'
