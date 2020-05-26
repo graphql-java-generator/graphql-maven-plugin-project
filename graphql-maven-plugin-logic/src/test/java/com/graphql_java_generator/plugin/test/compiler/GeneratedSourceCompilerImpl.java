@@ -126,6 +126,11 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 	boolean compileJavaFiles(List<File> javaFiles) {
 		// Let's manage the classpath
 		List<String> optionList = new ArrayList<String>();
+
+		// We check compatibility with Java 8
+		optionList.add("-source");
+		optionList.add("1.8");
+
 		if (classpath != null) {
 			optionList.add("-classpath");
 			// Let's add the classpath
