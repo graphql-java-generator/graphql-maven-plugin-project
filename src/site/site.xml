@@ -32,7 +32,7 @@
 
 		<menu name="Server mode">
 			<item name="Server usage" href="server.html" />
-			<item name="Subcsription" href="server_subscription.html" />
+			<item name="Subscription" href="server_subscription.html" />
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 
