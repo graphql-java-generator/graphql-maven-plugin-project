@@ -1,5 +1,7 @@
 package com.graphql_java_generator.client;
 
+import java.io.IOException;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -9,7 +11,6 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
@@ -116,7 +117,7 @@ public class SubscriptionClientWebSocket<R, T> {
 			T t = (T) graphqlUtils.invokeGetter(r, subscriptionName);
 			subscriptionCallback.onMessage(t);
 
-		} catch (JsonProcessingException e) {
+		} catch (IOException e) {
 			String errorMsg = "An error (" + e.getMessage()
 					+ ") occured while parsing a server message for subscription '" + subscriptionName + "'";
 			if (logger.isTraceEnabled()) {
