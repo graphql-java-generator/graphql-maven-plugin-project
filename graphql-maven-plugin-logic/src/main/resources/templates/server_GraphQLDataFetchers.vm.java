@@ -84,7 +84,7 @@ public class GraphQLDataFetchers {
 			if (dataLoader != null) 
 				return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			else
-				return new CompletableFuture<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end>().completeAsync(
+				return CompletableFuture.supplyAsync(
 						() -> ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end));
 #elseif (${dataFetcher.field.list})
 			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end List<${dataFetcher.field.type.classSimpleName}>#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);

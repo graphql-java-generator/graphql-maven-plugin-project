@@ -5,6 +5,10 @@ New developments should use these parameters, to be compliant with future 2.0 ve
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
+# 1.8.1
+
+Both mode (client and server):
+* The generated code was not compatible with Java 8 (only with Java 9 and above)
 
 # 1.8
 

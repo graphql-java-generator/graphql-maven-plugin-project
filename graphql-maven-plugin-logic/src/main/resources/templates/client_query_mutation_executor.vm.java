@@ -74,7 +74,7 @@ public class ${object.classSimpleName}Executor {
 	 * This default constructor is there for compatibility reasons. It will be removed in 2.x releases. 
 	 * @deprecated This constructor should be used by Jackson deserializer only
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated
 	public ${object.classSimpleName}Executor() {
 		// No action
 	}

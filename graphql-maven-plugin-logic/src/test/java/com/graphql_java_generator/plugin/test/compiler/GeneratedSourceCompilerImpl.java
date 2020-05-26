@@ -130,6 +130,8 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 		// We check compatibility with Java 8
 		optionList.add("-source");
 		optionList.add("1.8");
+		optionList.add("-target");
+		optionList.add("1.8");
 
 		if (classpath != null) {
 			optionList.add("-classpath");

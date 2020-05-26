@@ -79,7 +79,7 @@ class SubscriptionIT {
 		SubscriptionClient client = subscriptionType.newCharacter(subscriptionRequest, callback);
 
 		logger.debug("Creating the post, for which we should receice the notification");
-		CompletableFuture<Character> createdPostASync = new CompletableFuture<Character>().completeAsync(() -> {
+		CompletableFuture<Character> createdPostASync = CompletableFuture.supplyAsync(() -> {
 			try {
 				// We need to wait a little, to be sure the subscription is done, before creating the post.
 				// But we wait as little as possible
