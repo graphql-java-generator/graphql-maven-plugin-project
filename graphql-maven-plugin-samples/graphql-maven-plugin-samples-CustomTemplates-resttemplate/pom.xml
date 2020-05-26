@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-samples</artifactId>
-		<version>1.8.1</version>
+		<version>SNAPSHOT</version>
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>
