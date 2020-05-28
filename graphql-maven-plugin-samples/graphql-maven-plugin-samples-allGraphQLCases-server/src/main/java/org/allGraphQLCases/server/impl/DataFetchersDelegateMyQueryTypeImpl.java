@@ -20,9 +20,10 @@ import org.allGraphQLCases.server.HumanInput;
 import org.allGraphQLCases.server.MyQueryType;
 import org.allGraphQLCases.server._break;
 import org.allGraphQLCases.server._extends;
-import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
+
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 
 import graphql.language.Argument;
 import graphql.language.Directive;
@@ -41,7 +42,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Resource
 	DataGenerator generator;
 
-	Mapper mapper = new DozerBeanMapper();
+	Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
 	@Override
 	public List<Character> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
