@@ -27,7 +27,21 @@ The generator is currently available both as a Maven plugin and as a Gradle plug
 * The __Maven plugin__ is available in the project ([graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project)) 
 * A __Gradle plugin__ is available in the project [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
 
-## Full documentation
+## Documentation
+
+### This README
+
+This README gives you a quick overview of what this plugin offers
+
+### The tutorials
+
+Two tutorials are available:
+* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Maven-Sample-client subproject](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Sample/tree/master/GraphQL-Forum-Maven-Sample-client).
+* The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Maven-Sample-server subproject](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Sample/tree/master/GraphQL-Forum-Maven-Sample-server).
+
+These tutorials are stored in the [GraphQL-Forum-Maven-Sample](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Sample)
+
+### The full project documentation
 
 The [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
 
