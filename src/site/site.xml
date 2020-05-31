@@ -28,12 +28,14 @@
 			<item name="Subscription" href="client_subscription.html" />
 			<item name="Introspection" href="introspection.html" />
 			<item name="Runtime Classes" href="runtimeclasses.html" />
+			<item name="Client Tutorial" href="client_tutorial.html" />
 		</menu>
 
 		<menu name="Server mode">
 			<item name="Server usage" href="server.html" />
 			<item name="Subscription" href="server_subscription.html" />
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
+			<item name="Server Tutorial" href="server_tutorial.html" />
 		</menu>
 
 		<menu name="Project internal">
