@@ -35,15 +35,14 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	PostRepository postRepository;
 
 	/**
-	 * This {@link Subject} will be notified for each Human or Droid creation. This is the basis for the
-	 * <I>subscribeToNewPost</I> subscription
+	 * This {@link Subject} will be notified for each Post creation. This is the basis for the <I>subscribeToNewPost</I>
+	 * subscription
 	 */
 	@Resource
 	PostPublisher postPublisher;
 
 	@Override
-	public Board createBoard(
-			DataFetchingEnvironment dataFetchingEnvironment, String name, Boolean publiclyAvailable) {
+	public Board createBoard(DataFetchingEnvironment dataFetchingEnvironment, String name, Boolean publiclyAvailable) {
 		Board board = new Board();
 		board.setName(name);
 		if (publiclyAvailable != null) {
