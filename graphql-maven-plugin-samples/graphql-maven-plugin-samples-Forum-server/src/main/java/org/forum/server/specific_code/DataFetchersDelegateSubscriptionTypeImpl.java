@@ -7,9 +7,6 @@ import javax.annotation.Resource;
 
 import org.forum.server.graphql.DataFetchersDelegateSubscriptionType;
 import org.forum.server.graphql.Post;
-import org.forum.server.jpa.BoardRepository;
-import org.forum.server.jpa.PostRepository;
-import org.forum.server.jpa.TopicRepository;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +23,6 @@ public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDel
 
 	/** The logger for this instance */
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	@Resource
-	BoardRepository boardRepository;
-	@Resource
-	TopicRepository topicRepository;
-	@Resource
-	PostRepository postRepository;
 
 	/**
 	 * This {@link Subject} will be notified for each Human or Droid creation. This is the basis for the
