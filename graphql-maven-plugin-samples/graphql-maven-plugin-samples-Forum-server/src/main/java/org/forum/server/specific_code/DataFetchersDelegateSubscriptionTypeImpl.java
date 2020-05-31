@@ -25,8 +25,8 @@ public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDel
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * This {@link Subject} will be notified for each Human or Droid creation. This is the basis for the
-	 * <I>subscribeToNewPost</I> subscription
+	 * This {@link Subject} will be notified for each Post creation. This is the basis for the <I>subscribeToNewPost</I>
+	 * subscription
 	 */
 	@Resource
 	PostPublisher postPublisher;
