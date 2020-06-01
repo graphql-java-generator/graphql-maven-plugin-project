@@ -1,6 +1,6 @@
 # Note for the future 2.x versions
 
-New developments should use these parameters, to be compliant with future 2.0 version:
+New developments should use these parameters, to be compliant with default values of the 2.0 version:
 * copyRuntimeSources: false
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
