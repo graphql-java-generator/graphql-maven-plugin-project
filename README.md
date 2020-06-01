@@ -36,11 +36,11 @@ This README gives you a quick overview of what this plugin offers
 ### The tutorials
 
 Two tutorials are available for the Maven plugin:
-* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Maven-Sample-client subproject](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Sample/tree/master/GraphQL-Forum-Maven-Sample-client).
-* The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Maven-Sample-server subproject](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Sample/tree/master/GraphQL-Forum-Maven-Sample-server).
+* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Maven-Tutorial-client project](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-client).
+* The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Maven-Tutorial-server project](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-server).
 
 The same two tutorials exist for the Gradle plugin:
-* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Gradle-Tutorial-client](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client).
+* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Gradle-Tutorial-client git repository](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client).
 * The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Gradle-Tutorial-server](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
 
 ### The full project documentation
