@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Add the Tutorial for Subscription, on the Client side
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Analyse and response to issue #39 (@connection for relay)
 * Check generation of DataLoaderDelegateXxxImpl: are they still useful ?
