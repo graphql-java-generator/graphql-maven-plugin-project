@@ -4,7 +4,9 @@ Here are the next tasks listed, as a TODO list:
 ## TODO list for the current version
 * Add the Tutorial for Subscription, on the Client side
 * Update the README with the XxxxExecutor classes, when the next version is released
-* Analyse and response to issue #39 (@connection for relay)
+* Analyze and response to issue #39 (@connection for relay)
+* Add the _connection_ stuff, as [specified here](https://relay.dev/graphql/connections.htm)
+* Add the _node_ query, as [specified here](https://graphql.org/learn/global-object-identification/)
 * Check generation of DataLoaderDelegateXxxImpl: are they still useful ?
 * Correct the wrong https://github.com/graphql-java-generator/graphql-java-generator link in the generated code
 * Add integration tests to check the Executor behavior 
