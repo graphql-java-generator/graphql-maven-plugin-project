@@ -2,15 +2,12 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+
+* Switch to graphql-java 15.0 (waiting for [issue 1844](https://github.com/graphql-java/graphql-java/issues/1844) to be solved)
 * Add the Tutorial for Subscription, on the Client side
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Analyze and response to issue #39 (@connection for relay)
-* Add the _connection_ stuff, as [specified here](https://relay.dev/graphql/connections.htm)
-* Add the _node_ query, as [specified here](https://graphql.org/learn/global-object-identification/)
-* Check generation of DataLoaderDelegateXxxImpl: are they still useful ?
-* Correct the wrong https://github.com/graphql-java-generator/graphql-java-generator link in the generated code
-* Add integration tests to check the Executor behavior 
-* Allow builder, like proposed in the issue #30
+* Add the _connection_ stuff, as [specified here](https://relay.dev/graphql/connections.htmh 
 * Add Tutorial to describe the best way to use the plugin
 * Do a sample project based on the github GraphQL schema
 * Specifying an unknown template in the pom should raise an error
