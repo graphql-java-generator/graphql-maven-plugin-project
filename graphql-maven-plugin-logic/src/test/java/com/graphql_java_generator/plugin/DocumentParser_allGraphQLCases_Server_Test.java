@@ -83,13 +83,13 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals(4, documentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, documentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(3, documentParser.enumTypes.size(), "Nb enums");
-		assertEquals(1, documentParser.queryTypes.size(), "Nb queries");
-		assertEquals(1, documentParser.mutationTypes.size(), "Nb mutations");
-		assertEquals(1, documentParser.subscriptionTypes.size(), "Nb subscriptions");
+		assertNotNull(documentParser.queryType, "One query");
+		assertNotNull(documentParser.mutationType, "One mutation");
+		assertNotNull(documentParser.subscriptionType, "One subscription");
 
-		assertEquals("query", documentParser.queryTypes.get(0).getRequestType());
-		assertEquals("mutation", documentParser.mutationTypes.get(0).getRequestType());
-		assertEquals("subscription", documentParser.subscriptionTypes.get(0).getRequestType());
+		assertEquals("query", documentParser.queryType.getRequestType());
+		assertEquals("mutation", documentParser.mutationType.getRequestType());
+		assertEquals("subscription", documentParser.subscriptionType.getRequestType());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks if the boolean completableFuture is set correctly:
@@ -664,10 +664,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// We need to parse the whole document, to get the types map filled.
 		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.queryTypes = new ArrayList<>();
+		documentParser.queryType = null;
 
 		//
 		// We need this ObjectValue for one of the next tests:
+		@SuppressWarnings("rawtypes")
 		List<Value> values = new ArrayList<>();
 		values.add(new graphql.language.EnumValue("JEDI"));
 		values.add(new graphql.language.EnumValue("NEWHOPE"));
@@ -752,7 +753,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 				.forEach(node -> documentParser.directives
 						.add(documentParser.readDirectiveDefinition((DirectiveDefinition) node)));
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.queryTypes = new ArrayList<>();
+		documentParser.queryType = null;
 
 		// Go, go, go
 		EnumType type = documentParser.readEnumType(def);
@@ -783,7 +784,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// We need to parse the whole document, to get the types map filled.
 		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.mutationTypes = new ArrayList<>();
+		documentParser.mutationType = null;
 
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);
@@ -827,7 +828,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// We need to parse the whole document, to get the types map filled.
 		documentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		documentParser.subscriptionTypes = new ArrayList<>();
+		documentParser.subscriptionType = null;
 
 		// Go, go, go
 		ObjectType type = documentParser.readObjectType(def);

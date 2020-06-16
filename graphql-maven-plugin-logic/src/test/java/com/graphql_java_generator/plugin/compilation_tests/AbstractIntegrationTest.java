@@ -46,7 +46,7 @@ abstract class AbstractIntegrationTest {
 	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 	void testGenerateCode() throws IOException {
 		// Preparation
-		int i = documentParser.parseDocuments();
+		documentParser.parseDocuments();
 
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetSourceFolder());
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetClassFolder());

@@ -54,8 +54,8 @@ class DocumentParser_basic_Test {
 		documentParser.parseOneDocument(doc);
 
 		// Verification
-		int nbClasses = documentParser.queryTypes.size() + documentParser.subscriptionTypes.size()
-				+ documentParser.mutationTypes.size() + documentParser.objectTypes.size()
+		int nbClasses = (documentParser.queryType == null ? 0 : 1) + (documentParser.subscriptionType == null ? 0 : 1)
+				+ (documentParser.mutationType == null ? 0 : 1) + documentParser.objectTypes.size()
 				+ documentParser.enumTypes.size() + documentParser.interfaceTypes.size();
 		assertEquals(2, nbClasses);
 	}

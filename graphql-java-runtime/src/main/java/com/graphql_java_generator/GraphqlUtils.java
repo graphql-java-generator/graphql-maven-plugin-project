@@ -608,21 +608,36 @@ public class GraphqlUtils {
 	 *            The T class
 	 * @param parallelStreams
 	 *            true if the returned stream should be a parallel one
+	 * @param t1
+	 *            An optional item, that'll be added to the returned stream (if not null)
+	 * @param t2
+	 *            An optional item, that'll be added to the returned stream (if not null)
+	 * @param t3
+	 *            An optional item, that'll be added to the returned stream (if not null)
 	 * @param lists
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> Stream<T> concatStreams(Class<T> clazz, boolean parallelStreams, List<?>... lists) {
-		if (lists.length == 0) {
-			// Let's return an empty stream
-			return new ArrayList<T>().stream();
-		} else {
-			Stream<T> ret = (Stream<T>) lists[0].stream();
-			for (int i = 1; i < lists.length; i += 1) {
-				ret = (Stream<T>) Stream.concat(ret, lists[i].stream());
-			}
-			return parallelStreams ? ret.parallel() : ret;
+	@SafeVarargs
+	final public <T> Stream<T> concatStreams(Class<T> clazz, boolean parallelStreams, T t1, T t2, T t3,
+			List<? extends T>... lists) {
+		Stream.Builder<T> builder = Stream.builder();
+
+		// Let's first add all non list objects
+		if (t1 != null) {
+			builder.accept(t1);
 		}
+		if (t2 != null) {
+			builder.accept(t2);
+		}
+		if (t3 != null) {
+			builder.accept(t3);
+		}
+
+		Stream<T> ret = builder.build();
+		for (List<? extends T> list : lists) {
+			ret = Stream.concat(ret, list.stream());
+		}
+		return parallelStreams ? ret.parallel() : ret;
 	}
 
 	/**

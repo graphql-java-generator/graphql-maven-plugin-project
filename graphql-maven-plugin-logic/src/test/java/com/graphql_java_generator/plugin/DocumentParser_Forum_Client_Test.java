@@ -134,7 +134,7 @@ class DocumentParser_Forum_Client_Test {
 	@DirtiesContext
 	void test_addAnnotations_Mutation2_client() {
 		// Preparation
-		Type mutation = documentParser.mutationTypes.get(0);
+		Type mutation = documentParser.mutationType;
 
 		// Verification
 		assertEquals("" //
@@ -163,8 +163,8 @@ class DocumentParser_Forum_Client_Test {
 	@Test
 	@DirtiesContext
 	void test_checkIntrospectionQueries() {
-		assertEquals(1, documentParser.queryTypes.size());
-		ObjectType query = documentParser.queryTypes.get(0);
+		assertNotNull(documentParser.queryType);
+		ObjectType query = documentParser.queryType;
 
 		// Verification
 		assertEquals("QueryType", query.getName());
@@ -225,11 +225,6 @@ class DocumentParser_Forum_Client_Test {
 				"type name is " + typeName + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(classname, fieldType.getClassFullName(),
 				"Class for field type is " + classname + " (for " + fieldDescForJUnitMessage + ")");
-	}
-
-	private void checkNbInputParameter(ObjectType type, int j, int nbInputParameters) {
-		assertEquals(nbInputParameters, type.getFields().get(j).getInputParameters().size(),
-				"field " + type.getFields().get(j).getName() + " should have " + nbInputParameters + " parameter");
 	}
 
 	private void checkInputParameter(ObjectType type, int j, int numParam, String name, boolean list, boolean mandatory,

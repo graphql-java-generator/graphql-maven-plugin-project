@@ -2,8 +2,6 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,24 +45,6 @@ class DocumentParser_helloworld_Test {
 
 	@Test
 	@DirtiesContext
-	void test_parseDocuments() {
-		// Preparation
-		Document basic = parser.parseDocument(graphqlTestHelper.readSchema(ctx.getResource("/helloworld.graphqls")));
-		Document helloWorld = parser
-				.parseDocument(graphqlTestHelper.readSchema(ctx.getResource("/helloworld.graphqls")));
-		documentParser.documents = new ArrayList<Document>();
-		documentParser.documents.add(basic);
-		documentParser.documents.add(helloWorld);
-
-		// Go, go, go
-		int i = documentParser.parseDocuments();
-
-		// Verification
-		assertEquals(4, i, "3 classes expected (basic + helloworld)");
-	}
-
-	@Test
-	@DirtiesContext
 	void test_parseOneDocument_helloworld() {
 		// Preparation
 		Resource resource = ctx.getResource("/helloworld.graphqls");
@@ -74,8 +54,8 @@ class DocumentParser_helloworld_Test {
 		documentParser.parseOneDocument(doc);
 
 		// Verification
-		int nbClasses = documentParser.queryTypes.size() + documentParser.subscriptionTypes.size()
-				+ documentParser.mutationTypes.size() + documentParser.objectTypes.size()
+		int nbClasses = (documentParser.queryType == null ? 0 : 1) + (documentParser.subscriptionType == null ? 0 : 1)
+				+ (documentParser.mutationType == null ? 0 : 1) + documentParser.objectTypes.size()
 				+ documentParser.enumTypes.size() + documentParser.interfaceTypes.size();
 		assertEquals(2, nbClasses, "Two classes ares generated (the query and the object for the query)");
 	}

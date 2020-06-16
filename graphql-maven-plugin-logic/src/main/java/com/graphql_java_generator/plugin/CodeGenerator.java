@@ -112,49 +112,49 @@ public class CodeGenerator {
 			if (pluginConfiguration.isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
 				pluginConfiguration.getLog().debug("Generating query");
-				i += generateTargetFiles(documentParser.getQueryTypes(), "query",
+				i += generateTargetFile(documentParser.getQueryType(), "query",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
 				pluginConfiguration.getLog().debug("Generating mutation");
-				i += generateTargetFiles(documentParser.getMutationTypes(), "mutation",
+				i += generateTargetFile(documentParser.getMutationType(), "mutation",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
 				pluginConfiguration.getLog().debug("Generating subscription");
-				i += generateTargetFiles(documentParser.getSubscriptionTypes(), "subscription",
+				i += generateTargetFile(documentParser.getSubscriptionType(), "subscription",
 						resolveTemplate(CodeTemplate.SUBSCRIPTION), true);
 			}
 
 			// Generation of the query/mutation/subscription executor classes
 			pluginConfiguration.getLog().debug("Generating query executors");
-			i += generateTargetFiles(documentParser.getQueryTypes(), "executor",
+			i += generateTargetFile(documentParser.getQueryType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
 			pluginConfiguration.getLog().debug("Generating mutation executors");
-			i += generateTargetFiles(documentParser.getMutationTypes(), "executor",
+			i += generateTargetFile(documentParser.getMutationType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
 			pluginConfiguration.getLog().debug("Generating subscription executors");
-			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "executor",
+			i += generateTargetFile(documentParser.getSubscriptionType(), "executor",
 					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
 			if (pluginConfiguration.isGenerateDeprecatedRequestResponse()) {
 				pluginConfiguration.getLog().debug("Generating query response");
-				i += generateTargetFiles(documentParser.getQueryTypes(), "response",
+				i += generateTargetFile(documentParser.getQueryType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 				pluginConfiguration.getLog().debug("Generating mutation response");
-				i += generateTargetFiles(documentParser.getMutationTypes(), "response",
+				i += generateTargetFile(documentParser.getMutationType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 				pluginConfiguration.getLog().debug("Generating subscription response");
-				i += generateTargetFiles(documentParser.getSubscriptionTypes(), "response",
+				i += generateTargetFile(documentParser.getSubscriptionType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 			}
 
 			// Generation of the query/mutation/subscription root responses classes
 			pluginConfiguration.getLog().debug("Generating query root response");
-			i += generateTargetFiles(documentParser.getQueryTypes(), "root response",
+			i += generateTargetFile(documentParser.getQueryType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 			pluginConfiguration.getLog().debug("Generating mutation root response");
-			i += generateTargetFiles(documentParser.getMutationTypes(), "root response",
+			i += generateTargetFile(documentParser.getMutationType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 			pluginConfiguration.getLog().debug("Generating subscription root response");
-			i += generateTargetFiles(documentParser.getSubscriptionTypes(), "root response",
+			i += generateTargetFile(documentParser.getSubscriptionType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 
 			// Generation of the GraphQLRequest class
@@ -228,8 +228,8 @@ public class CodeGenerator {
 	/**
 	 * Utility method to centralize the common actions around the file generation.
 	 * 
-	 * @param object
-	 *            The object to send to the template
+	 * @param objects
+	 *            The list of objects to send to the template
 	 * @param type
 	 *            The kind of graphql object (object, query, mutation...), just for proper logging
 	 * @param templateFilename
@@ -241,8 +241,32 @@ public class CodeGenerator {
 	 */
 	int generateTargetFiles(List<? extends Type> objects, String type, String templateFilename, boolean utilityClass)
 			throws RuntimeException {
-		int i = 0;
+		int ret = 0;
 		for (Type object : objects) {
+			ret += generateTargetFile(object, type, templateFilename, utilityClass);
+		}
+		return ret;
+	}
+
+	/**
+	 * Utility method to centralize the common actions around the file generation.
+	 * 
+	 * @param object
+	 *            The object to send to the template. It can be null, in which case the method doesn't do anything, and
+	 *            just return 0.
+	 * @param type
+	 *            The kind of graphql object (object, query, mutation...), just for proper logging
+	 * @param templateFilename
+	 *            The absolute path for the template (or relative to the current path)
+	 * @param utilityClass
+	 *            true if this class is a utility class, false if it is not. A utility class it a class the is not
+	 *            directly the transposition of an item in the GraphQL schema (like object, interface, union, query...)
+	 * @return 1 if one file was generated, or 0 if object is null.
+	 */
+	int generateTargetFile(Type object, String type, String templateFilename, boolean utilityClass) {
+		if (object == null) {
+			return 0;
+		} else {
 			String targetFileName = (String) execWithOneStringParam("getTargetFileName", object, type);
 			File targetFile = getJavaFile(targetFileName, utilityClass);
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
@@ -252,9 +276,9 @@ public class CodeGenerator {
 			context.put("targetFileName", targetFileName);
 			context.put("type", type);
 
-			i += generateOneFile(targetFile, msg, context, templateFilename);
-		} // for
-		return i;
+			generateOneFile(targetFile, msg, context, templateFilename);
+			return 1;
+		}
 	}
 
 	/**
@@ -264,10 +288,9 @@ public class CodeGenerator {
 	int generateGraphQLRequest() {
 		VelocityContext context = getVelocityContext();
 
-		context.put("query", (documentParser.queryTypes.size() > 0) ? documentParser.queryTypes.get(0) : null);
-		context.put("mutation", (documentParser.mutationTypes.size() > 0) ? documentParser.mutationTypes.get(0) : null);
-		context.put("subscription",
-				(documentParser.subscriptionTypes.size() > 0) ? documentParser.subscriptionTypes.get(0) : null);
+		context.put("query", documentParser.getQueryType());
+		context.put("mutation", documentParser.getMutationType());
+		context.put("subscription", documentParser.getSubscriptionType());
 
 		return generateOneFile(getJavaFile("GraphQLRequest", true), "generating GraphQLRequest", context,
 				resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));

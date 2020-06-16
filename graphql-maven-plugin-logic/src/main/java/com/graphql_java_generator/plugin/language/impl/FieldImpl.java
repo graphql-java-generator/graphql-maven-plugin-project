@@ -105,9 +105,6 @@ public class FieldImpl implements Field {
 
 	public void setGraphQLTypeName(String graphQLTypeName) {
 		this.graphQLTypeName = graphQLTypeName;
-		if (graphQLTypeName.equals("UUID")) {
-			boolean breakpoint = true;
-		}
 		if (graphQLTypeName.equals("ID")) {
 			setId(true);
 		}

@@ -146,26 +146,23 @@ public class DocumentParser {
 	@Getter
 	List<Directive> directives = new ArrayList<>();
 
-	/**
-	 * All the Query Types for this Document. There may be several ones, if more than one GraphQLs files have been
-	 * merged
-	 */
+	/** The Query root operation for this Document */
 	@Getter
-	List<ObjectType> queryTypes = new ArrayList<>();
+	ObjectType queryType = null;
 
 	/**
-	 * All the Subscription Types for this Document. There may be several ones, if more than one GraphQLs files have
-	 * been merged
+	 * The Subscription root operation for this Document, if defined (that is: if this schema implements one or more
+	 * subscriptions)
 	 */
 	@Getter
-	List<ObjectType> subscriptionTypes = new ArrayList<>();
+	ObjectType subscriptionType = null;
 
 	/**
-	 * All the Mutation Types for this Document. There may be several ones, if more than one GraphQLs files have been
-	 * merged
+	 * The Mutation root operation for this Document, if defined (that is: if this schema implements one or more
+	 * mutations)
 	 */
 	@Getter
-	List<ObjectType> mutationTypes = new ArrayList<>();
+	ObjectType mutationType = null;
 
 	/**
 	 * All the {@link ObjectType} which have been read during the reading of the documents
@@ -340,8 +337,8 @@ public class DocumentParser {
 		jsonSchemaPersonalization.applySchemaPersonalization();
 
 		// We're done
-		int nbClasses = queryTypes.size() + subscriptionTypes.size() + mutationTypes.size() + objectTypes.size()
-				+ enumTypes.size() + interfaceTypes.size();
+		int nbClasses = (queryType == null ? 0 : 1) + (subscriptionType == null ? 0 : 1)
+				+ (mutationType == null ? 0 : 1) + objectTypes.size() + enumTypes.size() + interfaceTypes.size();
 		pluginConfiguration.getLog().debug(documents.size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
@@ -405,30 +402,45 @@ public class DocumentParser {
 					o.setRequestType("query");
 					objectTypes.add(o);
 					// Then we read the query, that'll go in the util subpackage: its imports are different
-					ObjectType query = readObjectType((ObjectTypeDefinition) node);
-					query.setPackageName(getUtilPackageName());
-					query.setRequestType("query");
-					queryTypes.add(query);
+					if (queryType != null) {
+						throw new RuntimeException(
+								"Error while reading the query '" + ((ObjectTypeDefinition) node).getName()
+										+ "'. A Query root operation has already been read, with name'"
+										+ queryType.getName() + "'");
+					}
+					queryType = readObjectType((ObjectTypeDefinition) node);
+					queryType.setPackageName(getUtilPackageName());
+					queryType.setRequestType("query");
 				} else if (mutationObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
 					// We first read the object type, that'll go to the main package
 					ObjectType o = readObjectType((ObjectTypeDefinition) node);
 					o.setRequestType("mutation");
 					objectTypes.add(o);
 					// Then we read the mutation, that'll go in the util subpackage: its imports are different
-					ObjectType mutation = readObjectType((ObjectTypeDefinition) node);
-					mutation.setPackageName(getUtilPackageName());
-					mutation.setRequestType("mutation");
-					mutationTypes.add(mutation);
+					if (mutationType != null) {
+						throw new RuntimeException(
+								"Error while reading the mutation '" + ((ObjectTypeDefinition) node).getName()
+										+ "'. A Mutation root operation has already been read, with name'"
+										+ mutationType.getName() + "'");
+					}
+					mutationType = readObjectType((ObjectTypeDefinition) node);
+					mutationType.setPackageName(getUtilPackageName());
+					mutationType.setRequestType("mutation");
 				} else if (subscriptionObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
 					// We first read the object type, that'll go to the main package
 					ObjectType o = readObjectType((ObjectTypeDefinition) node);
 					o.setRequestType("subscription");
 					objectTypes.add(o);
 					// Then we read the subscription, that'll go in the util subpackage: its imports are different
-					ObjectType subscription = readObjectType((ObjectTypeDefinition) node);
-					subscription.setPackageName(getUtilPackageName());
-					subscription.setRequestType("subscription");
-					subscriptionTypes.add(subscription);
+					if (subscriptionType != null) {
+						throw new RuntimeException(
+								"Error while reading the subscription '" + ((ObjectTypeDefinition) node).getName()
+										+ "'. A Subscription root operation has already been read, with name'"
+										+ subscriptionType.getName() + "'");
+					}
+					subscriptionType = readObjectType((ObjectTypeDefinition) node);
+					subscriptionType.setPackageName(getUtilPackageName());
+					subscriptionType.setRequestType("subscription");
 				} else {
 					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
 				}
@@ -464,9 +476,17 @@ public class DocumentParser {
 	void fillTypesMap() {
 		// Directive are directly added to the types map.
 		// TODO remove this method, and add each type in the types map as it is read
-		queryTypes.stream().forEach(q -> types.put(q.getName(), q));
-		mutationTypes.stream().forEach(m -> types.put(m.getName(), m));
-		subscriptionTypes.stream().forEach(s -> types.put(s.getName(), s));
+
+		// The query is mandatory
+		types.put(queryType.getName(), queryType);
+
+		if (mutationType != null) {
+			types.put(mutationType.getName(), mutationType);
+		}
+		if (subscriptionType != null) {
+			types.put(subscriptionType.getName(), subscriptionType);
+		}
+
 		scalarTypes.stream().forEach(s -> types.put(s.getName(), s));
 		objectTypes.stream().forEach(o -> types.put(o.getName(), o));
 		interfaceTypes.stream().forEach(i -> types.put(i.getName(), i));
@@ -925,20 +945,20 @@ public class DocumentParser {
 		switch (pluginConfiguration.getMode()) {
 		case client:
 			// Type annotations
-			graphqlUtils.concatStreams(Type.class, true, interfaceTypes, objectTypes, unionTypes, queryTypes,
-					mutationTypes, subscriptionTypes).forEach(o -> addTypeAnnotationForClientMode(o));
+			graphqlUtils.concatStreams(Type.class, true, queryType, mutationType, subscriptionType, interfaceTypes,
+					objectTypes, unionTypes).forEach(o -> addTypeAnnotationForClientMode(o));
 
 			// Field annotations
 			graphqlUtils
-					.concatStreams(Type.class, true, objectTypes, interfaceTypes, queryTypes, mutationTypes,
-							subscriptionTypes)
+					.concatStreams(Type.class, true, queryType, mutationType, subscriptionType, objectTypes,
+							interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode((FieldImpl) f));
 
 			break;
 		case server:
-			graphqlUtils.concatStreams(ObjectType.class, true, objectTypes, interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, objectTypes, interfaceTypes)
 					.forEach(o -> addTypeAnnotationForServerMode(o));
-			graphqlUtils.concatStreams(ObjectType.class, true, objectTypes, interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, objectTypes, interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForServerMode(f));
 			break;
 		}
@@ -1324,30 +1344,27 @@ public class DocumentParser {
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// First step : add the introspection queries into the existing query. If no query exists, one is created.s
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (queryTypes.size() == 0) {
-				// There was no query. We need to create one.
-				ObjectType introspectionQuery = new ObjectType(pluginConfiguration.getPackageName(),
-						pluginConfiguration.getPackageName(), pluginConfiguration);
-				introspectionQuery.setName(INTROSPECTION_QUERY);
-				introspectionQuery.setRequestType("query");
+			if (queryType == null) {
+				// There was no query. We need to create one. It will contain only the Introspection Query
+				queryType = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration.getPackageName(),
+						pluginConfiguration);
+				queryType.setName(INTROSPECTION_QUERY);
+				queryType.setRequestType("query");
 
 				// Let's first add the regular object that'll receive the server response (in the default package)
-				objectTypes.add(introspectionQuery);
-				types.put(introspectionQuery.getName(), introspectionQuery);
+				objectTypes.add(queryType);
+				types.put(queryType.getName(), queryType);
 
 				// Then the query class, in the util package
-				introspectionQuery.setPackageName(getUtilPackageName());
-				queryTypes.add(introspectionQuery);
-			}
-
-			// We add the introspection capability into each query (but there should be only one)
-			for (ObjectType query : queryTypes) {
-				query.getFields().add(get__SchemaField(query));
-				query.getFields().add(get__TypeField(query));
+				queryType.setPackageName(getUtilPackageName());
+			} else {
+				// We add the introspection capability to the query root operation
+				queryType.getFields().add(get__SchemaField(queryType));
+				queryType.getFields().add(get__TypeField(queryType));
 
 				// We also need to add the relevant fields into the regular object that matches the query.
 				// But they must be a separate instance, otherwise their annotation is added twice.
-				Type objectQuery = getType(query.getName());
+				Type objectQuery = getType(queryType.getName());
 				objectQuery.getFields().add(get__SchemaField(objectQuery));
 				objectQuery.getFields().add(get__TypeField(objectQuery));
 			}
@@ -1398,44 +1415,47 @@ public class DocumentParser {
 	private void addImports() {
 		types.values().parallelStream().forEach(type -> addImportsForOneType(type));
 
-		queryTypes.parallelStream().forEach(type -> addImportsForOneType(type));
-		mutationTypes.parallelStream().forEach(type -> addImportsForOneType(type));
-		subscriptionTypes.parallelStream().forEach(type -> addImportsForOneType(type));
+		addImportsForOneType(queryType);
+		addImportsForOneType(mutationType);
+		addImportsForOneType(subscriptionType);
 	}
 
 	/**
 	 * @param type
 	 */
 	private void addImportsForOneType(Type type) {
-		// Let's loop through all the fields
-		for (Field f : type.getFields()) {
-			if (f.isList()) {
-				type.addImport(List.class);
-			}
-			if (f instanceof CustomScalarType) {
-				type.addImport(((CustomScalarType) f).getPackageName(), ((CustomScalarType) f).getClassSimpleName());
-			}
-			type.addImport(f.getType().getPackageName(), f.getType().getClassSimpleName());
-			for (Field param : f.getInputParameters()) {
-				if (param.isList()) {
+		if (type != null) {
+			// Let's loop through all the fields
+			for (Field f : type.getFields()) {
+				if (f.isList()) {
 					type.addImport(List.class);
 				}
-				type.addImport(param.getType().getPackageName(), param.getType().getClassSimpleName());
-			} // for(inputParameters)
-		} // for(Fields)
+				if (f instanceof CustomScalarType) {
+					type.addImport(((CustomScalarType) f).getPackageName(),
+							((CustomScalarType) f).getClassSimpleName());
+				}
+				type.addImport(f.getType().getPackageName(), f.getType().getClassSimpleName());
+				for (Field param : f.getInputParameters()) {
+					if (param.isList()) {
+						type.addImport(List.class);
+					}
+					type.addImport(param.getType().getPackageName(), param.getType().getClassSimpleName());
+				} // for(inputParameters)
+			} // for(Fields)
 
-		// Let's add some common imports
-		type.addImport(GraphQLField.class);
-		type.addImport(GraphQLInputParameters.class);
+			// Let's add some common imports
+			type.addImport(GraphQLField.class);
+			type.addImport(GraphQLInputParameters.class);
 
-		switch (pluginConfiguration.getMode()) {
-		case client:
-			type.addImport(JsonProperty.class);
-			break;
-		case server:
-			break;
-		default:
-			throw new RuntimeException("unexpected plugin mode: " + pluginConfiguration.getMode().name());
+			switch (pluginConfiguration.getMode()) {
+			case client:
+				type.addImport(JsonProperty.class);
+				break;
+			case server:
+				break;
+			default:
+				throw new RuntimeException("unexpected plugin mode: " + pluginConfiguration.getMode().name());
+			}
 		}
 	}
 
