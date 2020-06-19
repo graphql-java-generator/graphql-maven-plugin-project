@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.CustomScalar;
 
 import lombok.Data;
@@ -37,10 +37,10 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 	 * @param graphQLScalarTypeGetter
 	 *            The full path for the static method name that returns this GraphQLScalarType. Optional.
 	 * @param pluginConfiguration
-	 *            The current {@link PluginConfiguration}
+	 *            The current {@link GraphQLConfiguration}
 	 * @see CustomScalarDefinition
 	 */
-	public CustomScalarType(CustomScalarDefinition customScalarDefinition, PluginConfiguration pluginConfiguration) {
+	public CustomScalarType(CustomScalarDefinition customScalarDefinition, GraphQLConfiguration pluginConfiguration) {
 		super(customScalarDefinition.getGraphQLTypeName(),
 				GraphqlUtils.graphqlUtils.getPackageName(customScalarDefinition.getJavaType()),
 				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()),

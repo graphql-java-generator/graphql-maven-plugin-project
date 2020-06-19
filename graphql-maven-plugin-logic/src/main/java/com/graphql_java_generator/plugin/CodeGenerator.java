@@ -54,7 +54,7 @@ public class CodeGenerator {
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	/** The component that reads the GraphQL schema from the file system */
 	@Autowired

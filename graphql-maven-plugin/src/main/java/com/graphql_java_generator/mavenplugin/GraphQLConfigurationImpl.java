@@ -10,19 +10,19 @@ import java.util.Map;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
 /**
  * @author etienne-sf
  *
  */
-public class PluginConfigurationImpl implements PluginConfiguration {
+public class GraphQLConfigurationImpl implements GraphQLConfiguration {
 
-	final private GraphqlMavenPlugin mojo;
+	final private GraphQLMojo mojo;
 	final private MavenLogger log;
 
-	PluginConfigurationImpl(GraphqlMavenPlugin mojo) {
+	GraphQLConfigurationImpl(GraphQLMojo mojo) {
 		this.mojo = mojo;
 		log = new MavenLogger(mojo);
 
@@ -72,7 +72,7 @@ public class PluginConfigurationImpl implements PluginConfiguration {
 
 	@Override
 	public File getSchemaPersonalizationFile() {
-		return (PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(mojo.schemaPersonalizationFile)) ? null
+		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(mojo.schemaPersonalizationFile)) ? null
 				: new File(mojo.project.getBasedir(), mojo.schemaPersonalizationFile);
 	}
 

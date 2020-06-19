@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -23,7 +22,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
 import graphql.ThreadSafe;
@@ -34,7 +33,7 @@ import graphql.schema.GraphQLScalarType;
  */
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 @ThreadSafe
-public class GraphqlMavenPlugin extends AbstractMojo {
+public class GraphQLMojo extends AbstractMojo {
 
 	/**
 	 * <P>
@@ -55,7 +54,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * to check the compatibility with all the next versions.
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyRuntimeSources", defaultValue = PluginConfiguration.DEFAULT_COPY_RUNTIME_SOURCES)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyRuntimeSources", defaultValue = GraphQLConfiguration.DEFAULT_COPY_RUNTIME_SOURCES)
 	boolean copyRuntimeSources;
 
 	/**
@@ -113,26 +112,24 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * query/mutation/subscription name defined in the GraphQL schema.
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateDeprecatedRequestResponse", defaultValue = PluginConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateDeprecatedRequestResponse", defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE)
 	boolean generateDeprecatedRequestResponse;
 
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = PluginConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION)
 	boolean generateJPAAnnotation;
-
-	Log log;
 
 	/**
 	 * The generation mode: either <I>client</I> or <I>server</I>. Choose client to generate the code which can query a
 	 * graphql server or server to generate a code for the server side.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.mode", defaultValue = PluginConfiguration.DEFAULT_MODE)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.mode", defaultValue = GraphQLConfiguration.DEFAULT_MODE)
 	PluginMode mode;
 
 	/** The package name that will contain the generated classes */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = PluginConfiguration.DEFAULT_PACKAGE_NAME)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = GraphQLConfiguration.DEFAULT_PACKAGE_NAME)
 	String packageName;
 
 	/**
@@ -156,11 +153,11 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * <I>your.app.package.impl, your.app.package.graphql</I>, or just <I>your.app.package</I>
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.scanBasePackages", defaultValue = PluginConfiguration.DEFAULT_SCAN_BASE_PACKAGES)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.scanBasePackages", defaultValue = GraphQLConfiguration.DEFAULT_SCAN_BASE_PACKAGES)
 	String scanBasePackages;
 
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
 	String schemaFileFolder;
 
 	/**
@@ -168,7 +165,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * will search all graphqls files in the "/src/main/resources" folder (please check also the <I>schemaFileFolder</I>
 	 * plugin parameter).
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
 	String schemaFilePattern;
 
 	/**
@@ -184,7 +181,7 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * /src/main/resources folders).
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
 	String schemaPersonalizationFile;
 
 	/**
@@ -205,15 +202,15 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilityClasses", defaultValue = PluginConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilityClasses", defaultValue = GraphQLConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
 	boolean separateUtilityClasses;
 
 	/** The encoding charset for the generated source files */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = PluginConfiguration.DEFAULT_SOURCE_ENCODING)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;
 
 	/** The folder where source code for the generated classes will be generated */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = PluginConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	String targetSourceFolder;
 
 	/**
@@ -249,12 +246,13 @@ public class GraphqlMavenPlugin extends AbstractMojo {
 			getLog().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
-			SpringConfiguration.mojo = this;
-			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+			GraphQLSpringConfiguration.mojo = this;
+			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
+					GraphQLSpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in
 			// debug mode)
-			ctx.getBean(PluginConfiguration.class).logConfiguration();
+			ctx.getBean(GraphQLConfiguration.class).logConfiguration();
 
 			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
 			documentParser.parseDocuments();

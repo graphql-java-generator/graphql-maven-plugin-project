@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Github_Client_SpringConfiguration;
 
@@ -23,7 +23,7 @@ class GithubPublicSchemaClientTest extends AbstractIntegrationTest {
 
 	@BeforeEach
 	public void setUp() {
-		((PluginConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
+		((GraphQLConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
 		graphqlTestHelper.checkSchemaStringProvider("github.schema.public.graphqls");
 	}
 

@@ -16,18 +16,18 @@ import com.graphql_java_generator.plugin.schema_personalization.Field;
 import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPersonalization;
 import com.graphql_java_generator.plugin.schema_personalization.SchemaPersonalization;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 class JsonSchemaPersonalizationTest {
 
-	PluginConfigurationTestHelper pluginConfigurationTestHelper;
+	GraphQLConfigurationTestHelper pluginConfigurationTestHelper;
 
 	JsonSchemaPersonalization jsonSchemaPersonalization;
 	File userJsonFile;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		pluginConfigurationTestHelper = new PluginConfigurationTestHelper(this);
+		pluginConfigurationTestHelper = new GraphQLConfigurationTestHelper(this);
 		pluginConfigurationTestHelper.schemaPersonalizationFile = new File(new MavenTestHelper().getModulePathFile(),
 				"src/test/resources/schema_personalization/complete.json");
 

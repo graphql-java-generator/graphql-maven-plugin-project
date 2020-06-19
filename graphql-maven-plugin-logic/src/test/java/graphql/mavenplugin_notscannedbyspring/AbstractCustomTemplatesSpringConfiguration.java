@@ -21,16 +21,16 @@ import org.springframework.context.annotation.Bean;
 import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.CodeTemplateScope;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Base Spring configuration for Custom template test Extends {@link AbstractSpringConfiguration} to configure
- * {@link PluginConfigurationTestHelper} with the customized templates
+ * {@link GraphQLConfigurationTestHelper} with the customized templates
  * Customized templates are generated previous to test execution by copying default templates at src/main/resources/templates to  target/test-classes/templates_personalization
  * 
  * @author ggomez
@@ -99,8 +99,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	 */
 	@Override
 	@Bean
-	PluginConfiguration pluginConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
-		PluginConfigurationTestHelper pluginConfiguration = (PluginConfigurationTestHelper) super.pluginConfigurationTestHelper(
+	GraphQLConfiguration pluginConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
+		GraphQLConfigurationTestHelper pluginConfiguration = (GraphQLConfigurationTestHelper) super.pluginConfigurationTestHelper(
 				mavenTestHelper);
 		pluginConfiguration.templates = buildTempaltes(this.codeTemplateScope);
 		return pluginConfiguration;

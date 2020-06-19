@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
@@ -19,8 +19,8 @@ public abstract class AbstractType implements Type {
 	/** The name of the object type */
 	private String name;
 
-	/** The current {@link PluginConfiguration} */
-	private PluginConfiguration pluginConfiguration;
+	/** The current {@link GraphQLConfiguration} */
+	private GraphQLConfiguration pluginConfiguration;
 
 	/** The name of the package for this class */
 	private String packageName;
@@ -40,7 +40,7 @@ public abstract class AbstractType implements Type {
 	/** The GraphQL type for this type */
 	final private GraphQlType graphQlType;
 
-	public AbstractType(String packageName, PluginConfiguration pluginConfiguration, GraphQlType graphQlType) {
+	public AbstractType(String packageName, GraphQLConfiguration pluginConfiguration, GraphQlType graphQlType) {
 		this.packageName = packageName;
 		this.pluginConfiguration = pluginConfiguration;
 		this.graphQlType = graphQlType;

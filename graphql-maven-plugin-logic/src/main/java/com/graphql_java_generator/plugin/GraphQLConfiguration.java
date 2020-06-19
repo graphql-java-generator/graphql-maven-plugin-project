@@ -17,14 +17,15 @@ import org.springframework.context.annotation.Configuration;
 import graphql.schema.GraphQLScalarType;
 
 /**
- * This interface contains all the configuration parameters for the plugin, as an interface.<BR/>
+ * This interface contains all the configuration parameters for the <I>graphql</I> goal (Maven) or task (Gradle) of the
+ * plugin, as an interface.<BR/>
  * All these methods are directly the property names, to map against a Spring {@link Configuration} that defines the
  * {@link Bean}s. These beans can then be reused in Spring Component, thank to Spring IoC and its dependency injection
  * capability.
  * 
  * @author etienne-sf
  */
-public interface PluginConfiguration {
+public interface GraphQLConfiguration {
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
@@ -184,7 +185,7 @@ public interface PluginConfiguration {
 	 */
 	public File getTargetClassFolder();
 
-	/** The folder where source code for the generated classes will be generated */
+	/** The folder where the source code for the generated classes will be generated */
 	public File getTargetSourceFolder();
 
 	/**
@@ -285,7 +286,7 @@ public interface PluginConfiguration {
 	/** Logs all the configuration parameters, in the debug level */
 	public default void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
-			getLog().debug("The graphql-java-generator Plugin Configuration is:");
+			getLog().debug("The graphql-java-generator Plugin Configuration for the graphql goal is:");
 			getLog().debug("  copyRuntimeSources: " + isCopyRuntimeSources());
 			getLog().debug("  mode: " + getMode());
 			getLog().debug("  packageName: " + getPackageName());

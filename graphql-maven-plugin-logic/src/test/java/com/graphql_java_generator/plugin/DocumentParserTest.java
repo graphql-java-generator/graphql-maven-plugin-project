@@ -19,7 +19,7 @@ import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.language.impl.ScalarType;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**
  * 
@@ -31,11 +31,11 @@ class DocumentParserTest {
 	String packageName = "org.graphql.test.generate";
 
 	private DocumentParser documentParser;
-	private PluginConfigurationTestHelper pluginConfiguration;
+	private GraphQLConfigurationTestHelper pluginConfiguration;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		pluginConfiguration = new PluginConfigurationTestHelper(this);
+		pluginConfiguration = new GraphQLConfigurationTestHelper(this);
 		pluginConfiguration.mode = PluginMode.client; // client as a default value for the tests, here
 		pluginConfiguration.packageName = packageName;
 

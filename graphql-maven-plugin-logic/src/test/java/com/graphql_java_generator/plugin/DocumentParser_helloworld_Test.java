@@ -31,7 +31,7 @@ class DocumentParser_helloworld_Test {
 	@Autowired
 	private GraphqlTestHelper graphqlTestHelper;
 	@javax.annotation.Resource
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	@Autowired
 	DocumentParser documentParser;

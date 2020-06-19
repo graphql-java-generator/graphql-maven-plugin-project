@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -45,7 +45,7 @@ public class JsonSchemaPersonalization {
 	DocumentParser documentParser;
 
 	@Autowired
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	/** The class where the content of the configuration file will be loaded */
 	SchemaPersonalization schemaPersonalization = null;

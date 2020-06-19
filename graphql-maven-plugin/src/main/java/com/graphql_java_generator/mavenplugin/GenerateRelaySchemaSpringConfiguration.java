@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 
 import graphql.language.Document;
@@ -24,19 +22,18 @@ import graphql.parser.Parser;
  * @author etienne-sf
  */
 @Configuration
-@Import({ JacksonAutoConfiguration.class })
 @ComponentScan(basePackages = { "com.graphql_java_generator" })
-public class SpringConfiguration {
+public class GenerateRelaySchemaSpringConfiguration {
 
 	/**
 	 * This static field is a trick to let the Spring ApplicationContext access to this instance. If you find any better
 	 * solution, let us know !
 	 */
-	static GraphqlMavenPlugin mojo = null;
+	static GenerateRelaySchemaMojo mojo = null;
 
 	@Bean
-	PluginConfiguration pluginConfiguration() {
-		return new PluginConfigurationImpl(mojo);
+	GenerateRelaySchemaConfiguration pluginConfiguration() {
+		return new GenerateRelaySchemaConfigurationImpl(mojo);
 	}
 
 	/**

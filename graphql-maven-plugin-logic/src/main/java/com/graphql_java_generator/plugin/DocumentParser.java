@@ -118,7 +118,7 @@ public class DocumentParser {
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	@Autowired
 	GraphqlUtils graphqlUtils;
@@ -849,7 +849,7 @@ public class DocumentParser {
 
 	/**
 	 * A utility method, which maps an object type to the class full name of the Java class which will be generated for
-	 * this object type. This utility method is based on the {@link PluginConfiguration#getPackageName()} plugin
+	 * this object type. This utility method is based on the {@link GraphQLConfiguration#getPackageName()} plugin
 	 * attribute, available in this class
 	 * 
 	 * @param name

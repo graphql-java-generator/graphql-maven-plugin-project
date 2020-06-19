@@ -1,5 +1,6 @@
 package com.graphql_java_generator.mavenplugin;
 
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.logging.Log;
 
 import com.graphql_java_generator.plugin.Logger;
@@ -12,7 +13,7 @@ public class MavenLogger implements Logger {
 
 	final private Log log;
 
-	MavenLogger(GraphqlMavenPlugin mojo) {
+	MavenLogger(AbstractMojo mojo) {
 		this.log = mojo.getLog();
 	}
 

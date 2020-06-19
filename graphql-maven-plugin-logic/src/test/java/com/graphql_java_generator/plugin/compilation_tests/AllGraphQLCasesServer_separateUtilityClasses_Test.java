@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses;
 
@@ -18,7 +18,7 @@ class AllGraphQLCasesServer_separateUtilityClasses_Test extends AbstractIntegrat
 	// The only aim of this class, is to have its own Spring Configuration
 	@BeforeEach
 	public void setUp() {
-		((PluginConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
+		((GraphQLConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
 		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases.graphqls");
 	}
 }

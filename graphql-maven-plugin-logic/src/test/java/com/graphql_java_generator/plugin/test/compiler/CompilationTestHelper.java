@@ -6,13 +6,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 
 @Component
 public class CompilationTestHelper {
 
 	@Resource
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	/**
 	 * Execute a full compilation, to check the whole project.

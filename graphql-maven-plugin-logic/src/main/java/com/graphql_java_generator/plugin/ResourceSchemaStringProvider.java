@@ -38,7 +38,7 @@ public class ResourceSchemaStringProvider {
 	 * It adds the introspection GraphQL schema to the list of documents to read
 	 */
 	@Autowired
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	public List<org.springframework.core.io.Resource> schemas() throws IOException {
 		String fullPathPattern;

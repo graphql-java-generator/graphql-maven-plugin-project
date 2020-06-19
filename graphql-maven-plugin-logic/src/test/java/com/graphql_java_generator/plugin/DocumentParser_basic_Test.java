@@ -11,7 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.Basic_Server_SpringConfiguration;
@@ -29,7 +29,7 @@ class DocumentParser_basic_Test {
 	@javax.annotation.Resource
 	private GraphqlTestHelper graphqlTestHelper;
 	@javax.annotation.Resource
-	PluginConfigurationTestHelper pluginConfiguration;
+	GraphQLConfigurationTestHelper pluginConfiguration;
 
 	@Autowired
 	DocumentParser documentParser;

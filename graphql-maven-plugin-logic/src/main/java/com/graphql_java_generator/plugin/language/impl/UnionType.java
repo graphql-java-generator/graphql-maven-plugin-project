@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +26,7 @@ public class UnionType extends ObjectType {
 	 */
 	List<ObjectType> memberTypes = new ArrayList<>();
 
-	public UnionType(String name, String packageName, PluginConfiguration pluginConfiguration) {
+	public UnionType(String name, String packageName, GraphQLConfiguration pluginConfiguration) {
 		super(name, packageName, pluginConfiguration, GraphQlType.UNION);
 	}
 
@@ -34,9 +34,9 @@ public class UnionType extends ObjectType {
 	 * @param packageName
 	 *            the package name where it must be created
 	 * @param pluginConfiguration
-	 *            The current {@link PluginConfiguration}
+	 *            The current {@link GraphQLConfiguration}
 	 */
-	public UnionType(String packageName, PluginConfiguration pluginConfiguration) {
+	public UnionType(String packageName, GraphQLConfiguration pluginConfiguration) {
 		super(null, packageName, pluginConfiguration, GraphQlType.UNION);
 	}
 

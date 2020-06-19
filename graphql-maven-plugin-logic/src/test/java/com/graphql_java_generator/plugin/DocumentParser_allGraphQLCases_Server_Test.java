@@ -60,7 +60,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	private DocumentParser documentParser;
 
 	@Resource
-	private PluginConfiguration pluginConfiguration;
+	private GraphQLConfiguration pluginConfiguration;
 
 	@Resource
 	List<Document> documents;

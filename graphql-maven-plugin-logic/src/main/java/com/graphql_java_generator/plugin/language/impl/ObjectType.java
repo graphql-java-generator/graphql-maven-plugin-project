@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 
 import lombok.Data;
@@ -58,9 +58,9 @@ public class ObjectType extends AbstractType {
 	 * @param packageName
 	 *            the package name where it must be created
 	 * @param pluginConfiguration
-	 *            The current {@link PluginConfiguration}
+	 *            The current {@link GraphQLConfiguration}
 	 */
-	public ObjectType(String name, String packageName, PluginConfiguration pluginConfiguration) {
+	public ObjectType(String name, String packageName, GraphQLConfiguration pluginConfiguration) {
 		super(packageName, pluginConfiguration, GraphQlType.OBJECT);
 		setName(name);
 	}
@@ -69,9 +69,9 @@ public class ObjectType extends AbstractType {
 	 * @param packageName
 	 *            the package name where it must be created
 	 * @param pluginConfiguration
-	 *            The current {@link PluginConfiguration}
+	 *            The current {@link GraphQLConfiguration}
 	 */
-	public ObjectType(String packageName, PluginConfiguration pluginConfiguration) {
+	public ObjectType(String packageName, GraphQLConfiguration pluginConfiguration) {
 		super(packageName, pluginConfiguration, GraphQlType.OBJECT);
 	}
 
@@ -80,10 +80,10 @@ public class ObjectType extends AbstractType {
 	 * 
 	 * @param packageName
 	 * @param pluginConfiguration
-	 *            The current {@link PluginConfiguration}
+	 *            The current {@link GraphQLConfiguration}
 	 * @param type
 	 */
-	protected ObjectType(String name, String packageName, PluginConfiguration pluginConfiguration, GraphQlType type) {
+	protected ObjectType(String name, String packageName, GraphQLConfiguration pluginConfiguration, GraphQlType type) {
 		super(packageName, pluginConfiguration, type);
 		setName(name);
 	}

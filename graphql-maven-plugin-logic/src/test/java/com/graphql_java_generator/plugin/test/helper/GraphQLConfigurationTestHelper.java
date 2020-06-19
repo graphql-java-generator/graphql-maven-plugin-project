@@ -9,7 +9,7 @@ import java.util.Map;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
 import lombok.Getter;
@@ -21,7 +21,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PluginConfigurationTestHelper implements PluginConfiguration {
+public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	final Logger log;
@@ -48,7 +48,7 @@ public class PluginConfigurationTestHelper implements PluginConfiguration {
 	 * @param caller
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
-	public PluginConfigurationTestHelper(Object caller) {
+	public GraphQLConfigurationTestHelper(Object caller) {
 		log = new Slf4jLogger(caller);
 	}
 

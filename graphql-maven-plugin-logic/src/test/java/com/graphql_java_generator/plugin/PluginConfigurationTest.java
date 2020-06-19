@@ -4,13 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 class PluginConfigurationTest {
 
 	@Test
 	void testGetQuotedScanBasePackages() {
-		PluginConfigurationTestHelper pluginConfiguration = new PluginConfigurationTestHelper(this);
+		GraphQLConfigurationTestHelper pluginConfiguration = new GraphQLConfigurationTestHelper(this);
 
 		pluginConfiguration.setScanBasePackages(null);
 		assertEquals("", pluginConfiguration.getQuotedScanBasePackages());

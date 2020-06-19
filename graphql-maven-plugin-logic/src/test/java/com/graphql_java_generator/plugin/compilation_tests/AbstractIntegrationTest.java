@@ -11,7 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.compiler.CompilationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
@@ -29,7 +29,7 @@ abstract class AbstractIntegrationTest {
 	protected MavenTestHelper mavenTestHelper;
 
 	@Resource
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	@javax.annotation.Resource
 	protected DocumentParser documentParser;

@@ -39,7 +39,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
 
@@ -49,7 +49,7 @@ class CodeGeneratorTest {
 	@Resource
 	ApplicationContext context;
 	@Resource
-	PluginConfigurationTestHelper pluginConfiguration;
+	GraphQLConfigurationTestHelper pluginConfiguration;
 	@Resource
 	MavenTestHelper mavenTestHelper;
 
@@ -130,7 +130,7 @@ class CodeGeneratorTest {
 		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
 		assertEquals(pluginConfiguration.getPackageName(),
-				((PluginConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
+				((GraphQLConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
@@ -181,7 +181,7 @@ class CodeGeneratorTest {
 		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
 		assertEquals(pluginConfiguration.getPackageName(),
-				((PluginConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
+				((GraphQLConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
@@ -240,7 +240,7 @@ class CodeGeneratorTest {
 
 	/**
 	 * Test to validate the code generation process copies runtime sources if
-	 * {@link PluginConfiguration#isCopyRuntimeSources()} is set to true
+	 * {@link GraphQLConfiguration#isCopyRuntimeSources()} is set to true
 	 *
 	 * @throws IOException
 	 */
@@ -267,7 +267,7 @@ class CodeGeneratorTest {
 
 	/**
 	 * Test to validate the code generation process does not copy runtime sources if
-	 * {@link PluginConfiguration#isCopyRuntimeSources()} is set to false
+	 * {@link GraphQLConfiguration#isCopyRuntimeSources()} is set to false
 	 *
 	 * @throws IOException
 	 */

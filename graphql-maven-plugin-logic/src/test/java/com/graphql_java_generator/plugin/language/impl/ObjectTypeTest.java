@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.plugin.PluginMode;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**
  * @author etienne-sf
@@ -24,7 +24,7 @@ class ObjectTypeTest {
 	PluginMode mode;
 
 	ObjectType objectType;
-	PluginConfigurationTestHelper pluginConfiguration = new PluginConfigurationTestHelper(this);
+	GraphQLConfigurationTestHelper pluginConfiguration = new GraphQLConfigurationTestHelper(this);
 
 	@BeforeEach
 	void setUp() {

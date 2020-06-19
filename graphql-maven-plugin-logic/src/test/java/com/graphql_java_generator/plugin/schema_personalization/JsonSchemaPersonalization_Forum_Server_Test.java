@@ -16,11 +16,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
@@ -29,7 +29,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 class JsonSchemaPersonalization_Forum_Server_Test {
 
 	@Resource
-	PluginConfiguration pluginConfiguration;
+	GraphQLConfiguration pluginConfiguration;
 
 	@Resource
 	JsonSchemaPersonalization jsonSchemaPersonalization;
@@ -46,7 +46,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	@DirtiesContext
 	void testApplySchemaPersonalization_OK() {
 		// Preparation
-		((PluginConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
+		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
 				mavenTestHelper.getModulePathFile(), "src/test/resources/schema_personalization/forum_OK.json");
 
 		jsonSchemaPersonalization.pluginConfiguration = pluginConfiguration;
@@ -89,7 +89,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	@DirtiesContext
 	void testApplySchemaPersonalization_wrongEntityName() {
 		// Preparation
-		((PluginConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
+		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
 				mavenTestHelper.getModulePathFile(),
 				"src/test/resources/schema_personalization/forum_KO_WrongEntity.json");
 
@@ -103,7 +103,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	@DirtiesContext
 	void testApplySchemaPersonalization_wrongFieldName() {
 		// Preparation
-		((PluginConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
+		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
 				mavenTestHelper.getModulePathFile(),
 				"src/test/resources/schema_personalization/forum_KO_WrongFieldName.json");
 
@@ -117,7 +117,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	@DirtiesContext
 	void testApplySchemaPersonalization_fieldNameAlreadyExist() {
 		// Preparation
-		((PluginConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
+		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
 				mavenTestHelper.getModulePathFile(),
 				"src/test/resources/schema_personalization/forum_KO_FieldNameAlreadyExist.json");
 

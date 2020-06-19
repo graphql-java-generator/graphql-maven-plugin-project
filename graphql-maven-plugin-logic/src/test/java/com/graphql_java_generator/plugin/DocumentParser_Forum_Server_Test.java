@@ -26,7 +26,7 @@ import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
@@ -41,7 +41,7 @@ class DocumentParser_Forum_Server_Test {
 	@Autowired
 	DocumentParser documentParser;
 	@Resource
-	PluginConfigurationTestHelper pluginConfiguration;
+	GraphQLConfigurationTestHelper pluginConfiguration;
 
 	@BeforeEach
 	void setUp() throws Exception {

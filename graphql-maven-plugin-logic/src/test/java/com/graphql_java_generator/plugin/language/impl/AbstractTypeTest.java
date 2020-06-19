@@ -8,12 +8,12 @@ import java.text.DateFormat;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.graphql_java_generator.plugin.PluginConfiguration;
-import com.graphql_java_generator.plugin.test.helper.PluginConfigurationTestHelper;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 class AbstractTypeTest {
 
-	PluginConfiguration pluginConfiguration = new PluginConfigurationTestHelper(this);
+	GraphQLConfiguration pluginConfiguration = new GraphQLConfigurationTestHelper(this);
 
 	@Test
 	void testAddImportClassOfQ() {
