@@ -2,7 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-
+* Add a description of the GraphQL mojo
 * Switch to graphql-java 15.0 (waiting for [issue 1844](https://github.com/graphql-java/graphql-java/issues/1844) to be solved)
 * Add the Tutorial for Subscription, on the Client side
 * Update the README with the XxxxExecutor classes, when the next version is released
