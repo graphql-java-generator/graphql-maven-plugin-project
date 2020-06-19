@@ -4,7 +4,6 @@
 package com.graphql_java_generator.plugin;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * This class generates the relay schema, based on the given GraphQL schema(s). That is: it generates a GraphQL schema,
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @author etienne-sf
  *
  */
-@Component
+// @Component
 public class GenerateRelaySchema {
 
 	@Autowired

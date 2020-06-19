@@ -5,8 +5,6 @@ package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
 
-import org.springframework.stereotype.Component;
-
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 import com.graphql_java_generator.plugin.Logger;
 
@@ -14,7 +12,7 @@ import com.graphql_java_generator.plugin.Logger;
  * @author etienne-sf
  *
  */
-@Component
+// @Component
 public class GenerateRelaySchemaConfigurationImpl implements GenerateRelaySchemaConfiguration {
 
 	final private GenerateRelaySchemaMojo mojo;

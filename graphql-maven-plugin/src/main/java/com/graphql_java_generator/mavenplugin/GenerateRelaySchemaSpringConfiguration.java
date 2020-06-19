@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
@@ -21,7 +20,7 @@ import graphql.parser.Parser;
 /**
  * @author etienne-sf
  */
-@Configuration
+// @Configuration
 @ComponentScan(basePackages = { "com.graphql_java_generator" })
 public class GenerateRelaySchemaSpringConfiguration {
 
