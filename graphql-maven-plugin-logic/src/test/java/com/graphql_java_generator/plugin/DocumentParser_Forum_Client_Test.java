@@ -173,7 +173,7 @@ class DocumentParser_Forum_Client_Test {
 		int j = 0; // The first query is 0, see ++j below
 		// boards: [Board]
 		checkField(query, j, "boards", true, false, false, "Board",
-				documentParser.pluginConfiguration.getPackageName() + ".Board");
+				documentParser.configuration.getPackageName() + ".Board");
 		assertEquals(0, query.getFields().get(j).getInputParameters().size());
 		j += 1;
 		// nbBoards: Int
@@ -182,25 +182,25 @@ class DocumentParser_Forum_Client_Test {
 		j += 1;
 		// topics(boardName: String!): [Topic]!
 		checkField(query, j, "topics", true, true, false, "Topic",
-				documentParser.pluginConfiguration.getPackageName() + ".Topic");
+				documentParser.configuration.getPackageName() + ".Topic");
 		assertEquals(1, query.getFields().get(j).getInputParameters().size());
 		checkInputParameter(query, j, 0, "boardName", false, true, null, "String", String.class.getName(), null);
 		j += 1;
 		// findTopics(boardName: String!, keyword: [String!]): [Topic]
 		checkField(query, j, "findTopics", true, false, false, "Topic",
-				documentParser.pluginConfiguration.getPackageName() + ".Topic");
+				documentParser.configuration.getPackageName() + ".Topic");
 		assertEquals(2, query.getFields().get(j).getInputParameters().size());
 		checkInputParameter(query, j, 0, "boardName", false, true, null, "String", String.class.getName(), null);
 		checkInputParameter(query, j, 1, "keyword", true, false, true, "String", String.class.getName(), null);
 		j += 1;
 		// __schema: __Schema!
 		checkField(query, j, "__schema", false, true, false, "__Schema",
-				documentParser.pluginConfiguration.getPackageName() + ".__Schema");
+				documentParser.configuration.getPackageName() + ".__Schema");
 		assertEquals(0, query.getFields().get(j).getInputParameters().size());
 		j += 1;
 		// __type(name: String!): __Type
 		checkField(query, j, "__type", false, true, false, "__Type",
-				documentParser.pluginConfiguration.getPackageName() + ".__Type");
+				documentParser.configuration.getPackageName() + ".__Type");
 		assertEquals(1, query.getFields().get(j).getInputParameters().size());
 		checkInputParameter(query, j, 0, "name", false, true, null, "String", String.class.getName(), null);
 		j += 1;

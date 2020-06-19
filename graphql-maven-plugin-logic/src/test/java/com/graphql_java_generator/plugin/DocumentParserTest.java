@@ -40,7 +40,7 @@ class DocumentParserTest {
 		pluginConfiguration.packageName = packageName;
 
 		documentParser = new DocumentParser();
-		documentParser.pluginConfiguration = pluginConfiguration;
+		documentParser.configuration = pluginConfiguration;
 
 	}
 

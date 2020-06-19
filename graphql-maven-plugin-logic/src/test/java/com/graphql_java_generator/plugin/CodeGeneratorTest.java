@@ -76,7 +76,7 @@ class CodeGeneratorTest {
 
 		codeGenerator = context.getBean(CodeGenerator.class);
 		codeGenerator.documentParser = new DocumentParser();
-		codeGenerator.documentParser.pluginConfiguration = pluginConfiguration;
+		codeGenerator.documentParser.configuration = pluginConfiguration;
 	}
 
 	@Test
