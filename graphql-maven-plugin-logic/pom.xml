@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -41,6 +43,34 @@
 									<outputDirectory>${project.build.directory}/classes/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/junittest/AllGraphQLCases_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest/AllGraphQLCases_Client_SpringConfiguration_separateUtilityClasses/generated-src</source>
+								<source>${project.build.directory}/junittest/AllGraphQLCases_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest/AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses/generated-src</source>
+								<source>${project.build.directory}/junittest/CodeGeneratorTest/generated-src</source>
+								<source>${project.build.directory}/junittest/CustomTemplates_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest/CustomTemplates_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest/Forum_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest/Forum_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest/StarWars_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest/StarWars_Server_SpringConfiguration/generated-src</source>
+							</sources>
 						</configuration>
 					</execution>
 				</executions>
