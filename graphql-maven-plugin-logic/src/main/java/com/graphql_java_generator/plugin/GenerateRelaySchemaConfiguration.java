@@ -15,6 +15,7 @@ public interface GenerateRelaySchemaConfiguration {
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
+	public final String DEFAULT_SCHEMA_FILE_NAME = "relay.graphqls";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
 	public final String DEFAULT_RESOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_TARGET_FOLDER = "/generated-resources/graphql-maven-plugin_generate-relay-schema";
@@ -30,6 +31,12 @@ public interface GenerateRelaySchemaConfiguration {
 	 * schema(s) are expected to be: in this folder, or one of these subfolders
 	 */
 	public File getSchemaFileFolder();
+
+	/**
+	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
+	 * the <I>schemaFileFolder</I> plugin parameter.
+	 */
+	public String getSchemaFileName();
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin

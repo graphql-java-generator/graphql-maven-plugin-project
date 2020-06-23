@@ -30,6 +30,12 @@ public class GenerateRelaySchemaMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = GenerateRelaySchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
 	File schemaFileFolder;
+	/**
+	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
+	 * the <I>schemaFileFolder</I> plugin parameter.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileName", defaultValue = GenerateRelaySchemaConfiguration.DEFAULT_SCHEMA_FILE_NAME)
+	String schemaFileName;
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin

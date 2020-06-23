@@ -34,6 +34,11 @@ public class GenerateRelaySchemaConfigurationImpl implements GenerateRelaySchema
 	}
 
 	@Override
+	public String getSchemaFileName() {
+		return mojo.schemaFileName;
+	}
+
+	@Override
 	public String getSchemaFilePattern() {
 		return mojo.schemaFilePattern;
 	}

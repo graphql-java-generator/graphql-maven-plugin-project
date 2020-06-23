@@ -42,7 +42,10 @@ public enum CodeTemplate {
 	PROVIDER(CodeTemplateScope.SERVER, "templates/server_GraphQLProvider.vm.java"), //
 	SERVER(CodeTemplateScope.SERVER, "templates/server_GraphQLServerMain.vm.java"), //
 	WEB_SOCKET_CONFIG(CodeTemplateScope.SERVER, "templates/server_WebSocketConfig.vm.java"), //
-	WEB_SOCKET_HANDLER(CodeTemplateScope.SERVER, "templates/server_WebSocketHandler.vm.java");
+	WEB_SOCKET_HANDLER(CodeTemplateScope.SERVER, "templates/server_WebSocketHandler.vm.java"),
+
+	// Template for the GraphQL relay schema generation
+	RELAY_SCHEMA(CodeTemplateScope.GENERATE_RELAY_SCHEMA, "templates/generateRelaySchema.vm.java");
 
 	/**
 	 * The scope for this template
