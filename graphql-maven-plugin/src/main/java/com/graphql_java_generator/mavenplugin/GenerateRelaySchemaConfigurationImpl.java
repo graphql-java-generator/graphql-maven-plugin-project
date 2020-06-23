@@ -4,6 +4,7 @@
 package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
+import java.util.Map;
 
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 import com.graphql_java_generator.plugin.Logger;
@@ -51,5 +52,10 @@ public class GenerateRelaySchemaConfigurationImpl implements GenerateRelaySchema
 	@Override
 	public File getTargetFolder() {
 		return mojo.targetFolder;
+	}
+
+	@Override
+	public Map<String, String> getTemplates() {
+		return this.mojo.templates;
 	}
 }

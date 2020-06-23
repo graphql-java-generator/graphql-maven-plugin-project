@@ -1,6 +1,8 @@
 package com.graphql_java_generator.plugin.test.helper;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -23,9 +25,11 @@ public class GenerateRelaySchemaConfigurationTestHelper implements GenerateRelay
 	final Logger log;
 
 	public File schemaFileFolder = null;
+	String schemaFileName = null;
 	public String schemaFilePattern = null;
 	public String resourceEncoding = null;
 	public File targetFolder = null;
+	public Map<String, String> templates = new HashMap<String, String>();
 
 	/**
 	 * @param caller
