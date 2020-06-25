@@ -15,7 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -35,7 +35,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	JsonSchemaPersonalization jsonSchemaPersonalization;
 
 	@Resource
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;

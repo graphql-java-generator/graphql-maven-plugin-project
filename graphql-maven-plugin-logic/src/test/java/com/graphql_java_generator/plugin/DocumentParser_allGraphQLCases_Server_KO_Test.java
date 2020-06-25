@@ -28,7 +28,7 @@ import graphql.schema.GraphQLScalarType;
 class DocumentParser_allGraphQLCases_Server_KO_Test {
 
 	@Resource
-	private DocumentParser documentParser;
+	private GraphQLDocumentParser documentParser;
 
 	@Resource
 	private GraphQLConfiguration pluginConfiguration;

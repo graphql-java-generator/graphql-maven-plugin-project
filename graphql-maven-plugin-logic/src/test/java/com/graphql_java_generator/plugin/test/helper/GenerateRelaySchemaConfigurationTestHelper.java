@@ -25,7 +25,7 @@ public class GenerateRelaySchemaConfigurationTestHelper implements GenerateRelay
 	final Logger log;
 
 	public File schemaFileFolder = null;
-	String schemaFileName = null;
+	public String schemaFileName = null;
 	public String schemaFilePattern = null;
 	public String resourceEncoding = null;
 	public File targetFolder = null;

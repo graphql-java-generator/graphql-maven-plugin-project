@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -42,7 +42,7 @@ public class JsonSchemaPersonalization {
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 
 	@Autowired
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 
 	@Autowired
 	GraphQLConfiguration pluginConfiguration;
@@ -55,7 +55,7 @@ public class JsonSchemaPersonalization {
 
 	/**
 	 * This is the 'main' method for this class: it loads the schema personalization from the json user file, and update
-	 * what the {@link DocumentParser} has already loaded according to the user's needs.
+	 * what the {@link GraphQLDocumentParser} has already loaded according to the user's needs.
 	 */
 	public void applySchemaPersonalization() {
 		try {

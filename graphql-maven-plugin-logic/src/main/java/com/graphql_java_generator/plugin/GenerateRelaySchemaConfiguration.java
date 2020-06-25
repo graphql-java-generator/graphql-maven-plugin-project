@@ -10,13 +10,11 @@ import java.util.Map;
  * @author etienne-sf
  *
  */
-public interface GenerateRelaySchemaConfiguration {
+public interface GenerateRelaySchemaConfiguration extends CommonConfiguration {
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
-	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
-	public final String DEFAULT_SCHEMA_FILE_NAME = "relay.graphqls";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
 	public final String DEFAULT_RESOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_TARGET_FOLDER = "/generated-resources/graphql-maven-plugin_generate-relay-schema";
@@ -25,12 +23,14 @@ public interface GenerateRelaySchemaConfiguration {
 	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
 	 * can use log4j2, by adding the 'Log4j JDK Logging Adapter' (JUL)
 	 */
+	@Override
 	public Logger getLog();
 
 	/**
 	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
 	 * schema(s) are expected to be: in this folder, or one of these subfolders
 	 */
+	@Override
 	public File getSchemaFileFolder();
 
 	/**
@@ -44,6 +44,7 @@ public interface GenerateRelaySchemaConfiguration {
 	 * will search all graphqls files in the "/src/main/resources" folder (please check also the <I>schemaFileFolder</I>
 	 * plugin parameter).
 	 */
+	@Override
 	public String getSchemaFilePattern();
 
 	/**
@@ -68,6 +69,7 @@ public interface GenerateRelaySchemaConfiguration {
 	 * in the future.
 	 * </P>
 	 */
+	@Override
 	public Map<String, String> getTemplates();
 
 	/** The encoding for the generated resource files */
@@ -77,6 +79,7 @@ public interface GenerateRelaySchemaConfiguration {
 	public File getTargetFolder();
 
 	/** Logs all the configuration parameters, in the debug level */
+	@Override
 	public default void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
 			getLog().debug("The graphql-java-generator Plugin Configuration for the generate-relay-schema is:");

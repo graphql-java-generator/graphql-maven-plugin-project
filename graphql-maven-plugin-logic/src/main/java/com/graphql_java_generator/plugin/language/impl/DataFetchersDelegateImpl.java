@@ -6,8 +6,8 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.plugin.CodeGenerator;
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -19,8 +19,8 @@ import lombok.Data;
  * * This class represents a GraphQL Data Fetcher Delegate. A DataFetchersDelegate aggregates all {@link DataFetcher}
  * for a GraphQL type. It is only used when in server mode, the GraphQL maven plugin generates on data fetcher delegate
  * for each object whose fields need at least one data fetcher. This helps to limit the impact on the specific code,
- * when the GraphQL schema changes. Their characteristics are read by {@link DocumentParser}, and used by
- * {@link CodeGenerator} and the Velocity templates to generate the code of the DataFechers, and their declaration in
+ * when the GraphQL schema changes. Their characteristics are read by {@link GraphQLDocumentParser}, and used by
+ * {@link GraphQLCodeGenerator} and the Velocity templates to generate the code of the DataFechers, and their declaration in
  * the GraphQLProvider.<BR/>
  * Thus there are two kinds of {@link DataFetchersDelegate}:
  * <UL>

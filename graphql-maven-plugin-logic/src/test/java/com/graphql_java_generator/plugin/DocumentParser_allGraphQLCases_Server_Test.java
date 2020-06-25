@@ -57,7 +57,7 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
 class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Resource
-	private DocumentParser documentParser;
+	private GraphQLDocumentParser documentParser;
 
 	@Resource
 	private GraphQLConfiguration pluginConfiguration;

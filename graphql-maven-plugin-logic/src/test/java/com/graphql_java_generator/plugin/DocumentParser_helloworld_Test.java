@@ -34,7 +34,7 @@ class DocumentParser_helloworld_Test {
 	GraphQLConfiguration pluginConfiguration;
 
 	@Autowired
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 
 	private Parser parser = new Parser();
 

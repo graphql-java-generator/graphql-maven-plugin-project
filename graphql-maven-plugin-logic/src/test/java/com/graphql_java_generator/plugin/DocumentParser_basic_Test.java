@@ -32,7 +32,7 @@ class DocumentParser_basic_Test {
 	GraphQLConfigurationTestHelper pluginConfiguration;
 
 	@Autowired
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 
 	private Parser parser = new Parser();
 

@@ -14,8 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.language.Document;
@@ -34,7 +36,6 @@ public abstract class AbstractSpringConfiguration {
 	public final static String ROOT_UNIT_TEST_FOLDER = "target/junittest_generate-relay-schema/";
 	public final static String ENCODING = "UTF-8";
 
-	/** Logger pour cette classe */
 	private final String schemaFilePattern;
 
 	@Resource
@@ -48,12 +49,22 @@ public abstract class AbstractSpringConfiguration {
 	GenerateRelaySchemaConfiguration generateRelaySchemaConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
 		GenerateRelaySchemaConfigurationTestHelper configuration = new GenerateRelaySchemaConfigurationTestHelper(this);
 		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), "src/test/resources");
+		configuration.schemaFileName = schemaFilePattern;
 		configuration.schemaFilePattern = schemaFilePattern;
 		configuration.resourceEncoding = ENCODING;
 		configuration.targetFolder = new File(mavenTestHelper.getModulePathFile(),
 				ROOT_UNIT_TEST_FOLDER + Forum_Client_SpringConfiguration.class.getSimpleName());
 
 		return configuration;
+	}
+
+	/** This beans won't be used in this use case, but we must declare it so that the Spring context can be loaded */
+	@Bean
+	GraphQLConfiguration graphqlConfigurationTestHelper() {
+		GraphQLConfigurationTestHelper configuration = new GraphQLConfigurationTestHelper(this);
+		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), "src/test/resources");
+		configuration.schemaFilePattern = schemaFilePattern;
+		return configuration; KO : ths doc parser must be able to wrk without it
 	}
 
 	/**

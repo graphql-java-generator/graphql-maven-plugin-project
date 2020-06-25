@@ -25,7 +25,7 @@ import graphql.schema.GraphQLScalarType;
  * 
  * @author etienne-sf
  */
-public interface GraphQLConfiguration {
+public interface GraphQLConfiguration extends CommonConfiguration {
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
@@ -36,8 +36,6 @@ public interface GraphQLConfiguration {
 	public final String DEFAULT_MODE = "client";
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_SCAN_BASE_PACKAGES = "null";
-	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
-	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
 	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "false";
 	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
@@ -82,12 +80,6 @@ public interface GraphQLConfiguration {
 	 * </P>
 	 */
 	public List<CustomScalarDefinition> getCustomScalars();
-
-	/**
-	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
-	 * can use log4j2, by adding the 'Log4j JDK Logging Adapter' (JUL)
-	 */
-	public Logger getLog();
 
 	/**
 	 * The generation mode: either client or server. Choose client to generate the code which can query a graphql server
@@ -145,19 +137,6 @@ public interface GraphQLConfiguration {
 		scanBasePackages = ",\"" + scanBasePackages + "\"";// scanBasePackages is now ,"a","b","c","d"
 		return scanBasePackages;
 	}
-
-	/**
-	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
-	 * schema(s) are expected to be: in this folder, or one of these subfolders
-	 */
-	public File getSchemaFileFolder();
-
-	/**
-	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
-	 * will search all graphqls files in the "/src/main/resources" folder (please check also the <I>schemaFileFolder</I>
-	 * plugin parameter).
-	 */
-	public String getSchemaFilePattern();
 
 	/**
 	 * <P>
@@ -284,6 +263,7 @@ public interface GraphQLConfiguration {
 	public boolean isSeparateUtilityClasses();
 
 	/** Logs all the configuration parameters, in the debug level */
+	@Override
 	public default void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
 			getLog().debug("The graphql-java-generator Plugin Configuration for the graphql goal is:");

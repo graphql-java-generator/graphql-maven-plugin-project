@@ -26,7 +26,7 @@ import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguratio
 class DocumentParser_StarWars_Server_Test {
 
 	@Autowired
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 
 	@BeforeEach
 	void setUp() throws Exception {

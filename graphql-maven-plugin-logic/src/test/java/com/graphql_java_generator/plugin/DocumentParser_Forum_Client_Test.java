@@ -30,7 +30,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 class DocumentParser_Forum_Client_Test {
 
 	@Autowired
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 
 	@SuppressWarnings("unused")
 	private Document doc;

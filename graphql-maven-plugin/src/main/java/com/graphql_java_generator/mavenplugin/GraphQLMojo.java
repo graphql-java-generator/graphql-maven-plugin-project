@@ -19,9 +19,9 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.CodeGenerator;
+import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
@@ -254,10 +254,10 @@ public class GraphQLMojo extends AbstractMojo {
 			// debug mode)
 			ctx.getBean(GraphQLConfiguration.class).logConfiguration();
 
-			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
+			GraphQLDocumentParser documentParser = ctx.getBean(GraphQLDocumentParser.class);
 			documentParser.parseDocuments();
 
-			CodeGenerator codeGenerator = ctx.getBean(CodeGenerator.class);
+			GraphQLCodeGenerator codeGenerator = ctx.getBean(GraphQLCodeGenerator.class);
 			int nbGeneratedClasses = codeGenerator.generateCode();
 
 			ctx.close();

@@ -13,7 +13,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 
 import graphql.ThreadSafe;
@@ -92,7 +92,7 @@ public class GenerateRelaySchemaMojo extends AbstractMojo {
 			// Let's log the current configuration (this will do something only when in debug mode)
 			ctx.getBean(GenerateRelaySchemaConfiguration.class).logConfiguration();
 
-			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
+			GraphQLDocumentParser documentParser = ctx.getBean(GraphQLDocumentParser.class);
 			documentParser.parseDocuments();
 
 			ctx.close();

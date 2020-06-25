@@ -39,7 +39,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 class DocumentParser_Forum_Server_Test {
 
 	@Autowired
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 	@Resource
 	GraphQLConfigurationTestHelper pluginConfiguration;
 

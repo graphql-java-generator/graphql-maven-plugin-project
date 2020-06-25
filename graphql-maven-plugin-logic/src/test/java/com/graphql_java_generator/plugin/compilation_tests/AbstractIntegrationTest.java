@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 
-import com.graphql_java_generator.plugin.CodeGenerator;
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.compiler.CompilationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
@@ -32,9 +32,9 @@ abstract class AbstractIntegrationTest {
 	GraphQLConfiguration pluginConfiguration;
 
 	@javax.annotation.Resource
-	protected DocumentParser documentParser;
+	protected GraphQLDocumentParser documentParser;
 	@javax.annotation.Resource
-	protected CodeGenerator codeGenerator;
+	protected GraphQLCodeGenerator codeGenerator;
 
 	/**
 	 * This test will be executed for each concrete subclass of this class

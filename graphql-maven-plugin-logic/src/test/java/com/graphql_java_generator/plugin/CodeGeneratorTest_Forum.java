@@ -7,8 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import com.graphql_java_generator.plugin.CodeGenerator;
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
@@ -21,9 +21,9 @@ class CodeGeneratorTest_Forum {
 	MavenTestHelper mavenTestHelper;
 
 	@javax.annotation.Resource
-	protected DocumentParser documentParser;
+	protected GraphQLDocumentParser documentParser;
 	@javax.annotation.Resource
-	protected CodeGenerator codeGenerator;
+	protected GraphQLCodeGenerator codeGenerator;
 
 	@BeforeEach
 	void setUp() throws Exception {

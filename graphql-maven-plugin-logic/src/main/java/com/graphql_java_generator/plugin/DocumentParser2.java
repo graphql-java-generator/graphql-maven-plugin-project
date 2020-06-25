@@ -98,17 +98,7 @@ import lombok.Getter;
  */
 @Component
 @Getter
-public class DocumentParser {
-
-	/**
-	 * The name of the package for utility classes, when the <I>separateUtilClasses</I> plugin parameter is set to true.
-	 * This is the name of subpackage within the package defined by the <I>packageName</I> plugin parameter. <BR/>
-	 * This constant is useless when the <I>separateUtilClasses</I> plugin parameter is set to false, which is its
-	 * default value.
-	 */
-	public static final String UTIL_PACKAGE_NAME = "util";
-
-	private static final String INTROSPECTION_QUERY = "__IntrospectionQuery";
+public class DocumentParser2 {
 
 	final String DEFAULT_QUERY_NAME = "Query";
 	final String DEFAULT_MUTATION_NAME = "Mutation";
@@ -118,7 +108,7 @@ public class DocumentParser {
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	GraphQLConfiguration configuration;
+	CommonConfiguration configuration;
 
 	@Autowired
 	GraphqlUtils graphqlUtils;
@@ -599,8 +589,7 @@ public class DocumentParser {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		ObjectType objectType = new ObjectType(node.getName(), configuration.getPackageName(),
-				configuration);
+		ObjectType objectType = new ObjectType(node.getName(), configuration.getPackageName(), configuration);
 
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
@@ -631,8 +620,7 @@ public class DocumentParser {
 	 */
 	ObjectType readInputObjectType(InputObjectTypeDefinition node) {
 
-		ObjectType objectType = new ObjectType(node.getName(), configuration.getPackageName(),
-				configuration);
+		ObjectType objectType = new ObjectType(node.getName(), configuration.getPackageName(), configuration);
 		objectType.setInputType(true);
 
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
@@ -661,8 +649,7 @@ public class DocumentParser {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		InterfaceType interfaceType = new InterfaceType(node.getName(), configuration.getPackageName(),
-				configuration);
+		InterfaceType interfaceType = new InterfaceType(node.getName(), configuration.getPackageName(), configuration);
 
 		interfaceType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 

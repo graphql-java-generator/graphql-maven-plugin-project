@@ -37,18 +37,18 @@ import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
 
 /**
- * This class generates the code, from the classes coming from the com.graphql_java_generator.plugin.language package.
- * This classes have been created by {link {@link DocumentParser}
+ * This class generates the code for the graphql goal/task of the plugin, from the classes coming from the
+ * com.graphql_java_generator.plugin.language package. This classes have been created by {link {@link GraphQLDocumentParser}
  * 
  * @author etienne-sf
  */
 @Component
-public class CodeGenerator {
+public class GraphQLCodeGenerator {
 
 	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
 
 	@Autowired
-	DocumentParser documentParser;
+	GraphQLDocumentParser documentParser;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
@@ -69,7 +69,7 @@ public class CodeGenerator {
 	/** The context for server mode. Stored here, so that it is calculated only once */
 	VelocityContext serverContext = null;
 
-	public CodeGenerator() {
+	public GraphQLCodeGenerator() {
 		// Initialization for Velocity
 		velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -378,8 +378,7 @@ public class CodeGenerator {
 
 			targetFile.getParentFile().mkdirs();
 			if (configuration.getSourceEncoding() != null) {
-				writer = new FileWriterWithEncoding(targetFile,
-						Charset.forName(configuration.getSourceEncoding()));
+				writer = new FileWriterWithEncoding(targetFile, Charset.forName(configuration.getSourceEncoding()));
 			} else {
 				writer = new FileWriter(targetFile);
 			}
