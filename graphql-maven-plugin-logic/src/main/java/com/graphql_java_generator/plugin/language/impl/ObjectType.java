@@ -60,8 +60,8 @@ public class ObjectType extends AbstractType {
 	 * @param pluginConfiguration
 	 *            The current {@link GraphQLConfiguration}
 	 */
-	public ObjectType(String name, String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(packageName, pluginConfiguration, GraphQlType.OBJECT);
+	public ObjectType(String name, String packageName) {
+		super(packageName, GraphQlType.OBJECT);
 		setName(name);
 	}
 
@@ -71,8 +71,8 @@ public class ObjectType extends AbstractType {
 	 * @param pluginConfiguration
 	 *            The current {@link GraphQLConfiguration}
 	 */
-	public ObjectType(String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(packageName, pluginConfiguration, GraphQlType.OBJECT);
+	public ObjectType(String packageName) {
+		super(packageName, GraphQlType.OBJECT);
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class ObjectType extends AbstractType {
 	 *            The current {@link GraphQLConfiguration}
 	 * @param type
 	 */
-	protected ObjectType(String name, String packageName, GraphQLConfiguration pluginConfiguration, GraphQlType type) {
-		super(packageName, pluginConfiguration, type);
+	protected ObjectType(String name, String packageName, GraphQlType type) {
+		super(packageName, type);
 		setName(name);
 	}
 

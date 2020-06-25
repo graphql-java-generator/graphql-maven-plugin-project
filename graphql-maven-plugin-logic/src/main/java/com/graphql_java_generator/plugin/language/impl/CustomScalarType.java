@@ -4,8 +4,8 @@
 package com.graphql_java_generator.plugin.language.impl;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.CustomScalar;
 
@@ -40,11 +40,10 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 	 *            The current {@link GraphQLConfiguration}
 	 * @see CustomScalarDefinition
 	 */
-	public CustomScalarType(CustomScalarDefinition customScalarDefinition, GraphQLConfiguration pluginConfiguration) {
+	public CustomScalarType(CustomScalarDefinition customScalarDefinition) {
 		super(customScalarDefinition.getGraphQLTypeName(),
 				GraphqlUtils.graphqlUtils.getPackageName(customScalarDefinition.getJavaType()),
-				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()),
-				pluginConfiguration);
+				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()));
 		this.customScalarDefinition = customScalarDefinition;
 	}
 

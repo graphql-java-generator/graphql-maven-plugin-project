@@ -36,7 +36,7 @@ import graphql.parser.Parser;
 class GenerateRelaySchema_Forum_Test {
 
 	@Autowired
-	GraphQLDocumentParser documentParser;
+	DocumentParser documentParser;
 
 	@Autowired
 	GenerateRelaySchema generateRelaySchema;

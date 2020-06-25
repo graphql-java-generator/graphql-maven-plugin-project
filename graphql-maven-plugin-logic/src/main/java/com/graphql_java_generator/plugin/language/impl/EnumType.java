@@ -34,8 +34,8 @@ public class EnumType extends AbstractType {
 	 * @param pluginConfiguration
 	 *            The current {@link GraphQLConfiguration}
 	 */
-	public EnumType(String name, String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(packageName, pluginConfiguration, GraphQlType.ENUM);
+	public EnumType(String name, String packageName) {
+		super(packageName, GraphQlType.ENUM);
 		setName(name);
 	}
 
@@ -45,8 +45,8 @@ public class EnumType extends AbstractType {
 	 * @param pluginConfiguration
 	 *            The current {@link GraphQLConfiguration}
 	 */
-	public EnumType(String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(packageName, pluginConfiguration, GraphQlType.ENUM);
+	public EnumType(String packageName) {
+		super(packageName, GraphQlType.ENUM);
 	}
 
 	/**

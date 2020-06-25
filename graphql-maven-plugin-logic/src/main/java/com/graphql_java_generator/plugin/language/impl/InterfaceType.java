@@ -58,8 +58,8 @@ public class InterfaceType extends ObjectType {
 	 */
 	List<ObjectType> implementingTypes = new ArrayList<>();
 
-	public InterfaceType(String name, String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(name, packageName, pluginConfiguration, GraphQlType.INTERFACE);
+	public InterfaceType(String name, String packageName) {
+		super(name, packageName, GraphQlType.INTERFACE);
 	}
 
 	/**
@@ -68,8 +68,8 @@ public class InterfaceType extends ObjectType {
 	 * @param pluginConfiguration
 	 *            The current {@link GraphQLConfiguration}
 	 */
-	public InterfaceType(String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(null, packageName, pluginConfiguration, GraphQlType.INTERFACE);
+	public InterfaceType(String packageName) {
+		super(null, packageName, GraphQlType.INTERFACE);
 	}
 
 }

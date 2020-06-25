@@ -7,8 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;

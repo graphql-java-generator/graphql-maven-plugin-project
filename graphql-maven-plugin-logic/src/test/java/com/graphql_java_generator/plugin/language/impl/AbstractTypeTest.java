@@ -18,7 +18,7 @@ class AbstractTypeTest {
 	@Test
 	void testAddImportClassOfQ() {
 		// Preparation
-		AbstractType type = new ObjectType("DateFormat", "com.fasterxml.jackson.annotation", pluginConfiguration);
+		AbstractType type = new ObjectType("DateFormat", "com.fasterxml.jackson.annotation");
 		assertEquals(0, type.getImports().size());
 
 		// Add of a class from the same package
@@ -51,7 +51,7 @@ class AbstractTypeTest {
 	@Test
 	void testAddImportStringString() {
 		// Preparation
-		AbstractType type = new ObjectType("DateFormat", "com.fasterxml.jackson.annotation", pluginConfiguration);
+		AbstractType type = new ObjectType("DateFormat", "com.fasterxml.jackson.annotation");
 		assertEquals(0, type.getImports().size());
 
 		// Add of a class from the same package

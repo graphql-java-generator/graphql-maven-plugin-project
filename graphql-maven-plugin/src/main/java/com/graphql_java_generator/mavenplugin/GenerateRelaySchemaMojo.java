@@ -13,8 +13,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 
 import graphql.ThreadSafe;
 

@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 import com.graphql_java_generator.plugin.Logger;
 
@@ -16,7 +14,6 @@ import lombok.Setter;
  * 
  * @author etienne-sf
  */
-@Component
 @Getter
 @Setter
 public class GenerateRelaySchemaConfigurationTestHelper implements GenerateRelaySchemaConfiguration {
@@ -24,6 +21,7 @@ public class GenerateRelaySchemaConfigurationTestHelper implements GenerateRelay
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	final Logger log;
 
+	public String packageName = "my.test.package";
 	public File schemaFileFolder = null;
 	public String schemaFileName = null;
 	public String schemaFilePattern = null;

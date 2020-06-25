@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class GenerateRelaySchema {
 
 	@Autowired
-	GraphQLDocumentParser documentParser;
+	DocumentParser documentParser;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)

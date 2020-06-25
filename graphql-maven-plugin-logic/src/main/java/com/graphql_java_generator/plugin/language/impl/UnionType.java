@@ -26,8 +26,8 @@ public class UnionType extends ObjectType {
 	 */
 	List<ObjectType> memberTypes = new ArrayList<>();
 
-	public UnionType(String name, String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(name, packageName, pluginConfiguration, GraphQlType.UNION);
+	public UnionType(String name, String packageName) {
+		super(name, packageName, GraphQlType.UNION);
 	}
 
 	/**
@@ -36,8 +36,8 @@ public class UnionType extends ObjectType {
 	 * @param pluginConfiguration
 	 *            The current {@link GraphQLConfiguration}
 	 */
-	public UnionType(String packageName, GraphQLConfiguration pluginConfiguration) {
-		super(null, packageName, pluginConfiguration, GraphQlType.UNION);
+	public UnionType(String packageName) {
+		super(null, packageName, GraphQlType.UNION);
 	}
 
 	/**

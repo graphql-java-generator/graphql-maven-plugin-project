@@ -38,8 +38,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
-import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
 
@@ -101,8 +101,8 @@ class CodeGeneratorTest {
 		codeGenerator.documentParser = mock(GraphQLDocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
 
-		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
-		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
+		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName());
+		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName());
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);
@@ -152,8 +152,8 @@ class CodeGeneratorTest {
 
 		pluginConfiguration.mode = PluginMode.server;
 
-		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
-		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName(), pluginConfiguration);
+		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName());
+		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName());
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		objects.add(object2);

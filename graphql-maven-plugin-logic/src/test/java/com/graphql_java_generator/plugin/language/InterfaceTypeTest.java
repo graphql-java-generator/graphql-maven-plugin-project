@@ -22,10 +22,10 @@ class InterfaceTypeTest {
 	@Test
 	void testGetConcreteClassSimpleName() {
 		// Preparation
-		ObjectType o = new ObjectType(packageName2, pluginConfiguration);
+		ObjectType o = new ObjectType(packageName2);
 		o.setName("AClassName");
 
-		InterfaceType i = new InterfaceType(packageName, pluginConfiguration);
+		InterfaceType i = new InterfaceType(packageName);
 
 		// Verification
 		assertEquals(null, i.getConcreteClassSimpleName(), "");

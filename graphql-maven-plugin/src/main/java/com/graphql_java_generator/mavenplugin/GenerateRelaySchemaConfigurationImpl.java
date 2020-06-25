@@ -58,4 +58,10 @@ public class GenerateRelaySchemaConfigurationImpl implements GenerateRelaySchema
 	public Map<String, String> getTemplates() {
 		return this.mojo.templates;
 	}
+
+	@Override
+	public String getPackageName() {
+		// Not used
+		return null;
+	}
 }

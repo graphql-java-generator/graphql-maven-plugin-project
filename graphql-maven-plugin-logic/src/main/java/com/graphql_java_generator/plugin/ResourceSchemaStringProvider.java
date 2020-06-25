@@ -38,31 +38,31 @@ public class ResourceSchemaStringProvider {
 	 * It adds the introspection GraphQL schema to the list of documents to read
 	 */
 	@Autowired
-	GraphQLConfiguration pluginConfiguration;
+	CommonConfiguration configuration;
 
 	public List<org.springframework.core.io.Resource> schemas() throws IOException {
 		String fullPathPattern;
-		if (pluginConfiguration.getSchemaFilePattern().startsWith("classpath:")) {
+		if (configuration.getSchemaFilePattern().startsWith("classpath:")) {
 			// We take the file pattern as is
-			fullPathPattern = pluginConfiguration.getSchemaFilePattern();
+			fullPathPattern = configuration.getSchemaFilePattern();
 		} else {
-			fullPathPattern = "file:///" + pluginConfiguration.getSchemaFileFolder().getCanonicalPath()
-					+ ((pluginConfiguration.getSchemaFilePattern().startsWith("/")
-							|| (pluginConfiguration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
-					+ pluginConfiguration.getSchemaFilePattern();
+			fullPathPattern = "file:///" + configuration.getSchemaFileFolder().getCanonicalPath()
+					+ ((configuration.getSchemaFilePattern().startsWith("/")
+							|| (configuration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
+					+ configuration.getSchemaFilePattern();
 		}
 
 		List<org.springframework.core.io.Resource> ret = new ArrayList<>(
 				Arrays.asList(applicationContext.getResources(fullPathPattern)));
 
-		// In client mode, we need to read the introspection schema
-		if (pluginConfiguration.getMode().equals(PluginMode.client)) {
-			org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
-			if (!introspection.exists()) {
-				throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
-			}
-			ret.add(introspection);
+		// // In client mode, we need to read the introspection schema
+		// if (configuration.getMode().equals(PluginMode.client)) {
+		org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
+		if (!introspection.exists()) {
+			throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
 		}
+		ret.add(introspection);
+		// }
 
 		return ret;
 	}
@@ -71,7 +71,7 @@ public class ResourceSchemaStringProvider {
 		List<org.springframework.core.io.Resource> resources = schemas();
 		if (resources.size() == 0) {
 			throw new IllegalStateException("No graphql schema files found on classpath with location pattern '"
-					+ pluginConfiguration.getSchemaFilePattern());
+					+ configuration.getSchemaFilePattern());
 		}
 
 		return resources.stream().map(this::readSchema).collect(Collectors.toList());
@@ -88,6 +88,6 @@ public class ResourceSchemaStringProvider {
 	}
 
 	public String getSchemaFilePattern() {
-		return pluginConfiguration.getSchemaFilePattern();
+		return configuration.getSchemaFilePattern();
 	}
 }
