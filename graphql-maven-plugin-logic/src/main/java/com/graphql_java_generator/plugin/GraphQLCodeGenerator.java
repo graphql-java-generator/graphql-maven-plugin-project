@@ -48,7 +48,7 @@ public class GraphQLCodeGenerator {
 	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
 
 	@Autowired
-	GraphQLDocumentParser documentParser;
+	GraphQLDocumentParser graphQLDocumentParser;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
@@ -78,7 +78,7 @@ public class GraphQLCodeGenerator {
 	}
 
 	/**
-	 * Execution of the code generation. The generation is done on the data build by the {@link #documentParser}
+	 * Execution of the code generation. The generation is done on the data build by the {@link #graphQLDocumentParser}
 	 * 
 	 * @Return The number of generated classes
 	 * @throws MojoExecutionException
@@ -90,15 +90,15 @@ public class GraphQLCodeGenerator {
 
 		int i = 0;
 		configuration.getLog().debug("Generating objects");
-		i += generateTargetFiles(documentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT),
+		i += generateTargetFiles(graphQLDocumentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT),
 				false);
 		configuration.getLog().debug("Generating interfaces");
-		i += generateTargetFiles(documentParser.getInterfaceTypes(), "interface",
+		i += generateTargetFiles(graphQLDocumentParser.getInterfaceTypes(), "interface",
 				resolveTemplate(CodeTemplate.INTERFACE), false);
 		configuration.getLog().debug("Generating unions");
-		i += generateTargetFiles(documentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION), false);
+		i += generateTargetFiles(graphQLDocumentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION), false);
 		configuration.getLog().debug("Generating enums");
-		i += generateTargetFiles(documentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM), false);
+		i += generateTargetFiles(graphQLDocumentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM), false);
 
 		switch (configuration.getMode()) {
 		case server:
@@ -112,49 +112,49 @@ public class GraphQLCodeGenerator {
 			if (configuration.isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
 				configuration.getLog().debug("Generating query");
-				i += generateTargetFile(documentParser.getQueryType(), "query",
+				i += generateTargetFile(graphQLDocumentParser.getQueryType(), "query",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
 				configuration.getLog().debug("Generating mutation");
-				i += generateTargetFile(documentParser.getMutationType(), "mutation",
+				i += generateTargetFile(graphQLDocumentParser.getMutationType(), "mutation",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
 				configuration.getLog().debug("Generating subscription");
-				i += generateTargetFile(documentParser.getSubscriptionType(), "subscription",
+				i += generateTargetFile(graphQLDocumentParser.getSubscriptionType(), "subscription",
 						resolveTemplate(CodeTemplate.SUBSCRIPTION), true);
 			}
 
 			// Generation of the query/mutation/subscription executor classes
 			configuration.getLog().debug("Generating query executors");
-			i += generateTargetFile(documentParser.getQueryType(), "executor",
+			i += generateTargetFile(graphQLDocumentParser.getQueryType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
 			configuration.getLog().debug("Generating mutation executors");
-			i += generateTargetFile(documentParser.getMutationType(), "executor",
+			i += generateTargetFile(graphQLDocumentParser.getMutationType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
 			configuration.getLog().debug("Generating subscription executors");
-			i += generateTargetFile(documentParser.getSubscriptionType(), "executor",
+			i += generateTargetFile(graphQLDocumentParser.getSubscriptionType(), "executor",
 					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
 			if (configuration.isGenerateDeprecatedRequestResponse()) {
 				configuration.getLog().debug("Generating query response");
-				i += generateTargetFile(documentParser.getQueryType(), "response",
+				i += generateTargetFile(graphQLDocumentParser.getQueryType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 				configuration.getLog().debug("Generating mutation response");
-				i += generateTargetFile(documentParser.getMutationType(), "response",
+				i += generateTargetFile(graphQLDocumentParser.getMutationType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 				configuration.getLog().debug("Generating subscription response");
-				i += generateTargetFile(documentParser.getSubscriptionType(), "response",
+				i += generateTargetFile(graphQLDocumentParser.getSubscriptionType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 			}
 
 			// Generation of the query/mutation/subscription root responses classes
 			configuration.getLog().debug("Generating query root response");
-			i += generateTargetFile(documentParser.getQueryType(), "root response",
+			i += generateTargetFile(graphQLDocumentParser.getQueryType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 			configuration.getLog().debug("Generating mutation root response");
-			i += generateTargetFile(documentParser.getMutationType(), "root response",
+			i += generateTargetFile(graphQLDocumentParser.getMutationType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 			configuration.getLog().debug("Generating subscription root response");
-			i += generateTargetFile(documentParser.getSubscriptionType(), "root response",
+			i += generateTargetFile(graphQLDocumentParser.getSubscriptionType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 
 			// Generation of the GraphQLRequest class
@@ -173,7 +173,7 @@ public class GraphQLCodeGenerator {
 					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
 			//
 			configuration.getLog().debug("Generating " + FILE_TYPE_JACKSON_DESERIALIZER);
-			i += generateTargetFiles(documentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
+			i += generateTargetFiles(graphQLDocumentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER), true);
 
 			//
@@ -288,9 +288,9 @@ public class GraphQLCodeGenerator {
 	int generateGraphQLRequest() {
 		VelocityContext context = getVelocityContext();
 
-		context.put("query", documentParser.getQueryType());
-		context.put("mutation", documentParser.getMutationType());
-		context.put("subscription", documentParser.getSubscriptionType());
+		context.put("query", graphQLDocumentParser.getQueryType());
+		context.put("mutation", graphQLDocumentParser.getMutationType());
+		context.put("subscription", graphQLDocumentParser.getSubscriptionType());
 
 		return generateOneFile(getJavaFile("GraphQLRequest", true), "generating GraphQLRequest", context,
 				resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
@@ -327,7 +327,7 @@ public class GraphQLCodeGenerator {
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
 				resolveTemplate(CodeTemplate.DATA_FETCHER));
 
-		for (DataFetchersDelegate dataFetcherDelegate : documentParser.dataFetchersDelegates) {
+		for (DataFetchersDelegate dataFetcherDelegate : graphQLDocumentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
 			configuration.getLog().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
 			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
@@ -335,7 +335,7 @@ public class GraphQLCodeGenerator {
 					resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
 		}
 
-		for (BatchLoader batchLoader : documentParser.batchLoaders) {
+		for (BatchLoader batchLoader : graphQLDocumentParser.batchLoaders) {
 			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
 			context.put("batchLoader", batchLoader);
 			configuration.getLog().debug("Generating " + name);
@@ -409,7 +409,7 @@ public class GraphQLCodeGenerator {
 	 */
 	File getJavaFile(String simpleClassname, boolean utilityClass) {
 		String packageName = (utilityClass && configuration.isSeparateUtilityClasses())
-				? documentParser.getUtilPackageName()
+				? graphQLDocumentParser.getUtilPackageName()
 				: configuration.getPackageName();
 		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java";
 		File file = new File(configuration.getTargetSourceFolder(), relativePath);
@@ -465,9 +465,9 @@ public class GraphQLCodeGenerator {
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
 		context.put("pluginConfiguration", configuration);
-		context.put("packageUtilName", documentParser.getUtilPackageName());
-		context.put("customScalars", documentParser.customScalars);
-		context.put("directives", documentParser.directives);
+		context.put("packageUtilName", graphQLDocumentParser.getUtilPackageName());
+		context.put("customScalars", graphQLDocumentParser.customScalars);
+		context.put("directives", graphQLDocumentParser.directives);
 		return context;
 	}
 
@@ -477,18 +477,18 @@ public class GraphQLCodeGenerator {
 	private VelocityContext getVelocityServerContext() {
 		if (serverContext == null) {
 			serverContext = getVelocityContext();
-			serverContext.put("dataFetchersDelegates", documentParser.getDataFetchersDelegates());
-			serverContext.put("interfaces", documentParser.getInterfaceTypes());
-			serverContext.put("unions", documentParser.getUnionTypes());
+			serverContext.put("dataFetchersDelegates", graphQLDocumentParser.getDataFetchersDelegates());
+			serverContext.put("interfaces", graphQLDocumentParser.getInterfaceTypes());
+			serverContext.put("unions", graphQLDocumentParser.getUnionTypes());
 
 			Set<String> imports = new ConcurrentSkipListSet<>();
 			// Let's calculate the list of imports for all the GraphQL schema object, input types, interfaces and unions
 			if (configuration.isSeparateUtilityClasses()) {
 				// ConcurrentSkipListSet: We need to be thread safe, for the parallel stream we use to fill it
-				documentParser.types.values().parallelStream()
+				graphQLDocumentParser.types.values().parallelStream()
 						.forEach(o -> imports.add(o.getPackageName() + "." + o.getClassSimpleName()));
 			}
-			documentParser.customScalars.parallelStream()
+			graphQLDocumentParser.customScalars.parallelStream()
 					.forEach(o -> imports.add(o.getPackageName() + "." + o.getClassSimpleName()));
 			serverContext.put("imports", imports);
 		}

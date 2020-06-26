@@ -55,14 +55,14 @@ public class ResourceSchemaStringProvider {
 		List<org.springframework.core.io.Resource> ret = new ArrayList<>(
 				Arrays.asList(applicationContext.getResources(fullPathPattern)));
 
-		// // In client mode, we need to read the introspection schema
-		// if (configuration.getMode().equals(PluginMode.client)) {
-		org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
-		if (!introspection.exists()) {
-			throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
+		// In client mode, we need to read the introspection schema
+		if (configuration instanceof GraphQLConfiguration && ((GraphQLConfiguration)configuration).getMode().equals(PluginMode.client)) {
+			org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
+			if (!introspection.exists()) {
+				throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
+			}
+			ret.add(introspection);
 		}
-		ret.add(introspection);
-		// }
 
 		return ret;
 	}

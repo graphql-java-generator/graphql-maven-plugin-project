@@ -19,8 +19,8 @@ import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
-import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.language.Document;
 import graphql.parser.Parser;
@@ -42,11 +42,11 @@ public abstract class AbstractSpringConfiguration {
 
 	/** Logger pour cette classe */
 	private final String schemaFilePattern;
-	
+
 	@Getter
 	@Setter
 	private String schemaFileSubFolder;
-	
+
 	private PluginMode mode;
 	private String schemaPersonalizationFilename = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
 	private List<CustomScalarDefinition> customScalars = null;
@@ -75,33 +75,30 @@ public abstract class AbstractSpringConfiguration {
 	}
 
 	@Bean
-	GraphQLConfiguration pluginConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
-		GraphQLConfigurationTestHelper pluginConfigurationTestHelper = new GraphQLConfigurationTestHelper(this);
-		pluginConfigurationTestHelper.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(),
-				"/src/test/resources");
+	GraphQLConfiguration graphQLConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
+		GraphQLConfigurationTestHelper configuration = new GraphQLConfigurationTestHelper(this);
+		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), "/src/test/resources");
 		if (schemaFileSubFolder != null) {
-			pluginConfigurationTestHelper.schemaFileFolder = new File(pluginConfigurationTestHelper.schemaFileFolder,
-					schemaFileSubFolder);
+			configuration.schemaFileFolder = new File(configuration.schemaFileFolder, schemaFileSubFolder);
 		}
 
 		String classname = this.getClass().getSimpleName();
 		int firstDollar = classname.indexOf('$');
-		pluginConfigurationTestHelper.packageName = BASE_PACKAGE + "."
-				+ classname.substring(0, firstDollar).toLowerCase();
+		configuration.packageName = BASE_PACKAGE + "." + classname.substring(0, firstDollar).toLowerCase();
 
-		pluginConfigurationTestHelper.customScalars = customScalars;
-		pluginConfigurationTestHelper.mode = mode;
-		pluginConfigurationTestHelper.schemaFilePattern = schemaFilePattern;
-		pluginConfigurationTestHelper.schemaPersonalizationFile = (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE
+		configuration.customScalars = customScalars;
+		configuration.mode = mode;
+		configuration.schemaFilePattern = schemaFilePattern;
+		configuration.schemaPersonalizationFile = (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE
 				.equals(schemaPersonalizationFilename)) ? null
 						: new File(mavenTestHelper.getModulePathFile(), schemaPersonalizationFilename);
-		pluginConfigurationTestHelper.sourceEncoding = ENCODING;
-		pluginConfigurationTestHelper.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
+		configuration.sourceEncoding = ENCODING;
+		configuration.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
 				(classname.contains("$")) ? classname = classname.substring(0, classname.indexOf('$')) : classname);
-		pluginConfigurationTestHelper.targetClassFolder = new File(
-				pluginConfigurationTestHelper.targetSourceFolder.getParentFile(), "compilation_test");
+		configuration.targetClassFolder = new File(configuration.targetSourceFolder.getParentFile(),
+				"compilation_test");
 
-		return pluginConfigurationTestHelper;
+		return configuration;
 	}
 
 	/**

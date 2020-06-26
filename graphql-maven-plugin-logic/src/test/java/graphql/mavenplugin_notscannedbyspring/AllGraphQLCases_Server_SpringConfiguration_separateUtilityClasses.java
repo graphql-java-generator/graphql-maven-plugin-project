@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.PluginMode;
@@ -18,7 +20,7 @@ import com.graphql_java_generator.plugin.PluginMode;
  * @author etienne-sf
  */
 @Configuration
-@ComponentScan(basePackages = "com.graphql_java_generator")
+@ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = @Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"))
 public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses extends AbstractSpringConfiguration {
 
 	static List<CustomScalarDefinition> customScalars;

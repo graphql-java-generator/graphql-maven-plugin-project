@@ -10,9 +10,9 @@ import lombok.Data;
 
 /**
  * This class contains the data in java form that the user has put in his/her schema configuration file.<BR/>
- * It is not public, as only {@link JsonSchemaPersonalization} may use it.
+ * It is not public, as only {@link GraphQLJsonSchemaPersonalization} may use it.
  * 
- * @See {@link JsonSchemaPersonalization}
+ * @See {@link GraphQLJsonSchemaPersonalization}
  * @author etienne-sf
  */
 @Data

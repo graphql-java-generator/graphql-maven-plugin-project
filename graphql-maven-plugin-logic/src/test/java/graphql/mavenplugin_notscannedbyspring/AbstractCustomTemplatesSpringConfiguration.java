@@ -99,8 +99,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	 */
 	@Override
 	@Bean
-	GraphQLConfiguration pluginConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
-		GraphQLConfigurationTestHelper pluginConfiguration = (GraphQLConfigurationTestHelper) super.pluginConfigurationTestHelper(
+	GraphQLConfiguration graphQLConfigurationTestHelper(MavenTestHelper mavenTestHelper) {
+		GraphQLConfigurationTestHelper pluginConfiguration = (GraphQLConfigurationTestHelper) super.graphQLConfigurationTestHelper(
 				mavenTestHelper);
 		pluginConfiguration.templates = buildTempaltes(this.codeTemplateScope);
 		return pluginConfiguration;

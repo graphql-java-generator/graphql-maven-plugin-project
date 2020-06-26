@@ -48,7 +48,7 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.language.impl.RelationImpl;
 import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.plugin.language.impl.UnionType;
-import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPersonalization;
+import com.graphql_java_generator.plugin.schema_personalization.GraphQLJsonSchemaPersonalization;
 
 import graphql.parser.Parser;
 import lombok.Getter;
@@ -87,11 +87,11 @@ public class GraphQLDocumentParser extends DocumentParser {
 	// Internal attributes for this class
 
 	/**
-	 * The {@link JsonSchemaPersonalization} allows the user to update what the plugin would have generate, through a
-	 * json configuration file
+	 * The {@link GraphQLJsonSchemaPersonalization} allows the user to update what the plugin would have generate,
+	 * through a json configuration file
 	 */
 	@Autowired
-	JsonSchemaPersonalization jsonSchemaPersonalization;
+	GraphQLJsonSchemaPersonalization jsonSchemaPersonalization;
 
 	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
 	List<Relation> relations = new ArrayList<>();
@@ -115,7 +115,8 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 * This method initializes the {@link #scalarTypes} list. This list depends on the use case
 	 * 
 	 */
-	private void initScalarTypes() {
+	@Override
+	protected void initScalarTypes() {
 		// In client mode, ID type is managed as a String
 		if (configuration.getMode().equals(PluginMode.server))
 			scalarTypes.add(new ScalarType("ID", "java.util", "UUID"));
@@ -777,6 +778,18 @@ public class GraphQLDocumentParser extends DocumentParser {
 		} else {
 			return configuration.getPackageName();
 		}
+	}
+
+	@Override
+	CustomScalarType getCustomScalarType(String name) {
+		for (CustomScalarType customScalarType : customScalars) {
+			if (customScalarType.getName().equals(name)) {
+				return customScalarType;
+			}
+		}
+
+		throw new RuntimeException(
+				"The plugin configuration must provide an implementation for the Custom Scalar '" + name + "'.");
 	}
 
 }

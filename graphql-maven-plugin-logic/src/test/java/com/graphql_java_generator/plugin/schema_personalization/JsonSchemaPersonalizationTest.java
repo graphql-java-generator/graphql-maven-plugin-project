@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.plugin.schema_personalization.EntityPersonalization;
 import com.graphql_java_generator.plugin.schema_personalization.Field;
-import com.graphql_java_generator.plugin.schema_personalization.JsonSchemaPersonalization;
+import com.graphql_java_generator.plugin.schema_personalization.GraphQLJsonSchemaPersonalization;
 import com.graphql_java_generator.plugin.schema_personalization.SchemaPersonalization;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
@@ -22,7 +22,7 @@ class JsonSchemaPersonalizationTest {
 
 	GraphQLConfigurationTestHelper pluginConfigurationTestHelper;
 
-	JsonSchemaPersonalization jsonSchemaPersonalization;
+	GraphQLJsonSchemaPersonalization jsonSchemaPersonalization;
 	File userJsonFile;
 
 	@BeforeEach
@@ -31,7 +31,7 @@ class JsonSchemaPersonalizationTest {
 		pluginConfigurationTestHelper.schemaPersonalizationFile = new File(new MavenTestHelper().getModulePathFile(),
 				"src/test/resources/schema_personalization/complete.json");
 
-		jsonSchemaPersonalization = new JsonSchemaPersonalization();
+		jsonSchemaPersonalization = new GraphQLJsonSchemaPersonalization();
 		jsonSchemaPersonalization.pluginConfiguration = pluginConfigurationTestHelper;
 	}
 

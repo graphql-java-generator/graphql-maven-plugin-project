@@ -37,7 +37,7 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
  * @author etienne-sf
  */
 @Component
-public class JsonSchemaPersonalization {
+public class GraphQLJsonSchemaPersonalization {
 
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 

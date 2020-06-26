@@ -32,7 +32,7 @@ abstract class AbstractIntegrationTest {
 	GraphQLConfiguration pluginConfiguration;
 
 	@javax.annotation.Resource
-	protected GraphQLDocumentParser documentParser;
+	protected GraphQLDocumentParser graphQLDocumentParser;
 	@javax.annotation.Resource
 	protected GraphQLCodeGenerator codeGenerator;
 
@@ -46,7 +46,7 @@ abstract class AbstractIntegrationTest {
 	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 	void testGenerateCode() throws IOException {
 		// Preparation
-		documentParser.parseDocuments();
+		graphQLDocumentParser.parseDocuments();
 
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetSourceFolder());
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetClassFolder());

@@ -32,7 +32,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	GraphQLConfiguration pluginConfiguration;
 
 	@Resource
-	JsonSchemaPersonalization jsonSchemaPersonalization;
+	GraphQLJsonSchemaPersonalization jsonSchemaPersonalization;
 
 	@Resource
 	GraphQLDocumentParser documentParser;

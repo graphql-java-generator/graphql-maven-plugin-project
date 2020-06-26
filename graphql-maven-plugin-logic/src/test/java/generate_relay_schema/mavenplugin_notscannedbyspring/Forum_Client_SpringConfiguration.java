@@ -16,8 +16,7 @@ import org.springframework.context.annotation.FilterType;
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper"),
-		@Filter(type = FilterType.REGEX, pattern = ".*JsonSchemaPersonalization") })
+		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
 public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public Forum_Client_SpringConfiguration() {

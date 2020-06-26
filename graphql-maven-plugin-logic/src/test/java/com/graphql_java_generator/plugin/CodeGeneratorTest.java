@@ -75,8 +75,8 @@ class CodeGeneratorTest {
 		}
 
 		codeGenerator = context.getBean(GraphQLCodeGenerator.class);
-		codeGenerator.documentParser = new GraphQLDocumentParser();
-		codeGenerator.documentParser.configuration = pluginConfiguration;
+		codeGenerator.graphQLDocumentParser = new GraphQLDocumentParser();
+		codeGenerator.graphQLDocumentParser.configuration = pluginConfiguration;
 	}
 
 	@Test
@@ -98,7 +98,7 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
-		codeGenerator.documentParser = mock(GraphQLDocumentParser.class);
+		codeGenerator.graphQLDocumentParser = mock(GraphQLDocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
 
 		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName());

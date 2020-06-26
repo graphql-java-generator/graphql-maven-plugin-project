@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -66,9 +65,8 @@ import lombok.Getter;
  * 
  * @author etienne-sf
  */
-@Component
 @Getter
-public class DocumentParser {
+public abstract class DocumentParser {
 
 	final String DEFAULT_QUERY_NAME = "Query";
 	final String DEFAULT_MUTATION_NAME = "Mutation";
@@ -200,7 +198,7 @@ public class DocumentParser {
 	 * This method initializes the {@link #scalarTypes} list. This list depends on the use case
 	 * 
 	 */
-	private void initScalarTypes() {
+	protected void initScalarTypes() {
 		// By default, we use the UUID type for the ID GraphQL type
 		scalarTypes.add(new ScalarType("ID", "java.util", "UUID"));
 		scalarTypes.add(new ScalarType("String", "java.lang", "String"));
@@ -623,16 +621,18 @@ public class DocumentParser {
 	CustomScalarType readCustomScalarType(ScalarTypeDefinition node) {
 		String name = node.getName();
 
-		for (CustomScalarType customScalarType : customScalars) {
-			if (customScalarType.getName().equals(name)) {
-				customScalarType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
-				return customScalarType;
-			}
-		}
-
-		throw new RuntimeException(
-				"The plugin configuration must provide an implementation for the Custom Scalar '" + name + "'.");
+		CustomScalarType customScalarType = getCustomScalarType(name);
+		customScalarType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
+		return customScalarType;
 	}
+
+	/**
+	 * This method retrieves the definition for the given Custom Scalar.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	abstract CustomScalarType getCustomScalarType(String name);
 
 	/**
 	 * Reads an enum definition, and create the relevant {@link EnumType}
