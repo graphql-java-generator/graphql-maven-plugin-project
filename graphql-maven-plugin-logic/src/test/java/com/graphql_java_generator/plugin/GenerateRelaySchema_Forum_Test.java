@@ -12,11 +12,13 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
@@ -25,6 +27,7 @@ import generate_relay_schema.mavenplugin_notscannedbyspring.Forum_Client_SpringC
 import graphql.language.Definition;
 import graphql.language.Document;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.ScalarTypeDefinition;
 import graphql.parser.Parser;
 
 /**
@@ -43,6 +46,9 @@ class GenerateRelaySchema_Forum_Test {
 
 	@Autowired
 	GenerateRelaySchemaConfigurationTestHelper configuration;
+
+	@Autowired
+	GraphqlUtils graphqlUtils;
 
 	MavenTestHelper mavenTestHelper = new MavenTestHelper();
 	Document generatedDocument;
@@ -73,6 +79,8 @@ class GenerateRelaySchema_Forum_Test {
 			for (Definition<?> node : doc.getDefinitions()) {
 				if (node instanceof ObjectTypeDefinition) {
 					checkObject((ObjectTypeDefinition) node);
+				} else if (node instanceof ScalarTypeDefinition) {
+					checkScalarType((ScalarTypeDefinition) node);
 				} else {
 					fail("non managed node type: " + node.getClass().getSimpleName());
 				}
@@ -87,19 +95,50 @@ class GenerateRelaySchema_Forum_Test {
 	 * 
 	 * @param objectDef
 	 */
-	private void checkObject(ObjectTypeDefinition objectDef) {
+	private void checkObject(ObjectTypeDefinition sourceNode) {
+		ObjectTypeDefinition generatedObject = getNodeFromGeneratedSchema(sourceNode.getName(),
+				ObjectTypeDefinition.class);
+
+		fail("field not tested");
+	}
+
+	private void checkScalarType(ScalarTypeDefinition sourceNode) {
+		ScalarTypeDefinition generatedObject = getNodeFromGeneratedSchema(sourceNode.getName(),
+				ScalarTypeDefinition.class);
+		fail("Not finished");
+	}
+
+	/**
+	 * This method retrieves the node of the given name and the given class, in the generated schema
+	 * 
+	 * @param <T>
+	 * @param searchedName
+	 *            The name of the node to be found
+	 * @param clazz
+	 *            The node type that is searched
+	 * @return The node of type <I>clazz</I> and of name <I>searchedName</I> that has been defined in the generated
+	 *         schema.
+	 * @throws AssertionFailedError
+	 *             If the node has not been found (will mark the JUnit test as KO)
+	 */
+	private <T extends Definition<?>> T getNodeFromGeneratedSchema(String searchedName, Class<T> clazz) {
 		// Each object in the source schema must be present in the generated schema
-		for (ObjectTypeDefinition node : generatedDocument.getDefinitionsOfType(ObjectTypeDefinition.class)) {
-			if (node.getName().contentEquals(objectDef.getName())) {
+		for (T node : generatedDocument.getDefinitionsOfType(clazz)) {
+			String foundName = (String) graphqlUtils.invokeMethod("getName", node);
+			if (searchedName.contentEquals(foundName)) {
 				fail("field not tested");
 			}
 		}
 
-		fail("The object definition '" + objectDef.getName() + "' doesn't exist in the generated schema");
+		fail("The node of type '" + clazz.getSimpleName() + "' and of name '" + searchedName
+				+ "' doesn't exist in the generated schema");
+		return null;
 	}
 
 	/** The folder where the generated GraphQL schema will be written */
-	File getTargetFolder() {
+	File
+
+			getTargetFolder() {
 		return new File(mavenTestHelper.getModulePathFile(), AbstractSpringConfiguration.ROOT_UNIT_TEST_FOLDER
 				+ Forum_Client_SpringConfiguration.class.getSimpleName());
 	}

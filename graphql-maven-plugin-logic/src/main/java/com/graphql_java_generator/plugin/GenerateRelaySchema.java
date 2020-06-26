@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class GenerateRelaySchema {
 
 	@Autowired
-	DocumentParser documentParser;
+	GenerateRelaySchemaDocumentParser documentParser;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
@@ -54,6 +54,10 @@ public class GenerateRelaySchema {
 
 	/** This method is the entry point, for the generation of the relay compatible schema */
 	public void generateRelaySchema() {
+
+		// Let's first read the source GraphQL schemas
+		documentParser.parseDocuments();
+
 		String msg = null;
 		try {
 			File targetFile = new File(configuration.getTargetFolder(), configuration.getSchemaFileName());
@@ -61,7 +65,7 @@ public class GenerateRelaySchema {
 			configuration.getLog().debug(msg);
 
 			VelocityContext context = new VelocityContext();
-			context.put("dummy", "dummy");
+			context.put("customScalars", documentParser.customScalars);
 			Template template = velocityEngine.getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");
 
 			targetFile.getParentFile().mkdirs();

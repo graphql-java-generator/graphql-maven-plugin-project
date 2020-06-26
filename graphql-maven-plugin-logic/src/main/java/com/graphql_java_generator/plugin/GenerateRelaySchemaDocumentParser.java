@@ -18,9 +18,20 @@ public class GenerateRelaySchemaDocumentParser extends DocumentParser {
 	 */
 	@Override
 	CustomScalarType getCustomScalarType(String name) {
+
+		// If this custom scalar has already been added to the list, let's return it
+		for (CustomScalarType customScalarType : customScalars) {
+			if (customScalarType.getName().equals(name)) {
+				return customScalarType;
+			}
+		}
+
+		// The custom scalar has not been added to the list yet, let's add it first.
 		CustomScalarDefinition customScalarDefinition = new CustomScalarDefinition(name, "java.lang.String",
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null);
-		return new CustomScalarType(customScalarDefinition);
+		CustomScalarType customScalarType = new CustomScalarType(customScalarDefinition);
+		customScalars.add(customScalarType);
+		return customScalarType;
 	}
 
 }
