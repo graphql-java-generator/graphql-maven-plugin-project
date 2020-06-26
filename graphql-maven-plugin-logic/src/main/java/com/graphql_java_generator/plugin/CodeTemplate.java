@@ -45,7 +45,7 @@ public enum CodeTemplate {
 	WEB_SOCKET_HANDLER(CodeTemplateScope.SERVER, "templates/server_WebSocketHandler.vm.java"),
 
 	// Template for the GraphQL relay schema generation
-	RELAY_SCHEMA(CodeTemplateScope.GENERATE_RELAY_SCHEMA, "templates/generateRelaySchema.vm.java");
+	RELAY_SCHEMA(CodeTemplateScope.GENERATE_RELAY_SCHEMA, "templates/generateRelaySchema.vm.graphqls");
 
 	/**
 	 * The scope for this template

@@ -1,0 +1,3 @@
+type HelloWorld {
+	name: String
+}
