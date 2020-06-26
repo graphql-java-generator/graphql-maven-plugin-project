@@ -8,6 +8,21 @@ scalar ${customScalar.name}
 
 #end
 
+###############################################################################################################
+################  Schema          #############################################################################
+###############################################################################################################
+
+schema {
+#if ($queryType)
+	query: $queryType.name
+#end
+#if ($mutationType)
+	mutation: $mutationType.name
+#end
+#if ($subscriptionType)
+	subscription: $subscriptionType.name
+#end
+}
 
 type HelloWorld {
 	name: String

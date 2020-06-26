@@ -1,5 +1,6 @@
 package com.graphql_java_generator.plugin;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -27,7 +28,9 @@ import generate_relay_schema.mavenplugin_notscannedbyspring.Forum_Client_SpringC
 import graphql.language.Definition;
 import graphql.language.Document;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
+import graphql.language.SchemaDefinition;
 import graphql.parser.Parser;
 
 /**
@@ -81,6 +84,8 @@ class GenerateRelaySchema_Forum_Test {
 					checkObject((ObjectTypeDefinition) node);
 				} else if (node instanceof ScalarTypeDefinition) {
 					checkScalarType((ScalarTypeDefinition) node);
+				} else if (node instanceof SchemaDefinition) {
+					checkSchema((SchemaDefinition) node);
 				} else {
 					fail("non managed node type: " + node.getClass().getSimpleName());
 				}
@@ -88,6 +93,39 @@ class GenerateRelaySchema_Forum_Test {
 		}
 
 		fail("Not finished");
+	}
+
+	private void checkScalarType(ScalarTypeDefinition sourceNode) {
+		getNodeFromGeneratedSchema(sourceNode.getName(), ScalarTypeDefinition.class);
+		// No other test: a scalar definition in a GraphQL schema contains just the scalar name.
+	}
+
+	private void checkSchema(SchemaDefinition sourceNode) {
+		int nbOperations = 0;
+
+		for (OperationTypeDefinition opDef : sourceNode.getOperationTypeDefinitions()) {
+			nbOperations += 1;
+			switch (opDef.getName()) {
+			case "query":
+				assertEquals(opDef.getTypeName().getName(), documentParser.queryType.getName());
+				break;
+			case "mutation":
+				assertEquals(opDef.getTypeName().getName(), documentParser.mutationType.getName());
+				break;
+			case "subscription":
+				assertEquals(opDef.getTypeName().getName(), documentParser.subscriptionType.getName());
+				break;
+			default:
+				throw new RuntimeException(
+						"Unexpected OperationTypeDefinition while reading schema: " + opDef.getName());
+			}// switch
+		} // for
+
+		// All found operations are of the correct type.
+		// Let's check that the total number of operation is correct. If yes, we're done.
+		int nbExpectedOperations = (documentParser.queryType == null ? 0 : 1)
+				+ (documentParser.mutationType == null ? 0 : 1) + (documentParser.subscriptionType == null ? 0 : 1);
+		assertEquals(nbExpectedOperations, nbOperations);
 	}
 
 	/**
@@ -100,12 +138,6 @@ class GenerateRelaySchema_Forum_Test {
 				ObjectTypeDefinition.class);
 
 		fail("field not tested");
-	}
-
-	private void checkScalarType(ScalarTypeDefinition sourceNode) {
-		ScalarTypeDefinition generatedObject = getNodeFromGeneratedSchema(sourceNode.getName(),
-				ScalarTypeDefinition.class);
-		fail("Not finished");
 	}
 
 	/**
@@ -126,7 +158,7 @@ class GenerateRelaySchema_Forum_Test {
 		for (T node : generatedDocument.getDefinitionsOfType(clazz)) {
 			String foundName = (String) graphqlUtils.invokeMethod("getName", node);
 			if (searchedName.contentEquals(foundName)) {
-				fail("field not tested");
+				return node;
 			}
 		}
 
