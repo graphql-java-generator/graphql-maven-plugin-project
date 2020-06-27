@@ -31,6 +31,7 @@ public class GenerateRelaySchemaDocumentParser extends DocumentParser {
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null);
 		CustomScalarType customScalarType = new CustomScalarType(customScalarDefinition);
 		customScalars.add(customScalarType);
+		types.put(customScalarType.getName(), customScalarType);
 		return customScalarType;
 	}
 

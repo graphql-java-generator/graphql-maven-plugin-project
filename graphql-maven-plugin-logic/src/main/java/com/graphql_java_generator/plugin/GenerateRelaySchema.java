@@ -69,6 +69,7 @@ public class GenerateRelaySchema {
 			context.put("queryType", documentParser.queryType);
 			context.put("mutationType", documentParser.mutationType);
 			context.put("subscriptionType", documentParser.subscriptionType);
+			context.put("objectTypes", documentParser.objectTypes);
 			Template template = velocityEngine.getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");
 
 			targetFile.getParentFile().mkdirs();

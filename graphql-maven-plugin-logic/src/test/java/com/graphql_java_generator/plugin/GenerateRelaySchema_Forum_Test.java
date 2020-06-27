@@ -27,6 +27,7 @@ import generate_relay_schema.mavenplugin_notscannedbyspring.AbstractSpringConfig
 import generate_relay_schema.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 import graphql.language.Definition;
 import graphql.language.Document;
+import graphql.language.FieldDefinition;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
@@ -92,7 +93,7 @@ class GenerateRelaySchema_Forum_Test {
 			}
 		}
 
-		fail("Not finished");
+		fail("Not finished (directive, including directive on fields, types...)");
 	}
 
 	private void checkScalarType(ScalarTypeDefinition sourceNode) {
@@ -137,8 +138,59 @@ class GenerateRelaySchema_Forum_Test {
 		ObjectTypeDefinition generatedObject = getNodeFromGeneratedSchema(sourceNode.getName(),
 				ObjectTypeDefinition.class);
 
+		for (FieldDefinition sourceField : sourceNode.getFieldDefinitions()) {
+			for (FieldDefinition generatedField : generatedObject.getFieldDefinitions()) {
+				// We found a field of the correct name. Let's check it's metadata
+				fail("To be implemented: checkField(sourceField, generatedField)");
+				// assertEquals(sourceField.getType().get, );
+			}
+			fail("In the object '" + sourceNode.getName() + "', the field '" + sourceField.getName()
+					+ "' doesn't exist in the generated schema");
+		}
+
 		fail("field not tested");
 	}
+
+	// private void checkField(FieldDefinition sourceField, FieldDefinition generatedField) {
+	// TypeName typeName = null;
+	// if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof TypeName) {
+	// typeName = (TypeName) graphqlUtils.invokeMethod("getType", fieldDef);
+	// } else if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof NonNullType) {
+	// field.setMandatory(true);
+	// Node<?> node = ((NonNullType) graphqlUtils.invokeMethod("getType", fieldDef)).getType();
+	// if (node instanceof TypeName) {
+	// typeName = (TypeName) node;
+	// } else if (node instanceof ListType) {
+	// Node<?> subNode = ((ListType) node).getType();
+	// field.setList(true);
+	// if (subNode instanceof TypeName) {
+	// typeName = (TypeName) subNode;
+	// } else if (subNode instanceof NonNullType) {
+	// typeName = (TypeName) ((NonNullType) subNode).getType();
+	// field.setItemMandatory(true);
+	// } else {
+	// throw new RuntimeException("Case not found (subnode of a ListType). The node is of type "
+	// + subNode.getClass().getName() + " (for field " + field.getName() + ")");
+	// }
+	// } else {
+	// throw new RuntimeException("Case not found (subnode of a NonNullType). The node is of type "
+	// + node.getClass().getName() + " (for field " + field.getName() + ")");
+	// }
+	// } else if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof ListType) {
+	// field.setList(true);
+	// Node<?> node = ((ListType) graphqlUtils.invokeMethod("getType", fieldDef)).getType();
+	// if (node instanceof TypeName) {
+	// typeName = (TypeName) node;
+	// } else if (node instanceof NonNullType) {
+	// typeName = (TypeName) ((NonNullType) node).getType();
+	// field.setItemMandatory(true);
+	// } else {
+	// throw new RuntimeException("Case not found (subnode of a ListType). The node is of type "
+	// + node.getClass().getName() + " (for field " + field.getName() + ")");
+	// }
+	// }
+	//
+	// }
 
 	/**
 	 * This method retrieves the node of the given name and the given class, in the generated schema
