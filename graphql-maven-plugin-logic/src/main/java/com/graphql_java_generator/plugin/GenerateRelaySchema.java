@@ -19,7 +19,6 @@ import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * This class generates the relay schema, based on the given GraphQL schema(s). That is: it generates a GraphQL schema,
@@ -29,7 +28,7 @@ import org.springframework.stereotype.Component;
  * @author etienne-sf
  *
  */
-@Component
+// @Component
 public class GenerateRelaySchema {
 
 	@Autowired

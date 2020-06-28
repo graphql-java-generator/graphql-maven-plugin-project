@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +97,7 @@ class GenerateRelaySchema_Forum_Test {
 	 * @throws IOException
 	 */
 	@Disabled
-	@Test
+	// @Test
 	@DirtiesContext
 	void testGenerateRelaySchema() throws IOException {
 
