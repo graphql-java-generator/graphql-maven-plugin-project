@@ -32,7 +32,8 @@ public abstract class AbstractSpringConfiguration {
 	public final static String ROOT_UNIT_TEST_FOLDER = "target/junittest_generate-relay-schema/";
 	public final static String ENCODING = "UTF-8";
 
-	private final String schemaFilePattern;
+	private String schemaFileFolder = "src/test/resources";
+	private String schemaFilePattern;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -40,13 +41,19 @@ public abstract class AbstractSpringConfiguration {
 	GenerateRelaySchemaConfigurationTestHelper configuration;
 
 	protected AbstractSpringConfiguration(String schemaFilePattern) {
+		schemaFileFolder = "src/test/resources";
+		this.schemaFilePattern = schemaFilePattern;
+	}
+
+	protected AbstractSpringConfiguration(String schemaFileFolder, String schemaFilePattern) {
+		this.schemaFileFolder = schemaFileFolder;
 		this.schemaFilePattern = schemaFilePattern;
 	}
 
 	@Bean
 	GenerateRelaySchemaConfigurationTestHelper graphQLConfigurationTestHelper() {
 		GenerateRelaySchemaConfigurationTestHelper configuration = new GenerateRelaySchemaConfigurationTestHelper(this);
-		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), "src/test/resources");
+		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), schemaFileFolder);
 		configuration.schemaFileName = schemaFilePattern;
 		configuration.schemaFilePattern = schemaFilePattern;
 		configuration.resourceEncoding = ENCODING;
