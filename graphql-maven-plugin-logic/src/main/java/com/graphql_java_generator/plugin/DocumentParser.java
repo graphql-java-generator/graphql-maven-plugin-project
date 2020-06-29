@@ -46,6 +46,7 @@ import graphql.language.ListType;
 import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.ObjectTypeExtensionDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
@@ -120,6 +121,12 @@ public abstract class DocumentParser {
 	 */
 	@Getter
 	List<ObjectType> objectTypes = new ArrayList<>();
+
+	/**
+	 * We store all the found object extensions (extend GraphQL keyword), to manage them once all object definitions
+	 * have been read
+	 */
+	List<ObjectTypeExtensionDefinition> objectTypeExtensionDefinitions = new ArrayList<>();
 
 	/**
 	 * All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents
@@ -239,6 +246,8 @@ public abstract class DocumentParser {
 		// The types Map allows to retrieve easily a Type from its name
 		configuration.getLog().debug("Fill type map");
 		fillTypesMap();
+		// Manage ObjectTypeExtensionDefinition: add the extension to the object they belong to
+		manageObjectTypeExtensionDefinition();
 
 		// We're done
 		int nbClasses = (queryType == null ? 0 : 1) + (subscriptionType == null ? 0 : 1)
@@ -296,13 +305,20 @@ public abstract class DocumentParser {
 			if (node instanceof InterfaceTypeDefinition) {
 				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
 			} else
+			// extend object
+			if (node instanceof ObjectTypeExtensionDefinition) {
+				// ObjectTypeExtensionDefinition is a subclass of ObjectTypeDefinition, so we need to check it first.
+				//
+				// No action here: we'll manage all the object extensions once all object definitions have been read
+				objectTypeExtensionDefinitions.add((ObjectTypeExtensionDefinition) node);
+			} else
 			// object
 			if (node instanceof ObjectTypeDefinition) {
 				// Let's check what kind of ObjectDefinition we have
 				String name = ((ObjectTypeDefinition) node).getName();
 				if (queryObjectNames.contains(name) || DEFAULT_QUERY_NAME.equals(name)) {
 					// We first read the object type, that'll go to the main package
-					ObjectType o = readObjectType((ObjectTypeDefinition) node);
+					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
 					o.setRequestType("query");
 					objectTypes.add(o);
 					// Then we read the query, that'll go in the util subpackage: its imports are different
@@ -312,12 +328,12 @@ public abstract class DocumentParser {
 										+ "'. A Query root operation has already been read, with name'"
 										+ queryType.getName() + "'");
 					}
-					queryType = readObjectType((ObjectTypeDefinition) node);
+					queryType = readObjectTypeDefinition((ObjectTypeDefinition) node);
 					queryType.setPackageName(getUtilPackageName());
 					queryType.setRequestType("query");
 				} else if (mutationObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
 					// We first read the object type, that'll go to the main package
-					ObjectType o = readObjectType((ObjectTypeDefinition) node);
+					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
 					o.setRequestType("mutation");
 					objectTypes.add(o);
 					// Then we read the mutation, that'll go in the util subpackage: its imports are different
@@ -327,12 +343,12 @@ public abstract class DocumentParser {
 										+ "'. A Mutation root operation has already been read, with name'"
 										+ mutationType.getName() + "'");
 					}
-					mutationType = readObjectType((ObjectTypeDefinition) node);
+					mutationType = readObjectTypeDefinition((ObjectTypeDefinition) node);
 					mutationType.setPackageName(getUtilPackageName());
 					mutationType.setRequestType("mutation");
 				} else if (subscriptionObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
 					// We first read the object type, that'll go to the main package
-					ObjectType o = readObjectType((ObjectTypeDefinition) node);
+					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
 					o.setRequestType("subscription");
 					objectTypes.add(o);
 					// Then we read the subscription, that'll go in the util subpackage: its imports are different
@@ -342,11 +358,11 @@ public abstract class DocumentParser {
 										+ "'. A Subscription root operation has already been read, with name'"
 										+ subscriptionType.getName() + "'");
 					}
-					subscriptionType = readObjectType((ObjectTypeDefinition) node);
+					subscriptionType = readObjectTypeDefinition((ObjectTypeDefinition) node);
 					subscriptionType.setPackageName(getUtilPackageName());
 					subscriptionType.setRequestType("subscription");
 				} else {
-					objectTypes.add(readObjectType((ObjectTypeDefinition) node));
+					objectTypes.add(readObjectTypeDefinition((ObjectTypeDefinition) node));
 				}
 			} else
 			// scalar
@@ -498,21 +514,49 @@ public abstract class DocumentParser {
 	 * @param node
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
-	ObjectType readObjectType(ObjectTypeDefinition node) {
-		// Let's check if it's a real object, or part of a schema (query, subscription,
-		// mutation) definition
-
+	ObjectType readObjectTypeDefinition(ObjectTypeDefinition node) {
 		ObjectType objectType = new ObjectType(node.getName(), configuration.getPackageName());
+		return addObjectTypeDefinition(objectType, node);
+	}
 
+	/**
+	 * Manages all the extensions found in the read {@link Document}s, and them to the relevant object(s)
+	 */
+	void manageObjectTypeExtensionDefinition() {
+		for (ObjectTypeExtensionDefinition node : objectTypeExtensionDefinitions) {
+			ObjectType objectType = (ObjectType) getType(node.getName());
+			addObjectTypeDefinition(objectType, node);
+
+			// if this object is a root operation, we must also upgrade this root operation
+			if (queryType != null && queryType.getName().equals(node.getName())) {
+				addObjectTypeDefinition(queryType, node);
+			} else if (mutationType != null && mutationType.getName().equals(node.getName())) {
+				addObjectTypeDefinition(mutationType, node);
+			} else if (subscriptionType != null && subscriptionType.getName().equals(node.getName())) {
+				addObjectTypeDefinition(subscriptionType, node);
+			}
+		}
+	}
+
+	/**
+	 * @param objectType
+	 *            The Object Type Definition in which the node properties must be stored. It should be null when reading
+	 *            a {@link ObjectTypeDefinition}, so that a new {@link ObjectType} is returned. And not null for
+	 *            {@link ObjectTypeExtensionDefinition}, so that the read properties are added to the already existing
+	 *            {@link ObjectType}.
+	 * @param node
+	 * @return
+	 */
+	private ObjectType addObjectTypeDefinition(final ObjectType objectType, ObjectTypeDefinition node) {
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's read all its fields
-		objectType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, objectType))
+		objectType.getFields().addAll(node.getFieldDefinitions().stream().map(def -> readField(def, objectType))
 				.collect(Collectors.toList()));
 
 		// Let's read all the other object types that this one implements
-		for (graphql.language.Type type : node.getImplements()) {
+		for (@SuppressWarnings("rawtypes")
+		graphql.language.Type type : node.getImplements()) {
 			if (type instanceof TypeName) {
 				objectType.getImplementz().add(((TypeName) type).getName());
 			} else if (type instanceof graphql.language.EnumValue) {

@@ -43,9 +43,16 @@ public interface CommonConfiguration {
 	public File getSchemaFileFolder();
 
 	/**
+	 * <P>
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
 	 * will search all graphqls files in the "/src/main/resources" folder (please check also the <I>schemaFileFolder</I>
 	 * plugin parameter).
+	 * </P>
+	 * <P>
+	 * You can put the star (*) joker in the filename, to retrieve several files at ones, for instance
+	 * <I>/myschema*.graphqls</I> will retrieve the <I>/src/main/resources/myschema.graphqls</I> and
+	 * <I>/src/main/resources/myschema_extend.graphqls</I> files.
+	 * <P>
 	 */
 	public String getSchemaFilePattern();
 

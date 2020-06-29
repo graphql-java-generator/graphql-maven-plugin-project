@@ -16,6 +16,6 @@ class AllGraphQLCasesServerTest extends AbstractIntegrationTest {
 	// The only aim of this class, is to have its own Spring Configuration
 	@BeforeEach
 	public void setUp() {
-		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases.graphqls");
+		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases*.graphqls");
 	}
 }

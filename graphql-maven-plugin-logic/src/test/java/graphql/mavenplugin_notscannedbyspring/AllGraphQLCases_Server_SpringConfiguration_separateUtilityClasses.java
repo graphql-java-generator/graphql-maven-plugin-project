@@ -37,6 +37,6 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 	}
 
 	public AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses() {
-		super("allGraphQLCases.graphqls", PluginMode.server, customScalars);
+		super("allGraphQLCases*.graphqls", PluginMode.server, customScalars);
 	}
 }

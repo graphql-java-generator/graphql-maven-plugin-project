@@ -47,11 +47,7 @@ type MyQueryType {
     # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
     # List is null if the directive is not present.
     directiveOnField: Character!
-    
-    ################################################################################
-    # A particular test, based on the github schema: a query that returns the query object.
-    # It introduces complexity in the code generation, that must be tested    
-    relay: MyQueryType!
+
 }
 
 type AnotherMutationType {

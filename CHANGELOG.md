@@ -5,6 +5,12 @@ New developments should use these parameters, to be compliant with default value
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
+# Not released yet
+
+Both mode (client and server):
+* The GraphQL schema can now be split into separate files, including one file containing GraphQL extend keyword on the other file's objects
+
+
 # 1.8.1
 
 Both mode (client and server):

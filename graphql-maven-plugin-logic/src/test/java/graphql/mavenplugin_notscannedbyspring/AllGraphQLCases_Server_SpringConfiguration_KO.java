@@ -23,6 +23,6 @@ import graphql.schema.GraphQLScalarType;
 public class AllGraphQLCases_Server_SpringConfiguration_KO extends AbstractSpringConfiguration {
 
 	public AllGraphQLCases_Server_SpringConfiguration_KO() {
-		super("allGraphQLCases.graphqls", PluginMode.server);
+		super("allGraphQLCases*.graphqls", PluginMode.server);
 	}
 }
