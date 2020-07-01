@@ -2,6 +2,7 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.cedarsoftware.util.DeepEquals;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
@@ -96,8 +98,7 @@ class GenerateRelaySchema_Forum_Test {
 	 * 
 	 * @throws IOException
 	 */
-	@Disabled
-	// @Test
+	@Test
 	@DirtiesContext
 	void testGenerateRelaySchema() throws IOException {
 
@@ -117,6 +118,10 @@ class GenerateRelaySchema_Forum_Test {
 		ctx.close();
 
 		// Let's check the two DocumentParser instances, to check they are the same
+		assertTrue(DeepEquals.deepEquals(documentParser, generatedDocumentParser));
+		
+		Un ajout vers la javadoc serait bien
+		
 		fail("missing the source and target DocumentParser comparison");
 	}
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -39,10 +40,11 @@
 	</developers>
 
 	<scm>
-		<!-- See the connection id in the properties, which allows to define the credentials -->
+		<!-- See the connection id in the properties, which allows to define the 
+			credentials -->
 		<!-- See first response of https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
-		<!-- Principle the project.scm.id property allows to define a server name, then define the relevant user/password for this 
-			server id in the settings.xml -->
+		<!-- Principle the project.scm.id property allows to define a server name, 
+			then define the relevant user/password for this server id in the settings.xml -->
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
 		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
@@ -62,7 +64,8 @@
 
 	<modules>
 		<!-- Below are the module that are always in the build -->
-		<!-- The samples (within graphql-maven-plugin-samples module) are activated only when not in release mode (see profiles) -->
+		<!-- The samples (within graphql-maven-plugin-samples module) are activated 
+			only when not in release mode (see profiles) -->
 		<module>graphql-java-runtime</module>
 		<module>graphql-maven-plugin</module>
 		<module>graphql-java-client-dependencies</module>
@@ -71,10 +74,11 @@
 	</modules>
 
 	<properties>
-		<!-- See the connection id in the properties, which allows to define the credentials -->
+		<!-- See the connection id in the properties, which allows to define the 
+			credentials -->
 		<!-- See first response of https://stackoverflow.com/questions/28282572/maven-release-plugin-git-credentials -->
-		<!-- Principle the project.scm.id property allows to define a server name, then define the relevant user/password for this 
-			server id in the settings.xml -->
+		<!-- Principle the project.scm.id property allows to define a server name, 
+			then define the relevant user/password for this server id in the settings.xml -->
 		<project.scm.id>git-graphql-java-generator</project.scm.id>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -83,9 +87,10 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-		<!-- The lastReleasedVersion is the version displayed in the site. The default value is the project version, which is Ok 
-			when actually doing a release. It can also be defined on the command line with -DlastReleasedVersion=version when building 
-			the site afterward -->
+		<!-- The lastReleasedVersion is the version displayed in the site. The 
+			default value is the project version, which is Ok when actually doing a release. 
+			It can also be defined on the command line with -DlastReleasedVersion=version 
+			when building the site afterward -->
 		<lastReleasedVersion>${project.version}</lastReleasedVersion>
 	</properties>
 
@@ -210,7 +215,8 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<!-- This plugin allows to start the SpringBoot StarWars-server in the background during the integration tests -->
+					<!-- This plugin allows to start the SpringBoot StarWars-server in the 
+						background during the integration tests -->
 					<groupId>com.bazaarvoice.maven.plugins</groupId>
 					<artifactId>process-exec-maven-plugin</artifactId>
 					<version>0.7</version>
@@ -325,7 +331,8 @@
 				<version>2019-06-24T11-47-27-31ab4f9</version>
 			</dependency>
 			<dependency>
-				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
+				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This 
+					project has been moved to com.graphql-java-kickstart -->
 				<groupId>com.graphql-java-kickstart</groupId>
 				<artifactId>graphiql-spring-boot-starter</artifactId>
 				<version>6.0.1</version>
@@ -353,6 +360,11 @@
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>2.6</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cedarsoftware</groupId>
+				<artifactId>java-util</artifactId>
+				<version>1.52.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.dozermapper</groupId>
@@ -402,7 +414,8 @@
 	<profiles>
 
 		<profile>
-			<!-- Activate this release, to generate releases, and deploy them to the central repository -->
+			<!-- Activate this release, to generate releases, and deploy them to the 
+				central repository -->
 			<!-- https://central.sonatype.org/pages/apache-maven.html#performing-a-release-deployment -->
 			<!-- mvn com.github.github:site-maven-plugin:site -Prelease -->
 			<!-- Issue raised: https://github.com/github/maven-plugins/issues/139 -->
@@ -437,16 +450,20 @@
 						<!-- -->
 						<!-- NOT USED. USE maven-release-plugin, instead -->
 						<!-- -->
-						<!-- The change of the versions for your project, and the parent references in a multi module setup, can be performed 
-							manually or with the help of the Maven versions plugin. -->
+						<!-- The change of the versions for your project, and the parent references 
+							in a multi module setup, can be performed manually or with the help of the 
+							Maven versions plugin. -->
 						<!-- mvn versions:set -DnewVersion=1.2.3 -->
-						<!-- If your version is a release version (does not end in -SNAPSHOT) and with this setup in place, you can run a deployment 
-							to OSSRH and an automated release to the Central Repository with the usual: -->
+						<!-- If your version is a release version (does not end in -SNAPSHOT) 
+							and with this setup in place, you can run a deployment to OSSRH and an automated 
+							release to the Central Repository with the usual: -->
 						<!-- mvn clean deploy -Prelease -->
-						<!-- With the property autoReleaseAfterClose set to false you can manually inspect the staging repository in the Nexus 
-							Repository Manager and trigger a release of the staging repository later with -->
+						<!-- With the property autoReleaseAfterClose set to false you can manually 
+							inspect the staging repository in the Nexus Repository Manager and trigger 
+							a release of the staging repository later with -->
 						<!-- mvn nexus-staging:release -P release -->
-						<!-- If you find something went wrong you can drop the staging repository with -->
+						<!-- If you find something went wrong you can drop the staging repository 
+							with -->
 						<!-- mvn nexus-staging:drop -Prelease -->
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -457,7 +474,8 @@
 						<!-- "C:\appli\java\apache-ant\bin\ant.bat" -f ant-deploy-site.xml -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-						<!-- executions> <execution> <phase>site-deploy</phase> <goals> <goal>run</goal> </goals> </execution> </executions -->
+						<!-- executions> <execution> <phase>site-deploy</phase> <goals> <goal>run</goal> 
+							</goals> </execution> </executions -->
 						<configuration>
 							<target>
 								<ant antfile="ant-deploy-site.xml" />
@@ -470,7 +488,8 @@
 		</profile>
 
 		<profile>
-			<!-- This profile is activated, when the "release" profile is not active. It embeds all samples. -->
+			<!-- This profile is activated, when the "release" profile is not active. 
+				It embeds all samples. -->
 			<!-- This prevents the sample to pollute the maven central repository -->
 			<id>withSamples</id>
 			<activation>

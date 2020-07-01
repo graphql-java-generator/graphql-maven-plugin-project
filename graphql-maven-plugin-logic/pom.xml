@@ -92,6 +92,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<!-- Contains a useful deepEquals method, for tests -->
+			<groupId>com.cedarsoftware</groupId>
+			<artifactId>java-util</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<scope>test</scope>
