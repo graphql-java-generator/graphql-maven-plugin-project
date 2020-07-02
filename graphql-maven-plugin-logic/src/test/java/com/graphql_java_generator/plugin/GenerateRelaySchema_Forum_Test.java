@@ -2,7 +2,6 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -18,6 +17,8 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.opentest4j.AssertionFailedError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -26,7 +27,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.cedarsoftware.util.DeepEquals;
+import com.cedarsoftware.util.GraphComparator;
+import com.cedarsoftware.util.GraphComparator.Delta;
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
@@ -56,6 +60,9 @@ import lombok.EqualsAndHashCode;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { Forum_Client_SpringConfiguration.class })
 class GenerateRelaySchema_Forum_Test {
+
+	/** The logger for this instance */
+	protected transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	DocumentParser documentParser;
@@ -120,9 +127,19 @@ class GenerateRelaySchema_Forum_Test {
 		ctx.close();
 
 		// Let's check the two DocumentParser instances, to check they are the same
-		assertTrue(DeepEquals.deepEquals(documentParser, generatedDocumentParser));
+		if (!DeepEquals.deepEquals(documentParser, generatedDocumentParser)) {
+			// There are differences. Let's write them.
+			logger.info(
+					"Below are the differences found between the two parsers (from the source schemas and from the generated schema)");
+			int i = 1;
+			for (Delta delta : GraphComparator.compare(documentParser, generatedDocumentParser, getIdFetcher())) {
+				logger.debug("   delta " + i++ + ": " + delta);
+			}
 
-		fail("	Un ajout vers la javadoc serait bien");
+			fail("There are differences between the two parsers (from the source schemas and from the generated schema");
+		}
+
+		fail("	Un ajout dans le README de java-util (DeepEquals) vers la javadoc serait bien");
 
 		fail("missing the source and target DocumentParser comparison");
 	}
@@ -317,5 +334,33 @@ class GenerateRelaySchema_Forum_Test {
 	@Deprecated
 	String getSchemaFileName() {
 		return "forum.graphqls";
+	}
+
+	private GraphComparator.ID getIdFetcher() {
+		return new GraphComparator.ID() {
+			@Override
+			public Object getId(Object objectToId) {
+				String name = "";
+
+				if (objectToId instanceof FieldImpl) {
+					name = ((FieldImpl) objectToId).getOwningType().getName() + "."
+							+ ((FieldImpl) objectToId).getName();
+				} else {
+					try {
+						name = (String) graphqlUtils.invokeGetter(objectToId, "name");
+					} catch (RuntimeException e) {
+						// No name property. We let the name be empty
+						name = "";
+					}
+				}
+
+				if (name.equals("")) {
+					return objectToId.getClass().getSimpleName() + " " + objectToId.hashCode();
+				} else {
+
+					return objectToId.getClass().getSimpleName() + "[" + name + "] " + objectToId.hashCode();
+				}
+			}
+		};
 	}
 }

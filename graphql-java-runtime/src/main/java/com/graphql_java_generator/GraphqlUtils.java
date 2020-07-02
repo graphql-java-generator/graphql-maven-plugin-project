@@ -445,11 +445,11 @@ public class GraphqlUtils {
 	 */
 	public Object invokeGetter(Object object, String fieldName) {
 		try {
-			Field field = object.getClass().getDeclaredField(fieldName);
-			Method getter = getGetter(object.getClass(), field);
+			String getterMethodName = "get" + getPascalCase(fieldName);
+			Method getter = object.getClass().getMethod(getterMethodName);
 			return getter.invoke(object);
-		} catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException e) {
 			throw new RuntimeException("Error while invoking to the getter for the field '" + fieldName
 					+ "' in the class " + object.getClass().getName() + " class", e);
 		}
