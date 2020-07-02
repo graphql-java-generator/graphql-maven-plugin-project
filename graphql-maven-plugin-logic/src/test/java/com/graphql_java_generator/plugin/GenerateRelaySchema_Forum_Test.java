@@ -47,6 +47,8 @@ import graphql.language.TypeName;
 import graphql.parser.Parser;
 import lombok.EqualsAndHashCode;
 
+//import com.cedarsoftware.util.DeepEquals;
+
 /**
  * 
  * @author etienne-sf
@@ -119,9 +121,9 @@ class GenerateRelaySchema_Forum_Test {
 
 		// Let's check the two DocumentParser instances, to check they are the same
 		assertTrue(DeepEquals.deepEquals(documentParser, generatedDocumentParser));
-		
-		Un ajout vers la javadoc serait bien
-		
+
+		fail("	Un ajout vers la javadoc serait bien");
+
 		fail("missing the source and target DocumentParser comparison");
 	}
 
