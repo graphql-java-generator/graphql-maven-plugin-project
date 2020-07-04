@@ -411,24 +411,37 @@ public class GraphqlUtils {
 	 * @param field
 	 * @return
 	 */
-	public <T> Method getGetter(Class<T> clazz, Field field) {
-		String setterMethodName = "get" + getPascalCase(field.getName());
+	public Method getGetter(Class<?> clazz, Field field) {
+		if (clazz.getSimpleName().contentEquals("FieldImpl")) {
+			int i = 0;
+		}
+		String getterMethodName = "get" + getPascalCase(field.getName());
 		try {
-			Method method = clazz.getDeclaredMethod(setterMethodName);
-
+			Method method = null;
+			try {
+				method = clazz.getMethod(getterMethodName);
+			} catch (NoSuchMethodException e) {
+				// For the boolean fields, the getter may be named isProperty. Let's try that:
+				if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
+					getterMethodName = "is" + getPascalCase(field.getName());
+					method = clazz.getDeclaredMethod(getterMethodName);
+				} else {
+					throw e;
+				}
+			}
 			// The return type must be the same as the field's class
 			if (field.getType() != method.getReturnType()) {
-				throw new RuntimeException("The getter '" + setterMethodName + "' and the field '" + field.getName()
+				throw new RuntimeException("The getter '" + getterMethodName + "' and the field '" + field.getName()
 						+ "' of the class " + clazz.getName() + " should be of the same type");
 			}
 
 			return method;
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(
-					"The getter '" + setterMethodName + "' is missing in " + clazz.getName() + " class", e);
+					"The getter '" + getterMethodName + "' is missing in " + clazz.getName() + " class", e);
 		} catch (SecurityException e) {
 			throw new RuntimeException(
-					"Error while accessing to the getter '" + setterMethodName + "' in " + clazz.getName() + " class",
+					"Error while accessing to the getter '" + getterMethodName + "' in " + clazz.getName() + " class",
 					e);
 		}
 	}
@@ -445,14 +458,35 @@ public class GraphqlUtils {
 	 */
 	public Object invokeGetter(Object object, String fieldName) {
 		try {
-			String getterMethodName = "get" + getPascalCase(fieldName);
-			Method getter = object.getClass().getMethod(getterMethodName);
+			Field field = getField(object, fieldName);
+			Method getter = getGetter(object.getClass(), field);
 			return getter.invoke(object);
-		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException e) {
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new RuntimeException("Error while invoking to the getter for the field '" + fieldName
 					+ "' in the class " + object.getClass().getName() + " class", e);
 		}
+	}
+
+	/**
+	 * Returns the field of the given name, in the objet's class, whether if it's in the object's class, or in one of
+	 * its superclass.
+	 * 
+	 * @param object
+	 * @param fieldName
+	 * @return
+	 */
+	private Field getField(Object object, String fieldName) {
+		Class<?> clazz = object.getClass();
+		while (!clazz.equals(Object.class)) {
+			try {
+				return clazz.getDeclaredField(fieldName);
+			} catch (NoSuchFieldException e) {
+				// We'll loop, and try in a superclass
+			}
+			clazz = clazz.getSuperclass();
+		}
+		throw new RuntimeException("Could not find the field " + fieldName + " in either " + object.getClass().getName()
+				+ " or in one of its superclass");
 	}
 
 	/**

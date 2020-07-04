@@ -74,20 +74,13 @@ public abstract class DocumentParser {
 	final String DEFAULT_SUBSCRIPTION_NAME = "Subscription";
 
 	/**
-	 * This instance is responsible for providing all the configuration parameter from the project (Maven,
-	 * Gradle...)<BR/>
-	 * <U>Note:</U> this field is marked as transient, to allow call to the DeepEquals method, in unit tests. This field
-	 * is then ignored by the DeepEquals comparison
+	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	transient CommonConfiguration configuration;
+	CommonConfiguration configuration;
 
-	/**
-	 * <U>Note:</U> this field is marked as transient, to allow call to the DeepEquals method, in unit tests. This field
-	 * is then ignored by the DeepEquals comparison
-	 */
 	@Autowired
-	transient GraphqlUtils graphqlUtils;
+	GraphqlUtils graphqlUtils;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
@@ -96,12 +89,10 @@ public abstract class DocumentParser {
 	 * This Spring Bean is created by {@link SpringConfiguration}. The {@link ResourceSchemaStringProvider} adds the
 	 * introspection schema into the documents list.<BR/>
 	 * See also the {@link #addIntrospectionCapabilities()} that finalize the introspection capabilities for the
-	 * generated code.<BR/>
-	 * <U>Note:</U> this field is marked as transient, to allow call to the DeepEquals method, in unit tests. This field
-	 * is then ignored by the DeepEquals comparison
+	 * generated code.
 	 */
 	@Autowired
-	transient List<Document> documents;
+	List<Document> documents;
 
 	/** List of all the directives that have been read in the GraphQL schema */
 	@Getter
@@ -133,11 +124,9 @@ public abstract class DocumentParser {
 
 	/**
 	 * We store all the found object extensions (extend GraphQL keyword), to manage them once all object definitions
-	 * have been read<BR/>
-	 * <U>Note:</U> this field is marked as transient, to allow call to the DeepEquals method, in unit tests. This field
-	 * is then ignored by the DeepEquals comparison
+	 * have been read
 	 */
-	transient List<ObjectTypeExtensionDefinition> objectTypeExtensionDefinitions = new ArrayList<>();
+	List<ObjectTypeExtensionDefinition> objectTypeExtensionDefinitions = new ArrayList<>();
 
 	/**
 	 * All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents
@@ -166,10 +155,8 @@ public abstract class DocumentParser {
 
 	/**
 	 * All the {@link Type}s that have been parsed, added by the default scalars<BR/>
-	 * <U>Note:</U> this field is marked as transient, to allow call to the DeepEquals method, in unit tests. This field
-	 * is then ignored by the DeepEquals comparison
 	 */
-	transient Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
+	Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
 
 	@PostConstruct
 	public void postConstruct() {

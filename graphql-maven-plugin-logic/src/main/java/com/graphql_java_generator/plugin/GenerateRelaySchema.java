@@ -66,6 +66,7 @@ public class GenerateRelaySchema {
 
 			VelocityContext context = new VelocityContext();
 			context.put("customScalars", documentParser.customScalars);
+			context.put("directives", documentParser.directives);
 			context.put("queryType", documentParser.queryType);
 			context.put("mutationType", documentParser.mutationType);
 			context.put("subscriptionType", documentParser.subscriptionType);
