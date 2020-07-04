@@ -4,6 +4,7 @@
 package com.graphql_java_generator.plugin.test.helper;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ import com.graphql_java_generator.GraphqlUtils;
 public class DeepComparator {
 
 	/** The logger for this class. It can be overriden by using the relevant constructor */
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
 
@@ -92,10 +93,10 @@ public class DeepComparator {
 		 * object o1, it compared the field <I>field1</I>, which is of type B, then its field <I>field2</I> then found a
 		 * difference, then the path is <I>/field1/field2</I>
 		 */
-		String path;
-		DiffenceType type;
-		Object value1;
-		Object value2;
+		public String path;
+		public DiffenceType type;
+		public Object value1;
+		public Object value2;
 		/** Some additional information, especially for the {@link Collection}s */
 		String info;
 
@@ -135,6 +136,8 @@ public class DeepComparator {
 
 	public DeepComparator() {
 		// Let's configure the default list of basic types (they will be compared using the equals method)
+		basicClasses.add(boolean.class);
+		basicClasses.add(Boolean.class);
 		basicClasses.add(char.class);
 		basicClasses.add(Character.class);
 		basicClasses.add(int.class);
@@ -197,6 +200,12 @@ public class DeepComparator {
 			return addDifference(differences, path, DiffenceType.TYPE, o1, o2, null);
 		}
 
+		// enums are not compared
+		if (o1.getClass().isEnum()) {
+			// No comparison. We stop here.
+			return differences;
+		}
+
 		// Should we really compare these two objects ?
 		if (ignoredClasses.contains(o1.getClass())) {
 			// No comparison. We stop here.
@@ -216,6 +225,11 @@ public class DeepComparator {
 		// Collection are tested in a non-ordered way
 		if (o1 instanceof Collection<?>) {
 			return compareNonOrderedCollection((Collection<?>) o1, (Collection<?>) o2, differences, path);
+		}
+
+		// Maps are a special beast
+		if (o1 instanceof Map<?, ?>) {
+			return compareMap((Map<?, ?>) o1, (Map<?, ?>) o2, differences, path);
 		}
 
 		// Objects are compared field by field: let's recurse down one level
@@ -276,6 +290,29 @@ public class DeepComparator {
 	}
 
 	/**
+	 * Comparison between two {@link Map}s
+	 * 
+	 * @param o1
+	 * @param o2
+	 * @param differences
+	 * @param path
+	 * @return
+	 */
+	List<Difference> compareMap(Map<?, ?> o1, Map<?, ?> o2, List<Difference> differences, String path) {
+		// First step: compare the keys
+		differences = compare(o1.keySet(), o2.keySet(), differences, path);
+
+		// Then, let's give a try on the values.
+		for (Object key : o1.keySet()) {
+			Object val1 = o1.get(key);
+			Object val2 = o2.get(key);
+			differences = compare(val1, val2, differences, path + "[" + key + "]");
+		}
+
+		return differences;
+	}
+
+	/**
 	 * Executes a field by field comparison between these two instances of the same class. Every field of every
 	 * superclass will also be compared. Fields that are in the {@link #ignoredFields} for this class (whether or not
 	 * they are actually defined in this class or in one of its superclasses) will be ignored.
@@ -296,13 +333,19 @@ public class DeepComparator {
 		// Let's go through all fields declared in this class
 		for (Field field : clazz.getDeclaredFields()) {
 
+			// We ignore constants
+			if (Modifier.isFinal(field.getModifiers())) {
+				// We skip the constants
+				continue;
+			}
+
 			// Inner classes contain a strange "this$0" field. Let's ignore it
 			if (field.getName().equals("this$0")) {
 				continue;
 			}
 
 			// Should we ignore this field ?
-			Set<String> fields = ignoredFields.get(clazz);
+			Set<String> fields = ignoredFields.get(o1.getClass());
 			if (fields != null && fields.contains(field.getName())) {
 				// We have to skip this field
 				continue;

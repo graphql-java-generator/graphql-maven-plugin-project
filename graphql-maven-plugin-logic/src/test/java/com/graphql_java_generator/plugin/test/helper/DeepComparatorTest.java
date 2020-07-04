@@ -9,7 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +68,6 @@ class DeepComparatorTest {
 		public String getIgnored() {
 			return ignored;
 		}
-
 	}
 
 	@BeforeEach
@@ -151,6 +152,64 @@ class DeepComparatorTest {
 		assertEquals(DeepComparator.DiffenceType.LIST_SIZE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
 		assertEquals("o1: 3 items, o2: 2 items", differences.get(0).info);
+	}
+
+	@Test
+	void test_Map() {
+		// Preparation
+		List<Difference> differences;
+		int i = 0;
+		Map<Integer, String> map123 = new HashMap<>();
+		map123.put(1, "1");
+		map123.put(2, "2");
+		map123.put(3, "3");
+		//
+		Map<Integer, String> map123bis = new HashMap<>();
+		map123bis.put(1, "11");
+		map123bis.put(2, "22");
+		map123bis.put(3, "33");
+		//
+		Map<Integer, String> map12 = new HashMap<>();
+		map12.put(1, "1");
+		map12.put(2, "2");
+
+		// Tests
+
+		test_oneType(map123, map123, 0);
+
+		// Different map size
+		differences = deepComparator.compare(map123, map12);
+		assertEquals(2, differences.size());
+		//
+		assertEquals(DeepComparator.DiffenceType.LIST_SIZE, differences.get(0).type);
+		assertEquals("", differences.get(0).path);
+		assertEquals("o1: 3 items, o2: 2 items", differences.get(0).info);
+		//
+		assertEquals(DeepComparator.DiffenceType.VALUE, differences.get(1).type);
+		assertEquals("[3]", differences.get(1).path);
+		assertEquals("3", differences.get(1).value1);
+		assertEquals(null, differences.get(1).value2);
+
+		// Same map size, but difference in the values
+		differences = test_oneType(map123, map123bis, 3);
+		//
+		Difference d = differences.get(i++);
+		assertEquals(DeepComparator.DiffenceType.VALUE, d.type);
+		assertEquals("[1]", d.path);
+		assertEquals("1", d.value1);
+		assertEquals("11", d.value2);
+		//
+		d = differences.get(i++);
+		assertEquals(DeepComparator.DiffenceType.VALUE, d.type);
+		assertEquals("[2]", d.path);
+		assertEquals("2", d.value1);
+		assertEquals("22", d.value2);
+		//
+		d = differences.get(i++);
+		assertEquals(DeepComparator.DiffenceType.VALUE, d.type);
+		assertEquals("[3]", d.path);
+		assertEquals("3", d.value1);
+		assertEquals("33", d.value2);
 	}
 
 	@Test
