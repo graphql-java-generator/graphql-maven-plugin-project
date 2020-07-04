@@ -170,20 +170,19 @@ class GenerateRelaySchema_Forum_Test {
 		// Let's check the two DocumentParser instances, to check they are the same
 		List<Difference> differences = deepComparator.compare(documentParser, generatedDocumentParser);
 		if (differences.size() > 0) {
-			StringBuffer sb = new StringBuffer();
-			sb.append(differences.size()
-					+ " differences found between the two parsers (from the source schemas and from the generated schema)");
-			for (Difference d : differences) {
-				sb.append(d.path).append(" [");
-				sb.append(d.type).append("] ");
-				sb.append("val1: ").append(d.value1);
-				sb.append(", val2: ").append(d.value2).append("\n");
-			}
-			String msg = sb.toString();
+			String firstLine = differences.size()
+					+ " differences found between the two parsers (details in the log file: target/JUnit-tests.log4j.log)";
+			logger.info(firstLine);
 
-			// There are differences. Let's write them.
-			logger.info(msg);
-			fail(msg);
+			for (Difference d : differences) {
+				logger.info("   " + d.path + " [diff: " + d.type + "] ");
+				logger.info("        val1: " + d.value1);
+				logger.info("        val2: " + d.value2);
+				if (d.info != null)
+					logger.info("        info: " + d.info);
+			}
+
+			fail(firstLine);
 		}
 
 		fail("	Un ajout dans le README de java-util (DeepEquals) vers la javadoc serait bien");

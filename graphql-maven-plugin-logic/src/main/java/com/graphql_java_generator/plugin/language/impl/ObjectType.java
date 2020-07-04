@@ -88,7 +88,6 @@ public class ObjectType extends AbstractType {
 		setName(name);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Field getIdentifier() {
 		List<Field> identifiers = new ArrayList<>();
@@ -102,13 +101,11 @@ public class ObjectType extends AbstractType {
 		return identifiers.size() == 1 ? identifiers.get(0) : null;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isCustomScalar() {
 		return false;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isScalar() {
 		return false;
@@ -117,4 +114,26 @@ public class ObjectType extends AbstractType {
 	public String getRequestTypePascalCase() {
 		return GraphqlUtils.graphqlUtils.getPascalCase(getRequestType());
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		boolean addSeparator;
+
+		sb.append("ObjectType {name: ").append(getName());
+
+		sb.append(", fields: {");
+		addSeparator = false;
+		for (Field f : getFields()) {
+			sb.append(f.toString());
+			if (addSeparator)
+				sb.append(",");
+			else
+				addSeparator = true;
+		}
+		sb.append("}");
+
+		return sb.toString();
+	}
+
 }

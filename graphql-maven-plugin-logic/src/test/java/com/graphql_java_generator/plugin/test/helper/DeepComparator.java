@@ -98,7 +98,7 @@ public class DeepComparator {
 		public Object value1;
 		public Object value2;
 		/** Some additional information, especially for the {@link Collection}s */
-		String info;
+		public String info;
 
 		public Difference(String path, DiffenceType diffenceType, Object value1, Object value2, String info) {
 			this.path = path;
@@ -264,11 +264,11 @@ public class DeepComparator {
 	List<Difference> compareNonOrderedCollection(Collection<?> o1, Collection<?> o2, List<Difference> differences,
 			String path) {
 		if (o1.size() != o2.size()) {
-			return addDifference(differences, path, DiffenceType.LIST_SIZE, o1, o2,
+			differences = addDifference(differences, path, DiffenceType.LIST_SIZE, o1, o2,
 					"o1: " + o1.size() + " items, o2: " + o2.size() + " items");
 		}
 
-		// Both list have the same size.
+		// Let's look for all items in o1 that doesn't exist in o2
 		for (Object item1 : o1) {
 			// Each item of o1 must exist in o2.
 			boolean found = false;
@@ -281,8 +281,25 @@ public class DeepComparator {
 
 			if (!found) {
 				// Too bad, item1 was not found in o2.
-				differences = addDifference(differences, path, DiffenceType.VALUE, o1, o2,
+				differences = addDifference(differences, path, DiffenceType.VALUE, item1, null,
 						"list1 contains the following item but not list2: " + item1.toString());
+			}
+		}
+
+		// Let's look for all items in o2 that doesn't exist in o1
+		for (Object item2 : o2) {
+			boolean found = false;
+			for (Object item1 : o1) {
+				if (compare(item1, item2).size() == 0) {
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				// Too bad, item1 was not found in o2.
+				differences = addDifference(differences, path, DiffenceType.VALUE, null, item2,
+						"list2 contains the following item but not list1: " + item2.toString());
 			}
 		}
 

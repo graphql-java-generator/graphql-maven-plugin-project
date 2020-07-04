@@ -142,16 +142,31 @@ class DeepComparatorTest {
 		test_oneType(lst123, lst132, 0);
 
 		// The test is non-ordered for lists: same size, but content is different
-		differences = test_oneType(lst123, lst412, 1);
+		differences = test_oneType(lst123, lst412, 2);
+		//
 		assertEquals(DeepComparator.DiffenceType.VALUE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
+		assertEquals(str3, differences.get(0).value1);
+		assertEquals(null, differences.get(0).value2);
 		assertEquals("list1 contains the following item but not list2: str3", differences.get(0).info);
+		//
+		assertEquals(DeepComparator.DiffenceType.VALUE, differences.get(1).type);
+		assertEquals("", differences.get(1).path);
+		assertEquals(null, differences.get(1).value1);
+		assertEquals(str4, differences.get(1).value2);
+		assertEquals("list2 contains the following item but not list1: str4", differences.get(1).info);
 
 		// Different list size
-		differences = test_oneType(lst123, lst12, 1);
+		differences = test_oneType(lst123, lst12, 2);
+		//
 		assertEquals(DeepComparator.DiffenceType.LIST_SIZE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
 		assertEquals("o1: 3 items, o2: 2 items", differences.get(0).info);
+		//
+		assertEquals(DeepComparator.DiffenceType.VALUE, differences.get(1).type);
+		assertEquals(str3, differences.get(1).value1);
+		assertEquals(null, differences.get(1).value2);
+		assertEquals("list1 contains the following item but not list2: str3", differences.get(1).info);
 	}
 
 	@Test
@@ -179,16 +194,21 @@ class DeepComparatorTest {
 
 		// Different map size
 		differences = deepComparator.compare(map123, map12);
-		assertEquals(2, differences.size());
+		assertEquals(3, differences.size());
 		//
 		assertEquals(DeepComparator.DiffenceType.LIST_SIZE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
 		assertEquals("o1: 3 items, o2: 2 items", differences.get(0).info);
 		//
 		assertEquals(DeepComparator.DiffenceType.VALUE, differences.get(1).type);
-		assertEquals("[3]", differences.get(1).path);
-		assertEquals("3", differences.get(1).value1);
+		assertEquals("", differences.get(1).path);
+		assertEquals(3, differences.get(1).value1);
 		assertEquals(null, differences.get(1).value2);
+		//
+		assertEquals(DeepComparator.DiffenceType.VALUE, differences.get(2).type);
+		assertEquals("[3]", differences.get(2).path);
+		assertEquals("3", differences.get(2).value1);
+		assertEquals(null, differences.get(2).value2);
 
 		// Same map size, but difference in the values
 		differences = test_oneType(map123, map123bis, 3);

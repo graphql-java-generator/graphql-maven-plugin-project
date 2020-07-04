@@ -98,7 +98,6 @@ public class FieldImpl implements Field {
 	@Builder.Default
 	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
 
-	/** {@inheritDoc} */
 	@Override
 	public Type getType() {
 		return documentParser.getType(graphQLTypeName);
@@ -159,7 +158,6 @@ public class FieldImpl implements Field {
 		addAnnotation(annotationToAdd);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String getPascalCaseName() {
 		String name = getName();
@@ -171,5 +169,27 @@ public class FieldImpl implements Field {
 			}
 		}
 		return GraphqlUtils.graphqlUtils.getPascalCase(name);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Field {name: ").append(getName());
+
+		sb.append(", type: ");
+		if (isList())
+			sb.append("[");
+		sb.append(graphQLTypeName);
+		if (isList() && isItemMandatory())
+			sb.append("!");
+		if (isList())
+			sb.append("]");
+		if (isMandatory())
+			sb.append("!");
+
+		sb.append("}");
+
+		return sb.toString();
 	}
 }
