@@ -175,21 +175,37 @@ public class FieldImpl implements Field {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
+		// Field's name
 		sb.append("Field {name: ").append(getName());
 
+		// Field's type
 		sb.append(", type: ");
-		if (isList())
-			sb.append("[");
-		sb.append(graphQLTypeName);
-		if (isList() && isItemMandatory())
-			sb.append("!");
-		if (isList())
-			sb.append("]");
-		if (isMandatory())
-			sb.append("!");
+		appendType(sb, this);
 
-		sb.append("}");
+		// Field's parameters
+		sb.append(", params: [");
+		boolean appendSeparator = false;
+		for (Field param : inputParameters) {
+			if (appendSeparator)
+				sb.append(",");
+			else
+				appendSeparator = true;
+			appendType(sb, this);
+		} // for
+		sb.append("]}");
 
 		return sb.toString();
+	}
+
+	private void appendType(StringBuilder sb, FieldImpl field) {
+		if (field.isList())
+			sb.append("[");
+		sb.append(field.graphQLTypeName);
+		if (field.isList() && field.isItemMandatory())
+			sb.append("!");
+		if (field.isList())
+			sb.append("]");
+		if (field.isMandatory())
+			sb.append("!");
 	}
 }

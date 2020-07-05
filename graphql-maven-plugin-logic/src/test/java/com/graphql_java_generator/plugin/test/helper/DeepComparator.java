@@ -317,7 +317,7 @@ public class DeepComparator {
 	 */
 	List<Difference> compareMap(Map<?, ?> o1, Map<?, ?> o2, List<Difference> differences, String path) {
 		// First step: compare the keys
-		differences = compare(o1.keySet(), o2.keySet(), differences, path);
+		differences = compare(o1.keySet(), o2.keySet(), differences, path + "/keys");
 
 		// Then, let's give a try on the values.
 		for (Object key : o1.keySet()) {

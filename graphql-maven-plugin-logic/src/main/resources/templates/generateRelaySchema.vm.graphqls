@@ -1,3 +1,8 @@
+##
+##
+##
+##
+#macro(fieldType $field)#if($field.list)[#end${field.type.name}#if($field.itemMandatory)!#end#if($field.list)]#end#if($field.mandatory)!#end#end
 
 ###############################################################################################################
 ################  Custom Scalars  #############################################################################
@@ -27,8 +32,22 @@ schema {
 ###############################################################################################################
 #foreach ($objectType in $objectTypes)
 type ${objectType.name} {
+##
 #foreach ($field in $objectType.fields)
-	${field.name}: ${field.type.name}
+##
+## To make this template readable, the parameters are written one per line. Which means that the way the field
+## is written depends on whether this field has or doesn't have input parameters
+##
+#if ($field.inputParameters.size() > 0)
+	${field.name} (## No newline here
+#foreach ($param in $field.inputParameters)
+${param.name}: #fieldType($param)#if($foreach.hasNext), #end##no newline here 
+#end
+): #fieldType($field)$space
+#else
+	${field.name}: #fieldType($field)$space
+#end
+##
 #end
 }
 

@@ -65,6 +65,8 @@ public class GenerateRelaySchema {
 			configuration.getLog().debug(msg);
 
 			VelocityContext context = new VelocityContext();
+			context.put("newline", "\n");
+			context.put("space", " ");
 			context.put("customScalars", documentParser.customScalars);
 			context.put("directives", documentParser.directives);
 			context.put("queryType", documentParser.queryType);
