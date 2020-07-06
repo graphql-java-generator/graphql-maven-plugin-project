@@ -8,15 +8,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.Type;
@@ -28,51 +23,25 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
+import generate_relay_schema.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
 import generate_relay_schema.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
+import generate_relay_schema.mavenplugin_notscannedbyspring.GeneratedAllGraphQLCases_Client_SpringConfiguration;
 import generate_relay_schema.mavenplugin_notscannedbyspring.GeneratedForum_Client_SpringConfiguration;
 import graphql.language.Document;
-import lombok.EqualsAndHashCode;
-
-//import com.cedarsoftware.util.DeepEquals;
 
 /**
  * 
  * @author etienne-sf
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { Forum_Client_SpringConfiguration.class })
 class GenerateRelaySchema_Forum_Test {
 
 	/** The logger for this instance */
 	protected transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	DocumentParser documentParser;
-
-	@Autowired
-	GenerateRelaySchema generateRelaySchema;
-
-	@Autowired
-	GenerateRelaySchemaConfigurationTestHelper configuration;
-
-	@Autowired
-	GraphqlUtils graphqlUtils;
-
 	MavenTestHelper mavenTestHelper = new MavenTestHelper();
 	Document generatedDocument;
 
 	DeepComparator deepComparator;
-
-	@EqualsAndHashCode // This will generate the equals method, used later in the unit tests. Note: this won't deep
-						// compare the collections.
-	@Deprecated
-	class FieldProperties {
-		String name;
-		boolean mandatory = false;
-		boolean list = false;
-		boolean itemMandatory = false;
-		List<FieldProperties> props = new ArrayList<>();
-	}
 
 	@BeforeEach
 	void setUp() {
@@ -131,9 +100,23 @@ class GenerateRelaySchema_Forum_Test {
 		});
 	}
 
+	@Test
+	void testGenerateRelaySchema_allGraphQLCases() throws IOException {
+		executeGenerateRelaySchemaTest(AllGraphQLCases_Client_SpringConfiguration.class,
+				GeneratedAllGraphQLCases_Client_SpringConfiguration.class, "generateRelaySchema for forum.graphqls");
+
+	}
+
+	@Test
+	void testGenerateRelaySchema_forum() throws IOException {
+		executeGenerateRelaySchemaTest(Forum_Client_SpringConfiguration.class,
+				GeneratedForum_Client_SpringConfiguration.class, "generateRelaySchema for forum.graphqls");
+
+	}
+
 	/**
-	 * This is not a unit test. It's more a full integration test, that checks that the GraphQL generated from the forum
-	 * schema is complete.<BR/>
+	 * Executes one test for the generate-relay-schema goal/task. This is not a unit test. It's more a full integration
+	 * test, that checks that the GraphQL generated from the forum schema is complete.<BR/>
 	 * It's too complex to compare the GraphQL AST, especially to manage things like the <I>extends</I> keyword. So the
 	 * principle is:
 	 * <UL>
@@ -146,18 +129,23 @@ class GenerateRelaySchema_Forum_Test {
 	 * implementation is heavily tested, we an consider that it is complete, out of some known and documented
 	 * limitations
 	 * 
-	 * @throws IOException
+	 * @param sourceSpringConfClass
+	 * @param generatedSpringConfClass
+	 * @param test
 	 */
-	@Test
-	@DirtiesContext
-	void testGenerateRelaySchema() throws IOException {
-
+	private void executeGenerateRelaySchemaTest(Class<?> sourceSpringConfClass, Class<?> generatedSpringConfClass,
+			String test) {
 		// Go, go, go
+		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
+		GenerateRelaySchema generateRelaySchema = ctx.getBean(GenerateRelaySchema.class);
+		GenerateRelaySchemaDocumentParser sourceDocumentParser = generateRelaySchema.documentParser;
 		generateRelaySchema.generateRelaySchema();
+		// Let's log the current configuration (this will do something only when in debug mode)
+		ctx.getBean(GenerateRelaySchemaConfiguration.class).logConfiguration();
+		ctx.close();
 
 		// Let's load the content of the generated schema in a new DocumentParser
-		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
-				GeneratedForum_Client_SpringConfiguration.class);
+		ctx = new AnnotationConfigApplicationContext(generatedSpringConfClass);
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(GenerateRelaySchemaConfiguration.class).logConfiguration();
 		//
@@ -168,9 +156,9 @@ class GenerateRelaySchema_Forum_Test {
 		ctx.close();
 
 		// Let's check the two DocumentParser instances, to check they are the same
-		List<Difference> differences = deepComparator.compare(documentParser, generatedDocumentParser);
+		List<Difference> differences = deepComparator.compare(sourceDocumentParser, generatedDocumentParser);
 		if (differences.size() > 0) {
-			String firstLine = differences.size()
+			String firstLine = test + ": " + differences.size()
 					+ " differences found between the two parsers (details in the log file: target/JUnit-tests.log4j.log)";
 			logger.info(firstLine);
 
@@ -184,10 +172,6 @@ class GenerateRelaySchema_Forum_Test {
 
 			fail(firstLine);
 		}
-
-		fail("	Un ajout dans le README de java-util (DeepEquals) vers la javadoc serait bien");
-
-		fail("missing the source and target DocumentParser comparison");
 	}
 
 }

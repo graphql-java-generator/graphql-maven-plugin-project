@@ -17,9 +17,9 @@ import org.springframework.context.annotation.FilterType;
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
-public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguration {
+public class AllGraphQLCases_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
-	public Forum_Client_SpringConfiguration() {
-		super("src/test/resources", "forum.graphqls", "forum.graphqls", "forum");
+	public AllGraphQLCases_Client_SpringConfiguration() {
+		super("src/test/resources", "allGraphQLCases*.graphqls", "allGraphQLCases.graphqls", "allGraphQLCases");
 	}
 }

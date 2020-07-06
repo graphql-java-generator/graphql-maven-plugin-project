@@ -8,8 +8,6 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
-import graphql.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
-
 /**
  * The Spring configuration used for JUnit tests
  * 
@@ -22,6 +20,6 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 public class GeneratedForum_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public GeneratedForum_Client_SpringConfiguration() {
-		super(ROOT_UNIT_TEST_FOLDER + Forum_Client_SpringConfiguration.class.getSimpleName(), "forum.graphqls");
+		super(ROOT_UNIT_TEST_FOLDER + "forum", "forum.graphqls", "forum.graphqls", "forum/regenerate");
 	}
 }

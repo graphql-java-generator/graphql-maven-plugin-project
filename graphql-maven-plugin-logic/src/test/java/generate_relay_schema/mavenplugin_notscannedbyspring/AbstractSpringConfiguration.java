@@ -18,7 +18,6 @@ import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigur
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.language.Document;
-import graphql.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 import graphql.parser.Parser;
 
 /**
@@ -34,31 +33,31 @@ public abstract class AbstractSpringConfiguration {
 
 	private String schemaFileFolder = "src/test/resources";
 	private String schemaFilePattern;
+	private String schemaFileName;
+	private String targetFolder;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
 	@Autowired
 	GenerateRelaySchemaConfigurationTestHelper configuration;
 
-	protected AbstractSpringConfiguration(String schemaFilePattern) {
-		schemaFileFolder = "src/test/resources";
-		this.schemaFilePattern = schemaFilePattern;
-	}
-
-	protected AbstractSpringConfiguration(String schemaFileFolder, String schemaFilePattern) {
+	protected AbstractSpringConfiguration(String schemaFileFolder, String schemaFilePattern, String schemaFileName,
+			String targetFolder) {
 		this.schemaFileFolder = schemaFileFolder;
 		this.schemaFilePattern = schemaFilePattern;
+		this.schemaFileName = schemaFileName;
+		this.targetFolder = targetFolder;
 	}
 
 	@Bean
 	GenerateRelaySchemaConfigurationTestHelper graphQLConfigurationTestHelper() {
 		GenerateRelaySchemaConfigurationTestHelper configuration = new GenerateRelaySchemaConfigurationTestHelper(this);
 		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), schemaFileFolder);
-		configuration.schemaFileName = schemaFilePattern;
 		configuration.schemaFilePattern = schemaFilePattern;
+		configuration.schemaFileName = schemaFileName;
 		configuration.resourceEncoding = ENCODING;
-		configuration.targetFolder = new File(mavenTestHelper.getModulePathFile(),
-				ROOT_UNIT_TEST_FOLDER + Forum_Client_SpringConfiguration.class.getSimpleName());
+		File rootTargetFolder = new File(mavenTestHelper.getModulePathFile(), ROOT_UNIT_TEST_FOLDER);
+		configuration.targetFolder = new File(rootTargetFolder, targetFolder);
 		return configuration;
 	}
 
