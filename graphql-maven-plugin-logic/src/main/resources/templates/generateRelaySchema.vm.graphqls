@@ -43,7 +43,7 @@ schema {
 ################  Objects         #############################################################################
 ###############################################################################################################
 #foreach ($objectType in $objectTypes)
-type ${objectType.name} {
+#if($objectType.inputType)input#{else}type#end ${objectType.name} {
 ##
 #foreach ($field in $objectType.fields)
 ##
