@@ -18,7 +18,7 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
-import com.graphql_java_generator.plugin.test.helper.DeepComparator.DiffenceType;
+import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
@@ -91,7 +91,7 @@ class GenerateRelaySchema_Forum_Test {
 				Type type2 = (Type) o2;
 				if (!type1.getName().equals(type2.getName())) {
 					List<Difference> differences = new ArrayList<>();
-					differences.add(new DeepComparator.Difference("/name", DiffenceType.VALUE, type1.getName(),
+					differences.add(new DeepComparator.Difference("/name", DifferenceType.VALUE, type1.getName(),
 							type2.getName(), null));
 					return differences;
 				}
