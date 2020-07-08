@@ -8,6 +8,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +38,7 @@ import com.graphql_java_generator.GraphqlUtils;
  * All differences are logged if the level is debug or lower. They are also returned by the
  * {@link #compare(Object, Object)} method, to allow further processing. This makes it possible to correct these
  * differences.
+ * 
  * 
  * @author etienne-sf
  */
@@ -83,7 +85,13 @@ public class DeepComparator {
 	 */
 	Map<Class<?>, Map<String, ComparisonRule>> specificComparisonRules = new HashMap<>();
 
-	public enum DiffenceType {
+	/**
+	 * Contains the list of couple of instances that has been compared. This is used to avoid cycles, by identifying if
+	 * this couple has already been compared.
+	 */
+	Map<Object, Set<Object>> executedComparison = new HashMap<>();
+
+	public enum DifferenceType {
 		TYPE, VALUE, LIST_SIZE
 	}
 
@@ -94,13 +102,13 @@ public class DeepComparator {
 		 * difference, then the path is <I>/field1/field2</I>
 		 */
 		public String path;
-		public DiffenceType type;
+		public DifferenceType type;
 		public Object value1;
 		public Object value2;
 		/** Some additional information, especially for the {@link Collection}s */
 		public String info;
 
-		public Difference(String path, DiffenceType diffenceType, Object value1, Object value2, String info) {
+		public Difference(String path, DifferenceType diffenceType, Object value1, Object value2, String info) {
 			this.path = path;
 			this.type = diffenceType;
 			this.value1 = value1;
@@ -166,6 +174,9 @@ public class DeepComparator {
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
 	public List<Difference> compare(Object o1, Object o2) {
+		// We start a new comparison.
+		executedComparison = new HashMap<>();
+
 		return compare(o1, o2, new ArrayList<>(), "");
 	}
 
@@ -181,23 +192,49 @@ public class DeepComparator {
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
 	List<Difference> compare(Object o1, Object o2, List<Difference> differences, String path) {
+		String object1 = null;
+		String object2 = null;
+		try {
+			object1 = o1.getClass().getSimpleName() + "[" + (String) graphqlUtils.invokeGetter(o1, "name") + "]";
+			object2 = o2.getClass().getSimpleName() + "[" + (String) graphqlUtils.invokeGetter(o2, "name") + "]";
+		} catch (RuntimeException e) {
+			// There is no name attribute in this object
+		}
 
+		// Has this couple already been compared ?
+		Set<Object> objectsAlreadyComparedToO1 = executedComparison.get(o1);
+		if (objectsAlreadyComparedToO1 != null && objectsAlreadyComparedToO1.contains(o2)) {
+			logger.debug("Comparison already done for " + object1 + " and " + object2);
+			return differences;
+		}
+
+		// Let's write this couple in the comparison map, to avoid cycles.
+		if (objectsAlreadyComparedToO1 == null) {
+			objectsAlreadyComparedToO1 = new HashSet<>();
+			executedComparison.put(o1, objectsAlreadyComparedToO1);
+		}
+		objectsAlreadyComparedToO1.add(o2);
+
+		// Let's log what we are comparing
+		logger.debug("Comparing " + object1 + " to " + object2);
+
+		// Let's got for the comparison
 		if (o1 == null) {
 			if (o2 == null) {
 				// No comparison to do. We're done.
 				return differences;
 			} else {
-				return addDifference(differences, path, DiffenceType.VALUE, o1, o2, null);
+				return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
 			}
 		} else if (o2 == null) {
-			return addDifference(differences, path, DiffenceType.VALUE, o1, o2, null);
+			return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
 		}
 
 		// Both objects are non null.
 
 		// They must be of the same type
 		if (o1.getClass() != o2.getClass()) {
-			return addDifference(differences, path, DiffenceType.TYPE, o1, o2, null);
+			return addDifference(differences, path, DifferenceType.TYPE, o1, o2, null);
 		}
 
 		// enums are not compared
@@ -218,7 +255,7 @@ public class DeepComparator {
 				// No additional difference
 				return differences;
 			} else {
-				return addDifference(differences, path, DiffenceType.VALUE, o1, o2, null);
+				return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
 			}
 		}
 
@@ -264,7 +301,7 @@ public class DeepComparator {
 	List<Difference> compareNonOrderedCollection(Collection<?> o1, Collection<?> o2, List<Difference> differences,
 			String path) {
 		if (o1.size() != o2.size()) {
-			differences = addDifference(differences, path, DiffenceType.LIST_SIZE, o1, o2,
+			differences = addDifference(differences, path, DifferenceType.LIST_SIZE, o1, o2,
 					"o1: " + o1.size() + " items, o2: " + o2.size() + " items");
 		}
 
@@ -281,7 +318,7 @@ public class DeepComparator {
 
 			if (!found) {
 				// Too bad, item1 was not found in o2.
-				differences = addDifference(differences, path, DiffenceType.VALUE, item1, null,
+				differences = addDifference(differences, path, DifferenceType.VALUE, item1, null,
 						"list1 contains the following item but not list2: " + item1.toString());
 			}
 		}
@@ -298,7 +335,7 @@ public class DeepComparator {
 
 			if (!found) {
 				// Too bad, item1 was not found in o2.
-				differences = addDifference(differences, path, DiffenceType.VALUE, null, item2,
+				differences = addDifference(differences, path, DifferenceType.VALUE, null, item2,
 						"list2 contains the following item but not list1: " + item2.toString());
 			}
 		}
@@ -411,7 +448,7 @@ public class DeepComparator {
 			return differences;
 		} else if (val1 == null || val2 == null) {
 			// Only one of the values is null
-			return addDifference(differences, path, DiffenceType.VALUE, val1, val2, null);
+			return addDifference(differences, path, DifferenceType.VALUE, val1, val2, null);
 		}
 
 		// Ok, both values are non null. We can execute the given rule.
@@ -429,7 +466,7 @@ public class DeepComparator {
 	}
 
 	/** Add a {@link Difference} to the given list, from its attribute */
-	protected List<Difference> addDifference(List<Difference> differences, String path, DiffenceType diffenceType,
+	protected List<Difference> addDifference(List<Difference> differences, String path, DifferenceType diffenceType,
 			Object o1, Object o2, String info) {
 		differences.add(new Difference(path, diffenceType, o1, o2, info));
 		return differences;
