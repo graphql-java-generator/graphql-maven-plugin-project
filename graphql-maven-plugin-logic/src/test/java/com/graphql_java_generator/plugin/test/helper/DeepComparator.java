@@ -148,6 +148,7 @@ public class DeepComparator {
 		basicClasses.add(Boolean.class);
 		basicClasses.add(char.class);
 		basicClasses.add(Character.class);
+		basicClasses.add(Enum.class);
 		basicClasses.add(int.class);
 		basicClasses.add(Integer.class);
 		basicClasses.add(long.class);
@@ -192,33 +193,8 @@ public class DeepComparator {
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
 	List<Difference> compare(Object o1, Object o2, List<Difference> differences, String path) {
-		String object1 = null;
-		String object2 = null;
-		try {
-			object1 = o1.getClass().getSimpleName() + "[" + (String) graphqlUtils.invokeGetter(o1, "name") + "]";
-			object2 = o2.getClass().getSimpleName() + "[" + (String) graphqlUtils.invokeGetter(o2, "name") + "]";
-		} catch (RuntimeException e) {
-			// There is no name attribute in this object
-		}
 
-		// Has this couple already been compared ?
-		Set<Object> objectsAlreadyComparedToO1 = executedComparison.get(o1);
-		if (objectsAlreadyComparedToO1 != null && objectsAlreadyComparedToO1.contains(o2)) {
-			logger.debug("Comparison already done for " + object1 + " and " + object2);
-			return differences;
-		}
-
-		// Let's write this couple in the comparison map, to avoid cycles.
-		if (objectsAlreadyComparedToO1 == null) {
-			objectsAlreadyComparedToO1 = new HashSet<>();
-			executedComparison.put(o1, objectsAlreadyComparedToO1);
-		}
-		objectsAlreadyComparedToO1.add(o2);
-
-		// Let's log what we are comparing
-		logger.debug("Comparing " + object1 + " to " + object2);
-
-		// Let's got for the comparison
+		// Let's first check the case where one or the two objects are null
 		if (o1 == null) {
 			if (o2 == null) {
 				// No comparison to do. We're done.
@@ -232,6 +208,42 @@ public class DeepComparator {
 
 		// Both objects are non null.
 
+		String object1 = null;
+		String object2 = null;
+		if (logger.isTraceEnabled()) {
+			try {
+				object1 = o1.getClass().getSimpleName() + "(name=" + (String) graphqlUtils.invokeGetter(o1, "name")
+						+ ")";
+				object2 = o2.getClass().getSimpleName() + "(name=" + (String) graphqlUtils.invokeGetter(o2, "name")
+						+ ")";
+			} catch (RuntimeException e) {
+				// There is no name attribute in this object
+				object1 = o1.getClass().getSimpleName();
+				object2 = o2.getClass().getSimpleName();
+			}
+		}
+
+		// Has this couple already been compared ?
+		Set<Object> objectsAlreadyComparedToO1 = executedComparison.get(o1);
+		if (objectsAlreadyComparedToO1 != null && objectsAlreadyComparedToO1.contains(o2)) {
+			if (logger.isTraceEnabled()) {
+				logger.trace("Comparison already done for " + object1 + " and " + object2);
+			}
+			return differences;
+		}
+
+		// Let's write this couple in the comparison map, to avoid cycles.
+		if (objectsAlreadyComparedToO1 == null) {
+			objectsAlreadyComparedToO1 = new HashSet<>();
+			executedComparison.put(o1, objectsAlreadyComparedToO1);
+		}
+		objectsAlreadyComparedToO1.add(o2);
+
+		// Let's log what we are comparing
+		if (logger.isTraceEnabled()) {
+			logger.trace("Comparing " + object1 + " to " + object2);
+		}
+
 		// They must be of the same type
 		if (o1.getClass() != o2.getClass()) {
 			return addDifference(differences, path, DifferenceType.TYPE, o1, o2, null);
@@ -240,7 +252,7 @@ public class DeepComparator {
 		// enums are not compared
 		if (o1.getClass().isEnum()) {
 			// No comparison. We stop here.
-			return differences;
+			return differences;  n'importe quoi. Passer par basicTypes
 		}
 
 		// Should we really compare these two objects ?
@@ -278,7 +290,7 @@ public class DeepComparator {
 					+ " is not managed by this comparison. Please add this class to one of these lists: basicTypes, objectTypes or ignoredTypes");
 		}
 
-		// Ok, let's execute the comparison.
+		// Ok, let's execute the field by field comparison.
 		return compareClasses(o1, o2, o1.getClass(), differences, path);
 	}
 
@@ -373,6 +385,10 @@ public class DeepComparator {
 	 * 
 	 * @param o1
 	 * @param o2
+	 * @param clazz
+	 *            The class on which the comparison should be executed: this method should be called with the real o1
+	 *            class. The this method iterates through all it superclasses. This allows to use the
+	 *            {@link Class#getDeclaredFields()} method.
 	 * @param differences
 	 * @param path
 	 * @return
@@ -393,14 +409,14 @@ public class DeepComparator {
 				continue;
 			}
 
-			// Inner classes contain a strange "this$0" field. Let's ignore it
+			// Inner non static classes contain a strange "this$0" field. Let's ignore it
 			if (field.getName().equals("this$0")) {
 				continue;
 			}
 
 			// Should we ignore this field ?
-			Set<String> fields = ignoredFields.get(o1.getClass());
-			if (fields != null && fields.contains(field.getName())) {
+			Set<String> ignoreFields = ignoredFields.get(o1.getClass());
+			if (ignoreFields != null && ignoreFields.contains(field.getName())) {
 				// We have to skip this field
 				continue;
 			}
@@ -424,7 +440,7 @@ public class DeepComparator {
 		Class<?> superclass = clazz.getSuperclass();
 		if (!superclass.getName().equals("java.lang.Object")) {
 			// Let's recurse, and compare the superclass's fields
-			compareClasses(o1, o2, superclass, differences, path);
+			differences = compareClasses(o1, o2, superclass, differences, path);
 		}
 
 		return differences;

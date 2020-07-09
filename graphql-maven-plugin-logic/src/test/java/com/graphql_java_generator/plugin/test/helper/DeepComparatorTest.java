@@ -70,6 +70,10 @@ class DeepComparatorTest {
 		}
 	}
 
+	public enum TestEnum {
+		ENUM1, ENUM2, ENUM3, ENUM4;
+	}
+
 	@BeforeEach
 	public void beforeEach() {
 		deepComparator = new DeepComparator();
@@ -165,6 +169,56 @@ class DeepComparatorTest {
 		//
 		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(1).type);
 		assertEquals(str3, differences.get(1).value1);
+		assertEquals(null, differences.get(1).value2);
+		assertEquals("list1 contains the following item but not list2: str3", differences.get(1).info);
+	}
+
+	@Test
+	void test_enum() {
+		assertEquals(0, deepComparator.compare(TestEnum.ENUM1, TestEnum.ENUM1).size());
+		assertEquals(1, deepComparator.compare(TestEnum.ENUM1, TestEnum.ENUM2).size());
+	}
+
+	@Test
+	void test_ListsEnum() {
+		// Preparation
+		List<Difference> differences;
+		List<TestEnum> lst123 = Arrays.asList(TestEnum.ENUM1, TestEnum.ENUM2, TestEnum.ENUM3);
+		List<TestEnum> lst132 = Arrays.asList(TestEnum.ENUM1, TestEnum.ENUM3, TestEnum.ENUM2);
+		List<TestEnum> lst412 = Arrays.asList(TestEnum.ENUM4, TestEnum.ENUM1, TestEnum.ENUM2);
+		List<TestEnum> lst12 = Arrays.asList(TestEnum.ENUM1, TestEnum.ENUM2);
+
+		// Tests
+
+		test_oneType(lst123, lst132, 0);
+
+		// The test is non-ordered for lists: when no difference
+		test_oneType(lst123, lst132, 0);
+
+		// The test is non-ordered for lists: same size, but content is different
+		differences = test_oneType(lst123, lst412, 2);
+		//
+		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(0).type);
+		assertEquals("", differences.get(0).path);
+		assertEquals(TestEnum.ENUM3, differences.get(0).value1);
+		assertEquals(null, differences.get(0).value2);
+		assertEquals("list1 contains the following item but not list2: str3", differences.get(0).info);
+		//
+		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(1).type);
+		assertEquals("", differences.get(1).path);
+		assertEquals(null, differences.get(1).value1);
+		assertEquals(TestEnum.ENUM4, differences.get(1).value2);
+		assertEquals("list2 contains the following item but not list1: str4", differences.get(1).info);
+
+		// Different list size
+		differences = test_oneType(lst123, lst12, 2);
+		//
+		assertEquals(DeepComparator.DifferenceType.LIST_SIZE, differences.get(0).type);
+		assertEquals("", differences.get(0).path);
+		assertEquals("o1: 3 items, o2: 2 items", differences.get(0).info);
+		//
+		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(1).type);
+		assertEquals(TestEnum.ENUM3, differences.get(1).value1);
 		assertEquals(null, differences.get(1).value2);
 		assertEquals("list1 contains the following item but not list2: str3", differences.get(1).info);
 	}
