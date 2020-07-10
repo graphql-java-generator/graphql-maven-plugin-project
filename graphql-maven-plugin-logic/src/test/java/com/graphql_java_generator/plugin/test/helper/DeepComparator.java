@@ -25,7 +25,8 @@ import com.graphql_java_generator.GraphqlUtils;
  * <LI>Checks that a and b are of the same class</LI>
  * <LI>Compares each field of a to each field of b (the fields defined in their superclasses are also scanned):</LI>
  * <LI>If the field is an ignored field, this field is skipped</LI>
- * <LI>If the field is of a basic type: use the equals method</LI>
+ * <LI>If the field is of a basic type: use the equals method. All enums should be registered in the basic type
+ * list.</LI>
  * <LI>If the field is a List: do a deep non-ordered comparison. Each list must be of the same size, and each object in
  * a's field must be deep equal to one object of the b's list. To do this, for each item in a's list, a recursive
  * deepEquals call is done on each item of the b's list until this deepEquals call returns true. If no such call returns
@@ -223,6 +224,31 @@ public class DeepComparator {
 			}
 		}
 
+		// They must be of the same type
+		if (o1.getClass() != o2.getClass()) {
+			return addDifference(differences, path, DifferenceType.TYPE, o1, o2, null);
+		}
+
+		// Should we really compare these two objects ?
+		if (ignoredClasses.contains(o1.getClass())) {
+			// No comparison. We stop here.
+			return differences;
+		}
+
+		// Basic types are compared by using the equals method
+		if (basicClasses.contains(o1.getClass())) {
+			if (o1.equals(o2)) {
+				// No additional difference
+				return differences;
+			} else {
+				return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
+			}
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////// Ok, we are in a case of deep comparison. Shall we continue? ///////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		// Has this couple already been compared ?
 		Set<Object> objectsAlreadyComparedToO1 = executedComparison.get(o1);
 		if (objectsAlreadyComparedToO1 != null && objectsAlreadyComparedToO1.contains(o2)) {
@@ -244,32 +270,9 @@ public class DeepComparator {
 			logger.trace("Comparing " + object1 + " to " + object2);
 		}
 
-		// They must be of the same type
-		if (o1.getClass() != o2.getClass()) {
-			return addDifference(differences, path, DifferenceType.TYPE, o1, o2, null);
-		}
-
-		// enums are not compared
-		if (o1.getClass().isEnum()) {
-			// No comparison. We stop here.
-			return differences;  n'importe quoi. Passer par basicTypes
-		}
-
-		// Should we really compare these two objects ?
-		if (ignoredClasses.contains(o1.getClass())) {
-			// No comparison. We stop here.
-			return differences;
-		}
-
-		// Basic types are compared by using the equals method
-		if (basicClasses.contains(o1.getClass())) {
-			if (o1.equals(o2)) {
-				// No additional difference
-				return differences;
-			} else {
-				return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
-			}
-		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////// Ok, we need to execute the deep comparison ////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Collection are tested in a non-ordered way
 		if (o1 instanceof Collection<?>) {

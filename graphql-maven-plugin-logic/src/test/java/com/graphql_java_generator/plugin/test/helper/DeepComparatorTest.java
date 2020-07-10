@@ -79,6 +79,7 @@ class DeepComparatorTest {
 		deepComparator = new DeepComparator();
 
 		deepComparator.addComparedClass(ComparisonObject.class);
+		deepComparator.addBasicClass(TestEnum.class);
 		deepComparator.addIgnoredFields(ComparisonObject.class, "ignored");
 
 		// To break the cycle where comparing ComparisonSuperClass.comp cycle with the Comparison class, we define a
@@ -107,6 +108,7 @@ class DeepComparatorTest {
 		test_oneType(Long.valueOf(1), Long.valueOf(2), 1);
 		test_oneType(Double.valueOf(1), Double.valueOf(2), 1);
 		test_oneType(Float.valueOf(1), Float.valueOf(2), 1);
+		test_oneType(TestEnum.ENUM1, TestEnum.ENUM2, 1);
 	}
 
 	@Test
@@ -174,12 +176,6 @@ class DeepComparatorTest {
 	}
 
 	@Test
-	void test_enum() {
-		assertEquals(0, deepComparator.compare(TestEnum.ENUM1, TestEnum.ENUM1).size());
-		assertEquals(1, deepComparator.compare(TestEnum.ENUM1, TestEnum.ENUM2).size());
-	}
-
-	@Test
 	void test_ListsEnum() {
 		// Preparation
 		List<Difference> differences;
@@ -202,13 +198,13 @@ class DeepComparatorTest {
 		assertEquals("", differences.get(0).path);
 		assertEquals(TestEnum.ENUM3, differences.get(0).value1);
 		assertEquals(null, differences.get(0).value2);
-		assertEquals("list1 contains the following item but not list2: str3", differences.get(0).info);
+		assertEquals("list1 contains the following item but not list2: ENUM3", differences.get(0).info);
 		//
 		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(1).type);
 		assertEquals("", differences.get(1).path);
 		assertEquals(null, differences.get(1).value1);
 		assertEquals(TestEnum.ENUM4, differences.get(1).value2);
-		assertEquals("list2 contains the following item but not list1: str4", differences.get(1).info);
+		assertEquals("list2 contains the following item but not list1: ENUM4", differences.get(1).info);
 
 		// Different list size
 		differences = test_oneType(lst123, lst12, 2);
@@ -220,7 +216,7 @@ class DeepComparatorTest {
 		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(1).type);
 		assertEquals(TestEnum.ENUM3, differences.get(1).value1);
 		assertEquals(null, differences.get(1).value2);
-		assertEquals("list1 contains the following item but not list2: str3", differences.get(1).info);
+		assertEquals("list1 contains the following item but not list2: ENUM3", differences.get(1).info);
 	}
 
 	@Test
