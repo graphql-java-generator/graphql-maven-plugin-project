@@ -8,7 +8,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,9 +87,11 @@ public class DeepComparator {
 
 	/**
 	 * Contains the list of couple of instances that has been compared. This is used to avoid cycles, by identifying if
-	 * this couple has already been compared.
+	 * this couple has already been compared.<BR/>
+	 * The comparison result is stored (the list of differences), so that it can be reused each time this comparison is
+	 * executed.
 	 */
-	Map<Object, Set<Object>> executedComparison = new HashMap<>();
+	Map<Object, Map<Object, List<Difference>>> executedComparison = new HashMap<>();
 
 	public enum DifferenceType {
 		TYPE, VALUE, LIST_SIZE
@@ -183,6 +184,23 @@ public class DeepComparator {
 	}
 
 	/**
+	 * Executes a deep comparison between the two given objects. This method is internal: it used when recursing into
+	 * objects of a collection. The path parameter allows to log where the comparison is located, when in debug log
+	 * level.
+	 * 
+	 * @param o1
+	 * @param o2
+	 * @param path
+	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
+	 */
+	List<Difference> compare(Object o1, Object o2, String path) {
+		// We start a new comparison.
+		executedComparison = new HashMap<>();
+
+		return compare(o1, o2, new ArrayList<>(), path);
+	}
+
+	/**
 	 * Executes a deep comparison between the two given objects.
 	 * 
 	 * @param o1
@@ -194,6 +212,9 @@ public class DeepComparator {
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
 	List<Difference> compare(Object o1, Object o2, List<Difference> differences, String path) {
+		if (logger.isTraceEnabled()) {
+			logger.trace("Starting comparison between " + o1 + " and " + o2 + " (on path: " + path + ")");
+		}
 
 		// Let's first check the case where one or the two objects are null
 		if (o1 == null) {
@@ -211,7 +232,7 @@ public class DeepComparator {
 
 		String object1 = null;
 		String object2 = null;
-		if (logger.isTraceEnabled()) {
+		if (logger.isDebugEnabled()) {
 			try {
 				object1 = o1.getClass().getSimpleName() + "(name=" + (String) graphqlUtils.invokeGetter(o1, "name")
 						+ ")";
@@ -250,38 +271,39 @@ public class DeepComparator {
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Has this couple already been compared ?
-		Set<Object> objectsAlreadyComparedToO1 = executedComparison.get(o1);
-		if (objectsAlreadyComparedToO1 != null && objectsAlreadyComparedToO1.contains(o2)) {
-			if (logger.isTraceEnabled()) {
-				logger.trace("Comparison already done for " + object1 + " and " + object2);
+		Map<Object, List<Difference>> objectsAlreadyComparedToO1 = executedComparison.get(o1);
+		if (objectsAlreadyComparedToO1 != null && objectsAlreadyComparedToO1.keySet().contains(o2)) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Comparison already done for " + object1 + " and " + object2);
 			}
-			return differences;
+			return addDifferences(differences, objectsAlreadyComparedToO1.get(o2));
 		}
 
 		// Let's write this couple in the comparison map, to avoid cycles.
 		if (objectsAlreadyComparedToO1 == null) {
-			objectsAlreadyComparedToO1 = new HashSet<>();
+			objectsAlreadyComparedToO1 = new HashMap<>();
 			executedComparison.put(o1, objectsAlreadyComparedToO1);
 		}
-		objectsAlreadyComparedToO1.add(o2);
 
 		// Let's log what we are comparing
-		if (logger.isTraceEnabled()) {
-			logger.trace("Comparing " + object1 + " to " + object2);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Comparison path: " + path + " / Comparing " + object1 + " to " + object2);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////// Ok, we need to execute the deep comparison ////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		List<Difference> additionalDifferences = new ArrayList<>();
+
 		// Collection are tested in a non-ordered way
 		if (o1 instanceof Collection<?>) {
-			return compareNonOrderedCollection((Collection<?>) o1, (Collection<?>) o2, differences, path);
+			additionalDifferences = compareNonOrderedCollection((Collection<?>) o1, (Collection<?>) o2, path);
 		}
 
 		// Maps are a special beast
-		if (o1 instanceof Map<?, ?>) {
-			return compareMap((Map<?, ?>) o1, (Map<?, ?>) o2, differences, path);
+		else if (o1 instanceof Map<?, ?>) {
+			additionalDifferences = compareMap((Map<?, ?>) o1, (Map<?, ?>) o2, path);
 		}
 
 		// Objects are compared field by field: let's recurse down one level
@@ -295,7 +317,18 @@ public class DeepComparator {
 		// }
 
 		// Ok, let's execute the field by field comparison.
-		return compareClasses(o1, o2, o1.getClass(), differences, path);
+		else {
+			additionalDifferences = compareClasses(o1, o2, o1.getClass(), path);
+		}
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Ok, we've done the deep comparison. And all newly found differences are in additionalDifferences
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		// Let's add this result to to reuse it, and to avoid to do it again, and
+		objectsAlreadyComparedToO1.put(o2, additionalDifferences);
+
+		return addDifferences(differences, additionalDifferences);
 	}
 
 	/**
@@ -307,18 +340,18 @@ public class DeepComparator {
 	 *            The first collection to compare
 	 * @param o2
 	 *            The second collection to compare
-	 * @param differences
-	 *            The current list of differences
 	 * @param path
 	 *            The current path
 	 * @return The updated list of differences. That is: the given list, where the found differences during this
 	 *         collection comparison, if any
 	 */
-	List<Difference> compareNonOrderedCollection(Collection<?> o1, Collection<?> o2, List<Difference> differences,
-			String path) {
+	List<Difference> compareNonOrderedCollection(Collection<?> o1, Collection<?> o2, String path) {
+
+		List<Difference> differences = new ArrayList<>();
+
 		if (o1.size() != o2.size()) {
-			differences = addDifference(differences, path, DifferenceType.LIST_SIZE, o1, o2,
-					"o1: " + o1.size() + " items, o2: " + o2.size() + " items");
+			differences.add(new Difference(path, DifferenceType.LIST_SIZE, o1, o2,
+					"o1: " + o1.size() + " items, o2: " + o2.size() + " items"));
 		}
 
 		// Let's look for all items in o1 that doesn't exist in o2
@@ -326,7 +359,7 @@ public class DeepComparator {
 			// Each item of o1 must exist in o2.
 			boolean found = false;
 			for (Object item2 : o2) {
-				if (compare(item1, item2).size() == 0) {
+				if (compare(item1, item2, path).size() == 0) {
 					found = true;
 					break;
 				}
@@ -334,8 +367,8 @@ public class DeepComparator {
 
 			if (!found) {
 				// Too bad, item1 was not found in o2.
-				differences = addDifference(differences, path, DifferenceType.VALUE, item1, null,
-						"list1 contains the following item but not list2: " + item1.toString());
+				differences.add(new Difference(path, DifferenceType.VALUE, item1, null,
+						"list1 contains the following item but not list2: " + item1.toString()));
 			}
 		}
 
@@ -343,7 +376,7 @@ public class DeepComparator {
 		for (Object item2 : o2) {
 			boolean found = false;
 			for (Object item1 : o1) {
-				if (compare(item1, item2).size() == 0) {
+				if (compare(item1, item2, path).size() == 0) {
 					found = true;
 					break;
 				}
@@ -351,8 +384,8 @@ public class DeepComparator {
 
 			if (!found) {
 				// Too bad, item1 was not found in o2.
-				differences = addDifference(differences, path, DifferenceType.VALUE, null, item2,
-						"list2 contains the following item but not list1: " + item2.toString());
+				differences.add(new Difference(path, DifferenceType.VALUE, null, item2,
+						"list2 contains the following item but not list1: " + item2.toString()));
 			}
 		}
 
@@ -364,19 +397,20 @@ public class DeepComparator {
 	 * 
 	 * @param o1
 	 * @param o2
-	 * @param differences
 	 * @param path
 	 * @return
 	 */
-	List<Difference> compareMap(Map<?, ?> o1, Map<?, ?> o2, List<Difference> differences, String path) {
+	List<Difference> compareMap(Map<?, ?> o1, Map<?, ?> o2, String path) {
+		List<Difference> differences = new ArrayList<>();
+
 		// First step: compare the keys
-		differences = compare(o1.keySet(), o2.keySet(), differences, path + "/keys");
+		differences.addAll(compare(o1.keySet(), o2.keySet(), path + "/keys"));
 
 		// Then, let's give a try on the values.
 		for (Object key : o1.keySet()) {
 			Object val1 = o1.get(key);
 			Object val2 = o2.get(key);
-			differences = compare(val1, val2, differences, path + "[" + key + "]");
+			differences.addAll(compare(val1, val2, path + "[" + key + "]"));
 		}
 
 		return differences;
@@ -393,11 +427,12 @@ public class DeepComparator {
 	 *            The class on which the comparison should be executed: this method should be called with the real o1
 	 *            class. The this method iterates through all it superclasses. This allows to use the
 	 *            {@link Class#getDeclaredFields()} method.
-	 * @param differences
 	 * @param path
 	 * @return
 	 */
-	List<Difference> compareClasses(Object o1, Object o2, Class<?> clazz, List<Difference> differences, String path) {
+	List<Difference> compareClasses(Object o1, Object o2, Class<?> clazz, String path) {
+		List<Difference> differences = new ArrayList<>();
+
 		// Let's check the given class
 		if (!clazz.isInstance(o1)) {
 			throw new RuntimeException("The o1 object is an instance of " + o1.getClass()
@@ -433,18 +468,18 @@ public class DeepComparator {
 			Map<String, ComparisonRule> fieldRulesMap = specificComparisonRules.get(clazz);
 			if (fieldRulesMap != null && fieldRulesMap.keySet().contains(field.getName())) {
 				// Let's execute this specific rule
-				differences = executeSpecificComparisonRule(val1, val2, differences, path + "/" + field.getName(),
-						fieldRulesMap.get(field.getName()));
+				differences.addAll(executeSpecificComparisonRule(val1, val2, path + "/" + field.getName(),
+						fieldRulesMap.get(field.getName())));
 			} else {
 				// Let's execute the standard field comparison
-				differences = compare(val1, val2, differences, path + "/" + field.getName());
+				differences.addAll(compare(val1, val2, path + "/" + field.getName()));
 			}
 		} // for
 
 		Class<?> superclass = clazz.getSuperclass();
 		if (!superclass.getName().equals("java.lang.Object")) {
 			// Let's recurse, and compare the superclass's fields
-			differences = compareClasses(o1, o2, superclass, differences, path);
+			differences.addAll(compareClasses(o1, o2, superclass, path));
 		}
 
 		return differences;
@@ -456,39 +491,50 @@ public class DeepComparator {
 	 * 
 	 * @param val1
 	 * @param val2
-	 * @param differences
 	 * @param path
 	 * @param comparisonRule
 	 * @return
 	 */
-	List<Difference> executeSpecificComparisonRule(Object val1, Object val2, List<Difference> differences, String path,
+	List<Difference> executeSpecificComparisonRule(Object val1, Object val2, String path,
 			ComparisonRule comparisonRule) {
+		List<Difference> diffs = new ArrayList<>();
+
 		if (val1 == null && val2 == null) {
 			// It's Ok
-			return differences;
+			return diffs;
 		} else if (val1 == null || val2 == null) {
 			// Only one of the values is null
-			return addDifference(differences, path, DifferenceType.VALUE, val1, val2, null);
-		}
+			return addDifference(diffs, path, DifferenceType.VALUE, val1, val2, null);
+		} else {
+			// Ok, both values are non null. We can execute the given rule.
+			diffs = comparisonRule.compare(val1, val2);
 
-		// Ok, both values are non null. We can execute the given rule.
-		List<Difference> diffs = comparisonRule.compare(val1, val2);
-
-		if (diffs != null) {
-			// Then we complete the received differences
-			for (Difference d : diffs) {
-				d.path = path + d.path;
+			if (diffs == null) {
+				// The return of this method may not be null
+				diffs = new ArrayList<>();
+			} else {
+				// Then we complete the received differences, to have the correct path, related to the current
+				// comparison step
+				for (Difference d : diffs) {
+					d.path = path + d.path;
+				}
 			}
-			differences.addAll(diffs);
+
+			return diffs;
 		}
 
-		return differences;
 	}
 
 	/** Add a {@link Difference} to the given list, from its attribute */
-	protected List<Difference> addDifference(List<Difference> differences, String path, DifferenceType diffenceType,
+	private List<Difference> addDifference(List<Difference> differences, String path, DifferenceType diffenceType,
 			Object o1, Object o2, String info) {
 		differences.add(new Difference(path, diffenceType, o1, o2, info));
+		return differences;
+	}
+
+	/** Add all the otherDifferences into the differences list, then return the differences list */
+	private List<Difference> addDifferences(List<Difference> differences, List<Difference> otherDifferences) {
+		differences.addAll(otherDifferences);
 		return differences;
 	}
 
