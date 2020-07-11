@@ -171,6 +171,17 @@ public class FieldImpl implements Field {
 		return GraphqlUtils.graphqlUtils.getPascalCase(name);
 	}
 
+	/**
+	 * Returns the default value, as text, as it can be written into a generated GraphQL schema.<BR/>
+	 * A <I>str</I> string default value will be returned as <I>"str"</I>,a <I>JEDI</I> enum value will be returned as
+	 * <I>JEDI</I>, ...
+	 * 
+	 * @return
+	 */
+	public String getDefaultValueAsText() {
+		return GraphqlUtils.graphqlUtils.getValueAsText(defaultValue);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

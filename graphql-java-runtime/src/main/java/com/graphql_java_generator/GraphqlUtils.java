@@ -25,6 +25,8 @@ import graphql.language.BooleanValue;
 import graphql.language.FloatValue;
 import graphql.language.IntValue;
 import graphql.language.NullValue;
+import graphql.language.ObjectField;
+import graphql.language.ObjectValue;
 import graphql.language.StringValue;
 import graphql.language.Value;
 
@@ -412,9 +414,6 @@ public class GraphqlUtils {
 	 * @return
 	 */
 	public Method getGetter(Class<?> clazz, Field field) {
-		if (clazz.getSimpleName().contentEquals("FieldImpl")) {
-			int i = 0;
-		}
 		String getterMethodName = "get" + getPascalCase(field.getName());
 		try {
 			Method method = null;
@@ -715,6 +714,59 @@ public class GraphqlUtils {
 		} else {
 			throw new RuntimeException(
 					"Value of type " + value.getClass().getName() + " is not managed (" + action + ")");
+		}
+	}
+
+	/**
+	 * Returns the given value, as text, as it can be written into a generated GraphQL schema.<BR/>
+	 * A <I>str</I> string default value will be returned as <I>"str"</I>,a <I>JEDI</I> enum value will be returned as
+	 * <I>JEDI</I>, ...
+	 * 
+	 * @return
+	 */
+	public String getValueAsText(Value<?> value) {
+		if (value == null || value instanceof NullValue) {
+			return "null";
+		} else if (value instanceof StringValue) {
+			return "\"" + ((StringValue) value).getValue() + "\"";
+		} else if (value instanceof BooleanValue) {
+			return ((BooleanValue) value).isValue() ? "true" : "false";
+		} else if (value instanceof IntValue) {
+			return ((IntValue) value).getValue().toString();
+		} else if (value instanceof FloatValue) {
+			return ((FloatValue) value).getValue().toString();
+		} else if (value instanceof graphql.language.EnumValue) {
+			// For enums, we can't retrieve an instance of the enum value, as the enum class has not been created yet.
+			// So we just return the label of the enum, as a String.
+			return ((graphql.language.EnumValue) value).getName();
+		} else if (value instanceof ObjectValue) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("{");
+			boolean appendSep = false;
+			for (ObjectField v : ((ObjectValue) value).getObjectFields()) {
+				if (appendSep)
+					sb.append(",");
+				else
+					appendSep = true;
+				sb.append(v.getName()).append(":").append(getValueAsText(v.getValue()));
+			} // for
+			sb.append("}");
+			return sb.toString();
+		} else if (value instanceof ArrayValue) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("[");
+			boolean appendSep = false;
+			for (Value<?> v : ((ArrayValue) value).getValues()) {
+				if (appendSep)
+					sb.append(",");
+				else
+					appendSep = true;
+				sb.append(getValueAsText(v));
+			} // for
+			sb.append("]");
+			return sb.toString();
+		} else {
+			throw new RuntimeException("Value of type " + value.getClass().getName() + " is not managed");
 		}
 	}
 }

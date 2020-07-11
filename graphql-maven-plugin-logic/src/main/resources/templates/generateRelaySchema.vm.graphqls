@@ -33,7 +33,7 @@ directive @${directive.name} #if ($directive.arguments.size() > 0)(
 #else $space
 #end
 #foreach($arg in $directive.arguments)
-	${arg.name}: #fieldType($arg)$space
+	${arg.name}: #fieldType($arg) #if($arg.defaultValue)= ${arg.getDefaultValueAsText()}#end $space
 #end
 #if ($directive.arguments.size() > 0)
 )
