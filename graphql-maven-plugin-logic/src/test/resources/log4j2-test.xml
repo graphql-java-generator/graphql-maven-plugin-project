@@ -5,7 +5,7 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-		<RollingFile name="File" fileName="target/JUnit-tests.log" filePattern="target/JUnit-tests-%d{yyyy-MM-dd}.log">
+		<RollingFile name="File" fileName="target/JUnit-tests.log" filePattern="target/JUnit-tests-%d{yyyy-MM-dd_HH-mm-ss}.log">
 			<PatternLayout>
 				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
