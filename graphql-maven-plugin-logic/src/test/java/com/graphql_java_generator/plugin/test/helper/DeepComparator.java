@@ -56,11 +56,11 @@ public class DeepComparator {
 	 */
 	List<Class<?>> basicClasses = new ArrayList<>();
 
-	/**
-	 * The list of objects, that will be compared field by field. For each of these objects, the list of fields to
-	 * ignore during the comparison can be set, by using the {@link #ignoredFields} map.
-	 */
-	Set<String> comparedClasses = new TreeSet<>();
+	// /**
+	// * The list of objects, that will be compared field by field. For each of these objects, the list of fields to
+	// * ignore during the comparison can be set, by using the {@link #ignoredFields} map.
+	// */
+	// Set<String> comparedClasses = new TreeSet<>();
 
 	/** The list of objects that will be ignored during the comparison: all fields of this type are skipped. */
 	List<Class<?>> ignoredClasses = new ArrayList<>();
@@ -286,12 +286,13 @@ public class DeepComparator {
 
 		// Objects are compared field by field: let's recurse down one level
 
-		// This class is not ignored. We still check that we should execute the comparison.
-		// Otherwise, there is a bad configuration somewhere.
-		if (!comparedClasses.contains(o1.getClass().getName())) {
-			throw new RuntimeException("The " + o1.getClass().getName()
-					+ " is not managed by this comparison. Please add this class to one of these lists: basicTypes, objectTypes or ignoredTypes");
-		}
+		// // This class is not ignored. We still check that we should execute the comparison.
+		// // Otherwise, there is a bad configuration somewhere.
+		// if (!comparedClasses.contains(o1.getClass().getName())) {
+		// throw new RuntimeException("The " + o1.getClass().getName()
+		// + " is not managed by this comparison. Please add this class to one of these lists: basicTypes, objectTypes
+		// or ignoredTypes");
+		// }
 
 		// Ok, let's execute the field by field comparison.
 		return compareClasses(o1, o2, o1.getClass(), differences, path);
@@ -500,15 +501,13 @@ public class DeepComparator {
 		basicClasses.add(clazz);
 	}
 
-	/**
-	 * Add a Class as an object, that is a class that should be compared field by field, not by the
-	 * {@link Object#equals(Object)} method
-	 * 
-	 * @param clazz
-	 */
-	public void addComparedClass(Class<?> clazz) {
-		comparedClasses.add(clazz.getName());
-	}
+	// /**
+	// * // * Add a Class as an object, that is a class that should be compared field by field, not by the // *
+	// * {@link Object#equals(Object)} method // * // * @param clazz //
+	// */
+	// public void addComparedClass(Class<?> clazz) {
+	// comparedClasses.add(clazz.getName());
+	// }
 
 	/**
 	 * Add a Class as an ignored class, that is that if a field to compare is of this class, the comparison is skipped

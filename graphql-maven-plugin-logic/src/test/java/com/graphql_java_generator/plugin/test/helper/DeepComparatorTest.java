@@ -4,15 +4,12 @@
 package com.graphql_java_generator.plugin.test.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,7 +75,7 @@ class DeepComparatorTest {
 	public void beforeEach() {
 		deepComparator = new DeepComparator();
 
-		deepComparator.addComparedClass(ComparisonObject.class);
+		// deepComparator.addComparedClass(ComparisonObject.class);
 		deepComparator.addBasicClass(TestEnum.class);
 		deepComparator.addIgnoredFields(ComparisonObject.class, "ignored");
 
@@ -282,23 +279,23 @@ class DeepComparatorTest {
 		assertEquals("33", d.value2);
 	}
 
-	@Test
-	void test_nonAddedObjects() {
-		// Preparation : we want an empty object list
-		deepComparator.comparedClasses = new TreeSet<>();
-		deepComparator.ignoredClasses = new ArrayList<>();
-		ComparisonObject o1 = new ComparisonObject(1, "o1", 100L, "ignored 1");
-		ComparisonObject o2 = new ComparisonObject(2, "o2", 200L, "ignored 2");
-
-		// Go, go, go
-		RuntimeException e = assertThrows(RuntimeException.class, () -> deepComparator.compare(o1, o2));
-		assertTrue(e.getMessage().contains(o1.getClass().getName() + " is not managed by this comparison"));
-	}
+	// @Test
+	// void test_nonAddedObjects() {
+	// // Preparation : we want an empty object list
+	// // deepComparator.comparedClasses = new TreeSet<>();
+	// deepComparator.ignoredClasses = new ArrayList<>();
+	// ComparisonObject o1 = new ComparisonObject(1, "o1", 100L, "ignored 1");
+	// ComparisonObject o2 = new ComparisonObject(2, "o2", 200L, "ignored 2");
+	//
+	// // Go, go, go
+	// RuntimeException e = assertThrows(RuntimeException.class, () -> deepComparator.compare(o1, o2));
+	// assertTrue(e.getMessage().contains(o1.getClass().getName() + " is not managed by this comparison"));
+	// }
 
 	@Test
 	void ignoredObjects() {
 		// Preparation
-		deepComparator.comparedClasses = new TreeSet<>();
+		// deepComparator.comparedClasses = new TreeSet<>();
 		deepComparator.addIgnoredClass(ComparisonObject.class);
 		ComparisonObject o1 = new ComparisonObject(1, "o1", 100L, "ignored 1");
 		ComparisonObject o2 = new ComparisonObject(2, "o2", 200L, "ignored 2");
