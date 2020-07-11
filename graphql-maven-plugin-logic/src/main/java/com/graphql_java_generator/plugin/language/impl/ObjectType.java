@@ -10,8 +10,8 @@ import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -28,8 +28,10 @@ import lombok.ToString;
  * 
  * @author etienne-sf
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+// @Data
+// @EqualsAndHashCode(callSuper = true)
 public class ObjectType extends AbstractType {
 
 	/** List of the names of GraphQL types (interface or enum or unions), that are implemented by this object */
