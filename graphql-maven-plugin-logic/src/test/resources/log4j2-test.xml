@@ -5,17 +5,20 @@
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-		<File name="File" fileName="target/JUnit-tests.log4j.log">
+		<RollingFile name="File" fileName="target/JUnit-tests.log" filePattern="target/JUnit-tests-%d{yyyy-MM-dd}.log">
 			<PatternLayout>
 				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
 			</PatternLayout>
-		</File>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+			</Policies>
+		</RollingFile>
 	</Appenders>
 
 	<Loggers>
 		<Logger name="com.graphql_java_generator.plugin" level="trace" />
 		<Root level="info">
-			<!-- AppenderRef ref="Console" /-->
+			<!-- AppenderRef ref="Console" / -->
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>
