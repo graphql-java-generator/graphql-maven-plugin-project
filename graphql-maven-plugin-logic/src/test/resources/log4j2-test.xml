@@ -7,7 +7,7 @@
 		</Console>
 		<RollingFile name="File" fileName="target/JUnit-tests.log" filePattern="target/JUnit-tests-%d{yyyy-MM-dd_HH-mm-ss}.log">
 			<PatternLayout>
-				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</pattern>
+				<pattern>%d{HH:mm:ss.SSS} [%t] %-5level - %msg%n</pattern>
 			</PatternLayout>
 			<Policies>
 				<OnStartupTriggeringPolicy />
@@ -16,7 +16,7 @@
 	</Appenders>
 
 	<Loggers>
-		<Logger name="com.graphql_java_generator.plugin" level="trace" />
+		<Logger name="com.graphql_java_generator.plugin" level="info" />
 		<Root level="info">
 			<!-- AppenderRef ref="Console" / -->
 			<AppenderRef ref="File" />
