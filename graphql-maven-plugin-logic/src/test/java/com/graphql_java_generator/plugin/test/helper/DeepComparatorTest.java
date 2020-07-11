@@ -4,6 +4,8 @@
 package com.graphql_java_generator.plugin.test.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,7 +84,7 @@ class DeepComparatorTest {
 		// specific comparison rule:
 		deepComparator.addSpecificComparisonRules(ComparisonSuperClass.class, "comp", new ComparisonRule() {
 			@Override
-			public List<Difference> compare(Object o1, Object o2) {
+			public List<Difference> compare(Object o1, Object o2, int nbMaxDifferences) {
 				ComparisonObject co1 = (ComparisonObject) o1;
 				ComparisonObject co2 = (ComparisonObject) o2;
 				if (co1.id != co2.id) {
@@ -96,15 +98,26 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	void test_equals() {
+		ComparisonObject o1 = new ComparisonObject(1, "o1", 100L, "ignored 1");
+		ComparisonObject o2 = new ComparisonObject(2, "o2", 200L, "ignored 2");
+
+		execTestEqualsOneType(true, false);
+		execTestEqualsOneType("1", "2");
+		execTestEqualsOneType(1, 2);
+		execTestEqualsOneType(o1, o2);
+	}
+
+	@Test
 	void test_basicTypes() {
-		test_oneType("QSDQSD", "sdsdq", 1);
-		test_oneType(1, 2, 1);
-		test_oneType(1L, 2L, 1);
-		test_oneType(Short.valueOf((short) 1), Short.valueOf((short) 2), 1);
-		test_oneType(Long.valueOf(1), Long.valueOf(2), 1);
-		test_oneType(Double.valueOf(1), Double.valueOf(2), 1);
-		test_oneType(Float.valueOf(1), Float.valueOf(2), 1);
-		test_oneType(TestEnum.ENUM1, TestEnum.ENUM2, 1);
+		execTestCompareOneType("QSDQSD", "sdsdq", 1);
+		execTestCompareOneType(1, 2, 1);
+		execTestCompareOneType(1L, 2L, 1);
+		execTestCompareOneType(Short.valueOf((short) 1), Short.valueOf((short) 2), 1);
+		execTestCompareOneType(Long.valueOf(1), Long.valueOf(2), 1);
+		execTestCompareOneType(Double.valueOf(1), Double.valueOf(2), 1);
+		execTestCompareOneType(Float.valueOf(1), Float.valueOf(2), 1);
+		execTestCompareOneType(TestEnum.ENUM1, TestEnum.ENUM2, 1);
 	}
 
 	@Test
@@ -138,13 +151,13 @@ class DeepComparatorTest {
 
 		// Tests
 
-		test_oneType(lst123, lst132, 0);
+		execTestCompareOneType(lst123, lst132, 0);
 
 		// The test is non-ordered for lists: when no difference
-		test_oneType(lst123, lst132, 0);
+		execTestCompareOneType(lst123, lst132, 0);
 
 		// The test is non-ordered for lists: same size, but content is different
-		differences = test_oneType(lst123, lst412, 2);
+		differences = execTestCompareOneType(lst123, lst412, 2);
 		//
 		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
@@ -159,7 +172,7 @@ class DeepComparatorTest {
 		assertEquals("list2 contains the following item but not list1: str4", differences.get(1).info);
 
 		// Different list size
-		differences = test_oneType(lst123, lst12, 2);
+		differences = execTestCompareOneType(lst123, lst12, 2);
 		//
 		assertEquals(DeepComparator.DifferenceType.LIST_SIZE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
@@ -182,13 +195,13 @@ class DeepComparatorTest {
 
 		// Tests
 
-		test_oneType(lst123, lst132, 0);
+		execTestCompareOneType(lst123, lst132, 0);
 
 		// The test is non-ordered for lists: when no difference
-		test_oneType(lst123, lst132, 0);
+		execTestCompareOneType(lst123, lst132, 0);
 
 		// The test is non-ordered for lists: same size, but content is different
-		differences = test_oneType(lst123, lst412, 2);
+		differences = execTestCompareOneType(lst123, lst412, 2);
 		//
 		assertEquals(DeepComparator.DifferenceType.VALUE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
@@ -203,7 +216,7 @@ class DeepComparatorTest {
 		assertEquals("list2 contains the following item but not list1: ENUM4", differences.get(1).info);
 
 		// Different list size
-		differences = test_oneType(lst123, lst12, 2);
+		differences = execTestCompareOneType(lst123, lst12, 2);
 		//
 		assertEquals(DeepComparator.DifferenceType.LIST_SIZE, differences.get(0).type);
 		assertEquals("", differences.get(0).path);
@@ -236,10 +249,10 @@ class DeepComparatorTest {
 
 		// Tests
 
-		test_oneType(map123, map123, 0);
+		execTestCompareOneType(map123, map123, 0);
 
 		// Different map size
-		differences = deepComparator.compare(map123, map12);
+		differences = deepComparator.differences(map123, map12, Integer.MAX_VALUE);
 		assertEquals(3, differences.size());
 		//
 		assertEquals(DeepComparator.DifferenceType.LIST_SIZE, differences.get(0).type);
@@ -257,7 +270,7 @@ class DeepComparatorTest {
 		assertEquals(null, differences.get(2).value2);
 
 		// Same map size, but difference in the values
-		differences = test_oneType(map123, map123bis, 3);
+		differences = execTestCompareOneType(map123, map123bis, 3);
 		//
 		Difference d = differences.get(i++);
 		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
@@ -300,11 +313,11 @@ class DeepComparatorTest {
 		ComparisonObject o2 = new ComparisonObject(2, "o2", 200L, "ignored 2");
 
 		// Go, go, go
-		assertEquals(0, deepComparator.compare(o1, o2).size());
+		assertEquals(0, deepComparator.differences(o1, o2, Integer.MAX_VALUE).size());
 	}
 
 	@Test
-	void test_Objects() {
+	void test_differencesObjects() {
 		// Preparation
 		Difference d;
 		int i = 0;
@@ -312,7 +325,7 @@ class DeepComparatorTest {
 		ComparisonObject o2 = new ComparisonObject(2, "o2", 200L, "ignored 2");
 
 		// Go, go, go
-		List<Difference> differences = deepComparator.compare(o1, o2);
+		List<Difference> differences = deepComparator.differences(o1, o2, Integer.MAX_VALUE);
 
 		// Verification
 		assertEquals(4, differences.size());
@@ -351,25 +364,25 @@ class DeepComparatorTest {
 		ComparisonObject o2 = new ComparisonObject(1, "o1", 100L, "ignored 1");
 
 		// Go, go, go (exactly the same)
-		assertEquals(0, deepComparator.compare(o1, o2).size());
+		assertEquals(0, deepComparator.differences(o1, o2, Integer.MAX_VALUE).size());
 
 		// Go, go, go (o2 is another object, with the same values)
 		o2 = new ComparisonObject(1, "o1", 100L, "ignored 1");
-		assertEquals(0, deepComparator.compare(o1, o2).size());
+		assertEquals(0, deepComparator.differences(o1, o2, Integer.MAX_VALUE).size());
 
 		// Go, go, go (We now change only the o2.comp field, but again another instance having the same values)
 		o2.comp = new ComparisonObject(1, "o1", 100L, "ignored 1");
-		assertEquals(0, deepComparator.compare(o1, o2).size());
+		assertEquals(0, deepComparator.differences(o1, o2, Integer.MAX_VALUE).size());
 
 		// Go, go, go (We now change only the o2.comp field, but again another instance having the same values out of
 		// the changed name, wich is not compared by the specific rule define in the setUp method, here above)
 		o2.comp = new ComparisonObject(1, "a different name", 100L, "ignored 1");
-		assertEquals(0, deepComparator.compare(o1, o2).size());
+		assertEquals(0, deepComparator.differences(o1, o2, Integer.MAX_VALUE).size());
 
 		// Go, go, go (We now change only the o2.comp field, but again another instance having the same values out of
 		// the changed id)
 		o2.comp = new ComparisonObject(666, "o1", 100L, "ignored 1");
-		List<Difference> differences = deepComparator.compare(o1, o2);
+		List<Difference> differences = deepComparator.differences(o1, o2, Integer.MAX_VALUE);
 		assertEquals(1, differences.size());
 		d = differences.get(i++);
 		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
@@ -379,7 +392,8 @@ class DeepComparatorTest {
 	}
 
 	/**
-	 * Test of one type, with two different objects of the same type.
+	 * Test of one type against the {@link DeepComparator#differences(Object, Object, int)} method, with two different
+	 * objects of the same type.
 	 * 
 	 * @param o1
 	 *            Must be non null
@@ -389,24 +403,46 @@ class DeepComparatorTest {
 	 *            Number of expected differences between o1 and o2
 	 * @return The differences list when calling
 	 */
-	List<Difference> test_oneType(Object o1, Object o2, int nbDifferences) {
+	List<Difference> execTestCompareOneType(Object o1, Object o2, int nbDifferences) {
 		// Different
-		assertEquals(1, deepComparator.compare(o1, null).size());
-		assertEquals(1, deepComparator.compare(null, o2).size());
-		List<Difference> differences = deepComparator.compare(o1, o2);
+		assertEquals(1, deepComparator.differences(o1, null, Integer.MAX_VALUE).size());
+		assertEquals(1, deepComparator.differences(null, o2, Integer.MAX_VALUE).size());
+		List<Difference> differences = deepComparator.differences(o1, o2, Integer.MAX_VALUE);
 		assertEquals(nbDifferences, differences.size());
-		assertEquals(nbDifferences, deepComparator.compare(o2, o1).size());
+		assertEquals(nbDifferences, deepComparator.differences(o2, o1, Integer.MAX_VALUE).size());
 
 		// Equal
-		assertEquals(0, deepComparator.compare(null, null).size());
-		assertEquals(0, deepComparator.compare(o1, o1).size());
-		assertEquals(0, deepComparator.compare(o2, o2).size());
+		assertEquals(0, deepComparator.differences(null, null, Integer.MAX_VALUE).size());
+		assertEquals(0, deepComparator.differences(o1, o1, Integer.MAX_VALUE).size());
+		assertEquals(0, deepComparator.differences(o2, o2, Integer.MAX_VALUE).size());
 
 		return differences;
 	}
 
+	/**
+	 * Test of one type against the {@link DeepComparator#equals(Object, Object)} method, with two different objects of
+	 * the same type.
+	 * 
+	 * @param o1
+	 *            Must be non null
+	 * @param o2
+	 *            Must be non null, and different from o1
+	 */
+	void execTestEqualsOneType(Object o1, Object o2) {
+		// Different
+		assertFalse(deepComparator.equals(o1, null));
+		assertFalse(deepComparator.equals(null, o2));
+		assertFalse(deepComparator.equals(o1, o2));
+		assertFalse(deepComparator.equals(o2, o1));
+
+		// Equal
+		assertTrue(deepComparator.equals(null, null));
+		assertTrue(deepComparator.equals(o1, o1));
+		assertTrue(deepComparator.equals(o2, o2));
+	}
+
 	List<Difference> assertDiffType(Object o1, Object o2, int nbDifferences, DeepComparator.DifferenceType type) {
-		List<Difference> differences = deepComparator.compare(o1, o2);
+		List<Difference> differences = deepComparator.differences(o1, o2, Integer.MAX_VALUE);
 		assertEquals(nbDifferences, differences.size());
 		for (Difference d : differences) {
 			assertEquals(type, d.type);

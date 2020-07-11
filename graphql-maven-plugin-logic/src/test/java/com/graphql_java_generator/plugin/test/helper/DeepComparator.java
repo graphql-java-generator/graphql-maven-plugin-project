@@ -36,13 +36,13 @@ import com.graphql_java_generator.GraphqlUtils;
  * used</LI>
  * </UL>
  * All differences are logged if the level is debug or lower. They are also returned by the
- * {@link #compare(Object, Object)} method, to allow further processing. This makes it possible to correct these
+ * {@link #differences(Object, Object)} method, to allow further processing. This makes it possible to correct these
  * differences.
  * 
  * 
  * @author etienne-sf
  */
-public class DeepComparator {
+public class DeepComparator implements Cloneable {
 
 	/** The logger for this class. It can be overriden by using the relevant constructor */
 	Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -136,12 +136,18 @@ public class DeepComparator {
 		 *            may not be null (this will be checked before calling this method)
 		 * @param o2
 		 *            may not be null (this will be checked before calling this method)
+		 * @param nbMaxDifferences
+		 *            The maximum number of differences to return. This allows to limit the size of the returned list,
+		 *            and to accelerate the comparison. <BR/>
+		 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+		 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+		 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 		 * @return A non null list. If it's empty, then there is no difference between o1 and o2. The root path for the
 		 *         returned {@link Difference}s is this field, starting by a slash (/). If differences are returned by
 		 *         this method, they will be updated with the current path of the comparison when this method was
 		 *         called.
 		 */
-		public List<Difference> compare(Object o1, Object o2);
+		public List<Difference> compare(Object o1, Object o2, int nbMaxDifferences);
 	}
 
 	public DeepComparator() {
@@ -174,30 +180,77 @@ public class DeepComparator {
 	 * 
 	 * @param o1
 	 * @param o2
-	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
+	 * @return true if no differences have been found, during the deep comparison. False if at least one difference has
+	 *         been found.
 	 */
-	public List<Difference> compare(Object o1, Object o2) {
+	public boolean equals(Object o1, Object o2) {
 		// We start a new comparison.
 		executedComparison = new HashMap<>();
 
-		return compare(o1, o2, new ArrayList<>(), "");
+		return compare(o1, o2, new ArrayList<>(), 1, "").size() == 0;
+	}
+
+	/**
+	 * Executes a deep comparison between the two given objects. All differences are reported.<BR/>
+	 * If you just want to know if these two objects are different, you can use the {@link #differences(Object, Object)}
+	 * method, which will stop the comparison as soon as a difference is found. It may be much faster.
+	 * 
+	 * @param o1
+	 * @param o2
+	 * @param nbMaxDifferences
+	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
+	 *            to accelerate the comparison. <BR/>
+	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
+	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
+	 */
+	public List<Difference> differences(Object o1, Object o2, int nbMaxDifferences) {
+		// We start a new comparison.
+		DeepComparator deepComparator = clone();
+		return deepComparator.compare(o1, o2, new ArrayList<>(), nbMaxDifferences, "");
 	}
 
 	/**
 	 * Executes a deep comparison between the two given objects. This method is internal: it used when recursing into
 	 * objects of a collection. The path parameter allows to log where the comparison is located, when in debug log
-	 * level.
+	 * level.<BR/>
+	 * This method stops after the first difference found.
 	 * 
 	 * @param o1
 	 * @param o2
 	 * @param path
+	 * @return true if no differences have been found, during the deep comparison. False if at least one difference has
+	 *         been found.
+	 */
+	boolean compare(Object o1, Object o2, String path) {
+		// We start a new comparison.
+		DeepComparator deepComparator = clone();
+		return deepComparator.compare(o1, o2, new ArrayList<>(), 1, path).size() == 0;
+	}
+
+	/**
+	 * Executes a deep comparison between the two given objects. This method is internal: it used when recursing into
+	 * objects of a collection. The path parameter allows to log where the comparison is located, when in debug log
+	 * level.<BR/>
+	 * This method stops after the first difference found.
+	 * 
+	 * @param o1
+	 * @param o2
+	 * @param nbMaxDifferences
+	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
+	 *            to accelerate the comparison. <BR/>
+	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
+	 * @param path
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
-	List<Difference> compare(Object o1, Object o2, String path) {
+	List<Difference> differences(Object o1, Object o2, int nbMaxDifferences, String path) {
 		// We start a new comparison.
 		executedComparison = new HashMap<>();
 
-		return compare(o1, o2, new ArrayList<>(), path);
+		return compare(o1, o2, new ArrayList<>(), nbMaxDifferences, path);
 	}
 
 	/**
@@ -207,13 +260,20 @@ public class DeepComparator {
 	 * @param o2
 	 * @param differences
 	 *            The current list of differences. All found differences will be added to this list
+	 * @param nbMaxDifferences
+	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
+	 *            to accelerate the comparison. <BR/>
+	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 *            The current path. When recursing, the field name will be added to the path.
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
-	List<Difference> compare(Object o1, Object o2, List<Difference> differences, String path) {
+	List<Difference> compare(Object o1, Object o2, List<Difference> differences, int nbMaxDifferences, String path) {
 		if (logger.isTraceEnabled()) {
-			logger.trace("Starting comparison between " + o1 + " and " + o2 + " (on path: " + path + ")");
+			logger.trace("Starting comparison between " + o1 + " and " + o2 + " (on path: " + path
+					+ ", with nbMaxDifferences=" + nbMaxDifferences + ")");
 		}
 
 		// Let's first check the case where one or the two objects are null
@@ -279,16 +339,13 @@ public class DeepComparator {
 			return addDifferences(differences, objectsAlreadyComparedToO1.get(o2));
 		}
 
-		// Let's write this couple in the comparison map, to avoid cycles.
+		// Let's write this couple in the comparison map, to avoid cycles. We set the differences list as an empty list,
+		// and we'll correct that at the end.
 		if (objectsAlreadyComparedToO1 == null) {
 			objectsAlreadyComparedToO1 = new HashMap<>();
 			executedComparison.put(o1, objectsAlreadyComparedToO1);
 		}
-
-		// Let's log what we are comparing
-		if (logger.isDebugEnabled()) {
-			logger.debug("Comparison path: " + path + " / Comparing " + object1 + " to " + object2);
-		}
+		objectsAlreadyComparedToO1.put(o2, new ArrayList<>());
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////// Ok, we need to execute the deep comparison ////////////////////////////////////////
@@ -298,12 +355,13 @@ public class DeepComparator {
 
 		// Collection are tested in a non-ordered way
 		if (o1 instanceof Collection<?>) {
-			additionalDifferences = compareNonOrderedCollection((Collection<?>) o1, (Collection<?>) o2, path);
+			additionalDifferences = compareNonOrderedCollection((Collection<?>) o1, (Collection<?>) o2,
+					nbMaxDifferences, path);
 		}
 
 		// Maps are a special beast
 		else if (o1 instanceof Map<?, ?>) {
-			additionalDifferences = compareMap((Map<?, ?>) o1, (Map<?, ?>) o2, path);
+			additionalDifferences = compareMap((Map<?, ?>) o1, (Map<?, ?>) o2, nbMaxDifferences, path);
 		}
 
 		// Objects are compared field by field: let's recurse down one level
@@ -318,75 +376,105 @@ public class DeepComparator {
 
 		// Ok, let's execute the field by field comparison.
 		else {
-			additionalDifferences = compareClasses(o1, o2, o1.getClass(), path);
+			additionalDifferences = compareClass(o1, o2, o1.getClass(), nbMaxDifferences, path);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Ok, we've done the deep comparison. And all newly found differences are in additionalDifferences
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		// Let's add this result to to reuse it, and to avoid to do it again, and
+		// Let's add this result to reuse it, and to avoid to do it again
+		if (logger.isDebugEnabled()) {
+			logger.debug("nb diff=" + differences.size() + " - Comparison path: " + path + "  -  Comparing " + object1
+					+ " to " + object2);
+		}
+
+		List<Difference> ret = addDifferences(differences, additionalDifferences);
+
+		// Let's write this couple in the comparison map, to avoid cycles, and to reuse it if possible
 		objectsAlreadyComparedToO1.put(o2, additionalDifferences);
 
-		return addDifferences(differences, additionalDifferences);
+		return ret;
 	}
 
 	/**
 	 * Compares two {@link Collection}s. They must be of the same size. And each item of the first collection must be in
-	 * the second collection. Here "must be" means that a call to {@link #compare(Object, Object)} returns no
+	 * the second collection. Here "must be" means that a call to {@link #differences(Object, Object)} returns no
 	 * difference.
 	 * 
 	 * @param o1
 	 *            The first collection to compare
 	 * @param o2
 	 *            The second collection to compare
+	 * @param nbMaxDifferences
+	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
+	 *            to accelerate the comparison. <BR/>
+	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 *            The current path
 	 * @return The updated list of differences. That is: the given list, where the found differences during this
 	 *         collection comparison, if any
 	 */
-	List<Difference> compareNonOrderedCollection(Collection<?> o1, Collection<?> o2, String path) {
+	List<Difference> compareNonOrderedCollection(Collection<?> o1, Collection<?> o2, int nbMaxDifferences,
+			String path) {
 
 		List<Difference> differences = new ArrayList<>();
 
 		if (o1.size() != o2.size()) {
 			differences.add(new Difference(path, DifferenceType.LIST_SIZE, o1, o2,
 					"o1: " + o1.size() + " items, o2: " + o2.size() + " items"));
+			nbMaxDifferences -= 1;
 		}
 
 		// Let's look for all items in o1 that doesn't exist in o2
-		for (Object item1 : o1) {
-			// Each item of o1 must exist in o2.
-			boolean found = false;
-			for (Object item2 : o2) {
-				if (compare(item1, item2, path).size() == 0) {
-					found = true;
-					break;
+		if (nbMaxDifferences > 0) {
+			for (Object item1 : o1) {
+				// Each item of o1 must exist in o2.
+				boolean found = false;
+				for (Object item2 : o2) {
+					if (compare(item1, item2, path)) {
+						found = true;
+						break;
+					}
 				}
-			}
 
-			if (!found) {
-				// Too bad, item1 was not found in o2.
-				differences.add(new Difference(path, DifferenceType.VALUE, item1, null,
-						"list1 contains the following item but not list2: " + item1.toString()));
-			}
+				if (!found) {
+					// Too bad, item1 was not found in o2.
+					differences.add(new Difference(path, DifferenceType.VALUE, item1, null,
+							"list1 contains the following item but not list2: " + item1.toString()));
+
+					if (--nbMaxDifferences <= 0) {
+						// We've reached the limit, in the number of expected differences. Let's stop here.
+						break;
+					}
+				}
+			} // for
 		}
 
 		// Let's look for all items in o2 that doesn't exist in o1
-		for (Object item2 : o2) {
-			boolean found = false;
-			for (Object item1 : o1) {
-				if (compare(item1, item2, path).size() == 0) {
-					found = true;
-					break;
+		if (nbMaxDifferences > 0) {
+			for (Object item2 : o2) {
+				boolean found = false;
+				for (Object item1 : o1) {
+					if (compare(item1, item2, path)) {
+						found = true;
+						break;
+					}
 				}
-			}
 
-			if (!found) {
-				// Too bad, item1 was not found in o2.
-				differences.add(new Difference(path, DifferenceType.VALUE, null, item2,
-						"list2 contains the following item but not list1: " + item2.toString()));
-			}
+				if (!found) {
+					// Too bad, item1 was not found in o2.
+					differences.add(new Difference(path, DifferenceType.VALUE, null, item2,
+							"list2 contains the following item but not list1: " + item2.toString()));
+
+					if (--nbMaxDifferences <= 0) {
+						// We've reached the limit, in the number of expected differences. Let's stop here.
+						break;
+					}
+				}
+			} // for
 		}
 
 		return differences;
@@ -397,20 +485,30 @@ public class DeepComparator {
 	 * 
 	 * @param o1
 	 * @param o2
+	 * @param nbMaxDifferences
+	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
+	 *            to accelerate the comparison. <BR/>
+	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 * @return
 	 */
-	List<Difference> compareMap(Map<?, ?> o1, Map<?, ?> o2, String path) {
+	List<Difference> compareMap(Map<?, ?> o1, Map<?, ?> o2, int nbMaxDifferences, String path) {
 		List<Difference> differences = new ArrayList<>();
 
 		// First step: compare the keys
-		differences.addAll(compare(o1.keySet(), o2.keySet(), path + "/keys"));
+		differences.addAll(differences(o1.keySet(), o2.keySet(), nbMaxDifferences, path + "/keys"));
 
 		// Then, let's give a try on the values.
 		for (Object key : o1.keySet()) {
+			if (--nbMaxDifferences <= 0) {
+				// We've reached the limit, in the number of expected differences. Let's stop here.
+				break;
+			}
 			Object val1 = o1.get(key);
 			Object val2 = o2.get(key);
-			differences.addAll(compare(val1, val2, path + "[" + key + "]"));
+			differences.addAll(differences(val1, val2, nbMaxDifferences, path + "[" + key + "]"));
 		}
 
 		return differences;
@@ -423,6 +521,12 @@ public class DeepComparator {
 	 * 
 	 * @param o1
 	 * @param o2
+	 * @param nbMaxDifferences
+	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
+	 *            to accelerate the comparison. <BR/>
+	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param clazz
 	 *            The class on which the comparison should be executed: this method should be called with the real o1
 	 *            class. The this method iterates through all it superclasses. This allows to use the
@@ -430,7 +534,7 @@ public class DeepComparator {
 	 * @param path
 	 * @return
 	 */
-	List<Difference> compareClasses(Object o1, Object o2, Class<?> clazz, String path) {
+	List<Difference> compareClass(Object o1, Object o2, Class<?> clazz, int nbMaxDifferences, String path) {
 		List<Difference> differences = new ArrayList<>();
 
 		// Let's check the given class
@@ -468,18 +572,20 @@ public class DeepComparator {
 			Map<String, ComparisonRule> fieldRulesMap = specificComparisonRules.get(clazz);
 			if (fieldRulesMap != null && fieldRulesMap.keySet().contains(field.getName())) {
 				// Let's execute this specific rule
-				differences.addAll(executeSpecificComparisonRule(val1, val2, path + "/" + field.getName(),
-						fieldRulesMap.get(field.getName())));
+				differences.addAll(executeSpecificComparisonRule(val1, val2, nbMaxDifferences,
+						path + "/" + field.getName(), fieldRulesMap.get(field.getName())));
 			} else {
 				// Let's execute the standard field comparison
-				differences.addAll(compare(val1, val2, path + "/" + field.getName()));
+				differences.addAll(differences(val1, val2, nbMaxDifferences, path + "/" + field.getName()));
 			}
 		} // for
 
 		Class<?> superclass = clazz.getSuperclass();
 		if (!superclass.getName().equals("java.lang.Object")) {
-			// Let's recurse, and compare the superclass's fields
-			differences.addAll(compareClasses(o1, o2, superclass, path));
+			if (nbMaxDifferences > differences.size()) {
+				// Let's recurse, and compare the superclass's fields
+				differences.addAll(compareClass(o1, o2, superclass, nbMaxDifferences - differences.size(), path));
+			}
 		}
 
 		return differences;
@@ -491,11 +597,17 @@ public class DeepComparator {
 	 * 
 	 * @param val1
 	 * @param val2
+	 * @param nbMaxDifferences
+	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
+	 *            to accelerate the comparison. <BR/>
+	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
+	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 * @param comparisonRule
 	 * @return
 	 */
-	List<Difference> executeSpecificComparisonRule(Object val1, Object val2, String path,
+	List<Difference> executeSpecificComparisonRule(Object val1, Object val2, int nbMaxDifferences, String path,
 			ComparisonRule comparisonRule) {
 		List<Difference> diffs = new ArrayList<>();
 
@@ -507,7 +619,7 @@ public class DeepComparator {
 			return addDifference(diffs, path, DifferenceType.VALUE, val1, val2, null);
 		} else {
 			// Ok, both values are non null. We can execute the given rule.
-			diffs = comparisonRule.compare(val1, val2);
+			diffs = comparisonRule.compare(val1, val2, nbMaxDifferences);
 
 			if (diffs == null) {
 				// The return of this method may not be null
@@ -599,4 +711,21 @@ public class DeepComparator {
 		}
 		rules.put(fieldName, comparator);
 	}
+
+	/**
+	 * Returns a fresh comparator, that is ready to execute a new Comparison. The {@link #executedComparison} map is
+	 * free. The various configuration lists are set in the clone with the exact same list as the original one. That
+	 * means that added (for instance) a basic class, will add it for both the clone and the original object.<BR/>
+	 * But the {@link #executedComparison} remains specific to each instance.
+	 */
+	@Override
+	protected DeepComparator clone() {
+		DeepComparator ret = new DeepComparator();
+		ret.basicClasses = basicClasses;
+		ret.ignoredClasses = ignoredClasses;
+		ret.ignoredFields = ignoredFields;
+		ret.specificComparisonRules = specificComparisonRules;
+		return ret;
+	}
+
 }
