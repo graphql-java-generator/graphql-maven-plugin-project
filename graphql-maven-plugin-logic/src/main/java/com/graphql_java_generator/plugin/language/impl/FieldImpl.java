@@ -78,7 +78,7 @@ public class FieldImpl implements Field {
 	 * Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum, not
 	 * the value of the enum.<BR/>
 	 * We store the graphql.language.Value as we receive it. We may not have parsed the relevant Object to check its
-	 * field, and obviously, we can"t instanciate any object or enum yet, as we dont't even generated any code.
+	 * field, and obviously, we can't instanciate any object or enum yet, as we dont't even generated any code.
 	 */
 	@Builder.Default
 	private Value<?> defaultValue = null;

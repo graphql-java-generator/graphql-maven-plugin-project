@@ -175,6 +175,7 @@ public abstract class DocumentParser {
 		skip.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		skip.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		skip.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
+		skip.setStandard(true);
 		directives.add(skip);
 		//
 		DirectiveImpl include = new DirectiveImpl();
@@ -183,12 +184,14 @@ public abstract class DocumentParser {
 		include.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		include.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		include.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
+		include.setStandard(true);
 		directives.add(include);
 		//
 		DirectiveImpl defer = new DirectiveImpl();
 		defer.setName("defer");
 		defer.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
 		defer.getDirectiveLocations().add(DirectiveLocation.FIELD);
+		defer.setStandard(true);
 		directives.add(defer);
 		//
 		DirectiveImpl deprecated = new DirectiveImpl();
@@ -197,6 +200,7 @@ public abstract class DocumentParser {
 		// .defaultValue("No longer supported").build());
 		deprecated.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
+		deprecated.setStandard(true);
 		directives.add(deprecated);
 
 		configuration.getLog().debug("Finished DocumentParser's PostConstrut intialization");

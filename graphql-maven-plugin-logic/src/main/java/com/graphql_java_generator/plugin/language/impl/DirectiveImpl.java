@@ -27,4 +27,10 @@ public class DirectiveImpl implements Directive {
 
 	/** Returns the list of location that this directive may have */
 	private List<DirectiveLocation> directiveLocations = new ArrayList<>();
+
+	/**
+	 * True if this directive is a standard GraphQL directive, or if it has been defined in the GraphQL schema. Default
+	 * value is false (non standard)
+	 */
+	private boolean standard = false;
 }
