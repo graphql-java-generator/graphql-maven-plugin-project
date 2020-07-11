@@ -236,7 +236,7 @@ public class DeepComparator {
 		}
 
 		// Basic types are compared by using the equals method
-		if (basicClasses.contains(o1.getClass())) {
+		if (basicClasses.contains(o1.getClass()) || o1 instanceof Enum) {
 			if (o1.equals(o2)) {
 				// No additional difference
 				return differences;

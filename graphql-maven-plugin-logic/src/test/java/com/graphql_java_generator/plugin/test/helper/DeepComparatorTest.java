@@ -76,7 +76,6 @@ class DeepComparatorTest {
 		deepComparator = new DeepComparator();
 
 		// deepComparator.addComparedClass(ComparisonObject.class);
-		deepComparator.addBasicClass(TestEnum.class);
 		deepComparator.addIgnoredFields(ComparisonObject.class, "ignored");
 
 		// To break the cycle where comparing ComparisonSuperClass.comp cycle with the Comparison class, we define a
