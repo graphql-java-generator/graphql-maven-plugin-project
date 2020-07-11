@@ -2,6 +2,7 @@
 target/
 logs/
 
+**/bin/
 .classpath
 .project
 
