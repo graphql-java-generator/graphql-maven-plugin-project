@@ -18,8 +18,8 @@ import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
-import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
+import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
@@ -47,24 +47,24 @@ class GenerateRelaySchema_Forum_Test {
 	void setUp() {
 		deepComparator = new DeepComparator();
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////// Compared classes //////////////////////////////////////////////////////////////////////////
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class);
-		// language
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.AppliedDirectiveImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.CustomScalarType.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DataFetcherImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DirectiveImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.EnumType.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.EnumValueImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.FieldImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.InterfaceType.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.ObjectType.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.RelationImpl.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.ScalarType.class);
-		deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.UnionType.class);
+		// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// /////////////// Compared classes //////////////////////////////////////////////////////////////////////////
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class);
+		// // language
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.AppliedDirectiveImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.CustomScalarType.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DataFetcherImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DirectiveImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.EnumType.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.EnumValueImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.FieldImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.InterfaceType.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.ObjectType.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.RelationImpl.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.ScalarType.class);
+		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.UnionType.class);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored classes //////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ class GenerateRelaySchema_Forum_Test {
 		// To break the cycle where comparing the type of a FieldImpl, we define a specific comparison rule:
 		deepComparator.addSpecificComparisonRules(FieldImpl.class, "owningType", new ComparisonRule() {
 			@Override
-			public List<Difference> compare(Object o1, Object o2) {
+			public List<Difference> compare(Object o1, Object o2, int nbMaxDifferences) {
 				Type type1 = (Type) o1;
 				Type type2 = (Type) o2;
 				if (!type1.getName().equals(type2.getName())) {
@@ -156,10 +156,11 @@ class GenerateRelaySchema_Forum_Test {
 		ctx.close();
 
 		// Let's check the two DocumentParser instances, to check they are the same
-		List<Difference> differences = deepComparator.compare(sourceDocumentParser, generatedDocumentParser);
+		List<Difference> differences = deepComparator.differences(sourceDocumentParser, generatedDocumentParser,
+				Integer.MAX_VALUE);
 		if (differences.size() > 0) {
 			String firstLine = test + ": " + differences.size()
-					+ " differences found between the two parsers (details in the log file: target/JUnit-tests.log4j.log)";
+					+ " differences found between the two parsers (details in the log file: target/JUnit-tests.log)";
 			logger.info(firstLine);
 
 			for (Difference d : differences) {
