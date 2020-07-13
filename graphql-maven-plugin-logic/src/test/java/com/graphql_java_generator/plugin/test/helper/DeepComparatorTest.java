@@ -5,13 +5,18 @@ package com.graphql_java_generator.plugin.test.helper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
+import com.graphql_java_generator.plugin.test.helper.DeepComparator.ExecutedComparison;
 
 /**
  * Test for the {@link DeepComparator} test helper
@@ -95,6 +101,65 @@ class DeepComparatorTest {
 				return null;
 			}
 		});
+	}
+
+	@Test
+	void fail_until_properly_stored() {
+		fail("ExecutedComparison still not used");
+	}
+
+	@Test
+	void test_ExecutedComparison() {
+		String str1 = "a string";
+		String str2 = "another string";
+		String str3 = "something else";
+		ExecutedComparison ec12 = new ExecutedComparison(str1, str2);
+		ExecutedComparison ec21 = new ExecutedComparison(str2, str1);
+		ExecutedComparison ec13 = new ExecutedComparison(str1, str3);
+		ExecutedComparison ec31 = new ExecutedComparison(str3, str1);
+
+		// o1 and o2 are mandatory
+		assertThrows(NullPointerException.class, () -> new ExecutedComparison(null, str2));
+		assertThrows(NullPointerException.class, () -> new ExecutedComparison(str2, null));
+
+		// str1 may be stored in o1 or o2, depending on its Java id. This may change from an execution to another:
+		if (ec12.o1 == str1) {
+			assertTrue(ec12.o1 == str1);
+			assertTrue(ec12.o2 == str2);
+			assertEquals(ec12.id1, Integer.toHexString(System.identityHashCode(str1)));
+			assertEquals(ec12.id2, Integer.toHexString(System.identityHashCode(str2)));
+		} else {
+			assertTrue(ec12.o1 == str2);
+			assertTrue(ec12.o2 == str1);
+			assertEquals(ec12.id1, Integer.toHexString(System.identityHashCode(str2)));
+			assertEquals(ec12.id2, Integer.toHexString(System.identityHashCode(str1)));
+		}
+
+		// ec1 and ec2 must be strictly equals (the order of parameters in the constructor should not change the stored
+		// result)
+		assertTrue(ec12.o1 == ec21.o1);
+		assertTrue(ec12.o2 == ec21.o2);
+		assertEquals(ec12.id1, ec21.id1);
+		assertEquals(ec12.id2, ec21.id2);
+
+		// The result is equality
+		assertEquals(ec12, ec21);
+		assertNotEquals(ec12, new ExecutedComparison(str3, str1));
+		assertNotEquals(ec12, new ExecutedComparison(str1, str3));
+
+		// ExecutedComparison is allowed in TreeSet (as it implements Comparable)
+		// And ec12 is equals to ec21, and ec13 is equals to ec31, so:
+		Set<ExecutedComparison> set = new TreeSet<>();
+		set.add(ec12);
+		set.add(ec21);
+		set.add(ec13);
+		set.add(ec31);
+		//
+		assertEquals(2, set.size());
+		assertTrue(set.contains(ec12));
+		assertTrue(set.contains(ec21));
+		assertTrue(set.contains(ec13));
+		assertTrue(set.contains(ec31));
 	}
 
 	@Test

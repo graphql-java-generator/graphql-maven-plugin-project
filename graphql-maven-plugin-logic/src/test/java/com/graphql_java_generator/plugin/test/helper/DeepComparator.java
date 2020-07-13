@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -91,7 +92,7 @@ public class DeepComparator implements Cloneable {
 	 * The comparison result is stored (the list of differences), so that it can be reused each time this comparison is
 	 * executed.
 	 */
-	Map<Object, Map<Object, List<Difference>>> executedComparison = new HashMap<>();
+	Map<ExecutedComparison, List<Difference>> executedComparisons = new TreeMap<>();
 
 	public enum DifferenceType {
 		TYPE, VALUE, LIST_SIZE
@@ -116,6 +117,58 @@ public class DeepComparator implements Cloneable {
 			this.value1 = value1;
 			this.value2 = value2;
 			this.info = info;
+		}
+	}
+
+	static class ExecutedComparison implements Comparable<ExecutedComparison> {
+		Object o1;
+		Object o2;
+		String id1;
+		String id2;// id1 > id2
+
+		ExecutedComparison(Object o1, Object o2) {
+			if (o1 == null) {
+				throw new NullPointerException("o1 may not be null");
+			}
+			if (o2 == null) {
+				throw new NullPointerException("o2 may not be null");
+			}
+			String id1 = Integer.toHexString(System.identityHashCode(o1));
+			String id2 = Integer.toHexString(System.identityHashCode(o2));
+			if (id1.compareTo(id2) > 0) {
+				this.id1 = id1;
+				this.id2 = id2;
+				this.o1 = o1;
+				this.o2 = o2;
+			} else {
+				this.id1 = id2;
+				this.id2 = id1;
+				this.o1 = o2;
+				this.o2 = o1;
+			}
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (o == null || !(o instanceof ExecutedComparison)) {
+				return false;
+			}
+			ExecutedComparison ec = (ExecutedComparison) o;
+			// o1 and o2 are stored ordered (o1 > o2. So this comparison is enough:
+			return ec.o1 == this.o1 && ec.o2 == this.o2;
+		}
+
+		@Override
+		public int compareTo(ExecutedComparison ec) {
+			if (ec == null) {
+				throw new NullPointerException("ec may not be null");
+			}
+
+			int ret = this.id1.compareTo(ec.id1);
+			if (ret == 0) {
+				ret = this.id2.compareTo(ec.id2);
+			}
+			return ret;
 		}
 	}
 
@@ -185,9 +238,9 @@ public class DeepComparator implements Cloneable {
 	 */
 	public boolean equals(Object o1, Object o2) {
 		// We start a new comparison.
-		executedComparison = new HashMap<>();
+		DeepComparator deepComparator = clone();
 
-		return compare(o1, o2, new ArrayList<>(), 1, "").size() == 0;
+		return deepComparator.differences(o1, o2, 1, "").size() == 0;
 	}
 
 	/**
@@ -208,7 +261,8 @@ public class DeepComparator implements Cloneable {
 	public List<Difference> differences(Object o1, Object o2, int nbMaxDifferences) {
 		// We start a new comparison.
 		DeepComparator deepComparator = clone();
-		return deepComparator.compare(o1, o2, new ArrayList<>(), nbMaxDifferences, "");
+
+		return deepComparator.differences(o1, o2, nbMaxDifferences, "");
 	}
 
 	/**
@@ -219,14 +273,11 @@ public class DeepComparator implements Cloneable {
 	 * 
 	 * @param o1
 	 * @param o2
-	 * @param path
 	 * @return true if no differences have been found, during the deep comparison. False if at least one difference has
 	 *         been found.
 	 */
-	boolean compare(Object o1, Object o2, String path) {
-		// We start a new comparison.
-		DeepComparator deepComparator = clone();
-		return deepComparator.compare(o1, o2, new ArrayList<>(), 1, path).size() == 0;
+	public boolean compare(Object o1, Object o2) {
+		return differences(o1, o2, 1).size() == 0;
 	}
 
 	/**
@@ -234,27 +285,6 @@ public class DeepComparator implements Cloneable {
 	 * objects of a collection. The path parameter allows to log where the comparison is located, when in debug log
 	 * level.<BR/>
 	 * This method stops after the first difference found.
-	 * 
-	 * @param o1
-	 * @param o2
-	 * @param nbMaxDifferences
-	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
-	 *            to accelerate the comparison. <BR/>
-	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
-	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
-	 * @param path
-	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
-	 */
-	List<Difference> differences(Object o1, Object o2, int nbMaxDifferences, String path) {
-		// We start a new comparison.
-		executedComparison = new HashMap<>();
-
-		return compare(o1, o2, new ArrayList<>(), nbMaxDifferences, path);
-	}
-
-	/**
-	 * Executes a deep comparison between the two given objects.
 	 * 
 	 * @param o1
 	 * @param o2
@@ -270,7 +300,8 @@ public class DeepComparator implements Cloneable {
 	 *            The current path. When recursing, the field name will be added to the path.
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
-	List<Difference> compare(Object o1, Object o2, List<Difference> differences, int nbMaxDifferences, String path) {
+	private List<Difference> differences(Object o1, Object o2, int nbMaxDifferences, String path) {
+
 		if (logger.isTraceEnabled()) {
 			logger.trace("Starting comparison between " + o1 + " and " + o2 + " (on path: " + path
 					+ ", with nbMaxDifferences=" + nbMaxDifferences + ")");
@@ -280,12 +311,12 @@ public class DeepComparator implements Cloneable {
 		if (o1 == null) {
 			if (o2 == null) {
 				// No comparison to do. We're done.
-				return differences;
+				return new ArrayList<>();
 			} else {
-				return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
+				return addDifference(null, path, DifferenceType.VALUE, o1, o2, null);
 			}
 		} else if (o2 == null) {
-			return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
+			return addDifference(null, path, DifferenceType.VALUE, o1, o2, null);
 		}
 
 		// Both objects are non null.
@@ -307,22 +338,22 @@ public class DeepComparator implements Cloneable {
 
 		// They must be of the same type
 		if (o1.getClass() != o2.getClass()) {
-			return addDifference(differences, path, DifferenceType.TYPE, o1, o2, null);
+			return addDifference(null, path, DifferenceType.TYPE, o1, o2, null);
 		}
 
 		// Should we really compare these two objects ?
 		if (ignoredClasses.contains(o1.getClass())) {
 			// No comparison. We stop here.
-			return differences;
+			return new ArrayList<>();
 		}
 
 		// Basic types are compared by using the equals method
 		if (basicClasses.contains(o1.getClass()) || o1 instanceof Enum) {
 			if (o1.equals(o2)) {
 				// No additional difference
-				return differences;
+				return new ArrayList<>();
 			} else {
-				return addDifference(differences, path, DifferenceType.VALUE, o1, o2, null);
+				return addDifference(null, path, DifferenceType.VALUE, o1, o2, null);
 			}
 		}
 
@@ -331,27 +362,24 @@ public class DeepComparator implements Cloneable {
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// Has this couple already been compared ?
-		Map<Object, List<Difference>> objectsAlreadyComparedToO1 = executedComparison.get(o1);
-		if (objectsAlreadyComparedToO1 != null && objectsAlreadyComparedToO1.keySet().contains(o2)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Comparison already done for " + object1 + " and " + object2);
+		ExecutedComparison theCurrentComparison = new ExecutedComparison(o1, o2);
+		List<Difference> alreadyFoundDifferences = executedComparisons.get(theCurrentComparison);
+		if (alreadyFoundDifferences != null) {
+			if (logger.isTraceEnabled()) {
+				logger.trace("Comparison already done for " + object1 + " and " + object2);
 			}
-			return addDifferences(differences, objectsAlreadyComparedToO1.get(o2));
+			return alreadyFoundDifferences;
 		}
 
 		// Let's write this couple in the comparison map, to avoid cycles. We set the differences list as an empty list,
-		// and we'll correct that at the end.
-		if (objectsAlreadyComparedToO1 == null) {
-			objectsAlreadyComparedToO1 = new HashMap<>();
-			executedComparison.put(o1, objectsAlreadyComparedToO1);
-		}
-		objectsAlreadyComparedToO1.put(o2, new ArrayList<>());
+		// and we'll correct this at the end of this method, once we actually know the differences.
+		executedComparisons.put(theCurrentComparison, new ArrayList<>());
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////// Ok, we need to execute the deep comparison ////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		List<Difference> additionalDifferences = new ArrayList<>();
+		List<Difference> additionalDifferences;
 
 		// Collection are tested in a non-ordered way
 		if (o1 instanceof Collection<?>) {
@@ -385,16 +413,21 @@ public class DeepComparator implements Cloneable {
 
 		// Let's add this result to reuse it, and to avoid to do it again
 		if (logger.isDebugEnabled()) {
-			logger.debug("nb diff=" + differences.size() + " - Comparison path: " + path + "  -  Comparing " + object1
-					+ " to " + object2);
+			logger.debug("nb diff=" + additionalDifferences.size() + " - Comparison path: " + path + "  -  Comparing "
+					+ object1 + " to " + object2);
 		}
 
-		List<Difference> ret = addDifferences(differences, additionalDifferences);
-
 		// Let's write this couple in the comparison map, to avoid cycles, and to reuse it if possible
-		objectsAlreadyComparedToO1.put(o2, additionalDifferences);
+		// This should not add a new item in the map, but replace the previous one (which maps to an amepty list)
+		int nbExecutedComparison = executedComparisons.keySet().size();
+		executedComparisons.put(theCurrentComparison, additionalDifferences);
+		if (executedComparisons.keySet().size() != nbExecutedComparison) {
+			throw new RuntimeException(
+					"[Internal error] A new ExecutedComparison has been added, instead of replacing the previous one (with o1="
+							+ o1 + " and o2=" + o2 + ")");
+		}
 
-		return ret;
+		return additionalDifferences;
 	}
 
 	/**
@@ -434,7 +467,7 @@ public class DeepComparator implements Cloneable {
 				// Each item of o1 must exist in o2.
 				boolean found = false;
 				for (Object item2 : o2) {
-					if (compare(item1, item2, path)) {
+					if (compare(item1, item2)) {
 						found = true;
 						break;
 					}
@@ -458,7 +491,7 @@ public class DeepComparator implements Cloneable {
 			for (Object item2 : o2) {
 				boolean found = false;
 				for (Object item1 : o1) {
-					if (compare(item1, item2, path)) {
+					if (compare(item1, item2)) {
 						found = true;
 						break;
 					}
@@ -640,13 +673,10 @@ public class DeepComparator implements Cloneable {
 	/** Add a {@link Difference} to the given list, from its attribute */
 	private List<Difference> addDifference(List<Difference> differences, String path, DifferenceType diffenceType,
 			Object o1, Object o2, String info) {
+		if (differences == null) {
+			differences = new ArrayList<>();
+		}
 		differences.add(new Difference(path, diffenceType, o1, o2, info));
-		return differences;
-	}
-
-	/** Add all the otherDifferences into the differences list, then return the differences list */
-	private List<Difference> addDifferences(List<Difference> differences, List<Difference> otherDifferences) {
-		differences.addAll(otherDifferences);
 		return differences;
 	}
 
@@ -713,10 +743,10 @@ public class DeepComparator implements Cloneable {
 	}
 
 	/**
-	 * Returns a fresh comparator, that is ready to execute a new Comparison. The {@link #executedComparison} map is
+	 * Returns a fresh comparator, that is ready to execute a new Comparison. The {@link #executedComparisons} map is
 	 * free. The various configuration lists are set in the clone with the exact same list as the original one. That
 	 * means that added (for instance) a basic class, will add it for both the clone and the original object.<BR/>
-	 * But the {@link #executedComparison} remains specific to each instance.
+	 * But the {@link #executedComparisons} remains specific to each instance.
 	 */
 	@Override
 	protected DeepComparator clone() {
@@ -725,6 +755,7 @@ public class DeepComparator implements Cloneable {
 		ret.ignoredClasses = ignoredClasses;
 		ret.ignoredFields = ignoredFields;
 		ret.specificComparisonRules = specificComparisonRules;
+		// The executedComparisons is not cloned: this allows to start a new comparison, with the same parameters.
 		return ret;
 	}
 
