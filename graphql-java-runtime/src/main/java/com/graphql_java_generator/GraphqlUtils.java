@@ -423,7 +423,7 @@ public class GraphqlUtils {
 				// For the boolean fields, the getter may be named isProperty. Let's try that:
 				if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
 					getterMethodName = "is" + getPascalCase(field.getName());
-					method = clazz.getDeclaredMethod(getterMethodName);
+					method = clazz.getMethod(getterMethodName);
 				} else {
 					throw e;
 				}

@@ -41,11 +41,29 @@ public class UnionType extends ObjectType {
 	}
 
 	/**
-	 * There is no concrete class for an union. So we return it's name (to be used in the @JsonDeserialize annotation)
+	 * There is no concrete class for an union. So we return it's name (to be used in the @JsonDeserialize
+	 * annotation).<BR/>
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getConcreteClassSimpleName() {
 		return getName();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("UnionType {name=" + getName() + ", members=[");
+		boolean appendSep = false;
+		for (ObjectType m : memberTypes) {
+			if (appendSep)
+				sb.append(",");
+			else
+				appendSep = true;
+			sb.append(m.getName());
+		}
+		sb.append("]}");
+		return sb.toString();
 	}
 
 }

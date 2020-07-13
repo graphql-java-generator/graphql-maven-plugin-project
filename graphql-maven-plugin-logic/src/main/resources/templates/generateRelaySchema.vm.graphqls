@@ -3,7 +3,27 @@
 ##
 ##
 #macro(fieldType $field)#if($field.list)[#end${field.type.name}#if($field.itemMandatory)!#end#if($field.list)]#end#if($field.mandatory)!#end#end
-
+##
+#macro(objectFields $fields)
+#foreach ($field in $fields)
+##
+## To make this template readable, the parameters are written one per line. Which means that the way the field
+## is written depends on whether this field has or doesn't have input parameters
+##
+#if ($field.inputParameters.size() > 0)
+	${field.name} (## No newline here
+#foreach ($param in $field.inputParameters)
+${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#if($foreach.hasNext), #end##no newline here 
+#end
+): #fieldType($field)$space
+#else
+	${field.name}: #fieldType($field)$space
+#end
+##
+#end
+#end
+##
+##
 ###############################################################################################################
 ################  Custom Scalars  #############################################################################
 ###############################################################################################################
@@ -60,12 +80,21 @@ schema {
 }
 
 ###############################################################################################################
-################  Objects         #############################################################################
+################  Unions          #############################################################################
 ###############################################################################################################
-#foreach ($objectType in $objectTypes)
-#if($objectType.inputType)input#{else}type#end ${objectType.name} {
+#foreach ($union in $unionTypes)
+union ${union.name}
+= #foreach ($type in $union.memberTypes)${type.name}#if($foreach.hasNext) | #end#end
+
+#end
+
+###############################################################################################################
+################  Interfaces      #############################################################################
+###############################################################################################################
+#foreach ($interface in $interfaces)
+interface ${interface.name} {
 ##
-#foreach ($field in $objectType.fields)
+#foreach ($field in $interface.fields)
 ##
 ## To make this template readable, the parameters are written one per line. Which means that the way the field
 ## is written depends on whether this field has or doesn't have input parameters
@@ -73,7 +102,7 @@ schema {
 #if ($field.inputParameters.size() > 0)
 	${field.name} (## No newline here
 #foreach ($param in $field.inputParameters)
-${param.name}: #fieldType($param)#if($foreach.hasNext), #end##no newline here 
+${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#if($foreach.hasNext), #end##no newline here 
 #end
 ): #fieldType($field)$space
 #else
@@ -81,6 +110,16 @@ ${param.name}: #fieldType($param)#if($foreach.hasNext), #end##no newline here
 #end
 ##
 #end
+}
+
+#end
+
+###############################################################################################################
+################  Objects         #############################################################################
+###############################################################################################################
+#foreach ($objectType in $objectTypes)
+#if($objectType.inputType)input#{else}type#end ${objectType.name} {
+#objectFields($objectType.fields)
 }
 
 #end

@@ -16,6 +16,8 @@ import org.springframework.context.support.AbstractApplicationContext;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
+import com.graphql_java_generator.plugin.language.impl.ObjectType;
+import com.graphql_java_generator.plugin.language.impl.UnionType;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
@@ -83,7 +85,8 @@ class GenerateRelaySchema_Forum_Test {
 		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class,
 				"objectTypeExtensionDefinitions");
 
-		// To break the cycle where comparing the type of a FieldImpl, we define a specific comparison rule:
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// To break the cycle where comparing the type of a FieldImpl, we define some specific comparison rules:
 		deepComparator.addSpecificComparisonRules(FieldImpl.class, "owningType", new ComparisonRule() {
 			@Override
 			public List<Difference> compare(Object o1, Object o2, int nbMaxDifferences) {
@@ -96,6 +99,23 @@ class GenerateRelaySchema_Forum_Test {
 					return differences;
 				}
 				return null;
+			}
+		});
+		deepComparator.addSpecificComparisonRules(UnionType.class, "memberTypes", new ComparisonRule() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public List<Difference> compare(Object o1, Object o2, int nbMaxDifferences) {
+				List<ObjectType> members1 = (List<ObjectType>) o1;
+				List<ObjectType> members2 = (List<ObjectType>) o2;
+				List<String> lst1 = new ArrayList<>(members1.size());
+				List<String> lst2 = new ArrayList<>(members2.size());
+				for (ObjectType m : members1) {
+					lst1.add(m.getName());
+				}
+				for (ObjectType m : members2) {
+					lst2.add(m.getName());
+				}
+				return deepComparator.differences(lst1, lst2, nbMaxDifferences);
 			}
 		});
 	}
