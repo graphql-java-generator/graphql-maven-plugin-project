@@ -1,9 +1,5 @@
-##
-##
-##
-##
 #macro(fieldType $field)#if($field.list)[#end${field.type.name}#if($field.itemMandatory)!#end#if($field.list)]#end#if($field.mandatory)!#end#end
-##
+
 #macro(objectFields $fields)
 #foreach ($field in $fields)
 ##
@@ -19,11 +15,14 @@ ${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValu
 #else
 	${field.name}: #fieldType($field)$space
 #end
-##
 #end
 #end
-##
-##
+
+#macro(implements $implements)
+#if ($implements.size()>0)implements#end ##
+#foreach($implement in $implements)$implement#if($foreach.hasNext), #end#end ##
+#end
+
 ###############################################################################################################
 ################  Custom Scalars  #############################################################################
 ###############################################################################################################
@@ -118,7 +117,7 @@ ${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValu
 ################  Objects         #############################################################################
 ###############################################################################################################
 #foreach ($objectType in $objectTypes)
-#if($objectType.inputType)input#{else}type#end ${objectType.name} {
+#if($objectType.inputType)input#{else}type#end ${objectType.name} #implements($objectType.implementz){
 #objectFields($objectType.fields)
 }
 
