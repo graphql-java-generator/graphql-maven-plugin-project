@@ -21,6 +21,8 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.GraphqlUtils;
+
 /**
  * This class generates the relay schema, based on the given GraphQL schema(s). That is: it generates a GraphQL schema,
  * that is compliant with relay pagination, from the given GraphQL schema.<BR/>
@@ -34,6 +36,9 @@ public class GenerateRelaySchema {
 
 	@Autowired
 	GenerateRelaySchemaDocumentParser documentParser;
+
+	@Autowired
+	GraphqlUtils graphqlUtils;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
@@ -68,6 +73,7 @@ public class GenerateRelaySchema {
 			context.put("newline", "\n");
 			context.put("space", " ");
 			context.put("documentParser", documentParser);
+			context.put("graphqlUtils", graphqlUtils);
 			//
 			context.put("customScalars", documentParser.customScalars);
 			context.put("directives", documentParser.directives);

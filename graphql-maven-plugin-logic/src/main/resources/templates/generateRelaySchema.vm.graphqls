@@ -1,5 +1,22 @@
+######################################################################################################################################################
+##
+##  The "fieldType" macro writes the field type, in GraphQL format: Type, Type!, [Type], [Type]!, [Type!] or [Type!]!
+##
+## parameters: 
+## 1) FieldImpl: the field, which type is to be displayed 
+##
 #macro(fieldType $field)#if($field.list)[#end${field.type.name}#if($field.itemMandatory)!#end#if($field.list)]#end#if($field.mandatory)!#end#end
-
+##
+##
+######
+######################################################################################################################################################
+##
+##  The "objectFields" macro generates the list of fields for an ObjectType or for an InterfaceType
+##
+## parameters: 
+## 1) List<FieldImpl>: the list of fields to display 
+##
+######
 #macro(objectFields $fields)
 #foreach ($field in $fields)
 ##
@@ -11,13 +28,21 @@
 #foreach ($param in $field.inputParameters)
 ${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#if($foreach.hasNext), #end##no newline here 
 #end
-): #fieldType($field)$space
+): #fieldType($field)#implementedDirective($field.appliedDirectives)$space
 #else
-	${field.name}: #fieldType($field)$space
+	${field.name}: #fieldType($field)#implementedDirective($field.appliedDirectives)$space
 #end
 #end
 #end
-
+##
+######################################################################################################################################################
+##
+##  The "implements" macro generates the "implements interface1, interface2 ..., interface n " string
+##
+## parameters: 
+## 1) List<String>: the list of name if interfaces or unions. The unions won't be written in the result. This is actually the ObjectType.implementz attribute. 
+##
+######
 #macro(implements $implements)
 #set($appendImplements=true)## As not all items in implements will be displayed, we dont even know if there is an interface in the list
 #set($appendSep=false)## As not all items in implements will be displayed, we can't rely on the ($foreach.hasNext) stuff
@@ -32,12 +57,31 @@ $implement##
 #set($appendSep=true)
 #end
 #end
+######################################################################################################################################################
+##
+##  The "implementedDirective" macro generates the @Directive... for all the given applied directives. Or nothing if the list is empty.
+##
+## parameters: 
+## 1) List<appliedDir>: the list of applied directives that should be written 
+##
+######
+#macro (implementedDirective $appliedDirectives)
+#foreach($appliedDir in $appliedDirectives)
 
+        @${appliedDir.directive.name}##
+#if($appliedDir.argumentValues.keySet().size() > 0)(#end
+#foreach($argName in $appliedDir.argumentValues.keySet())##
+$argName: ${graphqlUtils.getValueAsText($appliedDir.argumentValues[$argName])}#if($foreach.hasNext), #end
+#end
+#if($appliedDir.argumentValues.keySet().size() > 0))#end
+#end
+#end
+##
 ###############################################################################################################
 ################  Custom Scalars  #############################################################################
 ###############################################################################################################
 #foreach ($customScalar in $customScalars)
-scalar ${customScalar.name}
+scalar ${customScalar.name}#implementedDirective($customScalar.appliedDirectives)$space
 
 #end
 
@@ -45,9 +89,9 @@ scalar ${customScalar.name}
 ################  Enums           #############################################################################
 ###############################################################################################################
 #foreach ($enum in $enumTypes)
-enum ${enum.name} {
+enum ${enum.name}#implementedDirective($enum.appliedDirectives) {
 #foreach ($value in $enum.values)
-	${value.name}
+	${value.name}#implementedDirective($value.appliedDirectives)$space
 #end
 }
 
@@ -92,7 +136,7 @@ schema {
 ################  Unions          #############################################################################
 ###############################################################################################################
 #foreach ($union in $unionTypes)
-union ${union.name}
+union ${union.name}#implementedDirective($union.appliedDirectives)$space
 = #foreach ($type in $union.memberTypes)${type.name}#if($foreach.hasNext) | #end#end
 
 #end
@@ -100,25 +144,9 @@ union ${union.name}
 ###############################################################################################################
 ################  Interfaces      #############################################################################
 ###############################################################################################################
-#foreach ($interface in $interfaces)
-interface ${interface.name} {
-##
-#foreach ($field in $interface.fields)
-##
-## To make this template readable, the parameters are written one per line. Which means that the way the field
-## is written depends on whether this field has or doesn't have input parameters
-##
-#if ($field.inputParameters.size() > 0)
-	${field.name} (## No newline here
-#foreach ($param in $field.inputParameters)
-${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#if($foreach.hasNext), #end##no newline here 
-#end
-): #fieldType($field)$space
-#else
-	${field.name}: #fieldType($field)$space
-#end
-##
-#end
+#foreach ($interface in $interfaceTypes)
+interface ${interface.name}#implementedDirective($interface.appliedDirectives) {
+#objectFields($interface.fields)
 }
 
 #end
@@ -127,7 +155,7 @@ ${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValu
 ################  Objects         #############################################################################
 ###############################################################################################################
 #foreach ($objectType in $objectTypes)
-#if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz) {
+#if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz)#implementedDirective($objectType.appliedDirectives) {
 #objectFields($objectType.fields)
 }
 
