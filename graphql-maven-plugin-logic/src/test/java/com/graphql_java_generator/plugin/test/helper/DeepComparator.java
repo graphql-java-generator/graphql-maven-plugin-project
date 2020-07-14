@@ -193,7 +193,7 @@ public class DeepComparator implements Cloneable {
 		 *            The maximum number of differences to return. This allows to limit the size of the returned list,
 		 *            and to accelerate the comparison. <BR/>
 		 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-		 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+		 *            Setting it to a negative value prevents any comparison to occur.<BR/>
 		 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 		 * @return A non null list. If it's empty, then there is no difference between o1 and o2. The root path for the
 		 *         returned {@link Difference}s is this field, starting by a slash (/). If differences are returned by
@@ -254,7 +254,7 @@ public class DeepComparator implements Cloneable {
 	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
 	 *            to accelerate the comparison. <BR/>
 	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Setting it to a negative value prevents any comparison to occur.<BR/>
 	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @return The list of differences. Always non null. If this list is empty, then the two objects are identical
 	 */
@@ -294,7 +294,7 @@ public class DeepComparator implements Cloneable {
 	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
 	 *            to accelerate the comparison. <BR/>
 	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Setting it to a negative value prevents any comparison to occur.<BR/>
 	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 *            The current path. When recursing, the field name will be added to the path.
@@ -404,7 +404,7 @@ public class DeepComparator implements Cloneable {
 
 		// Ok, let's execute the field by field comparison.
 		else {
-			additionalDifferences = compareClass(o1, o2, o1.getClass(), nbMaxDifferences, path);
+			additionalDifferences = compareObjects(o1, o2, o1.getClass(), nbMaxDifferences, path);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -443,7 +443,7 @@ public class DeepComparator implements Cloneable {
 	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
 	 *            to accelerate the comparison. <BR/>
 	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Setting it to a negative value prevents any comparison to occur.<BR/>
 	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 *            The current path
@@ -522,7 +522,7 @@ public class DeepComparator implements Cloneable {
 	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
 	 *            to accelerate the comparison. <BR/>
 	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Setting it to a negative value prevents any comparison to occur.<BR/>
 	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 * @return
@@ -558,7 +558,7 @@ public class DeepComparator implements Cloneable {
 	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
 	 *            to accelerate the comparison. <BR/>
 	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Setting it to a negative value prevents any comparison to occur.<BR/>
 	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param clazz
 	 *            The class on which the comparison should be executed: this method should be called with the real o1
@@ -567,7 +567,7 @@ public class DeepComparator implements Cloneable {
 	 * @param path
 	 * @return
 	 */
-	List<Difference> compareClass(Object o1, Object o2, Class<?> clazz, int nbMaxDifferences, String path) {
+	List<Difference> compareObjects(Object o1, Object o2, Class<?> clazz, int nbMaxDifferences, String path) {
 		List<Difference> differences = new ArrayList<>();
 
 		// Let's check the given class
@@ -617,7 +617,7 @@ public class DeepComparator implements Cloneable {
 		if (!superclass.getName().equals("java.lang.Object")) {
 			if (nbMaxDifferences > differences.size()) {
 				// Let's recurse, and compare the superclass's fields
-				differences.addAll(compareClass(o1, o2, superclass, nbMaxDifferences - differences.size(), path));
+				differences.addAll(compareObjects(o1, o2, superclass, nbMaxDifferences - differences.size(), path));
 			}
 		}
 
@@ -634,7 +634,7 @@ public class DeepComparator implements Cloneable {
 	 *            The maximum number of differences to return. This allows to limit the size of the returned list, and
 	 *            to accelerate the comparison. <BR/>
 	 *            Setting 1 here will stop as soon as a difference is found.<BR/>
-	 *            Setting it to a negative value allows to return all the found differences (no limit).<BR/>
+	 *            Setting it to a negative value prevents any comparison to occur.<BR/>
 	 *            Set it to Integer.MAX_VALUE to have (almost) no limit on the number of returned differences
 	 * @param path
 	 * @param comparisonRule

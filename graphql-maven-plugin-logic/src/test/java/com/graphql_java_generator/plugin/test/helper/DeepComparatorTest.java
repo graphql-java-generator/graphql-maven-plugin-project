@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +78,29 @@ class DeepComparatorTest {
 		ENUM1, ENUM2, ENUM3, ENUM4;
 	}
 
+	/**
+	 * This class allows to test cycles between objects. The {@link DeepComparatorTest#test_Cycle()} test will create
+	 * two instances, each one references the other. So there is a loop between them. The test will check that there is
+	 * no endless loop (that is: no stack overflow)<BR/>
+	 * The behavior is this one: the comparator compares the name of the two {@link Cycler} instances. But it doesn't
+	 * compare the cycler field, to avoid loops.
+	 * 
+	 * @author etienne-sf
+	 * @See DeepComparatorTest#test_Cycle()
+	 */
+	public class Cycler {
+		String name;
+		Cycler cycler;
+
+		public String getName() {
+			return name;
+		}
+
+		public Cycler getCycler() {
+			return cycler;
+		}
+	}
+
 	@BeforeEach
 	public void beforeEach() {
 		deepComparator = new DeepComparator();
@@ -101,11 +123,6 @@ class DeepComparatorTest {
 				return null;
 			}
 		});
-	}
-
-	@Test
-	void fail_until_properly_stored() {
-		fail("ExecutedComparison still not used");
 	}
 
 	@Test
@@ -454,6 +471,44 @@ class DeepComparatorTest {
 		assertEquals("/comp/id", d.path);
 		assertEquals(o1.comp.id, d.value1);
 		assertEquals(o2.comp.id, d.value2);
+	}
+
+	/**
+	 * This class allows to test cycles between objects. The {@link DeepComparatorTest#test_Cycle()} test will create
+	 * two instances, each one references the other. So there is a loop between them. The test will check that there is
+	 * no endless loop (that is: no stack overflow)<BR/>
+	 * The behavior is this one: the comparator compares the name of the two {@link Cycler} instances. But it doesn't
+	 * compare the cycler field, to avoid loops.
+	 */
+	@Test
+	void test_Cycle() {
+		// Preparation
+		Cycler c1 = new Cycler();
+		Cycler c2 = new Cycler();
+		c1.name = "c1";
+		c2.name = "c2";
+		c1.cycler = c2;
+		c2.cycler = c1;
+
+		// Go, go, go
+		List<Difference> differences = deepComparator.differences(c1, c2, Integer.MAX_VALUE);
+		//
+		assertEquals(1, differences.size());
+		Difference d = differences.get(0);
+		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
+		assertEquals("/name", d.path);
+		assertEquals("c1", d.value1);
+		assertEquals("c2", d.value2);
+
+		// Go, go, go
+		differences = deepComparator.differences(c2, c1, Integer.MAX_VALUE);
+		//
+		assertEquals(1, differences.size());
+		d = differences.get(0);
+		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
+		assertEquals("/name", d.path);
+		assertEquals("c2", d.value1);
+		assertEquals("c1", d.value2);
 	}
 
 	/**
