@@ -26,7 +26,7 @@
 #if ($field.inputParameters.size() > 0)
 	${field.name} (## No newline here
 #foreach ($param in $field.inputParameters)
-${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#if($foreach.hasNext), #end##no newline here 
+${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#implementedDirective($param.appliedDirectives)#if($foreach.hasNext), #end##no newline here 
 #end
 ): #fieldType($field)#implementedDirective($field.appliedDirectives)$space
 #else
