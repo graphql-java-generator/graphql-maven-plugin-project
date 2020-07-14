@@ -19,8 +19,18 @@ ${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValu
 #end
 
 #macro(implements $implements)
-#if ($implements.size()>0)implements#end ##
-#foreach($implement in $implements)$implement#if($foreach.hasNext), #end#end ##
+#set($appendImplements=true)## As not all items in implements will be displayed, we dont even know if there is an interface in the list
+#set($appendSep=false)## As not all items in implements will be displayed, we can't rely on the ($foreach.hasNext) stuff
+#foreach($implement in $implements)##
+#if($appendImplements) implements #end##
+#set($appendImplements=false)##
+## the implementz field contains both the interfaces (that we want here) and the unions (that we don't want here)
+#if($documentParser.getType($implement).class.simpleName == "InterfaceType")
+#if($appendSep), #end##
+$implement##
+#end
+#set($appendSep=true)
+#end
 #end
 
 ###############################################################################################################
@@ -117,7 +127,7 @@ ${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValu
 ################  Objects         #############################################################################
 ###############################################################################################################
 #foreach ($objectType in $objectTypes)
-#if($objectType.inputType)input#{else}type#end ${objectType.name} #implements($objectType.implementz){
+#if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz) {
 #objectFields($objectType.fields)
 }
 

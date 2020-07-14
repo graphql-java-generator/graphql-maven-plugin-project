@@ -67,6 +67,8 @@ public class GenerateRelaySchema {
 			VelocityContext context = new VelocityContext();
 			context.put("newline", "\n");
 			context.put("space", " ");
+			context.put("documentParser", documentParser);
+			//
 			context.put("customScalars", documentParser.customScalars);
 			context.put("directives", documentParser.directives);
 			context.put("enumTypes", documentParser.enumTypes);
