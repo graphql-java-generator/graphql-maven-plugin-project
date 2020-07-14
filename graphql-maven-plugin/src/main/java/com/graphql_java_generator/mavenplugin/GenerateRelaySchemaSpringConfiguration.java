@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
@@ -20,8 +23,9 @@ import graphql.parser.Parser;
 /**
  * @author etienne-sf
  */
-// @Configuration
-@ComponentScan(basePackages = { "com.graphql_java_generator" })
+@Configuration
+@ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*") })
 public class GenerateRelaySchemaSpringConfiguration {
 
 	/**

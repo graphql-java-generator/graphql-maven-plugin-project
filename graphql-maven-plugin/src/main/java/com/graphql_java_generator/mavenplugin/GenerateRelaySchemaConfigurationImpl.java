@@ -13,7 +13,6 @@ import com.graphql_java_generator.plugin.Logger;
  * @author etienne-sf
  *
  */
-// @Component
 public class GenerateRelaySchemaConfigurationImpl implements GenerateRelaySchemaConfiguration {
 
 	final private GenerateRelaySchemaMojo mojo;

@@ -11,7 +11,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
@@ -25,7 +27,8 @@ import graphql.parser.Parser;
  */
 @Configuration
 @Import({ JacksonAutoConfiguration.class })
-@ComponentScan(basePackages = { "com.graphql_java_generator" })
+@ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*") })
 public class GraphQLSpringConfiguration {
 
 	/**
