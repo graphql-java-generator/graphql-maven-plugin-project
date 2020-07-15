@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
+import com.graphql_java_generator.plugin.MergeConfiguration;
 import com.graphql_java_generator.plugin.Logger;
 
 import lombok.Getter;
@@ -16,7 +16,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class GenerateRelaySchemaConfigurationTestHelper implements GenerateRelaySchemaConfiguration {
+public class GenerateRelaySchemaConfigurationTestHelper implements MergeConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	final Logger log;

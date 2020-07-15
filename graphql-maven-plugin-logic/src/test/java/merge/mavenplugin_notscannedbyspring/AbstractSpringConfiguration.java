@@ -1,7 +1,7 @@
 /**
  * 
  */
-package generate_relay_schema.mavenplugin_notscannedbyspring;
+package merge.mavenplugin_notscannedbyspring;
 
 import java.io.File;
 import java.io.IOException;

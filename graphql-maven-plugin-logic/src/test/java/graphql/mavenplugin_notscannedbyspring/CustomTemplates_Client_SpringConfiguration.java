@@ -15,7 +15,9 @@ import com.graphql_java_generator.plugin.PluginMode;
  * @author ggomez
  */
 @Configuration
-@ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = @Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"))
+@ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.Merge.*") })
 public class CustomTemplates_Client_SpringConfiguration extends AbstractCustomTemplatesSpringConfiguration {
 
 	public CustomTemplates_Client_SpringConfiguration() {

@@ -6,19 +6,19 @@ package com.graphql_java_generator.mavenplugin;
 import java.io.File;
 import java.util.Map;
 
-import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
+import com.graphql_java_generator.plugin.MergeConfiguration;
 import com.graphql_java_generator.plugin.Logger;
 
 /**
  * @author etienne-sf
  *
  */
-public class GenerateRelaySchemaConfigurationImpl implements GenerateRelaySchemaConfiguration {
+public class MergeConfigurationImpl implements MergeConfiguration {
 
-	final private GenerateRelaySchemaMojo mojo;
+	final private MergeMojo mojo;
 	final private MavenLogger log;
 
-	GenerateRelaySchemaConfigurationImpl(GenerateRelaySchemaMojo mojo) {
+	MergeConfigurationImpl(MergeMojo mojo) {
 		this.mojo = mojo;
 		log = new MavenLogger(mojo);
 	}

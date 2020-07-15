@@ -32,10 +32,10 @@ import com.graphql_java_generator.GraphqlUtils;
  *
  */
 @Component
-public class GenerateRelaySchema {
+public class Merge {
 
 	@Autowired
-	GenerateRelaySchemaDocumentParser documentParser;
+	MergeDocumentParser documentParser;
 
 	@Autowired
 	GraphqlUtils graphqlUtils;
@@ -44,12 +44,12 @@ public class GenerateRelaySchema {
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	GenerateRelaySchemaConfiguration configuration;
+	MergeConfiguration configuration;
 
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
 
-	public GenerateRelaySchema() {
+	public Merge() {
 		// Initialization for Velocity
 		velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");

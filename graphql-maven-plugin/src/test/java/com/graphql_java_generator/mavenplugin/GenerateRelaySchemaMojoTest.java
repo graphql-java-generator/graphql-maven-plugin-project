@@ -10,12 +10,12 @@ class GenerateRelaySchemaMojoTest {
 	@Test
 	@Disabled // this test hangs, because of a missing method... :(
 	void testExecute() {
-		GenerateRelaySchemaMojo mojo = new GenerateRelaySchemaMojo();
-		GenerateRelaySchemaSpringConfiguration.mojo = mojo;
+		MergeMojo mojo = new MergeMojo();
+		MergeSpringConfiguration.mojo = mojo;
 
 		// Let's just check that the Spring context is valid.
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
-				GenerateRelaySchemaSpringConfiguration.class);
+				MergeSpringConfiguration.class);
 		ctx.close();
 	}
 

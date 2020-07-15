@@ -8,11 +8,11 @@ This project is an accelerator to develop __GraphQL clients__ and __GraphQL serv
 
 That is: graphql-java-generator generates the boilerplate code, and lets you concentrate on what's specific to your use case. Then, the running code __doesn't depend on any dependencies from graphql-java-generator__. So you can get rid of graphql-java-generator at any time: just put the generated code in your SCM, and that's it.
 
-* In __client mode__ : graphql-java-generator generates a class for each query, mutation and subscription. These classes contain the methods to call the queries, mutations and subscriptions defined in the GraphQL schema. That is, to call the GraphQL server, you just call one of this method.
+* In __client mode__ : graphql-java-generator generates a class for each query, mutation type and/or subscription type. These classes contain the methods to call the queries, mutations and subscriptions. That is, to call the GraphQL server, you just call one of this method.
     * graphql-java-generator also generates the POJOs from the GraphQL schema. The __GraphQL response is stored in these POJOs__, for easy and standard use in Java.
 * In __server mode__ : graphql-java-generator generates the whole heart of the GraphQL server. The developer has only to develop request to the data. That is :
     * graphql-java-generator generates the main method (in a jar project) or the main servler (in a war project), and all the Spring wiring, based on [graphql-java-spring](https://github.com/graphql-java/graphql-java-spring), itself being build on top of [graphql-java](https://www.graphql-java.com/).
-    * It generates the POJOs with the standard JPA annotations, to make it easy to link with a database. But of course, you can also implement your GraphQL server based on REST resources, or any other kind of data storage.  
+    * graphql-java-generator generates the POJOs. An option allows to annotate them with the standard JPA annotations, to make it easy to link with a database. But of course, you can also implement your GraphQL server based on REST resources, or any other kind of data storage.  
     * graphql-java-generator also generates interfaces, named DataFetchersDelegate. It expects a Spring Bean to be defined.
     * The developer just has to implement each DataFetchersDelegate, and the GraphQL server is ready to go!
 
@@ -21,12 +21,37 @@ Please, take a look at the projects that are within the graphql-maven-plugin-sam
 __The interesting part is that graphql-java-generator is just an accelerator: you don't depend on any library from graphql-java-generator__. So, it just helps you to build application based on [graphql-java](https://www.graphql-java.com) .
 If the generated code doesn't fully suit your needs, you can take what's generated as a full sample for graphql-java usage, based on your use case. You can then update the generated code, where it's not compliant for you. And that's it. The only thing, there, is that we would like to know what was not correct for your use case, so that we can embed it into next versions. Or perhaps, if it's just a matter of documentation, to better explain how to use it...
 
-## Availibility
+This plugin contains these goal (Maven) / tasks (Gradle):
+* __graphql__ is the main goal, that generates the code from the Graphql schema file(s)
+    * The plugin parameters for this goal/task are [described here](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/graphql-mojo.html) 
+* __merge__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
+    * The plugin parameters for this goal/task are [described here](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/merge-mojo.html) 
+
+## Availibility: Maven and Gradle
 
 The generator is currently available both as a Maven plugin and as a Gradle plugin:
 * The __Maven plugin__ is available in the project ([graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project)) 
 * A __Gradle plugin__ is available in the project [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
 
+## Documentation
+
+### This README
+
+This README gives you a quick overview of what this plugin offers
+
+### The tutorials
+
+Two tutorials are available for the Maven plugin:
+* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Maven-Tutorial-client project](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-client).
+* The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Maven-Tutorial-server project](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-server).
+
+The same two tutorials exist for the Gradle plugin:
+* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Gradle-Tutorial-client git repository](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client).
+* The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Gradle-Tutorial-server](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
+
+### The full project documentation
+
+The [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
 
 ## Aim of this project
 
@@ -40,7 +65,7 @@ The aim of this project is to:
 
 ## How to use it?
 
-### Full projet documentation
+### Full project documentation
 
 You'll find below a quick presentation of the plugin.
 
@@ -55,11 +80,6 @@ The plugin documentation, generated by maven, is available [on this page](https:
 
 You'll find the following samples in the project. For all of these samples, there are two projects: the client and the server.
 
-* Basic
-    * The simplest sample: "Hello World" ! :) Start from them, when you want to start a new project
-    * It also contains an "error" query, which always returns an error. This allows you to check how to manage errors returned when executing a GraphQL query.
-    * The server is packaged as a Spring Boot application
-    * The GraphQL server exposes http
 * allGraphQLCases
     * This project is a compilation of GraphQL capabilities ... that are managed by this plugin. Its main objective is for integration testing.
     * The server is packaged as a Spring Boot application
@@ -70,12 +90,14 @@ You'll find the following samples in the project. For all of these samples, ther
     * The server uses the schema personalization, to override the default code generation
     * The GraphQL model maps to the database model
     * The Forum client project shows implementation of the same queries in the XxxQueries classes.
-* StarWars
+    * This sample contains a subscription, on both the client and the server side 
+* StarWars (only in the [Maven plugin](https://github.com/graphql-java-generator/graphql-maven-plugin-project) project)
     * The server is packaged as a war
     * The GraphQL server exposes https
     * The GraphQL interfaces in this model (character, and friends relation) makes it difficult to map to native RDBMS data model. This project uses JPA native queries to overcome this.
     * The StarWars client project shows implementation of the same queries in the XxxQueries classes.
- * CustomTemplates
+    * This sample contains a subscription, on both the client and the server side 
+ * CustomTemplates (only in the [Maven plugin](https://github.com/graphql-java-generator/graphql-maven-plugin-project) project)
     * An example related on how to customize code templates
 		* graphql-maven-plugin-samples-CustomTemplates-resttemplate project offers a customize template for Query/Mutation/Subscriptino client class and offer a Spring-base RestTemplate implementation for QueryExecutor template
 		* graphql-maven-plugin-samples-CustomTemplates-resttemplate proyect defines a client project that generates code with customized template defined in previous project
@@ -178,78 +200,44 @@ You'll find all the info on the [server](https://graphql-maven-plugin-project.gr
 
 Customizing the templates allows you to modify the generated code, in the way you want. 
 
-So, if for any reason you may need to customize the generated code, you can replace the default templates by your own, by using the parameter **templates**
-
-Here there's an example of plugin configuration to use customized templates
-
-```
-<project ...>
-...
-
-<build>
-<plugins>
-...
-	<plugin>
-		<groupId>com.graphql-java-generator</groupId>
-		<artifactId>graphql-maven-plugin</artifactId>
-		<version>${lastReleasedVersion}</version>
-
-		<executions>
-			<execution>
-				<goals>
-					<goal>graphql</goal>
-				</goals>
-			</execution>
-		</executions>
-		<configuration>
-			<mode>client</mode>
-			<templates>
-				<QUERY_MUTATION_SUBSCRIPTION>classpath/entry/to/cutomtemplate.java.vm</QUERY_MUTATION_SUBSCRIPTION>
-			</templates>
-		</configuration>
-		<dependencies>
-
-			<!-- Dependency containing your templates-->
-			<dependency>
-				<groupId>...</groupId>
-				<artifactId>...</artifactId>
-				<version>...</version>
-			</dependency>
-
-		</dependencies>
-	</plugin>
-</plugins>
-</build>
-...
-</project>
-```
-The **templates** plugin parameter is a map where the key is the ID of the template to customize and the value is a classpath entry to the resources containing the customized template.
+So, if for any reason you may need to customize the generated code, you can replace the default templates by your own, by using the plugin parameter **templates**: the **templates** plugin parameter is a map where the key is the ID of the template to customize and the value is a classpath entry to the resources containing the customized template.
 
 Customize templates shall be provided in a dependency configured in the plugin.
 
 Both client and server templates can be customized. 	
 
-The available templates are described in the [Customizing code templates](https://graphql-maven-plugin-project.graphql-java-generator.com/customtemplates.html) page.
+All the documentation, and the list of available templates is available in the [Customizing code templates](https://graphql-maven-plugin-project.graphql-java-generator.com/customtemplates.html) page.
 
 
-# Main evolutions for the near future
+# Compatibility with GraphQL
+
+This plugin respects quite all the GraphQL specification:
+- queries, mutations and subscriptions
+- introspection
+- custom scalars
+- input types
+- interfaces and unions (that are both implemented in Java interfaces into the generated code)
+- directives
+- fragments (global and inline)
+- input parameters (for fields and directives)
+- Use of Bind Parameters to map Java variables with input parameters
+- easy execution of just a query/mutation/subscription (one field of the query, mutation or subscription type) as a standard method call
+- execution of a full GraphQL request, which allows to execute several queries or several mutations at once
 
 You'll find below the main changes, that are planned in the near future:
-- Accept interface that implements interface. We're waiting for graphql-java next version (v15).
-- Manage enum values that are java keyword. Currently, it generates a compilation error.
-- Comments should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
+- Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 
 
 # Change log
 
-The Change Log is available [here](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/CHANGELOG.md)
+The Change Log is available [here](CHANGELOG.md)
 
 
 # Note for contributors
 
 All the plugin logic is stored in the [graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project) project.
 
-The Maven plugin and the Gradle plugin are just wrapper for the plugin logic, available in the __graphql-maven-plugin-logic__ module of the maven project. 
+The [Maven plugin](https://github.com/graphql-java-generator/graphql-maven-plugin-project) and the [Gradle plugin](https://github.com/graphql-java-generator/graphql-gradle-plugin-project) are just wrapper for the plugin logic, available in the __graphql-maven-plugin-logic__ module of the maven project. 
 
 If you want to compile the maven project, you'll have to add the lombok.jar file in your IDE. Please see the relevant section, in the Install menu of the [https://projectlombok.org/](https://projectlombok.org/) home page. This very nice tools generates all java boiler plate code, like setters, getters, constructors from fields...
 
@@ -257,7 +245,7 @@ If you use eclipse, please use the __code formatter__ given with the project (fi
 
 
 
-# Full projet documentation
+# Full project documentation
 
 For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/)
 

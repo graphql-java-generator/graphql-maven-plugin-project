@@ -20,7 +20,9 @@ import com.graphql_java_generator.plugin.PluginMode;
  * @author etienne-sf
  */
 @Configuration
-@ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = @Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"))
+@ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.Merge.*") })
 public class Forum_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	static List<CustomScalarDefinition> customScalars;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package generate_relay_schema.mavenplugin_notscannedbyspring;
+package merge.mavenplugin_notscannedbyspring;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -15,11 +15,12 @@ import org.springframework.context.annotation.FilterType;
  */
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
-public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguration {
+public class GeneratedForum_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
-	public Forum_Client_SpringConfiguration() {
-		super("src/test/resources", "forum.graphqls", "forum.graphqls", "forum");
+	public GeneratedForum_Client_SpringConfiguration() {
+		super(ROOT_UNIT_TEST_FOLDER + "forum", "forum.graphqls", "forum.graphqls", "forum/regenerate");
 	}
 }

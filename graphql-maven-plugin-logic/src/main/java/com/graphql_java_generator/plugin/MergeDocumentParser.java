@@ -11,7 +11,7 @@ import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
  * @author etienne-sf
  */
 @Component
-public class GenerateRelaySchemaDocumentParser extends DocumentParser {
+public class MergeDocumentParser extends DocumentParser {
 
 	/**
 	 * This class doesn't need an implementation for the Custom Scalars. So a dummy one is returned. {@inheritDoc}

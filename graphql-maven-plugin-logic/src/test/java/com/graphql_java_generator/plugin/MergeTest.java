@@ -25,17 +25,17 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceTy
 import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
-import generate_relay_schema.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
-import generate_relay_schema.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
-import generate_relay_schema.mavenplugin_notscannedbyspring.GeneratedAllGraphQLCases_Client_SpringConfiguration;
-import generate_relay_schema.mavenplugin_notscannedbyspring.GeneratedForum_Client_SpringConfiguration;
 import graphql.language.Document;
+import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
+import merge.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
+import merge.mavenplugin_notscannedbyspring.GeneratedAllGraphQLCases_Client_SpringConfiguration;
+import merge.mavenplugin_notscannedbyspring.GeneratedForum_Client_SpringConfiguration;
 
 /**
  * 
  * @author etienne-sf
  */
-class GenerateRelaySchema_Forum_Test {
+class MergeTest {
 
 	/** The logger for this instance */
 	protected transient Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -76,13 +76,13 @@ class GenerateRelaySchema_Forum_Test {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
 				"configuration");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
 				"graphqlUtils");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
 				"documents");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
 				"objectTypeExtensionDefinitions");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,20 +157,20 @@ class GenerateRelaySchema_Forum_Test {
 			String test) {
 		// Go, go, go
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
-		GenerateRelaySchema generateRelaySchema = ctx.getBean(GenerateRelaySchema.class);
-		GenerateRelaySchemaDocumentParser sourceDocumentParser = generateRelaySchema.documentParser;
+		Merge generateRelaySchema = ctx.getBean(Merge.class);
+		MergeDocumentParser sourceDocumentParser = generateRelaySchema.documentParser;
 		generateRelaySchema.generateRelaySchema();
 		// Let's log the current configuration (this will do something only when in debug mode)
-		ctx.getBean(GenerateRelaySchemaConfiguration.class).logConfiguration();
+		ctx.getBean(MergeConfiguration.class).logConfiguration();
 		ctx.close();
 
 		// Let's load the content of the generated schema in a new DocumentParser
 		ctx = new AnnotationConfigApplicationContext(generatedSpringConfClass);
 		// Let's log the current configuration (this will do something only when in debug mode)
-		ctx.getBean(GenerateRelaySchemaConfiguration.class).logConfiguration();
+		ctx.getBean(MergeConfiguration.class).logConfiguration();
 		//
-		GenerateRelaySchemaDocumentParser generatedDocumentParser = ctx
-				.getBean(GenerateRelaySchemaDocumentParser.class);
+		MergeDocumentParser generatedDocumentParser = ctx
+				.getBean(MergeDocumentParser.class);
 		generatedDocumentParser.parseDocuments();
 		//
 		ctx.close();

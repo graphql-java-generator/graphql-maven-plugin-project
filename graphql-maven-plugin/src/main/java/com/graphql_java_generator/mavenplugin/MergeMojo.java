@@ -15,29 +15,37 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GenerateRelaySchemaConfiguration;
 import com.graphql_java_generator.plugin.GraphQLDocumentParser;
+import com.graphql_java_generator.plugin.MergeConfiguration;
 
 import graphql.ThreadSafe;
 
 /**
+ * The <I>merge</I> goal generates GraphQL schema, based on the source GraphQL schemas.<BR/>
+ * It can be used to:
+ * <UL>
+ * <LI>Merge several GraphQL schema files into one file, for instance with additional schema files that would use the
+ * <I>extend</I> GraphQL keyword</LI>
+ * <LI>Reformat the schema file</LI>
+ * </UL>
+ * 
  * @author etienne-sf
  */
-@Mojo(name = "generate-relay-schema", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
+@Mojo(name = "merge", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 @ThreadSafe
-public class GenerateRelaySchemaMojo extends AbstractMojo {
+public class MergeMojo extends AbstractMojo {
 
 	/**
 	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
 	 * schema(s) are expected to be: in this folder, or one of these subfolders
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = GenerateRelaySchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = MergeConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
 	File schemaFileFolder;
 	/**
 	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
 	 * the <I>schemaFileFolder</I> plugin parameter.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileName", defaultValue = GenerateRelaySchemaConfiguration.DEFAULT_SCHEMA_FILE_NAME)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileName", defaultValue = MergeConfiguration.DEFAULT_SCHEMA_FILE_NAME)
 	String schemaFileName;
 
 	/**
@@ -52,7 +60,7 @@ public class GenerateRelaySchemaMojo extends AbstractMojo {
 	 * <I>/src/main/resources/myschema_extend.graphqls</I> files.
 	 * <P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = GenerateRelaySchemaConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = MergeConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
 	String schemaFilePattern;
 
 	/**
@@ -81,11 +89,11 @@ public class GenerateRelaySchemaMojo extends AbstractMojo {
 	Map<String, String> templates;
 
 	/** The encoding for the generated resource files */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.resourceEncoding", defaultValue = GenerateRelaySchemaConfiguration.DEFAULT_RESOURCE_ENCODING)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.resourceEncoding", defaultValue = MergeConfiguration.DEFAULT_RESOURCE_ENCODING)
 	String resourceEncoding;
 
 	/** The folder where the generated GraphQL schema will be stored */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = GenerateRelaySchemaConfiguration.DEFAULT_TARGET_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = MergeConfiguration.DEFAULT_TARGET_FOLDER)
 	File targetFolder;
 
 	@Override
@@ -94,12 +102,11 @@ public class GenerateRelaySchemaMojo extends AbstractMojo {
 			getLog().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
-			GenerateRelaySchemaSpringConfiguration.mojo = this;
-			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
-					GenerateRelaySchemaSpringConfiguration.class);
+			MergeSpringConfiguration.mojo = this;
+			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(MergeSpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
-			ctx.getBean(GenerateRelaySchemaConfiguration.class).logConfiguration();
+			ctx.getBean(MergeConfiguration.class).logConfiguration();
 
 			GraphQLDocumentParser documentParser = ctx.getBean(GraphQLDocumentParser.class);
 			documentParser.parseDocuments();

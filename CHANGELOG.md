@@ -1,6 +1,6 @@
 # Note for the future 2.x versions
 
-New developments should use these parameters, to be compliant with default values of the 2.0 version:
+New developments that use __graphql goal/task__ should use the parameters below, to be compliant with default values of the 2.0 version:
 * copyRuntimeSources: false
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
@@ -9,7 +9,7 @@ New developments should use these parameters, to be compliant with default value
 
 Both mode (client and server):
 * The GraphQL schema can now be split into separate files, including one file containing GraphQL extend keyword on the other file's objects
-
+* Add of the _merge_ goal/task: it generates a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
 
 # 1.8.1
 

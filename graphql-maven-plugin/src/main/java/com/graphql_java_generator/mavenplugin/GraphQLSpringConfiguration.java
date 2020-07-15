@@ -28,7 +28,8 @@ import graphql.parser.Parser;
 @Configuration
 @Import({ JacksonAutoConfiguration.class })
 @ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*") })
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.Merge.*") })
 public class GraphQLSpringConfiguration {
 
 	/**
