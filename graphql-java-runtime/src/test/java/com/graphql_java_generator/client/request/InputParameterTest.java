@@ -52,12 +52,12 @@ class InputParameterTest {
 	@Test
 	void test_getValueForGraphqlQuery_str() throws GraphQLRequestExecutionException {
 		String name = "aName";
-		String value = "This is a string with two \"\" to be escaped";
+		String value = "This is a string with two \"\", a 🎉 and some \r \t \\ to be escaped";
 		InputParameter param = InputParameter.newHardCodedParameter(name, value);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals("\\\"This is a string with two \\\"\\\" to be escaped\\\"", param.getValueForGraphqlQuery(null),
+		assertEquals("\\\"This is a string with two \\\\\\\"\\\\\\\", a \\\\uD83C\\\\uDF89 and some \\\\r \\\\t \\\\\\\\ to be escaped\\\"", param.getValueForGraphqlQuery(null),
 				"escaped value");
 	}
 

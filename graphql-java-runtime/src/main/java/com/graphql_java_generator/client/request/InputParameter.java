@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.graphql_java_generator.client.request;
 
@@ -22,6 +22,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.schema.GraphQLScalarType;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * Contains an input parameter, to be sent to a query (mutation...). It can be either:
@@ -32,7 +33,7 @@ import graphql.schema.GraphQLScalarType;
  * <UL>
  * A bind variable, which value must be provided when executing the query
  * <LI>
- * 
+ *
  * @author etienne-sf
  */
 public class InputParameter {
@@ -68,14 +69,14 @@ public class InputParameter {
 	 * graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String that
 	 * can be written in the GraphQL request, or convert from a String that is found in the GraphQL response. If this
 	 * type is not a GraphQL Custom Scalar, it must be null.
-	 * 
+	 *
 	 */
 	final GraphQLScalarType graphQLCustomScalarType;
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
 	 * this bind variable must be provided, when calling the request execution.
-	 * 
+	 *
 	 * @param name
 	 * @param bindParameterName
 	 *            The name of the bind parameter, as defined in the GraphQL response definition. It is mandator for bind
@@ -101,7 +102,7 @@ public class InputParameter {
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
 	 * this bind variable must be provided, when calling the request execution.
-	 * 
+	 *
 	 * @param name
 	 * @param bindParameterName
 	 *            The name of the bind parameter, as defined in the GraphQL response definition. It is mandator for bind
@@ -134,7 +135,7 @@ public class InputParameter {
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which value is given, and can not be changed
 	 * afterwards
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 * @return
@@ -146,7 +147,7 @@ public class InputParameter {
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which value is given, and can not be changed
 	 * afterwards.
-	 * 
+	 *
 	 * @param name
 	 * @param value
 	 * @param mandatory
@@ -161,7 +162,7 @@ public class InputParameter {
 	/**
 	 * The constructor is private. Instances must be created with one of these helper methods:
 	 * {@link #newBindParameter(String, String)} or {@link #newHardCodedParameter(String, Object)}
-	 * 
+	 *
 	 * @param name
 	 *            The parameter name, as defined in the GraphQL schema
 	 * @param bindParameterName
@@ -202,7 +203,7 @@ public class InputParameter {
 	 * Reads a list of input parameters, from a {@link QueryTokenizer}. It can be the list of parameters for a Field or
 	 * for a Directive. It can be either a Field of a Query, Mutation or Subscription, or a Field of a standard GraphQL
 	 * Type, or any directive...
-	 * 
+	 *
 	 * @param qt
 	 *            The StringTokenizer, where the opening parenthesis has been read. It will be read until and including
 	 *            the next closing parenthesis.
@@ -322,7 +323,7 @@ public class InputParameter {
 
 	/**
 	 * Parse a value read for an input parameter, within the query
-	 * 
+	 *
 	 * @param owningClass
 	 * @param fieldName
 	 * @param parameterName
@@ -385,7 +386,7 @@ public class InputParameter {
 
 	/**
 	 * Parse a value, depending on the parameter type.
-	 * 
+	 *
 	 * @param parameterValue
 	 * @param parameterType
 	 * @param packageName
@@ -470,7 +471,7 @@ public class InputParameter {
 	 * <LI>String: a "string" -> "a \"string\""</LI>
 	 * <LI>Enum: EPISODE -> EPISODE (no escape or double quote here)</LI>
 	 * </UL>
-	 * 
+	 *
 	 * @param bindVariables
 	 *            The map for the bind variables. It may be null, if this input parameter is a hard coded one. If this
 	 *            parameter is a Bind Variable, then bindVariables is mandatory, and it must contain a value for th bind
@@ -500,7 +501,7 @@ public class InputParameter {
 	/**
 	 * This method is used both by {@link #getValueForGraphqlQuery()} and {@link #getListValue(List)} to extract a value
 	 * as a string.
-	 * 
+	 *
 	 * @param val
 	 *            This value of the parameter. It can be the {@link #value} if it is not null, or the binding from the
 	 *            bind parameters. It's up to the caller to map the bind parameter into this method argument.
@@ -531,16 +532,20 @@ public class InputParameter {
 	}
 
 	/**
-	 * @return
+	 * Escape a string in accordance with the rules defined for JSON strings so that it can be included in a GraphQL payload.
+	 * Because a GraphQL request consists of stringified JSON objects wrapped in another JSON object, the escaping is applied twice.
+	 *
+	 * @see <a href="https://www.json.org/">json.org section on strings</a>
+	 * @return escaped string
 	 */
 	private String getStringValue(String str) {
-		return "\\\"" + str.replace("\"", "\\\"") + "\\\"";
+		return "\\\"" + StringEscapeUtils.escapeJson(StringEscapeUtils.escapeJson(str)) + "\\\"";
 	}
 
 	/**
 	 * This method returns the JSON string that represents the given list, according to GraphQL standard. This method is
 	 * used to write a part of the GraphQL client query that will be sent to the server.
-	 * 
+	 *
 	 * @param list
 	 *            a non null List
 	 * @return
@@ -564,7 +569,7 @@ public class InputParameter {
 	/**
 	 * This method returns the JSON string that represents the given object, according to GraphQL standard. This method
 	 * is used to write a part of the GraphQL client query that will be sent to the server.
-	 * 
+	 *
 	 * @param object
 	 *            An object which class is an InputType as defined in the GraphQL schema
 	 * @return The String that represents this object, according to GraphQL standard representation, as expected in the
