@@ -60,7 +60,7 @@ class InputParameterTest {
 		assertEquals(value, param.getValue(), "value");
 		assertEquals("\\\"This is a string with two \\\\\\\"\\\\\\\", a \\\\uD83C\\\\uDF89 and some \\\\r \\\\t \\\\\\\\ to be escaped\\\"", param.getValueForGraphqlQuery(null),
 				"escaped value");
-    assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(null))), "roundtripped value");
+		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(null))), "roundtripped value");
 	}
 
 	@Test
