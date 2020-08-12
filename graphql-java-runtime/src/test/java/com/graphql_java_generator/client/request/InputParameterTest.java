@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +60,7 @@ class InputParameterTest {
 		assertEquals(value, param.getValue(), "value");
 		assertEquals("\\\"This is a string with two \\\\\\\"\\\\\\\", a \\\\uD83C\\\\uDF89 and some \\\\r \\\\t \\\\\\\\ to be escaped\\\"", param.getValueForGraphqlQuery(null),
 				"escaped value");
+    assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(null))), "roundtripped value");
 	}
 
 	@Test
