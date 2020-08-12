@@ -138,12 +138,6 @@
 			<artifactId>graphql-java-client-dependencies</artifactId>
 			<type>pom</type>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-text</artifactId>
-			<version>1.8</version>
-		</dependency>
-
 
 	</dependencies>
 
