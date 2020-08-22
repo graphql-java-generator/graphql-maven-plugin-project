@@ -5,7 +5,7 @@ New developments that use __graphql goal/task__ should use the parameters below,
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
-# Not released yet
+# 1.9
 
 Both mode (client and server):
 * The GraphQL schema can now be split into separate files, including one file containing GraphQL extend keyword on the other file's objects
