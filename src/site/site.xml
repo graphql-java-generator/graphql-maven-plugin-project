@@ -41,6 +41,7 @@
 		<menu name="Project internal">
 			<item name="How to build?" href="howto_build.html" />
 			<item name="How to contribute?" href="howto_contribute.html" />
+			<item name="How to create a PGP key?" href="howto_pgp_key.html" />
 			<item name="How to publish the site?" href="howto_publish_site.html" />
 		</menu>
 
