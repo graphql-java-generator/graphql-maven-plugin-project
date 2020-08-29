@@ -46,16 +46,9 @@ Here are the steps to execute:
 
 * cd target/checkout
     * This allows to go to the just performed release, and get all the code in the relevant version
-* mvn site -Prelease -DlastReleasedVersion=x.y.z
-    * As the site configuration is in the "release" profile, to avoid polluting standard build
-    * Don't use mvn site-deploy, as this won't work to stage then deploy the site on github. If that's wrong, please provide a comment on this one !  :)
-    * After that, the site for each module is ready. But there is no link between each module's site.
-    * lastReleasedVersion can be optionally defined, so that the samples in the site have this version number.
-* mvn site:stage
-    * This agregate all the module sites built by the previous command into the target/staging folder of the root project.
-
-
-__Note:__ All these steps are automated through the publish_site.cmd Windows command file (very easy to adapt to a Unix shell)
+* publish_site    which is a Windows command file, that wraps:
+    * mvn antrun:run -Prelease 
+    * git push
 
 ## Publishing the site
 
@@ -71,4 +64,5 @@ Instead of using the github site-maven-plugin, read [this article](http://wiki.b
 * cd target\gh-pages_branch\graphql-maven-plugin-project
 * git push
 
-Currently, after each push, the custom domain configuration disappears... So we need to get to [the settings](https://github.com/graphql-java-generator/graphql-maven-plugin-project/settings) of the project, to restore the custom domain, which is graphql-maven-plugin-project.graphql-java-generator.com
+
+Thanks to the _CNAME_ file being preserved, in the ant file, the custom domain configuration should not disappear... But it may be worth a check, to get to [the settings](https://github.com/graphql-java-generator/graphql-maven-plugin-project/settings) of the project, to restore the custom domain, which is graphql-maven-plugin-project.graphql-java-generator.com
