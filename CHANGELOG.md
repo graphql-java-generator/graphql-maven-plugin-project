@@ -9,7 +9,7 @@ New developments that use __graphql goal/task__ should use the parameters below,
 
 Both mode (client and server):
 * The GraphQL schema can now be split into separate files, including one file containing GraphQL extend keyword on the other file's objects
-* Add of the _merge_ goal/task: it generates a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
+* [Not ready yet] Add of the _merge_ goal/task: it generates a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
 
 Client mode:
 * Fixes #46: Strings not properly escaped for JSON
