@@ -57,17 +57,17 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/junittest/AllGraphQLCases_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest/AllGraphQLCases_Client_SpringConfiguration_separateUtilityClasses/generated-src</source>
-								<source>${project.build.directory}/junittest/AllGraphQLCases_Server_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest/AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses/generated-src</source>
-								<source>${project.build.directory}/junittest/CodeGeneratorTest/generated-src</source>
-								<source>${project.build.directory}/junittest/CustomTemplates_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest/CustomTemplates_Server_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest/Forum_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest/Forum_Server_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest/StarWars_Client_SpringConfiguration/generated-src</source>
-								<source>${project.build.directory}/junittest/StarWars_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Client_SpringConfiguration_separateUtilityClasses/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/CodeGeneratorTest/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/CustomTemplates_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/Forum_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/Forum_Server_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/StarWars_Client_SpringConfiguration/generated-src</source>
+								<source>${project.build.directory}/junittest_graphql/StarWars_Server_SpringConfiguration/generated-src</source>
 							</sources>
 						</configuration>
 					</execution>

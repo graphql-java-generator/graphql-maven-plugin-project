@@ -28,7 +28,7 @@ import graphql.parser.Parser;
  */
 public abstract class AbstractSpringConfiguration {
 
-	public final static String ROOT_UNIT_TEST_FOLDER = "target/junittest_generate-relay-schema/";
+	public final static String ROOT_UNIT_TEST_FOLDER = "target/junittest_merge/";
 	public final static String ENCODING = "UTF-8";
 
 	private String schemaFileFolder = "src/test/resources";
