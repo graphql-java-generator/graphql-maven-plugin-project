@@ -15,8 +15,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
+import com.graphql_java_generator.plugin.Merge;
 import com.graphql_java_generator.plugin.MergeConfiguration;
+import com.graphql_java_generator.plugin.MergeDocumentParser;
 
 import graphql.ThreadSafe;
 
@@ -108,12 +109,17 @@ public class MergeMojo extends AbstractMojo {
 			// Let's log the current configuration (this will do something only when in debug mode)
 			ctx.getBean(MergeConfiguration.class).logConfiguration();
 
-			GraphQLDocumentParser documentParser = ctx.getBean(GraphQLDocumentParser.class);
+			MergeDocumentParser documentParser = ctx.getBean(MergeDocumentParser.class);
 			documentParser.parseDocuments();
+
+			Merge merge = ctx.getBean(Merge.class);
+			merge.generateRelaySchema();
 
 			ctx.close();
 
 			throw new RuntimeException("Not yet implemented");
+
+			// getLog().debug("Finished generation of the merged schema");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
