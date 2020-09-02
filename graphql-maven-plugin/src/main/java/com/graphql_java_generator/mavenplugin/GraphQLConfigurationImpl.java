@@ -62,7 +62,7 @@ public class GraphQLConfigurationImpl implements GraphQLConfiguration {
 
 	@Override
 	public File getSchemaFileFolder() {
-		return new File(mojo.project.getBasedir(), mojo.schemaFileFolder);
+		return mojo.schemaFileFolder;
 	}
 
 	@Override
