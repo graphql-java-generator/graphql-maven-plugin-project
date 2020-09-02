@@ -29,10 +29,13 @@ import graphql.ThreadSafe;
  * <I>extend</I> GraphQL keyword</LI>
  * <LI>Reformat the schema file</LI>
  * </UL>
+ * <BR/>
+ * This goal is, by default, attached to the Initialize maven phase, to be sure that the GraphQL schema are generated
+ * before the code generation would need it, if relevant.
  * 
  * @author etienne-sf
  */
-@Mojo(name = "merge", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
+@Mojo(name = "merge", defaultPhase = LifecyclePhase.INITIALIZE)
 @ThreadSafe
 public class MergeMojo extends AbstractMojo {
 
@@ -42,12 +45,6 @@ public class MergeMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = MergeConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
 	File schemaFileFolder;
-	/**
-	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
-	 * the <I>schemaFileFolder</I> plugin parameter.
-	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileName", defaultValue = MergeConfiguration.DEFAULT_SCHEMA_FILE_NAME)
-	String schemaFileName;
 
 	/**
 	 * <P>
@@ -97,6 +94,13 @@ public class MergeMojo extends AbstractMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = MergeConfiguration.DEFAULT_TARGET_FOLDER)
 	File targetFolder;
 
+	/**
+	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
+	 * the <I>targetFolder</I> plugin parameter.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaFileName", defaultValue = MergeConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)
+	String targetSchemaFileName;
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
@@ -117,9 +121,7 @@ public class MergeMojo extends AbstractMojo {
 
 			ctx.close();
 
-			throw new RuntimeException("Not yet implemented");
-
-			// getLog().debug("Finished generation of the merged schema");
+			getLog().debug("Finished generation of the merged schema");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);

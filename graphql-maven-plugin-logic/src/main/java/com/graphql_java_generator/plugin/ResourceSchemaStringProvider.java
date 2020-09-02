@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -46,14 +47,27 @@ public class ResourceSchemaStringProvider {
 			// We take the file pattern as is
 			fullPathPattern = configuration.getSchemaFilePattern();
 		} else {
+			if (configuration.getLog().isDebugEnabled()) {
+				configuration.getLog().debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
+				configuration.getSchemaFileFolder().getCanonicalPath();
+			}
 			fullPathPattern = "file:///" + configuration.getSchemaFileFolder().getCanonicalPath()
 					+ ((configuration.getSchemaFilePattern().startsWith("/")
 							|| (configuration.getSchemaFilePattern().startsWith("\\"))) ? "" : "/")
 					+ configuration.getSchemaFilePattern();
 		}
 
+		// Let's look for the GraphQL schema files
 		List<org.springframework.core.io.Resource> ret = new ArrayList<>(
 				Arrays.asList(applicationContext.getResources(fullPathPattern)));
+
+		// A little debug may be useful
+		if (configuration.getLog().isDebugEnabled() && ret.size() > 0) {
+			configuration.getLog().debug("The GraphQL schema file found are: ");
+			for (Resource schema : ret) {
+				configuration.getLog().debug("   * " + schema.getURI().toString());
+			}
+		}
 
 		// We musts have found at least one schema
 		if (ret.size() == 0) {

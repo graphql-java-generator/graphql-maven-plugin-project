@@ -33,8 +33,8 @@ public abstract class AbstractSpringConfiguration {
 
 	private String schemaFileFolder = "src/test/resources";
 	private String schemaFilePattern;
-	private String schemaFileName;
 	private String targetFolder;
+	private String targetSchemaFileName;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -45,7 +45,7 @@ public abstract class AbstractSpringConfiguration {
 			String targetFolder) {
 		this.schemaFileFolder = schemaFileFolder;
 		this.schemaFilePattern = schemaFilePattern;
-		this.schemaFileName = schemaFileName;
+		this.targetSchemaFileName = schemaFileName;
 		this.targetFolder = targetFolder;
 	}
 
@@ -54,7 +54,7 @@ public abstract class AbstractSpringConfiguration {
 		GenerateRelaySchemaConfigurationTestHelper configuration = new GenerateRelaySchemaConfigurationTestHelper(this);
 		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), schemaFileFolder);
 		configuration.schemaFilePattern = schemaFilePattern;
-		configuration.schemaFileName = schemaFileName;
+		configuration.targetSchemaFileName = targetSchemaFileName;
 		configuration.resourceEncoding = ENCODING;
 		File rootTargetFolder = new File(mavenTestHelper.getModulePathFile(), ROOT_UNIT_TEST_FOLDER);
 		configuration.targetFolder = new File(rootTargetFolder, targetFolder);

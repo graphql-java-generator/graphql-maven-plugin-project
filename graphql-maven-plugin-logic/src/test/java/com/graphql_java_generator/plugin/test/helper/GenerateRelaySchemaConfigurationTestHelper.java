@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.graphql_java_generator.plugin.MergeConfiguration;
 import com.graphql_java_generator.plugin.Logger;
+import com.graphql_java_generator.plugin.MergeConfiguration;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,10 +23,10 @@ public class GenerateRelaySchemaConfigurationTestHelper implements MergeConfigur
 
 	public String packageName = "my.test.package";
 	public File schemaFileFolder = null;
-	public String schemaFileName = null;
 	public String schemaFilePattern = null;
 	public String resourceEncoding = null;
 	public File targetFolder = null;
+	public String targetSchemaFileName = null;
 	public Map<String, String> templates = new HashMap<String, String>();
 
 	/**

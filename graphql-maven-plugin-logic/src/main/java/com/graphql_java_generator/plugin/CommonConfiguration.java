@@ -24,7 +24,7 @@ public interface CommonConfiguration {
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
-	public final String DEFAULT_SCHEMA_FILE_FOLDER = "/src/main/resources";
+	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
 
 	/**

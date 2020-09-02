@@ -173,7 +173,7 @@ public class GraphQLMojo extends AbstractMojo {
 
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
-	String schemaFileFolder;
+	File schemaFileFolder;
 
 	/**
 	 * <P>

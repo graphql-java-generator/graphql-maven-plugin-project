@@ -76,12 +76,9 @@ class MergeTest {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
-				"configuration");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
-				"graphqlUtils");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
-				"documents");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "configuration");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "graphqlUtils");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "documents");
 		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
 				"objectTypeExtensionDefinitions");
 
@@ -159,6 +156,7 @@ class MergeTest {
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
 		Merge generateRelaySchema = ctx.getBean(Merge.class);
 		MergeDocumentParser sourceDocumentParser = generateRelaySchema.documentParser;
+		sourceDocumentParser.parseDocuments();
 		generateRelaySchema.generateRelaySchema();
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(MergeConfiguration.class).logConfiguration();
@@ -169,8 +167,7 @@ class MergeTest {
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(MergeConfiguration.class).logConfiguration();
 		//
-		MergeDocumentParser generatedDocumentParser = ctx
-				.getBean(MergeDocumentParser.class);
+		MergeDocumentParser generatedDocumentParser = ctx.getBean(MergeDocumentParser.class);
 		generatedDocumentParser.parseDocuments();
 		//
 		ctx.close();

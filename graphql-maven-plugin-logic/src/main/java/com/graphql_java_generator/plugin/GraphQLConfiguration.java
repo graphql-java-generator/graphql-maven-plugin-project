@@ -236,7 +236,7 @@ public interface GraphQLConfiguration extends CommonConfiguration {
 	/** Logs all the configuration parameters, in the debug level */
 	public default void logConfiguration() {
 		if (getLog().isDebugEnabled()) {
-			getLog().debug("The graphql-java-generator Plugin Configuration for the graphql goal is:");
+			getLog().debug("The graphql-java-generator Plugin Configuration for the graphql goal is -->");
 			getLog().debug("  copyRuntimeSources: " + isCopyRuntimeSources());
 			getLog().debug("  mode: " + getMode());
 			getLog().debug("  packageName: " + getPackageName());
@@ -256,6 +256,7 @@ public interface GraphQLConfiguration extends CommonConfiguration {
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
 							: StringUtils.EMPTY));
+			getLog().debug("-- end configuration --");
 		}
 	}
 }

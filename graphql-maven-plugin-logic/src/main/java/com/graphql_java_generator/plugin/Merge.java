@@ -60,12 +60,9 @@ public class Merge {
 	/** This method is the entry point, for the generation of the relay compatible schema */
 	public void generateRelaySchema() {
 
-		// Let's first read the source GraphQL schemas
-		documentParser.parseDocuments();
-
 		String msg = null;
 		try {
-			File targetFile = new File(configuration.getTargetFolder(), configuration.getSchemaFileName());
+			File targetFile = new File(configuration.getTargetFolder(), configuration.getTargetSchemaFileName());
 			msg = "Generating relay schema in this file: " + targetFile.getAbsolutePath();
 			configuration.getLog().debug(msg);
 
