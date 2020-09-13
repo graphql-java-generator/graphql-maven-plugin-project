@@ -22,8 +22,8 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
-import com.graphql_java_generator.plugin.test.helper.GenerateRelaySchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
+import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTestHelper;
 
 import graphql.language.Document;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
@@ -70,8 +70,9 @@ class MergeTest {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored classes //////////////////////////////////////////////////////////////////////////
+		deepComparator.addIgnoredClass(AddRelayConnections.class);
 		deepComparator.addIgnoredClass(Document.class);
-		deepComparator.addIgnoredClass(GenerateRelaySchemaConfigurationTestHelper.class);
+		deepComparator.addIgnoredClass(MergeSchemaConfigurationTestHelper.class);
 		deepComparator.addIgnoredClass(GraphqlUtils.class);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,13 +160,13 @@ class MergeTest {
 		sourceDocumentParser.parseDocuments();
 		generateRelaySchema.generateRelaySchema();
 		// Let's log the current configuration (this will do something only when in debug mode)
-		ctx.getBean(MergeConfiguration.class).logConfiguration();
+		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 		ctx.close();
 
 		// Let's load the content of the generated schema in a new DocumentParser
 		ctx = new AnnotationConfigApplicationContext(generatedSpringConfClass);
 		// Let's log the current configuration (this will do something only when in debug mode)
-		ctx.getBean(MergeConfiguration.class).logConfiguration();
+		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 		//
 		MergeDocumentParser generatedDocumentParser = ctx.getBean(MergeDocumentParser.class);
 		generatedDocumentParser.parseDocuments();

@@ -19,6 +19,7 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.plugin.CommonConfiguration;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
@@ -49,6 +50,32 @@ import graphql.schema.GraphQLScalarType;
 @Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 @ThreadSafe
 public class GraphQLMojo extends AbstractMojo {
+
+	/**
+	 * <P>
+	 * True if the plugin is configured to add the relay connection capabilities, as
+	 * <A HREF="https://relay.dev/docs/en/graphql-server-specification.html">described here</A> and specified on the
+	 * <A HREF="https://relay.dev/graphql/connections.htm">.
+	 * </P>
+	 * <P>
+	 * If set to true, the plugin will add:
+	 * </P>
+	 * <UL>
+	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
+	 * defined in the given schema, but is not compliant, then an error is thrown.</LI>
+	 * <LI>The <I>@RelayConnexion</I> directive definition in the GraphQL schema (if not already defined). If this is
+	 * already defined in the given schema, but is not compliant with the relay specification, then an error is
+	 * thrown.</LI>
+	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
+	 * defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+	 * <LI>The <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined in
+	 * the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+	 * <LI>All the Edge and Connection type in the GraphQL schema, for each type that is marked by the
+	 * <I>@RelayConnexion</I> directive.</LI>
+	 * </UL>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.addRelayConnections", defaultValue = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS)
+	boolean addRelayConnections;
 
 	/**
 	 * <P>

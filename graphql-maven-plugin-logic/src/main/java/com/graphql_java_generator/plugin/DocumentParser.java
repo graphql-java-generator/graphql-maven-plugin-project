@@ -79,6 +79,14 @@ public abstract class DocumentParser {
 	@Autowired
 	CommonConfiguration configuration;
 
+	/**
+	 * A utility that adds Relay Connection capabilities to the read schema. It is called if the
+	 * {@link CommonConfiguration#isAddRelayConnections()} is true
+	 */
+	@Autowired
+	AddRelayConnections addRelayConnections;
+
+	/** Various utilities, grouped in a dedicated class */
 	@Autowired
 	GraphqlUtils graphqlUtils;
 

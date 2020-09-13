@@ -14,7 +14,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
-import com.graphql_java_generator.plugin.MergeConfiguration;
+import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 
 import graphql.language.Document;
@@ -36,7 +36,7 @@ public class MergeSpringConfiguration {
 	static MergeMojo mojo = null;
 
 	@Bean
-	MergeConfiguration pluginConfiguration() {
+	MergeSchemaConfiguration pluginConfiguration() {
 		return new MergeConfigurationImpl(mojo);
 	}
 

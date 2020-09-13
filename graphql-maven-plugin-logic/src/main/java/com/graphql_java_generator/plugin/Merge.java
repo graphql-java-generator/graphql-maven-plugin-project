@@ -44,7 +44,7 @@ public class Merge {
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	MergeConfiguration configuration;
+	MergeSchemaConfiguration configuration;
 
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;

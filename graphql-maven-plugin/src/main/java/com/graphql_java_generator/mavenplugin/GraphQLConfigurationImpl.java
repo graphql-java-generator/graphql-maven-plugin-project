@@ -116,13 +116,18 @@ public class GraphQLConfigurationImpl implements GraphQLConfiguration {
 	}
 
 	@Override
+	public Map<String, String> getTemplates() {
+		return this.mojo.templates;
+	}
+
+	@Override
 	public boolean isSeparateUtilityClasses() {
 		return this.mojo.separateUtilityClasses;
 	}
 
 	@Override
-	public Map<String, String> getTemplates() {
-		return this.mojo.templates;
+	public boolean isAddRelayConnections() {
+		return this.mojo.addRelayConnections;
 	}
 
 }

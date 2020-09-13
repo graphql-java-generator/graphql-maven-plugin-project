@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.graphql_java_generator.plugin.Logger;
-import com.graphql_java_generator.plugin.MergeConfiguration;
+import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +16,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class GenerateRelaySchemaConfigurationTestHelper implements MergeConfiguration {
+public class MergeSchemaConfigurationTestHelper implements MergeSchemaConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	final Logger log;
 
+	public boolean addRelayConnections = false;
 	public String packageName = "my.test.package";
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
@@ -33,7 +34,7 @@ public class GenerateRelaySchemaConfigurationTestHelper implements MergeConfigur
 	 * @param caller
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
-	public GenerateRelaySchemaConfigurationTestHelper(Object caller) {
+	public MergeSchemaConfigurationTestHelper(Object caller) {
 		log = new Slf4jLogger(caller);
 	}
 

@@ -15,9 +15,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.plugin.CommonConfiguration;
 import com.graphql_java_generator.plugin.Merge;
-import com.graphql_java_generator.plugin.MergeConfiguration;
 import com.graphql_java_generator.plugin.MergeDocumentParser;
+import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
 
 import graphql.ThreadSafe;
 
@@ -40,10 +41,36 @@ import graphql.ThreadSafe;
 public class MergeMojo extends AbstractMojo {
 
 	/**
+	 * <P>
+	 * True if the plugin is configured to add the relay connection capabilities, as
+	 * <A HREF="https://relay.dev/docs/en/graphql-server-specification.html">described here</A> and specified on the
+	 * <A HREF="https://relay.dev/graphql/connections.htm">.
+	 * </P>
+	 * <P>
+	 * If set to true, the plugin will add:
+	 * </P>
+	 * <UL>
+	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
+	 * defined in the given schema, but is not compliant, then an error is thrown.</LI>
+	 * <LI>The <I>@RelayConnexion</I> directive definition in the GraphQL schema (if not already defined). If this is
+	 * already defined in the given schema, but is not compliant with the relay specification, then an error is
+	 * thrown.</LI>
+	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
+	 * defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+	 * <LI>The <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined in
+	 * the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+	 * <LI>All the Edge and Connection type in the GraphQL schema, for each type that is marked by the
+	 * <I>@RelayConnexion</I> directive.</LI>
+	 * </UL>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.addRelayConnections", defaultValue = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS)
+	boolean addRelayConnections;
+
+	/**
 	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
 	 * schema(s) are expected to be: in this folder, or one of these subfolders
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = MergeConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = MergeSchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
 	File schemaFileFolder;
 
 	/**
@@ -58,7 +85,7 @@ public class MergeMojo extends AbstractMojo {
 	 * <I>/src/main/resources/myschema_extend.graphqls</I> files.
 	 * <P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = MergeConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = MergeSchemaConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
 	String schemaFilePattern;
 
 	/**
@@ -87,18 +114,18 @@ public class MergeMojo extends AbstractMojo {
 	Map<String, String> templates;
 
 	/** The encoding for the generated resource files */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.resourceEncoding", defaultValue = MergeConfiguration.DEFAULT_RESOURCE_ENCODING)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.resourceEncoding", defaultValue = MergeSchemaConfiguration.DEFAULT_RESOURCE_ENCODING)
 	String resourceEncoding;
 
 	/** The folder where the generated GraphQL schema will be stored */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = MergeConfiguration.DEFAULT_TARGET_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = MergeSchemaConfiguration.DEFAULT_TARGET_FOLDER)
 	File targetFolder;
 
 	/**
 	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
 	 * the <I>targetFolder</I> plugin parameter.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaFileName", defaultValue = MergeConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaFileName", defaultValue = MergeSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)
 	String targetSchemaFileName;
 
 	@Override
@@ -111,7 +138,7 @@ public class MergeMojo extends AbstractMojo {
 			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(MergeSpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
-			ctx.getBean(MergeConfiguration.class).logConfiguration();
+			ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 
 			MergeDocumentParser documentParser = ctx.getBean(MergeDocumentParser.class);
 			documentParser.parseDocuments();

@@ -7,13 +7,13 @@ import java.io.File;
 import java.util.Map;
 
 import com.graphql_java_generator.plugin.Logger;
-import com.graphql_java_generator.plugin.MergeConfiguration;
+import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
 
 /**
  * @author etienne-sf
  *
  */
-public class MergeConfigurationImpl implements MergeConfiguration {
+public class MergeConfigurationImpl implements MergeSchemaConfiguration {
 
 	final private MergeMojo mojo;
 	final private MavenLogger log;
@@ -62,5 +62,10 @@ public class MergeConfigurationImpl implements MergeConfiguration {
 	public String getPackageName() {
 		// Not used
 		return null;
+	}
+
+	@Override
+	public boolean isAddRelayConnections() {
+		return this.mojo.addRelayConnections;
 	}
 }

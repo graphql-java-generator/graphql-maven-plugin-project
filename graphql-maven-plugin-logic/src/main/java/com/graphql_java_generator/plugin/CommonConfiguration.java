@@ -22,7 +22,7 @@ public interface CommonConfiguration {
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
-
+	public final String DEFAULT_ADD_RELAY_CONNECTIONS = "false";
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
@@ -79,5 +79,30 @@ public interface CommonConfiguration {
 	 * </P>
 	 */
 	public Map<String, String> getTemplates();
+
+	/**
+	 * <P>
+	 * True if the plugin is configured to add the relay connection capabilities, as
+	 * <A HREF="https://relay.dev/docs/en/graphql-server-specification.html">described here</A> and specified on the
+	 * <A HREF="https://relay.dev/graphql/connections.htm">.
+	 * </P>
+	 * <P>
+	 * If set to true, the plugin will add:
+	 * </P>
+	 * <UL>
+	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
+	 * defined in the given schema, but is not compliant, then an error is thrown.</LI>
+	 * <LI>The <I>@RelayConnexion</I> directive definition in the GraphQL schema (if not already defined). If this is
+	 * already defined in the given schema, but is not compliant with the relay specification, then an error is
+	 * thrown.</LI>
+	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
+	 * defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+	 * <LI>The <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined in
+	 * the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+	 * <LI>All the Edge and Connection type in the GraphQL schema, for each type that is marked by the
+	 * <I>@RelayConnexion</I> directive.</LI>
+	 * </UL>
+	 */
+	public boolean isAddRelayConnections();
 
 }
