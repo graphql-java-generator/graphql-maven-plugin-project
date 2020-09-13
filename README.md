@@ -21,7 +21,7 @@ Please, take a look at the projects that are within the graphql-maven-plugin-sam
 __The interesting part is that graphql-java-generator is just an accelerator: you don't depend on any library from graphql-java-generator__. So, it just helps you to build application based on [graphql-java](https://www.graphql-java.com) .
 If the generated code doesn't fully suit your needs, you can take what's generated as a full sample for graphql-java usage, based on your use case. You can then update the generated code, where it's not compliant for you. And that's it. The only thing, there, is that we would like to know what was not correct for your use case, so that we can embed it into next versions. Or perhaps, if it's just a matter of documentation, to better explain how to use it...
 
-The next release will embed the compatibility with the [relay connection](https://relay.dev/graphql/connections.htm):
+The next release will embed the __compatibility with the [relay connection](https://relay.dev/graphql/connections.htm)__:
 * Automatically add this capacity to the schema read by the plugin (add of the Node interface, the PageInfo type, and all the XxxxEdge and XxxxConnection types, as needed).
 * When using the _graphql_ goal/task, the java code for these items will also be generated.
 * When using the _merge_ goal/task (new), a GraphQL schema file is generated, based on the GraphQL schema given to the plugin. This generated GraphQL schema file will include the relay connection capabilities.   
