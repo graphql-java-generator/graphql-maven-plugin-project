@@ -13,7 +13,7 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
 @ExtendWith(SpringExtension.class)
 @SpringJUnitConfig(classes = { Forum_Server_SpringConfiguration.class })
-class CodeGeneratorTest_Forum {
+class CodeGeneratorForumTest {
 
 	@Resource
 	MavenTestHelper mavenTestHelper;

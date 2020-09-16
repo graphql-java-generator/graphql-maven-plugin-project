@@ -78,7 +78,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(29, i, "Nb java files are generated");
-		assertEquals(6, graphQLDocumentParser.directives.size(), "Nb directives");
+		assertEquals(7, graphQLDocumentParser.directives.size(), "Nb directives");
 		assertEquals(19, graphQLDocumentParser.objectTypes.size(), "Nb objects");
 		assertEquals(4, graphQLDocumentParser.customScalars.size(), "Nb custom scalars");
 		assertEquals(4, graphQLDocumentParser.interfaceTypes.size(), "Nb interfaces");
@@ -237,6 +237,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("include", graphQLDocumentParser.directives.get(i++).getName());
 		assertEquals("defer", graphQLDocumentParser.directives.get(i++).getName());
 		assertEquals("deprecated", graphQLDocumentParser.directives.get(i++).getName());
+		assertEquals("RelayConnection", graphQLDocumentParser.directives.get(i++).getName());
 		assertEquals("testDirective", graphQLDocumentParser.directives.get(i++).getName());
 		assertEquals("anotherTestDirective", graphQLDocumentParser.directives.get(i++).getName());
 
@@ -683,7 +684,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(14, type.getFields().size());
+		assertEquals(16, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 

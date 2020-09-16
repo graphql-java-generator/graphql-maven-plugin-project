@@ -144,7 +144,7 @@ public class MergeMojo extends AbstractMojo {
 			documentParser.parseDocuments();
 
 			Merge merge = ctx.getBean(Merge.class);
-			merge.generateRelaySchema();
+			merge.generateGraphQLSchema();
 
 			ctx.close();
 

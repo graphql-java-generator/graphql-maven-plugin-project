@@ -24,9 +24,11 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.GraphqlUtils;
 
 /**
- * This class generates the relay schema, based on the given GraphQL schema(s). That is: it generates a GraphQL schema,
- * that is compliant with relay pagination, from the given GraphQL schema.<BR/>
- * The job is done by using this class as a Spring bean, and calling its {@link #generateRelaySchema()} method.
+ * This class merges one or more given GraphQL schema files into a new GraphQL schema, that is written in the given
+ * target schema file. If {@link CommonConfiguration#isAddRelayConnections()} is true, then the generated schema is
+ * updated to be conform to the <A HREF="https://relay.dev/graphql/connections.htm">relay connection
+ * specification</A>.<BR/>
+ * The job is done by using this class as a Spring bean, and calling its {@link #generateGraphQLSchema()} method.
  * 
  * @author etienne-sf
  *
@@ -57,8 +59,8 @@ public class Merge {
 		velocityEngine.init();
 	}
 
-	/** This method is the entry point, for the generation of the relay compatible schema */
-	public void generateRelaySchema() {
+	/** This method is the entry point, for the generation of the schema that merges the GraphQL source schema files */
+	public void generateGraphQLSchema() {
 
 		String msg = null;
 		try {

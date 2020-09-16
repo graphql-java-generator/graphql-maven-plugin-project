@@ -49,25 +49,6 @@ class MergeTest {
 	void setUp() {
 		deepComparator = new DeepComparator();
 
-		// //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// /////////////// Compared classes //////////////////////////////////////////////////////////////////////////
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.GenerateRelaySchemaDocumentParser.class);
-		// // language
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.AppliedDirectiveImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.BatchLoaderImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.CustomScalarType.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DataFetcherImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DataFetchersDelegateImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.DirectiveImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.EnumType.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.EnumValueImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.FieldImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.InterfaceType.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.ObjectType.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.RelationImpl.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.ScalarType.class);
-		// deepComparator.addComparedClass(com.graphql_java_generator.plugin.language.impl.UnionType.class);
-
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored classes //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredClass(AddRelayConnections.class);
@@ -158,7 +139,7 @@ class MergeTest {
 		Merge generateRelaySchema = ctx.getBean(Merge.class);
 		MergeDocumentParser sourceDocumentParser = generateRelaySchema.documentParser;
 		sourceDocumentParser.parseDocuments();
-		generateRelaySchema.generateRelaySchema();
+		generateRelaySchema.generateGraphQLSchema();
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 		ctx.close();

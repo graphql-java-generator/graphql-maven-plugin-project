@@ -1,6 +1,9 @@
 scalar Date @testDirective(value:"on Scalar") @anotherTestDirective
 scalar Long
 
+directive @RelayConnection
+on FIELD_DEFINITION
+
 schema @testDirective(value:"on Schema") {
 	#A comment on the query
     query: MyQueryType
@@ -48,6 +51,11 @@ type MyQueryType {
     # List is null if the directive is not present.
     directiveOnField: Character!
 
+    
+    ################################################################################
+    # queries to check the addRelayConnections capability
+    connectionWithoutParameters: Character @RelayConnection
+    connectionOnHuman(planet: String, episode: Episode): Human @RelayConnection
 }
 
 type AnotherMutationType {
