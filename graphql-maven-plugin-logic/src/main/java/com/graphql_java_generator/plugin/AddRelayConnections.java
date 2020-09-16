@@ -6,6 +6,7 @@ package com.graphql_java_generator.plugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 
 /**
@@ -102,7 +103,9 @@ public class AddRelayConnections {
 			// The standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			InterfaceType i = new InterfaceType(NODE, configuration.getPackageName());
 
-			// TODO add the id field
+			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(i)
+					.build();
+			i.getFields().add(f);
 
 			documentParser.getInterfaceTypes().add(i);
 			documentParser.getTypes().put(NODE, i);
