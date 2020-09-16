@@ -102,7 +102,7 @@ public class AddRelayConnections {
 		if (!found) {
 			// The standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			InterfaceType i = new InterfaceType(NODE, configuration.getPackageName());
-
+			// Adding the id field toe the Node interface
 			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(i)
 					.build();
 			i.getFields().add(f);
