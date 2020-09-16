@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -18,7 +17,7 @@ import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTes
 
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
 
-@Disabled
+//@Disabled
 @Execution(ExecutionMode.CONCURRENT)
 class AddRelayConnectionsTest {
 
@@ -118,9 +117,8 @@ class AddRelayConnectionsTest {
 				// We've found it.
 				found = true;
 				// Let's check its properties
-				assertEquals(0, d.getImplementz().size(), "No implements");
 				assertEquals(0, d.getMemberOfUnions().size(), "No unions");
-				assertEquals(0, d.getFields().size(), "One field");
+				assertEquals(1, d.getFields().size(), "One field");
 				assertEquals("id", d.getFields().get(0).getName(), "field is id");
 				assertEquals("ID", d.getFields().get(0).getGraphQLTypeName(), "field'stype is ID");
 				assertEquals(true, d.getFields().get(0).isId(), "field is an ID");

@@ -162,7 +162,9 @@ public abstract class DocumentParser {
 	List<CustomScalarType> customScalars = new ArrayList<>();
 
 	/**
-	 * All the {@link Type}s that have been parsed, added by the default scalars<BR/>
+	 * All the {@link Type}s that have been parsed, added by the default scalars. So it contains the query, the mutation
+	 * (if defined), the subscription (if defined), the types, the input types, all the scalars (including the default
+	 * ones), the interfaces, the unions and the enums
 	 */
 	Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
 
@@ -262,6 +264,10 @@ public abstract class DocumentParser {
 		fillTypesMap();
 		// Manage ObjectTypeExtensionDefinition: add the extension to the object they belong to
 		manageObjectTypeExtensionDefinition();
+		// Add the Relay connection capabilities, if configured for it
+		if (configuration.isAddRelayConnections()) {
+			addRelayConnections.addRelayConnections();
+		}
 
 		// We're done
 		int nbClasses = (queryType == null ? 0 : 1) + (subscriptionType == null ? 0 : 1)

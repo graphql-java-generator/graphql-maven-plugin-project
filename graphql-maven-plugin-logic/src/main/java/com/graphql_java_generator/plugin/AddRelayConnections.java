@@ -38,6 +38,9 @@ public class AddRelayConnections {
 	@Autowired
 	private DocumentParser documentParser;
 
+	@Autowired
+	CommonConfiguration configuration;
+
 	public void addRelayConnections() {
 
 		addNodeInterface();
@@ -47,34 +50,64 @@ public class AddRelayConnections {
 	private void addNodeInterface() {
 		final String NODE = "Node";
 		boolean found = false;
-		for (InterfaceType d : documentParser.getInterfaceTypes()) {
-			if (NODE.equals(d.getName())) {
-				// The interface should exist only once, so we may not already have found it.
-				// if (found) {
-				// fail("There are two interfaces with '" + NODE + "' as a name");
-				// }
-				// // We've found it.
-				// found = true;
-				// // Let's check its properties
-				// assertEquals(0, d.getImplementz().size(), "No implements");
-				// assertEquals(0, d.getMemberOfUnions().size(), "No unions");
-				// assertEquals(0, d.getFields().size(), "One field");
-				// assertEquals("id", d.getFields().get(0).getName(), "field is id");
-				// assertEquals("ID", d.getFields().get(0).getGraphQLTypeName(), "field'stype is ID");
-				// assertEquals(true, d.getFields().get(0).isId(), "field is an ID");
-				// assertEquals(false, d.getFields().get(0).isItemMandatory(), "field is not a list");
-				// assertEquals(false, d.getFields().get(0).isList(), "field is not a list");
-				// assertEquals(true, d.getFields().get(0).isMandatory(), "field is mandatory");
-				// assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
-				// assertEquals(false, d.isInputType(), "Not an input type");
+		for (InterfaceType i : documentParser.getInterfaceTypes()) {
+			if (NODE.equals(i.getName())) {
+				// We've found it.
+				found = true;
+
+				// Let's check its properties
+				if (i.getMemberOfUnions().size() != 0) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (member of unions)");
+				}
+				if (i.getFields().size() != 1) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain exactly one field)");
+				}
+				if ("id".equals(i.getFields().get(0).getName())) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field)");
+				}
+				if ("ID".equals(i.getFields().get(0).getGraphQLTypeName())) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, of the 'ID' type)");
+				}
+				if (!i.getFields().get(0).isId()) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is an identified)");
+				}
+				if (i.getFields().get(0).isList()) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is not a list)");
+				}
+				if (!i.getFields().get(0).isMandatory()) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is mandatory)");
+				}
+				if (i.getRequestType() != null) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should not be a query/mutation/subscription)");
+				}
+				if (i.isInputType()) {
+					throw new RuntimeException("The " + NODE
+							+ " interface already exists, but is not compliant with the Relay specification (it should not be an input type)");
+				}
+
+				// Ok, this interface is compliant. We're done.
+				break;
 			}
 		}
 
-		// if (!found) {
-		// fail("The interface " + NODE + " has not been found");
-		// }
+		if (!found) {
+			// The standard case: the interface doesn't exist in the given schema(s). Let's define it.
+			InterfaceType i = new InterfaceType(NODE, configuration.getPackageName());
 
-		throw new RuntimeException("Not yet implemented");
+			// TODO add the id field
+
+			documentParser.getInterfaceTypes().add(i);
+			documentParser.getTypes().put(NODE, i);
+		}
+
 	}
 
 }
