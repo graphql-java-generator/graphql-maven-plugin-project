@@ -142,7 +142,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
 
 # This interface is a clone of the AllFieldCases type. 
 # Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
-interface AllFieldCasesInterface {
+interface AllFieldCasesInterface  {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
@@ -152,7 +152,7 @@ interface AllFieldCasesInterface {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
-    friends: [Human!]
+    friends: [Human!] @RelayConnection
     oneWithIdSubType: AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
@@ -160,7 +160,7 @@ interface AllFieldCasesInterface {
 }
 
 # A concrete class that just implements the above interface
-type AllFieldCasesInterfaceType implements AllFieldCasesInterface {
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface, withID {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
@@ -170,7 +170,7 @@ type AllFieldCasesInterfaceType implements AllFieldCasesInterface {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
-    friends: [Human!]
+    friends: [Human!] @RelayConnection
     oneWithIdSubType: AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype

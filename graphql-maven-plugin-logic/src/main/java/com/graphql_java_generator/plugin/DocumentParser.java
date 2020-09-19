@@ -458,7 +458,7 @@ public abstract class DocumentParser {
 		return directive;
 	}
 
-	private Directive getDirectiveDefinition(String name) {
+	Directive getDirectiveDefinition(String name) {
 		for (Directive d : directives) {
 			if (d.getName().equals(name)) {
 				return d;
@@ -834,8 +834,23 @@ public abstract class DocumentParser {
 	 *             if the type could not be found
 	 */
 	public Type getType(String typeName) {
+		return getType(typeName, true);
+	}
+
+	/**
+	 * Returns the type for the given name
+	 * 
+	 * @param typeName
+	 * @param throwExceptionIfNotFound
+	 *            If true, a {@link RuntimeException} is thrown when the type is not found. If false and the type is not
+	 *            found, null is returned.
+	 * @return The found type, or null if the type is not found and throwExceptionIfNotFound is false
+	 * @throws RuntimeException
+	 *             if the type could not be found and throwExceptionIfNotFound is true
+	 */
+	public Type getType(String typeName, boolean throwExceptionIfNotFound) {
 		Type ret = types.get(typeName);
-		if (ret == null)
+		if (throwExceptionIfNotFound && ret == null)
 			throw new RuntimeException("The type named '" + typeName + "' could not be found");
 		return ret;
 	}

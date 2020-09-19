@@ -87,20 +87,56 @@ public interface CommonConfiguration {
 	 * <A HREF="https://relay.dev/graphql/connections.htm">relay connection specification</A>.
 	 * </P>
 	 * <P>
-	 * If set to true, the plugin will add:
+	 * The plugin reads the GraphQL schema file(s), and enrich them with the interface and types needed to respect the
+	 * Relay Connection specification. The entry point for that is the <I>@RelayConnection</I> directive. It is specific
+	 * to this plugin. It can be added to any field, that is, typically: queries, mutations, interface's fields, type's
+	 * field. It must be declared in the given GraphQL schema file(s) like this:
+	 * </P>
+	 * 
+	 * <PRE>
+	 * directive <I>&#064;RelayConnection</I> on FIELD_DEFINITION
+	 * </PRE>
+	 * <P>
+	 * When <I>addRelayConnections</I> is set to true, here is what's done for each field that is marked with the
+	 * <I>&#064;RelayConnection</I> directive:
 	 * </P>
 	 * <UL>
-	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
-	 * defined in the given schema, but is not compliant, then an error is thrown.</LI>
-	 * <LI>The <I>@RelayConnexion</I> directive definition in the GraphQL schema (if not already defined). If this is
-	 * already defined in the given schema, but is not compliant with the relay specification, then an error is
-	 * thrown.</LI>
-	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
+	 * <LI>The field type, whether it's a list or not, is replaced by the relevant XxxConnection type. For instance the
+	 * query <I>allHumans(criteria: String): [Human] <I>&#064;RelayConnection</I></I> is replaced by
+	 * <I>allHumans(criteria: String): HumanConnection</I>, and the human's field <I>friends: Character
+	 * <I>&#064;RelayConnection</I></I> is replaced by <I>friends: CharacterConnection</I>. Please note that :
+	 * <UL>
+	 * <LI>The <I>&#064;RelayConnection</I> directive is removed in the target schema</LI>
+	 * <LI>If the <I>&#064;RelayConnection</I> is set on a field of an interface, it should be set also in the same
+	 * field, for each type that implements this interface. If not, a warning is generated. The directive is applied on
+	 * the interface and its implementations's field, whether or not the directive is actually set in the implementing
+	 * classes.</LI>
+	 * <LI>If the <I>&#064;RelayConnection</I> is <B>not set</B> on a field of an interface, but is set in the same
+	 * field, for one type that implements this interface, then an error is generated. The directive is applied on the
+	 * interface and its implementations's field, whether or not the directive is actually set in the implementing
+	 * classes.</LI>
+	 * <LI>Input type's fields may not have the <I>&#064;RelayConnection</I> directive</I>
+	 * </UL>
+	 * </LI>
+	 * <LI>For each type marked at least once, with the <I>&#064;RelayConnection</I> directive (the <I>Human</I> type,
+	 * and the <I>Character</I> interface, here above), the relevant XxxConnection and XxxEdge type are added to the
+	 * in-memory schema.</LI>
+	 * <LI>The <I>Node</I> interface is added to each type marked at least once, with the <I>&#064;RelayConnection</I>
+	 * directive (the <I>Human</I> type, and the <I>Character</I> interface, here above). Of course, these types must
+	 * have a mandatory field <I>id</I> of type <I>ID</I> that is not a list. If not, then an error is thrown.</LI>
+	 * </UL>
+	 * <P>
+	 * As a sum-up, if <I>addRelayConnections</I> is set to true, the plugin will add into the in-memory GraphQL schema:
+	 * </P>
+	 * <UL>
+	 * <LI>Check that the <I>&#064;@RelayConnexion</I> directive definition exist in the GraphQL schema, and is
+	 * compliant with the above definition.</LI>
+	 * <LI>Add the <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
 	 * defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
-	 * <LI>The <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined in
-	 * the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+	 * <LI>Add the <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined
+	 * in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
 	 * <LI>All the Edge and Connection type in the GraphQL schema, for each type that is marked by the
-	 * <I>@RelayConnexion</I> directive.</LI>
+	 * <I>&#064;@RelayConnexion</I> directive.</LI>
 	 * </UL>
 	 */
 	public boolean isAddRelayConnections();
