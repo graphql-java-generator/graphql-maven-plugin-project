@@ -160,7 +160,7 @@ interface AllFieldCasesInterface  {
 }
 
 # A concrete class that just implements the above interface
-type AllFieldCasesInterfaceType implements AllFieldCasesInterface, withID {
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface, WithID {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String

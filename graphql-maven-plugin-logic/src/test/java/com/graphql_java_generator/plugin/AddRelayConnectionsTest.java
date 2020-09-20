@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +16,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.mockito.ArgumentCaptor;
 import org.opentest4j.AssertionFailedError;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -21,6 +25,7 @@ import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTestHelper;
@@ -89,6 +94,31 @@ class AddRelayConnectionsTest {
 		assertEquals("Character", fields.get(0).getOwningType().getName());
 		assertEquals("id", fields.get(1).getName());
 		assertEquals("WithID", fields.get(1).getOwningType().getName());
+	}
+
+	@Test
+	void test_addEdgeConnectionAndApplyNodeInterface() {
+		// If a type's field is annotated by @RelayConnection, but this field is "inherited" from an interface, in which
+		// is not inherited by this directive, then an error should be thrown.
+		// Let's remove the @RelayConnection directive from the AllFieldCasesInterface.friends field, and check that
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class);
+		FieldImpl f = (FieldImpl) getField("AllFieldCasesInterface", "friends");
+		f.setAppliedDirectives(new ArrayList<>());
+		Logger mockLogger = mock(Logger.class);
+		((MergeSchemaConfigurationTestHelper) configuration).log = mockLogger;
+		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class,
+				() -> addRelayConnections.addEdgeConnectionAndApplyNodeInterface());
+
+		// Verification
+		verify(mockLogger).error(argument.capture());
+		String errorMessage = argument.getValue();
+		assertTrue(errorMessage.contains("AllFieldCasesInterface"));
+		assertTrue(errorMessage.contains("friends"));
+		assertTrue(errorMessage.contains(
+				"interface AllFieldCasesInterface, in which this field doesn't have the directive @RelayConnection applied"));
 	}
 
 	@Disabled // Disabled, as graphql-java v14.0 (the current used version) doesn't accept interface that implements

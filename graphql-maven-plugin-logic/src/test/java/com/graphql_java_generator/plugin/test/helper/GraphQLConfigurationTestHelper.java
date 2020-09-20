@@ -24,7 +24,7 @@ import lombok.Setter;
 public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
-	final Logger log;
+	public Logger log;
 
 	public boolean addRelayConnections = false;
 	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow

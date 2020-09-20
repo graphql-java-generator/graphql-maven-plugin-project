@@ -5,6 +5,7 @@ package com.graphql_java_generator.plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -218,7 +219,7 @@ public class AddRelayConnections {
 	 * <LI>Add the <I>Node</I> interface as implemented by the Xxx type</LI>
 	 * </UL>
 	 */
-	private void addEdgeConnectionAndApplyNodeInterface() {
+	void addEdgeConnectionAndApplyNodeInterface() {
 
 		// A first step is to control that the schema is correct:
 		// * Standard case: a type's field has the @RelayConnection directive, and this field doesn't come from an
@@ -235,41 +236,62 @@ public class AddRelayConnections {
 		// Step 2: for each of these fields, whether it is owned by an object or an interface, check if it inherits from
 		// an interface field. If yes, add the check that the field in the implemented interface is also marked with the
 		// @RelayConnection directive. If no, raise an error.
-		// Step 3: Identify the list of types and interfaces for which the Edge and Connection and Node interface should
+		// Step 3: for fields of an interface that is marked with the @RelayConnection directive, checks that the
+		// implemented fields (that this: field if the same name in types that implement this interface) are also marked
+		// with the @RelayConnection directive
+		// Step 4: Identify the list of types and interfaces for which the Edge and Connection and Node interface should
 		// be done.
-		// Step 4: Actually implement the edges, connections and mark these types/interfaces with the Node interface
+		// Step 5: Actually implement the edges, connections and mark these types/interfaces with the Node interface
 
 		List<Field> fields = new ArrayList<>();
+		int nbErrors = 0;
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Step 1: identify all fields that have been marked with the @RelayConnection directive
+		// Step 1: identify all fields in types and interfaces that have been marked with the @RelayConnection directive
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		for (InterfaceType i : documentParser.getInterfaceTypes()) {
-			for (Field f : i.getFields()) {
-				// Is this field marked by the @RelayConnection directive?
-				for (AppliedDirective d : f.getAppliedDirectives()) {
-					if (d.getDirective().getName().equals(f.getName())) {
-						// This Field has the @RelayConnection directive applied
-						fields.add(f);
-						break;
-					}
-				} // for(AppliedDirective)
-			} // for(Field)
-		} // for(InterfaceType)
+		Stream.concat(documentParser.getObjectTypes().stream(), documentParser.getInterfaceTypes().stream())
+				.forEach((type) -> {
+					for (Field f : type.getFields()) {
+						// Is this field marked by the @RelayConnection directive?
+						for (AppliedDirective d : f.getAppliedDirectives()) {
+							if (d.getDirective().getName().equals("RelayConnection")) {
+								// This Field has the @RelayConnection directive applied
+								fields.add(f);
+								break;
+							}
+						} // for(AppliedDirective)
+					} // for(Field))
+				});
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 2: for each of these fields, whether it is owned by an object or an interface, check if it inherits from
 		// an interface field. If yes, add the check that the field in the implemented interface is also marked with the
+		// @RelayConnection directive
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (Field f : fields) {
 			// Let's find the list of interfaces from which this field is inherited (a given field can be defined in
 			// more than one implemented interfaces).
 			// We actually don't capture the interface, but the field's interface in the "super" interface(s) that match
 			// the current looping field
-			List<Field> inheritedFrom = getFieldInheritedFrom(f);
+			for (Field fieldInheritedFrom : getFieldInheritedFrom(f)) {
+				// This field must be marked by the @RelayConnection directive. So/and it must exist in the fields list
+				if (!fields.contains(fieldInheritedFrom)) {
+					configuration.getLog()
+							.error("The field " + f.getName() + " of the "
+									+ (f.getOwningType() instanceof InterfaceType ? "interface" : "type") + " "
+									+ f.getOwningType().getName()
+									+ " has the directive @RelayConnection applied. But it inherits from the interface "
+									+ fieldInheritedFrom.getOwningType().getName()
+									+ ", in which this field doesn't have the directive @RelayConnection applied");
+					nbErrors += 1;
+				}
+			} // for(getFieldInheritedFrom())
+		} // for(fields)
 
-		} // for(Field)
-
+		if (nbErrors > 0) {
+			throw new RuntimeException(nbErrors
+					+ " where found in this schema, linked with the @RelayConnection schema. Please check the logged errors.");
+		}
 		// throw new RuntimeException("not finished");
 	}
 

@@ -19,7 +19,7 @@ import lombok.Setter;
 public class MergeSchemaConfigurationTestHelper implements MergeSchemaConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
-	final Logger log;
+	public Logger log;
 
 	public boolean addRelayConnections = false;
 	public String packageName = "my.test.package";
