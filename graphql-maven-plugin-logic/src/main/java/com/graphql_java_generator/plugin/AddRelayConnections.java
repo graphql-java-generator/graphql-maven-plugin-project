@@ -290,13 +290,24 @@ public class AddRelayConnections {
 
 		if (nbErrors > 0) {
 			throw new RuntimeException(nbErrors
-					+ " where found in this schema, linked with the @RelayConnection schema. Please check the logged errors.");
+					+ " error(s) was(were) found in this schema, linked with the @RelayConnection schema. Please check the logged errors.");
 		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 3: for fields of an interface that is marked with the @RelayConnection directive, checks that the
+		// implemented fields (that this: field if the same name in types that implement this interface) are also marked
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		fields.stream().forEach((f) -> {
+			if (f.getOwningType() instanceof InterfaceType) {
+			}
+		});
 		// throw new RuntimeException("not finished");
 	}
 
 	/**
-	 * Retrieve the list of fields, from which the given field inherits
+	 * Retrieve the list of fields, from which the given field inherits. That is: all fields of the same name than the
+	 * given field, that are owned by interface implemented by the given field's type (whether it's an interface or a
+	 * type)
 	 * 
 	 * @param field
 	 * @return
@@ -318,6 +329,44 @@ public class AddRelayConnections {
 				} // for(Field f)
 			} // if(type)
 		} // for(interfaceName)
+		return ret;
+	}
+
+	/**
+	 * Retrieve the list of fields, that are inherited from the given field. That is: all fields of the same name than
+	 * the given field, that are owned by a type or an interface that implements the given field's type. As a GraphQL
+	 * type may not inherit from another type, the given field must be owned by an interface.
+	 * 
+	 * @param field
+	 * @return Never null. The list of all inherited fields. If the field is owned by a type (not an interface), this
+	 *         method returns an empty list.
+	 */
+	List<Field> getInheritedFields(Field field) {
+		List<Field> ret = new ArrayList<>();
+		if (field.getOwningType() instanceof InterfaceType) {
+			// Search for all types that implements this interface
+			for (Type type : documentParser.getTypes().values()) {
+				if (type instanceof ObjectType || type instanceof InterfaceType) {
+					ObjectType o = (ObjectType) type;
+					// Does this type implement the field's interface?
+					for (String i : o.getImplementz()) {
+						if (i.equals(field.getOwningType().getName())) {
+							// Let's find the right field
+							for (Field f : o.getFields()) {
+								if (f.getName().equals(field.getName())) {
+									// f inherits from field.
+									ret.add(f);
+									// If type is an interface, we need to iterate once more.
+									if (type instanceof InterfaceType) {
+										ret.addAll(getInheritedFields(f));
+									}
+								}
+							} // for(Field)
+						} // if(interface name)
+					} // for(getImplementz())
+				} // if(instanceof)
+			} // for(type)
+		}
 		return ret;
 	}
 

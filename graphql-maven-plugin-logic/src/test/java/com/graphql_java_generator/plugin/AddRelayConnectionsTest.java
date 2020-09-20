@@ -113,12 +113,43 @@ class AddRelayConnectionsTest {
 				() -> addRelayConnections.addEdgeConnectionAndApplyNodeInterface());
 
 		// Verification
+		assertTrue(e.getMessage().contains("1 error(s) was(were) found"));
 		verify(mockLogger).error(argument.capture());
 		String errorMessage = argument.getValue();
 		assertTrue(errorMessage.contains("AllFieldCasesInterface"));
 		assertTrue(errorMessage.contains("friends"));
 		assertTrue(errorMessage.contains(
 				"interface AllFieldCasesInterface, in which this field doesn't have the directive @RelayConnection applied"));
+	}
+
+	@Test
+	void test_getInheritedFields() {
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class);
+		List<Field> result;
+
+		// The field is owned by an object (not an interface)
+		result = addRelayConnections.getInheritedFields(getField("AllFieldCasesInterfaceType", "id"));
+		assertEquals(0, result.size());
+
+		// The field is owned by an interface, but never used (that is: the interface is never used)
+		result = addRelayConnections.getInheritedFields(getField("UnusedInterface", "aNonUSedField"));
+		assertEquals(0, result.size());
+
+		// Standard case: the field is owned by an interface, and used by several types
+		result = addRelayConnections.getInheritedFields(getField("WithID", "id"));
+		assertEquals(4, result.size());
+		// 4 items, which are:
+		assertEquals(1,
+				result.stream()
+						.filter((f) -> f.getOwningType().getName().equals("AllFieldCases") && f.getName().equals("id"))
+						.count());
+		assertEquals(1, result.stream().filter(
+				(f) -> f.getOwningType().getName().equals("AllFieldCasesInterfaceType") && f.getName().equals("id"))
+				.count());
+		assertEquals(1, result.stream()
+				.filter((f) -> f.getOwningType().getName().equals("Human") && f.getName().equals("id")).count());
+		assertEquals(1, result.stream()
+				.filter((f) -> f.getOwningType().getName().equals("Droid") && f.getName().equals("id")).count());
 	}
 
 	@Disabled // Disabled, as graphql-java v14.0 (the current used version) doesn't accept interface that implements

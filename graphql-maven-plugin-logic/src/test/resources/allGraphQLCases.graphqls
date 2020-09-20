@@ -77,6 +77,9 @@ interface Commented {
     comments: [String]
 }
 
+interface UnusedInterface {
+	aNonUSedField: String
+}
 
 ##############################################################################################################
 ################  ALL GRAPHQL CASES TEST CASES################################################################
