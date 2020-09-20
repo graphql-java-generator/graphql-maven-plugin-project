@@ -297,10 +297,25 @@ public class AddRelayConnections {
 		// Step 3: for fields of an interface that is marked with the @RelayConnection directive, checks that the
 		// implemented fields (that this: field if the same name in types that implement this interface) are also marked
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		fields.stream().forEach((f) -> {
-			if (f.getOwningType() instanceof InterfaceType) {
-			}
-		});
+		for (Field field : fields) {
+			if (field.getOwningType() instanceof InterfaceType) {
+				for (Field f : getInheritedFields(field)) {
+					boolean found = false;
+					for (AppliedDirective d : f.getAppliedDirectives()) {
+						if (d.getDirective().getName().equals("RelayConnection")) {
+							found = true;
+							break;
+						}
+					} // for(getAppliedDirectives)
+					if (!found) {
+						configuration.getLog().warn("The field " + f.getOwningType().getName() + "." + f.getName()
+								+ " implements (directly or indirectly) the " + field.getOwningType().getName() + "."
+								+ field.getName() + " field, but does not have the @RelayConnection directive");
+					} // if (!found)
+				} // for(getInheritedFields)
+			} // if
+		} // for(fields)
+
 		// throw new RuntimeException("not finished");
 	}
 

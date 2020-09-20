@@ -173,7 +173,8 @@ type AllFieldCasesInterfaceType implements AllFieldCasesInterface, WithID {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
-    friends: [Human!] @RelayConnection
+    # @RelayConnection should be but is not applied on the friends field (this allows the unit test that checks that a warning is correctly generated)
+    friends: [Human!] 
     oneWithIdSubType: AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype

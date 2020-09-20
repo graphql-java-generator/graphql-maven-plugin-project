@@ -97,7 +97,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
-	void test_addEdgeConnectionAndApplyNodeInterface() {
+	void test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField() {
 		// If a type's field is annotated by @RelayConnection, but this field is "inherited" from an interface, in which
 		// is not inherited by this directive, then an error should be thrown.
 		// Let's remove the @RelayConnection directive from the AllFieldCasesInterface.friends field, and check that
@@ -120,6 +120,26 @@ class AddRelayConnectionsTest {
 		assertTrue(errorMessage.contains("friends"));
 		assertTrue(errorMessage.contains(
 				"interface AllFieldCasesInterface, in which this field doesn't have the directive @RelayConnection applied"));
+	}
+
+	@Test
+	void test_addEdgeConnectionAndApplyNodeInterface_step3() {
+		// Preparation
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class);
+		Logger mockLogger = mock(Logger.class);
+		((MergeSchemaConfigurationTestHelper) configuration).log = mockLogger;
+		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
+
+		// Go, go, go
+		addRelayConnections.addEdgeConnectionAndApplyNodeInterface();
+
+		// Verification
+		verify(mockLogger).warn(argument.capture());
+		String warningMessage = argument.getValue();
+		assertTrue(warningMessage.contains("AllFieldCasesInterfaceType"));
+		assertTrue(warningMessage.contains("friends"));
+		assertTrue(warningMessage.contains(
+				"implements (directly or indirectly) the AllFieldCasesInterface.friends field, but does not have the @RelayConnection directive"));
 	}
 
 	@Test
