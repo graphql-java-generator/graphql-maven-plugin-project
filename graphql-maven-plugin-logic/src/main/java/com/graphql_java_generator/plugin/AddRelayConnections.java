@@ -355,7 +355,65 @@ public class AddRelayConnections {
 	}
 
 	void generateConnectionType(Type type) {
+		final String connectionTypeName = type.getName() + "Connection";
+		// The XxxEdge type should not already exist
+		Type xxxConnection = documentParser.getType(connectionTypeName, false);
+		if (xxxConnection != null) {
+			if (!(xxxConnection instanceof ObjectType)) {
+				// As ObjectType is a superclass of InterfaceType, xxxConnection is neither a GraphQL Object neither a
+				// GraphQL interface
+				throw new RuntimeException("The " + connectionTypeName
+						+ " already exist in the provided GraphQL schema. But it is not an Object, nor an interface.");
+			}
+			// The type exist, let's check if it is compliant with the Relay connection specification: it must contain
+			// at least the edges and the pageInfo fields.
+			if (xxxConnection.getFields().size() < 2) {
+				throw new RuntimeException("The " + connectionTypeName
+						+ " already exist in the provided GraphQL schema. But it is not compliant with the Relay connection specification: it should have at least the edges and the pageInfo fields");
+			}
+			boolean edgesFound = false;
+			boolean pageInfoFound = false;
+			for (Field f : xxxConnection.getFields()) {
+				switch (f.getName()) {
+				case "edges":
+					if (f.getType().getName().equals(type.getName() + "Edge") && !f.isMandatory() && f.isList()) {
+						// This field is compliant to the Relay specification
+						edgesFound = true;
+					}
+					break;
+				case "pageInfo":
+					if (f.getType().getName().equals("PageInfo") && f.isMandatory() && !f.isList()) {
+						// This field is compliant to the Relay specification
+						pageInfoFound = true;
+					}
+					break;
+				}
+			} // for
+			if (!edgesFound || !pageInfoFound) {
+				throw new RuntimeException("The " + connectionTypeName
+						+ " already exist in the provided GraphQL schema. But it is not compliant with the Relay connection specification: it must have at least these fields:"
+						+ " edged(not mandatory, list of the " + type.getName()
+						+ " type) and pageInfo (mandatory, PageInfo type) fields");
+			}
+		} else {
+			// Standard case: the XxxConnection type doesn't exist. Let's create it.
 
+			ObjectType xxxConnectionObject;
+			if (type instanceof InterfaceType) {
+				xxxConnectionObject = new InterfaceType(connectionTypeName, configuration.getPackageName());
+			} else {
+				xxxConnectionObject = new ObjectType(connectionTypeName, configuration.getPackageName());
+			}
+			documentParser.getObjectTypes().add(xxxConnectionObject);
+			documentParser.getTypes().put(connectionTypeName, xxxConnectionObject);
+
+			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName(type.getName() + "Edge").list(true)
+					.documentParser(documentParser).build();
+			xxxConnectionObject.getFields().add(edges);
+			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
+					.documentParser(documentParser).build();
+			xxxConnectionObject.getFields().add(pageInfo);
+		}
 	}
 
 	/**
@@ -372,8 +430,10 @@ public class AddRelayConnections {
 		Type xxxEdge = documentParser.getType(edgeTypeName, false);
 		if (xxxEdge != null) {
 			if (!(xxxEdge instanceof ObjectType)) {
+				// As ObjectType is a superclass of InterfaceType, xxxEdge is neither a GraphQL Object neither a GraphQL
+				// interface
 				throw new RuntimeException("The " + edgeTypeName
-						+ " already exist in the provided GraphQL schema. But it is not an Object.");
+						+ " already exist in the provided GraphQL schema. But it is not an Object, nor an interface.");
 			}
 			// The type exist, let's check if it is compliant with the Relay connection specification: it must contain
 			// at least the node and the cursor fields.
@@ -401,8 +461,8 @@ public class AddRelayConnections {
 			} // for
 			if (!nodeFound || !cursorFound) {
 				throw new RuntimeException("The " + edgeTypeName
-						+ " already exist in the provided GraphQL schema. But it is not compliant with the Relay connection specification: it must have at least the node (not mandatory, of the "
-						+ type.getName() + " type) and the cursor (mandatory, String) fields");
+						+ " already exist in the provided GraphQL schema. But it is not compliant with the Relay connection specification: it must have at least these two fields: node (not mandatory, of the "
+						+ type.getName() + " type) and cursor (mandatory, String)");
 			}
 		} else {
 			// Standard case: the XxxEdge type doesn't exist. Let's create it.

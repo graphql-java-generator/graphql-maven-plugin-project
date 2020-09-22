@@ -70,7 +70,48 @@ class AddRelayConnectionsTest {
 
 	@Test
 	void test_generateConnectionType() {
-		fail("not yet implemented");
+		// Preparation
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class);
+		Type sourceType;
+		String typename;
+		int nbTypesBefore;
+
+		//////////////////////////////////////////////////////////////////////////
+		// Standard case: the XxxConnection type doesn't exist in the source schema
+		typename = "AllFieldCasesInterfaceType";
+		sourceType = documentParser.getType(typename);
+		assertNull(documentParser.getType(typename + "Connection", false),
+				"The Connection type should not exist before the test");
+		nbTypesBefore = documentParser.getTypes().size();
+		//
+		addRelayConnections.generateConnectionType(sourceType);
+		// For the test to work properly, we need to also create the Edge type
+		addRelayConnections.generateEdgeType(sourceType);
+		//
+		assertEquals(nbTypesBefore + 2, documentParser.getTypes().size(),
+				"Two typse should have been created (Connection and Edge)");
+		checkConnectionForOneType(typename);
+
+		//////////////////////////////////////////////////////////////////////////
+		// Acceptable case: the XxxConnection type exists before, and is valid
+		nbTypesBefore = documentParser.getTypes().size();
+		//
+		addRelayConnections.generateConnectionType(sourceType);
+		//
+		assertEquals(nbTypesBefore, documentParser.getTypes().size(), "No new type should have been created");
+		checkConnectionForOneType(typename);
+
+		//////////////////////////////////////////////////////////////////////////
+		// Bad case: the XxxConnection type exists before, and is not valid
+		Type edgeType = documentParser.getType(typename + "Connection");
+		edgeType.getFields().remove(0); // Let's remove a field, so that the Connection type is not compliant any more
+										// with the relay spec
+		//
+		RuntimeException e = assertThrows(RuntimeException.class,
+				() -> addRelayConnections.generateConnectionType(sourceType));
+		//
+		assertTrue(e.getMessage().contains(typename + "Connection"));
+		assertTrue(e.getMessage().contains("is not compliant with the Relay connection specification"));
 	}
 
 	@Test
@@ -82,7 +123,7 @@ class AddRelayConnectionsTest {
 		int nbTypesBefore;
 
 		//////////////////////////////////////////////////////////////////////////
-		// Standard case: the XxxEdge type doesn't exist
+		// Standard case: the XxxEdge type doesn't exist in the source schema
 		typename = "AllFieldCasesInterfaceType";
 		sourceType = documentParser.getType(typename);
 		assertNull(documentParser.getType(typename + "Edge", false), "The Edge type should not exist before the test");
@@ -460,13 +501,13 @@ class AddRelayConnectionsTest {
 		assertEquals(2, connection.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-		checkField(connection, j++, "edges", true, true, false, typeName,
-				configuration.getPackageName() + "." + typeName, 0);
+		checkField(connection, j++, "edges", true, false, false, typeName + "Edge",
+				configuration.getPackageName() + "." + typeName + "Edge", 0);
 		checkField(connection, j++, "pageInfo", false, true, false, "PageInfo",
 				configuration.getPackageName() + ".PageInfo", 0);
 		//
-		assertEquals("id", connection.getIdentifier());
-		assertEquals(0, connection.getImplementz());
+		assertEquals(null, connection.getIdentifier());
+		assertEquals(0, connection.getImplementz().size());
 		assertEquals(0, connection.getMemberOfUnions().size());
 		assertEquals(null, connection.getRequestType());
 	}
