@@ -832,6 +832,7 @@ public abstract class DocumentParser {
 	 * @return
 	 * @throws RuntimeException
 	 *             if the type could not be found
+	 * @See {@link #getType(String, boolean)}
 	 */
 	public Type getType(String typeName) {
 		return getType(typeName, true);
@@ -846,7 +847,7 @@ public abstract class DocumentParser {
 	 *            found, null is returned.
 	 * @return The found type, or null if the type is not found and throwExceptionIfNotFound is false
 	 * @throws RuntimeException
-	 *             if the type could not be found and throwExceptionIfNotFound is true
+	 *             if <I>throwExceptionIfNotFound</I> is true and the type could not be found
 	 */
 	public Type getType(String typeName, boolean throwExceptionIfNotFound) {
 		Type ret = types.get(typeName);

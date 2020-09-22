@@ -4,7 +4,9 @@
 package com.graphql_java_generator.plugin;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +29,15 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
  * <UL>
  * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already defined in
  * the given schema, but is not compliant, then an error is thrown.</LI>
- * <LI>The <I>@RelayConnexion</I> directive definition in the GraphQL schema (if not already defined). If this is
+ * <LI>The <I>&#064;RelayConnection</I> directive definition in the GraphQL schema (if not already defined). If this is
  * already defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
  * <LI>The <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined in the
  * given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
- * <LI>All the Edge and Connection types in the GraphQL schema, for each type that is marked by the
- * <I>@RelayConnexion</I> directive.</LI>
+ * <LI>All the Edge and Connection types in the GraphQL schema, for each type of a field that is marked by the
+ * <I>&#064;RelayConnection</I> directive. If types with these names exist, and are not compliant with the Relay
+ * specification, then an error is thrown</LI>
+ * <LI>Each type of a field that is marked by the <I>&#064;RelayConnection</I> directive, is marked by the <I>Node</I>
+ * interface</I>
  * </UL>
  * 
  * @author etienne-sf
@@ -238,10 +243,14 @@ public class AddRelayConnections {
 		// @RelayConnection directive. If no, raise an error.
 		// Step 3: for fields of an interface that is marked with the @RelayConnection directive, checks that the
 		// implemented fields (that this: field if the same name in types that implement this interface) are also marked
-		// with the @RelayConnection directive
+		// with the @RelayConnection directive. If not, a warning is issued, but the field is still added to the list of
+		// fields that implements the @RelayConnection directive
 		// Step 4: Identify the list of types and interfaces for which the Edge and Connection and Node interface should
 		// be done.
 		// Step 5: Actually implement the edges, connections and mark these types/interfaces with the Node interface
+		// Step 6: Update every field that implements the RelayConnection and change its type by the relevant
+		// XxxConnection object. The list of field to update is: all fields marked by the @RelayConnection, or that
+		// implements a field that is marked by the directive (see step3)
 
 		List<Field> fields = new ArrayList<>();
 		int nbErrors = 0;
@@ -296,6 +305,8 @@ public class AddRelayConnections {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 3: for fields of an interface that is marked with the @RelayConnection directive, checks that the
 		// implemented fields (that this: field if the same name in types that implement this interface) are also marked
+		// with the @RelayConnection directive. If not, a warning is issued, but the field is still added to the list of
+		// fields that implements the @RelayConnection directive
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (Field field : fields) {
 			if (field.getOwningType() instanceof InterfaceType) {
@@ -316,7 +327,102 @@ public class AddRelayConnections {
 			} // if
 		} // for(fields)
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 4: Identify the list of types and interfaces for which the Edge and Connection and Node interface should
+		// be done.
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		Set<Type> connectionTypes = new HashSet<>();
+		for (Field f : fields) {
+			connectionTypes.add(f.getOwningType());
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 5: Actually implement the edges, connections and mark these types/interfaces with the Node interface
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		for (Type type : connectionTypes) {
+			// Add the Node interface to the implemented interface, if it's not already the case
+			if (0 == ((ObjectType) type).getImplementz().stream()
+					.filter((interfaceName) -> interfaceName.equals("Node")).count()) {
+				// This type doesn't implement the Node interface
+				((ObjectType) type).getImplementz().add("Node");
+			}
+
+			generateConnectionType(type);
+			generateEdgeType(type);
+		}
+
 		// throw new RuntimeException("not finished");
+	}
+
+	void generateConnectionType(Type type) {
+
+	}
+
+	/**
+	 * Adds the XxxEdge type for the given type into the current in-memory GraphQL model, according to the Relay
+	 * Connection specification.
+	 * 
+	 * @param type
+	 * @throws RuntimeException
+	 *             If the XxxEdge type already exists and is not compliant with the Relay Connection specification
+	 */
+	void generateEdgeType(Type type) {
+		final String edgeTypeName = type.getName() + "Edge";
+		// The XxxEdge type should not already exist
+		Type xxxEdge = documentParser.getType(edgeTypeName, false);
+		if (xxxEdge != null) {
+			if (!(xxxEdge instanceof ObjectType)) {
+				throw new RuntimeException("The " + edgeTypeName
+						+ " already exist in the provided GraphQL schema. But it is not an Object.");
+			}
+			// The type exist, let's check if it is compliant with the Relay connection specification: it must contain
+			// at least the node and the cursor fields.
+			if (xxxEdge.getFields().size() < 2) {
+				throw new RuntimeException("The " + edgeTypeName
+						+ " already exist in the provided GraphQL schema. But it is not compliant with the Relay connection specification: it should have at least the node and the cursor fields");
+			}
+			boolean nodeFound = false;
+			boolean cursorFound = false;
+			for (Field f : xxxEdge.getFields()) {
+				switch (f.getName()) {
+				case "node":
+					if (f.getType().getName().equals(type.getName()) && !f.isMandatory() && !f.isList()) {
+						// This field is compliant to the Relay specification
+						nodeFound = true;
+					}
+					break;
+				case "cursor":
+					if (f.getType().getName().equals("String") && f.isMandatory() && !f.isList()) {
+						// This field is compliant to the Relay specification
+						cursorFound = true;
+					}
+					break;
+				}
+			} // for
+			if (!nodeFound || !cursorFound) {
+				throw new RuntimeException("The " + edgeTypeName
+						+ " already exist in the provided GraphQL schema. But it is not compliant with the Relay connection specification: it must have at least the node (not mandatory, of the "
+						+ type.getName() + " type) and the cursor (mandatory, String) fields");
+			}
+		} else {
+			// Standard case: the XxxEdge type doesn't exist. Let's create it.
+
+			ObjectType xxxEdgeObject;
+			if (type instanceof InterfaceType) {
+				xxxEdgeObject = new InterfaceType(edgeTypeName, configuration.getPackageName());
+			} else {
+				xxxEdgeObject = new ObjectType(edgeTypeName, configuration.getPackageName());
+			}
+			documentParser.getObjectTypes().add(xxxEdgeObject);
+			documentParser.getTypes().put(edgeTypeName, xxxEdgeObject);
+
+			FieldImpl node = FieldImpl.builder().name("node").graphQLTypeName(type.getName())
+					.documentParser(documentParser).build();
+			xxxEdgeObject.getFields().add(node);
+			FieldImpl cursor = FieldImpl.builder().name("cursor").graphQLTypeName("String").mandatory(true)
+					.documentParser(documentParser).build();
+			xxxEdgeObject.getFields().add(cursor);
+		}
 	}
 
 	/**

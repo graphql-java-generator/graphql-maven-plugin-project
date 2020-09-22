@@ -88,9 +88,9 @@ public interface CommonConfiguration {
 	 * </P>
 	 * <P>
 	 * The plugin reads the GraphQL schema file(s), and enrich them with the interface and types needed to respect the
-	 * Relay Connection specification. The entry point for that is the <I>@RelayConnection</I> directive. It is specific
-	 * to this plugin. It can be added to any field, that is, typically: queries, mutations, interface's fields, type's
-	 * field. It must be declared in the given GraphQL schema file(s) like this:
+	 * Relay Connection specification. The entry point for that is the <I>&#064;RelayConnection</I> directive. It is
+	 * specific to this plugin. It can be added to any field, that is, typically: queries, mutations, interface's
+	 * fields, type's field. It must be declared in the given GraphQL schema file(s) like this:
 	 * </P>
 	 * 
 	 * <PRE>

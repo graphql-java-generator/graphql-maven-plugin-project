@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -65,6 +66,53 @@ class AddRelayConnectionsTest {
 
 		// Go, go, go
 		documentParser.parseDocuments();
+	}
+
+	@Test
+	void test_generateConnectionType() {
+		fail("not yet implemented");
+	}
+
+	@Test
+	void test_generateEdgeType() {
+		// Preparation
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class);
+		Type sourceType;
+		String typename;
+		int nbTypesBefore;
+
+		//////////////////////////////////////////////////////////////////////////
+		// Standard case: the XxxEdge type doesn't exist
+		typename = "AllFieldCasesInterfaceType";
+		sourceType = documentParser.getType(typename);
+		assertNull(documentParser.getType(typename + "Edge", false), "The Edge type should not exist before the test");
+		nbTypesBefore = documentParser.getTypes().size();
+		//
+		addRelayConnections.generateEdgeType(sourceType);
+		//
+		assertEquals(nbTypesBefore + 1, documentParser.getTypes().size(), "One type should have been created");
+		checkEdgeForOneType(typename);
+
+		//////////////////////////////////////////////////////////////////////////
+		// Acceptable case: the XxxEdge type exists before, and is valid
+		nbTypesBefore = documentParser.getTypes().size();
+		//
+		addRelayConnections.generateEdgeType(sourceType);
+		//
+		assertEquals(nbTypesBefore, documentParser.getTypes().size(), "No new type should have been created");
+		checkEdgeForOneType(typename);
+
+		//////////////////////////////////////////////////////////////////////////
+		// Bad case: the XxxEdge type exists before, and is not valid
+		Type edgeType = documentParser.getType(typename + "Edge");
+		edgeType.getFields().remove(0); // Let's remove a field, so that the Edge type is not compliant any more with
+										// the relay spec
+		//
+		RuntimeException e = assertThrows(RuntimeException.class,
+				() -> addRelayConnections.generateEdgeType(sourceType));
+		//
+		assertTrue(e.getMessage().contains(typename + "Edge"));
+		assertTrue(e.getMessage().contains("is not compliant with the Relay connection specification"));
 	}
 
 	@Test
@@ -351,15 +399,17 @@ class AddRelayConnectionsTest {
 	 * them correctly implements the Node interface
 	 */
 	private void checkNodeEdgeAndConnectionTypes() {
-		checkNodeEdgeAndConnectionForOneType("Character");
-		checkNodeEdgeAndConnectionForOneType("Human");
+		checkNodeInterfaceForOneType("Character");
+		checkEdgeForOneType("Character");
+		checkConnectionForOneType("Character");
+
+		checkNodeInterfaceForOneType("Human");
+		checkEdgeForOneType("Human");
+		checkConnectionForOneType("Human");
 	}
 
-	/**
-	 * This method checks for one base type, that it implements the Node interface, and its Edge and Connection types
-	 * have been correctly created.
-	 */
-	private void checkNodeEdgeAndConnectionForOneType(String typeName) {
+	/** This method checks for one base type, that it implements the Node interface */
+	private void checkNodeInterfaceForOneType(String typeName) {
 		assertTrue(documentParser.getType(typeName) instanceof ObjectType);
 		ObjectType baseType = (ObjectType) documentParser.getType(typeName);
 
@@ -372,8 +422,12 @@ class AddRelayConnectionsTest {
 			}
 		}
 		assertTrue(found, "We should have found the Node interface");
+	}
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////
+	/** This method checks for one base type, that its Edge type has been correctly created. */
+	private void checkEdgeForOneType(String typeName) {
+		assertTrue(documentParser.getType(typeName) instanceof ObjectType);
+
 		// The XxxEdge must have been created, and be compliant with the Relay specification
 		assertTrue(documentParser.getType(typeName + "Edge") instanceof ObjectType);
 		ObjectType edge = (ObjectType) documentParser.getType(typeName + "Edge");
@@ -387,12 +441,16 @@ class AddRelayConnectionsTest {
 				0);
 		checkField(edge, j++, "cursor", false, true, false, "String", "java.lang.String", 0);
 		//
-		assertEquals("id", edge.getIdentifier());
-		assertEquals(0, edge.getImplementz());
+		assertEquals(null, edge.getIdentifier());
+		assertEquals(0, edge.getImplementz().size());
 		assertEquals(0, edge.getMemberOfUnions().size());
 		assertEquals(null, edge.getRequestType());
+	}
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////
+	/** This method checks for one base type, that its Connection type has been correctly created. */
+	private void checkConnectionForOneType(String typeName) {
+		assertTrue(documentParser.getType(typeName) instanceof ObjectType);
+
 		// The XxxConnection must have been created, and be compliant with the Relay specification
 		assertTrue(documentParser.getType(typeName + "Connection") instanceof ObjectType);
 		ObjectType connection = (ObjectType) documentParser.getType(typeName + "Connection");
@@ -400,7 +458,7 @@ class AddRelayConnectionsTest {
 		assertEquals(0, connection.getAppliedDirectives().size());
 		//
 		assertEquals(2, connection.getFields().size());
-		j = 0;
+		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
 		checkField(connection, j++, "edges", true, true, false, typeName,
 				configuration.getPackageName() + "." + typeName, 0);
