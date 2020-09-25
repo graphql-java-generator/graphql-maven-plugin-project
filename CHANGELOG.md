@@ -5,6 +5,11 @@ New developments that use __graphql goal/task__ should use the parameters below,
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
+# Not released yet
+
+Server mode:
+* The generated code would not compile if a GraphQL interface is defined, but not used, in the given GraphQL schema
+
 # 1.9
 
 Both mode (client and server):

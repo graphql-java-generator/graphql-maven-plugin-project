@@ -77,11 +77,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = graphQLDocumentParser.parseDocuments();
 
 		// Verification
-		assertEquals(29, i, "Nb java files are generated");
+		assertEquals(30, i, "Nb java files are generated");
 		assertEquals(7, graphQLDocumentParser.directives.size(), "Nb directives");
 		assertEquals(19, graphQLDocumentParser.objectTypes.size(), "Nb objects");
 		assertEquals(4, graphQLDocumentParser.customScalars.size(), "Nb custom scalars");
-		assertEquals(4, graphQLDocumentParser.interfaceTypes.size(), "Nb interfaces");
+		assertEquals(5, graphQLDocumentParser.interfaceTypes.size(), "Nb interfaces");
 		assertEquals(3, graphQLDocumentParser.enumTypes.size(), "Nb enums");
 		assertNotNull(graphQLDocumentParser.queryType, "One query");
 		assertNotNull(graphQLDocumentParser.mutationType, "One mutation");
@@ -225,10 +225,12 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertTrue(objectType.getImplementz().contains("AnyCharacter"));// This is an union
 		//
 		InterfaceType interfaceType = (InterfaceType) graphQLDocumentParser.getType("WithID");
-		assertEquals(3, interfaceType.getImplementingTypes().size());
-		assertEquals("AllFieldCases", interfaceType.getImplementingTypes().get(0).getName());
-		assertEquals("Human", interfaceType.getImplementingTypes().get(1).getName());
-		assertEquals("Droid", interfaceType.getImplementingTypes().get(2).getName());
+		assertEquals(4, interfaceType.getImplementingTypes().size());
+		j = 0;
+		assertEquals("AllFieldCases", interfaceType.getImplementingTypes().get(j++).getName());
+		assertEquals("AllFieldCasesInterfaceType", interfaceType.getImplementingTypes().get(j++).getName());
+		assertEquals("Human", interfaceType.getImplementingTypes().get(j++).getName());
+		assertEquals("Droid", interfaceType.getImplementingTypes().get(j++).getName());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks of directive parsing
