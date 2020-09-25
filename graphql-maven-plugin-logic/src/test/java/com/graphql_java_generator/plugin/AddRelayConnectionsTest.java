@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.AppliedDirectiveImpl;
+import com.graphql_java_generator.plugin.language.impl.DirectiveImpl;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -189,10 +192,19 @@ class AddRelayConnectionsTest {
 	void test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField() {
 		// If a type's field is annotated by @RelayConnection, but this field is "inherited" from an interface, in which
 		// is not inherited by this directive, then an error should be thrown.
-		// Let's remove the @RelayConnection directive from the AllFieldCasesInterface.friends field, and check that
+		// Let's add the @RelayConnection directive to the AllFieldCasesInterfaceType.id field, and check that two
+		// errors are found (as id is in the AllFieldCasesInterface and the WithID interfaces)
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class);
-		FieldImpl f = (FieldImpl) getField("AllFieldCasesInterface", "friends");
+
+		DirectiveImpl dir = new DirectiveImpl();
+		dir.setName("RelayConnection");
+		dir.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
+		//
+		FieldImpl f = (FieldImpl) getField("AllFieldCasesInterfaceType", "id");
+		AppliedDirectiveImpl d = new AppliedDirectiveImpl();
+		d.setDirective(dir);
 		f.setAppliedDirectives(new ArrayList<>());
+		f.getAppliedDirectives().add(d);
 		Logger mockLogger = mock(Logger.class);
 		((MergeSchemaConfigurationTestHelper) configuration).log = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
@@ -202,13 +214,20 @@ class AddRelayConnectionsTest {
 				() -> addRelayConnections.addEdgeConnectionAndApplyNodeInterface());
 
 		// Verification
-		assertTrue(e.getMessage().contains("1 error(s) was(were) found"));
-		verify(mockLogger).error(argument.capture());
-		String errorMessage = argument.getValue();
-		assertTrue(errorMessage.contains("AllFieldCasesInterface"));
-		assertTrue(errorMessage.contains("friends"));
+		assertTrue(e.getMessage().contains("2 error(s) was(were) found"));
+		// First error
+		verify(mockLogger, times(2)).error(argument.capture());
+		String errorMessage = argument.getAllValues().get(0);
+		assertTrue(errorMessage.contains(" AllFieldCasesInterfaceType "));
+		assertTrue(errorMessage.contains(" id "));
 		assertTrue(errorMessage.contains(
 				"interface AllFieldCasesInterface, in which this field doesn't have the directive @RelayConnection applied"));
+		// Second error
+		errorMessage = argument.getAllValues().get(1);
+		assertTrue(errorMessage.contains(" AllFieldCasesInterfaceType "));
+		assertTrue(errorMessage.contains(" id "));
+		assertTrue(errorMessage
+				.contains("interface WithID, in which this field doesn't have the directive @RelayConnection applied"));
 	}
 
 	@Test
@@ -470,7 +489,8 @@ class AddRelayConnectionsTest {
 		assertTrue(documentParser.getType(typeName) instanceof ObjectType);
 
 		// The XxxEdge must have been created, and be compliant with the Relay specification
-		assertTrue(documentParser.getType(typeName + "Edge") instanceof ObjectType);
+		assertTrue(documentParser.getType(typeName + "Edge") instanceof ObjectType,
+				"The XxxEdge type must be a GraphQL Object (ObjectType) or a GraphQL interface (ObjectType is a superclass of InterfaceType)");
 		ObjectType edge = (ObjectType) documentParser.getType(typeName + "Edge");
 		assertEquals("", edge.getAnnotation());
 		assertEquals(0, edge.getAppliedDirectives().size());

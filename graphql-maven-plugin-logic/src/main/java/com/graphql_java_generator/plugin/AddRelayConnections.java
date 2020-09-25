@@ -331,15 +331,16 @@ public class AddRelayConnections {
 		// Step 4: Identify the list of types and interfaces for which the Edge and Connection and Node interface should
 		// be done.
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		Set<Type> connectionTypes = new HashSet<>();
+		Set<String> connectionTypeNames = new HashSet<>();
 		for (Field f : fields) {
-			connectionTypes.add(f.getOwningType());
+			connectionTypeNames.add(f.getGraphQLTypeName());
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 5: Actually implement the edges, connections and mark these types/interfaces with the Node interface
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		for (Type type : connectionTypes) {
+		for (String typeName : connectionTypeNames) {
+			Type type = documentParser.getType(typeName);
 			// Add the Node interface to the implemented interface, if it's not already the case
 			if (0 == ((ObjectType) type).getImplementz().stream()
 					.filter((interfaceName) -> interfaceName.equals("Node")).count()) {
@@ -401,10 +402,11 @@ public class AddRelayConnections {
 			ObjectType xxxConnectionObject;
 			if (type instanceof InterfaceType) {
 				xxxConnectionObject = new InterfaceType(connectionTypeName, configuration.getPackageName());
+				documentParser.getInterfaceTypes().add((InterfaceType) xxxConnectionObject);
 			} else {
 				xxxConnectionObject = new ObjectType(connectionTypeName, configuration.getPackageName());
+				documentParser.getObjectTypes().add(xxxConnectionObject);
 			}
-			documentParser.getObjectTypes().add(xxxConnectionObject);
 			documentParser.getTypes().put(connectionTypeName, xxxConnectionObject);
 
 			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName(type.getName() + "Edge").list(true)
@@ -470,10 +472,11 @@ public class AddRelayConnections {
 			ObjectType xxxEdgeObject;
 			if (type instanceof InterfaceType) {
 				xxxEdgeObject = new InterfaceType(edgeTypeName, configuration.getPackageName());
+				documentParser.getInterfaceTypes().add((InterfaceType) xxxEdgeObject);
 			} else {
 				xxxEdgeObject = new ObjectType(edgeTypeName, configuration.getPackageName());
+				documentParser.getObjectTypes().add(xxxEdgeObject);
 			}
-			documentParser.getObjectTypes().add(xxxEdgeObject);
 			documentParser.getTypes().put(edgeTypeName, xxxEdgeObject);
 
 			FieldImpl node = FieldImpl.builder().name("node").graphQLTypeName(type.getName())
