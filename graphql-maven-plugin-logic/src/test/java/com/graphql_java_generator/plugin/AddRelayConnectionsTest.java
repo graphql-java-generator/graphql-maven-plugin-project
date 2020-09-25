@@ -181,11 +181,13 @@ class AddRelayConnectionsTest {
 
 		// Type field that is not inherited from one interface
 		fields = addRelayConnections.getFieldInheritedFrom(getField("Human", "id"));
-		assertEquals(2, fields.size());
+		assertEquals(3, fields.size());
 		assertEquals("id", fields.get(0).getName());
 		assertEquals("Character", fields.get(0).getOwningType().getName());
 		assertEquals("id", fields.get(1).getName());
 		assertEquals("WithID", fields.get(1).getOwningType().getName());
+		assertEquals("id", fields.get(2).getName());
+		assertEquals("Node", fields.get(2).getOwningType().getName());
 	}
 
 	@Test
