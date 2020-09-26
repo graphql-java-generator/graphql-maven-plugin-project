@@ -244,8 +244,12 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("anotherTestDirective", graphQLDocumentParser.directives.get(i++).getName());
 
 		// On Scalar
-		checkDirectivesOnType(graphQLDocumentParser.getType("Date"), true, "on Scalar", null, null, null, null, null,
-				null, null, true);
+		assertEquals(0, graphQLDocumentParser.getType("Date").getAppliedDirectives().size(),
+				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
+		// The next test is deactivated, because of a bug in graphql-java v15.0. It should be restored, once the issue
+		// 2055 is solved
+		// checkDirectivesOnType(graphQLDocumentParser.getType("Date"), true, "on Scalar", null, null, null, null, null,
+		// null, null, true);
 		checkDirectivesOnType(graphQLDocumentParser.getType("Long"), false, null, null, null, null, null, null, null,
 				null, false);
 
@@ -253,15 +257,28 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Currently not managed (schema is not stored, and no java classes is generated afteward for the schema)
 
 		// On enum
-		checkDirectivesOnType(graphQLDocumentParser.getType("Episode"), true, "on Enum", "69", 666, (float) 666.666,
-				true, "00000000-0000-0000-0000-000000000002", null, "2001-02-28", false);
+		assertEquals(0, graphQLDocumentParser.getType("Episode").getAppliedDirectives().size(),
+				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
+		// The next test is deactivated, because of a bug in graphql-java v15.0. It should be restored, once the issue
+		// 2055 is solved
+		// checkDirectivesOnType(graphQLDocumentParser.getType("Episode"), true, "on Enum", "69", 666, (float) 666.666,
+		// true, "00000000-0000-0000-0000-000000000002", null, "2001-02-28", false);
 		checkDirectivesOnType(graphQLDocumentParser.getType("Unit"), false, null, null, null, null, null, null, null,
 				null, false);
+
 		// On enum item
-		checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", "-1",
-				true);
+		// The 3 below tests should be removed, and 3 next be uncommented, once the graphqm-java's issue 2055 is solved
+		checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "DOES_NOT_EXIST", false, "on Enum", "-1",
+				false);
 		checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "JEDI", false, null, null, false);
-		checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "EMPIRE", false, null, null, true);
+		checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "EMPIRE", false, null, null, false);
+		// The next 3 tests are deactivated, because of a bug in graphql-java v15.0. It should be restored, once the
+		// issue 2055 is solved
+		// checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", "-1",
+		// true);
+		// checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "JEDI", false, null, null, false);
+		// checkDirectivesOnEnumValue(graphQLDocumentParser.getType("Episode"), "EMPIRE", false, null, null, true);
+
 		// On interface
 		checkDirectivesOnType(graphQLDocumentParser.getType("WithID"), true, "on Interface", "666", null, null, null,
 				null, null, null, false);

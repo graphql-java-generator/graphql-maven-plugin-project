@@ -340,17 +340,17 @@
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java</artifactId>
-				<version>14.0</version>
+				<version>15.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
-				<version>2019-06-24T11-47-27-31ab4f9</version>
+				<version>2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-spring-webmvc</artifactId>
-				<version>2019-06-24T11-47-27-31ab4f9</version>
+				<version>2.0</version>
 			</dependency>
 			<dependency>
 				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->

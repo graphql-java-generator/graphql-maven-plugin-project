@@ -7,6 +7,9 @@ New developments that use __graphql goal/task__ should use the parameters below,
 
 # Not released yet
 
+Both mode (client and server):
+* Upgrade of graphql-java from v14.0 to v15.0
+
 Server mode:
 * The generated code would not compile if a GraphQL interface is defined, but not used, in the given GraphQL schema
 

@@ -1,4 +1,8 @@
-scalar Date @testDirective(value:"on Scalar") @anotherTestDirective
+scalar Date 
+	#@testDirective(value:"on Scalar") @anotherTestDirective 
+	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+	# (see issue 2055)
+
 scalar Long
 
 directive @RelayConnection
@@ -194,19 +198,31 @@ type AllFieldCasesWithoutIdSubtype {
 ################  STAR WARS SCHEMA  ##########################################################################
 ##############################################################################################################
 
-enum Episode @testDirective(
-		value: "on Enum", 
-		anotherValue: "69", 
-		anInt: 666, 
-		aFloat: 666.666, 
-		aBoolean: true, 
-		anID: "00000000-0000-0000-0000-000000000002", 
-		#anEnum: NEWHOPE, 
-		aCustomScalarDate: "2001-02-28") {
+enum Episode
+ 	# The directive can't be applied as it is used in a Directive definition. This doesn't work with graphql-java 15.0 (see issue 2055) 
+	#@testDirective(
+	#	value: "on Enum", 
+	#	anotherValue: "69", 
+	#	anInt: 666, 
+	#	aFloat: 666.666, 
+	#	aBoolean: true, 
+	#	anID: "00000000-0000-0000-0000-000000000002", 
+	#	anEnum: NEWHOPE, 
+	#	aCustomScalarDate: "2001-02-28"
+	#) 
+	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+	# (see issue 2055)
+{
     NEWHOPE
-    EMPIRE @anotherTestDirective
+    EMPIRE 
+    	#@anotherTestDirective 
+    	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+		# (see issue 2055)    
     JEDI
-    DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
+    DOES_NOT_EXIST  
+    	#@testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
+    	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+		# (see issue 2055)    
 }
 
 interface Character @testDirective(value:"on Character interface") @anotherTestDirective {
