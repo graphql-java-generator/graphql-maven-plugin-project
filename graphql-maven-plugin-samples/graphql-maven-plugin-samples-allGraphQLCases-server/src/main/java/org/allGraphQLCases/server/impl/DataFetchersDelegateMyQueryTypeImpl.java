@@ -276,4 +276,16 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Character connectionWithoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Human connectionOnHuman(DataFetchingEnvironment dataFetchingEnvironment, String planet, Episode episode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

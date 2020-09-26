@@ -161,9 +161,7 @@ public class GraphQLProvider {
 			// Let's link the interface types to the concrete types
 #end
 #foreach ($interface in $interfaces)
-#if ($interface.implementingTypes.size() >0)
 			.type("${interface.javaName}", typeWiring -> typeWiring.typeResolver(get${interface.javaName}Resolver()))
-#end
 #end
 #if ($unions.size() > 0)
 			//
@@ -176,14 +174,16 @@ public class GraphQLProvider {
 	}
 
 #foreach ($interface in $interfaces)
-#if ($interface.implementingTypes.size() >0)
 	private TypeResolver get${interface.javaName}Resolver() {
 		return new TypeResolver() {
 			@Override
 			public GraphQLObjectType getType(TypeResolutionEnvironment env) {
+#if ($interface.implementingTypes.size() == 0)
+## No implementing type.
+				return null;
+#else
 				Object javaObject = env.getObject();
 				String ret = null;
-
 #foreach ($implementingType in ${interface.implementingTypes})
 				if (javaObject instanceof ${implementingType.javaName}) {
 					ret = "${implementingType.javaName}";
@@ -194,11 +194,11 @@ public class GraphQLProvider {
 				}
 				logger.trace("Resolved type for javaObject {} is {}", javaObject.getClass().getName());
 				return env.getSchema().getObjectType(ret);
+#end
 			}
 		};
 	}
 
-#end
 #end
 #foreach ($union in $unions)
 private TypeResolver get${union.javaName}Resolver() {

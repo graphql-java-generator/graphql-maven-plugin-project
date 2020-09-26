@@ -1,6 +1,9 @@
 scalar Date @testDirective(value:"on Scalar") @anotherTestDirective
 scalar Long
 
+directive @RelayConnection
+on FIELD_DEFINITION
+
 schema @testDirective(value:"on Schema") {
 	#A comment on the query
     query: MyQueryType
@@ -48,6 +51,11 @@ type MyQueryType {
     # List is null if the directive is not present.
     directiveOnField: Character!
 
+    
+    ################################################################################
+    # queries to check the addRelayConnections capability
+    connectionWithoutParameters: Character @RelayConnection
+    connectionOnHuman(planet: String, episode: Episode): Human @RelayConnection
 }
 
 type AnotherMutationType {
@@ -69,6 +77,9 @@ interface Commented {
     comments: [String]
 }
 
+interface UnusedInterface {
+	aNonUSedField: String
+}
 
 ##############################################################################################################
 ################  ALL GRAPHQL CASES TEST CASES################################################################
@@ -134,7 +145,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
 
 # This interface is a clone of the AllFieldCases type. 
 # Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
-interface AllFieldCasesInterface {
+interface AllFieldCasesInterface  {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
@@ -144,7 +155,7 @@ interface AllFieldCasesInterface {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
-    friends: [Human!]
+    friends: [Human!] @RelayConnection
     oneWithIdSubType: AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
@@ -152,7 +163,7 @@ interface AllFieldCasesInterface {
 }
 
 # A concrete class that just implements the above interface
-type AllFieldCasesInterfaceType implements AllFieldCasesInterface {
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface, WithID {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
@@ -162,7 +173,8 @@ type AllFieldCasesInterfaceType implements AllFieldCasesInterface {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
-    friends: [Human!]
+    # @RelayConnection should be but is not applied on the friends field (this allows the unit test that checks that a warning is correctly generated)
+    friends: [Human!] 
     oneWithIdSubType: AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
