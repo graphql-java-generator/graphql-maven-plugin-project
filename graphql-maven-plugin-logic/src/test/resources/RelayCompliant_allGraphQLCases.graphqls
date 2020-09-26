@@ -1,0 +1,396 @@
+#
+# This schema is the allGraphQLCases schema, with the @RelayConnection used. But all the necessary types and interfaces are already done.
+# This allow to check the plugin behaviour against such a schema
+#
+
+
+scalar Date @testDirective(value:"on Scalar") @anotherTestDirective
+scalar Long
+
+directive @RelayConnection
+on FIELD_DEFINITION
+
+schema @testDirective(value:"on Schema") {
+	#A comment on the query
+    query: MyQueryType
+    mutation: AnotherMutationType
+    subscription: TheSubscriptionType
+}
+
+type MyQueryType {
+	withoutParameters: [Character]!
+    withOneOptionalParam(character: CharacterInput): Character
+    withOneMandatoryParam(character: CharacterInput!): Character
+    withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
+    withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num: Int = 45): Droid!
+    withEnum(episode: Episode! = NEWHOPE): Character
+    
+    ################################################################################
+    # withList return a list of Characters, matching the given list of CharacterInput.
+    # The name of the first Character returned is replaced by the given firstName.
+    # All ids are generated  
+    withList(firstName: String!, characters: [CharacterInput]!): [Character]
+
+    ################################################################################
+   	# Complementary tests with the AllFieldCases Object
+	allFieldCases(input: AllFieldCasesInput): AllFieldCases  
+	  
+    ################################################################################
+   	# Test for unions
+	unionTest(human1: HumanInput, human2: HumanInput, droid1: DroidInput, droid2: DroidInput): [AnyCharacter!]!    
+        
+    ################################################################################
+    # error always returns an error!  (used to check the error management)
+    error(errorLabel: String!): Character!
+    
+    # Check for GraphQL identifier that are java keywords
+    aBreak: break
+    
+    ################################################################################
+    # queries to check directive behavior
+    
+    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
+    # List is null if the directive is not present.
+    directiveOnQuery(uppercase: Boolean): [String]!
+
+    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
+    # List is null if the directive is not present.
+    directiveOnField: Character!
+
+    
+    ################################################################################
+    # queries to check the addRelayConnections capability
+    connectionWithoutParameters: Character @RelayConnection
+    connectionOnHuman(planet: String, episode: Episode): Human @RelayConnection
+}
+
+type AnotherMutationType {
+	createHuman(human: HumanInput!): Human!
+	createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
+}
+
+type TheSubscriptionType {
+	# Will be notified for each Human added to this Episode
+	subscribeNewHumanForEpisode(episode: Episode!): Human!
+}
+
+interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
+   id: ID!
+}
+
+interface Commented {
+	nbComments: Int
+    comments: [String]
+}
+
+interface UnusedInterface {
+	aNonUSedField: String
+}
+
+##############################################################################################################
+################  ALL GRAPHQL CASES TEST CASES################################################################
+##############################################################################################################
+
+
+input AllFieldCasesInput @testDirective(value:"on Input Type") {
+    id: ID! @testDirective(value:"on Input Field")
+    name: String!
+    forname: String
+    age: Long!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    withIdSubtype: [AllFieldCasesWithIdSubtypeInput!]
+    withoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]
+}
+
+input AllFieldCasesWithIdSubtypeInput {
+    id: ID!
+    name: String!
+}
+
+input FieldParameterInput {
+	uppercase: Boolean
+	date: Date
+}
+
+input AllFieldCasesWithoutIdSubtypeInput {
+    name: String!
+}
+
+enum Unit {
+    YEAR
+    MONTH
+    MINUTE
+}
+
+
+# This type is a clone of the InterfaceAllFieldCases interface. 
+# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherTestDirective {
+    id: ID! @testDirective(value:"on Field")
+    name: String!
+    forname(uppercase: Boolean @testDirective(value:"on Argument"), textToAppendToTheForname: String): String
+    age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
+    aFloat: Float
+    date: Date
+    dates: [Date]!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    friends: [Human!]
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+# This interface is a clone of the AllFieldCases type. 
+# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+interface AllFieldCasesInterface  {
+    id: ID!
+    name: String!
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    age: Long!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    friends: [Human!] @RelayConnection
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+# A concrete class that just implements the above interface
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface, WithID {
+    id: ID!
+    name: String!
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    age: Long!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    # @RelayConnection should be but is not applied on the friends field (this allows the unit test that checks that a warning is correctly generated)
+    friends: [Human!] 
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+type AllFieldCasesWithIdSubtype {
+    id: ID!
+    name: String!
+}
+
+type AllFieldCasesWithoutIdSubtype {
+    name: String!
+}
+
+##############################################################################################################
+################  STAR WARS SCHEMA  ##########################################################################
+##############################################################################################################
+
+enum Episode @testDirective(
+		value: "on Enum", 
+		anotherValue: "69", 
+		anInt: 666, 
+		aFloat: 666.666, 
+		aBoolean: true, 
+		anID: "00000000-0000-0000-0000-000000000002", 
+		#anEnum: NEWHOPE, 
+		aCustomScalarDate: "2001-02-28") {
+    NEWHOPE
+    EMPIRE @anotherTestDirective
+    JEDI
+    DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
+}
+
+interface Character @testDirective(value:"on Character interface") @anotherTestDirective implements Node {
+    id: ID!
+    name(uppercase: Boolean): String! @testDirective(value:"on interface field") @anotherTestDirective
+    friends: [Character]
+    appearsIn: [Episode]! @anotherTestDirective
+}
+
+
+union AnyCharacter @testDirective(value:"on Union")
+= Human | Droid
+
+
+
+type Human implements Character & Commented &  WithID & Node {
+    id: ID!
+    name(uppercase: Boolean): String!
+    bestFriend: Character
+    friends: [Character]
+	nbComments: Int
+    comments: [String]
+    appearsIn: [Episode]!
+    homePlanet: String
+}
+
+type Droid implements Character & WithID & Node {
+    id: ID!
+    name(uppercase: Boolean): String!
+    friends: [Character]
+    appearsIn: [Episode]!
+    primaryFunction: String
+}
+
+input DroidInput {
+    name: String!
+    friends: [CharacterInput]
+    appearsIn: [Episode]!
+    primaryFunction: String
+}
+
+# All the relay connection stuff
+
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+interface CharacterConnection {
+	edges: [CharacterEdge]
+	pageInfo: PageInfo!
+}
+
+type CharacterEdge {
+	cursor: String!
+	node: Character
+}
+
+type HumanConnection {
+	edges: [HumanEdge]
+	pageInfo: PageInfo!
+}
+
+interface HumanEdge {
+	cursor: String!
+	node: Human
+}
+
+##############################################################################################################
+#############  SOME DIRECTIVES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
+##############################################################################################################
+
+
+# A test directive, that can be added anywhere
+directive @testDirective(
+  value: String! = "A value to test default values"
+  anotherValue: String = null
+  anArray: [String!] = ["str1", "str2"]
+  anObject: CharacterInput = {name: "default name", appearsIn: [JEDI, NEWHOPE], type: "Human"}  
+  anInt: Int
+  aFloat: Float
+  aBoolean: Boolean
+  anID: ID
+  #anEnum: Episode = JEDI # not supported by graphql-java v14.0 on server side. It works Ok on client side
+  aCustomScalarDate: Date = "2000-12-31"
+) on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+# Another test directive, to check that two directives can be added
+directive @anotherTestDirective
+on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+
+##############################################################################################################
+############  SOME INPUT TYPES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
+##############################################################################################################
+
+input CharacterInput {
+    name: String!
+    friends: [CharacterInput]
+    appearsIn: [Episode]!
+    # type should be one of Human or Droid
+    type: String!
+} 
+input HumanInput {
+    name: String!
+    bestFriend: CharacterInput
+    friends: [CharacterInput]
+	nbComments: Int
+    comments: [String]
+    appearsIn: [Episode]!
+    homePlanet: String
+}
+
+##############################################################################################################
+##################  TEST ON COLLISION WITH JAVA KEYWORDS  ####################################################
+##############################################################################################################
+
+scalar else
+
+enum extends {
+	INT
+	DOUBLE
+	FLOAT
+	LONG
+}
+
+input class {
+	default: String
+}
+
+type break {
+	case(test: extends!, if: else): extends
+}
+
+##############################################################################################################
+###############   TEST CASE FOR ISSUES #######################################################################
+##############################################################################################################
+
+#############################
+# test for issue #35
+#
+# But removed from this GraphQL schema as enum values in Directives are not supported by graphql-java v14.0 on server side
+# It works Ok on client side
+#
+#directive @relation(
+#    name: String
+#    direction: direction
+#) on FIELD_DEFINITION
+#
+#enum direction {
+#    IN
+#    OUT
+#}
+#############################
+
+#############################
+# test for issue #36
+
+type TestExtScalar {
+bad: NonNegativeInt
+}
+
+scalar NonNegativeInt
+
+#############################
