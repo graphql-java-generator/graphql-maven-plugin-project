@@ -187,7 +187,12 @@ public class FieldImpl implements Field {
 		StringBuilder sb = new StringBuilder();
 
 		// Field's name
-		sb.append("Field {name: ").append(owningType.getName()).append(".").append(getName());
+		sb.append("Field {name: ");
+		// owningType is null for field parameters, directive arguments...
+		if (owningType != null) {
+			sb.append(owningType.getName()).append(".");
+		}
+		sb.append(getName());
 
 		// Field's type
 		sb.append(", type: ");
@@ -201,6 +206,7 @@ public class FieldImpl implements Field {
 				sb.append(",");
 			else
 				appendSeparator = true;
+			sb.append(param.getName()).append(":");
 			appendType(sb, this);
 		} // for
 		sb.append("]}");
