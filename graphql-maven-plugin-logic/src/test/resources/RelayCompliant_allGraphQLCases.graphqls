@@ -215,7 +215,7 @@ enum Episode @testDirective(
     DOES_NOT_EXIST  @testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
 }
 
-interface Character @testDirective(value:"on Character interface") @anotherTestDirective implements Node {
+interface Character implements Node @testDirective(value:"on Character interface") @anotherTestDirective {
     id: ID!
     name(uppercase: Boolean): String! @testDirective(value:"on interface field") @anotherTestDirective
     friends: [Character]
@@ -263,8 +263,8 @@ interface Node {
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
-  startCursor: String
-  endCursor: String
+  startCursor: String!
+  endCursor: String!
 }
 
 interface CharacterConnection {
@@ -273,8 +273,8 @@ interface CharacterConnection {
 }
 
 type CharacterEdge {
-	cursor: String!
 	node: Character
+	cursor: String!
 }
 
 type HumanConnection {
@@ -283,8 +283,8 @@ type HumanConnection {
 }
 
 interface HumanEdge {
-	cursor: String!
 	node: Human
+	cursor: String!
 }
 
 ##############################################################################################################

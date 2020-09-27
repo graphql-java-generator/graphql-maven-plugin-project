@@ -22,6 +22,10 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
 /**
  * This method add the relay capabilities into the GraphQL schema, as it has been read by {@link DocumentParser}. The
  * relay capabilities are specified in <A HREF="https://relay.dev/graphql/connections.htm">this doc</A>.<BR/>
+ * The implementation is largely based on this article:
+ * <A HREF="https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8">Intermediate
+ * Interfaces & Generic Utility Types in GraphQL</A>, which explains the choices in the GraphQL specifications, for
+ * interfaces that implements interface(s), especially when implementing the relay connection.<BR/>
  * This class will add the items described below in the currently read schema data. It is the possible to generate a
  * Java Really compatible code (by using the <I>graphql</I> goal/task), or to generate the Relay compatible GraphQL
  * schema (by using the <I>mergeSchema</I> task/goal). <BR/>
@@ -88,11 +92,11 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain exactly one field)");
 				}
-				if ("id".equals(i.getFields().get(0).getName())) {
+				if (!"id".equals(i.getFields().get(0).getName())) {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field)");
 				}
-				if ("ID".equals(i.getFields().get(0).getGraphQLTypeName())) {
+				if (!"ID".equals(i.getFields().get(0).getGraphQLTypeName())) {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, of the 'ID' type)");
 				}
@@ -183,45 +187,18 @@ public class AddRelayConnections {
 			checkField(pageInfo, "hasPreviousPage", false, false, true, false, "Boolean", 0);
 			checkField(pageInfo, "startCursor", false, false, true, false, "String", 0);
 			checkField(pageInfo, "endCursor", false, false, true, false, "String", 0);
-
-			if ("id".equals(pageInfo.getFields().get(0).getName())) {
-				throw new RuntimeException("The " + PAGE_INFO
-						+ " type already exists, but is not compliant with the Relay specification (it should contain only the 'id' field)");
-			}
-			if ("ID".equals(pageInfo.getFields().get(0).getGraphQLTypeName())) {
-				throw new RuntimeException("The " + PAGE_INFO
-						+ " type already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, of the 'ID' type)");
-			}
-			if (!pageInfo.getFields().get(0).isId()) {
-				throw new RuntimeException("The " + PAGE_INFO
-						+ " type already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is an identified)");
-			}
-			if (pageInfo.getFields().get(0).isList()) {
-				throw new RuntimeException("The " + PAGE_INFO
-						+ " type already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is not a list)");
-			}
-			if (!pageInfo.getFields().get(0).isMandatory()) {
-				throw new RuntimeException("The " + PAGE_INFO
-						+ " type already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is mandatory)");
-			}
-			if (pageInfo.getRequestType() != null) {
-				throw new RuntimeException("The " + PAGE_INFO
-						+ " type already exists, but is not compliant with the Relay specification (it should not be a query/mutation/subscription)");
-			}
-			if (pageInfo.isInputType()) {
-				throw new RuntimeException("The " + PAGE_INFO
-						+ " type already exists, but is not compliant with the Relay specification (it should not be an input type)");
-			}
 		}
 	}
 
 	/**
-	 * This method searches for all interface, then type fields that have been marked by the RelayConnection directive,
+	 * This method searches for all interfaces, then type fields that have been marked by the RelayConnection directive,
 	 * then, for each type, say <I>Xxx</I>:
 	 * <UL>
 	 * <LI>Creates the XxxEdge type</LI>
 	 * <LI>Creates the XxxConnection type</LI>
 	 * <LI>Add the <I>Node</I> interface as implemented by the Xxx type</LI>
+	 * <LI>Update each field that is marked with the <I>&#064;RelayConnection</I> interface, to change its type by the
+	 * TypeConnection type instead</I>
 	 * </UL>
 	 */
 	void addEdgeConnectionAndApplyNodeInterface() {
@@ -250,7 +227,8 @@ public class AddRelayConnections {
 		// Step 5: Actually implement the edges, connections and mark these types/interfaces with the Node interface
 		// Step 6: Update every field that implements the RelayConnection and change its type by the relevant
 		// XxxConnection object. The list of field to update is: all fields marked by the @RelayConnection, or that
-		// implements a field that is marked by the directive (see step3)
+		// implements a field that is marked by the directive (see step3). This @RelayConnection directive must also be
+		// removed from the final schema
 
 		List<Field> fields = new ArrayList<>();
 		int nbErrors = 0;
@@ -308,24 +286,34 @@ public class AddRelayConnections {
 		// with the @RelayConnection directive. If not, a warning is issued, but the field is still added to the list of
 		// fields that implements the @RelayConnection directive
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		List<Field> fieldsToAdd = new ArrayList<>();
 		for (Field field : fields) {
 			if (field.getOwningType() instanceof InterfaceType) {
-				for (Field f : getInheritedFields(field)) {
+				for (Field inheritedField : getInheritedFields(field)) {
 					boolean found = false;
-					for (AppliedDirective d : f.getAppliedDirectives()) {
+					for (AppliedDirective d : inheritedField.getAppliedDirectives()) {
 						if (d.getDirective().getName().equals("RelayConnection")) {
 							found = true;
 							break;
 						}
 					} // for(getAppliedDirectives)
+
 					if (!found) {
-						configuration.getLog().warn("The field " + f.getOwningType().getName() + "." + f.getName()
+						// We've found an object's field, inherited from an interface in which it is marked by the
+						// @RelayConnection directive. But this object's field is not marked with this directive. It's
+						// strange, but is generally Ok. So we display a warning. And we add this field to the list of
+						// field that must implement the relay connection.
+						configuration.getLog().warn("The field " + inheritedField.getOwningType().getName() + "." + inheritedField.getName()
 								+ " implements (directly or indirectly) the " + field.getOwningType().getName() + "."
 								+ field.getName() + " field, but does not have the @RelayConnection directive");
+						// As we may not update a list, while we're looping in it, we create another list, that we'll be
+						// added afterward.
+						fieldsToAdd.add(inheritedField);
 					} // if (!found)
 				} // for(getInheritedFields)
 			} // if
 		} // for(fields)
+		fields.addAll(fieldsToAdd);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 4: Identify the list of types and interfaces for which the Edge and Connection and Node interface should
@@ -352,7 +340,23 @@ public class AddRelayConnections {
 			generateEdgeType(type);
 		}
 
-		// throw new RuntimeException("not finished");
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 6: Update every field that implements the RelayConnection and change its type by the relevant
+		// XxxConnection object. The list of field to update is: all fields marked by the @RelayConnection, or that
+		// implements a field that is marked by the directive (see step3). This @RelayConnection directive must also be
+		// removed from the final schema.
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		for (Field f : fields) {
+			((FieldImpl) f).setGraphQLTypeName(f.getGraphQLTypeName() + "Connection");
+			// Let's remove the @RelayConnection directive from this field (it may not exist, for field inherited from
+			// an interface)
+			for (AppliedDirective d : f.getAppliedDirectives()) {
+				if (d.getDirective().getName().equals("RelayConnection")) {
+					f.getAppliedDirectives().remove(d);
+					break;
+				}
+			}
+		}
 	}
 
 	void generateConnectionType(Type type) {

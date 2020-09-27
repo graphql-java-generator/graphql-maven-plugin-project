@@ -38,7 +38,7 @@ import merge.mavenplugin_notscannedbyspring.AbstractSpringConfiguration;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCasesRelayConnection_Client_SpringConfiguration;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
 
-@Disabled
+//@Disabled
 @Execution(ExecutionMode.CONCURRENT)
 class AddRelayConnectionsTest {
 
@@ -333,17 +333,6 @@ class AddRelayConnectionsTest {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class);
 		// The Relay connection objects should exist before
-		checkRelayConnectionDirective();
-		checkNodeInterface();
-		checkPageInfoType();
-		checkNodeEdgeAndConnectionTypes();
-		assertThrows(AssertionFailedError.class, () -> checkRelayConnectionDirectiveHasBeenApplied(),
-				"the @RelayConnection is still to apply on field definitions of the query and of AllFieldCasesInterface");
-
-		// Go, go, go
-		addRelayConnections.addRelayConnections();
-
-		// Verification
 		checkRelayConnectionDirective();
 		checkNodeInterface();
 		checkPageInfoType();
