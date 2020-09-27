@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -286,12 +287,10 @@ class AddRelayConnectionsTest {
 				.filter((f) -> f.getOwningType().getName().equals("Droid") && f.getName().equals("id")).count());
 	}
 
-	@Disabled // Disabled, as graphql-java v14.0 (the current used version) doesn't accept interface that implements
-				// interface. This test should be enabled, once upgraded
 	@Test
 	void test_getFieldInheritedFrom_interfaceThatImplementsInterface() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, true);
 		Field f = getField("AllFieldCasesInterface", "id");
 
 		// Go, go, go
@@ -359,29 +358,161 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
-	void testAddRelayConnections_schemaWithWrongNode() {
-		fail("Not yet implemented");
+	void testAddRelayConnections_schemaWithWrongNodeInterface() {
+		// Preparation
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the Node interface compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		InterfaceType node = (InterfaceType) documentParser.getType("Node");
+		assertNotNull(node);
+		// Let's remove one field: the PageInfo type becomes non compliant with relay connection specifications
+		node.getFields().remove(0);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
+
+		// Verification
+		assertTrue(e.getMessage().contains(" Node "));
+	}
+
+	@Disabled
+	@Test
+	void testAddRelayConnections_schemaWithWrongEdgeInterface() {
+		// Preparation
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the Edge interface compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		InterfaceType edge = (InterfaceType) documentParser.getType("Edge");
+		assertNotNull(edge);
+		// Let's remove one field: the PageInfo type becomes non compliant with relay connection specifications
+		edge.getFields().remove(0);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
+
+		// Verification
+		assertTrue(e.getMessage().contains(" Edge "));
+	}
+
+	@Disabled
+	@Test
+	void testAddRelayConnections_schemaWithWrongConnectionInterface() {
+		// Preparation
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the Connection interface compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		InterfaceType connection = (InterfaceType) documentParser.getType("Connection");
+		assertNotNull(connection);
+		// Let's remove one field: the PageInfo type becomes non compliant with relay connection specifications
+		connection.getFields().remove(0);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
+
+		// Verification
+		assertTrue(e.getMessage().contains(" Connection "));
 	}
 
 	@Test
 	void testAddRelayConnections_schemaWithWrongPageInfo() {
-		fail("Not yet implemented");
+		// Preparation
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the PageInfo type compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		ObjectType pageInfo = (ObjectType) documentParser.getType("PageInfo");
+		assertNotNull(pageInfo);
+		// Let's remove one field: the PageInfo type becomes non compliant with relay connection specifications
+		pageInfo.getFields().remove(0);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
+
+		// Verification
+		assertTrue(e.getMessage().contains(" PageInfo "));
 	}
 
 	@Test
-	void testAddRelayConnections_schemaWithWrongEdge() {
-		fail("Not yet implemented");
+	void testAddRelayConnections_schemaWithWrongEdgeType() {
+		// Preparation
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the HumanEdge type compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		ObjectType humanEdge = (ObjectType) documentParser.getType("HumanEdge");
+		assertNotNull(humanEdge);
+		// Let's remove one field: the HumanConnection type becomes non compliant with relay connection specifications
+		humanEdge.getFields().remove(0);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
+
+		// Verification
+		assertTrue(e.getMessage().contains(" HumanEdge "));
 	}
 
 	@Test
-	void testAddRelayConnections_schemaWithWrongConnection() {
-		fail("Not yet implemented");
+	void testAddRelayConnections_schemaWithWrongConnectionType() {
+		// Preparation
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the HumanConnection type compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		ObjectType humanConnection = (ObjectType) documentParser.getType("HumanConnection");
+		assertNotNull(humanConnection);
+		// Let's remove one field: the HumanConnection type becomes non compliant with relay connection specifications
+		humanConnection.getFields().remove(0);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
+
+		// Verification
+		assertTrue(e.getMessage().contains(" HumanConnection "));
 	}
 
-	/** The <I>&#064;RelayConnection</I> directive may not be set on a field of an input type */
+	/**
+	 * The <I>&#064;RelayConnection</I> directive may not be set on a field of an input type. It's possible, as the
+	 * <I>&#064;RelayConnection</I> directive is defined in the input schema, so it can be badly defined
+	 */
 	@Test
 	void testAddRelayConnections_relayConnectionOnInputTypeField() {
-		fail("Not yet implemented");
+		// Preparation
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the Connection interface compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		DirectiveImpl dir = new DirectiveImpl();
+		dir.setName("RelayConnection");
+		dir.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
+		//
+		AppliedDirectiveImpl d = new AppliedDirectiveImpl();
+		d.setDirective(dir);
+		//
+		getField("AllFieldCasesInput", "name").getAppliedDirectives().add(d);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
+
+		// Verification
+		assertTrue(e.getMessage()
+				.contains("input type may not have fields to which the @RelayConnection directive is applied"));
 	}
 
 	private void checkRelayConnectionDirective() {

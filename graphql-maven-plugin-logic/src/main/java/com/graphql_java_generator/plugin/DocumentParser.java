@@ -567,6 +567,7 @@ public abstract class DocumentParser {
 	 * @param node
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	private ObjectType addObjectTypeDefinition(final ObjectType objectType, ObjectTypeDefinition node) {
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
@@ -574,9 +575,8 @@ public abstract class DocumentParser {
 		objectType.getFields().addAll(node.getFieldDefinitions().stream().map(def -> readField(def, objectType))
 				.collect(Collectors.toList()));
 
-		// Let's read all the other object types that this one implements
-		for (@SuppressWarnings("rawtypes")
-		graphql.language.Type type : node.getImplements()) {
+		// Let's read all the interfaces this object implements
+		for (graphql.language.Type type : node.getImplements()) {
 			if (type instanceof TypeName) {
 				objectType.getImplementz().add(((TypeName) type).getName());
 			} else if (type instanceof graphql.language.EnumValue) {
@@ -623,6 +623,7 @@ public abstract class DocumentParser {
 	 * @return
 	 * @see #initInterfaceAnnotations()
 	 */
+	@SuppressWarnings("rawtypes")
 	InterfaceType readInterfaceType(InterfaceTypeDefinition node) {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
@@ -634,6 +635,16 @@ public abstract class DocumentParser {
 		// Let's read all its fields
 		interfaceType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, interfaceType))
 				.collect(Collectors.toList()));
+
+		// Let's read all the interfaces that this one implements
+		for (graphql.language.Type type : node.getImplements()) {
+			if (type instanceof TypeName) {
+				interfaceType.getImplementz().add(((TypeName) type).getName());
+			} else {
+				throw new RuntimeException("Non managed object type '" + type.getClass().getName()
+						+ "' when listing implementations for the object '" + node.getName() + "'");
+			}
+		} // for
 
 		return interfaceType;
 	}

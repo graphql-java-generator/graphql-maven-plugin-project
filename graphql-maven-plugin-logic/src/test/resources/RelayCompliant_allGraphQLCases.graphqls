@@ -4,7 +4,7 @@
 #
 
 
-scalar Date @testDirective(value:"on Scalar") @anotherTestDirective
+scalar Date 
 scalar Long
 
 directive @RelayConnection
@@ -151,7 +151,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
 
 # This interface is a clone of the AllFieldCases type. 
 # Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
-interface AllFieldCasesInterface  {
+interface AllFieldCasesInterface implements WithID {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String
@@ -200,15 +200,7 @@ type AllFieldCasesWithoutIdSubtype {
 ################  STAR WARS SCHEMA  ##########################################################################
 ##############################################################################################################
 
-enum Episode @testDirective(
-		value: "on Enum", 
-		anotherValue: "69", 
-		anInt: 666, 
-		aFloat: 666.666, 
-		aBoolean: true, 
-		anID: "00000000-0000-0000-0000-000000000002", 
-		#anEnum: NEWHOPE, 
-		aCustomScalarDate: "2001-02-28") {
+enum Episode {
     NEWHOPE
     EMPIRE @anotherTestDirective
     JEDI
@@ -302,7 +294,7 @@ directive @testDirective(
   aFloat: Float
   aBoolean: Boolean
   anID: ID
-  #anEnum: Episode = JEDI # not supported by graphql-java v14.0 on server side. It works Ok on client side
+  anEnum: Episode = JEDI 
   aCustomScalarDate: Date = "2000-12-31"
 ) on
 # ExecutableDirectiveLocation

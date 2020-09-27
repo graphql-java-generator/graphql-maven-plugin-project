@@ -243,6 +243,15 @@ public class AddRelayConnections {
 						for (AppliedDirective d : f.getAppliedDirectives()) {
 							if (d.getDirective().getName().equals("RelayConnection")) {
 								// This Field has the @RelayConnection directive applied
+								//
+								// InputType may not have relay connection fields
+								if (((ObjectType) f.getOwningType()).isInputType()) {
+									throw new RuntimeException("The input type " + f.getOwningType().getName() + "."
+											+ f.getName()
+											+ " field has the @RelayConnection directive applied. But input type may not have fields to which the @RelayConnection directive is applied.");
+								}
+								//
+								// Everything is Ok. Let's go
 								fields.add(f);
 								break;
 							}
@@ -303,9 +312,11 @@ public class AddRelayConnections {
 						// @RelayConnection directive. But this object's field is not marked with this directive. It's
 						// strange, but is generally Ok. So we display a warning. And we add this field to the list of
 						// field that must implement the relay connection.
-						configuration.getLog().warn("The field " + inheritedField.getOwningType().getName() + "." + inheritedField.getName()
-								+ " implements (directly or indirectly) the " + field.getOwningType().getName() + "."
-								+ field.getName() + " field, but does not have the @RelayConnection directive");
+						configuration.getLog()
+								.warn("The field " + inheritedField.getOwningType().getName() + "."
+										+ inheritedField.getName() + " implements (directly or indirectly) the "
+										+ field.getOwningType().getName() + "." + field.getName()
+										+ " field, but does not have the @RelayConnection directive");
 						// As we may not update a list, while we're looping in it, we create another list, that we'll be
 						// added afterward.
 						fieldsToAdd.add(inheritedField);
