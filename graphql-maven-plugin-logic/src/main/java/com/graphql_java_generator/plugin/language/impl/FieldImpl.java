@@ -187,7 +187,7 @@ public class FieldImpl implements Field {
 		StringBuilder sb = new StringBuilder();
 
 		// Field's name
-		sb.append("Field {name: ").append(graphQLTypeName).append(".").append(getName());
+		sb.append("Field {name: ").append(owningType.getName()).append(".").append(getName());
 
 		// Field's type
 		sb.append(", type: ");
