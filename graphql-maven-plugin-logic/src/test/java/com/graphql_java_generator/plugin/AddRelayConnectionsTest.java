@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -39,7 +38,6 @@ import merge.mavenplugin_notscannedbyspring.AbstractSpringConfiguration;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCasesRelayConnection_Client_SpringConfiguration;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
 
-//@Disabled
 @Execution(ExecutionMode.CONCURRENT)
 class AddRelayConnectionsTest {
 
@@ -378,7 +376,6 @@ class AddRelayConnectionsTest {
 		assertTrue(e.getMessage().contains(" Node "));
 	}
 
-	@Disabled
 	@Test
 	void testAddRelayConnections_schemaWithWrongEdgeInterface() {
 		// Preparation
@@ -400,7 +397,6 @@ class AddRelayConnectionsTest {
 		assertTrue(e.getMessage().contains(" Edge "));
 	}
 
-	@Disabled
 	@Test
 	void testAddRelayConnections_schemaWithWrongConnectionInterface() {
 		// Preparation
@@ -652,6 +648,10 @@ class AddRelayConnectionsTest {
 		assertEquals("", edge.getAnnotation());
 		assertEquals(0, edge.getAppliedDirectives().size());
 		//
+		// According to https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8, it
+		// must implement the Edge interface
+		assertTrue(edge.getImplementz().contains("Edge"), typeName + "Edge must implement the Edge interface");
+		//
 		assertEquals(2, edge.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
@@ -660,7 +660,8 @@ class AddRelayConnectionsTest {
 		checkField(edge, j++, "cursor", false, true, false, "String", "java.lang.String", 0);
 		//
 		assertEquals(null, edge.getIdentifier());
-		assertEquals(0, edge.getImplementz().size());
+		assertEquals(1, edge.getImplementz().size());
+		assertTrue(edge.getImplementz().contains("Edge"));
 		assertEquals(0, edge.getMemberOfUnions().size());
 		assertEquals(null, edge.getRequestType());
 	}
@@ -675,6 +676,11 @@ class AddRelayConnectionsTest {
 		assertEquals("", connection.getAnnotation());
 		assertEquals(0, connection.getAppliedDirectives().size());
 		//
+		// According to https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8, it
+		// must implement the Connection interface
+		assertTrue(connection.getImplementz().contains("Connection"),
+				typeName + "Connection must implement the Connection interface");
+		//
 		assertEquals(2, connection.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
@@ -684,7 +690,8 @@ class AddRelayConnectionsTest {
 				configuration.getPackageName() + ".PageInfo", 0);
 		//
 		assertEquals(null, connection.getIdentifier());
-		assertEquals(0, connection.getImplementz().size());
+		assertEquals(1, connection.getImplementz().size());
+		assertTrue(connection.getImplementz().contains("Connection"));
 		assertEquals(0, connection.getMemberOfUnions().size());
 		assertEquals(null, connection.getRequestType());
 	}

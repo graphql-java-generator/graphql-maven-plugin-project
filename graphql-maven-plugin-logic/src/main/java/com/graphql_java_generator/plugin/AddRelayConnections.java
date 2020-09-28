@@ -62,20 +62,23 @@ public class AddRelayConnections {
 	/** The main entry point of the class. It is responsible for doing what's described in the class documentation */
 	public void addRelayConnections() {
 		addNodeInterface();
+		addEdgeInterface();
+		addConnectionInterface();
 		addPageInfoType();
 		addEdgeConnectionAndApplyNodeInterface();
 	}
 
 	/**
-	 * Adds the <I>Node</I> interface, as defined in the <A HREF="https://relay.dev/graphql/connections.htm">Relay
-	 * Connection specification</A>. If a <I>Node</I> interface already exists in the schema, it is checked to be
-	 * compliant to this specification. If not, an exception is thrown.
+	 * Adds the <I>Node</I> interfaces The <I>Node</I> is defined in the
+	 * <A HREF="https://relay.dev/graphql/connections.htm">Relay Connection specification</A>. If a <I>Node</I>
+	 * interface already exists in the schema, it is checked to be compliant to this specification. If not, an exception
+	 * is thrown.
 	 * 
 	 * @throws RuntimeException
 	 *             Thrown if a <I>Node</I> interface already exists, but is not compliant with the Relay Connection
 	 *             specification
 	 */
-	private void addNodeInterface() {
+	void addNodeInterface() {
 		final String NODE = "Node";
 		boolean found = false;
 		for (InterfaceType i : documentParser.getInterfaceTypes()) {
@@ -102,7 +105,7 @@ public class AddRelayConnections {
 				}
 				if (!i.getFields().get(0).isId()) {
 					throw new RuntimeException("The " + NODE
-							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is an identified)");
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is an identifier)");
 				}
 				if (i.getFields().get(0).isList()) {
 					throw new RuntimeException("The " + NODE
@@ -127,7 +130,14 @@ public class AddRelayConnections {
 		}
 
 		if (!found) {
-			// The standard case: the interface doesn't exist in the given schema(s). Let's define it.
+			// The interface Node has not been found. But this name can (and may not) be used for another type.
+			if (documentParser.getType(NODE, false) != null) {
+				throw new RuntimeException("A " + NODE + " type already exists. This prevents to create the " + NODE
+						+ " interface, as described in this article: https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8");
+
+			}
+
+			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			InterfaceType i = new InterfaceType(NODE, configuration.getPackageName());
 			// Adding the id field toe the Node interface
 			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(i)
@@ -141,6 +151,220 @@ public class AddRelayConnections {
 	}
 
 	/**
+	 * Adds the <I>Connection</I> interfaces. The <I>Connection</I> is described in the
+	 * <A HREF="https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8">generic
+	 * utility types</A>, that leads to allow that an interface implements an interface in the GraphQL specification.If
+	 * a <I>Connection</I> interface already exists in the schema, it is checked to be compliant to this specification.
+	 * If not, an exception is thrown.
+	 * 
+	 * @throws RuntimeException
+	 *             Thrown if a <I>Connection</I> interface already exists, but is not compliant with the above
+	 *             description
+	 */
+	void addConnectionInterface() {
+		final String CONNECTION = "Connection";
+		boolean found = false;
+		for (InterfaceType i : documentParser.getInterfaceTypes()) {
+			if (CONNECTION.equals(i.getName())) {
+				// We've found it.
+				found = true;
+
+				// Let's check its properties
+				if (i.getMemberOfUnions().size() != 0) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the specification (is is a member of unions)");
+				}
+				if (i.getRequestType() != null) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (it should not be a query/mutation/subscription)");
+				}
+				if (i.isInputType()) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (it should not be an input type)");
+				}
+				if (i.getFields().size() != 2) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the specification (it should contain exactly two fields)");
+				}
+				/////////////// The pageInfo field
+				int j = 0;
+				if (!"pageInfo".equals(i.getFields().get(j).getName())) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the first field should be the 'pageInfo' field)");
+				}
+				if (!"PageInfo".equals(i.getFields().get(j).getGraphQLTypeName())) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field must be of the 'PageInfo' type)");
+				}
+				if (i.getFields().get(j).isId()) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field may not be an identifier)");
+				}
+				if (i.getFields().get(j).isList()) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field may not be a list)");
+				}
+				if (!i.getFields().get(j).isMandatory()) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field must be mandatory)");
+				}
+				/////////////// The edges field
+				j += 1;
+				if (!"edges".equals(i.getFields().get(j).getName())) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the first field should be the 'edges' field)");
+				}
+				if (!"Edge".equals(i.getFields().get(j).getGraphQLTypeName())) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field must be of the 'PageInfo' type)");
+				}
+				if (i.getFields().get(j).isId()) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field may not be an identifier)");
+				}
+				if (!i.getFields().get(j).isList()) {
+					throw new RuntimeException("The " + CONNECTION
+							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field must be a list)");
+				}
+				// No constraint on the edges field, about mandatory
+
+				// Ok, this interface is compliant. We're done.
+				break;
+			}
+		}
+
+		if (!found) {
+			// The interface Connection has not been found. But this name can (and may not) be used for another type.
+			if (documentParser.getType(CONNECTION, false) != null) {
+				throw new RuntimeException("A " + CONNECTION + " type already exists. This prevents to create the "
+						+ CONNECTION
+						+ " interface, as described in this article: https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8");
+			}
+
+			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
+			InterfaceType i = new InterfaceType(CONNECTION, configuration.getPackageName());
+			// Adding the id field toe the Node interface
+			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
+					.owningType(i).build();
+			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName("Edge").list(true).owningType(i)
+					.build();
+			i.getFields().add(pageInfo);
+			i.getFields().add(edges);
+
+			documentParser.getInterfaceTypes().add(i);
+			documentParser.getTypes().put(CONNECTION, i);
+		}
+
+	}
+
+	/**
+	 * Adds the <I>Edge</I> interface. The <I>Edge</I> is defined in the
+	 * <A HREF="https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8">generic
+	 * utility types blog entry</A>, that leads to allow that an interface implements an interface in the GraphQL
+	 * specification.If an <I>Edge</I> interface already exists in the schema, it is checked to be compliant to this
+	 * specification. If not, an exception is thrown.
+	 * 
+	 * @throws RuntimeException
+	 *             Thrown if a <I>Edge</I> interface already exists, but is not compliant with the specification
+	 */
+	void addEdgeInterface() {
+		final String EDGE = "Edge";
+		boolean found = false;
+		for (InterfaceType i : documentParser.getInterfaceTypes()) {
+			if (EDGE.equals(i.getName())) {
+				// We've found it.
+				found = true;
+
+				// Let's check its properties
+				if (i.getMemberOfUnions().size() != 0) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (member of unions)");
+				}
+				if (i.getRequestType() != null) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (it should not be a query/mutation/subscription)");
+				}
+				if (i.isInputType()) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (it should not be an input type)");
+				}
+				if (i.getFields().size() != 2) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (it should contain exactly two fields)");
+				}
+				/////////////////////
+				// The cursor field
+				int j = 0;
+				if (!"cursor".equals(i.getFields().get(j).getName())) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the first field should be the 'cursor' field)");
+				}
+				if (!"String".equals(i.getFields().get(j).getGraphQLTypeName())) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should be a String field)");
+				}
+				if (i.getFields().get(j).isId()) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should not be an identifier)");
+				}
+				if (i.getFields().get(j).isList()) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should not be a list)");
+				}
+				if (!i.getFields().get(j).isMandatory()) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should be mandatory)");
+				}
+				/////////////////////
+				// The node field
+				j += 1;
+				if (!"node".equals(i.getFields().get(j).getName())) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the second field should be the 'node' field)");
+				}
+				if (!"Node".equals(i.getFields().get(j).getGraphQLTypeName())) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should be of type [Edge])");
+				}
+				if (i.getFields().get(j).isId()) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be an identifier)");
+				}
+				if (i.getFields().get(j).isList()) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be a list)");
+				}
+				if (i.getFields().get(j).isMandatory()) {
+					throw new RuntimeException("The " + EDGE
+							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be mandatory)");
+				}
+
+				// Ok, this interface is compliant. We're done.
+				break;
+			}
+		}
+
+		if (!found) {
+			// The interface Edge has not been found. But this name can (and may not) be used for another type.
+			if (documentParser.getType(EDGE, false) != null) {
+				throw new RuntimeException("A " + EDGE + " type already exists. This prevents to create the " + EDGE
+						+ " interface, as described in this article: https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8");
+			}
+
+			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
+			InterfaceType i = new InterfaceType(EDGE, configuration.getPackageName());
+			// Adding the id field toe the Node interface
+			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(i)
+					.build();
+			i.getFields().add(f);
+
+			documentParser.getInterfaceTypes().add(i);
+			documentParser.getTypes().put(EDGE, i);
+		}
+
+	}
+
+	/**
 	 * Adds the <I>PageInfo</I> type, as defined in the <A HREF="https://relay.dev/graphql/connections.htm">Relay
 	 * Connection specification</A>. If a <I>PageInfo</I> type already exists in the schema, it is checked to be
 	 * compliant to this specification. If not, an exception is thrown.
@@ -149,7 +373,7 @@ public class AddRelayConnections {
 	 *             Thrown if a <I>PageInfo</I> type already exists, but is not compliant with the Relay Connection
 	 *             specification
 	 */
-	private void addPageInfoType() {
+	void addPageInfoType() {
 		final String PAGE_INFO = "PageInfo";
 		Type o = documentParser.getType(PAGE_INFO, false);
 
@@ -430,6 +654,9 @@ public class AddRelayConnections {
 			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
 					.documentParser(documentParser).build();
 			xxxConnectionObject.getFields().add(pageInfo);
+
+			// The XxxConnection objects/interfaces must implement the Connection interface
+			xxxConnectionObject.getImplementz().add("Connection");
 		}
 	}
 
@@ -500,6 +727,9 @@ public class AddRelayConnections {
 			FieldImpl cursor = FieldImpl.builder().name("cursor").graphQLTypeName("String").mandatory(true)
 					.documentParser(documentParser).build();
 			xxxEdgeObject.getFields().add(cursor);
+
+			// The XxxEdge objects/interfaces must implement the Edge interface
+			xxxEdgeObject.getImplementz().add("Edge");
 		}
 	}
 

@@ -252,6 +252,16 @@ interface Node {
   id: ID!
 }
 
+interface Edge {
+  cursor: String!
+  node: Node
+}
+
+interface Connection {
+  pageInfo: PageInfo!
+  edges: [Edge]
+}
+
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
@@ -259,22 +269,22 @@ type PageInfo {
   endCursor: String!
 }
 
-interface CharacterConnection {
+interface CharacterConnection implements Connection {
 	edges: [CharacterEdge]
 	pageInfo: PageInfo!
 }
 
-type CharacterEdge {
+type CharacterEdge implements Edge {
 	node: Character
 	cursor: String!
 }
 
-type HumanConnection {
+type HumanConnection implements Connection {
 	edges: [HumanEdge]
 	pageInfo: PageInfo!
 }
 
-interface HumanEdge {
+interface HumanEdge implements Edge {
 	node: Human
 	cursor: String!
 }
