@@ -3,6 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * [WIP] Adding the relay connection capabilities (almost done).
+* Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
 * Optimize the build time of the plugin logic module 
 * Replace all the thrown RuntimeException by meaningfull exceptions
 * Rename the merge goal into mergeSchema goal (already named like that in gradle)
