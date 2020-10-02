@@ -7,6 +7,7 @@ Here are the next tasks listed, as a TODO list:
 * Optimize the build time of the plugin logic module 
 * Replace all the thrown RuntimeException by meaningfull exceptions
 * Rename the merge goal into mergeSchema goal (already named like that in gradle)
+* Make easier the way to define the target folder for unit test generated files
 * Move the packagePropery out of the common configuration
 * Make the task/goal names more homogeneous (graphql for maven versus graphqlGenerateCode for Gradle, merge is too generic?)
 * Allow to control the list of schema files, and their order (necessary to properly manage the extend keyword)
