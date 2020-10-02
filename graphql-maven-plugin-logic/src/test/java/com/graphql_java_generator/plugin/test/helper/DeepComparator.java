@@ -24,6 +24,10 @@ import com.graphql_java_generator.GraphqlUtils;
  * <UL>
  * <LI>Checks that a and b are of the same class</LI>
  * <LI>Compares each field of a to each field of b (the fields defined in their superclasses are also scanned):</LI>
+ * <LI>If the field is an id field, and a.id.equals(b.id), then a and b are considered as being the same. The comparison
+ * will check that there other attributes are equals, and if not these differences are registered as differences of the
+ * same object (with the key being the value of the id field, like the key in a Map). See
+ * {@link #addIdField(Class, String)} for more information on this</LI>
  * <LI>If the field is an ignored field, this field is skipped</LI>
  * <LI>If the field is of a basic type: use the equals method. All enums should be registered in the basic type
  * list.</LI>
@@ -65,6 +69,9 @@ public class DeepComparator implements Cloneable {
 	/** The list of objects that will be ignored during the comparison: all fields of this type are skipped. */
 	List<Class<?>> ignoredClasses = new ArrayList<>();
 
+	/** @see #addIdField(Class, String) */
+	Map<Class<?>, String> idFields = new HashMap<>();
+
 	/**
 	 * The list of fields that will be ignored, for each class. The key is the class. The value is the list of ignored
 	 * field names for this class. The ignored fields should contain all ignored fields for this class, including those
@@ -95,7 +102,18 @@ public class DeepComparator implements Cloneable {
 	Map<ExecutedComparison, List<Difference>> executedComparisons = new TreeMap<>();
 
 	public enum DifferenceType {
-		TYPE, VALUE, LIST_SIZE
+		/** This difference's type means that the two objects are not of the same class */
+		CLASS,
+		/**
+		 * This difference's type means that the two objects are of the same class, but:
+		 * <UL>
+		 * <LI>For Collection: there are differences in the content of the collection</LI>
+		 * <LI>For other objects: at leasts one attribute has a different value</LI>
+		 * </UL>
+		 */
+		VALUE,
+		/** This difference's type means that the two objects are collections, but not of the same size */
+		LIST_SIZE
 	}
 
 	public static class Difference {
@@ -120,6 +138,15 @@ public class DeepComparator implements Cloneable {
 		}
 	}
 
+	/**
+	 * This classes contains one pair of compared objects. When creating a new instance, with a couple of objects
+	 * (obj1,obj2), the {@link ExecutedComparison#o1} attribute receives the one of (obj1,obj2) which has the lower
+	 * identity hash code, and o2 the other. This allows to properly compare two instances of this class: it makes
+	 * equals instances that have been created by either <I>new ExecutedComparison(o1,o2)</I> or <I>new
+	 * ExecutedComparison(o2,o1)</I>.<BR/>
+	 * The only aim of this class, is to be the key of the {@link #executedComparisons} comparison map. Its objective is
+	 * to avoid to do two times the same comparison. One big gain here, is to avoid loops.
+	 */
 	static class ExecutedComparison implements Comparable<ExecutedComparison> {
 		Object o1;
 		Object o2;
@@ -136,15 +163,15 @@ public class DeepComparator implements Cloneable {
 			String id1 = Integer.toHexString(System.identityHashCode(o1));
 			String id2 = Integer.toHexString(System.identityHashCode(o2));
 			if (id1.compareTo(id2) > 0) {
-				this.id1 = id1;
-				this.id2 = id2;
 				this.o1 = o1;
+				this.id1 = id1;
 				this.o2 = o2;
+				this.id2 = id2;
 			} else {
-				this.id1 = id2;
-				this.id2 = id1;
 				this.o1 = o2;
+				this.id1 = id2;
 				this.o2 = o1;
+				this.id2 = id1;
 			}
 		}
 
@@ -338,7 +365,7 @@ public class DeepComparator implements Cloneable {
 
 		// They must be of the same type
 		if (o1.getClass() != o2.getClass()) {
-			return addDifference(null, path, DifferenceType.TYPE, o1, o2, null);
+			return addDifference(null, path, DifferenceType.CLASS, o1, o2, null);
 		}
 
 		// Should we really compare these two objects ?
@@ -572,8 +599,24 @@ public class DeepComparator implements Cloneable {
 
 		// Let's check the given class
 		if (!clazz.isInstance(o1)) {
-			throw new RuntimeException("The o1 object is an instance of " + o1.getClass()
+			throw new RuntimeException("[Internal Error] The o1 object is an instance of " + o1.getClass()
 					+ ", and is not an instance of the given class: " + clazz.getName());
+		}
+		if (!clazz.isInstance(o2)) {
+			throw new RuntimeException("[Internal Error] The o2 object is an instance of " + o2.getClass()
+					+ ", and is not an instance of the given class: " + clazz.getName());
+		}
+
+		// Does this class have an id field declared ?
+		String idField = idFields.get(clazz);
+		if (idField != null) {
+			Object val1 = graphqlUtils.invokeGetter(o1, idField);
+			Object val2 = graphqlUtils.invokeGetter(o2, idField);
+			if (compare(val1, val2)) {
+				// The id field are identical. We add this information in the current path, so that differences (if any)
+				// are seen as attribute in this same object.
+				path = path + "/" + clazz.getSimpleName() + "(" + idField + ":" + val1 + ")";
+			}
 		}
 
 		// Let's go through all fields declared in this class
@@ -707,6 +750,31 @@ public class DeepComparator implements Cloneable {
 	}
 
 	/**
+	 * Add an idField for a class. An idField is a field that identify an instance of a given class.Two objects with the
+	 * same value in their id field are same (for instance two persons of the same name), but may not be equals (other
+	 * attributes differ). This allows to trace differences in two objects that are the same.<BR/>
+	 * For classes that has such a field, the rules are :
+	 * <UL>
+	 * <LI>If the id field of the two instances are differents, generates a difference with the current difference's
+	 * path</LI>
+	 * <LI>If the id field of the two instances are equals, add /Xxx(idField:id) to the difference's path (where
+	 * <I>Xxx</I> is the classname, <I>idField</I> is name if the field/attribute that has been compared and <I>id</I>
+	 * is the value for this id field as a String), and loop for the other attributes</LI>
+	 * </UL>
+	 * 
+	 * When such a field is defined for a class, when compariring tw will be ignored, for each class. The key is the
+	 * class. The value is the list of ignored field names for this class. The ignored fields should contain all ignored
+	 * fields for this class, including those which are actually defined in its superclasses. This allow to choose if a
+	 * field is ignored or not per subclass (if there are two subclasses for one superclasse).
+	 * 
+	 * @param clazz
+	 * @param fieldName
+	 */
+	public void addIdField(Class<?> clazz, String fieldName) {
+		idFields.put(clazz, fieldName);
+	}
+
+	/**
 	 * Add a field of a class as ignored. That is: when comparing this class as an object, this field will be skipped.
 	 * 
 	 * @param clazz
@@ -753,6 +821,7 @@ public class DeepComparator implements Cloneable {
 		DeepComparator ret = new DeepComparator();
 		ret.basicClasses = basicClasses;
 		ret.ignoredClasses = ignoredClasses;
+		ret.idFields = idFields;
 		ret.ignoredFields = ignoredFields;
 		ret.specificComparisonRules = specificComparisonRules;
 		// The executedComparisons is not cloned: this allows to start a new comparison, with the same parameters.

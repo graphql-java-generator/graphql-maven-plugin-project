@@ -19,6 +19,8 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
@@ -30,6 +32,7 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator.ExecutedComp
  * 
  * @author etienne-sf
  */
+@Execution(ExecutionMode.CONCURRENT)
 class DeepComparatorTest {
 
 	DeepComparator deepComparator;
@@ -206,12 +209,12 @@ class DeepComparatorTest {
 	void test_twoClasses() {
 		List<Difference> differences;
 
-		differences = assertDiffType(1, 2L, 1, DeepComparator.DifferenceType.TYPE);
+		differences = assertDiffType(1, 2L, 1, DeepComparator.DifferenceType.CLASS);
 		assertEquals("", differences.get(0).path);
 		assertEquals(1, differences.get(0).value1);
 		assertEquals(2L, differences.get(0).value2);
 
-		differences = assertDiffType(1, "2", 1, DeepComparator.DifferenceType.TYPE);
+		differences = assertDiffType(1, "2", 1, DeepComparator.DifferenceType.CLASS);
 		assertEquals("", differences.get(0).path);
 		assertEquals(1, differences.get(0).value1);
 		assertEquals("2", differences.get(0).value2);
@@ -435,6 +438,36 @@ class DeepComparatorTest {
 		assertEquals("/comp/id", d.path);
 		assertEquals(o1.comp.id, d.value1);
 		assertEquals(o2.comp.id, d.value2);
+	}
+
+	@Test
+	void test_differencesObjects_withIdField() {
+		// Preparation
+		Difference d;
+		int i = 0;
+		// The if field of ComparisonObject is marked as id. So these objects should be matched, and as their attributes
+		// are different, the path for the found differences should be /ComparisonObject(id:1)
+		deepComparator.addIdField(ComparisonObject.class, "id");
+		ComparisonObject o1 = new ComparisonObject(1, "o1", 100L, "ignored 1");
+		ComparisonObject o1bis = new ComparisonObject(1, "o2", 200L, "ignored 2");
+
+		// Go, go, go
+		List<Difference> differences = deepComparator.differences(o1, o1bis, Integer.MAX_VALUE);
+
+		// Verification
+		assertEquals(2, differences.size());
+
+		d = differences.get(i++);
+		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
+		assertEquals("/ComparisonObject(id:1)/name", d.path);
+		assertEquals(o1.name, d.value1);
+		assertEquals(o1bis.name, d.value2);
+
+		d = differences.get(i++);
+		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
+		assertEquals("/ComparisonObject(id:1)/l", d.path);
+		assertEquals(o1.l, d.value1);
+		assertEquals(o1bis.l, d.value2);
 	}
 
 	@Test
