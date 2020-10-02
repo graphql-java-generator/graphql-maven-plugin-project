@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -120,6 +121,7 @@ class AddRelayConnectionsTest {
 		assertTrue(e.getMessage().contains("is not compliant with the Relay connection specification"));
 	}
 
+	@Disabled // Disabled until generic types are managed"
 	@Test
 	void test_generateEdgeType() {
 		// Preparation
@@ -323,6 +325,9 @@ class AddRelayConnectionsTest {
 		// Verification
 		checkRelayConnectionDirective();
 		checkNodeInterface();
+		// The Edge and Connection interfaces are not implemented yet
+		// checkEdgeInterface();
+		// checkConnectionInterface();
 		checkPageInfoType();
 		checkNodeEdgeAndConnectionTypes();
 		checkRelayConnectionDirectiveHasBeenApplied();
@@ -376,6 +381,7 @@ class AddRelayConnectionsTest {
 		assertTrue(e.getMessage().contains(" Node "));
 	}
 
+	@Disabled // Disabled until generic types are managed"
 	@Test
 	void testAddRelayConnections_schemaWithWrongEdgeInterface() {
 		// Preparation
@@ -397,6 +403,7 @@ class AddRelayConnectionsTest {
 		assertTrue(e.getMessage().contains(" Edge "));
 	}
 
+	@Disabled // Disabled until generic types are managed"
 	@Test
 	void testAddRelayConnections_schemaWithWrongConnectionInterface() {
 		// Preparation
@@ -555,6 +562,7 @@ class AddRelayConnectionsTest {
 				assertEquals(false, d.getFields().get(0).isItemMandatory(), "field is not a list");
 				assertEquals(false, d.getFields().get(0).isList(), "field is not a list");
 				assertEquals(true, d.getFields().get(0).isMandatory(), "field is mandatory");
+				assertEquals(documentParser, ((FieldImpl) d.getFields().get(0)).getDocumentParser());
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
 				assertEquals(false, d.isInputType(), "Not an input type");
 			}
@@ -562,6 +570,67 @@ class AddRelayConnectionsTest {
 
 		if (!found) {
 			fail("The interface " + NODE + " has not been found");
+		}
+	}
+
+	private void checkEdgeInterface() {
+		final String EDGE = "Edge";
+		boolean found = false;
+		for (InterfaceType d : documentParser.getInterfaceTypes()) {
+			if (EDGE.equals(d.getName())) {
+				// The interface should exist only once, so we may not already have found it.
+				if (found) {
+					fail("There are two interfaces with '" + EDGE + "' as a name");
+				}
+				// We've found it.
+				found = true;
+				// Let's check its properties
+				assertEquals(0, d.getMemberOfUnions().size(), "No unions");
+				assertEquals(2, d.getFields().size(), "Two fields");
+
+				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
+				int j = 0;
+				checkField(d, 0, "cursor", false, true, false, "String", "java.lang.String", 0);
+				checkField(d, 1, "node", false, false, false, "Node", configuration.getPackageName() + ".Node", 0);
+
+				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
+				assertEquals(false, d.isInputType(), "Not an input type");
+			}
+		}
+
+		if (!found) {
+			fail("The interface " + EDGE + " has not been found");
+		}
+	}
+
+	private void checkConnectionInterface() {
+		final String CONNECTION = "Connection";
+		boolean found = false;
+		for (InterfaceType d : documentParser.getInterfaceTypes()) {
+			if (CONNECTION.equals(d.getName())) {
+				// The interface should exist only once, so we may not already have found it.
+				if (found) {
+					fail("There are two interfaces with '" + CONNECTION + "' as a name");
+				}
+				// We've found it.
+				found = true;
+				// Let's check its properties
+				assertEquals(0, d.getMemberOfUnions().size(), "No unions");
+				assertEquals(2, d.getFields().size(), "Two fields");
+
+				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
+				int j = 0;
+				checkField(d, 0, "edges", true, false, false, "Edge", configuration.getPackageName() + ".Edge", 0);
+				checkField(d, 1, "pageInfo", false, true, false, "PageInfo",
+						configuration.getPackageName() + ".PageInfo", 0);
+
+				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
+				assertEquals(false, d.isInputType(), "Not an input type");
+			}
+		}
+
+		if (!found) {
+			fail("The interface " + CONNECTION + " has not been found");
 		}
 	}
 
@@ -649,8 +718,9 @@ class AddRelayConnectionsTest {
 		assertEquals(0, edge.getAppliedDirectives().size());
 		//
 		// According to https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8, it
-		// must implement the Edge interface
-		assertTrue(edge.getImplementz().contains("Edge"), typeName + "Edge must implement the Edge interface");
+		// must implement the Edge interface..
+		// Deactivated until generic types are managed
+		// assertTrue(edge.getImplementz().contains("Edge"), typeName + "Edge must implement the Edge interface");
 		//
 		assertEquals(2, edge.getFields().size());
 		int j = 0;
@@ -660,9 +730,11 @@ class AddRelayConnectionsTest {
 		checkField(edge, j++, "cursor", false, true, false, "String", "java.lang.String", 0);
 		//
 		assertEquals(null, edge.getIdentifier());
-		assertEquals(1, edge.getImplementz().size());
-		assertTrue(edge.getImplementz().contains("Edge"));
-		assertEquals(0, edge.getMemberOfUnions().size());
+		assertEquals(0, edge.getImplementz().size(), "0 until generic types are managed");
+		// Deactivated until generic types are managed
+		// assertTrue(edge.getImplementz().contains("Edge"));
+		// Deactivated until generic types are managed
+		// assertEquals(0, edge.getMemberOfUnions().size());
 		assertEquals(null, edge.getRequestType());
 	}
 
@@ -678,8 +750,9 @@ class AddRelayConnectionsTest {
 		//
 		// According to https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8, it
 		// must implement the Connection interface
-		assertTrue(connection.getImplementz().contains("Connection"),
-				typeName + "Connection must implement the Connection interface");
+		// Deactivated until generic types are managed
+		// assertTrue(connection.getImplementz().contains("Connection"),
+		// typeName + "Connection must implement the Connection interface");
 		//
 		assertEquals(2, connection.getFields().size());
 		int j = 0;
@@ -690,8 +763,9 @@ class AddRelayConnectionsTest {
 				configuration.getPackageName() + ".PageInfo", 0);
 		//
 		assertEquals(null, connection.getIdentifier());
-		assertEquals(1, connection.getImplementz().size());
-		assertTrue(connection.getImplementz().contains("Connection"));
+		assertEquals(0, connection.getImplementz().size(), "O until generic types are managed");
+		// Deactivated until generic types are managed
+		// assertTrue(connection.getImplementz().contains("Connection"));
 		assertEquals(0, connection.getMemberOfUnions().size());
 		assertEquals(null, connection.getRequestType());
 	}
@@ -702,6 +776,8 @@ class AddRelayConnectionsTest {
 		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
 
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
+		assertEquals(documentParser, ((FieldImpl) field).getDocumentParser());
+		assertNotNull(field.getOwningType());
 		assertEquals(list, field.isList(), "field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(mandatory, field.isMandatory(),
 				"field mandatory is " + mandatory + " (for " + fieldDescForJUnitMessage + ")");

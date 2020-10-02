@@ -11,7 +11,7 @@ Here are the next tasks listed, as a TODO list:
 * Make the task/goal names more homogeneous (graphql for maven versus graphqlGenerateCode for Gradle, merge is too generic?)
 * Allow to control the list of schema files, and their order (necessary to properly manage the extend keyword)
 * Add a description of the GraphQL mojo
-* Switch to graphql-java 15.0 (waiting for [issue 1844](https://github.com/graphql-java/graphql-java/issues/1844) to be solved)
+* Waiting for [issue 2055](https://github.com/graphql-java/graphql-java/issues/2055) to be solved. Some test cases can then be run again (see the allGraphQLCases.graphqls file)
 * Add the Tutorial for Subscription, on the Client side
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Analyze and response to issue #39 (@connection for relay)

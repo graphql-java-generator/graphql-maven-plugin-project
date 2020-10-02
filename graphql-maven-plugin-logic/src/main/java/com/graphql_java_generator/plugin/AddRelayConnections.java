@@ -22,10 +22,14 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
 /**
  * This method add the relay capabilities into the GraphQL schema, as it has been read by {@link DocumentParser}. The
  * relay capabilities are specified in <A HREF="https://relay.dev/graphql/connections.htm">this doc</A>.<BR/>
- * The implementation is largely based on this article:
+ * The implementation is the one described on the Relay website. It (currently) doesn't implement the <I>generic utility
+ * types</I>, as described in this article:
  * <A HREF="https://dev.to/mikemarcacci/intermediate-interfaces-generic-utility-types-in-graphql-50e8">Intermediate
  * Interfaces & Generic Utility Types in GraphQL</A>, which explains the choices in the GraphQL specifications, for
- * interfaces that implements interface(s), especially when implementing the relay connection.<BR/>
+ * interfaces that implements interface(s), especially when implementing the relay connection. The reason is that the
+ * capacity to "narrow" a field's type in a type inherited from an interface is not compatible with Java. So the Java
+ * implementation will need to use Java Generics, and probably some hint (directive) to properly generate the Java
+ * code.<BR/>
  * This class will add the items described below in the currently read schema data. It is the possible to generate a
  * Java Really compatible code (by using the <I>graphql</I> goal/task), or to generate the Relay compatible GraphQL
  * schema (by using the <I>mergeSchema</I> task/goal). <BR/>
@@ -62,8 +66,8 @@ public class AddRelayConnections {
 	/** The main entry point of the class. It is responsible for doing what's described in the class documentation */
 	public void addRelayConnections() {
 		addNodeInterface();
-		addEdgeInterface();
-		addConnectionInterface();
+		// addEdgeInterface();
+		// addConnectionInterface();
 		addPageInfoType();
 		addEdgeConnectionAndApplyNodeInterface();
 	}
@@ -141,7 +145,7 @@ public class AddRelayConnections {
 			InterfaceType i = new InterfaceType(NODE, configuration.getPackageName());
 			// Adding the id field toe the Node interface
 			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(i)
-					.build();
+					.documentParser(documentParser).build();
 			i.getFields().add(f);
 
 			documentParser.getInterfaceTypes().add(i);
@@ -244,12 +248,12 @@ public class AddRelayConnections {
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			InterfaceType i = new InterfaceType(CONNECTION, configuration.getPackageName());
 			// Adding the id field toe the Node interface
-			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
-					.owningType(i).build();
 			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName("Edge").list(true).owningType(i)
-					.build();
-			i.getFields().add(pageInfo);
+					.documentParser(documentParser).build();
+			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
+					.owningType(i).documentParser(documentParser).build();
 			i.getFields().add(edges);
+			i.getFields().add(pageInfo);
 
 			documentParser.getInterfaceTypes().add(i);
 			documentParser.getTypes().put(CONNECTION, i);
@@ -354,9 +358,12 @@ public class AddRelayConnections {
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			InterfaceType i = new InterfaceType(EDGE, configuration.getPackageName());
 			// Adding the id field toe the Node interface
-			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(i)
-					.build();
-			i.getFields().add(f);
+			FieldImpl cursor = FieldImpl.builder().name("cursor").graphQLTypeName("String").mandatory(true)
+					.owningType(i).documentParser(documentParser).build();
+			FieldImpl node = FieldImpl.builder().name("node").graphQLTypeName("Node").owningType(i)
+					.documentParser(documentParser).build();
+			i.getFields().add(cursor);
+			i.getFields().add(node);
 
 			documentParser.getInterfaceTypes().add(i);
 			documentParser.getTypes().put(EDGE, i);
@@ -649,14 +656,15 @@ public class AddRelayConnections {
 			documentParser.getTypes().put(connectionTypeName, xxxConnectionObject);
 
 			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName(type.getName() + "Edge").list(true)
-					.documentParser(documentParser).build();
+					.documentParser(documentParser).owningType(xxxConnectionObject).build();
 			xxxConnectionObject.getFields().add(edges);
 			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
-					.documentParser(documentParser).build();
+					.documentParser(documentParser).owningType(xxxConnectionObject).build();
 			xxxConnectionObject.getFields().add(pageInfo);
 
-			// The XxxConnection objects/interfaces must implement the Connection interface
-			xxxConnectionObject.getImplementz().add("Connection");
+			// The XxxConnection objects/interfaces will implement the Connection interface, once the Generic type are
+			// managed here.
+			// xxxConnectionObject.getImplementz().add("Connection");
 		}
 	}
 
@@ -722,14 +730,15 @@ public class AddRelayConnections {
 			documentParser.getTypes().put(edgeTypeName, xxxEdgeObject);
 
 			FieldImpl node = FieldImpl.builder().name("node").graphQLTypeName(type.getName())
-					.documentParser(documentParser).build();
+					.documentParser(documentParser).owningType(xxxEdgeObject).build();
 			xxxEdgeObject.getFields().add(node);
 			FieldImpl cursor = FieldImpl.builder().name("cursor").graphQLTypeName("String").mandatory(true)
-					.documentParser(documentParser).build();
+					.documentParser(documentParser).owningType(xxxEdgeObject).build();
 			xxxEdgeObject.getFields().add(cursor);
 
-			// The XxxEdge objects/interfaces must implement the Edge interface
-			xxxEdgeObject.getImplementz().add("Edge");
+			// The XxxEdge objects/interfaces must implement the Edge interface, once the Generic type are
+			// managed here.
+			// xxxEdgeObject.getImplementz().add("Edge");
 		}
 	}
 

@@ -252,15 +252,17 @@ interface Node {
   id: ID!
 }
 
-interface Edge {
-  cursor: String!
-  node: Node
-}
+# -> to uncomment, once the Generic type are managed here.
+# interface Edge {
+#   cursor: String!
+#   node: Node
+# }
 
-interface Connection {
-  pageInfo: PageInfo!
-  edges: [Edge]
-}
+# -> to uncomment, once the Generic type are managed here.
+# interface Connection {
+#   pageInfo: PageInfo!
+#   edges: [Edge]
+# }
 
 type PageInfo {
   hasNextPage: Boolean!
@@ -269,22 +271,26 @@ type PageInfo {
   endCursor: String!
 }
 
-interface CharacterConnection implements Connection {
+interface CharacterConnection #implements Connection  -> to uncomment, once the Generic type are managed here.
+{
 	edges: [CharacterEdge]
 	pageInfo: PageInfo!
 }
 
-type CharacterEdge implements Edge {
+type CharacterEdge #implements Edge -> to uncomment, once the Generic type are managed here.
+{
 	node: Character
 	cursor: String!
 }
 
-type HumanConnection implements Connection {
+type HumanConnection #implements Connection -> to uncomment, once the Generic type are managed here. 
+{
 	edges: [HumanEdge]
 	pageInfo: PageInfo!
 }
 
-interface HumanEdge implements Edge {
+interface HumanEdge #implements Edge  -> to uncomment, once the Generic type are managed here.
+{
 	node: Human
 	cursor: String!
 }

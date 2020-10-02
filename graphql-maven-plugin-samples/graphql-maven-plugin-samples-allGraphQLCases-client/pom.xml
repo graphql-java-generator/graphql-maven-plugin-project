@@ -25,6 +25,10 @@
 							<goal>merge</goal>
 						</goals>
 						<configuration>
+							<!-- addRelayConnections will generate all the Relay Connection stuff (Node, Edge and Connection interfaces, and creating 
+								the XxxEdge and XxxConnection interfaces or objects), for fields marked with the @RelatConnection directive. See the documentation 
+								for more information -->
+							<addRelayConnections>true</addRelayConnections>
 							<schemaFileFolder>${basedir}/src/graphqls/</schemaFileFolder>
 							<targetFolder>${basedir}/target/generated-resources/graphql-merge</targetFolder>
 							<targetSchemaFileName>merged_schemas.graphqls</targetSchemaFileName>

@@ -47,9 +47,10 @@ public abstract class AbstractSpringConfiguration {
 	@Setter
 	private String schemaFileSubFolder;
 
-	private PluginMode mode;
-	private String schemaPersonalizationFilename = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
-	private List<CustomScalarDefinition> customScalars = null;
+	protected boolean addRelayConnections = false;
+	protected PluginMode mode;
+	protected String schemaPersonalizationFilename = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
+	protected List<CustomScalarDefinition> customScalars = null;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -86,6 +87,7 @@ public abstract class AbstractSpringConfiguration {
 		int firstDollar = classname.indexOf('$');
 		configuration.packageName = BASE_PACKAGE + "." + classname.substring(0, firstDollar).toLowerCase();
 
+		configuration.addRelayConnections = this.addRelayConnections;
 		configuration.customScalars = customScalars;
 		configuration.mode = mode;
 		configuration.schemaFilePattern = schemaFilePattern;
