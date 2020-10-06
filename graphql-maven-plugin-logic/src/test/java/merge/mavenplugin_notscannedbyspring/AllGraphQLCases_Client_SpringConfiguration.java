@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
 /**
- * The Spring configuration used for JUnit tests
+ * The Spring configuration used for JUnit tests.
  * 
  * @author etienne-sf
  */
@@ -21,6 +21,6 @@ import org.springframework.context.annotation.FilterType;
 public class AllGraphQLCases_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public AllGraphQLCases_Client_SpringConfiguration() {
-		super("src/test/resources", "allGraphQLCases*.graphqls", "allGraphQLCases.graphqls", "allGraphQLCases");
+		super("src/test/resources", "allGraphQLCases*.graphqls", "allGraphQLCases.graphqls", "allGraphQLCases", false);
 	}
 }

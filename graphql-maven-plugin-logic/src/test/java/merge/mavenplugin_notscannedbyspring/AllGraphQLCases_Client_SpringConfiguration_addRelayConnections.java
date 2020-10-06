@@ -18,10 +18,10 @@ import org.springframework.context.annotation.FilterType;
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
-public class AllGraphQLCasesRelayConnection_Client_SpringConfiguration extends AbstractSpringConfiguration {
+public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections extends AbstractSpringConfiguration {
 
-	public AllGraphQLCasesRelayConnection_Client_SpringConfiguration() {
-		super("src/test/resources", "RelayCompliant_allGraphQLCases*.graphqls",
-				"RelayCompliant_allGraphQLCases.graphqls", "allGraphQLCases", false);
+	public AllGraphQLCases_Client_SpringConfiguration_addRelayConnections() {
+		super("src/test/resources", "allGraphQLCases*.graphqls", "allGraphQLCases.graphqls",
+				"allGraphQLCases_addRelayConnections", true);
 	}
 }

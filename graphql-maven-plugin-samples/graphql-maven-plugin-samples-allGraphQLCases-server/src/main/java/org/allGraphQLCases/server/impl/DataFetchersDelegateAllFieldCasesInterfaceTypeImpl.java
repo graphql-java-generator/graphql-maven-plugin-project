@@ -14,6 +14,7 @@ import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCasesInterfaceType
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.HumanConnection;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +60,7 @@ public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 	}
 
 	@Override
-	public List<Human> friends(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInterfaceType source) {
+	public HumanConnection friends(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInterfaceType source) {
 		Human human = new Human();
 		human.setId(UUID.randomUUID());
 		human.setName("a name");

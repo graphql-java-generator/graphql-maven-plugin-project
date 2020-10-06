@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -27,14 +29,17 @@ import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTes
 
 import graphql.language.Document;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
+import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration_addRelayConnections;
 import merge.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 import merge.mavenplugin_notscannedbyspring.GeneratedAllGraphQLCases_Client_SpringConfiguration;
+import merge.mavenplugin_notscannedbyspring.GeneratedAllGraphQLCases_Client_SpringConfiguration_addRelayConnections;
 import merge.mavenplugin_notscannedbyspring.GeneratedForum_Client_SpringConfiguration;
 
 /**
  * 
  * @author etienne-sf
  */
+@Execution(ExecutionMode.CONCURRENT)
 class MergeTest {
 
 	/** The logger for this instance */
@@ -55,6 +60,11 @@ class MergeTest {
 		deepComparator.addIgnoredClass(Document.class);
 		deepComparator.addIgnoredClass(MergeSchemaConfigurationTestHelper.class);
 		deepComparator.addIgnoredClass(GraphqlUtils.class);
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
+		deepComparator.addIdField(ObjectType.class, "name");
+		Ajotuer les autres
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
@@ -102,15 +112,22 @@ class MergeTest {
 	@Test
 	void testGenerateRelaySchema_allGraphQLCases() throws IOException {
 		executeGenerateRelaySchemaTest(AllGraphQLCases_Client_SpringConfiguration.class,
-				GeneratedAllGraphQLCases_Client_SpringConfiguration.class, "generateRelaySchema for forum.graphqls");
+				GeneratedAllGraphQLCases_Client_SpringConfiguration.class,
+				"mergeSchema for allGraphQLCases.graphqls (addRelayConnections=false)");
 
+	}
+
+	@Test
+	void testGenerateRelaySchema_allGraphQLCases_addRelayConnections() throws IOException {
+		executeGenerateRelaySchemaTest(AllGraphQLCases_Client_SpringConfiguration_addRelayConnections.class,
+				GeneratedAllGraphQLCases_Client_SpringConfiguration_addRelayConnections.class,
+				"mergeSchema for allGraphQLCases.graphqls (addRelayConnections=true)");
 	}
 
 	@Test
 	void testGenerateRelaySchema_forum() throws IOException {
 		executeGenerateRelaySchemaTest(Forum_Client_SpringConfiguration.class,
-				GeneratedForum_Client_SpringConfiguration.class, "generateRelaySchema for forum.graphqls");
-
+				GeneratedForum_Client_SpringConfiguration.class, "mergeSchema for forum.graphqls");
 	}
 
 	/**
@@ -136,10 +153,10 @@ class MergeTest {
 			String test) {
 		// Go, go, go
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
-		Merge generateRelaySchema = ctx.getBean(Merge.class);
-		MergeDocumentParser sourceDocumentParser = generateRelaySchema.documentParser;
+		Merge sourceRelaySchema = ctx.getBean(Merge.class);
+		MergeDocumentParser sourceDocumentParser = sourceRelaySchema.documentParser;
 		sourceDocumentParser.parseDocuments();
-		generateRelaySchema.generateGraphQLSchema();
+		sourceRelaySchema.generateGraphQLSchema();
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 		ctx.close();
@@ -150,7 +167,9 @@ class MergeTest {
 		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 		//
 		MergeDocumentParser generatedDocumentParser = ctx.getBean(MergeDocumentParser.class);
+		Merge generatedRelaySchema = ctx.getBean(Merge.class);
 		generatedDocumentParser.parseDocuments();
+		generatedRelaySchema.generateGraphQLSchema();
 		//
 		ctx.close();
 

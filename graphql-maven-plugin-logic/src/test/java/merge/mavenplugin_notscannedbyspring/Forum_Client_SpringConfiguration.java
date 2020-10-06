@@ -21,6 +21,6 @@ import org.springframework.context.annotation.FilterType;
 public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public Forum_Client_SpringConfiguration() {
-		super("src/test/resources", "forum.graphqls", "forum.graphqls", "forum");
+		super("src/test/resources", "forum.graphqls", "forum.graphqls", "forum", false);
 	}
 }

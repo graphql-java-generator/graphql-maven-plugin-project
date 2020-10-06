@@ -22,6 +22,6 @@ public class GeneratedAllGraphQLCases_Client_SpringConfiguration extends Abstrac
 
 	public GeneratedAllGraphQLCases_Client_SpringConfiguration() {
 		super(ROOT_UNIT_TEST_FOLDER + "allGraphQLCases", "allGraphQLCases.graphqls", "allGraphQLCases.graphqls",
-				"allGraphQLCases/regenerate");
+				"allGraphQLCases/regenerate", false);
 	}
 }

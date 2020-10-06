@@ -21,6 +21,6 @@ import org.springframework.context.annotation.FilterType;
 public class GeneratedForum_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public GeneratedForum_Client_SpringConfiguration() {
-		super(ROOT_UNIT_TEST_FOLDER + "forum", "forum.graphqls", "forum.graphqls", "forum/regenerate");
+		super(ROOT_UNIT_TEST_FOLDER + "forum", "forum.graphqls", "forum.graphqls", "forum/regenerate", false);
 	}
 }

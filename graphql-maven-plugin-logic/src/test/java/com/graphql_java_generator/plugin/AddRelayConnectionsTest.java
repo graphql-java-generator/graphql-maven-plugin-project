@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import com.graphql_java_generator.plugin.language.impl.DirectiveImpl;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTestHelper;
 
 import merge.mavenplugin_notscannedbyspring.AbstractSpringConfiguration;
@@ -46,6 +48,8 @@ class AddRelayConnectionsTest {
 	MergeDocumentParser documentParser = null;
 	AddRelayConnections addRelayConnections = null;
 	CommonConfiguration configuration;
+
+	MavenTestHelper mavenTestHelper = new MavenTestHelper();
 
 	@BeforeEach
 	void setup() {
@@ -61,9 +65,15 @@ class AddRelayConnectionsTest {
 	}
 
 	private void loadSpringContext(Class<? extends AbstractSpringConfiguration> configurationClass,
-			boolean executeParseDocuments) {
+			String targetFolderName, boolean executeParseDocuments) {
 		ctx = new AnnotationConfigApplicationContext(configurationClass);
-		((MergeSchemaConfigurationTestHelper) ctx.getBean(MergeSchemaConfiguration.class)).addRelayConnections = true;
+
+		MergeSchemaConfigurationTestHelper conf = ((MergeSchemaConfigurationTestHelper) ctx
+				.getBean(MergeSchemaConfiguration.class));
+		conf.addRelayConnections = true;
+		conf.targetFolder = new File(mavenTestHelper.getModulePathFile(),
+				"target/junittest_AddRelayConnectionsTest/" + targetFolderName);
+
 		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 		documentParser = ctx.getBean(MergeDocumentParser.class);
 		addRelayConnections = ctx.getBean(AddRelayConnections.class);
@@ -78,7 +88,7 @@ class AddRelayConnectionsTest {
 	@Test
 	void test_generateConnectionType() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_generateConnectionType", true);
 		Type sourceType;
 		String typename;
 		int nbTypesBefore;
@@ -125,7 +135,7 @@ class AddRelayConnectionsTest {
 	@Test
 	void test_generateEdgeType() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_generateEdgeType", true);
 		Type sourceType;
 		String typename;
 		int nbTypesBefore;
@@ -167,7 +177,7 @@ class AddRelayConnectionsTest {
 	@Test
 	void test_getFieldInheritedFrom() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_getFieldInheritedFrom", true);
 		List<Field> fields;
 
 		// Interface field that is not inherited from an interface
@@ -201,7 +211,8 @@ class AddRelayConnectionsTest {
 		// is not inherited by this directive, then an error should be thrown.
 		// Let's add the @RelayConnection directive to the AllFieldCasesInterfaceType.id field, and check that two
 		// errors are found (as id is in the AllFieldCasesInterface and the WithID interfaces)
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
+				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", true);
 
 		DirectiveImpl dir = new DirectiveImpl();
 		dir.setName("RelayConnection");
@@ -240,7 +251,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void test_addEdgeConnectionAndApplyNodeInterface_step3() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
+				"test_addEdgeConnectionAndApplyNodeInterface_step3", false);
 		Logger mockLogger = mock(Logger.class);
 		((MergeSchemaConfigurationTestHelper) configuration).log = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
@@ -259,7 +271,7 @@ class AddRelayConnectionsTest {
 
 	@Test
 	void test_getInheritedFields() {
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_getInheritedFields", true);
 		List<Field> result;
 
 		// The field is owned by an object (not an interface)
@@ -290,7 +302,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void test_getFieldInheritedFrom_interfaceThatImplementsInterface() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"test_getFieldInheritedFrom_interfaceThatImplementsInterface", true);
 		Field f = getField("AllFieldCasesInterface", "id");
 
 		// Go, go, go
@@ -320,7 +333,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithoutRelay() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithoutRelay", true);
 
 		// Verification
 		checkRelayConnectionDirective();
@@ -336,7 +350,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaAlreadyRelayCompliant() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaAlreadyRelayCompliant", true);
 		// The Relay connection objects should exist before
 		checkRelayConnectionDirective();
 		checkNodeInterface();
@@ -348,7 +363,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithWrongRelayConnectionDirective() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, true);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithWrongRelayConnectionDirective", true);
 		//
 		Directive relayConnection = documentParser.getDirectiveDefinition("RelayConnection");
 		relayConnection.getDirectiveLocations().remove(0);// Let's remove the only item in the list
@@ -363,7 +379,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithWrongNodeInterface() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithWrongNodeInterface", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Node interface compliance for the relay connection specification
 		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
@@ -385,7 +402,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithWrongEdgeInterface() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithWrongEdgeInterface", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Edge interface compliance for the relay connection specification
 		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
@@ -407,7 +425,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithWrongConnectionInterface() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithWrongConnectionInterface", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Connection interface compliance for the relay connection specification
 		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
@@ -428,7 +447,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithWrongPageInfo() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithWrongPageInfo", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the PageInfo type compliance for the relay connection specification
 		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
@@ -449,7 +469,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithWrongEdgeType() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithWrongEdgeType", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the HumanEdge type compliance for the relay connection specification
 		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
@@ -470,7 +491,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_schemaWithWrongConnectionType() {
 		// Preparation
-		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
+				"testAddRelayConnections_schemaWithWrongConnectionType", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the HumanConnection type compliance for the relay connection specification
 		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
@@ -495,7 +517,8 @@ class AddRelayConnectionsTest {
 	@Test
 	void testAddRelayConnections_relayConnectionOnInputTypeField() {
 		// Preparation
-		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, false);
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
+				"testAddRelayConnections_relayConnectionOnInputTypeField", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Connection interface compliance for the relay connection specification
 		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;

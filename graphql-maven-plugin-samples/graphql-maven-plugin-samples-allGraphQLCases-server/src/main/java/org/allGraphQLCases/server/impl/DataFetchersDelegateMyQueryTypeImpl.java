@@ -10,12 +10,14 @@ import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.AnyCharacter;
 import org.allGraphQLCases.server.Character;
+import org.allGraphQLCases.server.CharacterConnection;
 import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.DroidInput;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.HumanConnection;
 import org.allGraphQLCases.server.HumanInput;
 import org.allGraphQLCases.server.MyQueryType;
 import org.allGraphQLCases.server._break;
@@ -278,13 +280,14 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Character connectionWithoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
+	public CharacterConnection connectionWithoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Human connectionOnHuman(DataFetchingEnvironment dataFetchingEnvironment, String planet, Episode episode) {
+	public HumanConnection connectionOnHuman(DataFetchingEnvironment dataFetchingEnvironment, String planet,
+			Episode episode) {
 		// TODO Auto-generated method stub
 		return null;
 	}
