@@ -490,14 +490,7 @@ public class GraphqlClientUtils {
 			return graphql.Scalars.GraphQLID;
 		}
 
-		GraphQLScalarType type = CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
-		if (type != null) {
-			// Ok, it's a custom scalar
-			return type;
-		}
-
-		// No GraphQLType for enum
-		return null;
+		return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
 	}
 
 }

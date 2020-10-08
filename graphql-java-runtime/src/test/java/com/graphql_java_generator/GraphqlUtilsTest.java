@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -112,7 +113,7 @@ class GraphqlUtilsTest {
 		map.put("input", input);
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date);
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		// Go, go, go
 		TopicInput topicInput = graphqlUtils.getInputObject(map, false, TopicInput.class);
@@ -134,7 +135,7 @@ class GraphqlUtilsTest {
 		map.put("date", "2345-02-24");
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date);
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		// Go, go, go
 		FieldParameterInput input = graphqlUtils.getInputObject(map, false, FieldParameterInput.class);
@@ -251,7 +252,7 @@ class GraphqlUtilsTest {
 		map2.put("input", input2);
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date);
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		List<Map<String, Object>> list = new ArrayList<>();
 		list.add(map1);
@@ -278,4 +279,13 @@ class GraphqlUtilsTest {
 		assertEquals("The good title (2)", topicInput.getInput().getTitle());
 	}
 
+	@Test
+	public void test_getClass() {
+		String packageName = "com.graphql_java_generator.client.domain.allGraphQLCases";
+
+		assertEquals("java.lang.Integer", graphqlUtils.getClass(packageName, "Integer").getName());
+		assertEquals("com.graphql_java_generator.client.domain.allGraphQLCases.Human",
+				graphqlUtils.getClass(packageName, "Human").getName());
+		assertEquals("java.util.Date", graphqlUtils.getClass(packageName, "Date").getName());
+	}
 }

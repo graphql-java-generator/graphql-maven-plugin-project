@@ -5,6 +5,10 @@ New developments that use __graphql goal/task__ should use the parameters below,
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
+
+Both mode (client and server):
+* Attributes of input types that are list, boolean or custom scalars where not properly managed
+
 # 1.9
 
 Both mode (client and server):

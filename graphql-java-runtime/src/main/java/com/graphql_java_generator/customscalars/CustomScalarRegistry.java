@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.customscalars;
 
-import org.springframework.stereotype.Component;
-
 import graphql.schema.GraphQLScalarType;
 
 /**
@@ -15,17 +13,15 @@ import graphql.schema.GraphQLScalarType;
 public interface CustomScalarRegistry {
 
 	/**
-	 * This method registers all {@link GraphQLScalarType} that are declared as Spring {@link Component}. Another way to
-	 * register {@link GraphQLScalarType} is to call the {@link #registerGraphQLScalarType(GraphQLScalarType)}.
-	 */
-	public void registerAllGraphQLScalarType();
-
-	/**
 	 * Manually register one {@link GraphQLScalarType}.
 	 * 
 	 * @param graphQLScalarType
+	 * @param valueClazz
+	 *            The java The java type that will contain values for this custom scalar. This is needed to properly
+	 *            create the data from the value read in a string, especially when reading a GraphQL request, when in
+	 *            client mode
 	 */
-	public void registerGraphQLScalarType(GraphQLScalarType graphQLScalarType);
+	public void registerGraphQLScalarType(GraphQLScalarType graphQLScalarType, Class<?> valueClazz);
 
 	/**
 	 * Retrieves the registered {@link GraphQLScalarType} for this GraphQL CustomScalar.
@@ -34,5 +30,13 @@ public interface CustomScalarRegistry {
 	 * @return the {@link GraphQLScalarType}, or null if no converter has been registered for the given name
 	 */
 	public GraphQLScalarType getGraphQLScalarType(String graphQLTypeName);
+
+	/**
+	 * Retrieves the registered {@link GraphQLScalarType} for this GraphQL CustomScalar.
+	 * 
+	 * @param graphQLTypeName
+	 * @return the {@link GraphQLScalarType}, or null if no converter has been registered for the given name
+	 */
+	public CustomScalar getCustomScalar(String graphQLTypeName);
 
 }

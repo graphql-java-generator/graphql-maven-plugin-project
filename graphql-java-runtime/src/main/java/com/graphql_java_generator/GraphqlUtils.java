@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.customscalars.CustomScalar;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -346,7 +347,7 @@ public class GraphqlUtils {
 	 *            For arrays, it's a list. For objects, it's a map.
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	private Object getJavaValueForScalarAttribute(GraphQLScalar graphQLScalar, boolean list, Object sourceValue) {
 		// We have a Scalar, here. Let's look at all known scalars
 		if (list) {
@@ -375,12 +376,12 @@ public class GraphqlUtils {
 	public Object parseValueForInputParameter(String parameterValue, String parameterType, Class<?> parameterClass) {
 
 		// Let's check if this type is a Custom Scalar
-		GraphQLScalarType scalarType = CustomScalarRegistryImpl.customScalarRegistry
+		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.customScalarRegistry
 				.getGraphQLScalarType(parameterType);
 
-		if (scalarType != null) {
+		if (graphQLScalarType != null) {
 			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
-			return scalarType.getCoercing().parseValue(parameterValue);
+			return graphQLScalarType.getCoercing().parseValue(parameterValue);
 		} else if (parameterType.equals("Boolean")) {
 			if (parameterValue.equals("true"))
 				return Boolean.TRUE;
@@ -746,6 +747,45 @@ public class GraphqlUtils {
 	public String getPackageName(String classFullName) {
 		int lstPointPosition = classFullName.lastIndexOf('.');
 		return classFullName.substring(0, lstPointPosition);
+	}
+
+	/**
+	 * Retrieves a class for a given classname. For standard GraphQL types (Int, Boolean...) the good package is used
+	 * (java.lang, java.lang, java.util...). For others, the class is searched in the given package name.
+	 * 
+	 * @param packageName
+	 *            The name of the package, where the code has been generated.
+	 * @param graphQLTypeName
+	 *            The name of the class
+	 * @return
+	 */
+	public Class<?> getClass(String packageName, String graphQLTypeName) {
+
+		// First case, the simplest: standard GraphQL type
+		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName))
+			return Boolean.class;
+		else if ("Integer".equals(graphQLTypeName) || "int".equals(graphQLTypeName))
+			return Integer.class;
+		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName))
+			return String.class;
+		else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName))
+			return Double.class;
+
+		// Then custom scalars
+		CustomScalar customScalar = CustomScalarRegistryImpl.customScalarRegistry.getCustomScalar(graphQLTypeName);
+		if (customScalar != null) {
+			return customScalar.getValueClazz();
+		}
+
+		// Then other GraphQL types. This types should be linked to a generated java class. So we search for a class of
+		// this name in the given package.
+		String parameterClassname = packageName + "." + graphqlUtils.getJavaName(graphQLTypeName);
+		try {
+			return Class.forName(parameterClassname);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(
+					"Couldn't find the class (" + parameterClassname + ") of the type '" + graphQLTypeName + "'", e);
+		}
 	}
 
 	/**

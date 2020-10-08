@@ -394,18 +394,9 @@ public class InputParameter {
 	 */
 	private static Object parseValueForInputParameter(String parameterValue, String parameterType, String packageName)
 			throws GraphQLRequestPreparationException {
-
-		String parameterClassname = packageName + "." + graphqlUtils.getJavaName(parameterType);
-		Class<?> parameterClass;
 		try {
-			parameterClass = Class.forName(parameterClassname);
-		} catch (ClassNotFoundException e) {
-			throw new GraphQLRequestPreparationException(
-					"Couldn't find the class (" + parameterClassname + ") of the type '" + parameterType + "'", e);
-		}
-
-		try {
-			return graphqlUtils.parseValueForInputParameter(parameterValue, parameterType, parameterClass);
+			return graphqlUtils.parseValueForInputParameter(parameterValue, parameterType,
+					graphqlUtils.getClass(packageName, parameterType));
 		} catch (RuntimeException e) {
 			throw new GraphQLRequestPreparationException(e.getMessage(), e);
 		}
