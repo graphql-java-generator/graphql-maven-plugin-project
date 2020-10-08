@@ -358,8 +358,7 @@ public class GraphqlUtils {
 			}
 			return ret;
 		} else {
-			return parseValueForInputParameter((String) sourceValue, graphQLScalar.graphQLTypeName(),
-					graphQLScalar.javaClass());
+			return parseValueForInputParameter(sourceValue, graphQLScalar.graphQLTypeName(), graphQLScalar.javaClass());
 		}
 	}
 
@@ -373,7 +372,7 @@ public class GraphqlUtils {
 	 * @throws RuntimeException
 	 *             When the value could be parsed
 	 */
-	public Object parseValueForInputParameter(String parameterValue, String parameterType, Class<?> parameterClass) {
+	public Object parseValueForInputParameter(Object parameterValue, String parameterType, Class<?> parameterClass) {
 
 		// Let's check if this type is a Custom Scalar
 		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.customScalarRegistry
@@ -383,22 +382,26 @@ public class GraphqlUtils {
 			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
 			return graphQLScalarType.getCoercing().parseValue(parameterValue);
 		} else if (parameterType.equals("Boolean")) {
-			if (parameterValue.equals("true"))
-				return Boolean.TRUE;
-			else if (parameterValue.equals("false"))
-				return Boolean.FALSE;
-			else
-				throw new RuntimeException(
-						"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'");
+			if (parameterValue instanceof Boolean)
+				return parameterValue;
+			else if (parameterValue instanceof String) {
+				if (parameterValue.equals("true"))
+					return Boolean.TRUE;
+				else if (parameterValue.equals("false"))
+					return Boolean.FALSE;
+			}
+
+			throw new RuntimeException(
+					"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'");
 		} else if (parameterType.equals("ID")) {
 			return parameterValue;
 		} else if (parameterType.equals("Float")) {
 			// GraphQL Float are double precision numbers
-			return Double.parseDouble(parameterValue);
+			return Double.parseDouble((String) parameterValue);
 		} else if (parameterType.equals("Int")) {
-			return Integer.parseInt(parameterValue);
+			return Integer.parseInt((String) parameterValue);
 		} else if (parameterType.equals("Long")) {
-			return Long.parseLong(parameterValue);
+			return Long.parseLong((String) parameterValue);
 		} else if (parameterType.equals("String")) {
 			return parameterValue;
 		} else {
@@ -415,9 +418,9 @@ public class GraphqlUtils {
 				}
 				return "true".equals(parameterValue);
 			} else if (parameterClass.isAssignableFrom(Integer.class)) {
-				return Integer.parseInt(parameterValue);
+				return Integer.parseInt((String) parameterValue);
 			} else if (parameterClass.isAssignableFrom(Float.class)) {
-				return Float.parseFloat(parameterValue);
+				return Float.parseFloat((String) parameterValue);
 			}
 		} // else (scalarType != null)
 

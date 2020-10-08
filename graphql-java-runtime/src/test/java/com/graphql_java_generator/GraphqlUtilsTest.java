@@ -104,7 +104,7 @@ class GraphqlUtilsTest {
 		Map<String, Object> input = new LinkedHashMap<>();
 		input.put("authorId", "00000000-0000-0000-0000-000000000003");
 		input.put("date", "2009-11-20");
-		input.put("publiclyAvailable", "true");
+		input.put("publiclyAvailable", true);
 		input.put("title", "The good title");
 		input.put("content", "Some content");
 		//
@@ -131,7 +131,7 @@ class GraphqlUtilsTest {
 	void test_getInputObject_CustomScalar() {
 		// Preparation
 		Map<String, Object> map = new LinkedHashMap<>();
-		map.put("uppercase", "true");
+		map.put("uppercase", true);
 		map.put("date", "2345-02-24");
 		//
 		// And we need to register the custom scalar
@@ -234,7 +234,7 @@ class GraphqlUtilsTest {
 		Map<String, Object> input1 = new LinkedHashMap<>();
 		input1.put("authorId", "00000000-0000-0000-0000-000000000003");
 		input1.put("date", "2009-11-20");
-		input1.put("publiclyAvailable", "true");
+		input1.put("publiclyAvailable", true);
 		input1.put("title", "The good title");
 		input1.put("content", "Some content");
 		Map<String, Object> map1 = new LinkedHashMap<>();
@@ -244,7 +244,7 @@ class GraphqlUtilsTest {
 		Map<String, Object> input2 = new LinkedHashMap<>();
 		input2.put("authorId", "00000000-0000-0000-0000-000000000006");
 		input2.put("date", "2009-11-25");
-		input2.put("publiclyAvailable", "false");
+		input2.put("publiclyAvailable", false);
 		input2.put("title", "The good title (2)");
 		input2.put("content", "Some content (2)");
 		Map<String, Object> map2 = new LinkedHashMap<>();
