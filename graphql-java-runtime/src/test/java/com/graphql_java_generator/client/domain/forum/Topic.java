@@ -22,50 +22,50 @@ import java.util.Date;
 public class Topic  {
 
 	@JsonProperty("id")
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	String id;
 
 
 	@JsonProperty("date")
 	@JsonDeserialize(using = CustomScalarDeserializerDate.class)
-	@GraphQLScalar(fieldName = "date", graphQLTypeName = "Date", javaClass = Date.class)
+	@GraphQLScalar(list = false, fieldName = "date", graphQLTypeName = "Date", javaClass = Date.class)
 	Date date;
 
 
 	@JsonProperty("author")
-	@GraphQLNonScalar(fieldName = "author", graphQLTypeName = "Member", javaClass = Member.class)
+	@GraphQLNonScalar(list = false, fieldName = "author", graphQLTypeName = "Member", javaClass = Member.class)
 	Member author;
 
 
 	@JsonProperty("publiclyAvailable")
-	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar(list = false, fieldName = "publiclyAvailable", graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
 
 	@JsonProperty("nbPosts")
-	@GraphQLScalar(fieldName = "nbPosts", graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(list = false, fieldName = "nbPosts", graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbPosts;
 
 
 	@JsonProperty("title")
-	@GraphQLScalar(fieldName = "title", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "title", graphQLTypeName = "String", javaClass = String.class)
 	String title;
 
 
 	@JsonProperty("content")
-	@GraphQLScalar(fieldName = "content", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "content", graphQLTypeName = "String", javaClass = String.class)
 	String content;
 
 
 	@GraphQLInputParameters(names = {"memberId", "memberName", "since"}, types = {"ID", "String", "Date"})
 	@JsonProperty("posts")
 	@JsonDeserialize(contentAs = Post.class)
-	@GraphQLNonScalar(fieldName = "posts", graphQLTypeName = "Post", javaClass = Post.class)
+	@GraphQLNonScalar(list = false, fieldName = "posts", graphQLTypeName = "Post", javaClass = Post.class)
 	List<Post> posts;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

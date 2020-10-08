@@ -11,7 +11,7 @@ import com.graphql_java_generator.client.response.Error;
 public class TheSubscriptionTypeRootResponse {
 
 	@JsonProperty("data")
-	@GraphQLNonScalar(fieldName = "TheSubscriptionType", graphQLTypeName = "TheSubscriptionType", javaClass = TheSubscriptionType.class)
+	@GraphQLNonScalar(list = false, fieldName = "TheSubscriptionType", graphQLTypeName = "TheSubscriptionType", javaClass = TheSubscriptionType.class)
 	TheSubscriptionType subscription;
 
 	@JsonProperty("errors")

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.language.ArrayValue;
@@ -29,6 +29,7 @@ import graphql.language.ObjectField;
 import graphql.language.ObjectValue;
 import graphql.language.StringValue;
 import graphql.language.Value;
+import graphql.schema.GraphQLScalarType;
 
 /**
  * @author etienne-sf
@@ -264,13 +265,16 @@ public class GraphqlUtils {
 	 * @param map
 	 *            The map, read from the JSON in the GraphQL request. Only the part of the map, related to the expected
 	 *            class is sent.
-	 * @param t
-	 *            An empty instance of the expected type. This instance's fields will be set by this method, from the
-	 *            value in the map
+	 * @param list
+	 *            true if the sourceValue is a list, false otherwise.
+	 * @param clazz
+	 *            The class of the expected type. A new instance of this type will be returned, with its fields having
+	 *            been set by this method from the value in the map
 	 * @return An instance of the expected class. If the map is null, null is returned. Of the map is empty, anew
 	 *         instance is returned, with all its fields are left empty
 	 */
-	public <T> T getInputObject(Map<String, Object> map, Class<T> clazz) {
+	@SuppressWarnings("unchecked")
+	public <T> T getInputObject(Map<String, Object> map, boolean list, Class<T> clazz) {
 		if (map == null) {
 			return null;
 		} else {
@@ -297,30 +301,128 @@ public class GraphqlUtils {
 				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
 				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
 
+				Object value;
+
 				if (graphQLScalar != null) {
-					// We have a Scalar, here. Let's look at all known scalars
-					if (graphQLScalar.javaClass() == UUID.class) {
-						invokeMethod(setter, t, UUID.fromString((String) map.get(key)));
-					} else {
-						invokeMethod(setter, t, map.get(key));
-					}
+					value = getJavaValueForScalarAttribute(graphQLScalar, graphQLScalar.list(), map.get(key));
 				} else if (graphQLNonScalar != null) {
-					// We got a non scalar field. So we expect a map, which content will map to the fields of the target
-					// field.
-					if (!(map.get(key) instanceof Map<?, ?>)) {
-						throw new RuntimeException(
-								"The value for the field '" + clazz.getName() + "." + key + " should be a map");
+					Object sourceValue = map.get(key);
+					if (graphQLNonScalar.list()) {
+						value = getListInputObjects_internal((List<?>) sourceValue, graphQLNonScalar.javaClass());
+					} else {
+						// We got a non scalar field. So we expect a map, which content will map to the fields of the
+						// target field.
+						if (!(sourceValue instanceof Map<?, ?>)) {
+							throw new RuntimeException(
+									"The value for the field '" + clazz.getName() + "." + key + " should be a map");
+						}
+						Map<String, Object> subMap = (Map<String, Object>) sourceValue;
+						value = getInputObject(subMap, false, graphQLNonScalar.javaClass());
 					}
-					@SuppressWarnings("unchecked")
-					Map<String, Object> subMap = (Map<String, Object>) map.get(key);
-					invokeMethod(setter, t, getInputObject(subMap, graphQLNonScalar.javaClass()));
 				} else {
 					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
 							+ "' should have one of these annotations: GraphQLScalar or GraphQLScalar");
 				}
+
+				invokeMethod(setter, t, value);
 			}
 			return t;
 		}
+	}
+
+	/**
+	 * Returns the Java value for what's have been read from the GraphQL request map content for this attribute.
+	 * 
+	 * @param graphQLScalar
+	 *            The {@link GraphQLScalar} annotation, added to this attribute (or setter for interfaces) in the
+	 *            generated code
+	 * @param list
+	 *            true if the sourceValue is a list, false otherwise. This parameter is necessary to allow the recursive
+	 *            calls: when calling {@link #getJavaValueForScalarAttribute(GraphQLScalar, boolean, Object)} the first
+	 *            time, the value from the {@link GraphQLScalar} is used. Then, when looping through this list, this
+	 *            parameter is set to false.
+	 * @param sourceValue
+	 *            The GraphQL request map content for this attribute For standard attributes, this content is String.
+	 *            For arrays, it's a list. For objects, it's a map.
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Object getJavaValueForScalarAttribute(GraphQLScalar graphQLScalar, boolean list, Object sourceValue) {
+		// We have a Scalar, here. Let's look at all known scalars
+		if (list) {
+			List<Object> objects = (List<Object>) sourceValue;
+			List<Object> ret = new ArrayList<>(objects.size());
+			for (Object o : objects) {
+				ret.add(getJavaValueForScalarAttribute(graphQLScalar, false, o));
+			}
+			return ret;
+		} else {
+			return parseValueForInputParameter((String) sourceValue, graphQLScalar.graphQLTypeName(),
+					graphQLScalar.javaClass());
+		}
+	}
+
+	/**
+	 * Parse a value, depending on the parameter type.
+	 *
+	 * @param parameterValue
+	 * @param parameterType
+	 * @param packageName
+	 * @return
+	 * @throws RuntimeException
+	 *             When the value could be parsed
+	 */
+	public Object parseValueForInputParameter(String parameterValue, String parameterType, Class<?> parameterClass) {
+
+		// Let's check if this type is a Custom Scalar
+		GraphQLScalarType scalarType = CustomScalarRegistryImpl.customScalarRegistry
+				.getGraphQLScalarType(parameterType);
+
+		if (scalarType != null) {
+			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
+			return scalarType.getCoercing().parseValue(parameterValue);
+		} else if (parameterType.equals("Boolean")) {
+			if (parameterValue.equals("true"))
+				return Boolean.TRUE;
+			else if (parameterValue.equals("false"))
+				return Boolean.FALSE;
+			else
+				throw new RuntimeException(
+						"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'");
+		} else if (parameterType.equals("ID")) {
+			return parameterValue;
+		} else if (parameterType.equals("Float")) {
+			// GraphQL Float are double precision numbers
+			return Double.parseDouble(parameterValue);
+		} else if (parameterType.equals("Int")) {
+			return Integer.parseInt(parameterValue);
+		} else if (parameterType.equals("Long")) {
+			return Long.parseLong(parameterValue);
+		} else if (parameterType.equals("String")) {
+			return parameterValue;
+		} else {
+			// This type is not a Custom Scalar, so it must be a standard Scalar. Let's manage it
+			if (parameterClass.isEnum()) {
+				// This parameter is an enum. The parameterValue is one of its elements
+				Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
+				return graphqlUtils.invokeMethod(valueOf, null, parameterValue);
+			} else if (parameterClass.isAssignableFrom(Boolean.class)) {
+				// This parameter is a boolean. Only true and false are valid boolean.
+				if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
+					throw new RuntimeException("Only true and false are allowed values for booleans, but the value is '"
+							+ parameterValue + "'");
+				}
+				return "true".equals(parameterValue);
+			} else if (parameterClass.isAssignableFrom(Integer.class)) {
+				return Integer.parseInt(parameterValue);
+			} else if (parameterClass.isAssignableFrom(Float.class)) {
+				return Float.parseFloat(parameterValue);
+			}
+		} // else (scalarType != null)
+
+		// Too bad...
+		throw new RuntimeException(
+				"Couldn't parse the value'" + parameterValue + "' for the parameter type '" + parameterType + "'");
 	}
 
 	/**
@@ -333,11 +435,24 @@ public class GraphqlUtils {
 	 * @param clazz
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> List<T> getListInputObjects(List<Map<String, Object>> list, Class<T> clazz) {
-		List<T> ret = new ArrayList<>(list.size());
+		return (List<T>) getListInputObjects_internal(list, clazz);
+	}
 
-		for (Map<String, Object> map : list) {
-			ret.add(getInputObject(map, clazz));
+	/**
+	 * As it is not possible to map an Object to List<?> (!!!), we have to use an hidden ugly method
+	 * 
+	 * @param list
+	 * @param clazz
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private Object getListInputObjects_internal(List<?> list, Class<?> clazz) {
+		List<Object> ret = new ArrayList<>(list.size());
+
+		for (Map<String, Object> map : (List<Map<String, Object>>) list) {
+			ret.add(getInputObject(map, false, clazz));
 		}
 
 		return ret;
