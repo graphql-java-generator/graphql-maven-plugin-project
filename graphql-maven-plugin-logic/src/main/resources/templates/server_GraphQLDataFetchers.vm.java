@@ -65,7 +65,7 @@ public class GraphQLDataFetchers {
 #if(${argument.list})
 			List<${argument.type.classSimpleName}> ${argument.javaName} = graphqlUtils.getListInputObjects((List<Map<String, Object>>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
 #else
-			${argument.type.classSimpleName} ${argument.javaName} = graphqlUtils.getInputObject((Map<String, Object>) dataFetchingEnvironment.getArgument("${argument.name}"), ${argument.type.classSimpleName}.class);
+			${argument.type.classSimpleName} ${argument.javaName} = graphqlUtils.getInputObject((Map<String, Object>) dataFetchingEnvironment.getArgument("${argument.name}"), false, ${argument.type.classSimpleName}.class);
 #end
 #elseif (${argument.type.classSimpleName} == "UUID")
 			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = (dataFetchingEnvironment.getArgument("${argument.name}") == null) ? null : UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));

@@ -471,14 +471,16 @@ public class GraphQLDocumentParser extends DocumentParser {
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
 			field.getOwningType().addImport(GraphQLScalar.class);
-			((FieldImpl) field).addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName()
-					+ "\", graphQLTypeName = \"" + field.getGraphQLTypeName() + "\", javaClass = "
-					+ field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field)
+					.addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName() + "\", graphQLTypeName = \""
+							+ field.getGraphQLTypeName() + "\", list = " + ((field.isList()) ? "true" : "false")
+							+ ", javaClass = " + field.getType().getClassSimpleName() + ".class)");
 		} else {
 			field.getOwningType().addImport(GraphQLNonScalar.class);
-			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName()
-					+ "\", graphQLTypeName = \"" + field.getGraphQLTypeName() + "\", javaClass = "
-					+ field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field)
+					.addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName() + "\", graphQLTypeName = \""
+							+ field.getGraphQLTypeName() + "\", list = " + ((field.isList()) ? "true" : "false")
+							+ ", javaClass = " + field.getType().getClassSimpleName() + ".class)");
 		}
 	}
 

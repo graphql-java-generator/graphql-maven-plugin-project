@@ -84,30 +84,30 @@ class DocumentParser_Forum_Client_Test {
 		assertEquals("@GraphQLObjectType(\"Topic\")", topic.getAnnotation());
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", javaClass = String.class)");
+				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", list = false, javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date", ""//
 				+ "@JsonDeserialize(using = CustomScalarDeserializerDate.class)\n" //
 				+ "\t@JsonProperty(\"date\")\n" //
-				+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", javaClass = Date.class)");
+				+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", list = false, javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author", "@JsonProperty(\"author\")\n"//
-				+ "\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", javaClass = Member.class)");
+				+ "\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", list = false, javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable", ""//
 				+ "@JsonProperty(\"publiclyAvailable\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
+				+ "\t@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", list = false, javaClass = Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts", "" //
 				+ "@JsonProperty(\"nbPosts\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", javaClass = Integer.class)");
+				+ "\t@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", list = false, javaClass = Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title", ""//
 				+ "@JsonProperty(\"title\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", javaClass = String.class)");
+				+ "\t@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content", ""//
 				+ "@JsonProperty(\"content\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", javaClass = String.class)");
+				+ "\t@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts", ""//
 				+ "@JsonDeserialize(contentAs = Post.class)\n"//
 				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"})\n"
 				+ "\t@JsonProperty(\"posts\")\n"//
-				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", javaClass = Post.class)");
+				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", list = true, javaClass = Post.class)");
 	}
 
 	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
@@ -126,7 +126,7 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
 				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
 						+ "	@JsonProperty(\"createBoard\")\n"
-						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", javaClass = Board.class)");
+						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", list = false, javaClass = Board.class)");
 	}
 
 	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
@@ -144,7 +144,7 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
 				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
 						+ "	@JsonProperty(\"createBoard\")\n"
-						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", javaClass = Board.class)");
+						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", list = false, javaClass = Board.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {
