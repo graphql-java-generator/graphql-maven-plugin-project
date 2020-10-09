@@ -468,8 +468,9 @@ public class GraphQLCodeGenerator {
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
 		context.put("pluginConfiguration", configuration);
-		context.put("PluginModeClient", PluginMode.client);// Velocity can't access to enum values. So we add it into
-															// the context
+		// Velocity can't access to enum values. So we add it into the context
+		context.put("isPluginModeClient", configuration.getMode() == PluginMode.client);
+
 		context.put("packageUtilName", graphQLDocumentParser.getUtilPackageName());
 		context.put("customScalars", graphQLDocumentParser.customScalars);
 		context.put("directives", graphQLDocumentParser.directives);

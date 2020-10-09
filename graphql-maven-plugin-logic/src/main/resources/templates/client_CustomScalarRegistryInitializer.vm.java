@@ -27,7 +27,7 @@ public class CustomScalarRegistryInitializer {
 	public static CustomScalarRegistry initCustomScalarRegistry() {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
-#if ($configuration.mode == $PluginModeClient) {
+#if ($isPluginModeClient) {
 		// Registering the ID parser, for client mode
 		customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID, String.class);		
 #else
