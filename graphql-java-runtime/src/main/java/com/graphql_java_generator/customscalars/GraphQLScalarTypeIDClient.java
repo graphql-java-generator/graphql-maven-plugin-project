@@ -11,25 +11,22 @@ import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
 
 /**
- * Useless String scalar.<BR/>
- * It's used both as a sample, to be completed by a developper, according to his/her needs, and for the use in some
- * tests of the plugin logic (like in the Shopify sample, to handle (badly) various scalar as based on strings).<BR/>
- * It's actually a bad management, as this custom scalars does nothing, but read basic strings. It's just for test.
+ * ID are managed as String, on client side. This class takes care of ID attributes by doing ... nothing! As value as
+ * serialized and deserialized as String, to hide what it may mean.
  * 
  * @author etienne-sf
  */
-public class GraphQLScalarTypeString {
+public class GraphQLScalarTypeIDClient {
 
 	/**
-	 * Useless String scalar.<BR/>
-	 * It's used both as a sample, to be completed by a developper, according to his/her needs, and for the use in some
-	 * tests of the plugin logic (like in the Shopify sample, to handle (badly) various scalar as based on
-	 * strings).<BR/>
-	 * It's actually a bad management, as this custom scalars does nothing, but read basic strings. It's just for test.
+	 * UUID are managed as String, on client side. This class takes care of UUID attributes by doing ... nothing! As
+	 * value as serialized and deserialized as String, to hide what it may mean.
 	 */
-	public static GraphQLScalarType String = GraphQLScalarType.newScalar().name("String")
-			.description("Useless Custom Scalar for String management").coercing(
-
+	public static GraphQLScalarType ID = GraphQLScalarType.newScalar().name("ID")
+			.description("ID custom scalar, for client side").coercing(
+					//
+					// Note: String is the way the data is stored in GraphQL queries
+					// Date is the type while in the java code, either in the client and in the server
 					new Coercing<String, String>() {
 
 						/**
@@ -53,7 +50,7 @@ public class GraphQLScalarTypeString {
 						public String serialize(Object input) throws CoercingSerializeException {
 							if (!(input instanceof String)) {
 								throw new CoercingSerializeException(
-										"Can't parse the '" + input.toString() + "' string to a String");
+										"Can't parse the '" + input.toString() + "' ID to a String");
 							} else {
 								return (String) input;
 							}
@@ -78,7 +75,7 @@ public class GraphQLScalarTypeString {
 						public String parseValue(Object o) throws CoercingParseValueException {
 							if (!(o instanceof String)) {
 								throw new CoercingParseValueException(
-										"Can't parse the '" + o.toString() + "' string to a String");
+										"Can't parse the '" + o.toString() + "' string to an ID");
 							} else {
 								return (String) o;
 							}
@@ -105,7 +102,7 @@ public class GraphQLScalarTypeString {
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
 							if (!(o instanceof StringValue)) {
 								throw new CoercingParseValueException(
-										"Can't parse the '" + o.toString() + "' string to a String");
+										"Can't parse the '" + o.toString() + "' string to an ID");
 							} else {
 								return ((StringValue) o).getValue();
 							}

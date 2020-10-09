@@ -26,6 +26,7 @@ import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
+import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
 import com.graphql_java_generator.testcases.Isssue49AccountInput;
 import com.graphql_java_generator.testcases.Issue49Title;
 
@@ -99,7 +100,7 @@ class GraphqlUtilsTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_getInputObject() {
+	void test_getInputObject_clientMode() {
 		// Preparation
 		Map<String, Object> input = new LinkedHashMap<>();
 		input.put("authorId", "00000000-0000-0000-0000-000000000003");
@@ -113,6 +114,8 @@ class GraphqlUtilsTest {
 		map.put("input", input);
 		//
 		// And we need to register the custom scalar
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
+				String.class);
 		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		// Go, go, go
@@ -194,6 +197,10 @@ class GraphqlUtilsTest {
 		//
 		Map<String, Object> mapAllFieldCasesWithIdSubtypeInput = new LinkedHashMap<>();
 		mapAllFieldCasesWithIdSubtypeInput.put("withIdSubtype", listAllFieldCasesWithIdSubtypeInputs);
+		//
+		// And we need to register the custom scalar
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
+				String.class);
 
 		// Go, go, go
 		AllFieldCasesInput input = graphqlUtils.getInputObject(mapAllFieldCasesWithIdSubtypeInput, true,
@@ -252,6 +259,8 @@ class GraphqlUtilsTest {
 		map2.put("input", input2);
 		//
 		// And we need to register the custom scalar
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
+				String.class);
 		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		List<Map<String, Object>> list = new ArrayList<>();

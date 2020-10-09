@@ -380,21 +380,21 @@ public class GraphqlUtils {
 
 		if (graphQLScalarType != null) {
 			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
+			// Note: the GraphqQL ID is managed by specific CustomScalars, which is specific to the client or the server
+			// mode (ID are String for the client, and UUID for the server)
 			return graphQLScalarType.getCoercing().parseValue(parameterValue);
 		} else if (parameterType.equals("Boolean")) {
-			if (parameterValue instanceof Boolean)
+			if (parameterValue instanceof Boolean) {
+				// This should not occur
 				return parameterValue;
-			else if (parameterValue instanceof String) {
+			} else if (parameterValue instanceof String) {
 				if (parameterValue.equals("true"))
 					return Boolean.TRUE;
 				else if (parameterValue.equals("false"))
 					return Boolean.FALSE;
 			}
-
 			throw new RuntimeException(
 					"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'");
-		} else if (parameterType.equals("ID")) {
-			return parameterValue;
 		} else if (parameterType.equals("Float")) {
 			// GraphQL Float are double precision numbers
 			return Double.parseDouble((String) parameterValue);
@@ -425,8 +425,8 @@ public class GraphqlUtils {
 		} // else (scalarType != null)
 
 		// Too bad...
-		throw new RuntimeException(
-				"Couldn't parse the value'" + parameterValue + "' for the parameter type '" + parameterType + "'");
+		throw new RuntimeException("Couldn't parse the value'" + parameterValue + "' for the parameter type '"
+				+ parameterType + "': non managed GraphQL type (maybe a custom scalar is not properly registered?)");
 	}
 
 	/**
