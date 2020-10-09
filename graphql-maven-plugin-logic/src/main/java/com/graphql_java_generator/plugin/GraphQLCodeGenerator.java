@@ -38,7 +38,8 @@ import com.graphql_java_generator.plugin.language.Type;
 
 /**
  * This class generates the code for the graphql goal/task of the plugin, from the classes coming from the
- * com.graphql_java_generator.plugin.language package. This classes have been created by {link {@link GraphQLDocumentParser}
+ * com.graphql_java_generator.plugin.language package. This classes have been created by {link
+ * {@link GraphQLDocumentParser}
  * 
  * @author etienne-sf
  */
@@ -96,9 +97,11 @@ public class GraphQLCodeGenerator {
 		i += generateTargetFiles(graphQLDocumentParser.getInterfaceTypes(), "interface",
 				resolveTemplate(CodeTemplate.INTERFACE), false);
 		configuration.getLog().debug("Generating unions");
-		i += generateTargetFiles(graphQLDocumentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION), false);
+		i += generateTargetFiles(graphQLDocumentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION),
+				false);
 		configuration.getLog().debug("Generating enums");
-		i += generateTargetFiles(graphQLDocumentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM), false);
+		i += generateTargetFiles(graphQLDocumentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM),
+				false);
 
 		switch (configuration.getMode()) {
 		case server:
@@ -465,6 +468,8 @@ public class GraphQLCodeGenerator {
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
 		context.put("pluginConfiguration", configuration);
+		context.put("PluginModeClient", PluginMode.client);// Velocity can't access to enum values. So we add it into
+															// the context
 		context.put("packageUtilName", graphQLDocumentParser.getUtilPackageName());
 		context.put("customScalars", graphQLDocumentParser.customScalars);
 		context.put("directives", graphQLDocumentParser.directives);
