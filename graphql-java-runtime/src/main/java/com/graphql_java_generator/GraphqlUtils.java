@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -259,15 +260,17 @@ public class GraphqlUtils {
 
 	/**
 	 * This method returns a GraphQL input object, as defined in the GraphQL schema, from the Map that has been read
-	 * from the JSON object sent to the server.
+	 * from the JSON object sent to the server. It detects that the given <I>jsonParsedValue</I> is a list, and, in this
+	 * case, returns a list of instances of the given clazz type.
 	 * 
 	 * @param <T>
 	 *            The class expected to be returned
-	 * @param map
+	 * @param jsonParsedValue
 	 *            The map, read from the JSON in the GraphQL request. Only the part of the map, related to the expected
 	 *            class is sent.
-	 * @param list
-	 *            true if the sourceValue is a list, false otherwise.
+	 * @param graphQLTypeName
+	 *            The name of the GraphQL type, as defined in the GraphQL schema. This can be guessed from the given
+	 *            class for input types and objects, but not for scalars. So it must be provided.
 	 * @param clazz
 	 *            The class of the expected type. A new instance of this type will be returned, with its fields having
 	 *            been set by this method from the value in the map
@@ -275,11 +278,20 @@ public class GraphqlUtils {
 	 *         instance is returned, with all its fields are left empty
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getInputObject(Map<String, Object> map, boolean list, Class<T> clazz) {
-		if (map == null) {
+	public Object getInputObject(Object jsonParsedValue, String graphQLTypeName, Class<?> clazz) {
+		if (jsonParsedValue == null) {
 			return null;
-		} else {
-			T t;
+		} else if (jsonParsedValue instanceof List<?>) {
+			// We've a list. Let's loop inside its items
+			List<Object> objects = new ArrayList<>();
+			for (Object o : (List<Object>) jsonParsedValue) {
+				objects.add(getInputObject(o, graphQLTypeName, clazz));
+			}
+			return objects;
+		} else if (jsonParsedValue instanceof Map<?, ?>) {
+			// We have a Map. Its keys MUST be the attributes for the given class (clazz)
+			Map<String, Object> map = (Map<String, Object>) jsonParsedValue;
+			Object t;
 			Field field;
 
 			try {
@@ -305,21 +317,10 @@ public class GraphqlUtils {
 				Object value;
 
 				if (graphQLScalar != null) {
-					value = getJavaValueForScalarAttribute(graphQLScalar, graphQLScalar.list(), map.get(key));
+					value = getInputObject(map.get(key), graphQLScalar.graphQLTypeName(), graphQLScalar.javaClass());
 				} else if (graphQLNonScalar != null) {
-					Object sourceValue = map.get(key);
-					if (graphQLNonScalar.list()) {
-						value = getListInputObjects_internal((List<?>) sourceValue, graphQLNonScalar.javaClass());
-					} else {
-						// We got a non scalar field. So we expect a map, which content will map to the fields of the
-						// target field.
-						if (!(sourceValue instanceof Map<?, ?>)) {
-							throw new RuntimeException(
-									"The value for the field '" + clazz.getName() + "." + key + " should be a map");
-						}
-						Map<String, Object> subMap = (Map<String, Object>) sourceValue;
-						value = getInputObject(subMap, false, graphQLNonScalar.javaClass());
-					}
+					value = getInputObject(map.get(key), graphQLNonScalar.graphQLTypeName(),
+							graphQLNonScalar.javaClass());
 				} else {
 					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
 							+ "' should have one of these annotations: GraphQLScalar or GraphQLScalar");
@@ -328,37 +329,23 @@ public class GraphqlUtils {
 				invokeMethod(setter, t, value);
 			}
 			return t;
-		}
-	}
-
-	/**
-	 * Returns the Java value for what's have been read from the GraphQL request map content for this attribute.
-	 * 
-	 * @param graphQLScalar
-	 *            The {@link GraphQLScalar} annotation, added to this attribute (or setter for interfaces) in the
-	 *            generated code
-	 * @param list
-	 *            true if the sourceValue is a list, false otherwise. This parameter is necessary to allow the recursive
-	 *            calls: when calling {@link #getJavaValueForScalarAttribute(GraphQLScalar, boolean, Object)} the first
-	 *            time, the value from the {@link GraphQLScalar} is used. Then, when looping through this list, this
-	 *            parameter is set to false.
-	 * @param sourceValue
-	 *            The GraphQL request map content for this attribute For standard attributes, this content is String.
-	 *            For arrays, it's a list. For objects, it's a map.
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked" })
-	private Object getJavaValueForScalarAttribute(GraphQLScalar graphQLScalar, boolean list, Object sourceValue) {
-		// We have a Scalar, here. Let's look at all known scalars
-		if (list) {
-			List<Object> objects = (List<Object>) sourceValue;
-			List<Object> ret = new ArrayList<>(objects.size());
-			for (Object o : objects) {
-				ret.add(getJavaValueForScalarAttribute(graphQLScalar, false, o));
-			}
-			return ret;
 		} else {
-			return parseValueForInputParameter(sourceValue, graphQLScalar.graphQLTypeName(), graphQLScalar.javaClass());
+			// We have a scalar.
+			if (graphQLTypeName.equals("ID")) {
+				// ID are managed as UUID (we're on server side)
+				return UUID.fromString((String) jsonParsedValue);
+			} else if (clazz.isEnum()) {
+				if (!(jsonParsedValue instanceof String)) {
+					throw new RuntimeException("The " + clazz.getName()
+							+ " class is an enum, but the provided value is '" + jsonParsedValue
+							+ "' which should be a String, to be mapped to the relevant enum value");
+				}
+				// This object is a String, that we must map to its enum value
+				Method valueOf = graphqlUtils.getMethod("valueOf", clazz, String.class);
+				return graphqlUtils.invokeMethod(valueOf, null, (String) jsonParsedValue);
+			} else {
+				return jsonParsedValue;
+			}
 		}
 	}
 
@@ -427,39 +414,6 @@ public class GraphqlUtils {
 		// Too bad...
 		throw new RuntimeException("Couldn't parse the value'" + parameterValue + "' for the parameter type '"
 				+ parameterType + "': non managed GraphQL type (maybe a custom scalar is not properly registered?)");
-	}
-
-	/**
-	 * This method returns a list of instances of the given class, from a list of {@link Map}. This is used on
-	 * server-side, to map the input read from the JSON into the InputType that have been declared in the GraphQL
-	 * schema.
-	 * 
-	 * @param <T>
-	 * @param list
-	 * @param clazz
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public <T> List<T> getListInputObjects(List<Map<String, Object>> list, Class<T> clazz) {
-		return (List<T>) getListInputObjects_internal(list, clazz);
-	}
-
-	/**
-	 * As it is not possible to map an Object to List<?> (!!!), we have to use an hidden ugly method
-	 * 
-	 * @param list
-	 * @param clazz
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private Object getListInputObjects_internal(List<?> list, Class<?> clazz) {
-		List<Object> ret = new ArrayList<>(list.size());
-
-		for (Map<String, Object> map : (List<Map<String, Object>>) list) {
-			ret.add(getInputObject(map, false, clazz));
-		}
-
-		return ret;
 	}
 
 	/**

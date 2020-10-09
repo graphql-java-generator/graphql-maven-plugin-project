@@ -3,9 +3,6 @@
  */
 package com.graphql_java_generator.customscalars;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import graphql.language.StringValue;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
@@ -34,13 +31,6 @@ public class GraphQLScalarTypeIDServer {
 					new Coercing<java.util.UUID, String>() {
 
 						/**
-						 * The date pattern, used when exchanging date with this {@link GraphQLScalarType} from and to
-						 * the GrahQL Server
-						 */
-						final static String DATE_PATTERN = "yyyy-MM-dd";
-						SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN);
-
-						/**
 						 * Called to convert a Java object result of a DataFetcher to a valid runtime value for the
 						 * scalar type. <br/>
 						 * Note : Throw {@link graphql.schema.CoercingSerializeException} if there is fundamental
@@ -64,7 +54,7 @@ public class GraphQLScalarTypeIDServer {
 										+ "' UUID to a String (it should be a UUID but is a "
 										+ input.getClass().getName() + ")");
 							} else {
-								return formater.format((Date) input);
+								return ((java.util.UUID) input).toString();
 							}
 						}
 
@@ -114,7 +104,7 @@ public class GraphQLScalarTypeIDServer {
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
 							if (!(o instanceof StringValue)) {
 								throw new CoercingParseValueException("Can't parse the '" + o.toString()
-										+ "' string value to a Date (it should be a StringValue but is a "
+										+ "' string value to a UUID (it should be a StringValue but is a "
 										+ o.getClass().getName() + ")");
 							}
 							return java.util.UUID.fromString((String) o);
