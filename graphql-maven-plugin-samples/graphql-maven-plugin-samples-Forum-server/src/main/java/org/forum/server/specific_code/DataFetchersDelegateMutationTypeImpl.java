@@ -10,6 +10,8 @@ import javax.annotation.Resource;
 
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.DataFetchersDelegateMutationType;
+import org.forum.server.graphql.Member;
+import org.forum.server.graphql.MemberInput;
 import org.forum.server.graphql.Post;
 import org.forum.server.graphql.PostInput;
 import org.forum.server.graphql.Topic;
@@ -92,6 +94,17 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 		// Actually, this mutation is for sample only. We don't want to implement it !
 		// :)
 		throw new RuntimeException("Spamming is forbidden");
+	}
+
+	@Override
+	public Member createMember(DataFetchingEnvironment dataFetchingEnvironment, MemberInput input) {
+		Member member = new Member();
+		member.setId(UUID.randomUUID());
+		member.setAlias(input.getAlias());
+		member.setEmail(input.getEmail());
+		member.setName(input.getName());
+		member.setType(input.getType());
+		return member;
 	}
 
 }

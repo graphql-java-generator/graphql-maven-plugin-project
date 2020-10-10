@@ -148,7 +148,7 @@ class DocumentParser_Forum_Server_Test {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
-		assertEquals(15, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(16, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		//
@@ -176,6 +176,8 @@ class DocumentParser_Forum_Server_Test {
 				false, false, null, "post");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post",
 				true, false, null, "spam");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createMember", "MutationType", "createMember", "Member",
+				false, false, null, "input");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "subscribeToNewPost", "SubscriptionType",
 				"subscribeToNewPost", "Post", false, false, null, "boardName");
