@@ -2,7 +2,11 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Add a test case for issue 49
+* [WIP] Adding the relay connection capabilities
+* Remove the test case for issue 49 (already included in the other samples)
+* Rename the merge goal into mergeSchema goal (already named like that in gradle)
+* Move the packagePropery out of the common configuration
+* Make the task/goal names more homogeneous (graphql for maven versus graphqlGenerateCode for Gradle, merge is too generic?)
 * Allow to control the list of schema files, and their order (necessary to properly manage the extend keyword)
 * Add a description of the GraphQL mojo
 * Switch to graphql-java 15.0 (waiting for [issue 1844](https://github.com/graphql-java/graphql-java/issues/1844) to be solved)
