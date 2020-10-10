@@ -6,11 +6,11 @@ New developments that use __graphql goal/task__ should use the parameters below,
 * separateUtilityClasses: true
 
 
-# Not released yet 
+# 1.10
 
 Both mode (client and server):
 * Upgrade of graphql-java from v14.0 to v15.0
-* Main improvement for this: the plugin now accepts that an interface implements one or more interfaces
+* The main improvement for this is: the plugin now accepts interfaces that implement one or more interfaces
 * Attributes of input types that are enum are now properly managed
 
 Server mode:

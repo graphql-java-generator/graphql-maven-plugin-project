@@ -3,7 +3,6 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * [WIP] Adding the relay connection capabilities
-* Remove the test case for issue 49 (already included in the other samples)
 * Rename the merge goal into mergeSchema goal (already named like that in gradle)
 * Move the packagePropery out of the common configuration
 * Make the task/goal names more homogeneous (graphql for maven versus graphqlGenerateCode for Gradle, merge is too generic?)
