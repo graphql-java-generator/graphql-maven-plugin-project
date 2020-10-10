@@ -1,0 +1,7 @@
+Some tests requests, to test the server:
+
+
+mutation {
+  signupForAccount(input: { title: MR  }) {    id  }
+  signupForListAccount(input: {titles: [MR, MRS]}) { id }
+}

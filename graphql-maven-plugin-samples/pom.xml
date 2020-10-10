@@ -27,7 +27,8 @@
 		<module>graphql-maven-plugin-samples-StarWars-server</module>
 		<module>graphql-maven-plugin-samples-CustomTemplates-resttemplate</module>
 		<module>graphql-maven-plugin-samples-CustomTemplates-client</module>
-	</modules>
+    <module>issue_49</module>
+  </modules>
 
 	<build>
 		<pluginManagement>
