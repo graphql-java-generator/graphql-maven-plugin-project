@@ -3,6 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * [WIP] Adding the relay connection capabilities
+* Remove the test case for issue 49 (already included in the other samples)
 * Rename the merge goal into mergeSchema goal (already named like that in gradle)
 * Move the packagePropery out of the common configuration
 * Make the task/goal names more homogeneous (graphql for maven versus graphqlGenerateCode for Gradle, merge is too generic?)
@@ -10,6 +11,7 @@ Here are the next tasks listed, as a TODO list:
 * Add a description of the GraphQL mojo
 * Switch to graphql-java 15.0 (waiting for [issue 1844](https://github.com/graphql-java/graphql-java/issues/1844) to be solved)
 * Add the Tutorial for Subscription, on the Client side
+* Looks like the code generation doesn't work with a schema without a query (see the schema in issue 49)
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Analyze and response to issue #39 (@connection for relay)
 * Add the _connection_ stuff, as [specified here](https://relay.dev/graphql/connections.htmh 

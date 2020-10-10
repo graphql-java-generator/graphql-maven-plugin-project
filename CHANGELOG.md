@@ -5,20 +5,23 @@ New developments that use __graphql goal/task__ should use the parameters below,
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
-# Not released yet
+
+# Not released yet 
 
 Both mode (client and server):
 * Upgrade of graphql-java from v14.0 to v15.0
 * Main improvement for this: the plugin now accepts that an interface implements one or more interfaces
+* Attributes of input types that are enum are now properly managed
 
 Server mode:
 * The generated code would not compile if a GraphQL interface is defined, but not used, in the given GraphQL schema
+
 
 # 1.9
 
 Both mode (client and server):
 * The GraphQL schema can now be split into separate files, including one file containing GraphQL extend keyword on the other file's objects
-* [Not ready yet] Add of the _merge_ goal/task: it generates a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
+* Add of the _merge_ goal/task: it generates a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
 
 Client mode:
 * Fixes #46: Strings not properly escaped for JSON
