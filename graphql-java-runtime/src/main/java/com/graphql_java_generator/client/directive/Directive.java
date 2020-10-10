@@ -49,6 +49,12 @@ public class Directive {
 	 */
 	public Directive(QueryTokenizer qt) throws GraphQLRequestPreparationException {
 		name = qt.nextToken();
+
+		// We need to get some data from the registration of this directive.
+		Directive d = DirectiveRegistryImpl.directiveRegistry.getDirective(name);
+		setPackageName(d.getPackageName());
+		setDirectiveLocations(d.getDirectiveLocations());
+
 		if (qt.checkNextToken("(")) {
 			// We must consume the parenthesis, then read the list of argument.
 			qt.nextToken();

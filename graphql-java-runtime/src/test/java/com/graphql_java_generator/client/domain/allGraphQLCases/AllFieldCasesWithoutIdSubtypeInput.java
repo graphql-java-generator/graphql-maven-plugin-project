@@ -19,7 +19,7 @@ public class AllFieldCasesWithoutIdSubtypeInput  {
 	}
 
 	@JsonProperty("name")
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 

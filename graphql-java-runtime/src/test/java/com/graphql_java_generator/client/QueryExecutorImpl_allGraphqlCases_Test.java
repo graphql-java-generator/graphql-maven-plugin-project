@@ -15,6 +15,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graphql_java_generator.client.domain.allGraphQLCases.DirectiveRegistryInitializer;
 import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -36,6 +37,9 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 	void setUp() throws Exception {
 		myQueryType = new MyQueryType("http://localhost");
 		queryExecutorImpl = new QueryExecutorImpl("http://localhost:8180/graphql");
+
+		// For these test, we need to have directive that are properly registered
+		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
 	@Test

@@ -1,0 +1,28 @@
+Some tests requests, to test the server:
+
+
+mutation mut {
+  createPost(post: {topicId: "00000000-0000-0000-0000-000000000005", from: "2020-10-03"}) {
+    id
+  }
+}
+
+query boards {
+  boards {
+    id
+    name
+  }
+}
+
+query topics {
+  topics(boardName: "Board name 5") {
+    id
+    author {
+      id
+    }
+    title
+    posts(since: "1900-01-01") {
+      id
+    }
+  }
+}

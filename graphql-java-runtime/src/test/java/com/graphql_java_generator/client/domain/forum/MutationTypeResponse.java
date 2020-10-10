@@ -20,23 +20,23 @@ public class MutationTypeResponse {
 
 	@GraphQLInputParameters(names = { "name", "publiclyAvailable" }, types = { "String", "Boolean" })
 	@JsonProperty("createBoard")
-	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeName = "Board", javaClass = Board.class)
+	@GraphQLNonScalar(list = false, fieldName = "createBoard", graphQLTypeName = "Board", javaClass = Board.class)
 	Board createBoard;
 
 	@GraphQLInputParameters(names = { "topic" }, types = { "TopicInput" })
 	@JsonProperty("createTopic")
-	@GraphQLNonScalar(fieldName = "createTopic", graphQLTypeName = "Topic", javaClass = Topic.class)
+	@GraphQLNonScalar(list = false, fieldName = "createTopic", graphQLTypeName = "Topic", javaClass = Topic.class)
 	Topic createTopic;
 
 	@GraphQLInputParameters(names = { "post" }, types = { "PostInput" })
 	@JsonProperty("createPost")
-	@GraphQLNonScalar(fieldName = "createPost", graphQLTypeName = "Post", javaClass = Post.class)
+	@GraphQLNonScalar(list = false, fieldName = "createPost", graphQLTypeName = "Post", javaClass = Post.class)
 	Post createPost;
 
 	@GraphQLInputParameters(names = { "spam" }, types = { "PostInput" })
 	@JsonProperty("createPosts")
 	@JsonDeserialize(contentAs = Post.class)
-	@GraphQLNonScalar(fieldName = "createPosts", graphQLTypeName = "Post", javaClass = Post.class)
+	@GraphQLNonScalar(list = false, fieldName = "createPosts", graphQLTypeName = "Post", javaClass = Post.class)
 	List<Post> createPosts;
 
 	public void setCreateBoard(Board createBoard) {

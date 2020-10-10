@@ -19,8 +19,8 @@ import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
-import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
@@ -81,7 +81,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 		//
 		Field name = jsonSchemaPersonalization.findFieldFromName(board, "name");
 		assertEquals(
-				"@GraphQLScalar(fieldName = \"name\", graphQLTypeName = \"String\", javaClass = String.class)\n\t@Column(name=\"column_name\")",
+				"@GraphQLScalar(fieldName = \"name\", graphQLTypeName = \"String\", list = false, javaClass = String.class)\n\t@Column(name=\"column_name\")",
 				name.getAnnotation(), "board.name annotation");
 	}
 

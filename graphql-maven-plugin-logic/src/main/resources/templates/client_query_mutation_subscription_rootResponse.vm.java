@@ -16,7 +16,7 @@ import ${pluginConfiguration.packageName}.${object.classSimpleName};
 public class ${object.classSimpleName}RootResponse {
 
 	@JsonProperty("data")
-	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeName = "${object.javaName}", javaClass = ${object.classSimpleName}.class)
+	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeName = "${object.javaName}", list = false, javaClass = ${object.classSimpleName}.class)
 	${object.classSimpleName} ${object.requestType};
 
 	@JsonProperty("errors")

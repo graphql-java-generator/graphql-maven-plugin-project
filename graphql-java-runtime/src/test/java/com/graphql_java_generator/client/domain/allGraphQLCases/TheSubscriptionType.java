@@ -49,7 +49,7 @@ public class TheSubscriptionType {
 
 	@GraphQLInputParameters(names = { "episode" }, types = { "Episode" })
 	@JsonProperty("subscribeNewHumanForEpisode")
-	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(list = false, fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	Human subscribeNewHumanForEpisode;
 
 	public void setSubscribeNewHumanForEpisode(Human subscribeNewHumanForEpisode) {
@@ -412,7 +412,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(list = false, fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Human subscribeNewHumanForEpisodeWithBindValues(
 			String queryResponseDef, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -456,7 +456,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(list = false, fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Human subscribeNewHumanForEpisode(
 			String queryResponseDef, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -504,7 +504,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(list = false, fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Human subscribeNewHumanForEpisodeWithBindValues(
 			ObjectResponse objectResponse, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -562,7 +562,7 @@ public class TheSubscriptionType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar(list = false, fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", javaClass = Human.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Human subscribeNewHumanForEpisode(
 			ObjectResponse objectResponse, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {

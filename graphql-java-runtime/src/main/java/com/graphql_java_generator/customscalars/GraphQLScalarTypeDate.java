@@ -58,8 +58,9 @@ public class GraphQLScalarTypeDate {
 						@Override
 						public String serialize(Object input) throws CoercingSerializeException {
 							if (!(input instanceof Date)) {
-								throw new CoercingSerializeException(
-										"Can't parse the '" + input.toString() + "' string to a Date");
+								throw new CoercingSerializeException("Can't parse the '" + input.toString()
+										+ "' Date to a String (it should be a Date but is a "
+										+ input.getClass().getName() + ")");
 							} else {
 								return formater.format((Date) input);
 							}
@@ -83,8 +84,9 @@ public class GraphQLScalarTypeDate {
 						@Override
 						public Date parseValue(Object o) throws CoercingParseValueException {
 							if (!(o instanceof String)) {
-								throw new CoercingParseValueException(
-										"Can't parse the '" + o.toString() + "' string to a Date");
+								throw new CoercingParseValueException("Can't parse the '" + o.toString()
+										+ "' string to a Date (it should be a String but is a " + o.getClass().getName()
+										+ ")");
 							} else {
 								try {
 									return formater.parse((String) o);
@@ -114,8 +116,9 @@ public class GraphQLScalarTypeDate {
 						public Date parseLiteral(Object o) throws CoercingParseLiteralException {
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
 							if (!(o instanceof StringValue)) {
-								throw new CoercingParseValueException(
-										"Can't parse the '" + o.toString() + "' string to a Date");
+								throw new CoercingParseValueException("Can't parse the '" + o.toString()
+										+ "' string value to a Date (it should be a StringValue but is a "
+										+ o.getClass().getName() + ")");
 							} else {
 								try {
 									return formater.parse(((StringValue) o).getValue());

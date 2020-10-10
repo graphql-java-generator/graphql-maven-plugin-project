@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.customscalars.CustomScalar;
+import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.language.ArrayValue;
@@ -29,6 +31,7 @@ import graphql.language.ObjectField;
 import graphql.language.ObjectValue;
 import graphql.language.StringValue;
 import graphql.language.Value;
+import graphql.schema.GraphQLScalarType;
 
 /**
  * @author etienne-sf
@@ -257,24 +260,38 @@ public class GraphqlUtils {
 
 	/**
 	 * This method returns a GraphQL input object, as defined in the GraphQL schema, from the Map that has been read
-	 * from the JSON object sent to the server.
+	 * from the JSON object sent to the server. It detects that the given <I>jsonParsedValue</I> is a list, and, in this
+	 * case, returns a list of instances of the given clazz type.
 	 * 
 	 * @param <T>
 	 *            The class expected to be returned
-	 * @param map
+	 * @param jsonParsedValue
 	 *            The map, read from the JSON in the GraphQL request. Only the part of the map, related to the expected
 	 *            class is sent.
-	 * @param t
-	 *            An empty instance of the expected type. This instance's fields will be set by this method, from the
-	 *            value in the map
+	 * @param graphQLTypeName
+	 *            The name of the GraphQL type, as defined in the GraphQL schema. This can be guessed from the given
+	 *            class for input types and objects, but not for scalars. So it must be provided.
+	 * @param clazz
+	 *            The class of the expected type. A new instance of this type will be returned, with its fields having
+	 *            been set by this method from the value in the map
 	 * @return An instance of the expected class. If the map is null, null is returned. Of the map is empty, anew
 	 *         instance is returned, with all its fields are left empty
 	 */
-	public <T> T getInputObject(Map<String, Object> map, Class<T> clazz) {
-		if (map == null) {
+	@SuppressWarnings("unchecked")
+	public Object getInputObject(Object jsonParsedValue, String graphQLTypeName, Class<?> clazz) {
+		if (jsonParsedValue == null) {
 			return null;
-		} else {
-			T t;
+		} else if (jsonParsedValue instanceof List<?>) {
+			// We've a list. Let's loop inside its items
+			List<Object> objects = new ArrayList<>();
+			for (Object o : (List<Object>) jsonParsedValue) {
+				objects.add(getInputObject(o, graphQLTypeName, clazz));
+			}
+			return objects;
+		} else if (jsonParsedValue instanceof Map<?, ?>) {
+			// We have a Map. Its keys MUST be the attributes for the given class (clazz)
+			Map<String, Object> map = (Map<String, Object>) jsonParsedValue;
+			Object t;
 			Field field;
 
 			try {
@@ -297,50 +314,106 @@ public class GraphqlUtils {
 				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
 				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
 
+				Object value;
+
 				if (graphQLScalar != null) {
-					// We have a Scalar, here. Let's look at all known scalars
-					if (graphQLScalar.javaClass() == UUID.class) {
-						invokeMethod(setter, t, UUID.fromString((String) map.get(key)));
-					} else {
-						invokeMethod(setter, t, map.get(key));
-					}
+					value = getInputObject(map.get(key), graphQLScalar.graphQLTypeName(), graphQLScalar.javaClass());
 				} else if (graphQLNonScalar != null) {
-					// We got a non scalar field. So we expect a map, which content will map to the fields of the target
-					// field.
-					if (!(map.get(key) instanceof Map<?, ?>)) {
-						throw new RuntimeException(
-								"The value for the field '" + clazz.getName() + "." + key + " should be a map");
-					}
-					@SuppressWarnings("unchecked")
-					Map<String, Object> subMap = (Map<String, Object>) map.get(key);
-					invokeMethod(setter, t, getInputObject(subMap, graphQLNonScalar.javaClass()));
+					value = getInputObject(map.get(key), graphQLNonScalar.graphQLTypeName(),
+							graphQLNonScalar.javaClass());
 				} else {
 					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
 							+ "' should have one of these annotations: GraphQLScalar or GraphQLScalar");
 				}
+
+				invokeMethod(setter, t, value);
 			}
 			return t;
+		} else {
+			// We have a scalar.
+			if (graphQLTypeName.equals("ID")) {
+				// ID are managed as UUID (we're on server side)
+				return UUID.fromString((String) jsonParsedValue);
+			} else if (clazz.isEnum()) {
+				if (!(jsonParsedValue instanceof String)) {
+					throw new RuntimeException("The " + clazz.getName()
+							+ " class is an enum, but the provided value is '" + jsonParsedValue
+							+ "' which should be a String, to be mapped to the relevant enum value");
+				}
+				// This object is a String, that we must map to its enum value
+				Method valueOf = graphqlUtils.getMethod("valueOf", clazz, String.class);
+				return graphqlUtils.invokeMethod(valueOf, null, (String) jsonParsedValue);
+			} else {
+				return jsonParsedValue;
+			}
 		}
 	}
 
 	/**
-	 * This method returns a list of instances of the given class, from a list of {@link Map}. This is used on
-	 * server-side, to map the input read from the JSON into the InputType that have been declared in the GraphQL
-	 * schema.
-	 * 
-	 * @param <T>
-	 * @param list
-	 * @param clazz
+	 * Parse a value, depending on the parameter type.
+	 *
+	 * @param parameterValue
+	 * @param parameterType
+	 * @param packageName
 	 * @return
+	 * @throws RuntimeException
+	 *             When the value could be parsed
 	 */
-	public <T> List<T> getListInputObjects(List<Map<String, Object>> list, Class<T> clazz) {
-		List<T> ret = new ArrayList<>(list.size());
+	public Object parseValueForInputParameter(Object parameterValue, String parameterType, Class<?> parameterClass) {
 
-		for (Map<String, Object> map : list) {
-			ret.add(getInputObject(map, clazz));
-		}
+		// Let's check if this type is a Custom Scalar
+		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.customScalarRegistry
+				.getGraphQLScalarType(parameterType);
 
-		return ret;
+		if (graphQLScalarType != null) {
+			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
+			// Note: the GraphqQL ID is managed by specific CustomScalars, which is specific to the client or the server
+			// mode (ID are String for the client, and UUID for the server)
+			return graphQLScalarType.getCoercing().parseValue(parameterValue);
+		} else if (parameterType.equals("Boolean")) {
+			if (parameterValue instanceof Boolean) {
+				// This should not occur
+				return parameterValue;
+			} else if (parameterValue instanceof String) {
+				if (parameterValue.equals("true"))
+					return Boolean.TRUE;
+				else if (parameterValue.equals("false"))
+					return Boolean.FALSE;
+			}
+			throw new RuntimeException(
+					"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'");
+		} else if (parameterType.equals("Float")) {
+			// GraphQL Float are double precision numbers
+			return Double.parseDouble((String) parameterValue);
+		} else if (parameterType.equals("Int")) {
+			return Integer.parseInt((String) parameterValue);
+		} else if (parameterType.equals("Long")) {
+			return Long.parseLong((String) parameterValue);
+		} else if (parameterType.equals("String")) {
+			return parameterValue;
+		} else {
+			// This type is not a Custom Scalar, so it must be a standard Scalar. Let's manage it
+			if (parameterClass.isEnum()) {
+				// This parameter is an enum. The parameterValue is one of its elements
+				Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
+				return graphqlUtils.invokeMethod(valueOf, null, parameterValue);
+			} else if (parameterClass.isAssignableFrom(Boolean.class)) {
+				// This parameter is a boolean. Only true and false are valid boolean.
+				if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
+					throw new RuntimeException("Only true and false are allowed values for booleans, but the value is '"
+							+ parameterValue + "'");
+				}
+				return "true".equals(parameterValue);
+			} else if (parameterClass.isAssignableFrom(Integer.class)) {
+				return Integer.parseInt((String) parameterValue);
+			} else if (parameterClass.isAssignableFrom(Float.class)) {
+				return Float.parseFloat((String) parameterValue);
+			}
+		} // else (scalarType != null)
+
+		// Too bad...
+		throw new RuntimeException("Couldn't parse the value'" + parameterValue + "' for the parameter type '"
+				+ parameterType + "': non managed GraphQL type (maybe a custom scalar is not properly registered?)");
 	}
 
 	/**
@@ -631,6 +704,45 @@ public class GraphqlUtils {
 	public String getPackageName(String classFullName) {
 		int lstPointPosition = classFullName.lastIndexOf('.');
 		return classFullName.substring(0, lstPointPosition);
+	}
+
+	/**
+	 * Retrieves a class for a given classname. For standard GraphQL types (Int, Boolean...) the good package is used
+	 * (java.lang, java.lang, java.util...). For others, the class is searched in the given package name.
+	 * 
+	 * @param packageName
+	 *            The name of the package, where the code has been generated.
+	 * @param graphQLTypeName
+	 *            The name of the class
+	 * @return
+	 */
+	public Class<?> getClass(String packageName, String graphQLTypeName) {
+
+		// First case, the simplest: standard GraphQL type
+		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName))
+			return Boolean.class;
+		else if ("Integer".equals(graphQLTypeName) || "int".equals(graphQLTypeName))
+			return Integer.class;
+		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName))
+			return String.class;
+		else if ("Float".equals(graphQLTypeName) || "Double".equals(graphQLTypeName))
+			return Double.class;
+
+		// Then custom scalars
+		CustomScalar customScalar = CustomScalarRegistryImpl.customScalarRegistry.getCustomScalar(graphQLTypeName);
+		if (customScalar != null) {
+			return customScalar.getValueClazz();
+		}
+
+		// Then other GraphQL types. This types should be linked to a generated java class. So we search for a class of
+		// this name in the given package.
+		String parameterClassname = packageName + "." + graphqlUtils.getJavaName(graphQLTypeName);
+		try {
+			return Class.forName(parameterClassname);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(
+					"Couldn't find the class (" + parameterClassname + ") of the type '" + graphQLTypeName + "'", e);
+		}
 	}
 
 	/**

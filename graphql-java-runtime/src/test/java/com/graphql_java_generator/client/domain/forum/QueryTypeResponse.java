@@ -21,32 +21,32 @@ public class QueryTypeResponse {
 
 	@JsonProperty("boards")
 	@JsonDeserialize(contentAs = Board.class)
-	@GraphQLNonScalar(fieldName = "boards", graphQLTypeName = "Board", javaClass = Board.class)
+	@GraphQLNonScalar(list = false, fieldName = "boards", graphQLTypeName = "Board", javaClass = Board.class)
 	List<Board> boards;
 
 	@JsonProperty("nbBoards")
-	@GraphQLScalar(fieldName = "nbBoards", graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(list = false, fieldName = "nbBoards", graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbBoards;
 
 	@GraphQLInputParameters(names = { "boardName" }, types = { "String" })
 	@JsonProperty("topics")
 	@JsonDeserialize(contentAs = Topic.class)
-	@GraphQLNonScalar(fieldName = "topics", graphQLTypeName = "Topic", javaClass = Topic.class)
+	@GraphQLNonScalar(list = false, fieldName = "topics", graphQLTypeName = "Topic", javaClass = Topic.class)
 	List<Topic> topics;
 
 	@GraphQLInputParameters(names = { "boardName", "keyword" }, types = { "String", "String" })
 	@JsonProperty("findTopics")
 	@JsonDeserialize(contentAs = Topic.class)
-	@GraphQLNonScalar(fieldName = "findTopics", graphQLTypeName = "Topic", javaClass = Topic.class)
+	@GraphQLNonScalar(list = false, fieldName = "findTopics", graphQLTypeName = "Topic", javaClass = Topic.class)
 	List<Topic> findTopics;
 
 	@JsonProperty("__schema")
-	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(list = false, fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
 	__Schema __schema;
 
 	@GraphQLInputParameters(names = { "name" }, types = { "String" })
 	@JsonProperty("__type")
-	@GraphQLNonScalar(fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(list = false, fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type __type;
 
 	public void setBoards(List<Board> boards) {

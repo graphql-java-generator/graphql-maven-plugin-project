@@ -20,27 +20,27 @@ public class __InputValue  {
 	}
 
 	@JsonProperty("name")
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("type")
-	@GraphQLNonScalar(fieldName = "type", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(list = false, fieldName = "type", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type type;
 
 
 	@JsonProperty("defaultValue")
-	@GraphQLScalar(fieldName = "defaultValue", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "defaultValue", graphQLTypeName = "String", javaClass = String.class)
 	String defaultValue;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

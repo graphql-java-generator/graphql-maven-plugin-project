@@ -4,6 +4,7 @@
 package org.forum.server.specific_code;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -68,12 +69,16 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	@Override
 	public Post createPost(DataFetchingEnvironment dataFetchingEnvironment, PostInput postParam) {
 		Post newPost = new Post();
+		newPost.setId(UUID.randomUUID());
 		newPost.setTopicId(postParam.getTopicId());
-		newPost.setAuthorId(postParam.getInput().getAuthorId());
-		newPost.setPubliclyAvailable(postParam.getInput().getPubliclyAvailable());
-		newPost.setDate(postParam.getInput().getDate());
-		newPost.setTitle(postParam.getInput().getTitle());
-		newPost.setContent(postParam.getInput().getContent());
+		newPost.setDate(postParam.getFrom());
+		if (postParam.getInput() != null) {
+			newPost.setAuthorId(postParam.getInput().getAuthorId());
+			newPost.setPubliclyAvailable(postParam.getInput().getPubliclyAvailable());
+			newPost.setDate(postParam.getInput().getDate());
+			newPost.setTitle(postParam.getInput().getTitle());
+			newPost.setContent(postParam.getInput().getContent());
+		}
 		postRepository.save(newPost);
 
 		// Let's publish that new post, in case someone subscribed to the subscribeToNewPost GraphQL subscription
