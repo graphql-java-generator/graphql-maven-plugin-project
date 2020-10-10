@@ -2,10 +2,12 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Add a test case for issue 49
 * Allow to control the list of schema files, and their order (necessary to properly manage the extend keyword)
 * Add a description of the GraphQL mojo
 * Switch to graphql-java 15.0 (waiting for [issue 1844](https://github.com/graphql-java/graphql-java/issues/1844) to be solved)
 * Add the Tutorial for Subscription, on the Client side
+* Looks like the code generation doesn't work with a schema without a query (see the schema in issue 49)
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Analyze and response to issue #39 (@connection for relay)
 * Add the _connection_ stuff, as [specified here](https://relay.dev/graphql/connections.htmh 
