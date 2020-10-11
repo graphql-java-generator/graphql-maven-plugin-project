@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
@@ -875,13 +876,13 @@ public abstract class DocumentParser {
 	 */
 	void initListOfInterfaceImplementations() {
 		for (InterfaceType interfaceType : interfaceTypes) {
-			for (ObjectType objectType : objectTypes) {
-				if (objectType.getImplementz().contains(interfaceType.getName())) {
+			Stream.concat(objectTypes.stream(), interfaceTypes.stream()).forEach((o) -> {
+				if (o.getImplementz().contains(interfaceType.getName())) {
 					// This object implements the current interface we're looping in.
-					interfaceType.getImplementingTypes().add(objectType);
+					interfaceType.getImplementingTypes().add(o);
 				}
-			}
-		}
+			});
+		} // for
 	}
 
 	/**

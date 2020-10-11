@@ -63,6 +63,12 @@ public class AddRelayConnections {
 	@Autowired
 	CommonConfiguration configuration;
 
+	/**
+	 * This will contain the {@link InterfaceType} for the Node interface, whether it has been created by this class, or
+	 * it already exist before
+	 */
+	InterfaceType node = null;
+
 	/** The main entry point of the class. It is responsible for doing what's described in the class documentation */
 	public void addRelayConnections() {
 		addNodeInterface();
@@ -129,6 +135,7 @@ public class AddRelayConnections {
 				}
 
 				// Ok, this interface is compliant. We're done.
+				node = i;
 				break;
 			}
 		}
@@ -142,14 +149,14 @@ public class AddRelayConnections {
 			}
 
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
-			InterfaceType i = new InterfaceType(NODE, configuration.getPackageName());
+			node = new InterfaceType(NODE, configuration.getPackageName());
 			// Adding the id field toe the Node interface
-			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(i)
+			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(node)
 					.documentParser(documentParser).build();
-			i.getFields().add(f);
+			node.getFields().add(f);
 
-			documentParser.getInterfaceTypes().add(i);
-			documentParser.getTypes().put(NODE, i);
+			documentParser.getInterfaceTypes().add(node);
+			documentParser.getTypes().put(NODE, node);
 		}
 
 	}
@@ -574,8 +581,11 @@ public class AddRelayConnections {
 			// Add the Node interface to the implemented interface, if it's not already the case
 			if (0 == ((ObjectType) type).getImplementz().stream()
 					.filter((interfaceName) -> interfaceName.equals("Node")).count()) {
-				// This type doesn't implement the Node interface
+				// This type didn't implement the Node interface :
+				// 1) We add the Node interface to its list of implemented interfaces.
 				((ObjectType) type).getImplementz().add("Node");
+				// 2) We add this type to the list of types that are implemented by the Node interface
+				node.getImplementingTypes().add((ObjectType) type);
 			}
 
 			generateConnectionType(type);

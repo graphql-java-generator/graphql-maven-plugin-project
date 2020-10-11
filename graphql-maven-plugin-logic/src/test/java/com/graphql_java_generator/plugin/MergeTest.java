@@ -62,12 +62,12 @@ class MergeTest {
 		deepComparator.addIgnoredClass(GraphqlUtils.class);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
+		/////////////// Id fields //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIdField(ObjectType.class, "name");
-		Ajotuer les autres
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
+		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
 		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "configuration");
 		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "graphqlUtils");
 		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "documents");
@@ -160,6 +160,12 @@ class MergeTest {
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
 		ctx.close();
+
+		if (sourceDocumentParser.getConfiguration().isAddRelayConnections()) {
+			// The addRelayConnections parameters generates changes in the generated schema. Let's update the source
+			// schema, to take into account these changes
+
+		}
 
 		// Let's load the content of the generated schema in a new DocumentParser
 		ctx = new AnnotationConfigApplicationContext(generatedSpringConfClass);
