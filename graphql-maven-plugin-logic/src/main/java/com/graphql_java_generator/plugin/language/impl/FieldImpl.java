@@ -188,10 +188,6 @@ public class FieldImpl implements Field {
 
 		// Field's name
 		sb.append("Field {name: ");
-		// owningType is null for field parameters, directive arguments...
-		if (owningType != null) {
-			sb.append(owningType.getName()).append(".");
-		}
 		sb.append(getName());
 
 		// Field's type

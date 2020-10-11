@@ -122,7 +122,7 @@ public class ObjectType extends AbstractType {
 		StringBuilder sb = new StringBuilder();
 		boolean addSeparator;
 
-		sb.append("ObjectType {name: ").append(getName());
+		sb.append(getClass().getSimpleName() + " {name: ").append(getName());
 
 		sb.append(", fields: {");
 		addSeparator = false;
@@ -134,6 +134,11 @@ public class ObjectType extends AbstractType {
 				addSeparator = true;
 		}
 		sb.append("}");
+
+		if (getImplementz().size() > 0) {
+			sb.append("implements ");
+			sb.append(String.join(",", getImplementz()));
+		}
 
 		return sb.toString();
 	}

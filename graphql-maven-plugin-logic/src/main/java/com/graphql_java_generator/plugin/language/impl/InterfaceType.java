@@ -72,4 +72,8 @@ public class InterfaceType extends ObjectType {
 		super(null, packageName, GraphQlType.INTERFACE);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }
