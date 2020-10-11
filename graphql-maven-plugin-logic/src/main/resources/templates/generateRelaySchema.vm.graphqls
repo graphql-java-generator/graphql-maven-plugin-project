@@ -145,7 +145,7 @@ union ${union.name}#implementedDirective($union.appliedDirectives)$space
 ################  Interfaces      #############################################################################
 ###############################################################################################################
 #foreach ($interface in $interfaceTypes)
-interface ${interface.name}#implementedDirective($interface.appliedDirectives) {
+interface ${interface.name}#implements($interface.implementz)#implementedDirective($interface.appliedDirectives) {
 #objectFields($interface.fields)
 }
 
