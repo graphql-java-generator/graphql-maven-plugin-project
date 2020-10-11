@@ -29,9 +29,7 @@ public class GraphQLScalarTypeString {
 	 */
 	public static GraphQLScalarType String = GraphQLScalarType.newScalar().name("String")
 			.description("Useless Custom Scalar for String management").coercing(
-					//
-					// Note: String is the way the data is stored in GraphQL queries
-					// Date is the type while in the java code, either in the client and in the server
+
 					new Coercing<String, String>() {
 
 						/**

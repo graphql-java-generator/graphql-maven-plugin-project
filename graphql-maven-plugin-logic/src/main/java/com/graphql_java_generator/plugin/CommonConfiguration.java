@@ -102,9 +102,9 @@ public interface CommonConfiguration {
 	 * </P>
 	 * <UL>
 	 * <LI>The field type, whether it's a list or not, is replaced by the relevant XxxConnection type. For instance the
-	 * query <I>allHumans(criteria: String): [Human] <I>&#064;RelayConnection</I></I> is replaced by
-	 * <I>allHumans(criteria: String): HumanConnection</I>, and the human's field <I>friends: Character
-	 * <I>&#064;RelayConnection</I></I> is replaced by <I>friends: CharacterConnection</I>. Please note that :
+	 * query <I>allHumans(criteria: String): [Human] &#064;RelayConnection</I> is replaced by <I>allHumans(criteria:
+	 * String): HumanConnection</I>, and the human's field <I>friends: Character &#064;RelayConnection</I> is replaced
+	 * by <I>friends: CharacterConnection</I>. Please note that :
 	 * <UL>
 	 * <LI>The <I>&#064;RelayConnection</I> directive is removed in the target schema</LI>
 	 * <LI>If the <I>&#064;RelayConnection</I> is set on a field of an interface, it should be set also in the same
@@ -115,7 +115,7 @@ public interface CommonConfiguration {
 	 * field, for one type that implements this interface, then an error is generated. The directive is applied on the
 	 * interface and its implementations's field, whether or not the directive is actually set in the implementing
 	 * classes.</LI>
-	 * <LI>Input type's fields may not have the <I>&#064;RelayConnection</I> directive</I>
+	 * <LI>Input type's fields may not have the <I>&#064;RelayConnection</I> directive</LI>
 	 * </UL>
 	 * </LI>
 	 * <LI>For each type marked at least once, with the <I>&#064;RelayConnection</I> directive (the <I>Human</I> type,

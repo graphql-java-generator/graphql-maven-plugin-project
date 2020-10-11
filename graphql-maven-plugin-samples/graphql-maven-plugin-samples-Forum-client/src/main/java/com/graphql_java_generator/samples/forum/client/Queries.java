@@ -8,6 +8,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
@@ -42,6 +43,9 @@ public interface Queries {
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
 
 	Topic createTopic(TopicInput topicInput)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+
+	public Member createMember(MemberInput input)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	public Post createPost(PostInput input) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;

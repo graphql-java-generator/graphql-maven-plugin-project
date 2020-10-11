@@ -22,6 +22,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
@@ -238,6 +239,26 @@ abstract class AbstractIT {
 	}
 
 	@Test
+	void test_createMember() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// Preparation
+		MemberInput input = new MemberInput();
+		input.setAlias("an alias");
+		input.setEmail("an.email@my.domain.com");
+		input.setName("a member name");
+		input.setType(MemberType.MODERATOR);
+
+		// Go, go, go
+		Member member = queries.createMember(input);
+
+		// Verification
+		assertNotNull(member.getId());
+		assertEquals("an alias", member.getAlias());
+		assertEquals("an.email@my.domain.com", member.getEmail());
+		assertEquals("a member name", member.getName());
+		assertEquals(MemberType.MODERATOR, member.getType());
+	}
+
+	@Test
 	void test_createPost() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		Member author = new Member();
@@ -245,7 +266,7 @@ abstract class AbstractIT {
 		PostInput postInput = new PostInput();
 		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
 		postInput.setInput(getTopicPostInput(author, "Some other content",
-				new GregorianCalendar(2019, 11 - 1, 21).getTime(), false, "The good title for a post"));
+				new GregorianCalendar(1900, 11 - 1, 21).getTime(), false, "The good title for a post"));
 
 		// Go, go, go
 		Post post = queries.createPost(postInput);
@@ -253,7 +274,7 @@ abstract class AbstractIT {
 		// Verification
 		assertNotNull(post.getId());
 		assertEquals("Some other content", post.getContent());
-		assertEquals(new GregorianCalendar(2019, 11 - 1, 21).getTime(), post.getDate());
+		assertEquals(new GregorianCalendar(1900, 11 - 1, 21).getTime(), post.getDate());
 		assertEquals(false, post.getPubliclyAvailable());
 		assertEquals("The good title for a post", post.getTitle());
 	}
@@ -266,7 +287,7 @@ abstract class AbstractIT {
 		PostInput postInput = new PostInput();
 		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
 		postInput.setInput(getTopicPostInput(author, "Some other content",
-				new GregorianCalendar(2009, 11 - 1, 21).getTime(), false, "The good title for a post"));
+				new GregorianCalendar(1900, 11 - 1, 21).getTime(), false, "The good title for a post"));
 
 		List<PostInput> list = new ArrayList<>();
 		list.add(postInput);

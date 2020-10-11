@@ -19,8 +19,8 @@
 		<module>graphql-maven-plugin-samples-allGraphQLCases-server</module>
 		<module>graphql-maven-plugin-samples-allGraphQLCases-client</module>
 		<!-- The Basic sample is removed from the build, to accelerate it -->
-		<!-- module>graphql-maven-plugin-samples-Basic-server</module-->
-		<!-- module>graphql-maven-plugin-samples-Basic-client</module-->
+		<!-- module>graphql-maven-plugin-samples-Basic-server</module -->
+		<!-- module>graphql-maven-plugin-samples-Basic-client</module -->
 		<module>graphql-maven-plugin-samples-Forum-server</module>
 		<module>graphql-maven-plugin-samples-Forum-client</module>
 		<module>graphql-maven-plugin-samples-StarWars-client</module>
@@ -37,25 +37,25 @@
 					<artifactId>graphql-maven-plugin</artifactId>
 					<version>${project.version}</version>
 				</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>							
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+						<execution>
+							<id>add-source</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>add-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>

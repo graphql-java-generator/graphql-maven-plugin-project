@@ -21,34 +21,34 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 public class __Directive  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("locations")
 	@JsonDeserialize(contentAs = __DirectiveLocation.class)
-	@GraphQLScalar(fieldName = "locations", graphQLTypeName = "__DirectiveLocation", javaClass = __DirectiveLocation.class)
+	@GraphQLScalar(list = false, fieldName = "locations", graphQLTypeName = "__DirectiveLocation", javaClass = __DirectiveLocation.class)
 	List<__DirectiveLocation> locations;
 
 
 	@JsonProperty("args")
 	@JsonDeserialize(contentAs = __InputValue.class)
-	@GraphQLNonScalar(fieldName = "args", graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
+	@GraphQLNonScalar(list = false, fieldName = "args", graphQLTypeName = "__InputValue", javaClass = __InputValue.class)
 	List<__InputValue> args;
 
 
 	@JsonProperty("isRepeatable")
-	@GraphQLScalar(fieldName = "isRepeatable", graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar(list = false, fieldName = "isRepeatable", graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean isRepeatable;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

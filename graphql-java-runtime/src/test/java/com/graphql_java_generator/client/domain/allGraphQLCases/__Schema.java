@@ -22,39 +22,39 @@ public class __Schema  {
 	}
 
 	@JsonProperty("description")
-	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonDeserialize(contentAs = __Type.class)
 	@JsonProperty("types")
-	@GraphQLNonScalar(fieldName = "types", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(list = false, fieldName = "types", graphQLTypeName = "__Type", javaClass = __Type.class)
 	List<__Type> types;
 
 
 	@JsonProperty("queryType")
-	@GraphQLNonScalar(fieldName = "queryType", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(list = false, fieldName = "queryType", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type queryType;
 
 
 	@JsonProperty("mutationType")
-	@GraphQLNonScalar(fieldName = "mutationType", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(list = false, fieldName = "mutationType", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type mutationType;
 
 
 	@JsonProperty("subscriptionType")
-	@GraphQLNonScalar(fieldName = "subscriptionType", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(list = false, fieldName = "subscriptionType", graphQLTypeName = "__Type", javaClass = __Type.class)
 	__Type subscriptionType;
 
 
 	@JsonDeserialize(contentAs = __Directive.class)
 	@JsonProperty("directives")
-	@GraphQLNonScalar(fieldName = "directives", graphQLTypeName = "__Directive", javaClass = __Directive.class)
+	@GraphQLNonScalar(list = false, fieldName = "directives", graphQLTypeName = "__Directive", javaClass = __Directive.class)
 	List<__Directive> directives;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

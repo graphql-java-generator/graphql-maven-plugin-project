@@ -22,40 +22,40 @@ public class HumanInput  {
 	}
 
 	@JsonProperty("name")
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("bestFriend")
-	@GraphQLNonScalar(fieldName = "bestFriend", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
+	@GraphQLNonScalar(list = false, fieldName = "bestFriend", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
 	CharacterInput bestFriend;
 
 
 	@JsonDeserialize(contentAs = CharacterInput.class)
 	@JsonProperty("friends")
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
+	@GraphQLNonScalar(list = false, fieldName = "friends", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
 	List<CharacterInput> friends;
 
 
 	@JsonProperty("nbComments")
-	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(list = false, fieldName = "nbComments", graphQLTypeName = "Int", javaClass = Integer.class)
 	Integer nbComments;
 
 
 	@JsonDeserialize(contentAs = String.class)
 	@JsonProperty("comments")
-	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "comments", graphQLTypeName = "String", javaClass = String.class)
 	List<String> comments;
 
 
 	@JsonDeserialize(contentAs = Episode.class)
 	@JsonProperty("appearsIn")
-	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar(list = false, fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
 	@JsonProperty("homePlanet")
-	@GraphQLScalar(fieldName = "homePlanet", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "homePlanet", graphQLTypeName = "String", javaClass = String.class)
 	String homePlanet;
 
 

@@ -32,28 +32,21 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 	 * Map of all registered Custom Scalars. The key is the type name or the Custom Scalar, as defined in the GraphQL
 	 * schema.
 	 */
-	Map<String, GraphQLScalarType> customScalarTypes = new HashMap<>();
+	Map<String, CustomScalar> customScalarTypes = new HashMap<>();
 
-	/**
-	 * {@inheritDoc}<BR/>
-	 * This implementation works only if this class has been loaded as a Spring Component.
-	 */
 	@Override
-	public void registerAllGraphQLScalarType() {
-		for (GraphQLScalarType type : ctx.getBeansOfType(GraphQLScalarType.class).values()) {
-			registerGraphQLScalarType(type);
-		}
+	public void registerGraphQLScalarType(GraphQLScalarType type, Class<?> valueClazz) {
+		customScalarTypes.put(type.getName(), new CustomScalar(type, valueClazz));
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void registerGraphQLScalarType(GraphQLScalarType type) {
-		customScalarTypes.put(type.getName(), type);
-	}
-
-	/** {@inheritDoc} */
 	@Override
 	public GraphQLScalarType getGraphQLScalarType(String graphQLTypeName) {
+		CustomScalar scalar = customScalarTypes.get(graphQLTypeName);
+		return (scalar == null) ? null : scalar.getGraphQLScalarType();
+	}
+
+	@Override
+	public CustomScalar getCustomScalar(String graphQLTypeName) {
 		return customScalarTypes.get(graphQLTypeName);
 	}
 

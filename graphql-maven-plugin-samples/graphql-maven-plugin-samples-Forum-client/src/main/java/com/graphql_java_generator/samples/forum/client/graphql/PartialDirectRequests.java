@@ -8,6 +8,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
@@ -64,6 +66,12 @@ public class PartialDirectRequests implements Queries {
 		return mutationType.createTopic(
 				"{id date author{id} nbPosts title content posts(since: \"1900-01-01\"){id}  publiclyAvailable}",
 				input);
+	}
+
+	@Override
+	public Member createMember(MemberInput input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return mutationType.createMember("{id name alias email type}", input);
 	}
 
 	@Override

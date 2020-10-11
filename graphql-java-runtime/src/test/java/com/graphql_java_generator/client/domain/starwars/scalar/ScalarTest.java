@@ -5,7 +5,7 @@ import com.graphql_java_generator.client.domain.starwars.Episode;
 
 public class ScalarTest {
 
-	@GraphQLScalar(fieldName = "episode", graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar(list = false, fieldName = "episode", graphQLTypeName = "Episode", javaClass = Episode.class)
 	Episode episode;
 
 }

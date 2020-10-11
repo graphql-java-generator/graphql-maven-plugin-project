@@ -11,7 +11,7 @@ import com.graphql_java_generator.client.response.Error;
 public class AnotherMutationTypeRootResponse {
 
 	@JsonProperty("data")
-	@GraphQLNonScalar(fieldName = "AnotherMutationType", graphQLTypeName = "AnotherMutationType", javaClass = AnotherMutationType.class)
+	@GraphQLNonScalar(list = false, fieldName = "AnotherMutationType", graphQLTypeName = "AnotherMutationType", javaClass = AnotherMutationType.class)
 	AnotherMutationType mutation;
 
 	@JsonProperty("errors")

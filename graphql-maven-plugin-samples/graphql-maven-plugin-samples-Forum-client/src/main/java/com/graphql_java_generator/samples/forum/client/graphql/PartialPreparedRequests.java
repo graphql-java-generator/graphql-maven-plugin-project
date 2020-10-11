@@ -11,6 +11,8 @@ import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
@@ -43,6 +45,7 @@ public class PartialPreparedRequests implements Queries {
 	GraphQLRequest findTopicIdDateTitleContentRequest;
 	GraphQLRequest createBoardRequest;
 	GraphQLRequest createTopicRequest;
+	GraphQLRequest createMemberRequest;
 	GraphQLRequest createPostRequest;
 	GraphQLRequest createPostsRequest;
 
@@ -65,11 +68,17 @@ public class PartialPreparedRequests implements Queries {
 
 		// No field defined, so all scalar fields are returned
 		createBoardRequest = mutationType.getCreateBoardGraphQLRequest(null);
+
 		// No field defined, so all scalar fields are returned
 		createTopicRequest = mutationType.getCreateTopicGraphQLRequest(null);
+
+		// {id name alias email type}
+		createMemberRequest = mutationType.getCreateMemberGraphQLRequest("{id name alias email type}");
+
 		// "{id date author{id} title content publiclyAvailable}"
 		createPostRequest = mutationType
 				.getCreatePostGraphQLRequest("{id date author{id} title content publiclyAvailable}");
+
 		// "{id date author{id} title content publiclyAvailable}"
 		createPostsRequest = mutationType
 				.getCreatePostsGraphQLRequest("{id date author{id} title content publiclyAvailable}");
@@ -123,6 +132,13 @@ public class PartialPreparedRequests implements Queries {
 		// createTopicRequest has been create with this query string:
 		// (empty) which means that all scalars are returned
 		return mutationType.createTopic(createTopicRequest, input);
+	}
+
+	@Override
+	public Member createMember(MemberInput input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// createMember(input: &member) {id name alias email type}
+		return mutationType.createMember(createMemberRequest, input);
 	}
 
 	@Override

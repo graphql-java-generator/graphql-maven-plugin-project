@@ -4,11 +4,14 @@
 package org.forum.server.specific_code;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.DataFetchersDelegateMutationType;
+import org.forum.server.graphql.Member;
+import org.forum.server.graphql.MemberInput;
 import org.forum.server.graphql.Post;
 import org.forum.server.graphql.PostInput;
 import org.forum.server.graphql.Topic;
@@ -68,12 +71,16 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	@Override
 	public Post createPost(DataFetchingEnvironment dataFetchingEnvironment, PostInput postParam) {
 		Post newPost = new Post();
+		newPost.setId(UUID.randomUUID());
 		newPost.setTopicId(postParam.getTopicId());
-		newPost.setAuthorId(postParam.getInput().getAuthorId());
-		newPost.setPubliclyAvailable(postParam.getInput().getPubliclyAvailable());
-		newPost.setDate(postParam.getInput().getDate());
-		newPost.setTitle(postParam.getInput().getTitle());
-		newPost.setContent(postParam.getInput().getContent());
+		newPost.setDate(postParam.getFrom());
+		if (postParam.getInput() != null) {
+			newPost.setAuthorId(postParam.getInput().getAuthorId());
+			newPost.setPubliclyAvailable(postParam.getInput().getPubliclyAvailable());
+			newPost.setDate(postParam.getInput().getDate());
+			newPost.setTitle(postParam.getInput().getTitle());
+			newPost.setContent(postParam.getInput().getContent());
+		}
 		postRepository.save(newPost);
 
 		// Let's publish that new post, in case someone subscribed to the subscribeToNewPost GraphQL subscription
@@ -87,6 +94,17 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 		// Actually, this mutation is for sample only. We don't want to implement it !
 		// :)
 		throw new RuntimeException("Spamming is forbidden");
+	}
+
+	@Override
+	public Member createMember(DataFetchingEnvironment dataFetchingEnvironment, MemberInput input) {
+		Member member = new Member();
+		member.setId(UUID.randomUUID());
+		member.setAlias(input.getAlias());
+		member.setEmail(input.getEmail());
+		member.setName(input.getName());
+		member.setType(input.getType());
+		return member;
 	}
 
 }

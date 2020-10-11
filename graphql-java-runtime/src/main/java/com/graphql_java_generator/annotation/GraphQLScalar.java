@@ -31,6 +31,9 @@ public @interface GraphQLScalar {
 	 */
 	public String graphQLTypeName();
 
+	/** true if this GraphQL attribute is a list */
+	public boolean list();
+
 	/** Contains the java data type that is has used to store the data, on both the client and the server side. */
 	public Class<?> javaClass();
 

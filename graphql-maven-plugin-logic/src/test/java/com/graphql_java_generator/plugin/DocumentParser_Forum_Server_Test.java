@@ -101,21 +101,21 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals("@Entity\n@GraphQLObjectType(\"Topic\")", topic.getAnnotation(), "Entity annotation");
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", javaClass = UUID.class)");
+				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", list = false, javaClass = UUID.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", javaClass = Date.class)");
+				"@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", list = false, javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", javaClass = Member.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", list = false, javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
-				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", javaClass = Boolean.class)");
+				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", list = false, javaClass = Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts",
-				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", javaClass = Integer.class)");
+				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", list = false, javaClass = Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title",
-				"@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content",
-				"@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", javaClass = Post.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", list = true, javaClass = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {
@@ -148,7 +148,7 @@ class DocumentParser_Forum_Server_Test {
 	@Test
 	@DirtiesContext
 	void test_initDataFetchers() {
-		assertEquals(15, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(16, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		//
@@ -176,6 +176,8 @@ class DocumentParser_Forum_Server_Test {
 				false, false, null, "post");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post",
 				true, false, null, "spam");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createMember", "MutationType", "createMember", "Member",
+				false, false, null, "input");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "subscribeToNewPost", "SubscriptionType",
 				"subscribeToNewPost", "Post", false, false, null, "boardName");

@@ -22,27 +22,27 @@ import java.util.Date;
 public class __EnumValue  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("isDeprecated")
-	@GraphQLScalar(fieldName = "isDeprecated", graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar(list = false, fieldName = "isDeprecated", graphQLTypeName = "Boolean", javaClass = Boolean.class)
 	Boolean isDeprecated;
 
 
 	@JsonProperty("deprecationReason")
-	@GraphQLScalar(fieldName = "deprecationReason", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "deprecationReason", graphQLTypeName = "String", javaClass = String.class)
 	String deprecationReason;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

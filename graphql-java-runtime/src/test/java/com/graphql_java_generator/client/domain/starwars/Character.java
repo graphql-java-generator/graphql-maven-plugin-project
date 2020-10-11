@@ -24,37 +24,37 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 		@GraphQLInterfaceType("Character")
 public interface Character  {
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	public void setId(String id);
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
 	public String getId();
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	public void setName(String name);
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
 	public String getName();
 
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(list = false, fieldName = "friends", graphQLTypeName = "Character", javaClass = Character.class)
 	public void setFriends(List<Character> friends);
 
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(list = false, fieldName = "friends", graphQLTypeName = "Character", javaClass = Character.class)
 	public List<Character> getFriends();
 
 	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar(list = false, fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
 	public void setAppearsIn(List<Episode> appearsIn);
 
 	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar(list = false, fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
 	public List<Episode> getAppearsIn();
 
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	public void set__typename(String __typename);
 
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	public String get__typename();
 }

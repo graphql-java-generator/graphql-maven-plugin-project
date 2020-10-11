@@ -14,6 +14,7 @@ Here are the next tasks listed, as a TODO list:
 * Add a description of the GraphQL mojo
 * Waiting for [issue 2055](https://github.com/graphql-java/graphql-java/issues/2055) to be solved. Some test cases can then be run again (see the allGraphQLCases.graphqls file)
 * Add the Tutorial for Subscription, on the Client side
+* Looks like the code generation doesn't work with a schema without a query (see the schema in issue 49)
 * Update the README with the XxxxExecutor classes, when the next version is released
 * Analyze and response to issue #39 (@connection for relay)
 * Add the _connection_ stuff, as [specified here](https://relay.dev/graphql/connections.htmh 

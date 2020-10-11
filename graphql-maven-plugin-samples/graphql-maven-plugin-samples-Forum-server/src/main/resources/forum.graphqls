@@ -18,6 +18,7 @@ type MutationType {
 	createTopic(topic: TopicInput): Topic!
 	createPost(post: PostInput!): Post!
 	createPosts(spam: [PostInput!]!): [Post!]!
+	createMember(input: MemberInput!): Member
 }
 
 type SubscriptionType {
@@ -28,6 +29,13 @@ enum MemberType {
     ADMIN
     MODERATOR
     STANDARD
+}
+
+input MemberInput {
+    name: String!
+    alias: String
+    email: String!
+    type: MemberType
 }
 
 type Member {

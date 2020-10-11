@@ -20,12 +20,12 @@ public class _break  {
 
 	@GraphQLInputParameters(names = {"test", "if"}, types = {"extends", "else"})
 	@JsonProperty("case")
-	@GraphQLScalar(fieldName = "case", graphQLTypeName = "extends", javaClass = _extends.class)
+	@GraphQLScalar(list = false, fieldName = "case", graphQLTypeName = "extends", javaClass = _extends.class)
 	_extends _case;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
 	String __typename;
 
 

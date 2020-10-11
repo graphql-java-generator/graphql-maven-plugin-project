@@ -19,7 +19,7 @@ public class _class  {
 	}
 
 	@JsonProperty("default")
-	@GraphQLScalar(fieldName = "default", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar(list = false, fieldName = "default", graphQLTypeName = "String", javaClass = String.class)
 	String _default;
 
 

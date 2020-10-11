@@ -4,12 +4,13 @@
 package com.graphql_java_generator.client.request;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.UUID;
+
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -17,12 +18,10 @@ import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.directive.Directive;
-import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.schema.GraphQLScalarType;
-import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * Contains an input parameter, to be sent to a query (mutation...). It can be either:
@@ -395,66 +394,12 @@ public class InputParameter {
 	 */
 	private static Object parseValueForInputParameter(String parameterValue, String parameterType, String packageName)
 			throws GraphQLRequestPreparationException {
-
-		// Let's check if this type is a Custom Scalar
-		GraphQLScalarType scalarType = CustomScalarRegistryImpl.customScalarRegistry
-				.getGraphQLScalarType(parameterType);
-
-		if (scalarType != null) {
-			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.
-			return scalarType.getCoercing().parseValue(parameterValue);
-		} else if (parameterType.equals("Boolean")) {
-			if (parameterValue.equals("true"))
-				return Boolean.TRUE;
-			else if (parameterValue.equals("false"))
-				return Boolean.FALSE;
-			else
-				throw new GraphQLRequestPreparationException(
-						"Bad boolean value '" + parameterValue + "' for the parameter type '" + parameterType + "'");
-		} else if (parameterType.equals("ID")) {
-			return parameterValue;
-		} else if (parameterType.equals("Float")) {
-			// GraphQL Float are double precision numbers
-			return Double.parseDouble(parameterValue);
-		} else if (parameterType.equals("Int")) {
-			return Integer.parseInt(parameterValue);
-		} else if (parameterType.equals("Long")) {
-			return Long.parseLong(parameterValue);
-		} else if (parameterType.equals("String")) {
-			return parameterValue;
-		} else {
-			// This type is not a Custom Scalar, so it must be a standard Scalar. Let's manage it
-			String parameterClassname = packageName + "." + graphqlUtils.getJavaName(parameterType);
-			Class<?> parameterClass;
-			try {
-				parameterClass = Class.forName(parameterClassname);
-			} catch (ClassNotFoundException e) {
-				throw new GraphQLRequestPreparationException(
-						"Couldn't find the class (" + parameterClassname + ") of the type '" + parameterType + "'", e);
-			}
-
-			if (parameterClass.isEnum()) {
-				// This parameter is an enum. The parameterValue is one of its elements
-				Method valueOf = graphqlUtils.getMethod("valueOf", parameterClass, String.class);
-				return graphqlUtils.invokeMethod(valueOf, null, parameterValue);
-			} else if (parameterClass.isAssignableFrom(Boolean.class)) {
-				// This parameter is a boolean. Only true and false are valid boolean.
-				if (!"true".equals(parameterValue) && !"false".equals(parameterValue)) {
-					throw new GraphQLRequestPreparationException(
-							"Only true and false are allowed values for booleans, but the value is '" + parameterValue
-									+ "'");
-				}
-				return "true".equals(parameterValue);
-			} else if (parameterClass.isAssignableFrom(Integer.class)) {
-				return Integer.parseInt(parameterValue);
-			} else if (parameterClass.isAssignableFrom(Float.class)) {
-				return Float.parseFloat(parameterValue);
-			}
-		} // else (scalarType != null)
-
-		// Too bad...
-		throw new GraphQLRequestPreparationException(
-				"Couldn't parse the value'" + parameterValue + "' for the parameter type '" + parameterType + "'");
+		try {
+			return graphqlUtils.parseValueForInputParameter(parameterValue, parameterType,
+					graphqlUtils.getClass(packageName, parameterType));
+		} catch (RuntimeException e) {
+			throw new GraphQLRequestPreparationException(e.getMessage(), e);
+		}
 	}
 
 	public String getName() {
@@ -532,8 +477,9 @@ public class InputParameter {
 	}
 
 	/**
-	 * Escape a string in accordance with the rules defined for JSON strings so that it can be included in a GraphQL payload.
-	 * Because a GraphQL request consists of stringified JSON objects wrapped in another JSON object, the escaping is applied twice.
+	 * Escape a string in accordance with the rules defined for JSON strings so that it can be included in a GraphQL
+	 * payload. Because a GraphQL request consists of stringified JSON objects wrapped in another JSON object, the
+	 * escaping is applied twice.
 	 *
 	 * @see <a href="https://www.json.org/">json.org section on strings</a>
 	 * @return escaped string

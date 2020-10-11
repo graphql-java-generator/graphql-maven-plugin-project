@@ -9,6 +9,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
@@ -41,6 +43,7 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 	ObjectResponse findTopicIdDateTitleContentResponse;
 	ObjectResponse createBoardResponse;
 	ObjectResponse createTopicResponse;
+	ObjectResponse createMemberResponse;
 	ObjectResponse createPostResponse;
 	ObjectResponse createPostsResponse;
 
@@ -61,11 +64,18 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 
 		// No field defined, so all scalar fields are returned
 		createBoardResponse = mutationType.getCreateBoardResponseBuilder().build();
+
 		// No field defined, so all scalar fields are returned
 		createTopicResponse = mutationType.getCreateTopicResponseBuilder().build();
+
+		// createMember(input: &member) {id name alias email type}
+		createMemberResponse = mutationType.getCreateMemberResponseBuilder()
+				.withQueryResponseDef("{id name alias email type}").build();
+
 		// "{id date author{id} title content publiclyAvailable}"
 		createPostResponse = mutationType.getCreatePostResponseBuilder()
 				.withQueryResponseDef("{id date author{id} title content publiclyAvailable}").build();
+
 		// "{id date author{id} title content publiclyAvailable}"
 		createPostsResponse = mutationType.getCreatePostsResponseBuilder()
 				.withQueryResponseDef("{id date author{id} title content publiclyAvailable}").build();
@@ -122,6 +132,13 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 	}
 
 	@Override
+	public Member createMember(MemberInput input)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// createMember(input: &member) {id name alias email type}
+		return mutationType.createMember(createMemberResponse, input);
+	}
+
+	@Override
 	public Post createPost(PostInput input)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// createPostResponse has been create with this query string:
@@ -136,4 +153,5 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 		// {id date author{id} title content publiclyAvailable}
 		return mutationType.createPosts(createPostsResponse, input);
 	}
+
 }
