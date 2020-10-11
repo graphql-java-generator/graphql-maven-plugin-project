@@ -207,7 +207,7 @@ public class FieldImpl implements Field {
 			else
 				appendSeparator = true;
 			sb.append(param.getName()).append(":");
-			appendType(sb, this);
+			appendType(sb, (FieldImpl) param);
 		} // for
 		sb.append("]}");
 
