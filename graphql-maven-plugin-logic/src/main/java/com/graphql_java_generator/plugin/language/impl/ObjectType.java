@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.CommonConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 
 import lombok.Getter;
@@ -57,37 +57,33 @@ public class ObjectType extends AbstractType {
 	 * 
 	 * @param name
 	 *            The name of this object type
-	 * @param packageName
-	 *            the package name where it must be created
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
+	 * @param configuration
+	 *            The current plugin configuration, which is accessible through an interface that extends
+	 *            {@link CommonConfiguration}
 	 */
-	public ObjectType(String name, String packageName) {
-		super(packageName, GraphQlType.OBJECT);
-		setName(name);
-	}
-
-	/**
-	 * @param packageName
-	 *            the package name where it must be created
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
-	 */
-	public ObjectType(String packageName) {
-		super(packageName, GraphQlType.OBJECT);
+	public ObjectType(String name, CommonConfiguration configuration) {
+		super(name, GraphQlType.OBJECT, configuration);
 	}
 
 	/**
 	 * This constructor is especially intended for subclasses, like {@link InterfaceType}
 	 * 
-	 * @param packageName
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
+	 * @param name
+	 *            the name for this type
+	 * @param type
+	 *            the kind of object
+	 * @param configuration
+	 *            The current plugin configuration, which is accessible through an interface that extends
+	 *            {@link CommonConfiguration}
 	 * @param type
 	 */
-	protected ObjectType(String name, String packageName, GraphQlType type) {
-		super(packageName, type);
-		setName(name);
+	protected ObjectType(String name, GraphQlType type, CommonConfiguration configuration) {
+		super(name, type, configuration);
+	}
+
+	@Override
+	public String getPackageName() {
+		return configuration.getPackageName();
 	}
 
 	@Override

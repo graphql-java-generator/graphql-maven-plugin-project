@@ -8,15 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.CompletableFuture;
 
-import javax.annotation.Resource;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
@@ -34,22 +31,23 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
  * 
  * @author etienne-sf
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { Forum_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class DocumentParser_Forum_Server_Test {
 
-	@Autowired
+	AbstractApplicationContext ctx = null;
 	GraphQLDocumentParser documentParser;
-	@Resource
 	GraphQLConfigurationTestHelper pluginConfiguration;
 
 	@BeforeEach
 	void setUp() throws Exception {
+		ctx = new AnnotationConfigApplicationContext(Forum_Server_SpringConfiguration.class);
+		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
 		documentParser.parseDocuments();
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_initRelations() {
 
 		// Verification
@@ -92,7 +90,7 @@ class DocumentParser_Forum_Server_Test {
 
 	/** Tests the annotation. We're in Server mode, thanks to the Spring Configuration used for this test */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_server() {
 		// Preparation
 		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
@@ -125,19 +123,19 @@ class DocumentParser_Forum_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getDataFetchersDelegate() {
 		// Check, to start on a proper base
 		assertEquals(7, documentParser.dataFetchersDelegates.size());
 
 		// No DataFetchersDelegate creation
-		Type type = new ObjectType("my.package", "Test");
+		Type type = new ObjectType("Test", pluginConfiguration);
 		DataFetchersDelegate dfd = documentParser.getDataFetchersDelegate(type, false);
 		assertNull(dfd, "No DataFetchersDelegate creation");
 		assertEquals(7, documentParser.dataFetchersDelegates.size());
 
 		// With DataFetchersDelegate creation
-		type = new ObjectType("my.package", "Test2");
+		type = new ObjectType("Test2", pluginConfiguration);
 		dfd = documentParser.getDataFetchersDelegate(type, true);
 		assertNotNull(dfd, "With DataFetchersDelegate creation");
 		assertEquals(type, dfd.getType());
@@ -146,7 +144,7 @@ class DocumentParser_Forum_Server_Test {
 
 	/** Tests the Data Fetchers that are listed during parsing */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_initDataFetchers() {
 		assertEquals(16, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
@@ -303,7 +301,7 @@ class DocumentParser_Forum_Server_Test {
 
 	/** Tests the Batch Loader that are listed during parsing */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_initBatchLoaders() {
 		assertEquals(4, documentParser.batchLoaders.size());
 
@@ -338,17 +336,40 @@ class DocumentParser_Forum_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_initListOfImplementations() {
 		assertEquals(0, documentParser.interfaceTypes.size(), "No interface");
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_inputTypesAnnotationInServerMode() {
 		checkInputTypeAnnotations((ObjectType) documentParser.getType("TopicPostInput"));
 		checkInputTypeAnnotations((ObjectType) documentParser.getType("PostInput"));
 		checkInputTypeAnnotations((ObjectType) documentParser.getType("TopicInput"));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_addImport() {
+		ObjectType board = (ObjectType) documentParser.getType("Board");
+		assertNotNull(board);
+
+		assertTrue(board.getImports().contains("java.util.List"), "expecting java.util.List");
+		assertTrue(board.getImports().contains("java.util.UUID"), "expecting java.util.UUID");
+		assertTrue(board.getImports().contains("javax.persistence.Entity"), "expecting javax.persistence.Entity");
+		assertTrue(board.getImports().contains("javax.persistence.GeneratedValue"),
+				"expecting javax.persistence.GeneratedValue");
+		assertTrue(board.getImports().contains("javax.persistence.Id"), "expecting javax.persistence.Id");
+		assertTrue(board.getImports().contains("javax.persistence.Transient"), "expecting javax.persistence.Transient");
+		assertTrue(board.getImports().contains("com.graphql_java_generator.GraphQLField"),
+				"expecting com.graphql_java_generator.GraphQLField");
+		assertTrue(board.getImports().contains("com.graphql_java_generator.annotation.GraphQLNonScalar"),
+				"expecting com.graphql_java_generator.annotation.GraphQLNonScalar");
+		assertTrue(board.getImports().contains("com.graphql_java_generator.annotation.GraphQLObjectType"),
+				"expecting com.graphql_java_generator.annotation.GraphQLObjectType");
+		assertTrue(board.getImports().contains("com.graphql_java_generator.annotation.GraphQLScalar"),
+				"expecting com.graphql_java_generator.annotation.GraphQLScalar");
 	}
 
 	void checkInputTypeAnnotations(ObjectType o) {

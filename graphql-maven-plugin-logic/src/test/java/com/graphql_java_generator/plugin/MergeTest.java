@@ -110,6 +110,7 @@ class MergeTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateRelaySchema_allGraphQLCases() throws IOException {
 		executeGenerateRelaySchemaTest(AllGraphQLCases_Client_SpringConfiguration.class,
 				GeneratedAllGraphQLCases_Client_SpringConfiguration.class,
@@ -118,6 +119,7 @@ class MergeTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateRelaySchema_allGraphQLCases_addRelayConnections() throws IOException {
 		executeGenerateRelaySchemaTest(AllGraphQLCases_Client_SpringConfiguration_addRelayConnections.class,
 				GeneratedAllGraphQLCases_Client_SpringConfiguration_addRelayConnections.class,
@@ -125,6 +127,7 @@ class MergeTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateRelaySchema_forum() throws IOException {
 		executeGenerateRelaySchemaTest(Forum_Client_SpringConfiguration.class,
 				GeneratedForum_Client_SpringConfiguration.class, "mergeSchema for forum.graphqls");

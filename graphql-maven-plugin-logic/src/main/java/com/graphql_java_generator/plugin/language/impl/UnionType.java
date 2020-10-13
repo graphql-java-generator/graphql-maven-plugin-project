@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.CommonConfiguration;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,28 +26,15 @@ public class UnionType extends ObjectType {
 	 */
 	List<ObjectType> memberTypes = new ArrayList<>();
 
-	public UnionType(String name, String packageName) {
-		super(name, packageName, GraphQlType.UNION);
-	}
-
 	/**
-	 * @param packageName
-	 *            the package name where it must be created
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
+	 * @param name
+	 *            the name for this type
+	 * @param configuration
+	 *            The current plugin configuration, which is accessible through an interface that extends
+	 *            {@link CommonConfiguration}
 	 */
-	public UnionType(String packageName) {
-		super(null, packageName, GraphQlType.UNION);
-	}
-
-	/**
-	 * There is no concrete class for an union. So we return it's name (to be used in the @JsonDeserialize
-	 * annotation).<BR/>
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getConcreteClassSimpleName() {
-		return getName();
+	public UnionType(String name, CommonConfiguration configuration) {
+		super(name, GraphQlType.UNION, configuration);
 	}
 
 	@Override

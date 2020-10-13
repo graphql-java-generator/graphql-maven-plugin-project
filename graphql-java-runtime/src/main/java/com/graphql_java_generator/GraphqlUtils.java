@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -598,6 +599,34 @@ public class GraphqlUtils {
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException e) {
 			throw new RuntimeException("Error while invoking to the setter for the field '" + fieldName
 					+ "' in the class " + object.getClass().getName() + " class", e);
+		}
+	}
+
+	/**
+	 * Adds, if necessary the import calculated from the given parameters, into the given set of imports.
+	 * 
+	 * @param imports
+	 *            The set of import, in which the import for the given parameters is to be added
+	 * @param targetPackageName
+	 *            The package in which is the class that will contain this import
+	 * @param classname
+	 *            the full classname of the class to import
+	 * @return
+	 */
+	public void addImport(Set<String> imports, String targetPackageName, String classname) {
+
+		// For inner class, the classname is "MainClassname$InnerClassname". And the inner class must be imported, even
+		// if we are in the same package. So, we replace all $ by dot
+		String fullClassname = classname.replace('$', '.');
+
+		int lastDotPos = fullClassname.lastIndexOf('.');
+		String packageName = fullClassname.substring(0, lastDotPos);
+		String simpleClassName = fullClassname.substring(lastDotPos + 1);
+
+		// No import for java.lang
+		// And no import if the class is in the same package.
+		if (!packageName.equals("java.lang") && !targetPackageName.equals(packageName)) {
+			imports.add(packageName + "." + simpleClassName);
 		}
 	}
 

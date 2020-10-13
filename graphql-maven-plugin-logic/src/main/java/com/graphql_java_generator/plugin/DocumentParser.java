@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -176,7 +177,7 @@ public abstract class DocumentParser {
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL scalars: standard and customs depending on the use case
-		initScalarTypes();
+		initScalarTypes(UUID.class);
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL standard directives
@@ -221,23 +222,23 @@ public abstract class DocumentParser {
 	/**
 	 * This method initializes the {@link #scalarTypes} list. This list depends on the use case
 	 * 
+	 * @param IDclass
+	 * 
 	 */
-	protected void initScalarTypes() {
+	protected void initScalarTypes(Class<?> IDclass) {
 		// By default, we use the UUID type for the ID GraphQL type
-		scalarTypes.add(new ScalarType("ID", "java.util", "UUID"));
-		scalarTypes.add(new ScalarType("String", "java.lang", "String"));
+		scalarTypes.add(new ScalarType("ID", IDclass.getPackage().getName(), IDclass.getSimpleName(), configuration));
+		scalarTypes.add(new ScalarType("String", "java.lang", "String", configuration));
 
 		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
-		scalarTypes.add(new ScalarType("boolean", "java.lang", "Boolean"));
-		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean"));
-		scalarTypes.add(new ScalarType("int", "java.lang", "Integer"));
-		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer"));
+		scalarTypes.add(new ScalarType("boolean", "java.lang", "Boolean", configuration));
+		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", configuration));
+		scalarTypes.add(new ScalarType("int", "java.lang", "Integer", configuration));
+		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", configuration));
 
 		// GraphQL Float is a double precision number
-		scalarTypes.add(new ScalarType("Float", "java.lang", "Double"));
-		scalarTypes.add(new ScalarType("float", "java.lang", "Double"));
-
-		configuration.getLog().debug("Storing custom scalar's implementations [END]");
+		scalarTypes.add(new ScalarType("Float", "java.lang", "Double", configuration));
+		scalarTypes.add(new ScalarType("float", "java.lang", "Double", configuration));
 	}
 
 	/**
@@ -271,8 +272,7 @@ public abstract class DocumentParser {
 		}
 
 		// We're done
-		int nbClasses = (queryType == null ? 0 : 1) + (subscriptionType == null ? 0 : 1)
-				+ (mutationType == null ? 0 : 1) + objectTypes.size() + enumTypes.size() + interfaceTypes.size();
+		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
 		configuration.getLog().debug(documents.size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
@@ -349,9 +349,7 @@ public abstract class DocumentParser {
 										+ "'. A Query root operation has already been read, with name'"
 										+ queryType.getName() + "'");
 					}
-					queryType = readObjectTypeDefinition((ObjectTypeDefinition) node);
-					queryType.setPackageName(getUtilPackageName());
-					queryType.setRequestType("query");
+					queryType = o;
 				} else if (mutationObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
 					// We first read the object type, that'll go to the main package
 					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
@@ -364,9 +362,7 @@ public abstract class DocumentParser {
 										+ "'. A Mutation root operation has already been read, with name'"
 										+ mutationType.getName() + "'");
 					}
-					mutationType = readObjectTypeDefinition((ObjectTypeDefinition) node);
-					mutationType.setPackageName(getUtilPackageName());
-					mutationType.setRequestType("mutation");
+					mutationType = o;
 				} else if (subscriptionObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
 					// We first read the object type, that'll go to the main package
 					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
@@ -379,9 +375,7 @@ public abstract class DocumentParser {
 										+ "'. A Subscription root operation has already been read, with name'"
 										+ subscriptionType.getName() + "'");
 					}
-					subscriptionType = readObjectTypeDefinition((ObjectTypeDefinition) node);
-					subscriptionType.setPackageName(getUtilPackageName());
-					subscriptionType.setRequestType("subscription");
+					subscriptionType = o;
 				} else {
 					objectTypes.add(readObjectTypeDefinition((ObjectTypeDefinition) node));
 				}
@@ -417,16 +411,6 @@ public abstract class DocumentParser {
 	void fillTypesMap() {
 		// Directive are directly added to the types map.
 		// TODO remove this method, and add each type in the types map as it is read
-
-		// The query is mandatory
-		types.put(queryType.getName(), queryType);
-
-		if (mutationType != null) {
-			types.put(mutationType.getName(), mutationType);
-		}
-		if (subscriptionType != null) {
-			types.put(subscriptionType.getName(), subscriptionType);
-		}
 
 		scalarTypes.stream().forEach(s -> types.put(s.getName(), s));
 		objectTypes.stream().forEach(o -> types.put(o.getName(), o));
@@ -536,7 +520,7 @@ public abstract class DocumentParser {
 	 * @return
 	 */
 	ObjectType readObjectTypeDefinition(ObjectTypeDefinition node) {
-		ObjectType objectType = new ObjectType(node.getName(), configuration.getPackageName());
+		ObjectType objectType = new ObjectType(node.getName(), configuration);
 		return addObjectTypeDefinition(objectType, node);
 	}
 
@@ -547,15 +531,6 @@ public abstract class DocumentParser {
 		for (ObjectTypeExtensionDefinition node : objectTypeExtensionDefinitions) {
 			ObjectType objectType = (ObjectType) getType(node.getName());
 			addObjectTypeDefinition(objectType, node);
-
-			// if this object is a root operation, we must also upgrade this root operation
-			if (queryType != null && queryType.getName().equals(node.getName())) {
-				addObjectTypeDefinition(queryType, node);
-			} else if (mutationType != null && mutationType.getName().equals(node.getName())) {
-				addObjectTypeDefinition(mutationType, node);
-			} else if (subscriptionType != null && subscriptionType.getName().equals(node.getName())) {
-				addObjectTypeDefinition(subscriptionType, node);
-			}
 		}
 	}
 
@@ -599,7 +574,7 @@ public abstract class DocumentParser {
 	 */
 	ObjectType readInputObjectType(InputObjectTypeDefinition node) {
 
-		ObjectType objectType = new ObjectType(node.getName(), configuration.getPackageName());
+		ObjectType objectType = new ObjectType(node.getName(), configuration);
 		objectType.setInputType(true);
 
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
@@ -629,7 +604,7 @@ public abstract class DocumentParser {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		InterfaceType interfaceType = new InterfaceType(node.getName(), configuration.getPackageName());
+		InterfaceType interfaceType = new InterfaceType(node.getName(), configuration);
 
 		interfaceType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
@@ -660,7 +635,7 @@ public abstract class DocumentParser {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		UnionType unionType = new UnionType(node.getName(), configuration.getPackageName());
+		UnionType unionType = new UnionType(node.getName(), configuration);
 		unionType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		for (graphql.language.Type<?> memberType : node.getMemberTypes()) {
@@ -717,7 +692,7 @@ public abstract class DocumentParser {
 	 * @return
 	 */
 	EnumType readEnumType(EnumTypeDefinition node) {
-		EnumType enumType = new EnumType(node.getName(), configuration.getPackageName());
+		EnumType enumType = new EnumType(node.getName(), configuration);
 
 		enumType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 

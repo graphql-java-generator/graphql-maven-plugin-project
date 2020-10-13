@@ -33,7 +33,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public boolean generateDeprecatedRequestResponse = true;
 	public boolean generateJPAAnnotation = true;
 	public PluginMode mode = null;
-	public String packageName = null;
+	public String packageName = "org.my.test.package";
 	public Packaging packaging = null;
 	public String scanBasePackages = "null";
 	public File schemaFileFolder = null;

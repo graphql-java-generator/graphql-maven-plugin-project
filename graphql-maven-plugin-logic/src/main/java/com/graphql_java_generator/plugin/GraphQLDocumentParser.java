@@ -5,6 +5,7 @@ package com.graphql_java_generator.plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -116,31 +117,22 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 * 
 	 */
 	@Override
-	protected void initScalarTypes() {
-		// In client mode, ID type is managed as a String
-		if (configuration.getMode().equals(PluginMode.server))
-			scalarTypes.add(new ScalarType("ID", "java.util", "UUID"));
-		else
-			scalarTypes.add(new ScalarType("ID", "java.lang", "String"));
+	protected void initScalarTypes(Class<?> notUsed) {
 
-		scalarTypes.add(new ScalarType("String", "java.lang", "String"));
-
-		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
-		scalarTypes.add(new ScalarType("boolean", "java.lang", "Boolean"));
-		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean"));
-		scalarTypes.add(new ScalarType("int", "java.lang", "Integer"));
-		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer"));
-
-		// GraphQL Float is a double precision number
-		scalarTypes.add(new ScalarType("Float", "java.lang", "Double"));
-		scalarTypes.add(new ScalarType("float", "java.lang", "Double"));
+		// Let's load the standard Scalar types
+		if (configuration.getMode().equals(PluginMode.server)) {
+			super.initScalarTypes(UUID.class);
+		} else {
+			// In client mode, ID type is managed as a String
+			super.initScalarTypes(String.class);
+		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL custom scalar implementations must be provided by the plugin configuration
 		configuration.getLog().debug("Storing custom scalar's implementations [START]");
 		if (configuration.getCustomScalars() != null) {
 			for (CustomScalarDefinition customScalarDef : configuration.getCustomScalars()) {
-				CustomScalarType type = new CustomScalarType(customScalarDef);
+				CustomScalarType type = new CustomScalarType(customScalarDef, configuration);
 				customScalars.add(type);
 				types.put(type.getName(), type);
 			}
@@ -188,8 +180,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 		jsonSchemaPersonalization.applySchemaPersonalization();
 
 		// We're done
-		int nbClasses = (queryType == null ? 0 : 1) + (subscriptionType == null ? 0 : 1)
-				+ (mutationType == null ? 0 : 1) + objectTypes.size() + enumTypes.size() + interfaceTypes.size();
+		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
 		configuration.getLog().debug(documents.size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
@@ -266,13 +257,11 @@ public class GraphQLDocumentParser extends DocumentParser {
 		switch (configuration.getMode()) {
 		case client:
 			// Type annotations
-			graphqlUtils.concatStreams(Type.class, true, queryType, mutationType, subscriptionType, interfaceTypes,
-					objectTypes, unionTypes).forEach(o -> addTypeAnnotationForClientMode(o));
+			graphqlUtils.concatStreams(Type.class, true, null, null, null, interfaceTypes, objectTypes, unionTypes)
+					.forEach(o -> addTypeAnnotationForClientMode(o));
 
 			// Field annotations
-			graphqlUtils
-					.concatStreams(Type.class, true, queryType, mutationType, subscriptionType, objectTypes,
-							interfaceTypes)
+			graphqlUtils.concatStreams(Type.class, true, null, null, null, objectTypes, interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode((FieldImpl) f));
 
 			break;
@@ -295,16 +284,16 @@ public class GraphQLDocumentParser extends DocumentParser {
 		// No specific annotation for objects and interfaces when in client mode.
 
 		if (type instanceof InterfaceType || type instanceof UnionType) {
-			type.addImport(JsonTypeInfo.class);
-			type.addImport(JsonTypeInfo.Id.class);
+			type.addImport(configuration.getPackageName(), JsonTypeInfo.class.getName());
+			type.addImport(configuration.getPackageName(), JsonTypeInfo.Id.class.getName());
 			type.addAnnotation(
 					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)");
 
 			// jsonSubTypes annotation looks like this:
 			// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name = "Human") })
 			StringBuffer jsonSubTypes = new StringBuffer();
-			type.addImport(JsonSubTypes.class);
-			type.addImport(JsonSubTypes.Type.class);
+			type.addImport(configuration.getPackageName(), JsonSubTypes.class.getName());
+			type.addImport(configuration.getPackageName(), JsonSubTypes.Type.class.getName());
 			jsonSubTypes.append("@JsonSubTypes({");
 			boolean addSeparator = false;
 
@@ -331,8 +320,8 @@ public class GraphQLDocumentParser extends DocumentParser {
 		// Add the GraphQLQuery annotation fpr query/mutation/subscription and for objects that are a
 		// query/mutation/subscription
 		if (type instanceof ObjectType && ((ObjectType) type).getRequestType() != null) {
-			type.addImport(GraphQLQuery.class);
-			type.addImport(RequestType.class);
+			type.addImport(configuration.getPackageName(), GraphQLQuery.class.getName());
+			type.addImport(configuration.getPackageName(), RequestType.class.getName());
 			type.addAnnotation("@GraphQLQuery(name = \"" + type.getName() + "\", type = RequestType."
 					+ ((ObjectType) type).getRequestType() + ")");
 
@@ -357,7 +346,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 		if (configuration.isGenerateJPAAnnotation() && o instanceof ObjectType && !(o instanceof InterfaceType)
 				&& !(o instanceof UnionType) && !((ObjectType) o).isInputType()
 				&& ((ObjectType) o).getRequestType() == null) {
-			o.addImport(Entity.class);
+			o.addImport(configuration.getPackageName(), Entity.class.getName());
 			((AbstractType) o).addAnnotation("@Entity");
 		}
 
@@ -373,19 +362,19 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	private void addTypeAnnotationForBothClientAndServerMode(Type o) {
 		if (o instanceof InterfaceType) {
-			o.addImport(GraphQLInterfaceType.class);
+			o.addImport(configuration.getPackageName(), GraphQLInterfaceType.class.getName());
 			o.addAnnotation("@GraphQLInterfaceType(\"" + o.getName() + "\")");
 		} else if (o instanceof UnionType) {
-			o.addImport(GraphQLUnionType.class);
+			o.addImport(configuration.getPackageName(), GraphQLUnionType.class.getName());
 			o.addAnnotation("@GraphQLUnionType(\"" + o.getName() + "\")");
 		} else if (o instanceof ObjectType) {
 			if (((ObjectType) o).isInputType()) {
 				// input type
-				o.addImport(GraphQLInputType.class);
+				o.addImport(configuration.getPackageName(), GraphQLInputType.class.getName());
 				o.addAnnotation("@GraphQLInputType(\"" + o.getName() + "\")");
 			} else {
 				// Standard object type
-				o.addImport(GraphQLObjectType.class);
+				o.addImport(configuration.getPackageName(), GraphQLObjectType.class.getName());
 				o.addAnnotation("@GraphQLObjectType(\"" + o.getName() + "\")");
 			}
 		}
@@ -404,22 +393,22 @@ public class GraphQLDocumentParser extends DocumentParser {
 		String contentAs = null;
 		String using = null;
 		if (field.isList()) {
-			field.getOwningType().addImport(List.class);
-			contentAs = field.getType().getConcreteClassSimpleName() + ".class";
+			field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
+			contentAs = field.getType().getClassSimpleName() + ".class";
 		}
 		if (field.getType().isCustomScalar()) {
 			String classname = "CustomScalarDeserializer" + field.getType().getName();
-			field.getOwningType().addImport(getUtilPackageName(), classname);
+			field.getOwningType().addImport(configuration.getPackageName(), getUtilPackageName() + "." + classname);
 			using = classname + ".class";
 		}
 		if (contentAs != null || using != null) {
-			field.getOwningType().addImport(JsonDeserialize.class);
+			field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
 			field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
 		}
 
 		if (field.getInputParameters().size() > 0) {
 			// Let's add the @GraphQLInputParameters annotation
-			field.getOwningType().addImport(GraphQLInputParameters.class);
+			field.getOwningType().addImport(configuration.getPackageName(), GraphQLInputParameters.class.getName());
 			StringBuilder names = new StringBuilder();
 			StringBuilder types = new StringBuilder();
 			String separator = "";
@@ -431,7 +420,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 			field.addAnnotation("@GraphQLInputParameters(names = {" + names + "}, types = {" + types + "})");
 		}
 
-		field.getOwningType().addImport(JsonProperty.class);
+		field.getOwningType().addImport(configuration.getPackageName(), JsonProperty.class.getName());
 		field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
 
 		addFieldAnnotationForBothClientAndServerMode(field);
@@ -447,13 +436,13 @@ public class GraphQLDocumentParser extends DocumentParser {
 		if (configuration.isGenerateJPAAnnotation() && !field.getOwningType().isInputType()) {
 			if (field.isId()) {
 				// We have found the identifier
-				field.getOwningType().addImport(Id.class);
+				field.getOwningType().addImport(configuration.getPackageName(), Id.class.getName());
 				((FieldImpl) field).addAnnotation("@Id");
-				field.getOwningType().addImport(GeneratedValue.class);
+				field.getOwningType().addImport(configuration.getPackageName(), GeneratedValue.class.getName());
 				((FieldImpl) field).addAnnotation("@GeneratedValue");
 			} else if (field.getRelation() != null || field.isList()) {
 				// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
-				field.getOwningType().addImport(Transient.class);
+				field.getOwningType().addImport(configuration.getPackageName(), Transient.class.getName());
 				((FieldImpl) field).addAnnotation("@Transient");
 			}
 		}
@@ -470,13 +459,13 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
-			field.getOwningType().addImport(GraphQLScalar.class);
+			field.getOwningType().addImport(configuration.getPackageName(), GraphQLScalar.class.getName());
 			((FieldImpl) field)
 					.addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName() + "\", graphQLTypeName = \""
 							+ field.getGraphQLTypeName() + "\", list = " + ((field.isList()) ? "true" : "false")
 							+ ", javaClass = " + field.getType().getClassSimpleName() + ".class)");
 		} else {
-			field.getOwningType().addImport(GraphQLNonScalar.class);
+			field.getOwningType().addImport(configuration.getPackageName(), GraphQLNonScalar.class.getName());
 			((FieldImpl) field)
 					.addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName() + "\", graphQLTypeName = \""
 							+ field.getGraphQLTypeName() + "\", list = " + ((field.isList()) ? "true" : "false")
@@ -652,27 +641,20 @@ public class GraphQLDocumentParser extends DocumentParser {
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (queryType == null) {
 				// There was no query. We need to create one. It will contain only the Introspection Query
-				queryType = new ObjectType(configuration.getPackageName(), configuration.getPackageName());
+				queryType = new ObjectType(DEFAULT_QUERY_NAME, configuration);
 				queryType.setName(INTROSPECTION_QUERY);
 				queryType.setRequestType("query");
 
 				// Let's first add the regular object that'll receive the server response (in the default package)
 				objectTypes.add(queryType);
 				types.put(queryType.getName(), queryType);
-
-				// Then the query class, in the util package
-				queryType.setPackageName(getUtilPackageName());
-			} else {
-				// We add the introspection capability to the query root operation
-				queryType.getFields().add(get__SchemaField(queryType));
-				queryType.getFields().add(get__TypeField(queryType));
-
-				// We also need to add the relevant fields into the regular object that matches the query.
-				// But they must be a separate instance, otherwise their annotation is added twice.
-				Type objectQuery = getType(queryType.getName());
-				objectQuery.getFields().add(get__SchemaField(objectQuery));
-				objectQuery.getFields().add(get__TypeField(objectQuery));
 			}
+
+			// We also need to add the relevant fields into the regular object that matches the query.
+			// But they must be a separate instance, otherwise their annotation is added twice.
+			Type objectQuery = getType(queryType.getName());
+			objectQuery.getFields().add(get__SchemaField(objectQuery));
+			objectQuery.getFields().add(get__TypeField(objectQuery));
 
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// Second step: add the __datatype field into every GraphQL type (out of input types)
@@ -719,42 +701,49 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	private void addImports() {
 		types.values().parallelStream().forEach(type -> addImportsForOneType(type));
-
-		addImportsForOneType(queryType);
-		addImportsForOneType(mutationType);
-		addImportsForOneType(subscriptionType);
 	}
 
 	/**
+	 * Add all import that are needed for this type
+	 * 
 	 * @param type
 	 */
 	private void addImportsForOneType(Type type) {
 		if (type != null) {
+
+			if (type.getName().equals("Post")) {
+				// Just for a debut breakpoint
+				int i = 0;
+			}
+
+			// First, the import for the object itself. It should do something only for separate utility classes.
+			addAnImportForOneType(type, configuration.getPackageName() + "." + type.getClassSimpleName());
+
 			// Let's loop through all the fields
 			for (Field f : type.getFields()) {
 				if (f.isList()) {
-					type.addImport(List.class);
+					addAnImportForOneType(type, List.class);
 				}
-				if (f instanceof CustomScalarType) {
-					type.addImport(((CustomScalarType) f).getPackageName(),
-							((CustomScalarType) f).getClassSimpleName());
-				}
-				type.addImport(f.getType().getPackageName(), f.getType().getClassSimpleName());
+				addAnImportForOneType(type, f.getType());
+
 				for (Field param : f.getInputParameters()) {
 					if (param.isList()) {
-						type.addImport(List.class);
+						addAnImportForOneType(type, List.class);
 					}
-					type.addImport(param.getType().getPackageName(), param.getType().getClassSimpleName());
+					addAnImportForOneType(type, param.getType());
 				} // for(inputParameters)
 			} // for(Fields)
 
 			// Let's add some common imports
-			type.addImport(GraphQLField.class);
-			type.addImport(GraphQLInputParameters.class);
+			addAnImportForOneType(type, GraphQLField.class);
+			addAnImportForOneType(type, GraphQLInputParameters.class);
+
+			// Some imports that are only for utility classes
+			type.addImportForUtilityClasses(getUtilPackageName(), RequestType.class.getName());
 
 			switch (configuration.getMode()) {
 			case client:
-				type.addImport(JsonProperty.class);
+				addAnImportForOneType(type, JsonProperty.class);
 				break;
 			case server:
 				break;
@@ -762,6 +751,27 @@ public class GraphQLDocumentParser extends DocumentParser {
 				throw new RuntimeException("unexpected plugin mode: " + configuration.getMode().name());
 			}
 		}
+	}
+
+	private void addAnImportForOneType(Type type, Class<?> clazzToImport) {
+		addAnImportForOneType(type, clazzToImport.getName());
+	}
+
+	private void addAnImportForOneType(Type type, Type typeToImport) {
+		if (typeToImport instanceof ScalarType) {
+			addAnImportForOneType(type,
+					((ScalarType) typeToImport).getPackageName() + "." + typeToImport.getClassSimpleName());
+		} else {
+			addAnImportForOneType(type, configuration.getPackageName() + "." + typeToImport.getClassSimpleName());
+		}
+	}
+
+	private void addAnImportForOneType(Type type, String classname) {
+		final String targetPackage = configuration.getPackageName();
+		final String utilityPackage = getUtilPackageName();
+
+		type.addImport(targetPackage, classname);
+		type.addImportForUtilityClasses(utilityPackage, classname);
 	}
 
 	/**

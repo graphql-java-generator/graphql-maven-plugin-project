@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 
 /**
  * All types found in the GraphQL schema(s), and discovered during the GraphQL parsing, are instance of {@link Type}.
@@ -59,23 +60,21 @@ public interface Type {
 	}
 
 	/**
-	 * Get the list of imports for this object. It's an order Set, so that the generated java file is net.
+	 * Get the list of imports for this object, for classes in the {@link GraphQLConfiguration#getPackageName()}. It's
+	 * an order Set, so that the generated java file is clean.
 	 * 
 	 * @return
 	 */
 	public Set<String> getImports();
 
 	/**
-	 * Add the given class as an import for the current type. This import will be added only if the given class is not
-	 * in the same package as the java class for this type, and if it doesn't already exist in the imports set.<BR/>
-	 * classes from the <I>java.lang</I> package are not imported.<BR/>
-	 * Note: it is not allowed to import a class of the same name as the current class: there would be a name conflict.
-	 * In this case, the import "silently fails": the class is not imported in the imports list.
+	 * Get the list of imports for this object, for classes in the utility package, that is for utility classes when
+	 * {@link GraphQLConfiguration#isSeparateUtilityClasses()} is true. It's an order Set, so that the generated java
+	 * file is clean.
 	 * 
-	 * @param clazz
-	 *            The class that must be imported in the current type
+	 * @return
 	 */
-	public void addImport(Class<?> clazz);
+	public Set<String> getImportsForUtilityClasses();
 
 	/**
 	 * Add the given class as an import for the current type. This import will be added only if the given class is not
@@ -86,12 +85,22 @@ public interface Type {
 	 * Note2: it is not allowed to import a class of the same name as the current class: there would be a name conflict.
 	 * In this case, the import "silently fails": the class is not imported in the imports list.
 	 * 
-	 * @param packageName
-	 *            The package where the class to import is located
+	 * @param targetPackageName
+	 *            The package where the objects are generated
 	 * @param classname
-	 *            The simple class name (String for instance) of the class
+	 *            The full class name (java.lang.String for instance) of the class to import
 	 */
-	public void addImport(String packageName, String classname);
+	public void addImport(String targetPackageName, String classname);
+
+	/**
+	 * Same as {@link #addImport(String, String, String)}, but for the utility classes
+	 * 
+	 * @param targetPackageName
+	 *            The package where the objects are generated
+	 * @param classname
+	 *            The full class name (java.lang.String for instance) of the class to import
+	 */
+	public void addImportForUtilityClasses(String targetPackageName, String classname);
 
 	/**
 	 * Returns the annotation or annotations that must be added to this type.
@@ -154,21 +163,14 @@ public interface Type {
 	public String getCamelCaseName();
 
 	/**
-	 * The java class full name for this type. It may be and interface or a concrete class. <BR/>
+	 * The java class full name for this type. It may be an interface or a concrete class. <BR/>
 	 * 
 	 * @return The java classname is usually the name of the type. But in some case, collision my occur with the Java
 	 *         syntax. In this cas, this method will return a classname different from the name
 	 */
-	public String getClassFullName();
-
-	/**
-	 * Returns the name of the concrete class for this type. If this type is an interface, then this method returns the
-	 * name of the default implementation for this class. Otherwise, this method returns the same as
-	 * {@link #getJavaClassSimpleName()}
-	 * 
-	 * @return
-	 */
-	public String getConcreteClassSimpleName();
+	default public String getClassFullName() {
+		return getPackageName() + "." + getClassSimpleName();
+	}
 
 	/**
 	 * Returns the list of {@link Field}s for this type. Or null, if this field can't have any field, like a

@@ -613,7 +613,7 @@ class AddRelayConnectionsTest {
 
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
 				int j = 0;
-				checkField(d, 0, "cursor", false, true, false, "String", "java.lang.String", 0);
+				checkField(d, 0, "cursor", false, true, false, "String", "String", 0);
 				checkField(d, 1, "node", false, false, false, "Node", configuration.getPackageName() + ".Node", 0);
 
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
@@ -672,10 +672,10 @@ class AddRelayConnectionsTest {
 				assertEquals(0, o.getMemberOfUnions().size(), "No unions");
 				int j = 0;
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-				checkField(o, j++, "hasNextPage", false, true, false, "Boolean", "java.lang.Boolean", 0);
-				checkField(o, j++, "hasPreviousPage", false, true, false, "Boolean", "java.lang.Boolean", 0);
-				checkField(o, j++, "startCursor", false, true, false, "String", "java.lang.String", 0);
-				checkField(o, j++, "endCursor", false, true, false, "String", "java.lang.String", 0);
+				checkField(o, j++, "hasNextPage", false, true, false, "Boolean", "Boolean", 0);
+				checkField(o, j++, "hasPreviousPage", false, true, false, "Boolean", "Boolean", 0);
+				checkField(o, j++, "startCursor", false, true, false, "String", "String", 0);
+				checkField(o, j++, "endCursor", false, true, false, "String", "String", 0);
 				//
 				assertEquals(null, o.getRequestType(), "not a query/mutation/subscription");
 				assertEquals(false, o.isInputType(), "Not an input type");
@@ -748,9 +748,8 @@ class AddRelayConnectionsTest {
 		assertEquals(2, edge.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-		checkField(edge, j++, "node", false, false, false, typeName, configuration.getPackageName() + "." + typeName,
-				0);
-		checkField(edge, j++, "cursor", false, true, false, "String", "java.lang.String", 0);
+		checkField(edge, j++, "node", false, false, false, typeName, typeName, 0);
+		checkField(edge, j++, "cursor", false, true, false, "String", "String", 0);
 		//
 		assertEquals(null, edge.getIdentifier());
 		assertEquals(0, edge.getImplementz().size(), "0 until generic types are managed");
@@ -780,10 +779,8 @@ class AddRelayConnectionsTest {
 		assertEquals(2, connection.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-		checkField(connection, j++, "edges", true, false, false, typeName + "Edge",
-				configuration.getPackageName() + "." + typeName + "Edge", 0);
-		checkField(connection, j++, "pageInfo", false, true, false, "PageInfo",
-				configuration.getPackageName() + ".PageInfo", 0);
+		checkField(connection, j++, "edges", true, false, false, typeName + "Edge", typeName + "Edge", 0);
+		checkField(connection, j++, "pageInfo", false, true, false, "PageInfo", "PageInfo", 0);
 		//
 		assertEquals(null, connection.getIdentifier());
 		assertEquals(0, connection.getImplementz().size(), "O until generic types are managed");
@@ -794,7 +791,7 @@ class AddRelayConnectionsTest {
 	}
 
 	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
-			String typeName, String classname, int nbParameters) {
+			String typeName, String classSimpleName, int nbParameters) {
 		Field field = type.getFields().get(j);
 		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
 
@@ -812,8 +809,8 @@ class AddRelayConnectionsTest {
 		Type fieldType = field.getType();
 		assertEquals(typeName, fieldType.getName(),
 				"type name is " + typeName + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(classname, fieldType.getClassFullName(),
-				"Class for field type is " + classname + " (for " + fieldDescForJUnitMessage + ")");
+		assertEquals(classSimpleName, fieldType.getClassSimpleName(),
+				"Class for field type is " + classSimpleName + " (for " + fieldDescForJUnitMessage + ")");
 
 		assertEquals(nbParameters, field.getInputParameters().size(), "Nb Input parameters");
 	}

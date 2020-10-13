@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.CommonConfiguration;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -58,18 +58,15 @@ public class InterfaceType extends ObjectType {
 	 */
 	List<ObjectType> implementingTypes = new ArrayList<>();
 
-	public InterfaceType(String name, String packageName) {
-		super(name, packageName, GraphQlType.INTERFACE);
-	}
-
 	/**
-	 * @param packageName
-	 *            the package name where it must be created
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
+	 * @param name
+	 *            the name for this type
+	 * @param configuration
+	 *            The current plugin configuration, which is accessible through an interface that extends
+	 *            {@link CommonConfiguration}
 	 */
-	public InterfaceType(String packageName) {
-		super(null, packageName, GraphQlType.INTERFACE);
+	public InterfaceType(String name, CommonConfiguration configuration) {
+		super(name, GraphQlType.INTERFACE, configuration);
 	}
 
 	@Override

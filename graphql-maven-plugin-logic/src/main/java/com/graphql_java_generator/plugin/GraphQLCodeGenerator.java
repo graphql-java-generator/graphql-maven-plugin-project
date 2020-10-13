@@ -35,6 +35,7 @@ import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.ScalarType;
 
 /**
  * This class generates the code for the graphql goal/task of the plugin, from the classes coming from the
@@ -487,15 +488,21 @@ public class GraphQLCodeGenerator {
 			serverContext.put("interfaces", graphQLDocumentParser.getInterfaceTypes());
 			serverContext.put("unions", graphQLDocumentParser.getUnionTypes());
 
+			// ConcurrentSkipListSet: We need to be thread safe, for the parallel stream we use to fill it
 			Set<String> imports = new ConcurrentSkipListSet<>();
-			// Let's calculate the list of imports for all the GraphQL schema object, input types, interfaces and unions
-			if (configuration.isSeparateUtilityClasses()) {
-				// ConcurrentSkipListSet: We need to be thread safe, for the parallel stream we use to fill it
-				graphQLDocumentParser.types.values().parallelStream()
-						.forEach(o -> imports.add(o.getPackageName() + "." + o.getClassSimpleName()));
-			}
-			graphQLDocumentParser.customScalars.parallelStream()
-					.forEach(o -> imports.add(o.getPackageName() + "." + o.getClassSimpleName()));
+			// Let's calculate the list of imports of all the GraphQL schema object, input types, interfaces and unions,
+			// that must be imported in the utility classes
+			final String utilityPackage = configuration.getPackageName()
+					+ (configuration.isSeparateUtilityClasses() ? ("." + GraphQLDocumentParser.UTIL_PACKAGE_NAME) : "");
+			graphQLDocumentParser.types.values().parallelStream().forEach(o -> {
+				if (o instanceof ScalarType) {
+					graphqlUtils.addImport(imports, utilityPackage,
+							((ScalarType) o).getPackageName() + "." + ((ScalarType) o).getClassSimpleName());
+				} else {
+					graphqlUtils.addImport(imports, utilityPackage,
+							configuration.getPackageName() + "." + o.getClassSimpleName());
+				}
+			});
 			serverContext.put("imports", imports);
 		}
 		return serverContext;

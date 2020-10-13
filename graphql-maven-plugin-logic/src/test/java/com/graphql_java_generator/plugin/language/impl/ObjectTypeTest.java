@@ -31,7 +31,7 @@ class ObjectTypeTest {
 		name = "A name";
 		packageName = "a.package.name";
 		mode = PluginMode.server;
-		objectType = new ObjectType(name, packageName);
+		objectType = new ObjectType(name, pluginConfiguration);
 
 		FieldImpl f = FieldImpl.builder().documentParser(null).build();
 		f.setName("field1");

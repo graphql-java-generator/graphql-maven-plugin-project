@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
+import com.graphql_java_generator.plugin.CommonConfiguration;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 
@@ -16,7 +17,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ScalarType extends AbstractType {
 
-	/** The simple name for this class */
+	/** The package of the java class that will hold this value */
+	final String packageName;
+	/** The simple name (without the package) of the java class that will hold this value */
 	final String classSimpleName;
 
 	/**
@@ -24,15 +27,15 @@ public class ScalarType extends AbstractType {
 	 * @param name
 	 *            The name of the GraphQL type
 	 * @param packageName
-	 *            The package where the Java type for this class is stored
+	 *            The package of the java class that will hold this value
 	 * @param classSimpleName
-	 *            The simple name for this class
-	 * @param pluginConfiguration
+	 *            The simple name (without the package) of the java class that will hold this value
+	 * @param configuration
 	 *            The current {@link GraphQLConfiguration}
 	 */
-	public ScalarType(String name, String packageName, String classSimpleName) {
-		super(packageName, GraphQlType.SCALAR);
-		setName(name);
+	public ScalarType(String name, String packageName, String classSimpleName, CommonConfiguration configuration) {
+		super(name, GraphQlType.SCALAR, configuration);
+		this.packageName = packageName;
 		this.classSimpleName = classSimpleName;
 	}
 
@@ -63,4 +66,5 @@ public class ScalarType extends AbstractType {
 	public boolean isScalar() {
 		return true;
 	}
+
 }

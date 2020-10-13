@@ -30,6 +30,8 @@ public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguratio
 		customScalars = new ArrayList<>();
 		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date", null));
+		customScalars.add(new CustomScalarDefinition("ID", "java.lang.String", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient.ID", null));
 	}
 
 	public Forum_Client_SpringConfiguration() {

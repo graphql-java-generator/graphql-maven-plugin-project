@@ -101,11 +101,11 @@ class CodeGeneratorTest {
 		codeGenerator.graphQLDocumentParser = mock(GraphQLDocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
 
-		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName());
-		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName());
+		ObjectType object1 = new ObjectType("O1", pluginConfiguration);
+		// ObjectType object2 = new ObjectType("O2", pluginConfiguration);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
-		objects.add(object2);
+		// objects.add(object2);
 
 		String type = "my test type";
 		String templateFilename = "folder/a_template_for_test.vm";
@@ -119,7 +119,7 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(2)).getTemplate(argument1.capture(), argument2.capture());
+		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
 		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 
@@ -127,7 +127,7 @@ class CodeGeneratorTest {
 		// Let's check the velocity context sent to the template ... THIS IS IMPORTANT! DO NOT BREAK IT!
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
-		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
+		verify(mockedTemplate, times(1)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
 		assertEquals(pluginConfiguration.getPackageName(),
 				((GraphQLConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
@@ -152,11 +152,9 @@ class CodeGeneratorTest {
 
 		pluginConfiguration.mode = PluginMode.server;
 
-		ObjectType object1 = new ObjectType(pluginConfiguration.getPackageName());
-		ObjectType object2 = new ObjectType(pluginConfiguration.getPackageName());
+		ObjectType object1 = new ObjectType("O1", pluginConfiguration);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
-		objects.add(object2);
 
 		String type = "my test type";
 		String templateFilename = "folder/a_template_for_test.vm";
@@ -170,7 +168,7 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(2)).getTemplate(argument1.capture(), argument2.capture());
+		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
 		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 
@@ -178,7 +176,7 @@ class CodeGeneratorTest {
 		// Let's check the velocity context sent to the template ... THIS IS IMPORTANT! DO NOT BREAK IT!
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		ArgumentCaptor<Context> argumentContext = ArgumentCaptor.forClass(Context.class);
-		verify(mockedTemplate, times(2)).merge(argumentContext.capture(), any(Writer.class));
+		verify(mockedTemplate, times(1)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
 		assertEquals(pluginConfiguration.getPackageName(),
 				((GraphQLConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),

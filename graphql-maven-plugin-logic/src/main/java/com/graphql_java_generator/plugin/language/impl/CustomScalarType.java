@@ -4,9 +4,9 @@
 package com.graphql_java_generator.plugin.language.impl;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.CommonConfiguration;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.CustomScalar;
 
 import lombok.Data;
@@ -22,28 +22,21 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 
 	final CustomScalarDefinition customScalarDefinition;
 
+	final GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
+
 	/**
 	 * 
 	 * @param name
 	 *            The name of the GraphQL type
-	 * @param packageName
-	 *            The package where the Java type for this class is stored
-	 * @param classSimpleName
-	 *            The simple name for this class
-	 * @param graphQLScalarTypeClass
-	 *            The full class name for this GraphQLScalarType. Optional.
-	 * @param graphQLScalarTypeStaticField
-	 *            The full path for the static field name that contains this GraphQLScalarType. Optional.
-	 * @param graphQLScalarTypeGetter
-	 *            The full path for the static method name that returns this GraphQLScalarType. Optional.
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
+	 * @param configuration
+	 *            The current plugin configuration, which is accessible through an interface that extends
+	 *            {@link CommonConfiguration}
 	 * @see CustomScalarDefinition
 	 */
-	public CustomScalarType(CustomScalarDefinition customScalarDefinition) {
+	public CustomScalarType(CustomScalarDefinition customScalarDefinition, CommonConfiguration configuration) {
 		super(customScalarDefinition.getGraphQLTypeName(),
 				GraphqlUtils.graphqlUtils.getPackageName(customScalarDefinition.getJavaType()),
-				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()));
+				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()), configuration);
 		this.customScalarDefinition = customScalarDefinition;
 	}
 

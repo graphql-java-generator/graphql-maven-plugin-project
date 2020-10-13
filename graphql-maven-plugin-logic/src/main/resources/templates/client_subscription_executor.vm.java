@@ -30,7 +30,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 
-#foreach($import in ${object.imports})
+#foreach($import in ${object.importsForUtilityClasses})
 import $import;
 #end
 
@@ -327,9 +327,7 @@ public class ${object.classSimpleName}Executor {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", 
-				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${object.classSimpleName}.class, 
-				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${field.type.classSimpleName}.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, ${field.type.classSimpleName}.class);
 	}
 
 	/**
@@ -416,9 +414,7 @@ public class ${object.classSimpleName}Executor {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 		
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", 
-				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${object.classSimpleName}.class, 
-				#if(${pluginConfiguration.separateUtilityClasses})${pluginConfiguration.packageName}.#end${field.type.classSimpleName}.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, ${field.type.classSimpleName}.class);
 	}
 
 	/**

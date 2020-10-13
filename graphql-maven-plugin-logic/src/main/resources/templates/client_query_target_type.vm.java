@@ -19,11 +19,11 @@ public class ${objectName} {
 	public static final String NAME = "${query.javaName}";
 
 #if ($query.list  &&  $query.type.class.simpleName == "InterfaceType")
-	@JsonDeserialize(contentAs = ${query.type.concreteClassSimpleName}.class)
+	@JsonDeserialize(contentAs = ${query.type.classSimpleName}.class)
 #elseif (${query.list})
 	@JsonDeserialize(contentAs = ${query.type.classSimpleName}.class)
 #elseif ($query.type.class.simpleName == "InterfaceType")
-	@JsonDeserialize(as = ${query.type.concreteClassSimpleName}.class)
+	@JsonDeserialize(as = ${query.type.classSimpleName}.class)
 #end
 	@JsonProperty("${query.name}")
 	#if(${query.list})List<#end${query.type.classSimpleName}#if(${query.list})>#end ${query.javaName};

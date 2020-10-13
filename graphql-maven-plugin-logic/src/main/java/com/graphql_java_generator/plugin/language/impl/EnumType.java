@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.CommonConfiguration;
 import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 
@@ -29,24 +29,12 @@ public class EnumType extends AbstractType {
 	 * 
 	 * @param name
 	 *            The name of this enum type
-	 * @param packageName
-	 *            the package name where it must be created
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
+	 * @param configuration
+	 *            The current plugin configuration, which is accessible through an interface that extends
+	 *            {@link CommonConfiguration}
 	 */
-	public EnumType(String name, String packageName) {
-		super(packageName, GraphQlType.ENUM);
-		setName(name);
-	}
-
-	/**
-	 * @param packageName
-	 *            the package name where it must be created
-	 * @param pluginConfiguration
-	 *            The current {@link GraphQLConfiguration}
-	 */
-	public EnumType(String packageName) {
-		super(packageName, GraphQlType.ENUM);
+	public EnumType(String name, CommonConfiguration configuration) {
+		super(name, GraphQlType.ENUM, configuration);
 	}
 
 	/**
@@ -59,19 +47,21 @@ public class EnumType extends AbstractType {
 		return null;
 	}
 
-	/** {@inheritDoc} */
+	@Override
+	public String getPackageName() {
+		return configuration.getPackageName();
+	}
+
 	@Override
 	public boolean isInputType() {
 		return false;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isCustomScalar() {
 		return false;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isScalar() {
 		return true;

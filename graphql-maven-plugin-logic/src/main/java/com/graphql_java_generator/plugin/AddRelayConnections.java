@@ -149,7 +149,7 @@ public class AddRelayConnections {
 			}
 
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
-			node = new InterfaceType(NODE, configuration.getPackageName());
+			node = new InterfaceType(NODE, configuration);
 			// Adding the id field toe the Node interface
 			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(node)
 					.documentParser(documentParser).build();
@@ -253,7 +253,7 @@ public class AddRelayConnections {
 			}
 
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
-			InterfaceType i = new InterfaceType(CONNECTION, configuration.getPackageName());
+			InterfaceType i = new InterfaceType(CONNECTION, configuration);
 			// Adding the id field toe the Node interface
 			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName("Edge").list(true).owningType(i)
 					.documentParser(documentParser).build();
@@ -363,7 +363,7 @@ public class AddRelayConnections {
 			}
 
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
-			InterfaceType i = new InterfaceType(EDGE, configuration.getPackageName());
+			InterfaceType i = new InterfaceType(EDGE, configuration);
 			// Adding the id field toe the Node interface
 			FieldImpl cursor = FieldImpl.builder().name("cursor").graphQLTypeName("String").mandatory(true)
 					.owningType(i).documentParser(documentParser).build();
@@ -393,7 +393,7 @@ public class AddRelayConnections {
 
 		if (o == null) {
 			// PageInfo is not defined in the GraphQL source schema. Let's add it.
-			ObjectType pageInfo = new ObjectType(PAGE_INFO, configuration.getPackageName());
+			ObjectType pageInfo = new ObjectType(PAGE_INFO, configuration);
 			// Adding the PageInfo's fields
 			pageInfo.getFields().add(FieldImpl.builder().name("hasNextPage").graphQLTypeName("Boolean").mandatory(true)
 					.owningType(pageInfo).documentParser(documentParser).build());
@@ -657,10 +657,10 @@ public class AddRelayConnections {
 
 			ObjectType xxxConnectionObject;
 			if (type instanceof InterfaceType) {
-				xxxConnectionObject = new InterfaceType(connectionTypeName, configuration.getPackageName());
+				xxxConnectionObject = new InterfaceType(connectionTypeName, configuration);
 				documentParser.getInterfaceTypes().add((InterfaceType) xxxConnectionObject);
 			} else {
-				xxxConnectionObject = new ObjectType(connectionTypeName, configuration.getPackageName());
+				xxxConnectionObject = new ObjectType(connectionTypeName, configuration);
 				documentParser.getObjectTypes().add(xxxConnectionObject);
 			}
 			documentParser.getTypes().put(connectionTypeName, xxxConnectionObject);
@@ -731,10 +731,10 @@ public class AddRelayConnections {
 
 			ObjectType xxxEdgeObject;
 			if (type instanceof InterfaceType) {
-				xxxEdgeObject = new InterfaceType(edgeTypeName, configuration.getPackageName());
+				xxxEdgeObject = new InterfaceType(edgeTypeName, configuration);
 				documentParser.getInterfaceTypes().add((InterfaceType) xxxEdgeObject);
 			} else {
-				xxxEdgeObject = new ObjectType(edgeTypeName, configuration.getPackageName());
+				xxxEdgeObject = new ObjectType(edgeTypeName, configuration);
 				documentParser.getObjectTypes().add(xxxEdgeObject);
 			}
 			documentParser.getTypes().put(edgeTypeName, xxxEdgeObject);
