@@ -35,6 +35,6 @@ public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguratio
 	}
 
 	public Forum_Client_SpringConfiguration() {
-		super("forum.graphqls", PluginMode.client, customScalars);
+		super("forum.graphqls", PluginMode.client, null, customScalars, false);
 	}
 }

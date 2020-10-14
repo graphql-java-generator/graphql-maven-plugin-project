@@ -2,15 +2,14 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 
@@ -22,29 +21,35 @@ import graphql.parser.Parser;
  * 
  * @author etienne-sf
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { HelloWorld_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class DocumentParser_helloworld_Test {
 
-	@Autowired
-	private ApplicationContext ctx;
-	@Autowired
-	private GraphqlTestHelper graphqlTestHelper;
-	@javax.annotation.Resource
+	AbstractApplicationContext ctx;
+	GraphqlTestHelper graphqlTestHelper;
 	GraphQLConfiguration pluginConfiguration;
-
-	@Autowired
 	GraphQLDocumentParser documentParser;
 
 	private Parser parser = new Parser();
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void loadApplicationContext() {
+		ctx = new AnnotationConfigApplicationContext(HelloWorld_Server_SpringConfiguration.class);
+		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
+		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
+
 		graphqlTestHelper.checkSchemaStringProvider("helloworld.graphqls");
 	}
 
+	@AfterEach
+	void cleanUp() {
+		if (ctx != null) {
+			ctx.close();
+		}
+	}
+
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_parseOneDocument_helloworld() {
 		// Preparation
 		Resource resource = ctx.getResource("/helloworld.graphqls");

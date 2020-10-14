@@ -86,6 +86,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateConnectionType() {
 		// Preparation
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_generateConnectionType", true);
@@ -133,6 +134,7 @@ class AddRelayConnectionsTest {
 
 	@Disabled // Disabled until generic types are managed"
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateEdgeType() {
 		// Preparation
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_generateEdgeType", true);
@@ -175,6 +177,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getFieldInheritedFrom() {
 		// Preparation
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_getFieldInheritedFrom", true);
@@ -206,6 +209,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField() {
 		// If a type's field is annotated by @RelayConnection, but this field is "inherited" from an interface, in which
 		// is not inherited by this directive, then an error should be thrown.
@@ -249,6 +253,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_addEdgeConnectionAndApplyNodeInterface_step3() {
 		// Preparation
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
@@ -270,6 +275,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getInheritedFields() {
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class, "test_getInheritedFields", true);
 		List<Field> result;
@@ -300,6 +306,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getFieldInheritedFrom_interfaceThatImplementsInterface() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -331,6 +338,7 @@ class AddRelayConnectionsTest {
 	 * &#064;RelayConnection directive)
 	 */
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithoutRelay() {
 		// Preparation
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
@@ -348,6 +356,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaAlreadyRelayCompliant() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -361,6 +370,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithWrongRelayConnectionDirective() {
 		// Preparation
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
@@ -377,6 +387,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithWrongNodeInterface() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -400,6 +411,7 @@ class AddRelayConnectionsTest {
 
 	@Disabled // Disabled until generic types are managed"
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithWrongEdgeInterface() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -423,6 +435,7 @@ class AddRelayConnectionsTest {
 
 	@Disabled // Disabled until generic types are managed"
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithWrongConnectionInterface() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -445,6 +458,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithWrongPageInfo() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -467,6 +481,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithWrongEdgeType() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -489,6 +504,7 @@ class AddRelayConnectionsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_schemaWithWrongConnectionType() {
 		// Preparation
 		loadSpringContext(AllGraphQLCasesRelayConnection_Client_SpringConfiguration.class,
@@ -515,6 +531,7 @@ class AddRelayConnectionsTest {
 	 * <I>&#064;RelayConnection</I> directive is defined in the input schema, so it can be badly defined
 	 */
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testAddRelayConnections_relayConnectionOnInputTypeField() {
 		// Preparation
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,

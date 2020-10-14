@@ -22,6 +22,6 @@ import com.graphql_java_generator.plugin.PluginMode;
 public class Basic_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public Basic_Client_SpringConfiguration() {
-		super("basic.graphqls", PluginMode.client);
+		super("basic.graphqls", PluginMode.client, null, null, false);
 	}
 }

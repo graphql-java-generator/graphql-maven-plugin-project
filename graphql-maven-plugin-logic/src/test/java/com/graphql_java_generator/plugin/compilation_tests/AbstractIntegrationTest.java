@@ -2,12 +2,11 @@ package com.graphql_java_generator.plugin.compilation_tests;
 
 import java.io.IOException;
 
-import javax.annotation.Resource;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
@@ -16,25 +15,41 @@ import com.graphql_java_generator.plugin.test.compiler.CompilationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
-@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 abstract class AbstractIntegrationTest {
 
-	@Autowired
-	protected ApplicationContext ctx;
-	@Autowired
-	protected CompilationTestHelper compilationTestHelper;
-	@Autowired
-	protected GraphqlTestHelper graphqlTestHelper;
-	@Autowired
-	protected MavenTestHelper mavenTestHelper;
+	Class<?> springConfClass;
 
-	@Resource
+	protected AbstractApplicationContext ctx = null;
+	protected GraphQLDocumentParser graphQLDocumentParser;
+	protected GraphQLCodeGenerator codeGenerator;
+	protected CompilationTestHelper compilationTestHelper;
+	protected GraphqlTestHelper graphqlTestHelper;
+	protected MavenTestHelper mavenTestHelper;
 	GraphQLConfiguration pluginConfiguration;
 
-	@javax.annotation.Resource
-	protected GraphQLDocumentParser graphQLDocumentParser;
-	@javax.annotation.Resource
-	protected GraphQLCodeGenerator codeGenerator;
+	public AbstractIntegrationTest(Class<?> springConfClass) {
+		this.springConfClass = springConfClass;
+	}
+
+	@BeforeEach
+	void loadApplicationContext() {
+		ctx = new AnnotationConfigApplicationContext(springConfClass);
+		graphQLDocumentParser = ctx.getBean(GraphQLDocumentParser.class);
+		codeGenerator = ctx.getBean(GraphQLCodeGenerator.class);
+		compilationTestHelper = ctx.getBean(CompilationTestHelper.class);
+		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
+		mavenTestHelper = ctx.getBean(MavenTestHelper.class);
+		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
+
+		graphQLDocumentParser.parseDocuments();
+	}
+
+	@AfterEach
+	void cleanUp() {
+		if (ctx != null) {
+			ctx.close();
+		}
+	}
 
 	/**
 	 * This test will be executed for each concrete subclass of this class
@@ -43,11 +58,8 @@ abstract class AbstractIntegrationTest {
 	 * @throws IOException
 	 */
 	@Test
-	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
 	void testGenerateCode() throws IOException {
 		// Preparation
-		graphQLDocumentParser.parseDocuments();
-
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetSourceFolder());
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetClassFolder());
 

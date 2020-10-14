@@ -47,6 +47,6 @@ public class Github_Server_SpringConfiguration extends AbstractSpringConfigurati
 	}
 
 	public Github_Server_SpringConfiguration() {
-		super("github.schema.public.graphqls", PluginMode.server, customScalars);
+		super("github.schema.public.graphqls", PluginMode.server, null, customScalars, true);
 	}
 }

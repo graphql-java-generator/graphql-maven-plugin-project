@@ -39,6 +39,6 @@ public class AllGraphQLCases_Client_SpringConfiguration extends AbstractSpringCo
 	}
 
 	public AllGraphQLCases_Client_SpringConfiguration() {
-		super("allGraphQLCases*.graphqls", PluginMode.client, customScalars);
+		super("allGraphQLCases*.graphqls", PluginMode.client, null, customScalars, false);
 	}
 }

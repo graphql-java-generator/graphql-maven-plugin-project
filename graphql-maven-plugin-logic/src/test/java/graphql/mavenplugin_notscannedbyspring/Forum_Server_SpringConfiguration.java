@@ -33,6 +33,7 @@ public class Forum_Server_SpringConfiguration extends AbstractSpringConfiguratio
 	}
 
 	public Forum_Server_SpringConfiguration() {
-		super("forum.graphqls", PluginMode.server, "src/test/resources/forum_personalization.json", customScalars);
+		super("forum.graphqls", PluginMode.server, "src/test/resources/forum_personalization.json", customScalars,
+				false);
 	}
 }

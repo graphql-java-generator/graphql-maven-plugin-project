@@ -53,6 +53,6 @@ public class Shopify_Server_SpringConfiguration extends AbstractSpringConfigurat
 	}
 
 	public Shopify_Server_SpringConfiguration() {
-		super("shopify.graphqls", PluginMode.server, customScalars);
+		super("shopify.graphqls", PluginMode.server, null, customScalars, true);
 	}
 }

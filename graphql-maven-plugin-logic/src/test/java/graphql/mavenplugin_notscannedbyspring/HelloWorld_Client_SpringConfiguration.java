@@ -22,6 +22,6 @@ import com.graphql_java_generator.plugin.PluginMode;
 public class HelloWorld_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public HelloWorld_Client_SpringConfiguration() {
-		super("helloworld.graphqls", PluginMode.client);
+		super("helloworld.graphqls", PluginMode.client, null, null, false);
 	}
 }

@@ -129,6 +129,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_ExecutedComparison() {
 		String str1 = "a string";
 		String str2 = "another string";
@@ -183,6 +184,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_equals() {
 		ComparisonObject o1 = new ComparisonObject(1, "o1", 100L, "ignored 1");
 		ComparisonObject o2 = new ComparisonObject(2, "o2", 200L, "ignored 2");
@@ -206,6 +208,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_twoClasses() {
 		List<Difference> differences;
 
@@ -221,6 +224,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_Lists() {
 		// Preparation
 		List<Difference> differences;
@@ -270,6 +274,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_ListsEnum() {
 		// Preparation
 		List<Difference> differences;
@@ -314,6 +319,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_Map() {
 		// Preparation
 		List<Difference> differences;
@@ -377,6 +383,7 @@ class DeepComparatorTest {
 	}
 
 	// @Test
+	// @Execution(ExecutionMode.CONCURRENT)
 	// void test_nonAddedObjects() {
 	// // Preparation : we want an empty object list
 	// // deepComparator.comparedClasses = new TreeSet<>();
@@ -390,6 +397,7 @@ class DeepComparatorTest {
 	// }
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void ignoredObjects() {
 		// Preparation
 		// deepComparator.comparedClasses = new TreeSet<>();
@@ -402,6 +410,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_differencesObjects() {
 		// Preparation
 		Difference d;
@@ -441,6 +450,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_differencesObjects_withIdField() {
 		// Preparation
 		Difference d;
@@ -471,6 +481,7 @@ class DeepComparatorTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_ObjectsWithDiffInSuperClassFields() {
 		// Preparation
 		Difference d;
@@ -514,6 +525,7 @@ class DeepComparatorTest {
 	 * compare the cycler field, to avoid loops.
 	 */
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_Cycle() {
 		// Preparation
 		Cycler c1 = new Cycler();

@@ -10,14 +10,13 @@ import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.graphql_java_generator.plugin.schema_personalization.EntityPersonalization;
-import com.graphql_java_generator.plugin.schema_personalization.Field;
-import com.graphql_java_generator.plugin.schema_personalization.GraphQLJsonSchemaPersonalization;
-import com.graphql_java_generator.plugin.schema_personalization.SchemaPersonalization;
-import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
+@Execution(ExecutionMode.CONCURRENT)
 class JsonSchemaPersonalizationTest {
 
 	GraphQLConfigurationTestHelper pluginConfigurationTestHelper;
@@ -36,6 +35,7 @@ class JsonSchemaPersonalizationTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGetSchemaPersonalization() throws IOException, URISyntaxException {
 		// Preparation
 		assertNull(jsonSchemaPersonalization.schemaPersonalization, "Before");
@@ -49,6 +49,7 @@ class JsonSchemaPersonalizationTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testLoadGrahQLSchemaPersonalization() throws IOException, URISyntaxException {
 		// Preparation
 		assertNull(jsonSchemaPersonalization.schemaPersonalization, "Before");

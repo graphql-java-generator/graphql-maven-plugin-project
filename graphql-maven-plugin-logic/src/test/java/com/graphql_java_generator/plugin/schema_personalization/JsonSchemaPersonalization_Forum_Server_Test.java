@@ -9,11 +9,13 @@ import java.io.File;
 
 import javax.annotation.Resource;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.GraphQLDocumentParser;
@@ -24,17 +26,12 @@ import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { Forum_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class JsonSchemaPersonalization_Forum_Server_Test {
 
-	@Resource
+	AbstractApplicationContext ctx = null;
 	GraphQLConfiguration pluginConfiguration;
-
-	@Resource
 	GraphQLJsonSchemaPersonalization jsonSchemaPersonalization;
-
-	@Resource
 	GraphQLDocumentParser documentParser;
 
 	@Resource
@@ -42,8 +39,24 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 
 	File userJsonFile;
 
+	@BeforeEach
+	void loadApplicationContext() {
+		ctx = new AnnotationConfigApplicationContext(Forum_Server_SpringConfiguration.class);
+		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		jsonSchemaPersonalization = ctx.getBean(GraphQLJsonSchemaPersonalization.class);
+		mavenTestHelper = ctx.getBean(MavenTestHelper.class);
+		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
+	}
+
+	@AfterEach
+	void cleanUp() {
+		if (ctx != null) {
+			ctx.close();
+		}
+	}
+
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testApplySchemaPersonalization_OK() {
 		// Preparation
 		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
@@ -86,7 +99,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testApplySchemaPersonalization_wrongEntityName() {
 		// Preparation
 		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
@@ -100,7 +113,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testApplySchemaPersonalization_wrongFieldName() {
 		// Preparation
 		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
@@ -114,7 +127,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testApplySchemaPersonalization_fieldNameAlreadyExist() {
 		// Preparation
 		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(

@@ -22,6 +22,6 @@ import com.graphql_java_generator.plugin.PluginMode;
 public class StarWars_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public StarWars_Client_SpringConfiguration() {
-		super("starWarsSchema.graphqls", PluginMode.client);
+		super("starWarsSchema.graphqls", PluginMode.client, null, null, false);
 	}
 }

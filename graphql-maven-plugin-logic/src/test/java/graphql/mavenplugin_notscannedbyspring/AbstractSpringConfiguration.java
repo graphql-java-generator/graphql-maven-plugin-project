@@ -50,29 +50,30 @@ public abstract class AbstractSpringConfiguration {
 	protected boolean addRelayConnections = false;
 	protected PluginMode mode;
 	protected String schemaPersonalizationFilename = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
+	protected boolean separateUtilityClasses = false;
 	protected List<CustomScalarDefinition> customScalars = null;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
 
-	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode) {
-		this.schemaFilePattern = schemaFilePattern;
-		this.mode = mode;
-	}
-
+	/**
+	 * 
+	 * @param schemaFilePattern
+	 * @param mode
+	 * @param schemaPersonalizationFilename
+	 *            if null, then no schema personalization is sued
+	 * @param customScalars
+	 * @param separateUtilityClasses
+	 */
 	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode,
-			String schemaPersonalizationFilename, List<CustomScalarDefinition> customScalars) {
+			String schemaPersonalizationFilename, List<CustomScalarDefinition> customScalars,
+			boolean separateUtilityClasses) {
 		this.schemaFilePattern = schemaFilePattern;
 		this.mode = mode;
-		this.schemaPersonalizationFilename = schemaPersonalizationFilename;
+		if (schemaPersonalizationFilename != null)
+			this.schemaPersonalizationFilename = schemaPersonalizationFilename;
 		this.customScalars = customScalars;
-	}
-
-	protected AbstractSpringConfiguration(String schemaFilePattern, PluginMode mode,
-			List<CustomScalarDefinition> customScalars) {
-		this.schemaFilePattern = schemaFilePattern;
-		this.mode = mode;
-		this.customScalars = customScalars;
+		this.separateUtilityClasses = separateUtilityClasses;
 	}
 
 	@Bean
@@ -94,6 +95,7 @@ public abstract class AbstractSpringConfiguration {
 		configuration.schemaPersonalizationFile = (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE
 				.equals(schemaPersonalizationFilename)) ? null
 						: new File(mavenTestHelper.getModulePathFile(), schemaPersonalizationFilename);
+		configuration.separateUtilityClasses = separateUtilityClasses;
 		configuration.sourceEncoding = ENCODING;
 		configuration.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
 				(classname.contains("$")) ? classname = classname.substring(0, classname.indexOf('$')) : classname);

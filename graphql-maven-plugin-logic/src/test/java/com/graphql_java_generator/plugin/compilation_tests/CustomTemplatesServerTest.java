@@ -7,21 +7,17 @@ import java.util.regex.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import graphql.mavenplugin_notscannedbyspring.CustomTemplates_Server_SpringConfiguration;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { CustomTemplates_Server_SpringConfiguration.class })
 @Tag("customTemplates")
 class CustomTemplatesServerTest extends AbstractCustomTemplateIntegrationTest {
 
-	// Everything is in the AbstractIntegrationTest class.
+	public CustomTemplatesServerTest() {
+		super(CustomTemplates_Server_SpringConfiguration.class);
+	}
 
-	// The only aim of this class, is to have its own Spring Configuration
 	@BeforeEach
 	public void setUp() throws IOException {
 		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases.graphqls");

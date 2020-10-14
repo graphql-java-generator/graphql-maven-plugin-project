@@ -47,6 +47,6 @@ public class Github_Client_SpringConfiguration extends AbstractSpringConfigurati
 	}
 
 	public Github_Client_SpringConfiguration() {
-		super("github.schema.public.graphqls", PluginMode.client, customScalars);
+		super("github.schema.public.graphqls", PluginMode.client, null, customScalars, true);
 	}
 }

@@ -39,7 +39,7 @@ public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections exte
 	}
 
 	public AllGraphQLCases_Client_SpringConfiguration_addRelayConnections() {
-		super("allGraphQLCases*.graphqls", PluginMode.client, customScalars);
+		super("allGraphQLCases*.graphqls", PluginMode.client, null, customScalars, false);
 		this.addRelayConnections = true;
 	}
 }

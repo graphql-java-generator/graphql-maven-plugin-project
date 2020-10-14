@@ -3,23 +3,18 @@ package com.graphql_java_generator.plugin.compilation_tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Shopify_Server_SpringConfiguration;
 
-@Disabled // Generates a stack overflow in the Java Compiler! :(
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { Shopify_Server_SpringConfiguration.class })
+@Disabled // Disabled as the generated code generates a Stack Overflow in the java compiler!
 @Tag("shopify")
 class ShopifyServerTest extends AbstractIntegrationTest {
 
-	// Everything is in the AbstractIntegrationTest class.
-
-	// The only aim of this class, is to have its own Spring Configuration
+	public ShopifyServerTest() {
+		super(Shopify_Server_SpringConfiguration.class);
+	}
 
 	@BeforeEach
 	public void setUp() {
