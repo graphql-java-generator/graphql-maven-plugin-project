@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -132,7 +133,7 @@ class AddRelayConnectionsTest {
 		assertTrue(e.getMessage().contains("is not compliant with the Relay connection specification"));
 	}
 
-	@Disabled // Disabled until generic types are managed"
+	@Disabled // Disabled until generic types are managed (needs a generic interface for Edge and Connection)
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateEdgeType() {
@@ -210,19 +211,78 @@ class AddRelayConnectionsTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
+	void test_addEdgeConnectionAndApplyNodeInterface_step1RelayConnectionOnNonListField() {
+		// If a type's field is annotated by @RelayConnection, but this field is not a list, then an error should be
+		// thrown.
+		// Let's change the list attribute to false to one of this field
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
+				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", true);
+
+		FieldImpl f = (FieldImpl) getField("MyQueryType", "connectionWithoutParameters");
+		f.setList(false);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class,
+				() -> addRelayConnections.addEdgeConnectionAndApplyNodeInterface());
+
+		// Verification
+		assertTrue(e.getMessage().contains("MyQueryType.connectionWithoutParameters"));
+		assertTrue(e.getMessage().contains("@RelayConnection directive applied, but is not a list"));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_addEdgeConnectionAndApplyNodeInterface_step1RelayConnectionOnInputField() {
+		// If a type's field is annotated by @RelayConnection, but this field is not a list, then an error should be
+		// thrown.
+		// Let's change the list attribute to false to one of this field
+		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
+				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the Node interface compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
+		//
+		FieldImpl f = (FieldImpl) getField("AllFieldCasesInput", "booleans");
+		//
+		DirectiveImpl dir = new DirectiveImpl();
+		dir.setName("RelayConnection");
+		dir.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
+		//
+		AppliedDirectiveImpl d = new AppliedDirectiveImpl();
+		d.setDirective(dir);
+		f.getAppliedDirectives().add(d);
+
+		// Go, go, go
+		RuntimeException e = assertThrows(RuntimeException.class,
+				() -> addRelayConnections.addEdgeConnectionAndApplyNodeInterface());
+
+		// Verification
+		assertTrue(e.getMessage().contains("AllFieldCasesInput.booleans"));
+		assertTrue(e.getMessage()
+				.contains("input type may not have fields to which the @RelayConnection directive is applied"));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField() {
 		// If a type's field is annotated by @RelayConnection, but this field is "inherited" from an interface, in which
 		// is not inherited by this directive, then an error should be thrown.
 		// Let's add the @RelayConnection directive to the AllFieldCasesInterfaceType.id field, and check that two
 		// errors are found (as id is in the AllFieldCasesInterface and the WithID interfaces)
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
-				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", true);
+				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", false);
+		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
+		// the Node interface compliance for the relay connection specification
+		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		documentParser.parseDocuments();
 
 		DirectiveImpl dir = new DirectiveImpl();
 		dir.setName("RelayConnection");
 		dir.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		//
 		FieldImpl f = (FieldImpl) getField("AllFieldCasesInterfaceType", "id");
+		f.setList(true);// Necessary to pass the "is a list" test
 		AppliedDirectiveImpl d = new AppliedDirectiveImpl();
 		d.setDirective(dir);
 		f.setAppliedDirectives(new ArrayList<>());
@@ -236,7 +296,8 @@ class AddRelayConnectionsTest {
 				() -> addRelayConnections.addEdgeConnectionAndApplyNodeInterface());
 
 		// Verification
-		assertTrue(e.getMessage().contains("2 error(s) was(were) found"));
+		assertTrue(e.getMessage().contains("2 error(s) was(were) found"),
+				"Expected '2 error(s) was(were) found' in  " + e.getMessage());
 		// First error
 		verify(mockLogger, times(2)).error(argument.capture());
 		String errorMessage = argument.getAllValues().get(0);
@@ -548,7 +609,7 @@ class AddRelayConnectionsTest {
 		AppliedDirectiveImpl d = new AppliedDirectiveImpl();
 		d.setDirective(dir);
 		//
-		getField("AllFieldCasesInput", "name").getAppliedDirectives().add(d);
+		getField("AllFieldCasesInput", "aliases").getAppliedDirectives().add(d);
 
 		// Go, go, go
 		RuntimeException e = assertThrows(RuntimeException.class, () -> addRelayConnections.addRelayConnections());
@@ -660,8 +721,8 @@ class AddRelayConnectionsTest {
 
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
 				int j = 0;
-				checkField(d, 0, "edges", true, false, false, "Edge", configuration.getPackageName() + ".Edge", 0);
-				checkField(d, 1, "pageInfo", false, true, false, "PageInfo",
+				checkField(d, j++, "edges", true, false, false, "Edge", configuration.getPackageName() + ".Edge", 0);
+				checkField(d, j++, "pageInfo", false, true, false, "PageInfo",
 						configuration.getPackageName() + ".PageInfo", 0);
 
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
@@ -725,9 +786,16 @@ class AddRelayConnectionsTest {
 	private void checkRelayConnectionDirectiveHasBeenApplied() {
 		assertEquals("CharacterConnection",
 				getField("MyQueryType", "connectionWithoutParameters").getGraphQLTypeName());
+		assertFalse(getField("MyQueryType", "connectionWithoutParameters").isList());
+
 		assertEquals("HumanConnection", getField("MyQueryType", "connectionOnHuman").getGraphQLTypeName());
+		assertFalse(getField("MyQueryType", "connectionOnHuman").isList());
+
 		assertEquals("HumanConnection", getField("AllFieldCasesInterface", "friends").getGraphQLTypeName());
+		assertFalse(getField("AllFieldCasesInterface", "friends").isList());
+
 		assertEquals("HumanConnection", getField("AllFieldCasesInterfaceType", "friends").getGraphQLTypeName());
+		assertFalse(getField("AllFieldCasesInterfaceType", "friends").isList());
 	}
 
 	/** This method checks for one base type, that it implements the Node interface */

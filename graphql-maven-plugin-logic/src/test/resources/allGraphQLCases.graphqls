@@ -58,8 +58,8 @@ type MyQueryType {
     
     ################################################################################
     # queries to check the addRelayConnections capability
-    connectionWithoutParameters: Character @RelayConnection
-    connectionOnHuman(planet: String, episode: Episode): Human @RelayConnection
+    connectionWithoutParameters: [Character] @RelayConnection
+    connectionOnHuman(planet: String, episode: Episode): [Human] @RelayConnection
 }
 
 type AnotherMutationType {

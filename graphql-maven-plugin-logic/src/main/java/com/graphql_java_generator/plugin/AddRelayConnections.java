@@ -482,10 +482,15 @@ public class AddRelayConnections {
 							if (d.getDirective().getName().equals("RelayConnection")) {
 								// This Field has the @RelayConnection directive applied
 								//
+								// It must be a list
+								if (!f.isList()) {
+									throw new RuntimeException("The " + f.getOwningType().getName() + "." + f.getName()
+											+ " field has the @RelayConnection directive applied, but is not a list. The @RelayConnection directive may only be applied on lists.");
+								}
+								//
 								// InputType may not have relay connection fields
 								if (((ObjectType) f.getOwningType()).isInputType()) {
-									throw new RuntimeException("The input type " + f.getOwningType().getName() + "."
-											+ f.getName()
+									throw new RuntimeException("The " + f.getOwningType().getName() + "." + f.getName()
 											+ " field has the @RelayConnection directive applied. But input type may not have fields to which the @RelayConnection directive is applied.");
 								}
 								//
@@ -600,14 +605,9 @@ public class AddRelayConnections {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (Field f : fields) {
 			((FieldImpl) f).setGraphQLTypeName(f.getGraphQLTypeName() + "Connection");
-			// Let's remove the @RelayConnection directive from this field (it may not exist, for field inherited from
-			// an interface)
-			for (AppliedDirective d : f.getAppliedDirectives()) {
-				if (d.getDirective().getName().equals("RelayConnection")) {
-					f.getAppliedDirectives().remove(d);
-					break;
-				}
-			}
+			((FieldImpl) f).setList(false);
+			((FieldImpl) f).setMandatory(true);
+			((FieldImpl) f).setItemMandatory(false);// No more sense, for item lists
 		}
 	}
 

@@ -15,6 +15,8 @@ import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanConnection;
+import org.allGraphQLCases.server.HumanEdge;
+import org.allGraphQLCases.server.PageInfo;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,8 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 		implements DataFetchersDelegateAllFieldCasesInterfaceType {
+
+	final String BAD_CURSOR = "TODO : implement a sample cursor capability. It's specific to each implementation";
 
 	@Resource
 	DataGenerator generator;
@@ -61,15 +65,18 @@ public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 
 	@Override
 	public HumanConnection friends(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInterfaceType source) {
-		Human human = new Human();
-		human.setId(UUID.randomUUID());
-		human.setName("a name");
-		human.setAppearsIn(new ArrayList<Episode>());
+		Human human = Human.builder().withId(UUID.randomUUID()).withName("a name")
+				.withAppearsIn(new ArrayList<Episode>()).build();
+		//
+		HumanEdge edge = HumanEdge.builder().withNode(human).withCursor(BAD_CURSOR).build();
+		//
+		List<HumanEdge> edges = new ArrayList<>();
+		edges.add(edge);
 
-		List<Human> ret = new ArrayList<>();
-		ret.add(human);
+		PageInfo pageInfo = PageInfo.builder().withEndCursor(BAD_CURSOR).withHasNextPage(false)
+				.withHasPreviousPage(false).withStartCursor(BAD_CURSOR).build();
 
-		return ret;
+		return HumanConnection.builder().withEdges(edges).withPageInfo(pageInfo).build();
 	}
 
 	@Override
