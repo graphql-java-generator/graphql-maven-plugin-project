@@ -713,12 +713,6 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	private void addImportsForOneType(Type type) {
 		if (type != null) {
-
-			if (type.getName().equals("Post")) {
-				// Just for a debut breakpoint
-				int i = 0;
-			}
-
 			// First, the import for the object itself. It should do something only for separate utility classes.
 			addAnImportForOneType(type, configuration.getPackageName() + "." + type.getClassSimpleName());
 
