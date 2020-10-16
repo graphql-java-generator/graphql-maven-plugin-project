@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
  * @author etienne-sf
  *
  */
-public interface MergeSchemaConfiguration extends CommonConfiguration {
+public interface GenerateGraphQLSchemaConfiguration extends CommonConfiguration {
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"

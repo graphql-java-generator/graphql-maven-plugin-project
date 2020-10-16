@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.graphql_java_generator.plugin.conf.Logger;
-import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MergeSchemaConfigurationTestHelper implements MergeSchemaConfiguration {
+public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGraphQLSchemaConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
 	public Logger log;
@@ -34,7 +34,7 @@ public class MergeSchemaConfigurationTestHelper implements MergeSchemaConfigurat
 	 * @param caller
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
-	public MergeSchemaConfigurationTestHelper(Object caller) {
+	public GenerateGraphQLSchemaConfigurationTestHelper(Object caller) {
 		log = new Slf4jLogger(caller);
 	}
 

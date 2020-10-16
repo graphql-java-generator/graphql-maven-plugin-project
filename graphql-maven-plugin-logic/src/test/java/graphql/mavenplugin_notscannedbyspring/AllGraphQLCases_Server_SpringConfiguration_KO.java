@@ -22,7 +22,7 @@ import graphql.schema.GraphQLScalarType;
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.Merge.*") })
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*") })
 public class AllGraphQLCases_Server_SpringConfiguration_KO extends AbstractSpringConfiguration {
 
 	public AllGraphQLCases_Server_SpringConfiguration_KO() {

@@ -19,7 +19,7 @@ import org.springframework.context.annotation.FilterType;
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.Merge.*") })
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*") })
 public class StarWars_Server_SpringConfiguration extends AbstractSpringConfiguration {
 
 	public StarWars_Server_SpringConfiguration() {

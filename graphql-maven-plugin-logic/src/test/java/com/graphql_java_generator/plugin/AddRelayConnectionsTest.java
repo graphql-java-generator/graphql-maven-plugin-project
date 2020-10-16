@@ -28,7 +28,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
-import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
@@ -39,7 +39,7 @@ import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 
 import merge.mavenplugin_notscannedbyspring.AbstractSpringConfiguration;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCasesRelayConnection_Client_SpringConfiguration;
@@ -49,7 +49,7 @@ import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfigu
 class AddRelayConnectionsTest {
 
 	AbstractApplicationContext ctx = null;
-	MergeDocumentParser documentParser = null;
+	GenerateGraphQLSchemaDocumentParser documentParser = null;
 	AddRelayConnections addRelayConnections = null;
 	CommonConfiguration configuration;
 
@@ -72,14 +72,14 @@ class AddRelayConnectionsTest {
 			String targetFolderName, boolean executeParseDocuments) {
 		ctx = new AnnotationConfigApplicationContext(configurationClass);
 
-		MergeSchemaConfigurationTestHelper conf = ((MergeSchemaConfigurationTestHelper) ctx
-				.getBean(MergeSchemaConfiguration.class));
+		GenerateGraphQLSchemaConfigurationTestHelper conf = ((GenerateGraphQLSchemaConfigurationTestHelper) ctx
+				.getBean(GenerateGraphQLSchemaConfiguration.class));
 		conf.addRelayConnections = true;
 		conf.targetFolder = new File(mavenTestHelper.getModulePathFile(),
 				"target/junittest_AddRelayConnectionsTest/" + targetFolderName);
 
-		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
-		documentParser = ctx.getBean(MergeDocumentParser.class);
+		ctx.getBean(GenerateGraphQLSchemaConfiguration.class).logConfiguration();
+		documentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
 		addRelayConnections = ctx.getBean(AddRelayConnections.class);
 		configuration = documentParser.configuration;
 
@@ -243,7 +243,7 @@ class AddRelayConnectionsTest {
 				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Node interface compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		FieldImpl f = (FieldImpl) getField("AllFieldCasesInput", "booleans");
@@ -277,7 +277,7 @@ class AddRelayConnectionsTest {
 				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Node interface compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 
 		DirectiveImpl dir = new DirectiveImpl();
@@ -291,7 +291,7 @@ class AddRelayConnectionsTest {
 		f.setAppliedDirectives(new ArrayList<>());
 		f.getAppliedDirectives().add(d);
 		Logger mockLogger = mock(Logger.class);
-		((MergeSchemaConfigurationTestHelper) configuration).log = mockLogger;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).log = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 
 		// Go, go, go
@@ -323,7 +323,7 @@ class AddRelayConnectionsTest {
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
 				"test_addEdgeConnectionAndApplyNodeInterface_step3", false);
 		Logger mockLogger = mock(Logger.class);
-		((MergeSchemaConfigurationTestHelper) configuration).log = mockLogger;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).log = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 
 		// Go, go, go
@@ -458,7 +458,7 @@ class AddRelayConnectionsTest {
 				"testAddRelayConnections_schemaWithWrongNodeInterface", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Node interface compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		InterfaceType node = (InterfaceType) documentParser.getType("Node");
@@ -482,7 +482,7 @@ class AddRelayConnectionsTest {
 				"testAddRelayConnections_schemaWithWrongEdgeInterface", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Edge interface compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		InterfaceType edge = (InterfaceType) documentParser.getType("Edge");
@@ -506,7 +506,7 @@ class AddRelayConnectionsTest {
 				"testAddRelayConnections_schemaWithWrongConnectionInterface", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Connection interface compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		InterfaceType connection = (InterfaceType) documentParser.getType("Connection");
@@ -529,7 +529,7 @@ class AddRelayConnectionsTest {
 				"testAddRelayConnections_schemaWithWrongPageInfo", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the PageInfo type compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		ObjectType pageInfo = (ObjectType) documentParser.getType("PageInfo");
@@ -552,7 +552,7 @@ class AddRelayConnectionsTest {
 				"testAddRelayConnections_schemaWithWrongEdgeType", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the HumanEdge type compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		ObjectType humanEdge = (ObjectType) documentParser.getType("HumanEdge");
@@ -575,7 +575,7 @@ class AddRelayConnectionsTest {
 				"testAddRelayConnections_schemaWithWrongConnectionType", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the HumanConnection type compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		ObjectType humanConnection = (ObjectType) documentParser.getType("HumanConnection");
@@ -602,7 +602,7 @@ class AddRelayConnectionsTest {
 				"testAddRelayConnections_relayConnectionOnInputTypeField", false);
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Connection interface compliance for the relay connection specification
-		((MergeSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
 		documentParser.parseDocuments();
 		//
 		DirectiveImpl dir = new DirectiveImpl();

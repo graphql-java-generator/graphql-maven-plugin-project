@@ -15,20 +15,22 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.Merge;
-import com.graphql_java_generator.plugin.MergeDocumentParser;
+import com.graphql_java_generator.plugin.GenerateGraphQLSchema;
+import com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
-import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
 import graphql.ThreadSafe;
 
 /**
- * The <I>merge</I> goal generates GraphQL schema, based on the source GraphQL schemas.<BR/>
+ * The <I>generateGraphQLSchema</I> goal generates GraphQL schema, based on the source GraphQL schemas.<BR/>
  * It can be used to:
  * <UL>
- * <LI>Merge several GraphQL schema files into one file, for instance with additional schema files that would use the
+ * <LI>Generate several GraphQL schema files into one file, for instance with additional schema files that would use the
  * <I>extend</I> GraphQL keyword</LI>
  * <LI>Reformat the schema file</LI>
+ * <LI>Generate the GraphQL schema with the Relay Connection stuff (Node interface, XxxEdge and XxxConnection types),
+ * thanks to the <I>addRelayConnections</I> plugin parameter.
  * </UL>
  * <BR/>
  * This goal is, by default, attached to the Initialize maven phase, to be sure that the GraphQL schema are generated
@@ -36,9 +38,9 @@ import graphql.ThreadSafe;
  * 
  * @author etienne-sf
  */
-@Mojo(name = "merge", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name = "generateGraphQLSchema", defaultPhase = LifecyclePhase.INITIALIZE)
 @ThreadSafe
-public class MergeMojo extends AbstractMojo {
+public class GenerateGraphQLSchemaMojo extends AbstractMojo {
 
 	/**
 	 * <P>
@@ -70,7 +72,7 @@ public class MergeMojo extends AbstractMojo {
 	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
 	 * schema(s) are expected to be: in this folder, or one of these subfolders
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = MergeSchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFileFolder", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER)
 	File schemaFileFolder;
 
 	/**
@@ -85,7 +87,7 @@ public class MergeMojo extends AbstractMojo {
 	 * <I>/src/main/resources/myschema_extend.graphqls</I> files.
 	 * <P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = MergeSchemaConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaFilePattern", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_SCHEMA_FILE_PATTERN)
 	String schemaFilePattern;
 
 	/**
@@ -114,18 +116,18 @@ public class MergeMojo extends AbstractMojo {
 	Map<String, String> templates;
 
 	/** The encoding for the generated resource files */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.resourceEncoding", defaultValue = MergeSchemaConfiguration.DEFAULT_RESOURCE_ENCODING)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.resourceEncoding", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_RESOURCE_ENCODING)
 	String resourceEncoding;
 
 	/** The folder where the generated GraphQL schema will be stored */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = MergeSchemaConfiguration.DEFAULT_TARGET_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetFolder", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER)
 	File targetFolder;
 
 	/**
 	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
 	 * the <I>targetFolder</I> plugin parameter.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaFileName", defaultValue = MergeSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaFileName", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)
 	String targetSchemaFileName;
 
 	@Override
@@ -134,21 +136,22 @@ public class MergeMojo extends AbstractMojo {
 			getLog().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
-			MergeSpringConfiguration.mojo = this;
-			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(MergeSpringConfiguration.class);
+			GenerateGraphQLSchemaSpringConfiguration.mojo = this;
+			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
+					GenerateGraphQLSchemaSpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
-			ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
+			ctx.getBean(GenerateGraphQLSchemaConfiguration.class).logConfiguration();
 
-			MergeDocumentParser documentParser = ctx.getBean(MergeDocumentParser.class);
+			GenerateGraphQLSchemaDocumentParser documentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
 			documentParser.parseDocuments();
 
-			Merge merge = ctx.getBean(Merge.class);
-			merge.generateGraphQLSchema();
+			GenerateGraphQLSchema generateGraphQLSchema = ctx.getBean(GenerateGraphQLSchema.class);
+			generateGraphQLSchema.generateGraphQLSchema();
 
 			ctx.close();
 
-			getLog().debug("Finished generation of the merged schema");
+			getLog().debug("Finished generation of the GraphQL schema");
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);

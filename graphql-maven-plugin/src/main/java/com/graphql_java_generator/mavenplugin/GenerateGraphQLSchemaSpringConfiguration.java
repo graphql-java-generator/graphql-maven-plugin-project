@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
-import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
 import graphql.language.Document;
 import graphql.parser.Parser;
@@ -27,17 +27,17 @@ import graphql.parser.Parser;
 @ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*") })
-public class MergeSpringConfiguration {
+public class GenerateGraphQLSchemaSpringConfiguration {
 
 	/**
 	 * This static field is a trick to let the Spring ApplicationContext access to this instance. If you find any better
 	 * solution, let us know !
 	 */
-	static MergeMojo mojo = null;
+	static GenerateGraphQLSchemaMojo mojo = null;
 
 	@Bean
-	MergeSchemaConfiguration pluginConfiguration() {
-		return new MergeConfigurationImpl(mojo);
+	GenerateGraphQLSchemaConfiguration pluginConfiguration() {
+		return new GenerateGraphQLSchemaConfigurationImpl(mojo);
 	}
 
 	/**

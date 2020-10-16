@@ -16,7 +16,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -26,7 +26,7 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRu
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 
 import graphql.language.Document;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
@@ -41,7 +41,7 @@ import merge.mavenplugin_notscannedbyspring.GeneratedForum_Client_SpringConfigur
  * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
-class MergeTest {
+class GenerateGraphQLSchemaTest {
 
 	/** The logger for this instance */
 	protected transient Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -59,7 +59,7 @@ class MergeTest {
 		/////////////// Ignored classes //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredClass(AddRelayConnections.class);
 		deepComparator.addIgnoredClass(Document.class);
-		deepComparator.addIgnoredClass(MergeSchemaConfigurationTestHelper.class);
+		deepComparator.addIgnoredClass(GenerateGraphQLSchemaConfigurationTestHelper.class);
 		deepComparator.addIgnoredClass(GraphqlUtils.class);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,10 +69,10 @@ class MergeTest {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "configuration");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "graphqlUtils");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class, "documents");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.MergeDocumentParser.class,
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class, "configuration");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class, "graphqlUtils");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class, "documents");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
 				"objectTypeExtensionDefinitions");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,12 +157,12 @@ class MergeTest {
 			String test) {
 		// Go, go, go
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
-		Merge sourceRelaySchema = ctx.getBean(Merge.class);
-		MergeDocumentParser sourceDocumentParser = sourceRelaySchema.documentParser;
+		GenerateGraphQLSchema sourceRelaySchema = ctx.getBean(GenerateGraphQLSchema.class);
+		GenerateGraphQLSchemaDocumentParser sourceDocumentParser = sourceRelaySchema.documentParser;
 		sourceDocumentParser.parseDocuments();
 		sourceRelaySchema.generateGraphQLSchema();
 		// Let's log the current configuration (this will do something only when in debug mode)
-		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
+		ctx.getBean(GenerateGraphQLSchemaConfiguration.class).logConfiguration();
 		ctx.close();
 
 		if (sourceDocumentParser.getConfiguration().isAddRelayConnections()) {
@@ -174,10 +174,10 @@ class MergeTest {
 		// Let's load the content of the generated schema in a new DocumentParser
 		ctx = new AnnotationConfigApplicationContext(generatedSpringConfClass);
 		// Let's log the current configuration (this will do something only when in debug mode)
-		ctx.getBean(MergeSchemaConfiguration.class).logConfiguration();
+		ctx.getBean(GenerateGraphQLSchemaConfiguration.class).logConfiguration();
 		//
-		MergeDocumentParser generatedDocumentParser = ctx.getBean(MergeDocumentParser.class);
-		Merge generatedRelaySchema = ctx.getBean(Merge.class);
+		GenerateGraphQLSchemaDocumentParser generatedDocumentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
+		GenerateGraphQLSchema generatedRelaySchema = ctx.getBean(GenerateGraphQLSchema.class);
 		generatedDocumentParser.parseDocuments();
 		generatedRelaySchema.generateGraphQLSchema();
 		//

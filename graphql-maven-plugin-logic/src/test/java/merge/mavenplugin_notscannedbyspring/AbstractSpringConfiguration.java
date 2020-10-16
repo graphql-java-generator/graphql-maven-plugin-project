@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.MergeSchemaConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 
 import graphql.language.Document;
 import graphql.parser.Parser;
@@ -40,7 +40,7 @@ public abstract class AbstractSpringConfiguration {
 	@Resource
 	MavenTestHelper mavenTestHelper;
 	@Autowired
-	MergeSchemaConfigurationTestHelper configuration;
+	GenerateGraphQLSchemaConfigurationTestHelper configuration;
 
 	protected AbstractSpringConfiguration(String schemaFileFolder, String schemaFilePattern, String schemaFileName,
 			String targetFolder, boolean addRelayConnections) {
@@ -52,8 +52,8 @@ public abstract class AbstractSpringConfiguration {
 	}
 
 	@Bean
-	MergeSchemaConfigurationTestHelper graphQLConfigurationTestHelper() {
-		MergeSchemaConfigurationTestHelper configuration = new MergeSchemaConfigurationTestHelper(this);
+	GenerateGraphQLSchemaConfigurationTestHelper graphQLConfigurationTestHelper() {
+		GenerateGraphQLSchemaConfigurationTestHelper configuration = new GenerateGraphQLSchemaConfigurationTestHelper(this);
 		configuration.addRelayConnections = addRelayConnections;
 		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), schemaFileFolder);
 		configuration.schemaFilePattern = schemaFilePattern;

@@ -7,18 +7,18 @@ import java.io.File;
 import java.util.Map;
 
 import com.graphql_java_generator.plugin.conf.Logger;
-import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
 /**
  * @author etienne-sf
  *
  */
-public class MergeConfigurationImpl implements MergeSchemaConfiguration {
+public class GenerateGraphQLSchemaConfigurationImpl implements GenerateGraphQLSchemaConfiguration {
 
-	final private MergeMojo mojo;
+	final private GenerateGraphQLSchemaMojo mojo;
 	final private MavenLogger log;
 
-	MergeConfigurationImpl(MergeMojo mojo) {
+	GenerateGraphQLSchemaConfigurationImpl(GenerateGraphQLSchemaMojo mojo) {
 		this.mojo = mojo;
 		log = new MavenLogger(mojo);
 	}

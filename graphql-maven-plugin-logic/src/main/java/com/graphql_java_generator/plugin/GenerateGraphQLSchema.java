@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
-import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
 /**
  * This class merges one or more given GraphQL schema files into a new GraphQL schema, that is written in the given
@@ -36,10 +36,10 @@ import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
  *
  */
 @Component
-public class Merge {
+public class GenerateGraphQLSchema {
 
 	@Autowired
-	MergeDocumentParser documentParser;
+	GenerateGraphQLSchemaDocumentParser documentParser;
 
 	@Autowired
 	GraphqlUtils graphqlUtils;
@@ -48,12 +48,12 @@ public class Merge {
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	MergeSchemaConfiguration configuration;
+	GenerateGraphQLSchemaConfiguration configuration;
 
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
 
-	public Merge() {
+	public GenerateGraphQLSchema() {
 		// Initialization for Velocity
 		velocityEngine = new VelocityEngine();
 		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
