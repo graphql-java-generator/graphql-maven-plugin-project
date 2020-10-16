@@ -5,6 +5,7 @@ package com.graphql_java_generator.plugin;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 
 /**

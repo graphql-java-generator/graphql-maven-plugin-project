@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;

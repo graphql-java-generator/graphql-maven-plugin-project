@@ -3,7 +3,7 @@
  */
 package com.graphql_java_generator.plugin.language;
 
-import com.graphql_java_generator.plugin.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 
 /**
  * All types found in the GraphQL schema(s), and discovered during the GraphQL parsing, are instance of

@@ -4,9 +4,9 @@
 package com.graphql_java_generator.plugin.language.impl;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.CommonConfiguration;
-import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.language.CustomScalar;
 
 import lombok.Data;

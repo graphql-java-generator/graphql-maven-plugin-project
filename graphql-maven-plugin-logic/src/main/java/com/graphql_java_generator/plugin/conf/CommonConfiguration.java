@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.conf;
 
 import java.io.File;
 import java.util.Map;

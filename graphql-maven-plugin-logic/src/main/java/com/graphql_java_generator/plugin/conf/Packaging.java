@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.conf;
 
 /**
  * This enumeration contains the packaging type which are managed by the plugin.

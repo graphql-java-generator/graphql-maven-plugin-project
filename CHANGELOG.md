@@ -5,10 +5,24 @@ New developments that use __graphql goal/task__ should use the parameters below,
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
+# Not released yet
+
+Both modes (client and server):
+* Changes in goal(maven)/task(gradle) names, to make them clear and homogeneous between the gradle and the maven plugin:
+    * The _graphql_ maven goal (and _graphqlGenerateCode_ gradle task) are deprecated, but they will be maintained in future 2.x versions
+    * The goal(maven)/task(gradle) are now:
+        * __generateClientCode__ : same as the deprecated _graphql_ maven goal (or _graphqlGenerateCode_ gradle task), with _mode_ set to _client_.
+        * __generateServerCode__ : same as the deprecated _graphql_ maven goal (or _graphqlGenerateCode_ gradle task), with _mode_ set to _server_.
+        * __generateGraphQLSchema__ : new, see below
+        * __graphql__ (maven) / ___graphqlGenerateCode__ (gradle) : deprecated and maintained. Maps to the new _generateClientCode_ and _generateServerCode_ goal/task, depending on the value of the _mode_ plugin parameter.  
+* New _generateGraphQLSchema_ that allows to generate the GraphQL schema file. It's interesting when:
+    * There are several GraphQL schema files in input (for instance with the extends GraphQL capability)
+    * The _addRelayConnections_ is used, that adds the _Node_ interface, and the _Edge_ and _Connection_ types to the schema.
+
 
 # 1.10
 
-Both mode (client and server):
+Both modes (client and server):
 * Upgrade of graphql-java from v14.0 to v15.0
 * The main improvement for this is: the plugin now accepts interfaces that implement one or more interfaces
 * Attributes of input types that are enum are now properly managed
@@ -19,7 +33,7 @@ Server mode:
 
 # 1.9
 
-Both mode (client and server):
+Both modes (client and server):
 * The GraphQL schema can now be split into separate files, including one file containing GraphQL extend keyword on the other file's objects
 * Add of the _merge_ goal/task: it generates a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
 
@@ -28,12 +42,12 @@ Client mode:
 
 # 1.8.1
 
-Both mode (client and server):
+Both modes (client and server):
 * The generated code was not compatible with Java 8 (only with Java 9 and above)
 
 # 1.8
 
-Both mode (client and server):
+Both modes (client and server):
 * Corrected issue #43: GraphQL Float was mapped to Float, instead of Double
 
 Client mode:

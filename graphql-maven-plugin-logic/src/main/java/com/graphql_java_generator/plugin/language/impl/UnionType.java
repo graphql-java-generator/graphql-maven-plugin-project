@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.graphql_java_generator.plugin.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

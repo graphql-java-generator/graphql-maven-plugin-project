@@ -30,7 +30,7 @@
  *
  */
 
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.conf;
 
 /**
  * The org.slf4j.Logger interface is the main user entry point of SLF4J API. It is expected that logging takes place

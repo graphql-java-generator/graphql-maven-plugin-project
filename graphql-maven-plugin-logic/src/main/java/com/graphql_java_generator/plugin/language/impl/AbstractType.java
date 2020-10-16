@@ -6,8 +6,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.CommonConfiguration;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;

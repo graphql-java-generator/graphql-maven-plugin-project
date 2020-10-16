@@ -15,10 +15,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.CommonConfiguration;
 import com.graphql_java_generator.plugin.Merge;
 import com.graphql_java_generator.plugin.MergeDocumentParser;
-import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
 
 import graphql.ThreadSafe;
 

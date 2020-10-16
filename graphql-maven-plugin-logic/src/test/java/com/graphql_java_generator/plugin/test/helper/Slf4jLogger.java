@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Etienne
  */
-public class Slf4jLogger implements com.graphql_java_generator.plugin.Logger {
+public class Slf4jLogger implements com.graphql_java_generator.plugin.conf.Logger {
 
 	/** The logger, to which all log calls will be delegated */
 	Logger logger = null;

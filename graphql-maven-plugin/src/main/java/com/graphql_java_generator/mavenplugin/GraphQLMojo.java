@@ -19,12 +19,12 @@ import org.apache.maven.project.MavenProject;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.CommonConfiguration;
-import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.GraphQLDocumentParser;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 
 import graphql.ThreadSafe;
 import graphql.schema.GraphQLScalarType;

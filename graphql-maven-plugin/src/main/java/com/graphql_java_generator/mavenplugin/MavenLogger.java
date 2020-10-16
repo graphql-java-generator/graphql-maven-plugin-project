@@ -3,7 +3,7 @@ package com.graphql_java_generator.mavenplugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.logging.Log;
 
-import com.graphql_java_generator.plugin.Logger;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * 

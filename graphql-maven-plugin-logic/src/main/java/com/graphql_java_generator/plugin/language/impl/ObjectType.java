@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 
 import lombok.Getter;

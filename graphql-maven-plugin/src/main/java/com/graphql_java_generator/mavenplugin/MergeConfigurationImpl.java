@@ -6,8 +6,8 @@ package com.graphql_java_generator.mavenplugin;
 import java.io.File;
 import java.util.Map;
 
-import com.graphql_java_generator.plugin.Logger;
-import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
+import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
 
 /**
  * @author etienne-sf

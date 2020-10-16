@@ -16,6 +16,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;

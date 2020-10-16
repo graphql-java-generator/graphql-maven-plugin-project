@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;

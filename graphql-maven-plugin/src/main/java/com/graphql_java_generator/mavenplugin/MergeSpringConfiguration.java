@@ -14,8 +14,8 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
-import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
+import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
 
 import graphql.language.Document;
 import graphql.parser.Parser;

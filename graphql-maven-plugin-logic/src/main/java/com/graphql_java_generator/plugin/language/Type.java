@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
 /**
  * All types found in the GraphQL schema(s), and discovered during the GraphQL parsing, are instance of {@link Type}.

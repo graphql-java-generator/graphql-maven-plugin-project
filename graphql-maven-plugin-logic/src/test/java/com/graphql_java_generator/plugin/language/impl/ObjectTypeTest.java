@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**

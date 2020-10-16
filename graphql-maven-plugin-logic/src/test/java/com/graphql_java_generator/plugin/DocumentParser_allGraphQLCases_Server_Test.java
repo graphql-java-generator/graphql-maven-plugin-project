@@ -21,6 +21,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.EnumValue;

@@ -36,6 +36,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;

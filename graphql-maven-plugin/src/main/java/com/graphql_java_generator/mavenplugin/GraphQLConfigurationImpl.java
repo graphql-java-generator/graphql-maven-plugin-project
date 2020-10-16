@@ -7,11 +7,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.Logger;
-import com.graphql_java_generator.plugin.Packaging;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
+import com.graphql_java_generator.plugin.conf.Packaging;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
  * @author etienne-sf

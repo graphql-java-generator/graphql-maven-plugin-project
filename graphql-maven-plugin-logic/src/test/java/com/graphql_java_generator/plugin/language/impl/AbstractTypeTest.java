@@ -8,7 +8,7 @@ import java.text.DateFormat;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 class AbstractTypeTest {

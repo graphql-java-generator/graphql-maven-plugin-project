@@ -16,6 +16,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;

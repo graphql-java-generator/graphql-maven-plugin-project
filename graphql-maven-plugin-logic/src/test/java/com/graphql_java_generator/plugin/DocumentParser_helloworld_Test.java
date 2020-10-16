@@ -11,6 +11,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 
 import graphql.language.Document;

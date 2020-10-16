@@ -26,6 +26,9 @@ import org.opentest4j.AssertionFailedError;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
+import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;

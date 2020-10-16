@@ -17,7 +17,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import com.graphql_java_generator.plugin.Logger;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * This class allows to compile a given source code.

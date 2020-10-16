@@ -13,6 +13,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+
 import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_KO;
 import graphql.schema.GraphQLScalarType;

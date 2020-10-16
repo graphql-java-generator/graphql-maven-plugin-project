@@ -15,6 +15,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.PluginMode;
+
 /**
  * 
  */

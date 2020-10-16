@@ -5,10 +5,11 @@ package graphql.mavenplugin_notscannedbyspring;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
+
+import com.graphql_java_generator.plugin.conf.PluginMode;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
-
-import com.graphql_java_generator.plugin.PluginMode;
 
 /**
  * The Spring configuration used for JUnit tests

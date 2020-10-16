@@ -11,8 +11,8 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
-import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {

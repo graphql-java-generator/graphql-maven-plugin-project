@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
 @Component
 public class CompilationTestHelper {

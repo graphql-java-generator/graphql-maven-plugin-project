@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin.test.compiler;
 import java.io.File;
 import java.nio.charset.Charset;
 
-import com.graphql_java_generator.plugin.Logger;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * 

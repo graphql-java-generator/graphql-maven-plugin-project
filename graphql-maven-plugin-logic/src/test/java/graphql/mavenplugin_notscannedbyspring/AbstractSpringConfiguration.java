@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.PluginMode;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 

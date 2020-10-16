@@ -17,8 +17,8 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.GraphQLDocumentParser;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;

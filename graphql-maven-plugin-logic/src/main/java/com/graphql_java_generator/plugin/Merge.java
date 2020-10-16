@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.MergeSchemaConfiguration;
 
 /**
  * This class merges one or more given GraphQL schema files into a new GraphQL schema, that is written in the given

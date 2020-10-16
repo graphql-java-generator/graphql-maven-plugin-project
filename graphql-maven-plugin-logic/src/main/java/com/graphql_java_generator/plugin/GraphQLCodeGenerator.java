@@ -32,6 +32,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;

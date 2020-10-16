@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.GraphQLDocumentParser;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;

@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.GraphQLDocumentParser;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
