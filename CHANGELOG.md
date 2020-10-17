@@ -15,7 +15,7 @@ Both modes (client and server):
         * __generateServerCode__ : same as the deprecated _graphql_ maven goal (or _graphqlGenerateCode_ gradle task), with _mode_ set to _server_.
         * __generateGraphQLSchema__ : new, see below
         * __graphql__ (maven) / ___graphqlGenerateCode__ (gradle) : deprecated and maintained. Maps to the new _generateClientCode_ and _generateServerCode_ goal/task, depending on the value of the _mode_ plugin parameter.  
-* New _generateGraphQLSchema_ that allows to generate the GraphQL schema file. It's interesting when:
+* New _generateGraphQLSchema_ goal/task that allows to generate the GraphQL schema file. It's interesting when:
     * There are several GraphQL schema files in input (for instance with the extends GraphQL capability)
     * The _addRelayConnections_ is used, that adds the _Node_ interface, and the _Edge_ and _Connection_ types to the schema.
 

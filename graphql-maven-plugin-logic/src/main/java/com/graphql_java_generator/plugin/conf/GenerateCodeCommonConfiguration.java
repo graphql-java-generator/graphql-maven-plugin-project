@@ -1,0 +1,121 @@
+/**
+ * 
+ */
+package com.graphql_java_generator.plugin.conf;
+
+import java.io.File;
+import java.util.List;
+
+import graphql.schema.GraphQLScalarType;
+
+/**
+ * This class contains all parameters that are common to the <I>generateClientCode</I>, <I>generateServerCode</I> and
+ * <I>graphql</I> goals/tasks.
+ * 
+ * @author etienne-sf
+ */
+public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
+
+	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
+	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
+
+	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
+	public final String DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE = "true";
+	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
+	public final String DEFAULT_MODE = "client";
+	public final String DEFAULT_SCAN_BASE_PACKAGES = "null";
+	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "false";
+	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
+	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
+	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
+
+	/**
+	 * <P>
+	 * This parameter contains the list of custom scalars implementations. One such implementation must be provided for
+	 * each custom scalar defined in the GraphQL implemented by the project for its GraphQL schema. It's a list, where
+	 * the key is the scalar name, as defined in the GraphQL schema, and the value is the full class name of the
+	 * implementation of {@link GraphQLScalarType}.
+	 * </P>
+	 * <P>
+	 * This parameter is a list of customScalars. For each one, you must define the name, the javaType and exactly one
+	 * of these fields: graphQLScalarTypeClass, graphQLScalarTypeStaticField or graphQLScalarTypeGetter.
+	 * </P>
+	 * <P>
+	 * Here is the detail:
+	 * </P>
+	 * <UL>
+	 * <LI><B>graphQLTypeName</B>: The type name, as defined in the GraphQL schema, for instance <I>Date</I></LI>
+	 * <LI><B>javaType</B>: The full class name for the java type that contains the data for this type, once in the Java
+	 * code, for instance <I>java.util.Date</I></LI>
+	 * <LI><B>graphQLScalarTypeClass</B>: The full class name for the {@link GraphQLScalarType} that will manage this
+	 * Custom Scalar. This class must be a subtype of {@link GraphQLScalarType}. Bu the constructor of
+	 * {@link GraphQLScalarType} has been deprecated, so you'll find no sample for that in this project</LI>
+	 * <LI><B>graphQLScalarTypeStaticField</B>: The full class name followed by the static field name that contains the
+	 * {@link GraphQLScalarType} that will manage this Custom Scalar. For instance, the graphql-java package provides
+	 * several custom scalars like <I>graphql.Scalars.GraphQLLong</I>. You can also use the
+	 * <I>graphql-java-extended-scalars</I> project, that provides other custom scalars like
+	 * <I>graphql.scalars.ExtendedScalars.NonNegativeInt</I>.</LI>
+	 * <LI><B>graphQLScalarTypeGetter</B>: The full class name followed by the static method name that returns the
+	 * {@link GraphQLScalarType} that will manage this Custom Scalar. For instance:
+	 * <I>org.mycompany.MyScalars.getGraphQLLong()</I> or
+	 * <I>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate</I>. This call may contain parameters, provided
+	 * that this a valid java command.</LI>
+	 * </UL>
+	 * <P>
+	 * Please have a look at the allGraphQLCases (both client and server) samples for more information. The <A HREF=
+	 * "https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/pom.xml">allGraphQLCases
+	 * client pom</A> is a good sample.
+	 * </P>
+	 */
+	public List<CustomScalarDefinition> getCustomScalars();
+
+	/** The encoding for the generated source files */
+	public String getSourceEncoding();
+
+	/**
+	 * The folder where the generated classes will be compiled, that is: where the class file are stored after
+	 * compilation
+	 */
+	public File getTargetClassFolder();
+
+	/** The folder where the source code for the generated classes will be generated */
+	public File getTargetSourceFolder();
+
+	/**
+	 * <P>
+	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory. It allows to
+	 * control whether the runtime code is embedded in the generated code or not.
+	 * </P>
+	 * <P>
+	 * The default behavior is the old one, that is: the runtime code is embedded. This means that when you upgrade the
+	 * plugin version, just build the project and everything is coherent.
+	 * </P>
+	 * <P>
+	 * If you set this parameter to false, the runtime is no more copied with the generated code. You then have to add
+	 * the runtime dependency in the pom dependencies: it's the com.graphql-java-generator:graphql-java-runtime
+	 * dependency, with the exact same version as the plugin version.
+	 * </P>
+	 * <P>
+	 * This also allows you to create your own runtime, and change the "standard" behavior. But of course, you'll have
+	 * to check the compatibility with all the next versions.
+	 * </P>
+	 *
+	 * @return
+	 */
+	public boolean isCopyRuntimeSources();
+
+	/** Logs all the configuration parameters (only when in the debug level) */
+	public void logConfiguration();
+
+	public default void logGenerateCodeCommonConfiguration() {
+		getLog().debug("  Common parameters for code generation:");
+		getLog().debug("    copyRuntimeSources: " + isCopyRuntimeSources());
+		getLog().debug("    customScalars: " + getCustomScalars());
+		getLog().debug("    packageName: " + getPackageName());
+		getLog().debug("    sourceEncoding: " + getSourceEncoding());
+		getLog().debug("    targetClassFolder: " + getTargetClassFolder());
+		getLog().debug("    targetSourceFolder: " + getTargetSourceFolder());
+		logCommonConfiguration();
+	}
+
+}
