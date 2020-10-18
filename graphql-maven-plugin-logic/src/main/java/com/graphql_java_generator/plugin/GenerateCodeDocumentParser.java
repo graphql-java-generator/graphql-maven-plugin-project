@@ -658,10 +658,14 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// No action in server mode: everything is handled by graphql-java
 		if (((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.client)) {
 
+			configuration.getLog().debug("Adding introspection capability");
+
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// First step : add the introspection queries into the existing query. If no query exists, one is created.s
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (queryType == null) {
+				configuration.getLog().debug("The source schema contains no query: creating an empty query type");
+
 				// There was no query. We need to create one. It will contain only the Introspection Query
 				queryType = new ObjectType(DEFAULT_QUERY_NAME, configuration);
 				queryType.setName(INTROSPECTION_QUERY);
@@ -673,7 +677,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			}
 
 			// We also need to add the relevant fields into the regular object that matches the query.
-			// But they must be a separate instance, otherwise their annotation is added twice.
 			Type objectQuery = getType(queryType.getName());
 			objectQuery.getFields().add(get__SchemaField(objectQuery));
 			objectQuery.getFields().add(get__TypeField(objectQuery));
@@ -682,12 +685,14 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// Second step: add the __datatype field into every GraphQL type (out of input types)
 			// That is : in all regular object types and interfaces.
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			configuration.getLog().debug("Adding __typename to each object");
 			for (ObjectType type : objectTypes) {
 				if (!type.isInputType()) {
 					type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
 							.graphQLTypeName("String").owningType(type).mandatory(false).build());
 				}
 			}
+			configuration.getLog().debug("Adding __typename to each interface");
 			for (InterfaceType type : interfaceTypes) {
 				type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
 						.graphQLTypeName("String").owningType(type).mandatory(false).build());
