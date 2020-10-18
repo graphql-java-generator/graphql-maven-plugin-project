@@ -2,40 +2,48 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
+import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguration;
 
 /**
  * 
  * @author etienne-sf
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { StarWars_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class DocumentParser_StarWars_Server_Test {
 
-	@Autowired
+	AbstractApplicationContext ctx = null;
 	GraphQLDocumentParser documentParser;
+	GraphQLConfiguration pluginConfiguration;
+	List<Document> documents;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void loadApplicationContext() throws IOException {
+		ctx = new AnnotationConfigApplicationContext(StarWars_Server_SpringConfiguration.class);
+		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
+		documents = documentParser.documents.getDocuments();
+
 		documentParser.parseDocuments();
 	}
 
 	/** Tests the Data Fetchers that are listed during parsing */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_initDataFetchers() {
 
 		// DataFetchers are aggregated into DataFetchersDelegate (one DataFetchersDelegate per type in the graphQL
@@ -89,7 +97,7 @@ class DocumentParser_StarWars_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_initListOfImplementations() {
 		assertEquals(1, documentParser.interfaceTypes.size(), "Only one interface");
 		List<ObjectType> implementingTypes = documentParser.interfaceTypes.get(0).getImplementingTypes();

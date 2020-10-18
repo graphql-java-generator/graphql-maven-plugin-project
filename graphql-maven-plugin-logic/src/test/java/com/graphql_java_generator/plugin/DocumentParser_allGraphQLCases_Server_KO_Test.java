@@ -38,7 +38,6 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
 		documentParser = ctx.getBean(GraphQLDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
-
 		documents = documentParser.documents.getDocuments();
 	}
 

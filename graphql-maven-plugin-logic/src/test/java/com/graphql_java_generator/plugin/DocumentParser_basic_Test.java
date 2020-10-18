@@ -2,16 +2,18 @@ package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 
 import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.Basic_Server_SpringConfiguration;
@@ -21,17 +23,12 @@ import graphql.parser.Parser;
  * 
  * @author etienne-sf
  */
-@SpringJUnitConfig(classes = { Basic_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class DocumentParser_basic_Test {
 
-	@javax.annotation.Resource
 	private ApplicationContext ctx;
-	@javax.annotation.Resource
 	private GraphqlTestHelper graphqlTestHelper;
-	@javax.annotation.Resource
 	GraphQLConfigurationTestHelper pluginConfiguration;
-
-	@Autowired
 	GraphQLDocumentParser documentParser;
 
 	private Parser parser = new Parser();
@@ -39,12 +36,17 @@ class DocumentParser_basic_Test {
 	private Document doc;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void loadApplicationContext() throws IOException {
+		ctx = new AnnotationConfigApplicationContext(Basic_Server_SpringConfiguration.class);
+		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
+		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
+
 		graphqlTestHelper.checkSchemaStringProvider("basic.graphqls");
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_parseOneDocument_basic() {
 		// Preparation
 		Resource resource = ctx.getResource("/basic.graphqls");

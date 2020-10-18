@@ -7,11 +7,13 @@ import java.util.regex.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.annotation.DirtiesContext;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import graphql.mavenplugin_notscannedbyspring.CustomTemplates_Client_SpringConfiguration;
 
 @Tag("customTemplates")
+@Execution(ExecutionMode.CONCURRENT)
 class CustomTemplatesClientTest extends AbstractCustomTemplateIntegrationTest {
 
 	public CustomTemplatesClientTest() {
@@ -31,7 +33,7 @@ class CustomTemplatesClientTest extends AbstractCustomTemplateIntegrationTest {
 	 */
 	@Override
 	@Test
-	@DirtiesContext // We need to forget the previous parsing (or everything may be doubled)
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateCode() throws IOException {
 		super.testGenerateCode();
 

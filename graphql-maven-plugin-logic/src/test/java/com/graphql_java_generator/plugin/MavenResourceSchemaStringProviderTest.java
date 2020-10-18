@@ -7,33 +7,37 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.MavenResourceSchemaStringProviderTest_Server_SpringConfiguration;
 
-@SpringJUnitConfig(classes = { MavenResourceSchemaStringProviderTest_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class MavenResourceSchemaStringProviderTest {
 
-	@Autowired
+	AbstractApplicationContext ctx = null;
 	private ResourceSchemaStringProvider resourceSchemaStringProvider;
-
-	@Autowired
 	protected GraphqlTestHelper graphqlTestHelper;
-	@Autowired
 	protected MavenTestHelper mavenTestHelper;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void loadApplicationContext() throws IOException {
+		ctx = new AnnotationConfigApplicationContext(
+				MavenResourceSchemaStringProviderTest_Server_SpringConfiguration.class);
+		mavenTestHelper = ctx.getBean(MavenTestHelper.class);
+		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
+		resourceSchemaStringProvider = ctx.getBean(ResourceSchemaStringProvider.class);
+
 		graphqlTestHelper.checkSchemaStringProvider("MavenResourceSchemaStringProviderTest/*.graphqls");
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testSchemaStrings() throws IOException {
 		// Preparation
 

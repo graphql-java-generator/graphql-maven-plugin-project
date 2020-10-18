@@ -21,20 +21,17 @@ import java.util.Objects;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
@@ -45,14 +42,10 @@ import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class CodeGeneratorTest {
-	@Resource
-	ApplicationContext context;
-	@Resource
+	AnnotationConfigApplicationContext context;
 	GraphQLConfigurationTestHelper pluginConfiguration;
-	@Resource
 	MavenTestHelper mavenTestHelper;
 
 	private File targetSourceFolder;
@@ -62,6 +55,10 @@ class CodeGeneratorTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
+		context = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
+		pluginConfiguration = context.getBean(GraphQLConfigurationTestHelper.class);
+		mavenTestHelper = context.getBean(MavenTestHelper.class);
+
 		targetSourceFolder = mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
 		targetRuntimeClassesSourceFolder = mavenTestHelper
 				.getTargetRuntimeClassesBaseSourceFolder(this.getClass().getSimpleName());
@@ -81,8 +78,13 @@ class CodeGeneratorTest {
 		codeGenerator.graphQLDocumentParser.configuration = pluginConfiguration;
 	}
 
+	@AfterEach
+	void close() {
+		context.close();
+	}
+
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testCodeGenerator() {
 		assertNotNull(codeGenerator.velocityEngine, "Velocity engine must be initialized");
 	}
@@ -93,7 +95,7 @@ class CodeGeneratorTest {
 	 * templates. It must remain stable. Field can be added. <B>But no field should be removed</B>.
 	 */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_client() {
 		// Let's mock the Velocity engine, to check how it is called
 		codeGenerator.velocityEngine = mock(VelocityEngine.class);
@@ -145,7 +147,7 @@ class CodeGeneratorTest {
 	 * templates. It must remain stable. Field can be added. <B>But no field should be removed</B>.
 	 */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_server() {
 		// Let's mock the Velocity engine, to check how it is called
 		codeGenerator.velocityEngine = mock(VelocityEngine.class);
@@ -189,7 +191,7 @@ class CodeGeneratorTest {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGetJavaFile() throws IOException {
 		// Preparation
 		String name = "MyClass";
@@ -245,7 +247,7 @@ class CodeGeneratorTest {
 	 * @throws IOException
 	 */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateCode_copyRuntimeSources() throws IOException {
 
 		pluginConfiguration.mode = PluginMode.client;
@@ -272,7 +274,7 @@ class CodeGeneratorTest {
 	 * @throws IOException
 	 */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateCode_skipCopyRuntimeSources() throws IOException {
 
 		pluginConfiguration.mode = PluginMode.client;
@@ -291,7 +293,7 @@ class CodeGeneratorTest {
 	 * Test for validating default template resolution
 	 */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	protected void testResolveTemplateDefault() {
 		pluginConfiguration.templates.clear();
 		assertEquals(CodeTemplate.PROVIDER.getDefaultValue(),
@@ -303,7 +305,7 @@ class CodeGeneratorTest {
 	 * Test for validating customized template resolution
 	 */
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	protected void testResolveTemplateCustom() {
 		pluginConfiguration.templates.clear();
 		pluginConfiguration.templates.put(CodeTemplate.PROVIDER.name(), "/my/custom/template");

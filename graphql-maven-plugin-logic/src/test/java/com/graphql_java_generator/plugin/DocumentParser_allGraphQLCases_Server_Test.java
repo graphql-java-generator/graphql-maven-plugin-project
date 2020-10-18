@@ -13,14 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Resource;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.DataFetcher;
@@ -53,26 +51,24 @@ import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfi
  * 
  * @author etienne-sf
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { AllGraphQLCases_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class DocumentParser_allGraphQLCases_Server_Test {
 
-	@Resource
-	private GraphQLDocumentParser graphQLDocumentParser;
-
-	@Resource
-	private GraphQLConfiguration pluginConfiguration;
-
-	@Resource
+	AbstractApplicationContext ctx = null;
+	GraphQLDocumentParser graphQLDocumentParser;
+	GraphQLConfiguration pluginConfiguration;
 	Documents documents;
 
 	@BeforeEach
-	void setUp() throws Exception {
-		//
+	void loadApplicationContext() throws IOException {
+		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
+		graphQLDocumentParser = ctx.getBean(GraphQLDocumentParser.class);
+		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
+		documents = ctx.getBean(Documents.class);
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_parseOneDocument_allGraphQLCases() throws IOException {
 		// Go, go, go
 		int i = graphQLDocumentParser.parseDocuments();
@@ -514,7 +510,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	private void test_addObjectType_noImplement() throws IOException {
 		// Preparation
 		String objectName = "AllFieldCases";
@@ -579,7 +575,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_addObjectType_withImplement() throws IOException {
 		// Preparation
 		String objectName = "Human";
@@ -633,7 +629,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_readSchemaDefinition() throws IOException {
 		// Preparation
 		List<String> queries = new ArrayList<>();
@@ -666,7 +662,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_readObjectType_QueryType() throws IOException {
 		// Preparation
 		String objectName = "MyQueryType";
@@ -739,7 +735,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_readEnumType() throws IOException {
 		// Preparation
 		String objectName = "Episode";
@@ -773,7 +769,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_addObjectType_MutationType() throws IOException {
 		// Preparation
 		String objectName = "AnotherMutationType";
@@ -814,7 +810,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	}
 
 	@Test
-	@DirtiesContext
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_addObjectType_SubscriptionType() throws IOException {
 		// Preparation
 		String objectName = "TheSubscriptionType";
