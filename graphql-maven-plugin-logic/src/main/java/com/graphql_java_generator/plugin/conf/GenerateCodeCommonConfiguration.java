@@ -18,14 +18,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
-
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
-	public final String DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE = "true";
-	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
-	public final String DEFAULT_MODE = "client";
-	public final String DEFAULT_SCAN_BASE_PACKAGES = "null";
-	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "false";
-	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
 
@@ -105,6 +98,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public boolean isCopyRuntimeSources();
 
 	/** Logs all the configuration parameters (only when in the debug level) */
+	@Override
 	public void logConfiguration();
 
 	public default void logGenerateCodeCommonConfiguration() {

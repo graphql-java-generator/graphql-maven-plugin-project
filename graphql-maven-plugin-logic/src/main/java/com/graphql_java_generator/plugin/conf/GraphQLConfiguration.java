@@ -17,6 +17,10 @@ import org.springframework.context.annotation.Configuration;
  */
 public interface GraphQLConfiguration extends GenerateClientCodeConfiguration, GenerateServerCodeConfiguration {
 
+	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
+	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
+	public final String DEFAULT_MODE = "client";
+
 	/**
 	 * The generation mode: either client or server. Choose client to generate the code which can query a graphql server
 	 * or server to generate a code for the server side.<BR/>
