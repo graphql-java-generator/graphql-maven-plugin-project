@@ -16,7 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
@@ -79,8 +79,8 @@ public class ResourceSchemaStringProvider {
 		}
 
 		// In client mode, we need to read the introspection schema
-		if (configuration instanceof GraphQLConfiguration
-				&& ((GraphQLConfiguration) configuration).getMode().equals(PluginMode.client)) {
+		if (configuration instanceof GenerateCodeCommonConfiguration
+				&& ((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.client)) {
 			org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
 			if (!introspection.exists()) {
 				throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
