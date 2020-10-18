@@ -17,7 +17,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 
 import graphql.language.Document;
 import graphql.parser.Parser;
@@ -28,19 +28,20 @@ import graphql.parser.Parser;
 @Configuration
 @Import({ JacksonAutoConfiguration.class })
 @ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*") })
-public class GraphQLSpringConfiguration {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*") })
+public class GenerateServerCodeSpringConfiguration {
 
 	/**
 	 * This static field is a trick to let the Spring ApplicationContext access to this instance. If you find any better
 	 * solution, let us know !
 	 */
-	static GraphQLMojo mojo = null;
+	static GenerateServerCodeMojo mojo = null;
 
 	@Bean
-	GraphQLConfiguration pluginConfiguration() {
-		return new GraphQLConfigurationImpl(mojo);
+	GenerateServerCodeConfiguration pluginConfiguration() {
+		return new GenerateServerCodeConfigurationImpl(mojo);
 	}
 
 	/**
