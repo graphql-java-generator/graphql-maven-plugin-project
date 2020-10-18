@@ -135,6 +135,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 		getLog().debug("  Common parameters for code generation:");
 		getLog().debug("    copyRuntimeSources: " + isCopyRuntimeSources());
 		getLog().debug("    customScalars: " + getCustomScalars());
+		getLog().debug("    mode: " + getMode());
 		getLog().debug("    packageName: " + getPackageName());
 		getLog().debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
 		getLog().debug("    sourceEncoding: " + getSourceEncoding());
