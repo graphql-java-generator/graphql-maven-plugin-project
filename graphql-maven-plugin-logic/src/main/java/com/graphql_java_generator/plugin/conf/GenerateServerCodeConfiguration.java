@@ -112,28 +112,6 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 */
 	public boolean isGenerateJPAAnnotation();
 
-	/**
-	 * <P>
-	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
-	 * generated in the same package than the classes that matches the GraphQL schema.
-	 * </P>
-	 * <P>
-	 * That is: internal technical classes, java classes that contain the method to execute the
-	 * queries/mutations/subscriptions, Jackson deserializer for custom scalars...
-	 * </P>
-	 * <P>
-	 * The default value is false, to maintain the previous behavior. In this case, all classes are generated in the
-	 * <I>packageName</I>, or the default package if this parameter is not defined.
-	 * </P>
-	 * <P>
-	 * If true, the GraphQL classes are generated in the package defined in the <I>packageName</I> plugin parameter. And
-	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
-	 * </P>
-	 * 
-	 * @return
-	 */
-	public boolean isSeparateUtilityClasses();
-
 	/** Logs all the configuration parameters (only when in the debug level) */
 	@Override
 	public default void logConfiguration() {
@@ -155,7 +133,6 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 		getLog().debug("    generateJPAAnnotation: " + isGenerateJPAAnnotation());
 		getLog().debug("    packaging: " + getPackaging());
 		getLog().debug("    scanBasePackages: " + getScanBasePackages());
-		getLog().debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
 		getLog().debug("    schemaPersonalizationFile: " + getSchemaPersonalizationFile());
 		logGenerateCodeCommonConfiguration();
 	}

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.FilterType;
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateCode.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
 public class AllGraphQLCasesRelayConnection_Client_SpringConfiguration extends AbstractSpringConfiguration {
 

@@ -85,6 +85,11 @@ public class GenerateClientCodeConfigurationImpl implements GenerateClientCodeCo
 	}
 
 	@Override
+	public boolean isSeparateUtilityClasses() {
+		return this.mojo.separateUtilityClasses;
+	}
+
+	@Override
 	public Map<String, String> getTemplates() {
 		return this.mojo.templates;
 	}

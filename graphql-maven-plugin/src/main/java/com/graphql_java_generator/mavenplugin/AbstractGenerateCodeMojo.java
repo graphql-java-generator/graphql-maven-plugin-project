@@ -86,6 +86,27 @@ public abstract class AbstractGenerateCodeMojo extends AbstractCommonMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars")
 	List<CustomScalarDefinition> customScalars = null;
 
+	/**
+	 * <P>
+	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
+	 * generated in the same package than the classes that matches the GraphQL schema.
+	 * </P>
+	 * <P>
+	 * That is: internal technical classes, java classes that contain the method to execute the
+	 * queries/mutations/subscriptions, Jackson deserializer for custom scalars...
+	 * </P>
+	 * <P>
+	 * The default value is false, to maintain the previous behavior. In this case, all classes are generated in the
+	 * <I>packageName</I>, or the default package if this parameter is not defined.
+	 * </P>
+	 * <P>
+	 * If true, the GraphQL classes are generated in the package defined in the <I>packageName</I> plugin parameter. And
+	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
+	 * </P>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilityClasses", defaultValue = GraphQLConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
+	boolean separateUtilityClasses;
+
 	/** The encoding charset for the generated source files */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;

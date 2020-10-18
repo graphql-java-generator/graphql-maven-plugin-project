@@ -803,7 +803,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 */
 	@Override
 	String getUtilPackageName() {
-		if (((GenerateServerCodeConfiguration) configuration).isSeparateUtilityClasses()) {
+		if (((GenerateCodeCommonConfiguration) configuration).isSeparateUtilityClasses()) {
 			return ((GenerateCodeCommonConfiguration) configuration).getPackageName() + "." + UTIL_PACKAGE_NAME;
 		} else {
 			return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
