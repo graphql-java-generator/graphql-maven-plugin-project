@@ -5,43 +5,30 @@
 
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
-		<artifactId>graphql-maven-plugin-samples</artifactId>
-		<version>local-SNAPSHOT</version>
+		<artifactId>graphql-maven-plugin</artifactId>
+		<version>@pom.version@</version>
 	</parent>
 
-	<artifactId>graphql-maven-plugin-samples-allGraphQLCases-server</artifactId>
+	<artifactId>plugin-integration-test</artifactId>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generateClientCode</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<schemaFileFolder>src/test/resources/</schemaFileFolder>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.graphql-java-generator</groupId>
-				<artifactId>graphql-maven-plugin</artifactId>
+				<version>@pom.version@</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>graphql</goal>
 						</goals>
+						<configuration>
+							<mode>client</mode>
+							<packageName>org.allGraphQLCases.server</packageName>
+							<schemaFileFolder>src/main/graphql/</schemaFileFolder>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<mode>server</mode>
-					<packageName>org.allGraphQLCases.server</packageName>
-					<schemaFileFolder>src/test/resources/</schemaFileFolder>
-				</configuration>
 			</plugin>
 			<plugin>
 				<!-- This helps by adding the generated source in the build path of your IDE -->
