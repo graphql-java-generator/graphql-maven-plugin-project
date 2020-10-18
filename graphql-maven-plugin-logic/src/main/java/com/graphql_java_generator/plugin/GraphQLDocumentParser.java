@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -149,9 +150,11 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 * @param documents
 	 *            The GraphQL definition schema, from which the code is to be generated
 	 * @return
+	 * @throws IOException
+	 *             When an error occurs, during the parsing of the GraphQL schemas
 	 */
 	@Override
-	public int parseDocuments() {
+	public int parseDocuments() throws IOException {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's start by reading the GraphQL documents
 		super.parseDocuments();
@@ -184,7 +187,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 
 		// We're done
 		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
-		configuration.getLog().debug(documents.size() + " document(s) parsed (" + nbClasses + ")");
+		configuration.getLog().debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
 

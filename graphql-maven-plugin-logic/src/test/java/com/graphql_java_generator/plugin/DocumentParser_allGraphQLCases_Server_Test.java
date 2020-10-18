@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	void test_parseOneDocument_allGraphQLCases() {
+	void test_parseOneDocument_allGraphQLCases() throws IOException {
 		// Go, go, go
 		int i = graphQLDocumentParser.parseDocuments();
 
@@ -515,7 +516,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	private void test_addObjectType_noImplement() {
+	private void test_addObjectType_noImplement() throws IOException {
 		// Preparation
 		String objectName = "AllFieldCases";
 		ObjectTypeDefinition def = null;
@@ -580,7 +581,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	void test_addObjectType_withImplement() {
+	void test_addObjectType_withImplement() throws IOException {
 		// Preparation
 		String objectName = "Human";
 		ObjectTypeDefinition def = null;
@@ -667,7 +668,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	void test_readObjectType_QueryType() {
+	void test_readObjectType_QueryType() throws IOException {
 		// Preparation
 		String objectName = "MyQueryType";
 		ObjectTypeDefinition def = null;
@@ -740,7 +741,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	void test_readEnumType() {
+	void test_readEnumType() throws IOException {
 		// Preparation
 		String objectName = "Episode";
 		EnumTypeDefinition def = null;
@@ -752,8 +753,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to read the directives first
 		graphQLDocumentParser.postConstruct();
-		graphQLDocumentParser.documents.get(0).getDefinitions().stream().filter(n -> (n instanceof DirectiveDefinition))
-				.forEach(node -> graphQLDocumentParser.directives
+		graphQLDocumentParser.documents.getDocuments().get(0).getDefinitions().stream()
+				.filter(n -> (n instanceof DirectiveDefinition)).forEach(node -> graphQLDocumentParser.directives
 						.add(graphQLDocumentParser.readDirectiveDefinition((DirectiveDefinition) node)));
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		graphQLDocumentParser.queryType = null;
@@ -774,7 +775,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	void test_addObjectType_MutationType() {
+	void test_addObjectType_MutationType() throws IOException {
 		// Preparation
 		String objectName = "AnotherMutationType";
 		ObjectTypeDefinition def = null;
@@ -815,7 +816,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	void test_addObjectType_SubscriptionType() {
+	void test_addObjectType_SubscriptionType() throws IOException {
 		// Preparation
 		String objectName = "TheSubscriptionType";
 		ObjectTypeDefinition def = null;

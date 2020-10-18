@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +105,7 @@ public abstract class DocumentParser {
 	 * generated code.
 	 */
 	@Autowired
-	List<Document> documents;
+	Documents documents;
 
 	/** List of all the directives that have been read in the GraphQL schema */
 	@Getter
@@ -249,11 +250,13 @@ public abstract class DocumentParser {
 	 * @param documents
 	 *            The GraphQL definition schema, from which the code is to be generated
 	 * @return
+	 * @throws IOException
+	 *             When an error occurs, during the parsing of the GraphQL schemas
 	 */
-	public int parseDocuments() {
+	public int parseDocuments() throws IOException {
 		configuration.getLog().debug("Starting documents parsing");
 
-		documents.stream().forEach(this::parseOneDocument);
+		documents.getDocuments().stream().forEach(this::parseOneDocument);
 
 		configuration.getLog().debug("Documents have been parsed. Executing internal finalizations");
 
@@ -275,7 +278,7 @@ public abstract class DocumentParser {
 
 		// We're done
 		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
-		configuration.getLog().debug(documents.size() + " document(s) parsed (" + nbClasses + ")");
+		configuration.getLog().debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
 

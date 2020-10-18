@@ -32,7 +32,7 @@ abstract class AbstractIntegrationTest {
 	}
 
 	@BeforeEach
-	void loadApplicationContext() {
+	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(springConfClass);
 		graphQLDocumentParser = ctx.getBean(GraphQLDocumentParser.class);
 		codeGenerator = ctx.getBean(GraphQLCodeGenerator.class);

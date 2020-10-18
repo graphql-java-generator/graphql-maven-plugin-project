@@ -3,6 +3,7 @@ package com.graphql_java_generator.plugin;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -33,12 +34,12 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 	List<Document> documents;
 
 	@BeforeEach
-	void loadApplicationContext() {
+	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
 		documentParser = ctx.getBean(GraphQLDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 
-		documents = documentParser.documents;
+		documents = documentParser.documents.getDocuments();
 	}
 
 	@AfterEach

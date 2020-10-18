@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.annotation.Resource;
 
@@ -57,7 +58,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void testApplySchemaPersonalization_OK() {
+	void testApplySchemaPersonalization_OK() throws IOException {
 		// Preparation
 		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
 				mavenTestHelper.getModulePathFile(), "src/test/resources/schema_personalization/forum_OK.json");

@@ -25,8 +25,8 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
-import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.language.Document;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
@@ -69,9 +69,12 @@ class GenerateGraphQLSchemaTest {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class, "configuration");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class, "graphqlUtils");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class, "documents");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
+				"configuration");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
+				"graphqlUtils");
+		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
+				"documents");
 		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
 				"objectTypeExtensionDefinitions");
 
@@ -152,9 +155,10 @@ class GenerateGraphQLSchemaTest {
 	 * @param sourceSpringConfClass
 	 * @param generatedSpringConfClass
 	 * @param test
+	 * @throws IOException
 	 */
 	private void executeGenerateRelaySchemaTest(Class<?> sourceSpringConfClass, Class<?> generatedSpringConfClass,
-			String test) {
+			String test) throws IOException {
 		// Go, go, go
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
 		GenerateGraphQLSchema sourceRelaySchema = ctx.getBean(GenerateGraphQLSchema.class);
@@ -176,7 +180,8 @@ class GenerateGraphQLSchemaTest {
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(GenerateGraphQLSchemaConfiguration.class).logConfiguration();
 		//
-		GenerateGraphQLSchemaDocumentParser generatedDocumentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
+		GenerateGraphQLSchemaDocumentParser generatedDocumentParser = ctx
+				.getBean(GenerateGraphQLSchemaDocumentParser.class);
 		GenerateGraphQLSchema generatedRelaySchema = ctx.getBean(GenerateGraphQLSchema.class);
 		generatedDocumentParser.parseDocuments();
 		generatedRelaySchema.generateGraphQLSchema();
