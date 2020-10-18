@@ -7,6 +7,9 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
@@ -17,23 +20,13 @@ import com.graphql_java_generator.plugin.conf.PluginMode;
  * @author etienne-sf
  *
  */
+@Component
 public class GraphQLConfigurationImpl implements GraphQLConfiguration {
 
-	final private GraphQLMojo mojo;
-	final private MavenLogger log;
+	@Autowired
+	private GraphQLMojo mojo;
 
-	GraphQLConfigurationImpl(GraphQLMojo mojo) {
-		this.mojo = mojo;
-		log = new MavenLogger(mojo);
-
-		// Let's check that the Packaging is a valid value
-		try {
-			Packaging.valueOf(mojo.project.getPackaging());
-		} catch (Exception e) {
-			throw new RuntimeException("The project packaging is <" + mojo.project.getPackaging()
-					+ ">. This is not accepted by this plugin", e);
-		}
-	}
+	private MavenLogger log = null;
 
 	@Override
 	public List<CustomScalarDefinition> getCustomScalars() {
@@ -42,6 +35,9 @@ public class GraphQLConfigurationImpl implements GraphQLConfiguration {
 
 	@Override
 	public Logger getLog() {
+		if (log == null) {
+			log = new MavenLogger(mojo);
+		}
 		return log;
 	}
 

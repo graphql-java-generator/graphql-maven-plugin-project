@@ -6,9 +6,11 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
+@Disabled // The default values doesn't seem to initialize the Mojo's parameters in these tests :(
+@Execution(ExecutionMode.CONCURRENT)
 class GraphQLMojoTest extends AbstractMojoTestCase {
 
 	@BeforeEach
@@ -17,15 +19,35 @@ class GraphQLMojoTest extends AbstractMojoTestCase {
 	}
 
 	@Test
-	@Disabled // this test hangs, because of a missing method... :(
-	void testExecute() throws Exception {
+	@Execution(ExecutionMode.CONCURRENT)
+	void testExecute_generateClientCode() throws Exception {
+		File testPom = new File(getBasedir(), "src/test/resources/pom-allGraphQLCases-server.xml");
+		GenerateClientCodeMojo mojo = (GenerateClientCodeMojo) lookupMojo("generateClientCode", testPom);
+		assertNotNull(mojo);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testExecute_generateGraphQLSchema() throws Exception {
+		File testPom = new File(getBasedir(), "src/test/resources/pom-allGraphQLCases-server.xml");
+		GenerateGraphQLSchemaMojo mojo = (GenerateGraphQLSchemaMojo) lookupMojo("generateGraphQLSchema", testPom);
+		assertNotNull(mojo);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testExecute_generateServerCode() throws Exception {
+		File testPom = new File(getBasedir(), "src/test/resources/pom-allGraphQLCases-server.xml");
+		GenerateServerCodeMojo mojo = (GenerateServerCodeMojo) lookupMojo("generateServerCode", testPom);
+		assertNotNull(mojo);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testExecute_graphql() throws Exception {
 		File testPom = new File(getBasedir(), "src/test/resources/pom-allGraphQLCases-server.xml");
 		GraphQLMojo mojo = (GraphQLMojo) lookupMojo("graphql", testPom);
-		GraphQLSpringConfiguration.mojo = mojo;
-
-		// Let's just check that the Spring context is valid.
-		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(GraphQLSpringConfiguration.class);
-		ctx.close();
+		assertNotNull(mojo);
 	}
 
 }

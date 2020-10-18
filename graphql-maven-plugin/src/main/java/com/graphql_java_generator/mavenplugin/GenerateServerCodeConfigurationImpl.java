@@ -7,33 +7,27 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.Packaging;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
  * @author etienne-sf
  *
  */
+@Component
 public class GenerateServerCodeConfigurationImpl implements GenerateServerCodeConfiguration {
 
-	final private GenerateServerCodeMojo mojo;
-	final private MavenLogger log;
+	@Autowired
+	private GenerateServerCodeMojo mojo;
 
-	GenerateServerCodeConfigurationImpl(GenerateServerCodeMojo mojo2) {
-		this.mojo = mojo2;
-		log = new MavenLogger(mojo2);
-
-		// Let's check that the Packaging is a valid value
-		try {
-			Packaging.valueOf(mojo2.project.getPackaging());
-		} catch (Exception e) {
-			throw new RuntimeException("The project packaging is <" + mojo2.project.getPackaging()
-					+ ">. This is not accepted by this plugin", e);
-		}
-	}
+	private MavenLogger log = null;
 
 	@Override
 	public List<CustomScalarDefinition> getCustomScalars() {
@@ -42,7 +36,15 @@ public class GenerateServerCodeConfigurationImpl implements GenerateServerCodeCo
 
 	@Override
 	public Logger getLog() {
+		if (log == null) {
+			log = new MavenLogger(mojo);
+		}
 		return log;
+	}
+
+	@Override
+	public PluginMode getMode() {
+		return mojo.mode;
 	}
 
 	@Override

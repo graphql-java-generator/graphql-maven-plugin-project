@@ -6,17 +6,23 @@ package com.graphql_java_generator.mavenplugin;
 import java.io.File;
 import java.util.Map;
 
-import com.graphql_java_generator.plugin.conf.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * @author etienne-sf
  *
  */
+@Component
 public class GenerateGraphQLSchemaConfigurationImpl implements GenerateGraphQLSchemaConfiguration {
 
-	final private GenerateGraphQLSchemaMojo mojo;
-	final private MavenLogger log;
+	@Autowired
+	private GenerateGraphQLSchemaMojo mojo;
+
+	private MavenLogger log = null;
 
 	GenerateGraphQLSchemaConfigurationImpl(GenerateGraphQLSchemaMojo mojo) {
 		this.mojo = mojo;
@@ -25,6 +31,9 @@ public class GenerateGraphQLSchemaConfigurationImpl implements GenerateGraphQLSc
 
 	@Override
 	public Logger getLog() {
+		if (log == null) {
+			log = new MavenLogger(mojo);
+		}
 		return log;
 	}
 

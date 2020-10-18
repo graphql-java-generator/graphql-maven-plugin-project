@@ -32,7 +32,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -58,7 +59,7 @@ public class GraphQLCodeGenerator {
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	GraphQLConfiguration configuration;
+	GenerateCodeCommonConfiguration configuration;
 
 	/** The component that reads the GraphQL schema from the file system */
 	@Autowired
@@ -115,7 +116,7 @@ public class GraphQLCodeGenerator {
 			configuration.getLog().debug("Starting client specific code generation");
 
 			// Generation of the query/mutation/subscription classes
-			if (configuration.isGenerateDeprecatedRequestResponse()) {
+			if (((GenerateServerCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
 				configuration.getLog().debug("Generating query");
 				i += generateTargetFile(graphQLDocumentParser.getQueryType(), "query",
@@ -140,7 +141,7 @@ public class GraphQLCodeGenerator {
 					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
-			if (configuration.isGenerateDeprecatedRequestResponse()) {
+			if (((GenerateServerCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				configuration.getLog().debug("Generating query response");
 				i += generateTargetFile(graphQLDocumentParser.getQueryType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
@@ -414,9 +415,10 @@ public class GraphQLCodeGenerator {
 	 * @return
 	 */
 	File getJavaFile(String simpleClassname, boolean utilityClass) {
-		String packageName = (utilityClass && configuration.isSeparateUtilityClasses())
-				? graphQLDocumentParser.getUtilPackageName()
-				: configuration.getPackageName();
+		String packageName = (utilityClass
+				&& ((GenerateServerCodeConfiguration) configuration).isSeparateUtilityClasses())
+						? graphQLDocumentParser.getUtilPackageName()
+						: configuration.getPackageName();
 		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java";
 		File file = new File(configuration.getTargetSourceFolder(), relativePath);
 		file.getParentFile().mkdirs();
@@ -495,7 +497,9 @@ public class GraphQLCodeGenerator {
 			// Let's calculate the list of imports of all the GraphQL schema object, input types, interfaces and unions,
 			// that must be imported in the utility classes
 			final String utilityPackage = configuration.getPackageName()
-					+ (configuration.isSeparateUtilityClasses() ? ("." + GraphQLDocumentParser.UTIL_PACKAGE_NAME) : "");
+					+ (((GenerateServerCodeConfiguration) configuration).isSeparateUtilityClasses()
+							? ("." + GraphQLDocumentParser.UTIL_PACKAGE_NAME)
+							: "");
 			graphQLDocumentParser.types.values().parallelStream().forEach(o -> {
 				if (o instanceof ScalarType) {
 					graphqlUtils.addImport(imports, utilityPackage,

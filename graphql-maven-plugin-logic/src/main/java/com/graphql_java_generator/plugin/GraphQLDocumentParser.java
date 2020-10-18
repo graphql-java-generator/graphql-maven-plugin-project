@@ -31,7 +31,8 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.GraphQLUnionType;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
@@ -82,12 +83,6 @@ public class GraphQLDocumentParser extends DocumentParser {
 
 	private static final String INTROSPECTION_QUERY = "__IntrospectionQuery";
 
-	/**
-	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
-	 */
-	@Autowired
-	GraphQLConfiguration configuration;
-
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
 
@@ -124,7 +119,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 	protected void initScalarTypes(Class<?> notUsed) {
 
 		// Let's load the standard Scalar types
-		if (configuration.getMode().equals(PluginMode.server)) {
+		if (((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.server)) {
 			super.initScalarTypes(UUID.class);
 		} else {
 			// In client mode, ID type is managed as a String
@@ -134,8 +129,9 @@ public class GraphQLDocumentParser extends DocumentParser {
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL custom scalar implementations must be provided by the plugin configuration
 		configuration.getLog().debug("Storing custom scalar's implementations [START]");
-		if (configuration.getCustomScalars() != null) {
-			for (CustomScalarDefinition customScalarDef : configuration.getCustomScalars()) {
+		if (((GenerateCodeCommonConfiguration) configuration).getCustomScalars() != null) {
+			for (CustomScalarDefinition customScalarDef : ((GenerateCodeCommonConfiguration) configuration)
+					.getCustomScalars()) {
 				CustomScalarType type = new CustomScalarType(customScalarDef, configuration);
 				customScalars.add(type);
 				types.put(type.getName(), type);
@@ -260,7 +256,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 		// No annotation for types.
 		// We go through each field of each type we generate, to define the relevant
 		// annotation
-		switch (configuration.getMode()) {
+		switch (((GenerateCodeCommonConfiguration) configuration).getMode()) {
 		case client:
 			// Type annotations
 			graphqlUtils.concatStreams(Type.class, true, null, null, null, interfaceTypes, objectTypes, unionTypes)
@@ -290,16 +286,20 @@ public class GraphQLDocumentParser extends DocumentParser {
 		// No specific annotation for objects and interfaces when in client mode.
 
 		if (type instanceof InterfaceType || type instanceof UnionType) {
-			type.addImport(configuration.getPackageName(), JsonTypeInfo.class.getName());
-			type.addImport(configuration.getPackageName(), JsonTypeInfo.Id.class.getName());
+			type.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					JsonTypeInfo.class.getName());
+			type.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					JsonTypeInfo.Id.class.getName());
 			type.addAnnotation(
 					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)");
 
 			// jsonSubTypes annotation looks like this:
 			// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name = "Human") })
 			StringBuffer jsonSubTypes = new StringBuffer();
-			type.addImport(configuration.getPackageName(), JsonSubTypes.class.getName());
-			type.addImport(configuration.getPackageName(), JsonSubTypes.Type.class.getName());
+			type.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					JsonSubTypes.class.getName());
+			type.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					JsonSubTypes.Type.class.getName());
 			jsonSubTypes.append("@JsonSubTypes({");
 			boolean addSeparator = false;
 
@@ -326,8 +326,10 @@ public class GraphQLDocumentParser extends DocumentParser {
 		// Add the GraphQLQuery annotation fpr query/mutation/subscription and for objects that are a
 		// query/mutation/subscription
 		if (type instanceof ObjectType && ((ObjectType) type).getRequestType() != null) {
-			type.addImport(configuration.getPackageName(), GraphQLQuery.class.getName());
-			type.addImport(configuration.getPackageName(), RequestType.class.getName());
+			type.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					GraphQLQuery.class.getName());
+			type.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					RequestType.class.getName());
 			type.addAnnotation("@GraphQLQuery(name = \"" + type.getName() + "\", type = RequestType."
 					+ ((ObjectType) type).getRequestType() + ")");
 
@@ -349,8 +351,8 @@ public class GraphQLDocumentParser extends DocumentParser {
 		// 1) It's asked in the plugin configuration
 		// 2) The object is a regular object (not an input type)
 		// 3) It's not an object that is a query/mutation/subscription
-		if (configuration.isGenerateJPAAnnotation() && o instanceof ObjectType && !(o instanceof InterfaceType)
-				&& !(o instanceof UnionType) && !((ObjectType) o).isInputType()
+		if (((GenerateServerCodeConfiguration) configuration).isGenerateJPAAnnotation() && o instanceof ObjectType
+				&& !(o instanceof InterfaceType) && !(o instanceof UnionType) && !((ObjectType) o).isInputType()
 				&& ((ObjectType) o).getRequestType() == null) {
 			o.addImport(configuration.getPackageName(), Entity.class.getName());
 			((AbstractType) o).addAnnotation("@Entity");
@@ -368,19 +370,23 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	private void addTypeAnnotationForBothClientAndServerMode(Type o) {
 		if (o instanceof InterfaceType) {
-			o.addImport(configuration.getPackageName(), GraphQLInterfaceType.class.getName());
+			o.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					GraphQLInterfaceType.class.getName());
 			o.addAnnotation("@GraphQLInterfaceType(\"" + o.getName() + "\")");
 		} else if (o instanceof UnionType) {
-			o.addImport(configuration.getPackageName(), GraphQLUnionType.class.getName());
+			o.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					GraphQLUnionType.class.getName());
 			o.addAnnotation("@GraphQLUnionType(\"" + o.getName() + "\")");
 		} else if (o instanceof ObjectType) {
 			if (((ObjectType) o).isInputType()) {
 				// input type
-				o.addImport(configuration.getPackageName(), GraphQLInputType.class.getName());
+				o.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+						GraphQLInputType.class.getName());
 				o.addAnnotation("@GraphQLInputType(\"" + o.getName() + "\")");
 			} else {
 				// Standard object type
-				o.addImport(configuration.getPackageName(), GraphQLObjectType.class.getName());
+				o.addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+						GraphQLObjectType.class.getName());
 				o.addAnnotation("@GraphQLObjectType(\"" + o.getName() + "\")");
 			}
 		}
@@ -399,22 +405,26 @@ public class GraphQLDocumentParser extends DocumentParser {
 		String contentAs = null;
 		String using = null;
 		if (field.isList()) {
-			field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
+			field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					List.class.getName());
 			contentAs = field.getType().getClassSimpleName() + ".class";
 		}
 		if (field.getType().isCustomScalar()) {
 			String classname = "CustomScalarDeserializer" + field.getType().getName();
-			field.getOwningType().addImport(configuration.getPackageName(), getUtilPackageName() + "." + classname);
+			field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					getUtilPackageName() + "." + classname);
 			using = classname + ".class";
 		}
 		if (contentAs != null || using != null) {
-			field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
+			field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					JsonDeserialize.class.getName());
 			field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
 		}
 
 		if (field.getInputParameters().size() > 0) {
 			// Let's add the @GraphQLInputParameters annotation
-			field.getOwningType().addImport(configuration.getPackageName(), GraphQLInputParameters.class.getName());
+			field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					GraphQLInputParameters.class.getName());
 			StringBuilder names = new StringBuilder();
 			StringBuilder types = new StringBuilder();
 			String separator = "";
@@ -426,7 +436,8 @@ public class GraphQLDocumentParser extends DocumentParser {
 			field.addAnnotation("@GraphQLInputParameters(names = {" + names + "}, types = {" + types + "})");
 		}
 
-		field.getOwningType().addImport(configuration.getPackageName(), JsonProperty.class.getName());
+		field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+				JsonProperty.class.getName());
 		field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
 
 		addFieldAnnotationForBothClientAndServerMode(field);
@@ -439,16 +450,20 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForServerMode(Field field) {
-		if (configuration.isGenerateJPAAnnotation() && !field.getOwningType().isInputType()) {
+		if (((GenerateServerCodeConfiguration) configuration).isGenerateJPAAnnotation()
+				&& !field.getOwningType().isInputType()) {
 			if (field.isId()) {
 				// We have found the identifier
-				field.getOwningType().addImport(configuration.getPackageName(), Id.class.getName());
+				field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+						Id.class.getName());
 				((FieldImpl) field).addAnnotation("@Id");
-				field.getOwningType().addImport(configuration.getPackageName(), GeneratedValue.class.getName());
+				field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+						GeneratedValue.class.getName());
 				((FieldImpl) field).addAnnotation("@GeneratedValue");
 			} else if (field.getRelation() != null || field.isList()) {
 				// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
-				field.getOwningType().addImport(configuration.getPackageName(), Transient.class.getName());
+				field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+						Transient.class.getName());
 				((FieldImpl) field).addAnnotation("@Transient");
 			}
 		}
@@ -465,7 +480,8 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
-			field.getOwningType().addImport(configuration.getPackageName(), GraphQLScalar.class.getName());
+			field.getOwningType().addImport(((GenerateCodeCommonConfiguration) configuration).getPackageName(),
+					GraphQLScalar.class.getName());
 			((FieldImpl) field)
 					.addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName() + "\", graphQLTypeName = \""
 							+ field.getGraphQLTypeName() + "\", list = " + ((field.isList()) ? "true" : "false")
@@ -483,7 +499,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 * Identified all the GraphQL Data Fetchers needed from this/these schema/schemas
 	 */
 	void initDataFetchers() {
-		if (configuration.getMode().equals(PluginMode.server)) {
+		if (((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.server)) {
 			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
 			interfaceTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
 			unionTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
@@ -568,7 +584,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 * The whole stuff is stored into {@link #batchLoaders}
 	 */
 	private void initBatchLoaders() {
-		if (configuration.getMode().equals(PluginMode.server)) {
+		if (((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.server)) {
 			// objectTypes contains both the objects defined in the schema, and the concrete objects created to map the
 			// interfaces, along with Enums...
 
@@ -640,7 +656,7 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	void addIntrospectionCapabilities() {
 		// No action in server mode: everything is handled by graphql-java
-		if (configuration.getMode().equals(PluginMode.client)) {
+		if (((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.client)) {
 
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// First step : add the introspection queries into the existing query. If no query exists, one is created.s
@@ -741,14 +757,15 @@ public class GraphQLDocumentParser extends DocumentParser {
 			// Some imports that are only for utility classes
 			type.addImportForUtilityClasses(getUtilPackageName(), RequestType.class.getName());
 
-			switch (configuration.getMode()) {
+			switch (((GenerateCodeCommonConfiguration) configuration).getMode()) {
 			case client:
 				addAnImportForOneType(type, JsonProperty.class);
 				break;
 			case server:
 				break;
 			default:
-				throw new RuntimeException("unexpected plugin mode: " + configuration.getMode().name());
+				throw new RuntimeException("unexpected plugin mode: "
+						+ ((GenerateCodeCommonConfiguration) configuration).getMode().name());
 			}
 		}
 	}
@@ -762,12 +779,13 @@ public class GraphQLDocumentParser extends DocumentParser {
 			addAnImportForOneType(type,
 					((ScalarType) typeToImport).getPackageName() + "." + typeToImport.getClassSimpleName());
 		} else {
-			addAnImportForOneType(type, configuration.getPackageName() + "." + typeToImport.getClassSimpleName());
+			addAnImportForOneType(type, ((GenerateCodeCommonConfiguration) configuration).getPackageName() + "."
+					+ typeToImport.getClassSimpleName());
 		}
 	}
 
 	private void addAnImportForOneType(Type type, String classname) {
-		final String targetPackage = configuration.getPackageName();
+		final String targetPackage = ((GenerateCodeCommonConfiguration) configuration).getPackageName();
 		final String utilityPackage = getUtilPackageName();
 
 		type.addImport(targetPackage, classname);
@@ -785,10 +803,10 @@ public class GraphQLDocumentParser extends DocumentParser {
 	 */
 	@Override
 	String getUtilPackageName() {
-		if (configuration.isSeparateUtilityClasses()) {
-			return configuration.getPackageName() + "." + UTIL_PACKAGE_NAME;
+		if (((GenerateServerCodeConfiguration) configuration).isSeparateUtilityClasses()) {
+			return ((GenerateCodeCommonConfiguration) configuration).getPackageName() + "." + UTIL_PACKAGE_NAME;
 		} else {
-			return configuration.getPackageName();
+			return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
 		}
 	}
 

@@ -22,13 +22,6 @@ public interface GraphQLConfiguration extends GenerateClientCodeConfiguration, G
 	public final String DEFAULT_MODE = "client";
 
 	/**
-	 * The generation mode: either client or server. Choose client to generate the code which can query a graphql server
-	 * or server to generate a code for the server side.<BR/>
-	 * This parameter is mandatory.
-	 */
-	public PluginMode getMode();
-
-	/**
 	 * Logs all the configuration parameters for the <I>graphql</I> maven goal or <I>graphqlGenerateCode</I> gradle task
 	 * (only when in the debug level)
 	 */

@@ -62,6 +62,14 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 */
 	public List<CustomScalarDefinition> getCustomScalars();
 
+	/**
+	 * The generation mode: either client or server. Choose client to generate the code which can query a graphql server
+	 * or server to generate a code for the server side.<BR/>
+	 * This parameter is mandatory. It forced to {@link PluginMode.client} by the <I>generateClientCode</I> goal/task an
+	 * to {@link PluginMode.server} by the <I>generateServerCode</I> goal/task.
+	 */
+	public PluginMode getMode();
+
 	/** The encoding for the generated source files */
 	public String getSourceEncoding();
 

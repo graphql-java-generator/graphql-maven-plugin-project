@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -388,19 +389,19 @@
 				<version>6.5.0</version>
 			</dependency>
 			<dependency>
-				<groupId>com.opencsv</groupId>
-				<artifactId>opencsv</artifactId>
-				<version>5.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.persistence</groupId>
-				<artifactId>org.eclipse.persistence.jpa</artifactId>
-				<version>2.7.4</version>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>25.1-android</version>
 			</dependency>
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
 				<version>1.4.199</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>org.eclipse.persistence.jpa</artifactId>
+				<version>2.7.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.leadpony.justify</groupId>
@@ -412,6 +413,11 @@
 				<artifactId>lombok</artifactId>
 				<version>1.18.12</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.opencsv</groupId>
+				<artifactId>opencsv</artifactId>
+				<version>5.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.velocity</groupId>
