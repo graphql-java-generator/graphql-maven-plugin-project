@@ -21,7 +21,7 @@
 					<execution>
 						<id>graphql-merge</id>
 						<goals>
-							<goal>merge</goal>
+							<goal>generateGraphQLSchema</goal>
 						</goals>
 						<configuration>
 							<!-- addRelayConnections will generate all the Relay Connection stuff (Node, Edge and Connection interfaces, and creating 

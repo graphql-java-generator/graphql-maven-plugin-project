@@ -46,7 +46,7 @@ import graphql.schema.GraphQLScalarType;
  * 
  * @author etienne-sf
  */
-@Mojo(name = "graphql", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
+@Mojo(name = "generateServerCode", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 @ThreadSafe
 public class GenerateServerCodeMojo extends AbstractMojo {
 
