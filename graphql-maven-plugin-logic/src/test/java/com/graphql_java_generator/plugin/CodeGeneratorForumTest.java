@@ -19,9 +19,9 @@ class CodeGeneratorForumTest {
 	MavenTestHelper mavenTestHelper;
 
 	@javax.annotation.Resource
-	protected GraphQLDocumentParser documentParser;
+	protected GenerateCodeDocumentParser documentParser;
 	@javax.annotation.Resource
-	protected GraphQLCodeGenerator codeGenerator;
+	protected GenerateCodeGenerator codeGenerator;
 
 	@BeforeEach
 	void setUp() throws Exception {

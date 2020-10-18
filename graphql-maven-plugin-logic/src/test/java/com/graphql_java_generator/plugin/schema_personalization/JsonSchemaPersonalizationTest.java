@@ -21,7 +21,7 @@ class JsonSchemaPersonalizationTest {
 
 	GraphQLConfigurationTestHelper pluginConfigurationTestHelper;
 
-	GraphQLJsonSchemaPersonalization jsonSchemaPersonalization;
+	GenerateCodeJsonSchemaPersonalization jsonSchemaPersonalization;
 	File userJsonFile;
 
 	@BeforeEach
@@ -30,7 +30,7 @@ class JsonSchemaPersonalizationTest {
 		pluginConfigurationTestHelper.schemaPersonalizationFile = new File(new MavenTestHelper().getModulePathFile(),
 				"src/test/resources/schema_personalization/complete.json");
 
-		jsonSchemaPersonalization = new GraphQLJsonSchemaPersonalization();
+		jsonSchemaPersonalization = new GenerateCodeJsonSchemaPersonalization();
 		jsonSchemaPersonalization.pluginConfiguration = pluginConfigurationTestHelper;
 	}
 

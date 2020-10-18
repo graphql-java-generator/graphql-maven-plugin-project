@@ -18,8 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -37,15 +38,15 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
  * @author etienne-sf
  */
 @Component
-public class GraphQLJsonSchemaPersonalization {
+public class GenerateCodeJsonSchemaPersonalization {
 
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 
 	@Autowired
-	GraphQLDocumentParser documentParser;
+	GenerateCodeDocumentParser documentParser;
 
 	@Autowired
-	GraphQLConfiguration pluginConfiguration;
+	GenerateCodeCommonConfiguration pluginConfiguration;
 
 	/** The class where the content of the configuration file will be loaded */
 	SchemaPersonalization schemaPersonalization = null;
@@ -55,7 +56,7 @@ public class GraphQLJsonSchemaPersonalization {
 
 	/**
 	 * This is the 'main' method for this class: it loads the schema personalization from the json user file, and update
-	 * what the {@link GraphQLDocumentParser} has already loaded according to the user's needs.
+	 * what the {@link GenerateCodeDocumentParser} has already loaded according to the user's needs.
 	 */
 	public void applySchemaPersonalization() {
 		try {
@@ -169,7 +170,7 @@ public class GraphQLJsonSchemaPersonalization {
 	 */
 	public SchemaPersonalization loadGraphQLSchemaPersonalization() throws IOException, URISyntaxException {
 
-		if (pluginConfiguration.getSchemaPersonalizationFile() == null) {
+		if (((GenerateServerCodeConfiguration) pluginConfiguration).getSchemaPersonalizationFile() == null) {
 			return null;
 		} else {
 
@@ -183,23 +184,25 @@ public class GraphQLJsonSchemaPersonalization {
 			// Reads the JSON instance by javax.json.JsonReader
 			nbErrors = 0;
 			try (JsonReader reader = service.createReader(
-					new FileInputStream(pluginConfiguration.getSchemaPersonalizationFile()), schema, handler)) {
+					new FileInputStream(
+							((GenerateServerCodeConfiguration) pluginConfiguration).getSchemaPersonalizationFile()),
+					schema, handler)) {
 				// JsonValue value =
 				reader.readValue();
 				// Do something useful here
 			}
 			if (nbErrors > 0) {
-				throw new RuntimeException(
-						"The json file '" + pluginConfiguration.getSchemaPersonalizationFile().getAbsolutePath()
-								+ "' is invalid. See the logs for details");
+				throw new RuntimeException("The json file '" + ((GenerateServerCodeConfiguration) pluginConfiguration)
+						.getSchemaPersonalizationFile().getAbsolutePath() + "' is invalid. See the logs for details");
 			}
 
 			// Let's read the flow definition
-			pluginConfiguration.getLog()
-					.info("Loading file " + pluginConfiguration.getSchemaPersonalizationFile().getAbsolutePath());
+			pluginConfiguration.getLog().info("Loading file " + ((GenerateServerCodeConfiguration) pluginConfiguration)
+					.getSchemaPersonalizationFile().getAbsolutePath());
 			ObjectMapper objectMapper = new ObjectMapper();
 			SchemaPersonalization ret;
-			try (InputStream isFlowJson = new FileInputStream(pluginConfiguration.getSchemaPersonalizationFile())) {
+			try (InputStream isFlowJson = new FileInputStream(
+					((GenerateServerCodeConfiguration) pluginConfiguration).getSchemaPersonalizationFile())) {
 				ret = objectMapper.readValue(isFlowJson, SchemaPersonalization.class);
 			}
 			return ret;

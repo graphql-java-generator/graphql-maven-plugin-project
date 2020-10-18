@@ -29,7 +29,7 @@ class DocumentParser_basic_Test {
 	private ApplicationContext ctx;
 	private GraphqlTestHelper graphqlTestHelper;
 	GraphQLConfigurationTestHelper pluginConfiguration;
-	GraphQLDocumentParser documentParser;
+	GenerateCodeDocumentParser documentParser;
 
 	private Parser parser = new Parser();
 
@@ -38,7 +38,7 @@ class DocumentParser_basic_Test {
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(Basic_Server_SpringConfiguration.class);
-		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
 		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
 

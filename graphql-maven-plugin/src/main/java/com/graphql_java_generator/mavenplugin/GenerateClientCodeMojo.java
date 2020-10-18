@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
-import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
+import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 
 import graphql.ThreadSafe;
 
@@ -60,7 +60,7 @@ public class GenerateClientCodeMojo extends AbstractGenerateClientCodeMojo {
 
 	@Override
 	protected void executeSpecificJob() throws IOException {
-		GraphQLCodeGenerator codeGenerator = ctx.getBean(GraphQLCodeGenerator.class);
+		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 		nbGeneratedClasses = codeGenerator.generateCode();
 
 		File targetDir = new File(project.getBasedir(), "target");

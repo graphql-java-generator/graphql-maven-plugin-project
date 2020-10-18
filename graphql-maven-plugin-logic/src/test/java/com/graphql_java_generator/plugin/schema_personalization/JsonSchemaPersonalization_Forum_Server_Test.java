@@ -18,7 +18,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
+import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -32,8 +32,8 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 
 	AbstractApplicationContext ctx = null;
 	GraphQLConfiguration pluginConfiguration;
-	GraphQLJsonSchemaPersonalization jsonSchemaPersonalization;
-	GraphQLDocumentParser documentParser;
+	GenerateCodeJsonSchemaPersonalization jsonSchemaPersonalization;
+	GenerateCodeDocumentParser documentParser;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -43,8 +43,8 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 	@BeforeEach
 	void loadApplicationContext() {
 		ctx = new AnnotationConfigApplicationContext(Forum_Server_SpringConfiguration.class);
-		documentParser = ctx.getBean(GraphQLDocumentParser.class);
-		jsonSchemaPersonalization = ctx.getBean(GraphQLJsonSchemaPersonalization.class);
+		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
+		jsonSchemaPersonalization = ctx.getBean(GenerateCodeJsonSchemaPersonalization.class);
 		mavenTestHelper = ctx.getBean(MavenTestHelper.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 	}

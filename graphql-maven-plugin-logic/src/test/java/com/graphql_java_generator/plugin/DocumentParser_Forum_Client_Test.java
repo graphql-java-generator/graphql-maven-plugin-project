@@ -29,12 +29,12 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 class DocumentParser_Forum_Client_Test {
 
 	AbstractApplicationContext ctx = null;
-	GraphQLDocumentParser documentParser;
+	GenerateCodeDocumentParser documentParser;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		ctx = new AnnotationConfigApplicationContext(Forum_Client_SpringConfiguration.class);
-		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 
 		documentParser.parseDocuments();
 	}

@@ -40,6 +40,7 @@ public class GenerateGraphQLSchemaMojo extends AbstractGenerateGraphQLSchemaMojo
 	@ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
+			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateCode.*"),
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateServerCode.*") })
 	public class SpringConfiguration {
 

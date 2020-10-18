@@ -28,14 +28,14 @@ class DocumentParser_helloworld_Test {
 	AbstractApplicationContext ctx;
 	GraphqlTestHelper graphqlTestHelper;
 	GraphQLConfiguration pluginConfiguration;
-	GraphQLDocumentParser documentParser;
+	GenerateCodeDocumentParser documentParser;
 
 	private Parser parser = new Parser();
 
 	@BeforeEach
 	void loadApplicationContext() {
 		ctx = new AnnotationConfigApplicationContext(HelloWorld_Server_SpringConfiguration.class);
-		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 

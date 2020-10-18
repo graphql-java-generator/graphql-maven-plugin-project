@@ -35,13 +35,13 @@ import graphql.mavenplugin_notscannedbyspring.Forum_Server_SpringConfiguration;
 class DocumentParser_Forum_Server_Test {
 
 	AbstractApplicationContext ctx = null;
-	GraphQLDocumentParser documentParser;
+	GenerateCodeDocumentParser documentParser;
 	GraphQLConfigurationTestHelper pluginConfiguration;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		ctx = new AnnotationConfigApplicationContext(Forum_Server_SpringConfiguration.class);
-		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
 		documentParser.parseDocuments();
 	}

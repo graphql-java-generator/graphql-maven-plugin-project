@@ -54,7 +54,7 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.language.impl.RelationImpl;
 import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.plugin.language.impl.UnionType;
-import com.graphql_java_generator.plugin.schema_personalization.GraphQLJsonSchemaPersonalization;
+import com.graphql_java_generator.plugin.schema_personalization.GenerateCodeJsonSchemaPersonalization;
 
 import graphql.parser.Parser;
 import lombok.Getter;
@@ -71,7 +71,7 @@ import lombok.Getter;
  */
 @Component
 @Getter
-public class GraphQLDocumentParser extends DocumentParser {
+public class GenerateCodeDocumentParser extends DocumentParser {
 
 	/**
 	 * The name of the package for utility classes, when the <I>separateUtilClasses</I> plugin parameter is set to true.
@@ -87,11 +87,11 @@ public class GraphQLDocumentParser extends DocumentParser {
 	// Internal attributes for this class
 
 	/**
-	 * The {@link GraphQLJsonSchemaPersonalization} allows the user to update what the plugin would have generate,
+	 * The {@link GenerateCodeJsonSchemaPersonalization} allows the user to update what the plugin would have generate,
 	 * through a json configuration file
 	 */
 	@Autowired
-	GraphQLJsonSchemaPersonalization jsonSchemaPersonalization;
+	GenerateCodeJsonSchemaPersonalization jsonSchemaPersonalization;
 
 	/** All {@link Relation}s that have been found in the GraphQL schema(s) */
 	List<Relation> relations = new ArrayList<>();

@@ -51,7 +51,7 @@ class CodeGeneratorTest {
 	private File targetSourceFolder;
 	private File targetRuntimeClassesSourceFolder;
 	private File testRuntimeSourcesFile;
-	private GraphQLCodeGenerator codeGenerator;
+	private GenerateCodeGenerator codeGenerator;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -73,9 +73,9 @@ class CodeGeneratorTest {
 			testRuntimeSourcesFile.delete();
 		}
 
-		codeGenerator = context.getBean(GraphQLCodeGenerator.class);
-		codeGenerator.graphQLDocumentParser = new GraphQLDocumentParser();
-		codeGenerator.graphQLDocumentParser.configuration = pluginConfiguration;
+		codeGenerator = context.getBean(GenerateCodeGenerator.class);
+		codeGenerator.generateCodeDocumentParser = new GenerateCodeDocumentParser();
+		codeGenerator.generateCodeDocumentParser.configuration = pluginConfiguration;
 	}
 
 	@AfterEach
@@ -102,7 +102,7 @@ class CodeGeneratorTest {
 		Template mockedTemplate = mock(Template.class);
 		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
-		codeGenerator.graphQLDocumentParser = mock(GraphQLDocumentParser.class);
+		codeGenerator.generateCodeDocumentParser = mock(GenerateCodeDocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
 
 		ObjectType object1 = new ObjectType("O1", pluginConfiguration);
@@ -235,7 +235,7 @@ class CodeGeneratorTest {
 		file = codeGenerator.getJavaFile(name, true);
 		// Verification
 		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/'
-				+ GraphQLDocumentParser.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/') + ".java";
+				+ GenerateCodeDocumentParser.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/') + ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 	}

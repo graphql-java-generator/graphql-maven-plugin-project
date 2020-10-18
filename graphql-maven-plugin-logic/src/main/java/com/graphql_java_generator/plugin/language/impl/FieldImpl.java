@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
+import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
@@ -30,7 +30,7 @@ import lombok.Data;
 public class FieldImpl implements Field {
 
 	/**
-	 * The {@link GraphQLDocumentParser} instance, which will allow to get the {@link Type} of the field, from its
+	 * The {@link GenerateCodeDocumentParser} instance, which will allow to get the {@link Type} of the field, from its
 	 * typeName, after the whole parsing is finished
 	 */
 	final DocumentParser documentParser;

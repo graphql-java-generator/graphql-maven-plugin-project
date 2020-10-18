@@ -27,14 +27,14 @@ import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguratio
 class DocumentParser_StarWars_Server_Test {
 
 	AbstractApplicationContext ctx = null;
-	GraphQLDocumentParser documentParser;
+	GenerateCodeDocumentParser documentParser;
 	GraphQLConfiguration pluginConfiguration;
 	List<Document> documents;
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(StarWars_Server_SpringConfiguration.class);
-		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 		documents = documentParser.documents.getDocuments();
 

@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
+import com.graphql_java_generator.plugin.GenerateCodeGenerator;
+import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.compiler.CompilationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
@@ -20,8 +20,8 @@ abstract class AbstractIntegrationTest {
 	Class<?> springConfClass;
 
 	protected AbstractApplicationContext ctx = null;
-	protected GraphQLDocumentParser graphQLDocumentParser;
-	protected GraphQLCodeGenerator codeGenerator;
+	protected GenerateCodeDocumentParser generateCodeDocumentParser;
+	protected GenerateCodeGenerator codeGenerator;
 	protected CompilationTestHelper compilationTestHelper;
 	protected GraphqlTestHelper graphqlTestHelper;
 	protected MavenTestHelper mavenTestHelper;
@@ -34,14 +34,14 @@ abstract class AbstractIntegrationTest {
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(springConfClass);
-		graphQLDocumentParser = ctx.getBean(GraphQLDocumentParser.class);
-		codeGenerator = ctx.getBean(GraphQLCodeGenerator.class);
+		generateCodeDocumentParser = ctx.getBean(GenerateCodeDocumentParser.class);
+		codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 		compilationTestHelper = ctx.getBean(CompilationTestHelper.class);
 		graphqlTestHelper = ctx.getBean(GraphqlTestHelper.class);
 		mavenTestHelper = ctx.getBean(MavenTestHelper.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 
-		graphQLDocumentParser.parseDocuments();
+		generateCodeDocumentParser.parseDocuments();
 	}
 
 	@AfterEach

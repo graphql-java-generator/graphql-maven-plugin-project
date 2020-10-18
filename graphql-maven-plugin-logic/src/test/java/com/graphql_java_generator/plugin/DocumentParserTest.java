@@ -31,7 +31,7 @@ class DocumentParserTest {
 
 	String packageName = "org.graphql.test.generate";
 
-	private GraphQLDocumentParser documentParser;
+	private GenerateCodeDocumentParser documentParser;
 	private GraphQLConfigurationTestHelper pluginConfiguration;
 
 	@BeforeEach
@@ -40,7 +40,7 @@ class DocumentParserTest {
 		pluginConfiguration.mode = PluginMode.client; // client as a default value for the tests, here
 		pluginConfiguration.packageName = packageName;
 
-		documentParser = new GraphQLDocumentParser();
+		documentParser = new GenerateCodeDocumentParser();
 		documentParser.configuration = pluginConfiguration;
 
 	}

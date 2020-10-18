@@ -29,14 +29,14 @@ import graphql.schema.GraphQLScalarType;
 class DocumentParser_allGraphQLCases_Server_KO_Test {
 
 	AbstractApplicationContext ctx = null;
-	GraphQLDocumentParser documentParser;
+	GenerateCodeDocumentParser documentParser;
 	GraphQLConfiguration pluginConfiguration;
 	List<Document> documents;
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
-		documentParser = ctx.getBean(GraphQLDocumentParser.class);
+		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 		documents = documentParser.documents.getDocuments();
 	}
