@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfigurat
 class GraphqlMavenPluginTest {
 
 	@Autowired
-	List<Document> documents;
+	Documents documents;
 
 	@Autowired
 	GraphqlTestHelper graphqlTestHelper;
@@ -57,16 +57,16 @@ class GraphqlMavenPluginTest {
 	// }
 
 	@Test
-	void testDocuments_helloworld() {
+	void testDocuments_helloworld() throws IOException {
 		// Preparation
 
 		// Go, go, go
 
 		// Verification
 		assertNotNull(documents, "documents should be returned");
-		assertEquals(1, documents.size(), "documents should contain one doc");
+		assertEquals(1, documents.getDocuments().size(), "documents should contain one doc");
 
-		Document doc = documents.get(0);
+		Document doc = documents.getDocuments().get(0);
 		assertEquals(1, doc.getDefinitions().size(), "One definition");
 
 		Node<?> node = doc.getDefinitions().get(0);

@@ -38,7 +38,6 @@ import graphql.language.ArrayValue;
 import graphql.language.BooleanValue;
 import graphql.language.Definition;
 import graphql.language.DirectiveDefinition;
-import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.FloatValue;
 import graphql.language.IntValue;
@@ -65,7 +64,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	private GraphQLConfiguration pluginConfiguration;
 
 	@Resource
-	List<Document> documents;
+	Documents documents;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -520,7 +519,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Preparation
 		String objectName = "AllFieldCases";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.get(0).getDefinitions()) {
+		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
@@ -585,7 +584,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Preparation
 		String objectName = "Human";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.get(0).getDefinitions()) {
+		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
@@ -635,14 +634,14 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 	@Test
 	@DirtiesContext
-	void test_readSchemaDefinition() {
+	void test_readSchemaDefinition() throws IOException {
 		// Preparation
 		List<String> queries = new ArrayList<>();
 		List<String> mutations = new ArrayList<>();
 		List<String> subscriptions = new ArrayList<>();
 		String objectName = "schema";
 		SchemaDefinition schema = null;
-		for (Definition<?> node : documents.get(0).getDefinitions()) {
+		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
 			if (node instanceof SchemaDefinition) {
 				schema = (SchemaDefinition) node;
 				break;
@@ -672,7 +671,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Preparation
 		String objectName = "MyQueryType";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.get(0).getDefinitions()) {
+		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
@@ -745,7 +744,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Preparation
 		String objectName = "Episode";
 		EnumTypeDefinition def = null;
-		for (Definition<?> node : documents.get(0).getDefinitions()) {
+		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
 			if (node instanceof EnumTypeDefinition && ((EnumTypeDefinition) node).getName().equals(objectName)) {
 				def = (EnumTypeDefinition) node;
 			}
@@ -779,7 +778,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Preparation
 		String objectName = "AnotherMutationType";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.get(0).getDefinitions()) {
+		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}
@@ -820,7 +819,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Preparation
 		String objectName = "TheSubscriptionType";
 		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.get(0).getDefinitions()) {
+		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
 			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
 				def = (ObjectTypeDefinition) node;
 			}

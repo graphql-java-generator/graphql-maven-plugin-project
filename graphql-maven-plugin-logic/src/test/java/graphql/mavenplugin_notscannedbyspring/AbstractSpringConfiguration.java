@@ -5,6 +5,7 @@ package graphql.mavenplugin_notscannedbyspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import com.graphql_java_generator.plugin.Documents;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -55,6 +57,19 @@ public abstract class AbstractSpringConfiguration {
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
+
+	public class DocumentsTestHelperImpl implements Documents {
+		List<Document> documents = new ArrayList<>();
+
+		@Override
+		public List<Document> getDocuments() throws IOException {
+			return documents;
+		}
+
+		public void setDocuments(List<Document> documents) {
+			this.documents = documents;
+		}
+	}
 
 	/**
 	 * 
@@ -113,8 +128,12 @@ public abstract class AbstractSpringConfiguration {
 	 * @throws IOException
 	 */
 	@Bean
-	public List<Document> documents(ResourceSchemaStringProvider schemaStringProvider) throws IOException {
+	public Documents documents(ResourceSchemaStringProvider schemaStringProvider) throws IOException {
 		Parser parser = new Parser();
-		return schemaStringProvider.schemaStrings().stream().map(parser::parseDocument).collect(Collectors.toList());
+		List<Document> documents = schemaStringProvider.schemaStrings().stream().map(parser::parseDocument)
+				.collect(Collectors.toList());
+		DocumentsTestHelperImpl ret = new DocumentsTestHelperImpl();
+		ret.setDocuments(documents);
+		return ret;
 	}
 }

@@ -5,6 +5,7 @@ package merge.mavenplugin_notscannedbyspring;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +14,10 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
+import com.graphql_java_generator.plugin.Documents;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
-import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
+import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.language.Document;
 import graphql.parser.Parser;
@@ -42,6 +44,19 @@ public abstract class AbstractSpringConfiguration {
 	@Autowired
 	GenerateGraphQLSchemaConfigurationTestHelper configuration;
 
+	public class DocumentsTestHelperImpl implements Documents {
+		List<Document> documents = new ArrayList<>();
+
+		@Override
+		public List<Document> getDocuments() throws IOException {
+			return documents;
+		}
+
+		public void setDocuments(List<Document> documents) {
+			this.documents = documents;
+		}
+	}
+
 	protected AbstractSpringConfiguration(String schemaFileFolder, String schemaFilePattern, String schemaFileName,
 			String targetFolder, boolean addRelayConnections) {
 		this.addRelayConnections = addRelayConnections;
@@ -53,7 +68,8 @@ public abstract class AbstractSpringConfiguration {
 
 	@Bean
 	GenerateGraphQLSchemaConfigurationTestHelper graphQLConfigurationTestHelper() {
-		GenerateGraphQLSchemaConfigurationTestHelper configuration = new GenerateGraphQLSchemaConfigurationTestHelper(this);
+		GenerateGraphQLSchemaConfigurationTestHelper configuration = new GenerateGraphQLSchemaConfigurationTestHelper(
+				this);
 		configuration.addRelayConnections = addRelayConnections;
 		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), schemaFileFolder);
 		configuration.schemaFilePattern = schemaFilePattern;
@@ -72,8 +88,12 @@ public abstract class AbstractSpringConfiguration {
 	 * @throws IOException
 	 */
 	@Bean
-	public List<Document> documents(ResourceSchemaStringProvider schemaStringProvider) throws IOException {
+	public Documents documents(ResourceSchemaStringProvider schemaStringProvider) throws IOException {
 		Parser parser = new Parser();
-		return schemaStringProvider.schemaStrings().stream().map(parser::parseDocument).collect(Collectors.toList());
+		List<Document> documents = schemaStringProvider.schemaStrings().stream().map(parser::parseDocument)
+				.collect(Collectors.toList());
+		DocumentsTestHelperImpl ret = new DocumentsTestHelperImpl();
+		ret.setDocuments(documents);
+		return ret;
 	}
 }
