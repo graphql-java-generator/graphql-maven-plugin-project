@@ -516,7 +516,7 @@ public class AddRelayConnections {
 			for (Field fieldInheritedFrom : getFieldInheritedFrom(f)) {
 				// This field must be marked by the @RelayConnection directive. So/and it must exist in the fields list
 				if (!fields.contains(fieldInheritedFrom)) {
-					configuration.getLog()
+					configuration.getPluginLogger()
 							.error("The field " + f.getName() + " of the "
 									+ (f.getOwningType() instanceof InterfaceType ? "interface" : "type") + " "
 									+ f.getOwningType().getName()
@@ -556,7 +556,7 @@ public class AddRelayConnections {
 						// @RelayConnection directive. But this object's field is not marked with this directive. It's
 						// strange, but is generally Ok. So we display a warning. And we add this field to the list of
 						// field that must implement the relay connection.
-						configuration.getLog()
+						configuration.getPluginLogger()
 								.warn("The field " + inheritedField.getOwningType().getName() + "."
 										+ inheritedField.getName() + " implements (directly or indirectly) the "
 										+ field.getOwningType().getName() + "." + field.getName()

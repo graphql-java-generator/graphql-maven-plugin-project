@@ -5,20 +5,22 @@ package com.graphql_java_generator.mavenplugin;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
  * This class is the super class of all Mojos that generates the client code, that is the {@link GenerateClientCodeMojo}
  * mojo. It contains all parameters that are common to these goals. The parameters common to all goal are inherited from
- * the {@link AbstractGenerateCodeMojo} class.<BR/>
+ * the {@link AbstractGenerateCodeCommonMojo} class.<BR/>
  * This avoids to redeclare each common parameter in each Mojo, including its comment. When a comment is updated, only
  * one update is necessary, instead of updating it in each Mojo.
  * 
  * 
  * @author etienne-sf
  */
-public abstract class AbstractGenerateClientCodeMojo extends AbstractGenerateCodeMojo {
+public abstract class AbstractGenerateClientCodeMojo extends AbstractGenerateCodeCommonMojo
+		implements GenerateClientCodeConfiguration {
 
 	/**
 	 * <P>
@@ -38,7 +40,15 @@ public abstract class AbstractGenerateClientCodeMojo extends AbstractGenerateCod
 	boolean generateDeprecatedRequestResponse;
 
 	/** The mode is forced to {@link PluginMode#client} */
-	protected PluginMode mode = PluginMode.client;
+	@Override
+	public PluginMode getMode() {
+		return PluginMode.client;
+	}
+
+	@Override
+	public boolean isGenerateDeprecatedRequestResponse() {
+		return generateDeprecatedRequestResponse;
+	}
 
 	protected AbstractGenerateClientCodeMojo(Class<?> springConfigurationClass) {
 		super(springConfigurationClass);

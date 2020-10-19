@@ -36,21 +36,21 @@ public interface GenerateGraphQLSchemaConfiguration extends CommonConfiguration 
 
 	/** Logs all the configuration parameters, in the debug level */
 	public default void logConfiguration() {
-		if (getLog().isDebugEnabled()) {
-			getLog().debug("The graphql-java-generator Plugin Configuration for the 'merge' goal is -->");
-			getLog().debug("  resourceEncoding: " + getResourceEncoding());
-			getLog().debug("  targetFolder: " + getTargetFolder());
-			getLog().debug("  targetSchemaFileName: " + getTargetSchemaFileName());
-			getLog().debug("  COMMON PARAMETERS:");
-			getLog().debug("    schemaFileFolder: " + getSchemaFileFolder());
-			getLog().debug("    schemaFilePattern: " + getSchemaFilePattern());
-			getLog().debug("    Templates: "
+		if (getPluginLogger().isDebugEnabled()) {
+			getPluginLogger().debug("The graphql-java-generator Plugin Configuration for the 'merge' goal is -->");
+			getPluginLogger().debug("  resourceEncoding: " + getResourceEncoding());
+			getPluginLogger().debug("  targetFolder: " + getTargetFolder());
+			getPluginLogger().debug("  targetSchemaFileName: " + getTargetSchemaFileName());
+			getPluginLogger().debug("  COMMON PARAMETERS:");
+			getPluginLogger().debug("    schemaFileFolder: " + getSchemaFileFolder());
+			getPluginLogger().debug("    schemaFilePattern: " + getSchemaFilePattern());
+			getPluginLogger().debug("    Templates: "
 					+ (Objects.nonNull(getTemplates())
 							? getTemplates().entrySet().stream()
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
 							: StringUtils.EMPTY));
-			getLog().debug("-- end configuration --");
+			getPluginLogger().debug("-- end configuration --");
 		}
 	}
 }

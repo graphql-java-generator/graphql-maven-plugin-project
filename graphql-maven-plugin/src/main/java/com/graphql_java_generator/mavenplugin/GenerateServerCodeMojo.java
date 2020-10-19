@@ -40,7 +40,13 @@ import graphql.ThreadSafe;
  */
 @Mojo(name = "generateServerCode", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresProject = true)
 @ThreadSafe
+// No need to add the @Component spring annotation: AbstractCommonMojo added this instance into the spring context, to
+// use the instance which attributs has been set with the pom content
 public class GenerateServerCodeMojo extends AbstractGenerateServerCodeMojo {
+
+	// All the Mojo parameters are defined in the AbstractXxxx classes, that contains the contain the hierarchical
+	// structure of the Maven goals.
+	// See the explanation in the AbstractCommonMojo for more details.
 
 	int nbGeneratedClasses = 0;
 

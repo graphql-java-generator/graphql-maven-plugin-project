@@ -292,7 +292,7 @@ class AddRelayConnectionsTest {
 		f.setAppliedDirectives(new ArrayList<>());
 		f.getAppliedDirectives().add(d);
 		Logger mockLogger = mock(Logger.class);
-		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).log = mockLogger;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).pluginLogger = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 
 		// Go, go, go
@@ -324,7 +324,7 @@ class AddRelayConnectionsTest {
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
 				"test_addEdgeConnectionAndApplyNodeInterface_step3", false);
 		Logger mockLogger = mock(Logger.class);
-		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).log = mockLogger;
+		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).pluginLogger = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 
 		// Go, go, go

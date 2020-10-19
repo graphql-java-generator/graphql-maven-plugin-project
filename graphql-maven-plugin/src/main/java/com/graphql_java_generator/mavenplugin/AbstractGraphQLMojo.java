@@ -9,14 +9,16 @@ import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
- * This class is the class that contains all parameters that are specific to the {@link GraphQLMojo} mojo. The
- * parameters common to all goal are inherited from the {@link AbstractGenerateCodeMojo} class.<BR/>
+ * This class is the class that contains all parameters that needed for the {@link GraphQLMojo}, that is all parameters
+ * that are common to all generate code Mojos. The parameters from the generateServerCode are inherited from
+ * {@link AbstractGenerateServerCodeMojo}, and the parameters that are specific to the generateClientCode must be
+ * manually added here, as a class may not inherit from two superclasses.<BR/>
  * This avoids to redeclare each common parameter in each Mojo, including its comment. When a comment is updated, only
  * one update is necessary, instead of updating it in each Mojo.
  * 
  * @author etienne-sf
  */
-public abstract class AbstractGraphQLMojo extends AbstractGenerateServerCodeMojo {
+public abstract class AbstractGraphQLMojo extends AbstractGenerateServerCodeMojo implements GraphQLConfiguration {
 
 	/**
 	 * <P>
@@ -41,6 +43,16 @@ public abstract class AbstractGraphQLMojo extends AbstractGenerateServerCodeMojo
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.mode", defaultValue = GraphQLConfiguration.DEFAULT_MODE)
 	PluginMode mode;
+
+	@Override
+	public PluginMode getMode() {
+		return mode;
+	}
+
+	@Override
+	public boolean isGenerateDeprecatedRequestResponse() {
+		return generateDeprecatedRequestResponse;
+	}
 
 	protected AbstractGraphQLMojo(Class<?> springConfigurationClass) {
 		super(springConfigurationClass);

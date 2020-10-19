@@ -132,15 +132,15 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public void logConfiguration();
 
 	public default void logGenerateCodeCommonConfiguration() {
-		getLog().debug("  Common parameters for code generation:");
-		getLog().debug("    copyRuntimeSources: " + isCopyRuntimeSources());
-		getLog().debug("    customScalars: " + getCustomScalars());
-		getLog().debug("    mode: " + getMode());
-		getLog().debug("    packageName: " + getPackageName());
-		getLog().debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
-		getLog().debug("    sourceEncoding: " + getSourceEncoding());
-		getLog().debug("    targetClassFolder: " + getTargetClassFolder());
-		getLog().debug("    targetSourceFolder: " + getTargetSourceFolder());
+		getPluginLogger().debug("  Common parameters for code generation:");
+		getPluginLogger().debug("    copyRuntimeSources: " + isCopyRuntimeSources());
+		getPluginLogger().debug("    customScalars: " + getCustomScalars());
+		getPluginLogger().debug("    mode: " + getMode());
+		getPluginLogger().debug("    packageName: " + getPackageName());
+		getPluginLogger().debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
+		getPluginLogger().debug("    sourceEncoding: " + getSourceEncoding());
+		getPluginLogger().debug("    targetClassFolder: " + getTargetClassFolder());
+		getPluginLogger().debug("    targetSourceFolder: " + getTargetSourceFolder());
 		logCommonConfiguration();
 	}
 

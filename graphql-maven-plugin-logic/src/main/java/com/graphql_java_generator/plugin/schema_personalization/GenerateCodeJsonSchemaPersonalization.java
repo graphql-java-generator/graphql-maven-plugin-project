@@ -64,7 +64,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 		try {
 			if (!(configuration instanceof GenerateCodeCommonConfiguration)
 					|| !((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.server)) {
-				configuration.getLog().debug(
+				configuration.getPluginLogger().debug(
 						"The plugin configuration is not in server mode: no schema personalization is to be applied");
 			} else {
 				// First step: we load the schema personalization
@@ -205,7 +205,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 			}
 
 			// Let's read the flow definition
-			configuration.getLog().info("Loading file " + ((GenerateServerCodeConfiguration) configuration)
+			configuration.getPluginLogger().info("Loading file " + ((GenerateServerCodeConfiguration) configuration)
 					.getSchemaPersonalizationFile().getAbsolutePath());
 			ObjectMapper objectMapper = new ObjectMapper();
 			SchemaPersonalization ret;
@@ -218,7 +218,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 	}// loadFlow
 
 	public void logParsingError(String error) {
-		configuration.getLog().error(error);
+		configuration.getPluginLogger().error(error);
 		nbErrors += 1;
 	}
 

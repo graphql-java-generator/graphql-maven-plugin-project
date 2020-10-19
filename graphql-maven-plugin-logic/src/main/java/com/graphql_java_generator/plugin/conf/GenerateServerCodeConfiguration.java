@@ -99,12 +99,12 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	/** Logs all the configuration parameters (only when in the debug level) */
 	@Override
 	public default void logConfiguration() {
-		if (getLog().isDebugEnabled()) {
-			getLog().debug("-- start configuration --");
-			getLog().debug(
+		if (getPluginLogger().isDebugEnabled()) {
+			getPluginLogger().debug("-- start configuration --");
+			getPluginLogger().debug(
 					"The graphql-java-generator Plugin Configuration for the generateServerCode goal/task is -->");
 			logGenerateServerCodeConfiguration();
-			getLog().debug("-- end configuration --");
+			getPluginLogger().debug("-- end configuration --");
 		}
 	}
 
@@ -112,11 +112,11 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * Logs all the configuration parameters for the <I>generateServerCode</I> task/goal (only when in the debug level)
 	 */
 	public default void logGenerateServerCodeConfiguration() {
-		getLog().debug("  Parameters specific to the generateServerCode task/goal:");
-		getLog().debug("    generateJPAAnnotation: " + isGenerateJPAAnnotation());
-		getLog().debug("    packaging: " + getPackaging());
-		getLog().debug("    scanBasePackages: " + getScanBasePackages());
-		getLog().debug("    schemaPersonalizationFile: " + getSchemaPersonalizationFile());
+		getPluginLogger().debug("  Parameters specific to the generateServerCode task/goal:");
+		getPluginLogger().debug("    generateJPAAnnotation: " + isGenerateJPAAnnotation());
+		getPluginLogger().debug("    packaging: " + getPackaging());
+		getPluginLogger().debug("    scanBasePackages: " + getScanBasePackages());
+		getPluginLogger().debug("    schemaPersonalizationFile: " + getSchemaPersonalizationFile());
 		logGenerateCodeCommonConfiguration();
 	}
 }

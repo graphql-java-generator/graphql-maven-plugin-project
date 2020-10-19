@@ -18,16 +18,19 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * This class is the super class of all Mojos. It contains all parameters that are common to all goals, and the
  * {@link #execute()} method.<BR/>
  * This avoids to redeclare each common parameter in each Mojo, including its comment. When a comment is updated, only
- * one update is necessary, instead of updating it in each Mojo.
+ * one update is necessary, instead of updating it in each Mojo.<BR/>
+ * <BR/>
+ * 
  * 
  * @author etienne-sf
  */
-public abstract class AbstractCommonMojo extends AbstractMojo {
+public abstract class AbstractCommonMojo extends AbstractMojo implements CommonConfiguration {
 
 	/**
 	 * <P>
@@ -54,6 +57,11 @@ public abstract class AbstractCommonMojo extends AbstractMojo {
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.addRelayConnections", defaultValue = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS)
 	boolean addRelayConnections;
+
+	/**
+	 * This is the Plugin Logger, that hides the plugin technology: Maven or Gradle (or other, perhaps, in the future)
+	 */
+	private MavenLogger log = null;
 
 	/** The package name that will contain the generated classes */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = GraphQLConfiguration.DEFAULT_PACKAGE_NAME)
@@ -121,6 +129,29 @@ public abstract class AbstractCommonMojo extends AbstractMojo {
 	/** The {@link DocumentParser} that contains all the data for the parsed GraphQL schema(s) */
 	protected DocumentParser documentParser;
 
+	@Override
+	public Logger getPluginLogger() {
+		if (log == null) {
+			log = new MavenLogger(this);
+		}
+		return log;
+	}
+
+	@Override
+	public File getSchemaFileFolder() {
+		return schemaFileFolder;
+	}
+
+	@Override
+	public String getSchemaFilePattern() {
+		return schemaFilePattern;
+	}
+
+	@Override
+	public Map<String, String> getTemplates() {
+		return templates;
+	}
+
 	AbstractCommonMojo(Class<?> springConfigurationClass) {
 		this.springConfigurationClass = springConfigurationClass;
 	}
@@ -130,7 +161,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			Instant start = Instant.now();
-			getLog().debug("Starting generation of java classes from graphqls files");
+			getPluginLogger().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
 			ctx = new AnnotationConfigApplicationContext();

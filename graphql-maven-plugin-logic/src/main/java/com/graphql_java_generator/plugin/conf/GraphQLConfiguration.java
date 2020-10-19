@@ -27,15 +27,15 @@ public interface GraphQLConfiguration extends GenerateClientCodeConfiguration, G
 	 */
 	@Override
 	public default void logConfiguration() {
-		if (getLog().isDebugEnabled()) {
-			getLog().debug("-- start configuration --");
-			getLog().debug(
+		if (getPluginLogger().isDebugEnabled()) {
+			getPluginLogger().debug("-- start configuration --");
+			getPluginLogger().debug(
 					"The graphql-java-generator Plugin Configuration for the generateClientCode goal/task is -->");
-			getLog().debug("    generateDeprecatedRequestResponse: " + isGenerateDeprecatedRequestResponse());
-			getLog().debug(
+			getPluginLogger().debug("    generateDeprecatedRequestResponse: " + isGenerateDeprecatedRequestResponse());
+			getPluginLogger().debug(
 					"The graphql-java-generator Plugin Configuration for the graphql goal or the generateServerCode task is -->");
 			logGenerateServerCodeConfiguration(); // There is no parameter specific to the client mode
-			getLog().debug("-- end configuration --");
+			getPluginLogger().debug("-- end configuration --");
 		}
 	}
 }

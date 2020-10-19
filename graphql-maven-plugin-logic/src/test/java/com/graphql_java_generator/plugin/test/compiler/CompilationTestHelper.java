@@ -20,9 +20,9 @@ public class CompilationTestHelper {
 	 * @throws MojoExecutionException
 	 */
 	public void checkCompleteCompilationStatus(String classpath) {
-		pluginConfiguration.getLog().info("Check full project compilation status with classpath: " + classpath);
+		pluginConfiguration.getPluginLogger().info("Check full project compilation status with classpath: " + classpath);
 		GeneratedSourceCompiler compilerPortFacadeImpl = GeneratedSourceCompilerFactory.getGeneratedSourceCompiler(
-				pluginConfiguration.getLog(), null, pluginConfiguration.getTargetSourceFolder(),
+				pluginConfiguration.getPluginLogger(), null, pluginConfiguration.getTargetSourceFolder(),
 				pluginConfiguration.getTargetClassFolder(), classpath, pluginConfiguration.getSourceEncoding());
 		assertTrue(compilerPortFacadeImpl.compileAllSources(), "Full project compilation status");
 	}

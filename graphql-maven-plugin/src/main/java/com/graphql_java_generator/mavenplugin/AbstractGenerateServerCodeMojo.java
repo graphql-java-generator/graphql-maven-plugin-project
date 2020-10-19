@@ -3,30 +3,32 @@
  */
 package com.graphql_java_generator.mavenplugin;
 
+import java.io.File;
+
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
  * This class is the super class of all Mojos that generates the code, that is the {@link GenerateServerCodeMojo} and
  * the {@link GraphQLMojo} mojos. It contains all parameters that are common to these goals. The parameters common to
- * all goal are inherited from the {@link AbstractGenerateCodeMojo} class.<BR/>
+ * all goal are inherited from the {@link AbstractGenerateCodeCommonMojo} class.<BR/>
  * This avoids to redeclare each common parameter in each Mojo, including its comment. When a comment is updated, only
- * one update is necessary, instead of updating it in each Mojo.
+ * one update is necessary, instead of updating it in each
  * 
  * @author etienne-sf
  */
-public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCodeMojo {
+public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCodeCommonMojo
+		implements GenerateServerCodeConfiguration {
 
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION)
 	boolean generateJPAAnnotation;
-
-	/** The mode is forced to {@link PluginMode#client} */
-	protected PluginMode mode = PluginMode.server;
 
 	/**
 	 * <P>
@@ -61,6 +63,33 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
 	String schemaPersonalizationFile;
+
+	/** The mode is forced to {@link PluginMode#server} */
+	@Override
+	public PluginMode getMode() {
+		return PluginMode.server;
+	}
+
+	@Override
+	public Packaging getPackaging() {
+		return Packaging.valueOf(project.getPackaging());
+	}
+
+	@Override
+	public File getSchemaPersonalizationFile() {
+		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
+				: new File(project.getBasedir(), schemaPersonalizationFile);
+	}
+
+	@Override
+	public boolean isGenerateJPAAnnotation() {
+		return generateJPAAnnotation;
+	}
+
+	@Override
+	public String getScanBasePackages() {
+		return scanBasePackages;
+	}
 
 	protected AbstractGenerateServerCodeMojo(Class<?> springConfigurationClass) {
 		super(springConfigurationClass);

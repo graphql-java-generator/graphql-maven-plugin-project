@@ -34,7 +34,7 @@ public interface CommonConfiguration {
 	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
 	 * can use log4j2, by adding the 'Log4j JDK Logging Adapter' (JUL)
 	 */
-	public Logger getLog();
+	public Logger getPluginLogger();
 
 	/** The packageName in which the generated classes will be created */
 	public String getPackageName();
@@ -149,10 +149,10 @@ public interface CommonConfiguration {
 
 	/** Logs all the common configuration parameters (only when in the debug level) */
 	public default void logCommonConfiguration() {
-		getLog().debug("  Common parameters:");
-		getLog().debug("    schemaFileFolder: " + getSchemaFileFolder());
-		getLog().debug("    schemaFilePattern: " + getSchemaFilePattern());
-		getLog().debug("    Templates: "
+		getPluginLogger().debug("  Common parameters:");
+		getPluginLogger().debug("    schemaFileFolder: " + getSchemaFileFolder());
+		getPluginLogger().debug("    schemaFilePattern: " + getSchemaFilePattern());
+		getPluginLogger().debug("    Templates: "
 				+ (Objects.nonNull(getTemplates())
 						? getTemplates().entrySet().stream()
 								.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))

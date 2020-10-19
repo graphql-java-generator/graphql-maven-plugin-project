@@ -3,11 +3,13 @@
  */
 package com.graphql_java_generator.mavenplugin;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
 import graphql.schema.GraphQLScalarType;
@@ -17,11 +19,11 @@ import graphql.schema.GraphQLScalarType;
  * {@link GenerateServerCodeMojo} and the {@link GraphQLMojo} mojos. It contains all parameters that are common to these
  * goals. The parameters common to all goal are inherited from the {@link AbstractCommonMojo} class.<BR/>
  * This avoids to redeclare each common parameter in each Mojo, including its comment. When a comment is updated, only
- * one update is necessary, instead of updating it in each Mojo.
+ * one update is necessary, instead of updating it in each
  * 
  * @author etienne-sf
  */
-public abstract class AbstractGenerateCodeMojo extends AbstractCommonMojo {
+public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo implements GenerateCodeCommonConfiguration {
 
 	/**
 	 * <P>
@@ -115,7 +117,51 @@ public abstract class AbstractGenerateCodeMojo extends AbstractCommonMojo {
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	String targetSourceFolder;
 
-	protected AbstractGenerateCodeMojo(Class<?> springConfigurationClass) {
+	@Override
+	public List<CustomScalarDefinition> getCustomScalars() {
+		return customScalars;
+	}
+
+	@Override
+	public String getPackageName() {
+		return packageName;
+	}
+
+	@Override
+	public String getSourceEncoding() {
+		return sourceEncoding;
+	}
+
+	public File getTargetFolder() {
+		return new File(project.getBasedir(), "target");
+	}
+
+	@Override
+	public File getTargetClassFolder() {
+		return new File(getTargetFolder(), "classes");
+	}
+
+	@Override
+	public File getTargetSourceFolder() {
+		return new File(getTargetFolder(), targetSourceFolder);
+	}
+
+	@Override
+	public boolean isCopyRuntimeSources() {
+		return copyRuntimeSources;
+	}
+
+	@Override
+	public boolean isSeparateUtilityClasses() {
+		return separateUtilityClasses;
+	}
+
+	@Override
+	public boolean isAddRelayConnections() {
+		return addRelayConnections;
+	}
+
+	protected AbstractGenerateCodeCommonMojo(Class<?> springConfigurationClass) {
 		super(springConfigurationClass);
 	}
 }

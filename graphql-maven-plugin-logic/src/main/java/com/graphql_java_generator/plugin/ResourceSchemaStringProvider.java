@@ -51,8 +51,8 @@ public class ResourceSchemaStringProvider {
 			// We take the file pattern as is
 			fullPathPattern = configuration.getSchemaFilePattern();
 		} else {
-			if (configuration.getLog().isDebugEnabled()) {
-				configuration.getLog().debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
+			if (configuration.getPluginLogger().isDebugEnabled()) {
+				configuration.getPluginLogger().debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
 				configuration.getSchemaFileFolder().getCanonicalPath();
 			}
 			fullPathPattern = "file:///" + configuration.getSchemaFileFolder().getCanonicalPath()
@@ -66,10 +66,10 @@ public class ResourceSchemaStringProvider {
 				Arrays.asList(applicationContext.getResources(fullPathPattern)));
 
 		// A little debug may be useful
-		if (configuration.getLog().isDebugEnabled() && ret.size() > 0) {
-			configuration.getLog().debug("The GraphQL schema file found are: ");
+		if (configuration.getPluginLogger().isDebugEnabled() && ret.size() > 0) {
+			configuration.getPluginLogger().debug("The GraphQL schema file found are: ");
 			for (Resource schema : ret) {
-				configuration.getLog().debug("   * " + schema.getURI().toString());
+				configuration.getPluginLogger().debug("   * " + schema.getURI().toString());
 			}
 		}
 

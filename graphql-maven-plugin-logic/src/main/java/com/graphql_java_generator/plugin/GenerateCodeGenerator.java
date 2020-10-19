@@ -92,95 +92,95 @@ public class GenerateCodeGenerator {
 	 */
 	public int generateCode() throws IOException {
 
-		configuration.getLog().debug("Starting code generation");
+		configuration.getPluginLogger().debug("Starting code generation");
 
 		int i = 0;
-		configuration.getLog().debug("Generating objects");
+		configuration.getPluginLogger().debug("Generating objects");
 		i += generateTargetFiles(generateCodeDocumentParser.getObjectTypes(), "object",
 				resolveTemplate(CodeTemplate.OBJECT), false);
-		configuration.getLog().debug("Generating interfaces");
+		configuration.getPluginLogger().debug("Generating interfaces");
 		i += generateTargetFiles(generateCodeDocumentParser.getInterfaceTypes(), "interface",
 				resolveTemplate(CodeTemplate.INTERFACE), false);
-		configuration.getLog().debug("Generating unions");
+		configuration.getPluginLogger().debug("Generating unions");
 		i += generateTargetFiles(generateCodeDocumentParser.getUnionTypes(), "union",
 				resolveTemplate(CodeTemplate.UNION), false);
-		configuration.getLog().debug("Generating enums");
+		configuration.getPluginLogger().debug("Generating enums");
 		i += generateTargetFiles(generateCodeDocumentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM),
 				false);
 
 		switch (configuration.getMode()) {
 		case server:
-			configuration.getLog().debug("Starting server specific code generation");
+			configuration.getPluginLogger().debug("Starting server specific code generation");
 			i += generateServerFiles();
 			break;
 		case client:
-			configuration.getLog().debug("Starting client specific code generation");
+			configuration.getPluginLogger().debug("Starting client specific code generation");
 
 			// Generation of the query/mutation/subscription classes
 			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
-				configuration.getLog().debug("Generating query");
+				configuration.getPluginLogger().debug("Generating query");
 				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "query",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
-				configuration.getLog().debug("Generating mutation");
+				configuration.getPluginLogger().debug("Generating mutation");
 				i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "mutation",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
-				configuration.getLog().debug("Generating subscription");
+				configuration.getPluginLogger().debug("Generating subscription");
 				i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "subscription",
 						resolveTemplate(CodeTemplate.SUBSCRIPTION), true);
 			}
 
 			// Generation of the query/mutation/subscription executor classes
-			configuration.getLog().debug("Generating query executors");
+			configuration.getPluginLogger().debug("Generating query executors");
 			i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
-			configuration.getLog().debug("Generating mutation executors");
+			configuration.getPluginLogger().debug("Generating mutation executors");
 			i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
-			configuration.getLog().debug("Generating subscription executors");
+			configuration.getPluginLogger().debug("Generating subscription executors");
 			i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "executor",
 					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
 			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
-				configuration.getLog().debug("Generating query response");
+				configuration.getPluginLogger().debug("Generating query response");
 				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
-				configuration.getLog().debug("Generating mutation response");
+				configuration.getPluginLogger().debug("Generating mutation response");
 				i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
-				configuration.getLog().debug("Generating subscription response");
+				configuration.getPluginLogger().debug("Generating subscription response");
 				i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 			}
 
 			// Generation of the query/mutation/subscription root responses classes
-			configuration.getLog().debug("Generating query root response");
+			configuration.getPluginLogger().debug("Generating query root response");
 			i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
-			configuration.getLog().debug("Generating mutation root response");
+			configuration.getPluginLogger().debug("Generating mutation root response");
 			i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
-			configuration.getLog().debug("Generating subscription root response");
+			configuration.getPluginLogger().debug("Generating subscription root response");
 			i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 
 			// Generation of the GraphQLRequest class
-			configuration.getLog().debug("Generating GraphQL Request class");
+			configuration.getPluginLogger().debug("Generating GraphQL Request class");
 			i += generateGraphQLRequest();
 
 			// Files for Custom Scalars
-			configuration.getLog().debug("Generating CustomScalarRegistryInitializer");
+			configuration.getPluginLogger().debug("Generating CustomScalarRegistryInitializer");
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer", true),
 					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
 			// Files for Directives
-			configuration.getLog().debug("Generating DirectiveRegistryInitializer");
+			configuration.getPluginLogger().debug("Generating DirectiveRegistryInitializer");
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer", true),
 					"Generating DirectiveRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
 			//
-			configuration.getLog().debug("Generating " + FILE_TYPE_JACKSON_DESERIALIZER);
+			configuration.getPluginLogger().debug("Generating " + FILE_TYPE_JACKSON_DESERIALIZER);
 			i += generateTargetFiles(generateCodeDocumentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER), true);
 
@@ -323,21 +323,21 @@ public class GenerateCodeGenerator {
 
 		int ret = 0;
 
-		configuration.getLog().debug("Generating GraphQLServerMain");
+		configuration.getPluginLogger().debug("Generating GraphQLServerMain");
 		ret += generateOneFile(getJavaFile("GraphQLServerMain", true), "generating GraphQLServerMain", context,
 				resolveTemplate(CodeTemplate.SERVER));
 
-		configuration.getLog().debug("Generating GraphQLProvider");
+		configuration.getPluginLogger().debug("Generating GraphQLProvider");
 		ret += generateOneFile(getJavaFile("GraphQLProvider", true), "generating GraphQLProvider", context,
 				resolveTemplate(CodeTemplate.PROVIDER));
 
-		configuration.getLog().debug("Generating GraphQLDataFetchers");
+		configuration.getPluginLogger().debug("Generating GraphQLDataFetchers");
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
 				resolveTemplate(CodeTemplate.DATA_FETCHER));
 
 		for (DataFetchersDelegate dataFetcherDelegate : generateCodeDocumentParser.dataFetchersDelegates) {
 			context.put("dataFetcherDelegate", dataFetcherDelegate);
-			configuration.getLog().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
+			configuration.getPluginLogger().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
 			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
 					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 					resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
@@ -346,16 +346,16 @@ public class GenerateCodeGenerator {
 		for (BatchLoader batchLoader : generateCodeDocumentParser.batchLoaders) {
 			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
 			context.put("batchLoader", batchLoader);
-			configuration.getLog().debug("Generating " + name);
+			configuration.getPluginLogger().debug("Generating " + name);
 			ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
 					resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE_IMPL));
 		}
 
-		configuration.getLog().debug("Generating WebSocketConfig");
+		configuration.getPluginLogger().debug("Generating WebSocketConfig");
 		ret += generateOneFile(getJavaFile("WebSocketConfig", true), "generating WebSocketConfig", context,
 				resolveTemplate(CodeTemplate.WEB_SOCKET_CONFIG));
 
-		configuration.getLog().debug("Generating WebSocketHandler");
+		configuration.getPluginLogger().debug("Generating WebSocketHandler");
 		ret += generateOneFile(getJavaFile("WebSocketHandler", true), "generating WebSocketHandler", context,
 				resolveTemplate(CodeTemplate.WEB_SOCKET_HANDLER));
 
@@ -381,7 +381,7 @@ public class GenerateCodeGenerator {
 		try {
 			Writer writer = null;
 
-			configuration.getLog().debug(msg);
+			configuration.getPluginLogger().debug(msg);
 			Template template = velocityEngine.getTemplate(templateFilename, "UTF-8");
 
 			targetFile.getParentFile().mkdirs();

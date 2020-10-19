@@ -68,7 +68,7 @@ public class GenerateGraphQLSchema {
 		try {
 			File targetFile = new File(configuration.getTargetFolder(), configuration.getTargetSchemaFileName());
 			msg = "Generating relay schema in this file: " + targetFile.getAbsolutePath();
-			configuration.getLog().debug(msg);
+			configuration.getPluginLogger().debug(msg);
 
 			VelocityContext context = new VelocityContext();
 			context.put("newline", "\n");
