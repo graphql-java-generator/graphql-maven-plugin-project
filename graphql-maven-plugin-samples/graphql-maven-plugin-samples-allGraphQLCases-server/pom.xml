@@ -29,6 +29,7 @@
 						for more information -->
 					<addRelayConnections>true</addRelayConnections>
 					<packageName>org.allGraphQLCases.server</packageName>
+					<separateUtilityClasses>true</separateUtilityClasses>
 					<customScalars>
 						<customScalar>
 							<graphQLTypeName>Date</graphQLTypeName>

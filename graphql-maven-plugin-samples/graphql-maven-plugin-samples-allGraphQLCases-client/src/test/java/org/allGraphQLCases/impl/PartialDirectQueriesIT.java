@@ -1,7 +1,7 @@
 package org.allGraphQLCases.impl;
 
 import org.allGraphQLCases.Main;
-import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -19,7 +19,7 @@ class PartialDirectQueriesIT extends AbstractIT {
 	void setUp() throws Exception {
 
 		// For some tests, we need to execute additional partialQueries
-		queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Creation of the instance, against which we'll execute the JUnit tests
 		partialQueries = new PartialDirectQueries(Main.GRAPHQL_ENDPOINT);

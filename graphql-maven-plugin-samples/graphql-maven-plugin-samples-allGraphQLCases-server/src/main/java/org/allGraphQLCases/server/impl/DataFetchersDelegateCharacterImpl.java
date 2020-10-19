@@ -9,8 +9,8 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.DataFetchersDelegateCharacter;
 import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.util.DataFetchersDelegateCharacter;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

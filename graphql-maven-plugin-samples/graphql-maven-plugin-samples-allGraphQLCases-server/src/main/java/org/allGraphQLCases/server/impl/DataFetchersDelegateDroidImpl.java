@@ -9,9 +9,9 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.DataFetchersDelegateDroid;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.util.DataFetchersDelegateDroid;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

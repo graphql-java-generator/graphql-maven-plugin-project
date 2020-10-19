@@ -3,9 +3,9 @@ package org.allGraphQLCases.server.impl.relayConnection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.allGraphQLCases.server.DataFetchersDelegateHumanEdge;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanEdge;
+import org.allGraphQLCases.server.util.DataFetchersDelegateHumanEdge;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

@@ -8,14 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.allGraphQLCases.client.AnotherMutationTypeResponse;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.GraphQLRequest;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyQueryType;
-import org.allGraphQLCases.client.MyQueryTypeResponse;
+import org.allGraphQLCases.client.util.AnotherMutationTypeResponse;
+import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -63,7 +63,7 @@ class FullQueriesIT {
 	@Test
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
 		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery}"); // Direct queries should be used only for very
@@ -79,7 +79,7 @@ class FullQueriesIT {
 	@Test
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
 

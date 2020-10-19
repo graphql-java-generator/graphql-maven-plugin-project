@@ -3,9 +3,9 @@
  */
 package org.allGraphQLCases.server.impl;
 
-import org.allGraphQLCases.server.DataFetchersDelegateTheSubscriptionType;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.util.DataFetchersDelegateTheSubscriptionType;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 

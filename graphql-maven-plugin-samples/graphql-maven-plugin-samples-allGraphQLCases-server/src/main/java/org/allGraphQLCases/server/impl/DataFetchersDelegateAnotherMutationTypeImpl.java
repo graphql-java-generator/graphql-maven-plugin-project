@@ -9,9 +9,9 @@ import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
-import org.allGraphQLCases.server.DataFetchersDelegateAnotherMutationType;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanInput;
+import org.allGraphQLCases.server.util.DataFetchersDelegateAnotherMutationType;
 import org.springframework.stereotype.Component;
 
 import graphql.language.Argument;

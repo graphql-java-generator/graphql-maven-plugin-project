@@ -8,14 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.allGraphQLCases.client.AnotherMutationType;
-import org.allGraphQLCases.client.AnotherMutationTypeResponse;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyQueryType;
-import org.allGraphQLCases.client.MyQueryTypeResponse;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeResponse;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -28,8 +28,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 class FullQueriesDeprecatedIT {
 
-	MyQueryType queryType;
-	AnotherMutationType mutationType;
+	MyQueryTypeExecutor queryType;
+	AnotherMutationTypeExecutor mutationType;
 
 	ObjectResponse mutationWithDirectiveResponse;
 	ObjectResponse mutationWithoutDirectiveResponse;
@@ -38,8 +38,8 @@ class FullQueriesDeprecatedIT {
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-		queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
-		mutationType = new AnotherMutationType(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		mutationType = new AnotherMutationTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// The response preparation should be somewhere in the application initialization code.
 		mutationWithDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//

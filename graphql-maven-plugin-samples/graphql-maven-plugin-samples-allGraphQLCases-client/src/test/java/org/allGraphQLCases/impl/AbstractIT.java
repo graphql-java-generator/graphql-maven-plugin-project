@@ -19,8 +19,8 @@ import org.allGraphQLCases.client.Droid;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client._extends;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -37,7 +37,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 abstract class AbstractIT {
 
-	MyQueryType queryType;
+	MyQueryTypeExecutor queryType;
 	PartialQueries partialQueries;
 
 	@Test

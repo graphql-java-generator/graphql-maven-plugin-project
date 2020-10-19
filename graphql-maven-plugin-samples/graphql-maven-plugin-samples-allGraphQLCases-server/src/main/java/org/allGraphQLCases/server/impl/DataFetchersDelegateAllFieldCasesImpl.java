@@ -13,9 +13,9 @@ import javax.annotation.Resource;
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
-import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCases;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCases;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

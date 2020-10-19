@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.allGraphQLCases.server.CharacterConnection;
 import org.allGraphQLCases.server.CharacterEdge;
-import org.allGraphQLCases.server.DataFetchersDelegateCharacterConnection;
 import org.allGraphQLCases.server.PageInfo;
+import org.allGraphQLCases.server.util.DataFetchersDelegateCharacterConnection;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

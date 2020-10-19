@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.MyQueryType;
-import org.allGraphQLCases.client.MyQueryTypeResponse;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -17,11 +17,11 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 class DirectiveOnFieldIT {
 
-	MyQueryType queryType;
+	MyQueryTypeExecutor queryType;
 
 	@BeforeEach
 	void setup() {
-		queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 	}
 
 	@Test

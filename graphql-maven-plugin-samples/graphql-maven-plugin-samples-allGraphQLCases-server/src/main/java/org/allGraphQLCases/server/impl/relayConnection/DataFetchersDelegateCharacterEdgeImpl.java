@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.CharacterEdge;
-import org.allGraphQLCases.server.DataFetchersDelegateCharacterEdge;
+import org.allGraphQLCases.server.util.DataFetchersDelegateCharacterEdge;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

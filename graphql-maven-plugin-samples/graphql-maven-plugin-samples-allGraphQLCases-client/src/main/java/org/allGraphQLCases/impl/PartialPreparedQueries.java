@@ -9,17 +9,17 @@ import java.util.List;
 import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
-import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
-import org.allGraphQLCases.client.GraphQLRequest;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -41,8 +41,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public class PartialPreparedQueries implements PartialQueries {
 
-	final MyQueryType queryType;
-	final AnotherMutationType mutationType;
+	final MyQueryTypeExecutor queryType;
+	final AnotherMutationTypeExecutor mutationType;
 
 	// PartialQueries
 	GraphQLRequest withoutParametersRequest;
@@ -71,8 +71,8 @@ public class PartialPreparedQueries implements PartialQueries {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public PartialPreparedQueries(String graphqlEndpoint) throws GraphQLRequestPreparationException {
-		queryType = new MyQueryType(graphqlEndpoint);
-		mutationType = new AnotherMutationType(graphqlEndpoint);
+		queryType = new MyQueryTypeExecutor(graphqlEndpoint);
+		mutationType = new AnotherMutationTypeExecutor(graphqlEndpoint);
 
 		withoutParametersRequest = queryType.getWithoutParametersGraphQLRequest("{appearsIn name}");
 		withOneOptionalParamRequest = queryType

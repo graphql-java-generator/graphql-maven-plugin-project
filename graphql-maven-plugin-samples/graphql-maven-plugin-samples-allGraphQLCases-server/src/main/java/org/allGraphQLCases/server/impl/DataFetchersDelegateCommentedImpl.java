@@ -8,7 +8,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.Commented;
-import org.allGraphQLCases.server.DataFetchersDelegateCommented;
+import org.allGraphQLCases.server.util.DataFetchersDelegateCommented;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;

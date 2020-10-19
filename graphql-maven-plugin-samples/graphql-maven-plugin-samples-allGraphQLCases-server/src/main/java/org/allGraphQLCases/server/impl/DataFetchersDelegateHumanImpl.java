@@ -7,9 +7,9 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.DataFetchersDelegateHuman;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.util.DataFetchersDelegateHuman;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

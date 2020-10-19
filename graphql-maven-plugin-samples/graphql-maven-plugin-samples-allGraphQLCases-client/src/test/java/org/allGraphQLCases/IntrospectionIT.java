@@ -11,11 +11,10 @@ import java.util.List;
 
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.MyQueryType;
-import org.allGraphQLCases.client.MyQueryTypeExecutor;
 import org.allGraphQLCases.client.__Field;
 import org.allGraphQLCases.client.__Schema;
 import org.allGraphQLCases.client.__Type;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -76,7 +75,7 @@ public class IntrospectionIT {
 	@Test
 	void test__datatype_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification
-		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
 		// AllFieldCases ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
@@ -90,7 +89,7 @@ public class IntrospectionIT {
 	void test__datatype_withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification
-		MyQueryType queryType = new MyQueryType(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
 		List<Character> ret = queryType.withoutParameters(" {id __typename}");

@@ -3,8 +3,8 @@ package org.allGraphQLCases.server.impl;
 import java.util.List;
 import java.util.UUID;
 
-import org.allGraphQLCases.server.DataFetchersDelegateNode;
 import org.allGraphQLCases.server.Node;
+import org.allGraphQLCases.server.util.DataFetchersDelegateNode;
 import org.springframework.stereotype.Component;
 
 @Component

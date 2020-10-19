@@ -11,13 +11,13 @@ import org.allGraphQLCases.server.AllFieldCasesInterface;
 import org.allGraphQLCases.server.AllFieldCasesInterfaceType;
 import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
-import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCasesInterface;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanConnection;
 import org.allGraphQLCases.server.HumanEdge;
 import org.allGraphQLCases.server.PageInfo;
+import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesInterface;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 

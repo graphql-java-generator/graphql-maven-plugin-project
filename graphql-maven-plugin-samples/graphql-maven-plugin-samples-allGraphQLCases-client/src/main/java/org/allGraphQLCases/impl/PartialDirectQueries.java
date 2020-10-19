@@ -6,16 +6,16 @@ import java.util.List;
 import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
-import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -27,8 +27,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public class PartialDirectQueries implements PartialQueries {
 
-	final MyQueryType queryType;
-	final AnotherMutationType mutationType;
+	final MyQueryTypeExecutor queryType;
+	final AnotherMutationTypeExecutor mutationType;
 
 	/**
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
@@ -39,8 +39,8 @@ public class PartialDirectQueries implements PartialQueries {
 	 *            the https URI for the GraphQL endpoint
 	 */
 	public PartialDirectQueries(String graphqlEndpoint) {
-		queryType = new MyQueryType(graphqlEndpoint);
-		mutationType = new AnotherMutationType(graphqlEndpoint);
+		queryType = new MyQueryTypeExecutor(graphqlEndpoint);
+		mutationType = new AnotherMutationTypeExecutor(graphqlEndpoint);
 	}
 
 	@Override

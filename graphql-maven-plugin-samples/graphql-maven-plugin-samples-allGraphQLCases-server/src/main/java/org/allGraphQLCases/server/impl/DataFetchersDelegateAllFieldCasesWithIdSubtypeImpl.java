@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
-import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCasesWithIdSubtype;
+import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesWithIdSubtype;
 import org.springframework.stereotype.Component;
 
 @Component

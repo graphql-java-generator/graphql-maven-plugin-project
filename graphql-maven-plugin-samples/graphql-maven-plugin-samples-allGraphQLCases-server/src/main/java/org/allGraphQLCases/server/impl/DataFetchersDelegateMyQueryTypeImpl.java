@@ -12,7 +12,6 @@ import org.allGraphQLCases.server.AnyCharacter;
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.CharacterConnection;
 import org.allGraphQLCases.server.CharacterInput;
-import org.allGraphQLCases.server.DataFetchersDelegateMyQueryType;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.DroidInput;
 import org.allGraphQLCases.server.Episode;
@@ -22,6 +21,7 @@ import org.allGraphQLCases.server.HumanInput;
 import org.allGraphQLCases.server.MyQueryType;
 import org.allGraphQLCases.server._break;
 import org.allGraphQLCases.server._extends;
+import org.allGraphQLCases.server.util.DataFetchersDelegateMyQueryType;
 import org.springframework.stereotype.Component;
 
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
