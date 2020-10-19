@@ -19,7 +19,7 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>graphql</goal>
+							<goal>generateServerCode</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -28,7 +28,6 @@
 						the XxxEdge and XxxConnection interfaces or objects), for fields marked with the @RelatConnection directive. See the documentation 
 						for more information -->
 					<addRelayConnections>true</addRelayConnections>
-					<mode>server</mode>
 					<packageName>org.allGraphQLCases.server</packageName>
 					<customScalars>
 						<customScalar>

@@ -106,7 +106,7 @@ class CodeGeneratorTest {
 		pluginConfiguration.mode = PluginMode.client;
 
 		ObjectType object1 = new ObjectType("O1", pluginConfiguration);
-		// ObjectType object2 = new ObjectType("O2", pluginConfiguration);
+		// ObjectType object2 = new ObjectType("O2", configuration);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 		// objects.add(object2);
@@ -134,7 +134,7 @@ class CodeGeneratorTest {
 		verify(mockedTemplate, times(1)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
 		assertEquals(pluginConfiguration.getPackageName(),
-				((GraphQLConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
+				((GraphQLConfiguration) argumentContext.getValue().get("configuration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
@@ -183,7 +183,7 @@ class CodeGeneratorTest {
 		verify(mockedTemplate, times(1)).merge(argumentContext.capture(), any(Writer.class));
 		// We have the Context sent to the Template.merge(..) method. Let's check its content
 		assertEquals(pluginConfiguration.getPackageName(),
-				((GraphQLConfiguration) argumentContext.getValue().get("pluginConfiguration")).getPackageName(),
+				((GraphQLConfiguration) argumentContext.getValue().get("configuration")).getPackageName(),
 				"Context: checks the package");
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");

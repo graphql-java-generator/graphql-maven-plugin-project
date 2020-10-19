@@ -9,8 +9,8 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.Error;
 
-#if(${pluginConfiguration.separateUtilityClasses})
-import ${pluginConfiguration.packageName}.${object.classSimpleName};
+#if(${configuration.separateUtilityClasses})
+import ${configuration.packageName}.${object.classSimpleName};
 #end
 
 public class ${object.classSimpleName}RootResponse {

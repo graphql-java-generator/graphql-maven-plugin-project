@@ -32,8 +32,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
-import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -83,7 +83,8 @@ public class GenerateCodeGenerator {
 	}
 
 	/**
-	 * Execution of the code generation. The generation is done on the data build by the {@link #generateCodeDocumentParser}
+	 * Execution of the code generation. The generation is done on the data build by the
+	 * {@link #generateCodeDocumentParser}
 	 * 
 	 * @Return The number of generated classes
 	 * @throws MojoExecutionException
@@ -95,14 +96,14 @@ public class GenerateCodeGenerator {
 
 		int i = 0;
 		configuration.getLog().debug("Generating objects");
-		i += generateTargetFiles(generateCodeDocumentParser.getObjectTypes(), "object", resolveTemplate(CodeTemplate.OBJECT),
-				false);
+		i += generateTargetFiles(generateCodeDocumentParser.getObjectTypes(), "object",
+				resolveTemplate(CodeTemplate.OBJECT), false);
 		configuration.getLog().debug("Generating interfaces");
 		i += generateTargetFiles(generateCodeDocumentParser.getInterfaceTypes(), "interface",
 				resolveTemplate(CodeTemplate.INTERFACE), false);
 		configuration.getLog().debug("Generating unions");
-		i += generateTargetFiles(generateCodeDocumentParser.getUnionTypes(), "union", resolveTemplate(CodeTemplate.UNION),
-				false);
+		i += generateTargetFiles(generateCodeDocumentParser.getUnionTypes(), "union",
+				resolveTemplate(CodeTemplate.UNION), false);
 		configuration.getLog().debug("Generating enums");
 		i += generateTargetFiles(generateCodeDocumentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM),
 				false);
@@ -116,7 +117,7 @@ public class GenerateCodeGenerator {
 			configuration.getLog().debug("Starting client specific code generation");
 
 			// Generation of the query/mutation/subscription classes
-			if (((GenerateServerCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
+			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
 				configuration.getLog().debug("Generating query");
 				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "query",
@@ -141,7 +142,7 @@ public class GenerateCodeGenerator {
 					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
-			if (((GenerateServerCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
+			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				configuration.getLog().debug("Generating query response");
 				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
@@ -185,7 +186,7 @@ public class GenerateCodeGenerator {
 
 			//
 			// Now useless? (to be confirmed after the first successful full build)
-			// pluginConfiguration.getLog().debug("Generating query target files");
+			// configuration.getLog().debug("Generating query target files");
 			// i += generateQueryTargetType();
 
 			break;
@@ -415,10 +416,9 @@ public class GenerateCodeGenerator {
 	 * @return
 	 */
 	File getJavaFile(String simpleClassname, boolean utilityClass) {
-		String packageName = (utilityClass
-				&& ((GenerateServerCodeConfiguration) configuration).isSeparateUtilityClasses())
-						? generateCodeDocumentParser.getUtilPackageName()
-						: configuration.getPackageName();
+		String packageName = (utilityClass && configuration.isSeparateUtilityClasses())
+				? generateCodeDocumentParser.getUtilPackageName()
+				: configuration.getPackageName();
 		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java";
 		File file = new File(configuration.getTargetSourceFolder(), relativePath);
 		file.getParentFile().mkdirs();
@@ -472,7 +472,7 @@ public class GenerateCodeGenerator {
 	 */
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
-		context.put("pluginConfiguration", configuration);
+		context.put("configuration", configuration);
 		// Velocity can't access to enum values. So we add it into the context
 		context.put("isPluginModeClient", configuration.getMode() == PluginMode.client);
 
@@ -497,8 +497,7 @@ public class GenerateCodeGenerator {
 			// Let's calculate the list of imports of all the GraphQL schema object, input types, interfaces and unions,
 			// that must be imported in the utility classes
 			final String utilityPackage = configuration.getPackageName()
-					+ (((GenerateServerCodeConfiguration) configuration).isSeparateUtilityClasses()
-							? ("." + GenerateCodeDocumentParser.UTIL_PACKAGE_NAME)
+					+ ((configuration.isSeparateUtilityClasses()) ? ("." + GenerateCodeDocumentParser.UTIL_PACKAGE_NAME)
 							: "");
 			generateCodeDocumentParser.types.values().parallelStream().forEach(o -> {
 				if (o instanceof ScalarType) {

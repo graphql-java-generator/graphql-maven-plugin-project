@@ -98,11 +98,6 @@ public class GenerateServerCodeConfigurationImpl implements GenerateServerCodeCo
 	}
 
 	@Override
-	public boolean isGenerateDeprecatedRequestResponse() {
-		return mojo.generateDeprecatedRequestResponse;
-	}
-
-	@Override
 	public boolean isGenerateJPAAnnotation() {
 		return mojo.generateJPAAnnotation;
 	}

@@ -19,8 +19,10 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
@@ -46,7 +48,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 	GenerateCodeDocumentParser documentParser;
 
 	@Autowired
-	GenerateCodeCommonConfiguration pluginConfiguration;
+	CommonConfiguration configuration;
 
 	/** The class where the content of the configuration file will be loaded */
 	SchemaPersonalization schemaPersonalization = null;
@@ -60,82 +62,88 @@ public class GenerateCodeJsonSchemaPersonalization {
 	 */
 	public void applySchemaPersonalization() {
 		try {
-			// First step: we load the schema personalization
-			if (getSchemaPersonalization() != null) {
+			if (!(configuration instanceof GenerateCodeCommonConfiguration)
+					|| !((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.server)) {
+				configuration.getLog().debug(
+						"The plugin configuration is not in server mode: no schema personalization is to be applied");
+			} else {
+				// First step: we load the schema personalization
+				if (getSchemaPersonalization() != null) {
 
-				// Then, we apply what has been loaded from the json file
-				for (EntityPersonalization objectPers : schemaPersonalization.getEntityPersonalizations()) {
-					ObjectType objectType = findObjectTypeFromName(objectPers.getName());
+					// Then, we apply what has been loaded from the json file
+					for (EntityPersonalization objectPers : schemaPersonalization.getEntityPersonalizations()) {
+						ObjectType objectType = findObjectTypeFromName(objectPers.getName());
 
-					// Should we add an annotation ?
-					if (objectPers.getAddAnnotation() != null) {
-						objectType.addAnnotation(objectPers.getAddAnnotation());
+						// Should we add an annotation ?
+						if (objectPers.getAddAnnotation() != null) {
+							objectType.addAnnotation(objectPers.getAddAnnotation());
+						}
+
+						// Should we replace the annotation ?
+						if (objectPers.getReplaceAnnotation() != null) {
+							objectType.addAnnotation(objectPers.getReplaceAnnotation(), true);
+						}
+
+						// Let's add all new fields
+						for (com.graphql_java_generator.plugin.schema_personalization.Field field : objectPers
+								.getNewFields()) {
+							// There must not be any field of that name in that object
+							if (checkIfFieldExists(objectType, field.getName())) {
+								throw new RuntimeException("The object " + objectType.getName()
+										+ " already has a field of name " + field.getName());
+							}
+							// Ok, we can add this new field
+							FieldImpl newField = FieldImpl.builder().documentParser(documentParser).build();
+							newField.setName(field.getName());
+							newField.setOwningType(objectType);
+							newField.setGraphQLTypeName(field.getType());
+							if (field.getId() != null) {
+								newField.setId(field.getId());
+							}
+							if (field.getList() != null) {
+								newField.setList(field.getList());
+							}
+							if (field.getMandatory() != null) {
+								newField.setMandatory(field.getMandatory());
+							}
+							if (field.getAddAnnotation() != null) {
+								newField.addAnnotation(field.getAddAnnotation());
+							}
+							if (field.getReplaceAnnotation() != null) {
+								// We replace the annotation, even if there was an addAnnotation in the json file
+								newField.addAnnotation(field.getReplaceAnnotation(), true);
+							}
+							objectType.getFields().add(newField);
+						} // for newFields
+
+						// Let's add personalize existing fields
+						for (com.graphql_java_generator.plugin.schema_personalization.Field field : objectPers
+								.getFieldPersonalizations()) {
+							// Ok, we can add the field to personalize. This will throw an exception if not found
+							FieldImpl existingField = (FieldImpl) findFieldFromName(objectType, field.getName());
+
+							existingField.setName(field.getName());
+							if (field.getType() != null) {
+								existingField.setGraphQLTypeName(field.getType());
+							}
+							if (field.getId() != null) {
+								existingField.setId(field.getId());
+							}
+							if (field.getList() != null) {
+								existingField.setList(field.getList());
+							}
+							if (field.getMandatory() != null) {
+								existingField.setMandatory(field.getMandatory());
+							}
+							if (field.getAddAnnotation() != null) {
+								existingField.addAnnotation(field.getAddAnnotation());
+							}
+							if (field.getReplaceAnnotation() != null) {
+								// We replace the annotation, even if there was an addAnnotation in the json file
+								existingField.addAnnotation(field.getReplaceAnnotation(), true);
+							}
+						} // for personalize existing fields
 					}
-
-					// Should we replace the annotation ?
-					if (objectPers.getReplaceAnnotation() != null) {
-						objectType.addAnnotation(objectPers.getReplaceAnnotation(), true);
-					}
-
-					// Let's add all new fields
-					for (com.graphql_java_generator.plugin.schema_personalization.Field field : objectPers
-							.getNewFields()) {
-						// There must not be any field of that name in that object
-						if (checkIfFieldExists(objectType, field.getName())) {
-							throw new RuntimeException("The object " + objectType.getName()
-									+ " already has a field of name " + field.getName());
-						}
-						// Ok, we can add this new field
-						FieldImpl newField = FieldImpl.builder().documentParser(documentParser).build();
-						newField.setName(field.getName());
-						newField.setOwningType(objectType);
-						newField.setGraphQLTypeName(field.getType());
-						if (field.getId() != null) {
-							newField.setId(field.getId());
-						}
-						if (field.getList() != null) {
-							newField.setList(field.getList());
-						}
-						if (field.getMandatory() != null) {
-							newField.setMandatory(field.getMandatory());
-						}
-						if (field.getAddAnnotation() != null) {
-							newField.addAnnotation(field.getAddAnnotation());
-						}
-						if (field.getReplaceAnnotation() != null) {
-							// We replace the annotation, even if there was an addAnnotation in the json file
-							newField.addAnnotation(field.getReplaceAnnotation(), true);
-						}
-						objectType.getFields().add(newField);
-					} // for newFields
-
-					// Let's add personalize existing fields
-					for (com.graphql_java_generator.plugin.schema_personalization.Field field : objectPers
-							.getFieldPersonalizations()) {
-						// Ok, we can add the field to personalize. This will throw an exception if not found
-						FieldImpl existingField = (FieldImpl) findFieldFromName(objectType, field.getName());
-
-						existingField.setName(field.getName());
-						if (field.getType() != null) {
-							existingField.setGraphQLTypeName(field.getType());
-						}
-						if (field.getId() != null) {
-							existingField.setId(field.getId());
-						}
-						if (field.getList() != null) {
-							existingField.setList(field.getList());
-						}
-						if (field.getMandatory() != null) {
-							existingField.setMandatory(field.getMandatory());
-						}
-						if (field.getAddAnnotation() != null) {
-							existingField.addAnnotation(field.getAddAnnotation());
-						}
-						if (field.getReplaceAnnotation() != null) {
-							// We replace the annotation, even if there was an addAnnotation in the json file
-							existingField.addAnnotation(field.getReplaceAnnotation(), true);
-						}
-					} // for personalize existing fields
 				}
 			}
 		} catch (IOException | URISyntaxException e) {
@@ -170,7 +178,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 	 */
 	public SchemaPersonalization loadGraphQLSchemaPersonalization() throws IOException, URISyntaxException {
 
-		if (((GenerateServerCodeConfiguration) pluginConfiguration).getSchemaPersonalizationFile() == null) {
+		if (((GenerateServerCodeConfiguration) configuration).getSchemaPersonalizationFile() == null) {
 			return null;
 		} else {
 
@@ -185,24 +193,24 @@ public class GenerateCodeJsonSchemaPersonalization {
 			nbErrors = 0;
 			try (JsonReader reader = service.createReader(
 					new FileInputStream(
-							((GenerateServerCodeConfiguration) pluginConfiguration).getSchemaPersonalizationFile()),
+							((GenerateServerCodeConfiguration) configuration).getSchemaPersonalizationFile()),
 					schema, handler)) {
 				// JsonValue value =
 				reader.readValue();
 				// Do something useful here
 			}
 			if (nbErrors > 0) {
-				throw new RuntimeException("The json file '" + ((GenerateServerCodeConfiguration) pluginConfiguration)
+				throw new RuntimeException("The json file '" + ((GenerateServerCodeConfiguration) configuration)
 						.getSchemaPersonalizationFile().getAbsolutePath() + "' is invalid. See the logs for details");
 			}
 
 			// Let's read the flow definition
-			pluginConfiguration.getLog().info("Loading file " + ((GenerateServerCodeConfiguration) pluginConfiguration)
+			configuration.getLog().info("Loading file " + ((GenerateServerCodeConfiguration) configuration)
 					.getSchemaPersonalizationFile().getAbsolutePath());
 			ObjectMapper objectMapper = new ObjectMapper();
 			SchemaPersonalization ret;
 			try (InputStream isFlowJson = new FileInputStream(
-					((GenerateServerCodeConfiguration) pluginConfiguration).getSchemaPersonalizationFile())) {
+					((GenerateServerCodeConfiguration) configuration).getSchemaPersonalizationFile())) {
 				ret = objectMapper.readValue(isFlowJson, SchemaPersonalization.class);
 			}
 			return ret;
@@ -210,7 +218,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 	}// loadFlow
 
 	public void logParsingError(String error) {
-		pluginConfiguration.getLog().error(error);
+		configuration.getLog().error(error);
 		nbErrors += 1;
 	}
 

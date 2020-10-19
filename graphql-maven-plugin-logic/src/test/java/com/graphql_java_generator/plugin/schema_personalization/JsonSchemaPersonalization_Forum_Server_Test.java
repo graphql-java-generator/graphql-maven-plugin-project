@@ -63,7 +63,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 		((GraphQLConfigurationTestHelper) pluginConfiguration).schemaPersonalizationFile = new File(
 				mavenTestHelper.getModulePathFile(), "src/test/resources/schema_personalization/forum_OK.json");
 
-		jsonSchemaPersonalization.pluginConfiguration = pluginConfiguration;
+		jsonSchemaPersonalization.configuration = pluginConfiguration;
 
 		// Go, go, go
 		documentParser.parseDocuments();

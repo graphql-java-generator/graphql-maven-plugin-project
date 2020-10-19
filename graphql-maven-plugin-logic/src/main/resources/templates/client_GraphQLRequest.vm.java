@@ -19,16 +19,16 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 ## When seperateUtilityClasses is set to true, the current class is generated in the util subpackage.
 ## So we need to import the object.classSimpleName
-#if(${pluginConfiguration.separateUtilityClasses})
+#if(${configuration.separateUtilityClasses})
 // Utility classes are generated in the util subpackage. We need to import the ${object.classSimpleName} from the 'main' package
 #if ($query)
-import ${pluginConfiguration.packageName}.${query.name};
+import ${configuration.packageName}.${query.name};
 #end
 #if ($mutation)
-import ${pluginConfiguration.packageName}.${mutation.name};
+import ${configuration.packageName}.${mutation.name};
 #end
 #if ($subscription)
-import ${pluginConfiguration.packageName}.${subscription.name};
+import ${configuration.packageName}.${subscription.name};
 #end
 #end
 
@@ -95,9 +95,9 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${query.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end execQuery(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public ${query.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end execQuery(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		logExecution(RequestType.mutation, parameters);
-		return exec(${query.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end.class, parameters);
+		return exec(${query.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end.class, parameters);
 	}
 
 	/**
@@ -134,8 +134,8 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${query.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(${query.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	public ${query.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
+		return exec(${query.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 #end
@@ -175,10 +175,10 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${mutation.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end execMutation(Map<String, Object> parameters)
+	public ${mutation.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end execMutation(Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		logExecution(RequestType.mutation, parameters);
-		return exec(${mutation.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end.class, parameters);
+		return exec(${mutation.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end.class, parameters);
 	}
 
 	/**
@@ -215,8 +215,8 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${mutation.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
-		return exec(${mutation.name}#if(${pluginConfiguration.generateDeprecatedRequestResponse})Response#end.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	public ${mutation.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
+		return exec(${mutation.name}#if(${configuration.generateDeprecatedRequestResponse})Response#end.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
 #end
@@ -374,7 +374,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 * @return
 	 */
 	protected String getGraphQLClassesPackageName() {
-		return "${pluginConfiguration.packageName}";
+		return "${configuration.packageName}";
 	}
 
 	@Override

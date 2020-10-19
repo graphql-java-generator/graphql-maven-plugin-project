@@ -31,7 +31,7 @@ class JsonSchemaPersonalizationTest {
 				"src/test/resources/schema_personalization/complete.json");
 
 		jsonSchemaPersonalization = new GenerateCodeJsonSchemaPersonalization();
-		jsonSchemaPersonalization.pluginConfiguration = pluginConfigurationTestHelper;
+		jsonSchemaPersonalization.configuration = pluginConfigurationTestHelper;
 	}
 
 	@Test

@@ -33,6 +33,11 @@ public class GenerateClientCodeConfigurationImpl implements GenerateClientCodeCo
 	}
 
 	@Override
+	public boolean isGenerateDeprecatedRequestResponse() {
+		return mojo.generateDeprecatedRequestResponse;
+	}
+
+	@Override
 	public Logger getLog() {
 		if (log == null) {
 			log = new MavenLogger(mojo);
