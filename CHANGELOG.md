@@ -1,6 +1,8 @@
 # Note for the future 2.x versions
 
-New developments that use __graphql goal/task__ should use the parameters below, to be compliant with default values of the 2.0 version:
+New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
+Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
+Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
 * copyRuntimeSources: false
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
@@ -11,8 +13,8 @@ Both modes (client and server):
 * Changes in goal(maven)/task(gradle) names, to make them clear and homogeneous between the gradle and the maven plugin:
     * The _graphql_ maven goal (and _graphqlGenerateCode_ gradle task) are deprecated, but they will be maintained in future 2.x versions
     * The goal(maven)/task(gradle) are now:
-        * __generateClientCode__ : same as the deprecated _graphql_ maven goal (or _graphqlGenerateCode_ gradle task), with _mode_ forced to _client_.
-        * __generateServerCode__ : same as the deprecated _graphql_ maven goal (or _graphqlGenerateCode_ gradle task), with _mode_ forced to _server_.
+        * __generateClientCode__ : same as the deprecated _graphql_ maven goal (or _graphqlGenerateCode_ gradle task), with the _mode_ parameter removed (it is internally forced to _client_).
+        * __generateServerCode__ : same as the deprecated _graphql_ maven goal (or _graphqlGenerateCode_ gradle task), with the _mode_ parameter removed (it is forced to _server_).
         * __generateGraphQLSchema__ : new, see below
         * __graphql__ (maven) / ___graphqlGenerateCode__ (gradle) : deprecated and maintained. Maps to the new _generateClientCode_ and _generateServerCode_ goal/task, depending on the value of the _mode_ plugin parameter.  
 * New _generateGraphQLSchema_ goal/task that allows to generate the GraphQL schema file. It's interesting when:
