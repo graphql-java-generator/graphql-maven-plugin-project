@@ -3,7 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * [WIP] Adding the relay connection capabilities (almost done).
-* Set separateUtilityClasses to true in samples-allGraphQLCases-client and samples-allGraphQLCases-server
+* Add a parameter to choose the ID java type, in server mode
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
 * Switch to apache 2.0 licence
 * Optimize the build time of the plugin logic module 

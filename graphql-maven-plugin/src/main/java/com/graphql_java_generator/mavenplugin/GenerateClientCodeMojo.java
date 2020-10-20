@@ -21,20 +21,17 @@ import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 import graphql.ThreadSafe;
 
 /**
- * The <I>graphql</I> goal generates the java code from one or more GraphQL schemas. It allows to work in Java with
- * graphQL, in a schema first approach.<BR/>
- * It has two main modes:
- * <UL>
- * <LI><B>client mode:</B> it generates a class for each query, mutation and subscription type. These classes contain
- * the methods to call the queries, mutations and subscriptions. That is: to execute a query against the GraphQL server,
- * you just have to call one of this method. It also generates the POJOs from the GraphQL schema. The <B>GraphQL
- * response is stored in these POJOs</B>, for an easy and standard use in Java.</LI>
- * <LI><B>server mode:</B> it generates the whole heart of the GraphQL server. The developer has only to develop request
- * to the data. That is the main method (in a jar project) or the main servler (in a war project), and all the Spring
- * wiring, based on graphql-java-spring, itself being build on top of graphql-java. It also generates the POJOs. An
- * option allows to annotate them with the standard JPA annotations, to make it easy to link with a database. This goal
- * generates the interfaces for the DataFetchersDelegate (often named providers) that the server needs to implement</LI>
- * </UL>
+ * The <I>generateClientCode</I> Maven goal (and Gradle task) generates the java code from one or more GraphQL schemas.
+ * It allows to work in Java with graphQL, in a schema first approach.<BR/>
+ * It generates a class for each query, mutation and subscription type. These classes contain the methods to call the
+ * queries, mutations and subscriptions. That is: to execute a query against the GraphQL server, you just have to call
+ * one of these methods. It also generates the POJOs from the GraphQL schema. The <B>GraphQL response is stored in these
+ * POJOs</B>, for an easy and standard use in Java. <BR/>
+ * <BR/>
+ * You'll find more info in the tutorials: take a look at the
+ * <A HREF="https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-client">Maven client tutorial</A> or
+ * the <A HREF="https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client">Gradle client
+ * tutorial</A>
  * 
  * @author etienne-sf
  */
