@@ -5,11 +5,11 @@ package graphql.mavenplugin_notscannedbyspring;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
-
-import com.graphql_java_generator.plugin.conf.PluginMode;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+
+import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**
  * The Spring configuration used for JUnit tests
@@ -22,7 +22,12 @@ import org.springframework.context.annotation.FilterType;
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*") })
 public class StarWars_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
-	public StarWars_Client_SpringConfiguration() {
-		super("starWarsSchema.graphqls", PluginMode.client, null, null, false);
+	@Override
+	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
+		configuration.schemaFilePattern = "starWarsSchema.graphqls";
+		configuration.mode = PluginMode.client;
+		configuration.schemaPersonalizationFile = null;
+		configuration.customScalars = null;
+		configuration.separateUtilityClasses = false;
 	}
 }

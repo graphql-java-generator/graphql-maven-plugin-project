@@ -13,6 +13,7 @@ import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**
  * The Spring configuration used for JUnit tests
@@ -52,7 +53,12 @@ public class Shopify_Client_SpringConfiguration extends AbstractSpringConfigurat
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 	}
 
-	public Shopify_Client_SpringConfiguration() {
-		super("shopify.graphqls", PluginMode.client, null, customScalars, true);
+	@Override
+	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
+		configuration.schemaFilePattern = "shopify.graphqls";
+		configuration.mode = PluginMode.client;
+		configuration.schemaPersonalizationFile = null;
+		configuration.customScalars = customScalars;
+		configuration.separateUtilityClasses = true;
 	}
 }

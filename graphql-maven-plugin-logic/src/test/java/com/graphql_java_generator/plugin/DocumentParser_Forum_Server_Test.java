@@ -99,7 +99,7 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals("@Entity\n@GraphQLObjectType(\"Topic\")", topic.getAnnotation(), "Entity annotation");
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", list = false, javaClass = UUID.class)");
+				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", list = false, javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
 				"@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", list = false, javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",

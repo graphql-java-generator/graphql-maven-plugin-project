@@ -31,13 +31,6 @@ import graphql.parser.Parser;
 public abstract class AbstractSpringConfiguration {
 
 	public final static String ROOT_UNIT_TEST_FOLDER = "target/junittest_merge/";
-	public final static String ENCODING = "UTF-8";
-
-	private boolean addRelayConnections;
-	private String schemaFileFolder = "src/test/resources";
-	private String schemaFilePattern;
-	private String targetFolder;
-	private String targetSchemaFileName;
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
@@ -57,28 +50,27 @@ public abstract class AbstractSpringConfiguration {
 		}
 	}
 
-	protected AbstractSpringConfiguration(String schemaFileFolder, String schemaFilePattern, String schemaFileName,
-			String targetFolder, boolean addRelayConnections) {
-		this.addRelayConnections = addRelayConnections;
-		this.schemaFileFolder = schemaFileFolder;
-		this.schemaFilePattern = schemaFilePattern;
-		this.targetSchemaFileName = schemaFileName;
-		this.targetFolder = targetFolder;
+	protected File getRootUnitTestFolder() {
+		return new File(mavenTestHelper.getModulePathFile(), ROOT_UNIT_TEST_FOLDER);
 	}
 
 	@Bean
 	GenerateGraphQLSchemaConfigurationTestHelper graphQLConfigurationTestHelper() {
 		GenerateGraphQLSchemaConfigurationTestHelper configuration = new GenerateGraphQLSchemaConfigurationTestHelper(
 				this);
-		configuration.addRelayConnections = addRelayConnections;
-		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), schemaFileFolder);
-		configuration.schemaFilePattern = schemaFilePattern;
-		configuration.targetSchemaFileName = targetSchemaFileName;
-		configuration.resourceEncoding = ENCODING;
-		File rootTargetFolder = new File(mavenTestHelper.getModulePathFile(), ROOT_UNIT_TEST_FOLDER);
-		configuration.targetFolder = new File(rootTargetFolder, targetFolder);
+
+		// Let's update what"s specific to the current test case
+		addSpecificConfigurationParameterValue(configuration);
+
 		return configuration;
 	}
+
+	/**
+	 * Allows the concrete subclasses to supersede the default configuration values to values specific to the current
+	 * test case
+	 */
+	protected abstract void addSpecificConfigurationParameterValue(
+			GenerateGraphQLSchemaConfigurationTestHelper configuration);
 
 	/**
 	 * Loads the schema from the graphqls files. This method uses the {@link GraphQLJavaToolsAutoConfiguration} from the

@@ -61,9 +61,7 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 
 	protected CodeTemplateScope codeTemplateScope;
 
-	protected AbstractCustomTemplatesSpringConfiguration(String schemaFilePattern, PluginMode mode,
-			List<CustomScalarDefinition> customScalars) {
-		super(schemaFilePattern, mode, null, customScalars, false);
+	protected AbstractCustomTemplatesSpringConfiguration(PluginMode mode) {
 		this.codeTemplateScope = mode == PluginMode.client ? CodeTemplateScope.CLIENT : CodeTemplateScope.SERVER;
 		copyAndCustomizeTemplates();
 	}

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**
  * The Spring configuration used for JUnit tests
@@ -38,7 +39,12 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 				"graphql.scalars.ExtendedScalars.NonNegativeInt", null));
 	}
 
-	public AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses() {
-		super("allGraphQLCases*.graphqls", PluginMode.server, null, customScalars, true);
+	@Override
+	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
+		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
+		configuration.mode = PluginMode.server;
+		configuration.schemaPersonalizationFile = null;
+		configuration.customScalars = customScalars;
+		configuration.separateUtilityClasses = true;
 	}
 }

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
@@ -46,7 +47,12 @@ public class Github_Client_SpringConfiguration extends AbstractSpringConfigurati
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 	}
 
-	public Github_Client_SpringConfiguration() {
-		super("github.schema.public.graphqls", PluginMode.client, null, customScalars, true);
+	@Override
+	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
+		configuration.schemaFilePattern = "github.schema.public.graphqls";
+		configuration.mode = PluginMode.client;
+		configuration.schemaPersonalizationFile = null;
+		configuration.customScalars = customScalars;
+		configuration.separateUtilityClasses = true;
 	}
 }

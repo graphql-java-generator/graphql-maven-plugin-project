@@ -2,11 +2,11 @@ package graphql.mavenplugin_notscannedbyspring;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
-
-import com.graphql_java_generator.plugin.conf.PluginMode;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+
+import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**
  * Spring configuration for {@link CustomTemplatesClientTest} integration test Extends
@@ -21,8 +21,17 @@ import org.springframework.context.annotation.FilterType;
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*") })
 public class CustomTemplates_Client_SpringConfiguration extends AbstractCustomTemplatesSpringConfiguration {
 
-	public CustomTemplates_Client_SpringConfiguration() {
-		super("allGraphQLCases.graphqls", PluginMode.client, customScalars);
+	protected CustomTemplates_Client_SpringConfiguration() {
+		super(PluginMode.client);
 	}
 
+	@Override
+	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
+		configuration.schemaFilePattern = "allGraphQLCases.graphqls";
+		configuration.mode = PluginMode.client;
+		configuration.schemaPersonalizationFile = null;
+		configuration.customScalars = customScalars;
+		configuration.separateUtilityClasses = false;
+
+	}
 }

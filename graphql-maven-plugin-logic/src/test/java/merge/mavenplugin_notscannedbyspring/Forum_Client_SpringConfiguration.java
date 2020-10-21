@@ -3,10 +3,14 @@
  */
 package merge.mavenplugin_notscannedbyspring;
 
+import java.io.File;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+
+import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 
 /**
  * The Spring configuration used for JUnit tests
@@ -20,7 +24,12 @@ import org.springframework.context.annotation.FilterType;
 		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
 public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
-	public Forum_Client_SpringConfiguration() {
-		super("src/test/resources", "forum.graphqls", "forum.graphqls", "forum", false);
+	@Override
+	protected void addSpecificConfigurationParameterValue(GenerateGraphQLSchemaConfigurationTestHelper configuration) {
+		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), "src/test/resources");
+		configuration.schemaFilePattern = "forum.graphqls";
+		configuration.targetSchemaFileName = "forum.graphqls";
+		configuration.targetFolder = new File(getRootUnitTestFolder(), "forum");
+		configuration.addRelayConnections = false;
 	}
 }

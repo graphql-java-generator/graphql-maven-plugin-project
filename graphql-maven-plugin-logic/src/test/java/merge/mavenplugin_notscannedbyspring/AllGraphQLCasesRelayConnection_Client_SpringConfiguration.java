@@ -3,10 +3,14 @@
  */
 package merge.mavenplugin_notscannedbyspring;
 
+import java.io.File;
+
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+
+import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 
 /**
  * The Spring configuration used for JUnit tests
@@ -20,8 +24,12 @@ import org.springframework.context.annotation.FilterType;
 		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
 public class AllGraphQLCasesRelayConnection_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
-	public AllGraphQLCasesRelayConnection_Client_SpringConfiguration() {
-		super("src/test/resources", "RelayCompliant_allGraphQLCases*.graphqls",
-				"RelayCompliant_allGraphQLCases.graphqls", "allGraphQLCases", false);
+	@Override
+	protected void addSpecificConfigurationParameterValue(GenerateGraphQLSchemaConfigurationTestHelper configuration) {
+		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(), "src/test/resources");
+		configuration.schemaFilePattern = "RelayCompliant_allGraphQLCases*.graphqls";
+		configuration.targetSchemaFileName = "RelayCompliant_allGraphQLCases.graphqls";
+		configuration.targetFolder = new File(getRootUnitTestFolder(), "allGraphQLCases");
+		configuration.addRelayConnections = false;
 	}
 }

@@ -25,7 +25,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	public String packageName = "my.test.package";
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
-	public String resourceEncoding = null;
+	public String resourceEncoding = "UTF-8";
 	public File targetFolder = null;
 	public String targetSchemaFileName = null;
 	public Map<String, String> templates = new HashMap<String, String>();

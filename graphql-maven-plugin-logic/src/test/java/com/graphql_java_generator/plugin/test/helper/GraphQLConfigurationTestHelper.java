@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.Packaging;
@@ -32,6 +33,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
 	public boolean generateDeprecatedRequestResponse = true;
 	public boolean generateJPAAnnotation = true;
+	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
 	public Packaging packaging = null;
@@ -40,7 +42,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
 	public boolean separateUtilityClasses = false;
-	public String sourceEncoding = null;
+	public String sourceEncoding = "UTF-8";
 	public File targetClassFolder = null;
 	public File targetSourceFolder = null;
 	public Map<String, String> templates = new HashMap<String, String>();
