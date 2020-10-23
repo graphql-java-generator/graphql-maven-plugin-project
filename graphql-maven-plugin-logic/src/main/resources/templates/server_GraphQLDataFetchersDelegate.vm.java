@@ -4,7 +4,6 @@ package ${packageUtilName};
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.DataLoader;
@@ -36,8 +35,8 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 * <PRE>
 	 * @Override
 	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader, Human origin) {
-	 *     List<UUID> friendIds = origin.getFriendIds();
-	 *     DataLoader<UUID, CharacterImpl> dataLoader = environment.getDataLoader("Character");
+	 *     List<${configuration.javaTypeForIDType}> friendIds = origin.getFriendIds();
+	 *     DataLoader<${configuration.javaTypeForIDType}, CharacterImpl> dataLoader = environment.getDataLoader("Character");
 	 *     return dataLoader.loadMany(friendIds);
 	 * }
 	 * </PRE>

@@ -138,7 +138,7 @@ public class GraphQLDataFetchers {
 	public DataFetcher<Topic> dataFetchersDelegateMutationTypeCreateTopic() {
 		return dataFetchingEnvironment -> {
 			TopicInput topic = (TopicInput) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("topic"),
-					"TopicInput", TopicInput.class);
+					"java.lang.String", "TopicInput", TopicInput.class);
 
 			Topic ret = null;
 			try {
@@ -159,7 +159,7 @@ public class GraphQLDataFetchers {
 	public DataFetcher<Post> dataFetchersDelegateMutationTypeCreatePost() {
 		return dataFetchingEnvironment -> {
 			PostInput post = (PostInput) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("post"),
-					"PostInput", PostInput.class);
+					"PostInput", "java.lang.String", PostInput.class);
 
 			Post ret = null;
 			try {
@@ -180,8 +180,8 @@ public class GraphQLDataFetchers {
 	public DataFetcher<List<Post>> dataFetchersDelegateMutationTypeCreatePosts() {
 		return dataFetchingEnvironment -> {
 			@SuppressWarnings("unchecked")
-			List<PostInput> spam = (List<PostInput>) graphqlUtils
-					.getInputObject(dataFetchingEnvironment.getArgument("spam"), "PostInput", PostInput.class);
+			List<PostInput> spam = (List<PostInput>) graphqlUtils.getInputObject(
+					dataFetchingEnvironment.getArgument("spam"), "PostInput", "java.lang.String", PostInput.class);
 
 			List<Post> ret = dataFetchersDelegateMutationType.createPosts(dataFetchingEnvironment, spam);
 			logger.debug("createPosts: {} found rows", (ret == null) ? 0 : ret.size());

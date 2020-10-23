@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
@@ -56,7 +55,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 	@Override
 	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<UUID, Member> dataLoader, Topic source) {
+			DataLoader<Long, Member> dataLoader, Topic source) {
 		return dataLoader.load(source.getAuthorId());
 	}
 
@@ -68,7 +67,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
-	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, UUID memberId,
+	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, Long memberId,
 			String memberName, Date since) {
 
 		logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
@@ -112,7 +111,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
-	public List<Topic> batchLoader(List<UUID> keys) {
+	public List<Topic> batchLoader(List<Long> keys) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
 	}

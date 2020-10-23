@@ -1,6 +1,9 @@
 
+-- This sequence allows Hibernate to generate id values, thanks to the @GeneratedValue annotation 
+CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 1000 INCREMENT BY 1;
+
 create table member (
-	id uuid not null,
+	id long not null,
 	name varchar(255) not null,
 	alias varchar(255),
 	email varchar(255) not null,
@@ -9,17 +12,17 @@ create table member (
 );
 
 create table board (
-	id uuid not null,
+	id long not null,
 	name varchar(255) not null,
 	publicly_available boolean,
 	primary key (id)
 );
 
 create table topic (
-	id uuid not null,
-	board_id uuid not null,
+	id long not null,
+	board_id long not null,
 	date datetime not null,
-	author_id uuid,
+	author_id long,
 	publicly_available boolean,
 	nb_posts int,
 	title varchar(255) not null,
@@ -28,10 +31,10 @@ create table topic (
 );
 
 create table post (
-	id uuid not null,
+	id long not null,
 	date datetime not null,
-	topic_id uuid not null,
-	author_id uuid,
+	topic_id long not null,
+	author_id long,
 	publicly_available boolean,
 	title varchar(255) not null,
 	content varchar(255) not null,

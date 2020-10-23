@@ -60,9 +60,9 @@ class SubscriptionIT {
 		// Preparation
 		PostSubscriptionCallback<Post> postSubscriptionCallback = new PostSubscriptionCallback<>();
 		Member author = new Member();
-		author.setId("00000000-0000-0000-0000-000000000012");
+		author.setId("12");
 		PostInput postInput = new PostInput();
-		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
+		postInput.setTopicId("22");
 		postInput.setInput(getTopicPostInput(author, "Some other content",
 				new GregorianCalendar(2020, 11 - 1, 21).getTime(), false, "The good title for a post"));
 

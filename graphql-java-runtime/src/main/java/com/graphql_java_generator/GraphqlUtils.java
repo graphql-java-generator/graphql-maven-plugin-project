@@ -272,6 +272,9 @@ public class GraphqlUtils {
 	 * @param graphQLTypeName
 	 *            The name of the GraphQL type, as defined in the GraphQL schema. This can be guessed from the given
 	 *            class for input types and objects, but not for scalars. So it must be provided.
+	 * @param javaTypeForIDType
+	 *            Value of the plugin parameter of the same name. This is necessary to properly manage fields of the ID
+	 *            GraphQL type, which must be transformed to this java type
 	 * @param clazz
 	 *            The class of the expected type. A new instance of this type will be returned, with its fields having
 	 *            been set by this method from the value in the map
@@ -279,14 +282,15 @@ public class GraphqlUtils {
 	 *         instance is returned, with all its fields are left empty
 	 */
 	@SuppressWarnings("unchecked")
-	public Object getInputObject(Object jsonParsedValue, String graphQLTypeName, Class<?> clazz) {
+	public Object getInputObject(Object jsonParsedValue, String graphQLTypeName, String javaTypeForIDType,
+			Class<?> clazz) {
 		if (jsonParsedValue == null) {
 			return null;
 		} else if (jsonParsedValue instanceof List<?>) {
 			// We've a list. Let's loop inside its items
 			List<Object> objects = new ArrayList<>();
 			for (Object o : (List<Object>) jsonParsedValue) {
-				objects.add(getInputObject(o, graphQLTypeName, clazz));
+				objects.add(getInputObject(o, graphQLTypeName, javaTypeForIDType, clazz));
 			}
 			return objects;
 		} else if (jsonParsedValue instanceof Map<?, ?>) {
@@ -318,9 +322,10 @@ public class GraphqlUtils {
 				Object value;
 
 				if (graphQLScalar != null) {
-					value = getInputObject(map.get(key), graphQLScalar.graphQLTypeName(), graphQLScalar.javaClass());
+					value = getInputObject(map.get(key), graphQLScalar.graphQLTypeName(), javaTypeForIDType,
+							graphQLScalar.javaClass());
 				} else if (graphQLNonScalar != null) {
-					value = getInputObject(map.get(key), graphQLNonScalar.graphQLTypeName(),
+					value = getInputObject(map.get(key), graphQLNonScalar.graphQLTypeName(), javaTypeForIDType,
 							graphQLNonScalar.javaClass());
 				} else {
 					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key
@@ -330,24 +335,57 @@ public class GraphqlUtils {
 				invokeMethod(setter, t, value);
 			}
 			return t;
-		} else {
-			// We have a scalar.
-			if (graphQLTypeName.equals("ID")) {
-				// ID are managed as UUID (we're on server side)
+		}
+		// We don't have a collection, so we have a single value to get
+		else if (clazz.isEnum()) {
+			if (!(jsonParsedValue instanceof String)) {
+				throw new RuntimeException("The " + clazz.getName() + " class is an enum, but the provided value is '"
+						+ jsonParsedValue + "' which should be a String, to be mapped to the relevant enum value");
+			}
+			// This object is a String, that we must map to its enum value
+			Method valueOf = graphqlUtils.getMethod("valueOf", clazz, String.class);
+			return graphqlUtils.invokeMethod(valueOf, null, (String) jsonParsedValue);
+		} else if (graphQLTypeName.equals("ID")) {
+			// ID is particular animal: it's by default managed as a UUID (we're on server side). And this can be
+			// overridden by the javaTypeForIDType plugin parameter.
+			// If the type is unknown, the String value is returned.
+			if (javaTypeForIDType == null || javaTypeForIDType.equals("")) {
 				return UUID.fromString((String) jsonParsedValue);
-			} else if (clazz.isEnum()) {
-				if (!(jsonParsedValue instanceof String)) {
-					throw new RuntimeException("The " + clazz.getName()
-							+ " class is an enum, but the provided value is '" + jsonParsedValue
-							+ "' which should be a String, to be mapped to the relevant enum value");
-				}
-				// This object is a String, that we must map to its enum value
-				Method valueOf = graphqlUtils.getMethod("valueOf", clazz, String.class);
-				return graphqlUtils.invokeMethod(valueOf, null, (String) jsonParsedValue);
-			} else {
+			} else if (javaTypeForIDType.equals("java.util.UUID")) {
+				return UUID.fromString((String) jsonParsedValue);
+			} else if (javaTypeForIDType.equals("java.lang.String")) {
 				return jsonParsedValue;
+			} else if (javaTypeForIDType.equals("java.lang.Long")) {
+				return Long.parseLong((String) jsonParsedValue);
+			} else {
+				throw new RuntimeException(
+						"Non managed value for the plugin parameter 'javaTypeForIDType': '" + javaTypeForIDType + "'");
+			}
+		} else if (clazz.isInstance(jsonParsedValue)) {
+			// The job is already done
+			return jsonParsedValue;
+		} else if (jsonParsedValue instanceof String) {
+			// If the given value is a String, let's try to map it to the target class
+			if (clazz == String.class) {
+				return jsonParsedValue;
+			} else if (clazz == UUID.class) {
+				return UUID.fromString((String) jsonParsedValue);
+			} else if (clazz == Boolean.class) {
+				return jsonParsedValue.equals("true");
+			} else if (clazz == Long.class) {
+				return Long.parseLong((String) jsonParsedValue);
+			} else if (clazz == Integer.class) {
+				return Integer.parseInt((String) jsonParsedValue);
+			} else if (clazz == Double.class) {
+				return Double.parseDouble((String) jsonParsedValue);
+			} else if (clazz == Float.class) {
+				return Float.parseFloat((String) jsonParsedValue);
 			}
 		}
+
+		// Too bad...
+		throw new RuntimeException("Can't transform the jsonParsedValue (" + jsonParsedValue.getClass().getName()
+				+ ") into a " + clazz.getName());
 	}
 
 	/**
@@ -684,8 +722,19 @@ public class GraphqlUtils {
 		try {
 			return method.invoke(o, args);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new RuntimeException("Error when executing the method '" + method.getName() + "' is missing in "
-					+ o.getClass().getName() + " class", e);
+			StringBuffer msg = new StringBuffer("Error when executing the method '");
+			msg.append(method.getName());
+			msg.append("(");
+			String separator = "";
+			for (Object arg : args) {
+				msg.append(separator);
+				separator = ",";
+				msg.append(arg.getClass().getName());
+			}
+			msg.append(")' is missing in ");
+			msg.append(o.getClass().getName());
+			msg.append(" class");
+			throw new RuntimeException(msg.toString(), e);
 		}
 	}
 

@@ -5,7 +5,6 @@ package org.forum.server.specific_code;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -47,7 +46,7 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 	}
 
 	@Override
-	public List<Board> batchLoader(List<UUID> keys) {
+	public List<Board> batchLoader(List<Long> keys) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return boardRepository.findByIds(keys);
 	}

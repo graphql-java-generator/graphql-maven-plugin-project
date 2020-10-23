@@ -5,7 +5,6 @@ package org.forum.server.specific_code;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
@@ -38,12 +37,12 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 
 	@Override
 	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<UUID, Member> dataLoader, Post source) {
+			DataLoader<Long, Member> dataLoader, Post source) {
 		return dataLoader.load(source.getAuthorId());
 	}
 
 	@Override
-	public List<Post> batchLoader(List<UUID> keys) {
+	public List<Post> batchLoader(List<Long> keys) {
 		logger.debug("Batch loading {} posts", keys.size());
 		return postRepository.findByIds(keys);
 	}

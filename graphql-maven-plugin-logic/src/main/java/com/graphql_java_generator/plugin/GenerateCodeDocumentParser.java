@@ -6,7 +6,6 @@ package com.graphql_java_generator.plugin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
@@ -136,7 +135,12 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		// Let's load the standard Scalar types
 		if (configuration.getMode().equals(PluginMode.server)) {
-			super.initScalarTypes(UUID.class);
+			try {
+				super.initScalarTypes(
+						Class.forName(((GenerateServerCodeConfiguration) configuration).getJavaTypeForIDType()));
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		} else {
 			// In client mode, ID type is managed as a String
 			super.initScalarTypes(String.class);
@@ -198,7 +202,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		// We're done
 		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
-		configuration.getPluginLogger().debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
+		configuration.getPluginLogger()
+				.debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
 
@@ -662,7 +667,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// First step : add the introspection queries into the existing query. If no query exists, one is created.s
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (queryType == null) {
-				configuration.getPluginLogger().debug("The source schema contains no query: creating an empty query type");
+				configuration.getPluginLogger()
+						.debug("The source schema contains no query: creating an empty query type");
 
 				// There was no query. We need to create one. It will contain only the Introspection Query
 				queryType = new ObjectType(DEFAULT_QUERY_NAME, configuration);

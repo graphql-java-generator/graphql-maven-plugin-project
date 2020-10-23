@@ -51,13 +51,13 @@ abstract class AbstractIT {
 		assertTrue(boards.size() >= 10, "10 boards at startup, then new ones are created by the tests");
 
 		Board board2 = boards.get(1); // Board names start by 1, not 0 as a lists
-		assertEquals("00000000-0000-0000-0000-000000000002", board2.getId());
+		assertEquals("2", board2.getId());
 		assertEquals("Board name 2", board2.getName());
 		assertEquals(false, board2.getPubliclyAvailable());
 		assertEquals(null, board2.getTopics());
 
 		Board board10 = boards.get(9); // Board names start by 1, not 0 as a lists
-		assertEquals("00000000-0000-0000-0000-000000000010", board10.getId());
+		assertEquals("10", board10.getId());
 		assertEquals("Board name 10", board10.getName());
 		assertEquals(true, board10.getPubliclyAvailable());
 		assertEquals(null, board10.getTopics());
@@ -77,13 +77,13 @@ abstract class AbstractIT {
 		assertTrue(boards.size() >= 10, "10 boards at startup, then new ones are created by the tests");
 
 		Board board2 = boards.get(1); // Board names start by 1, not 0 as a lists
-		assertEquals("00000000-0000-0000-0000-000000000002", board2.getId());
+		assertEquals("2", board2.getId());
 		assertEquals("Board name 2", board2.getName());
 		assertEquals(false, board2.getPubliclyAvailable());
 		assertEquals(2, board2.getTopics().size());
 
 		Board board10 = boards.get(9); // Board names start by 1, not 0 as a lists
-		assertEquals("00000000-0000-0000-0000-000000000010", board10.getId());
+		assertEquals("10", board10.getId());
 		assertEquals("Board name 10", board10.getName());
 		assertEquals(true, board10.getPubliclyAvailable());
 		assertEquals(1, board10.getTopics().size());
@@ -109,11 +109,11 @@ abstract class AbstractIT {
 		assertEquals(new GregorianCalendar(2018, 12 - 1, 20).getTime(), topic12.getDate());
 		assertEquals(12, (int) topic12.getNbPosts());
 		assertEquals("The title of <12>", topic12.getTitle());
-		assertEquals("00000000-0000-0000-0000-000000000012", topic12.getId());
+		assertEquals("12", topic12.getId());
 		//
 		Member author12 = topic12.getAuthor();// All its fields have been loaded
 		assertNotNull(author12);
-		assertEquals("00000000-0000-0000-0000-000000000012", author12.getId());
+		assertEquals("12", author12.getId());
 		assertEquals("Name 12", author12.getName());
 		assertEquals("Alias of Name 12", author12.getAlias());
 		assertEquals("name.12@graphql-java.com", author12.getEmail());
@@ -125,7 +125,7 @@ abstract class AbstractIT {
 		//
 		Post post232 = posts12.get(5);
 		assertEquals(new GregorianCalendar(2018, 05 - 1, 13).getTime(), post232.getDate());
-		assertEquals("00000000-0000-0000-0000-000000000232", post232.getId());
+		assertEquals("232", post232.getId());
 		assertEquals("The content of the post <232>", post232.getContent());
 		assertEquals(null, post232.getPubliclyAvailable()); // Not queried
 		assertEquals("The title of <232>", post232.getTitle());
@@ -262,9 +262,9 @@ abstract class AbstractIT {
 	void test_createPost() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		Member author = new Member();
-		author.setId("00000000-0000-0000-0000-000000000012");
+		author.setId("12");
 		PostInput postInput = new PostInput();
-		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
+		postInput.setTopicId("22");
 		postInput.setInput(getTopicPostInput(author, "Some other content",
 				new GregorianCalendar(1900, 11 - 1, 21).getTime(), false, "The good title for a post"));
 
@@ -283,9 +283,9 @@ abstract class AbstractIT {
 	void test_createPosts() {
 		// Preparation
 		Member author = new Member();
-		author.setId("00000000-0000-0000-0000-000000000012");
+		author.setId("12");
 		PostInput postInput = new PostInput();
-		postInput.setTopicId("00000000-0000-0000-0000-000000000022");
+		postInput.setTopicId("22");
 		postInput.setInput(getTopicPostInput(author, "Some other content",
 				new GregorianCalendar(1900, 11 - 1, 21).getTime(), false, "The good title for a post"));
 

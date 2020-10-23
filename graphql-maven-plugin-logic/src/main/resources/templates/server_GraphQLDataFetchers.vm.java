@@ -53,25 +53,11 @@ public class GraphQLDataFetchers {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)          
 ## $argument is an instance of Field
-#if ($argument.type.class.simpleName == "EnumType")
-#if ($argument.mandatory)
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.javaName}"));
-#else
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = null;
-			if (dataFetchingEnvironment.getArgument("${argument.name}") != null)
-				${argument.javaName} = ${argument.type.classSimpleName}.valueOf(dataFetchingEnvironment.getArgument("${argument.name}"));
-#end
-#elseif (${argument.type.inputType})
 #if(${argument.list})
 			@SuppressWarnings("unchecked")
-			List<${argument.type.classSimpleName}> ${argument.javaName} = (List<${argument.type.classSimpleName}>) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", ${argument.type.classSimpleName}.class);
+			List<${argument.type.classSimpleName}> ${argument.javaName} = (List<${argument.type.classSimpleName}>) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", "${configuration.javaTypeForIDType}", ${argument.type.classSimpleName}.class);
 #else
-			${argument.type.classSimpleName} ${argument.javaName} = (${argument.type.classSimpleName}) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", ${argument.type.classSimpleName}.class);
-#end
-#elseif (${argument.type.classSimpleName} == "UUID")
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = (dataFetchingEnvironment.getArgument("${argument.name}") == null) ? null : UUID.fromString(dataFetchingEnvironment.getArgument("${argument.name}"));
-#else
-			#if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end ${argument.javaName} = dataFetchingEnvironment.getArgument("${argument.name}");
+			${argument.type.classSimpleName} ${argument.javaName} = (${argument.type.classSimpleName}) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", "${configuration.javaTypeForIDType}", ${argument.type.classSimpleName}.class);
 #end
 #end  ##Foreach
 #if($dataFetcher.graphQLOriginType)

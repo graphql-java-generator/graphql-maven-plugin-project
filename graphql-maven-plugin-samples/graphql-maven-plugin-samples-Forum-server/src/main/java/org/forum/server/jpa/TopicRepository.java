@@ -5,7 +5,6 @@ package org.forum.server.jpa;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.forum.server.graphql.Topic;
 import org.springframework.data.jpa.repository.Query;
@@ -14,13 +13,13 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * @author etienne-sf
  */
-public interface TopicRepository extends CrudRepository<Topic, UUID>, FindTopicRepository {
+public interface TopicRepository extends CrudRepository<Topic, Long>, FindTopicRepository {
 
 	@Query(value = "select t from Topic t where t.boardId= ?1")
-	List<Topic> findByBoardId(UUID boardId);
+	List<Topic> findByBoardId(Long boardId);
 
 	@Query(value = "select t from Topic t where t.boardId= ?1 and t.date >= ?2")
-	List<Topic> findByBoardIdAndSince(UUID boardId, Date since);
+	List<Topic> findByBoardIdAndSince(Long boardId, Date since);
 
 	/**
 	 * An example of a native query that could be used for some particular case
@@ -38,5 +37,5 @@ public interface TopicRepository extends CrudRepository<Topic, UUID>, FindTopicR
 
 	/** The query for the BatchLoader */
 	@Query(value = "select t from Topic t where id in ?1")
-	List<Topic> findByIds(List<UUID> ids);
+	List<Topic> findByIds(List<Long> ids);
 }

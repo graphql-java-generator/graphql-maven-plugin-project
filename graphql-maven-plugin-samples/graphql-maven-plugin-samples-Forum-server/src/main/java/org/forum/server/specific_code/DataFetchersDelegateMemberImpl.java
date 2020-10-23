@@ -1,7 +1,6 @@
 package org.forum.server.specific_code;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -22,7 +21,7 @@ public class DataFetchersDelegateMemberImpl implements DataFetchersDelegateMembe
 	MemberRepository memberRepository;
 
 	@Override
-	public List<Member> batchLoader(List<UUID> keys) {
+	public List<Member> batchLoader(List<Long> keys) {
 		logger.debug("Batch loading {} members", keys.size());
 		return memberRepository.findByIds(keys);
 	}

@@ -32,6 +32,31 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 
 	/**
 	 * <P>
+	 * The <I>javaTypeForIDType</I> is the java class that is used in the generated code for GraphQL fields that are of
+	 * the GraphQL ID type. The default value is <I>java.util.UUID</I>. Valid values are: java.lang.String,
+	 * java.lang.Long and java.util.UUID.
+	 * </P>
+	 * <P>
+	 * This parameter is only valid for the server mode. When generating the client code, the ID is always generated as
+	 * a String type, as recommended in the GraphQL doc.
+	 * </P>
+	 * <P>
+	 * In other words: when in server mode and <I>javaTypeForIDType</I> is not set, all GraphQL ID fields are UUID
+	 * attributes in java. When in server mode and <I>javaTypeForIDType</I> is set to the X type, all GraphQL ID fields
+	 * are X attributes in java.<BR/>
+	 * Note: you can override this, by using the schema personalization capability. For more information, please have a
+	 * look at the
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
+	 * Personalization doc page</A>.
+	 * </P>
+	 * 
+	 * @return
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.javaTypeForIDType", defaultValue = GraphQLConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE)
+	public String javaTypeForIDType;
+
+	/**
+	 * <P>
 	 * (only for server mode) A comma separated list of package names, <B>without</B> double quotes, that will also be
 	 * parsed by Spring, to discover Spring beans, Spring repositories and JPA entities when the server starts. You
 	 * should use this parameter only for packages that are not subpackage of the package defined in the _packageName_
@@ -63,6 +88,11 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.schemaPersonalizationFile", defaultValue = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE)
 	String schemaPersonalizationFile;
+
+	@Override
+	public String getJavaTypeForIDType() {
+		return javaTypeForIDType;
+	}
 
 	/** The mode is forced to {@link PluginMode#server} */
 	@Override

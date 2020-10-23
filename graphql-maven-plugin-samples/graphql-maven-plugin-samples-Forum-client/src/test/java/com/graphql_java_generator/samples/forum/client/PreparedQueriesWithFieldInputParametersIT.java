@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,15 +71,12 @@ public class PreparedQueriesWithFieldInputParametersIT {
 	void test_memberId_since() throws GraphQLRequestExecutionException {
 
 		// Go, go, go
-		List<Topic> topics = preparedQueriesWithFieldInputParameters.boardsWithPostSince(boardName,
-				UUID.fromString("00000000-0000-0000-0000-00000000002"), null, since);
+		List<Topic> topics = preparedQueriesWithFieldInputParameters.boardsWithPostSince(boardName, "2", null, since);
 
 		// Verification
 		assertTrue(topics.size() >= 5);
-		assertEquals(2, topics.get(0).getPosts().size(),
-				"First topic has two posts since 2018-10-20 for member '00000000-0000-0000-0000-00000000002'");
-		assertEquals(0, topics.get(1).getPosts().size(),
-				"Second topic has no posts since 2018-10-20 for member '00000000-0000-0000-0000-00000000002'");
+		assertEquals(2, topics.get(0).getPosts().size(), "First topic has two posts since 2018-10-20 for member '2'");
+		assertEquals(0, topics.get(1).getPosts().size(), "Second topic has no posts since 2018-10-20 for member '2'");
 	}
 
 	/**
@@ -112,15 +108,13 @@ public class PreparedQueriesWithFieldInputParametersIT {
 	void test_memberId_memberName_since_OK() throws GraphQLRequestExecutionException {
 
 		// Go, go, go
-		List<Topic> topics = preparedQueriesWithFieldInputParameters.boardsWithPostSince(boardName,
-				UUID.fromString("00000000-0000-0000-0000-00000000002"), "Name 2", since);
+		List<Topic> topics = preparedQueriesWithFieldInputParameters.boardsWithPostSince(boardName, "2", "Name 2",
+				since);
 
 		// Verification
 		assertTrue(topics.size() >= 5);
-		assertEquals(2, topics.get(0).getPosts().size(),
-				"First topic has two posts since 2018-10-20 for member '00000000-0000-0000-0000-00000000002'");
-		assertEquals(0, topics.get(1).getPosts().size(),
-				"Second topic has no posts since 2018-10-20 for member '00000000-0000-0000-0000-00000000002'");
+		assertEquals(2, topics.get(0).getPosts().size(), "First topic has two posts since 2018-10-20 for member '2'");
+		assertEquals(0, topics.get(1).getPosts().size(), "Second topic has no posts since 2018-10-20 for member '2'");
 	}
 
 	/**
@@ -131,8 +125,8 @@ public class PreparedQueriesWithFieldInputParametersIT {
 	@Test
 	void test_memberId_memberName_since_KO() throws GraphQLRequestExecutionException {
 
-		List<Topic> topics = preparedQueriesWithFieldInputParameters.boardsWithPostSince(boardName,
-				UUID.fromString("00000000-0000-0000-0000-00000000002"), "Bad Name", since);
+		List<Topic> topics = preparedQueriesWithFieldInputParameters.boardsWithPostSince(boardName, "2", "Bad Name",
+				since);
 
 		// Verification
 		assertTrue(topics.size() >= 5);

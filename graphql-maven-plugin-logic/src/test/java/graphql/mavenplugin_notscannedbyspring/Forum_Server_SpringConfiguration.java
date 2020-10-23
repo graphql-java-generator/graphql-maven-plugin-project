@@ -39,6 +39,7 @@ public class Forum_Server_SpringConfiguration extends AbstractSpringConfiguratio
 				"src/test/resources/forum_personalization.json");
 		configuration.customScalars = customScalars;
 		configuration.separateUtilityClasses = false;
+		configuration.javaTypeForIDType = "java.lang.String";
 	}
 
 }

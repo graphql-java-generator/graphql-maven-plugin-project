@@ -157,11 +157,12 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = (com.graphql_java_generator.server.domain.forum.TopicInput) graphqlUtils
-				.getInputObject(map, "TopicInput", com.graphql_java_generator.server.domain.forum.TopicInput.class);
+				.getInputObject(map, "TopicInput", String.class.getName(),
+						com.graphql_java_generator.server.domain.forum.TopicInput.class);
 
 		// Verification
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000004"), topicInput.getBoardId());
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000003"), topicInput.getInput().getAuthorId());
+		assertEquals("00000000-0000-0000-0000-000000000004", topicInput.getBoardId());
+		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getInput().getAuthorId());
 		assertEquals("Some content", topicInput.getInput().getContent());
 		assertEquals(new GregorianCalendar(2009, 11 - 1, 20).getTime(), topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
@@ -170,7 +171,7 @@ class GraphqlUtilsTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_getInputObject_serverMode() {
+	void test_getInputObject_serverMode_UUIDID() {
 		// Preparation
 		List<String> comments = new ArrayList<>();
 		comments.add("comment1");
@@ -206,7 +207,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput topicInput = (com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput) graphqlUtils
-				.getInputObject(map, "AllFieldCasesInput",
+				.getInputObject(map, "AllFieldCasesInput", UUID.class.getName(),
 						com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput.class);
 
 		// Verification
@@ -230,6 +231,45 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_getInputObject_serverMode_StringID() {
+		// Preparation
+		List<String> comments = new ArrayList<>();
+		comments.add("comment1");
+		comments.add("comment2");
+
+		List<Boolean> booleans = new ArrayList<>();
+		booleans.add(true);
+		booleans.add(false);
+
+		Map<String, Object> withoutIdSubtype1 = new LinkedHashMap<>();
+		withoutIdSubtype1.put("name", "subname1");
+		Map<String, Object> withoutIdSubtype2 = new LinkedHashMap<>();
+		withoutIdSubtype2.put("name", "subname2");
+		List<Object> withoutIdSubtypes = new ArrayList<>();
+		withoutIdSubtypes.add(withoutIdSubtype1);
+		withoutIdSubtypes.add(withoutIdSubtype2);
+
+		Map<String, Object> map = new LinkedHashMap<>();
+		map.put("boardId", "00000000-0000-0000-0000-000000000003");
+
+		//
+		// And we need to register the custom scalar
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDServer.ID,
+				String.class);
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(graphql.Scalars.GraphQLLong,
+				Long.class);
+
+		// Go, go, go
+		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = (com.graphql_java_generator.server.domain.forum.TopicInput) graphqlUtils
+				.getInputObject(map, "AllFieldCasesInput", String.class.getName(),
+						com.graphql_java_generator.server.domain.forum.TopicInput.class);
+
+		// Verification
+		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getBoardId());
+	}
+
+	@Test
 	void test_getInputObject_CustomScalar() {
 		// Preparation
 		Map<String, Object> map = new LinkedHashMap<>();
@@ -241,7 +281,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput input = (com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput) graphqlUtils
-				.getInputObject(map, "FieldParameterInput",
+				.getInputObject(map, "FieldParameterInput", UUID.class.getName(),
 						com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput.class);
 
 		// Verification
@@ -257,7 +297,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		Isssue49AccountInput input = (Isssue49AccountInput) graphqlUtils.getInputObject(map, "Isssue49AccountInput",
-				Isssue49AccountInput.class);
+				UUID.class.getName(), Isssue49AccountInput.class);
 
 		// Verification
 		assertEquals(Issue49Title.MRS, input.getTitle());
@@ -273,7 +313,7 @@ class GraphqlUtilsTest {
 		map.put("appearsIn", episodes);
 
 		// Go, go, go
-		Human human = (Human) graphqlUtils.getInputObject(map, "Human", Human.class);
+		Human human = (Human) graphqlUtils.getInputObject(map, "Human", UUID.class.getName(), Human.class);
 
 		// Verification
 		assertEquals(2, human.getAppearsIn().size());
@@ -306,7 +346,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput input = (com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput) graphqlUtils
-				.getInputObject(mapAllFieldCasesWithIdSubtypeInput, "AllFieldCasesInput",
+				.getInputObject(mapAllFieldCasesWithIdSubtypeInput, "AllFieldCasesInput", UUID.class.getName(),
 						com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput.class);
 
 		// Verification
@@ -324,7 +364,8 @@ class GraphqlUtilsTest {
 		Map<String, Object> map = new LinkedHashMap<>();
 
 		// Go, go, go
-		TopicInput topicInput = (TopicInput) graphqlUtils.getInputObject(map, "TopicInput", TopicInput.class);
+		TopicInput topicInput = (TopicInput) graphqlUtils.getInputObject(map, "TopicInput", UUID.class.getName(),
+				TopicInput.class);
 
 		// Verification
 		assertNull(topicInput.getBoardId());
@@ -334,7 +375,7 @@ class GraphqlUtilsTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_getInputObject_nullMap() {
-		assertNull(graphqlUtils.getInputObject(null, "TopicInput", TopicInput.class),
+		assertNull(graphqlUtils.getInputObject(null, "TopicInput", UUID.class.getName(), TopicInput.class),
 				"A null map return a null object");
 	}
 
@@ -374,20 +415,21 @@ class GraphqlUtilsTest {
 		// Go, go, go
 		@SuppressWarnings("unchecked")
 		List<com.graphql_java_generator.server.domain.forum.TopicInput> result = (List<com.graphql_java_generator.server.domain.forum.TopicInput>) graphqlUtils
-				.getInputObject(list, "TopicInput", com.graphql_java_generator.server.domain.forum.TopicInput.class);
+				.getInputObject(list, "TopicInput", String.class.getName(),
+						com.graphql_java_generator.server.domain.forum.TopicInput.class);
 
 		// Preparation
 		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = result.get(0);
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000004"), topicInput.getBoardId());
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000003"), topicInput.getInput().getAuthorId());
+		assertEquals("00000000-0000-0000-0000-000000000004", topicInput.getBoardId());
+		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getInput().getAuthorId());
 		assertEquals("Some content", topicInput.getInput().getContent());
 		assertEquals(new GregorianCalendar(2009, 11 - 1, 20).getTime(), topicInput.getInput().getDate());
 		assertEquals(true, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title", topicInput.getInput().getTitle());
 
 		topicInput = result.get(1);
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000005"), topicInput.getBoardId());
-		assertEquals(UUID.fromString("00000000-0000-0000-0000-000000000006"), topicInput.getInput().getAuthorId());
+		assertEquals("00000000-0000-0000-0000-000000000005", topicInput.getBoardId());
+		assertEquals("00000000-0000-0000-0000-000000000006", topicInput.getInput().getAuthorId());
 		assertEquals("Some content (2)", topicInput.getInput().getContent());
 		assertEquals(new GregorianCalendar(2009, 11 - 1, 25).getTime(), topicInput.getInput().getDate());
 		assertEquals(false, topicInput.getInput().getPubliclyAvailable());

@@ -98,6 +98,8 @@ class DocumentParser_Forum_Server_Test {
 		// Verification
 		assertEquals("@Entity\n@GraphQLObjectType(\"Topic\")", topic.getAnnotation(), "Entity annotation");
 		int i = 0;
+		// For the test below, the String class is expected, as there is this config update in the setup, here above:
+		// pluginConfiguration.setJavaTypeForIDType("java.lang.String");
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
 				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", list = false, javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
@@ -356,7 +358,6 @@ class DocumentParser_Forum_Server_Test {
 		assertNotNull(board);
 
 		assertTrue(board.getImports().contains("java.util.List"), "expecting java.util.List");
-		assertTrue(board.getImports().contains("java.util.UUID"), "expecting java.util.UUID");
 		assertTrue(board.getImports().contains("javax.persistence.Entity"), "expecting javax.persistence.Entity");
 		assertTrue(board.getImports().contains("javax.persistence.GeneratedValue"),
 				"expecting javax.persistence.GeneratedValue");

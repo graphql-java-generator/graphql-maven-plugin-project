@@ -2,7 +2,6 @@ package com.graphql_java_generator.samples.forum.client;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -36,7 +35,7 @@ public class PreparedQueriesWithFieldInputParameters {
 	 * 
 	 * @throws GraphQLRequestExecutionException
 	 */
-	List<Topic> boardsWithPostSince(String boardName, UUID memberId, String memberName, Date since)
+	List<Topic> boardsWithPostSince(String boardName, String memberId, String memberName, Date since)
 			throws GraphQLRequestExecutionException {
 		return queryType.topics(topicAuthorPostAuthorResponse, boardName, "memberId", memberId, "memberName",
 				memberName, "since", since);

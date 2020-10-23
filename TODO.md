@@ -3,6 +3,9 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * [WIP] Adding the relay connection capabilities (almost done).
+* javaTypeForIDType: control that the provided class is valid, and one of the allowed classes for this type. To study: the good way of dealing with tis is perhaps to create a custom scalar for the ID type. IS it allowed by graphql-java? 
+* Remove the getArgument, and replace them by getInputObject
+* Check parameters that are list of enums, list of ID (with IDType=UUID), list of scalars or list of custom scalars (the GraphQLDataFetchers reading of input parameters will probably fail. The generated code should be replaced by a call to a utility method to manage and test this complexity)
 * Add a parameter to choose the ID java type, in server mode
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
 * Switch to apache 2.0 licence

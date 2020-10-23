@@ -4,7 +4,7 @@
 package org.forum.server.specific_code;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 import javax.annotation.Resource;
 
@@ -44,6 +44,8 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	@Resource
 	PostPublisher postPublisher;
 
+	Random rand = new Random();
+
 	@Override
 	public Board createBoard(DataFetchingEnvironment dataFetchingEnvironment, String name, Boolean publiclyAvailable) {
 		Board board = new Board();
@@ -71,7 +73,7 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	@Override
 	public Post createPost(DataFetchingEnvironment dataFetchingEnvironment, PostInput postParam) {
 		Post newPost = new Post();
-		newPost.setId(UUID.randomUUID());
+		newPost.setId(rand.nextLong()); // A proper use of ids (with a sequence) would be better for production
 		newPost.setTopicId(postParam.getTopicId());
 		newPost.setDate(postParam.getFrom());
 		if (postParam.getInput() != null) {
@@ -99,7 +101,7 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	@Override
 	public Member createMember(DataFetchingEnvironment dataFetchingEnvironment, MemberInput input) {
 		Member member = new Member();
-		member.setId(UUID.randomUUID());
+		member.setId(rand.nextLong()); // A proper use of ids (with a sequence) would be better for production
 		member.setAlias(input.getAlias());
 		member.setEmail(input.getEmail());
 		member.setName(input.getName());
