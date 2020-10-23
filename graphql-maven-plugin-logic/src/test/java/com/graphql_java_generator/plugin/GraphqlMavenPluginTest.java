@@ -9,6 +9,8 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -29,6 +31,7 @@ import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfigurat
  */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { HelloWorld_Server_SpringConfiguration.class })
+@Execution(ExecutionMode.CONCURRENT)
 class GraphqlMavenPluginTest {
 
 	@Autowired
@@ -57,6 +60,7 @@ class GraphqlMavenPluginTest {
 	// }
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testDocuments_helloworld() throws IOException {
 		// Preparation
 
