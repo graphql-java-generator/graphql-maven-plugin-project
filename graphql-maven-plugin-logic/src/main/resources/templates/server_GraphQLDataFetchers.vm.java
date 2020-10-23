@@ -55,9 +55,9 @@ public class GraphQLDataFetchers {
 ## $argument is an instance of Field
 #if(${argument.list})
 			@SuppressWarnings("unchecked")
-			List<${argument.type.classSimpleName}> ${argument.javaName} = (List<${argument.type.classSimpleName}>) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", "${configuration.javaTypeForIDType}", ${argument.type.classSimpleName}.class);
+			List<${argument.type.classSimpleName}> ${argument.javaName} = (List<${argument.type.classSimpleName}>) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", "${configuration.javaTypeForIDType}", ${argument.type.classSimpleName}.class);
 #else
-			${argument.type.classSimpleName} ${argument.javaName} = (${argument.type.classSimpleName}) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", "${configuration.javaTypeForIDType}", ${argument.type.classSimpleName}.class);
+			${argument.type.classSimpleName} ${argument.javaName} = (${argument.type.classSimpleName}) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeName}", "${configuration.javaTypeForIDType}", ${argument.type.classSimpleName}.class);
 #end
 #end  ##Foreach
 #if($dataFetcher.graphQLOriginType)

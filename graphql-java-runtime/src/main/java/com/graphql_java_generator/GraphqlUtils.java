@@ -260,21 +260,28 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * This method returns a GraphQL input object, as defined in the GraphQL schema, from the Map that has been read
-	 * from the JSON object sent to the server. It detects that the given <I>jsonParsedValue</I> is a list, and, in this
-	 * case, returns a list of instances of the given clazz type.
+	 * This method returns a GraphQL argument into the relevant Java object, within a data fetcher, from what has been
+	 * parsed by the graphql-java engine from the incoming JSON request
 	 * 
 	 * @param <T>
 	 *            The class expected to be returned
 	 * @param jsonParsedValue
-	 *            The map, read from the JSON in the GraphQL request. Only the part of the map, related to the expected
-	 *            class is sent.
+	 *            The value, read from the JSON in the GraphQL request. Only the part of the JSON map, related to the
+	 *            expected class is sent. It can be:
+	 *            <UL>
+	 *            <LI>A {@link Map}. This map will be transformed into an input object, as defined in the GraphQL
+	 *            schema, from the Map that has been read from the JSON object sent to the server.</LI>
+	 *            <LI>A {@link List}. In this case, returns a list of instances of the given clazz type.</LI>
+	 *            <LI>Otherwise, the value is a scalar. At this stage, Custom Scalars have already been transformed into
+	 *            the relevant Java Type. So it must be a standard scalar. It is then mapped to the asked java type</LI>
+	 *            </UL>
 	 * @param graphQLTypeName
 	 *            The name of the GraphQL type, as defined in the GraphQL schema. This can be guessed from the given
 	 *            class for input types and objects, but not for scalars. So it must be provided.
 	 * @param javaTypeForIDType
 	 *            Value of the plugin parameter of the same name. This is necessary to properly manage fields of the ID
-	 *            GraphQL type, which must be transformed to this java type
+	 *            GraphQL type, which must be transformed to this java type. This is useful only when mapping into input
+	 *            types.
 	 * @param clazz
 	 *            The class of the expected type. A new instance of this type will be returned, with its fields having
 	 *            been set by this method from the value in the map
@@ -282,7 +289,7 @@ public class GraphqlUtils {
 	 *         instance is returned, with all its fields are left empty
 	 */
 	@SuppressWarnings("unchecked")
-	public Object getInputObject(Object jsonParsedValue, String graphQLTypeName, String javaTypeForIDType,
+	public Object getArgument(Object jsonParsedValue, String graphQLTypeName, String javaTypeForIDType,
 			Class<?> clazz) {
 		if (jsonParsedValue == null) {
 			return null;
@@ -290,7 +297,7 @@ public class GraphqlUtils {
 			// We've a list. Let's loop inside its items
 			List<Object> objects = new ArrayList<>();
 			for (Object o : (List<Object>) jsonParsedValue) {
-				objects.add(getInputObject(o, graphQLTypeName, javaTypeForIDType, clazz));
+				objects.add(getArgument(o, graphQLTypeName, javaTypeForIDType, clazz));
 			}
 			return objects;
 		} else if (jsonParsedValue instanceof Map<?, ?>) {
@@ -322,10 +329,10 @@ public class GraphqlUtils {
 				Object value;
 
 				if (graphQLScalar != null) {
-					value = getInputObject(map.get(key), graphQLScalar.graphQLTypeName(), javaTypeForIDType,
+					value = getArgument(map.get(key), graphQLScalar.graphQLTypeName(), javaTypeForIDType,
 							graphQLScalar.javaClass());
 				} else if (graphQLNonScalar != null) {
-					value = getInputObject(map.get(key), graphQLNonScalar.graphQLTypeName(), javaTypeForIDType,
+					value = getArgument(map.get(key), graphQLNonScalar.graphQLTypeName(), javaTypeForIDType,
 							graphQLNonScalar.javaClass());
 				} else {
 					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key

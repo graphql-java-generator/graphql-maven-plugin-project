@@ -137,7 +137,7 @@ class GraphqlUtilsTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_getInputObject_forum() {
+	void test_getArgument_forum() {
 		// Preparation
 		Map<String, Object> mapTopicPostInput = new LinkedHashMap<>();
 		mapTopicPostInput.put("authorId", "00000000-0000-0000-0000-000000000003");
@@ -157,7 +157,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = (com.graphql_java_generator.server.domain.forum.TopicInput) graphqlUtils
-				.getInputObject(map, "TopicInput", String.class.getName(),
+				.getArgument(map, "TopicInput", String.class.getName(),
 						com.graphql_java_generator.server.domain.forum.TopicInput.class);
 
 		// Verification
@@ -171,7 +171,7 @@ class GraphqlUtilsTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_getInputObject_serverMode_UUIDID() {
+	void test_getArgument_serverMode_UUIDID() {
 		// Preparation
 		List<String> comments = new ArrayList<>();
 		comments.add("comment1");
@@ -207,7 +207,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput topicInput = (com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput) graphqlUtils
-				.getInputObject(map, "AllFieldCasesInput", UUID.class.getName(),
+				.getArgument(map, "AllFieldCasesInput", UUID.class.getName(),
 						com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput.class);
 
 		// Verification
@@ -232,7 +232,7 @@ class GraphqlUtilsTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_getInputObject_serverMode_StringID() {
+	void test_getArgument_serverMode_StringID() {
 		// Preparation
 		List<String> comments = new ArrayList<>();
 		comments.add("comment1");
@@ -262,7 +262,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = (com.graphql_java_generator.server.domain.forum.TopicInput) graphqlUtils
-				.getInputObject(map, "AllFieldCasesInput", String.class.getName(),
+				.getArgument(map, "AllFieldCasesInput", String.class.getName(),
 						com.graphql_java_generator.server.domain.forum.TopicInput.class);
 
 		// Verification
@@ -270,7 +270,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
-	void test_getInputObject_CustomScalar() {
+	void test_getArgument_CustomScalar() {
 		// Preparation
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("uppercase", true);
@@ -281,7 +281,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput input = (com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput) graphqlUtils
-				.getInputObject(map, "FieldParameterInput", UUID.class.getName(),
+				.getArgument(map, "FieldParameterInput", UUID.class.getName(),
 						com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput.class);
 
 		// Verification
@@ -290,13 +290,33 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
-	void test_getInputObject_Enum() {
+	void test_getArgument_scalar() {
+		assertEquals("33", graphqlUtils.getArgument("33", "String", "not used", String.class));
+
+		assertEquals(UUID.fromString("00000000-0000-0000-0000-000002000003"),
+				graphqlUtils.getArgument("00000000-0000-0000-0000-000002000003", "ID", "java.util.UUID", UUID.class));
+		assertEquals("00000000-0000-0000-0000-000002000003", graphqlUtils
+				.getArgument("00000000-0000-0000-0000-000002000003", "ID", "java.lang.String", String.class));
+		assertEquals((long) 2000003, graphqlUtils.getArgument("00000002000003", "ID", "java.lang.Long", Long.class));
+
+		assertEquals((long) 2, graphqlUtils.getArgument("2", "Int", "not used", Long.class));
+		assertEquals(22, graphqlUtils.getArgument("22", "Int", "not used", Integer.class));
+
+		assertEquals((float) 1.234, graphqlUtils.getArgument("1.234", "Int", "not used", Float.class));
+		assertEquals(2.456, graphqlUtils.getArgument("2.456", "Int", "not used", Double.class));
+
+		assertEquals(true, graphqlUtils.getArgument("true", "Boolean", "not used", Boolean.class));
+		assertEquals(false, graphqlUtils.getArgument("false", "Boolean", "not used", Boolean.class));
+	}
+
+	@Test
+	void test_getArgument_Enum() {
 		// Preparation
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("title", "MRS");
 
 		// Go, go, go
-		Isssue49AccountInput input = (Isssue49AccountInput) graphqlUtils.getInputObject(map, "Isssue49AccountInput",
+		Isssue49AccountInput input = (Isssue49AccountInput) graphqlUtils.getArgument(map, "Isssue49AccountInput",
 				UUID.class.getName(), Isssue49AccountInput.class);
 
 		// Verification
@@ -304,7 +324,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
-	void test_getInputObject_ListOfEnum() {
+	void test_getArgument_ListOfEnum() {
 		// Preparation
 		List<String> episodes = new ArrayList<>();
 		episodes.add(Episode.JEDI.toString());
@@ -313,7 +333,7 @@ class GraphqlUtilsTest {
 		map.put("appearsIn", episodes);
 
 		// Go, go, go
-		Human human = (Human) graphqlUtils.getInputObject(map, "Human", UUID.class.getName(), Human.class);
+		Human human = (Human) graphqlUtils.getArgument(map, "Human", UUID.class.getName(), Human.class);
 
 		// Verification
 		assertEquals(2, human.getAppearsIn().size());
@@ -322,7 +342,7 @@ class GraphqlUtilsTest {
 	}
 
 	@Test
-	void test_getInputObject_ListOfInputTypes() {
+	void test_getArgument_ListOfInputTypes() {
 		// Preparation
 		//
 		Map<String, Object> map1 = new LinkedHashMap<>();
@@ -346,7 +366,7 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput input = (com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput) graphqlUtils
-				.getInputObject(mapAllFieldCasesWithIdSubtypeInput, "AllFieldCasesInput", UUID.class.getName(),
+				.getArgument(mapAllFieldCasesWithIdSubtypeInput, "AllFieldCasesInput", UUID.class.getName(),
 						com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput.class);
 
 		// Verification
@@ -364,7 +384,7 @@ class GraphqlUtilsTest {
 		Map<String, Object> map = new LinkedHashMap<>();
 
 		// Go, go, go
-		TopicInput topicInput = (TopicInput) graphqlUtils.getInputObject(map, "TopicInput", UUID.class.getName(),
+		TopicInput topicInput = (TopicInput) graphqlUtils.getArgument(map, "TopicInput", UUID.class.getName(),
 				TopicInput.class);
 
 		// Verification
@@ -374,14 +394,14 @@ class GraphqlUtilsTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_getInputObject_nullMap() {
-		assertNull(graphqlUtils.getInputObject(null, "TopicInput", UUID.class.getName(), TopicInput.class),
+	void test_getArgument_nullMap() {
+		assertNull(graphqlUtils.getArgument(null, "TopicInput", UUID.class.getName(), TopicInput.class),
 				"A null map return a null object");
 	}
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_getInputObjects_list() {
+	void test_getArguments_list() {
 		// Preparation
 		Map<String, Object> input1 = new LinkedHashMap<>();
 		input1.put("authorId", "00000000-0000-0000-0000-000000000003");
@@ -415,7 +435,7 @@ class GraphqlUtilsTest {
 		// Go, go, go
 		@SuppressWarnings("unchecked")
 		List<com.graphql_java_generator.server.domain.forum.TopicInput> result = (List<com.graphql_java_generator.server.domain.forum.TopicInput>) graphqlUtils
-				.getInputObject(list, "TopicInput", String.class.getName(),
+				.getArgument(list, "TopicInput", String.class.getName(),
 						com.graphql_java_generator.server.domain.forum.TopicInput.class);
 
 		// Preparation

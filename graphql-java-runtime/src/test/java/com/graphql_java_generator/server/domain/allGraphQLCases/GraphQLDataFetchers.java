@@ -85,7 +85,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<Character> dataFetchersDelegateMyQueryTypeWithOneOptionalParam() {
 		return dataFetchingEnvironment -> {
-			CharacterInput character = (CharacterInput) graphqlUtils.getInputObject(
+			CharacterInput character = (CharacterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("character"), "CharacterInput", "java.util.UUID",
 					CharacterInput.class);
 
@@ -107,7 +107,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<Character> dataFetchersDelegateMyQueryTypeWithOneMandatoryParam() {
 		return dataFetchingEnvironment -> {
-			CharacterInput character = (CharacterInput) graphqlUtils.getInputObject(
+			CharacterInput character = (CharacterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("character"), "CharacterInput", "java.util.UUID",
 					CharacterInput.class);
 
@@ -150,7 +150,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<Droid> dataFetchersDelegateMyQueryTypeWithTwoMandatoryParamDefaultVal() {
 		return dataFetchingEnvironment -> {
-			DroidInput theHero = (DroidInput) graphqlUtils.getInputObject(
+			DroidInput theHero = (DroidInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("theHero"), "DroidInput", "java.util.UUID", DroidInput.class);
 			Integer num = dataFetchingEnvironment.getArgument("num");
 
@@ -195,7 +195,7 @@ public class GraphQLDataFetchers {
 		return dataFetchingEnvironment -> {
 			String firstName = dataFetchingEnvironment.getArgument("firstName");
 			@SuppressWarnings("unchecked")
-			List<CharacterInput> characters = (List<CharacterInput>) graphqlUtils.getInputObject(
+			List<CharacterInput> characters = (List<CharacterInput>) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("characters"), "CharacterInput", "java.util.UUID",
 					CharacterInput.class);
 
@@ -209,7 +209,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<AllFieldCases> dataFetchersDelegateMyQueryTypeAllFieldCases() {
 		return dataFetchingEnvironment -> {
-			AllFieldCasesInput input = (AllFieldCasesInput) graphqlUtils.getInputObject(
+			AllFieldCasesInput input = (AllFieldCasesInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "AllFieldCasesInput", "java.util.UUID",
 					AllFieldCasesInput.class);
 
@@ -231,13 +231,13 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<List<AnyCharacter>> dataFetchersDelegateMyQueryTypeUnionTest() {
 		return dataFetchingEnvironment -> {
-			HumanInput human1 = (HumanInput) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("human1"),
+			HumanInput human1 = (HumanInput) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("human1"),
 					"HumanInput", "java.util.UUID", HumanInput.class);
-			HumanInput human2 = (HumanInput) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("human1"),
+			HumanInput human2 = (HumanInput) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("human1"),
 					"HumanInput", "java.util.UUID", HumanInput.class);
-			DroidInput droid1 = (DroidInput) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("droid1"),
+			DroidInput droid1 = (DroidInput) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("droid1"),
 					"DroidInput", "java.util.UUID", DroidInput.class);
-			DroidInput droid2 = (DroidInput) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("droid2"),
+			DroidInput droid2 = (DroidInput) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("droid2"),
 					"DroidInput", "java.util.UUID", DroidInput.class);
 
 			List<AnyCharacter> ret = dataFetchersDelegateMyQueryType.unionTest(dataFetchingEnvironment, human1, human2,
@@ -342,7 +342,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<Human> dataFetchersDelegateAnotherMutationTypeCreateHuman() {
 		return dataFetchingEnvironment -> {
-			HumanInput human = (HumanInput) graphqlUtils.getInputObject(dataFetchingEnvironment.getArgument("human"),
+			HumanInput human = (HumanInput) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("human"),
 					"HumanInput", "java.util.UUID", HumanInput.class);
 
 			Human ret = null;
@@ -363,7 +363,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<AllFieldCases> dataFetchersDelegateAnotherMutationTypeCreateAllFieldCases() {
 		return dataFetchingEnvironment -> {
-			AllFieldCasesInput input = (AllFieldCasesInput) graphqlUtils.getInputObject(
+			AllFieldCasesInput input = (AllFieldCasesInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "AllFieldCasesInput", "java.util.UUID",
 					AllFieldCasesInput.class);
 
@@ -533,7 +533,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<AllFieldCasesWithoutIdSubtype> dataFetchersDelegateAllFieldCasesOneWithoutIdSubType() {
 		return dataFetchingEnvironment -> {
-			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getInputObject(
+			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "FieldParameterInput", "java.util.UUID",
 					FieldParameterInput.class);
 			AllFieldCases source = dataFetchingEnvironment.getSource();
@@ -557,7 +557,7 @@ public class GraphQLDataFetchers {
 	public DataFetcher<List<AllFieldCasesWithoutIdSubtype>> dataFetchersDelegateAllFieldCasesListWithoutIdSubTypes() {
 		return dataFetchingEnvironment -> {
 			Long nbItems = dataFetchingEnvironment.getArgument("nbItems");
-			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getInputObject(
+			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "FieldParameterInput", "java.util.UUID",
 					FieldParameterInput.class);
 			String textToAppendToTheForname = dataFetchingEnvironment.getArgument("textToAppendToTheForname");
@@ -685,7 +685,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<AllFieldCasesWithoutIdSubtype> dataFetchersDelegateAllFieldCasesInterfaceTypeOneWithoutIdSubType() {
 		return dataFetchingEnvironment -> {
-			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getInputObject(
+			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "FieldParameterInput", "java.util.UUID",
 					FieldParameterInput.class);
 			AllFieldCasesInterfaceType source = dataFetchingEnvironment.getSource();
@@ -710,7 +710,7 @@ public class GraphQLDataFetchers {
 	public DataFetcher<List<AllFieldCasesWithoutIdSubtype>> dataFetchersDelegateAllFieldCasesInterfaceTypeListWithoutIdSubTypes() {
 		return dataFetchingEnvironment -> {
 			Integer nbItems = dataFetchingEnvironment.getArgument("nbItems");
-			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getInputObject(
+			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "FieldParameterInput", "java.util.UUID",
 					FieldParameterInput.class);
 			String textToAppendToTheForname = dataFetchingEnvironment.getArgument("textToAppendToTheForname");
@@ -950,7 +950,7 @@ public class GraphQLDataFetchers {
 
 	public DataFetcher<AllFieldCasesWithoutIdSubtype> dataFetchersDelegateAllFieldCasesInterfaceOneWithoutIdSubType() {
 		return dataFetchingEnvironment -> {
-			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getInputObject(
+			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "FieldParameterInput", "java.util.UUID",
 					FieldParameterInput.class);
 			AllFieldCasesInterface source = dataFetchingEnvironment.getSource();
@@ -975,7 +975,7 @@ public class GraphQLDataFetchers {
 	public DataFetcher<List<AllFieldCasesWithoutIdSubtype>> dataFetchersDelegateAllFieldCasesInterfaceListWithoutIdSubTypes() {
 		return dataFetchingEnvironment -> {
 			Integer nbItems = dataFetchingEnvironment.getArgument("nbItems");
-			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getInputObject(
+			FieldParameterInput input = (FieldParameterInput) graphqlUtils.getArgument(
 					dataFetchingEnvironment.getArgument("input"), "FieldParameterInput", "java.util.UUID",
 					FieldParameterInput.class);
 			String textToAppendToTheForname = dataFetchingEnvironment.getArgument("textToAppendToTheForname");
