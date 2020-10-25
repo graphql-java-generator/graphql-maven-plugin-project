@@ -23,7 +23,8 @@ import graphql.schema.GraphQLScalarType;
  * 
  * @author etienne-sf
  */
-public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo implements GenerateCodeCommonConfiguration {
+public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
+		implements GenerateCodeCommonConfiguration {
 
 	/**
 	 * <P>
@@ -87,6 +88,10 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo 
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.customScalars")
 	List<CustomScalarDefinition> customScalars = null;
+
+	/** The package name that will contain the generated classes */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = GraphQLConfiguration.DEFAULT_PACKAGE_NAME)
+	String packageName;
 
 	/**
 	 * <P>

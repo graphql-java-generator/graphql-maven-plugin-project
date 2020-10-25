@@ -63,10 +63,6 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	 */
 	private MavenLogger log = null;
 
-	/** The package name that will contain the generated classes */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = GraphQLConfiguration.DEFAULT_PACKAGE_NAME)
-	String packageName;
-
 	/**
 	 * Not available to the user: the {@link MavenProject} in which the plugin executes
 	 */

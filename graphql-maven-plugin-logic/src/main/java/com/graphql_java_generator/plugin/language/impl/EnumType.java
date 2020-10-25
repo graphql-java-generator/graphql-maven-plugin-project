@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
 
@@ -49,7 +50,7 @@ public class EnumType extends AbstractType {
 
 	@Override
 	public String getPackageName() {
-		return configuration.getPackageName();
+		return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
 	}
 
 	@Override

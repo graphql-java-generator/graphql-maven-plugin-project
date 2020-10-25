@@ -28,6 +28,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.language.Directive;
@@ -700,7 +701,8 @@ class AddRelayConnectionsTest {
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
 				int j = 0;
 				checkField(d, 0, "cursor", false, true, false, "String", "String", 0);
-				checkField(d, 1, "node", false, false, false, "Node", configuration.getPackageName() + ".Node", 0);
+				checkField(d, 1, "node", false, false, false, "Node",
+						((GenerateCodeCommonConfiguration) configuration).getPackageName() + ".Node", 0);
 
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
 				assertEquals(false, d.isInputType(), "Not an input type");
@@ -729,9 +731,10 @@ class AddRelayConnectionsTest {
 
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
 				int j = 0;
-				checkField(d, j++, "edges", true, false, false, "Edge", configuration.getPackageName() + ".Edge", 0);
+				checkField(d, j++, "edges", true, false, false, "Edge",
+						((GenerateCodeCommonConfiguration) configuration).getPackageName() + ".Edge", 0);
 				checkField(d, j++, "pageInfo", false, true, false, "PageInfo",
-						configuration.getPackageName() + ".PageInfo", 0);
+						((GenerateCodeCommonConfiguration) configuration).getPackageName() + ".PageInfo", 0);
 
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
 				assertEquals(false, d.isInputType(), "Not an input type");

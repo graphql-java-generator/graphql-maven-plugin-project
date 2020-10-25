@@ -36,9 +36,6 @@ public interface CommonConfiguration {
 	 */
 	public Logger getPluginLogger();
 
-	/** The packageName in which the generated classes will be created */
-	public String getPackageName();
-
 	/**
 	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
 	 * schema(s) are expected to be: in this folder, or one of these subfolders

@@ -77,12 +77,6 @@ public abstract class AbstractGenerateGraphQLSchemaMojo extends AbstractCommonMo
 	}
 
 	@Override
-	public String getPackageName() {
-		// Not used
-		return null;
-	}
-
-	@Override
 	public boolean isAddRelayConnections() {
 		return this.addRelayConnections;
 	}

@@ -70,6 +70,9 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 */
 	public PluginMode getMode();
 
+	/** The packageName in which the generated classes will be created */
+	public String getPackageName();
+
 	/** The encoding for the generated source files */
 	public String getSourceEncoding();
 

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Directive;
@@ -278,7 +279,8 @@ public abstract class DocumentParser {
 
 		// We're done
 		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
-		configuration.getPluginLogger().debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
+		configuration.getPluginLogger()
+				.debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
 
@@ -814,7 +816,7 @@ public abstract class DocumentParser {
 	 * @param name
 	 */
 	String getGeneratedFieldFullClassName(String name) {
-		return configuration.getPackageName() + "." + name;
+		return ((GenerateCodeCommonConfiguration) configuration).getPackageName() + "." + name;
 	}
 
 	/**
@@ -872,7 +874,7 @@ public abstract class DocumentParser {
 	 * @return
 	 */
 	String getUtilPackageName() {
-		return configuration.getPackageName();
+		return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
 	}
 
 }
