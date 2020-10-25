@@ -25,6 +25,7 @@ import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.EnumValue;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.AppliedDirectiveImpl;
 import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
@@ -49,7 +50,6 @@ import graphql.language.InputObjectTypeDefinition;
 import graphql.language.InputValueDefinition;
 import graphql.language.InterfaceTypeDefinition;
 import graphql.language.ListType;
-import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.ObjectTypeExtensionDefinition;
@@ -187,7 +187,10 @@ public abstract class DocumentParser {
 		// Add of all GraphQL standard directives
 		DirectiveImpl skip = new DirectiveImpl();
 		skip.setName("skip");
-		skip.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
+		skip.getArguments()
+				.add(FieldImpl.builder().name("if")
+						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
+						.build());
 		skip.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		skip.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		skip.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
@@ -196,7 +199,10 @@ public abstract class DocumentParser {
 		//
 		DirectiveImpl include = new DirectiveImpl();
 		include.setName("include");
-		include.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
+		include.getArguments()
+				.add(FieldImpl.builder().name("if")
+						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
+						.build());
 		include.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		include.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		include.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
@@ -205,14 +211,17 @@ public abstract class DocumentParser {
 		//
 		DirectiveImpl defer = new DirectiveImpl();
 		defer.setName("defer");
-		defer.getArguments().add(FieldImpl.builder().name("if").graphQLTypeName("Boolean").mandatory(true).build());
+		defer.getArguments()
+				.add(FieldImpl.builder().name("if")
+						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
+						.build());
 		defer.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		defer.setStandard(true);
 		directives.add(defer);
 		//
 		DirectiveImpl deprecated = new DirectiveImpl();
 		deprecated.setName("deprecated");
-		// deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeName("String")
+		// deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeSimpleName("String")
 		// .defaultValue("No longer supported").build());
 		deprecated.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
@@ -750,54 +759,7 @@ public abstract class DocumentParser {
 		field.setName((String) graphqlUtils.invokeMethod("getName", fieldDef));
 		field.setAppliedDirectives(readAppliedDirectives(
 				(List<graphql.language.Directive>) graphqlUtils.invokeMethod("getDirectives", fieldDef)));
-
-		// Let's default value to false
-		field.setMandatory(false);
-		field.setList(false);
-		field.setItemMandatory(false);
-
-		TypeName typeName = null;
-		if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof TypeName) {
-			typeName = (TypeName) graphqlUtils.invokeMethod("getType", fieldDef);
-		} else if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof NonNullType) {
-			field.setMandatory(true);
-			Node<?> node = ((NonNullType) graphqlUtils.invokeMethod("getType", fieldDef)).getType();
-			if (node instanceof TypeName) {
-				typeName = (TypeName) node;
-			} else if (node instanceof ListType) {
-				Node<?> subNode = ((ListType) node).getType();
-				field.setList(true);
-				if (subNode instanceof TypeName) {
-					typeName = (TypeName) subNode;
-				} else if (subNode instanceof NonNullType) {
-					typeName = (TypeName) ((NonNullType) subNode).getType();
-					field.setItemMandatory(true);
-				} else {
-					throw new RuntimeException("Case not found (subnode of a ListType). The node is of type "
-							+ subNode.getClass().getName() + " (for field " + field.getName() + ")");
-				}
-			} else {
-				throw new RuntimeException("Case not found (subnode of a NonNullType). The node is of type "
-						+ node.getClass().getName() + " (for field " + field.getName() + ")");
-			}
-		} else if (graphqlUtils.invokeMethod("getType", fieldDef) instanceof ListType) {
-			field.setList(true);
-			Node<?> node = ((ListType) graphqlUtils.invokeMethod("getType", fieldDef)).getType();
-			if (node instanceof TypeName) {
-				typeName = (TypeName) node;
-			} else if (node instanceof NonNullType) {
-				typeName = (TypeName) ((NonNullType) node).getType();
-				field.setItemMandatory(true);
-			} else {
-				throw new RuntimeException("Case not found (subnode of a ListType). The node is of type "
-						+ node.getClass().getName() + " (for field " + field.getName() + ")");
-			}
-		}
-
-		// We have the type. But we may not have parsed it yet. So we just write its
-		// name. And will get the
-		// com.graphql_java_generator.plugin.language.Type when generating the code.
-		field.setGraphQLTypeName(typeName.getName());
+		field.setFieldTypeAST(readFieldTypeAST(graphqlUtils.invokeMethod("getType", fieldDef)));
 
 		// For InputValueDefinition, we may have a default value
 		if (fieldDef instanceof InputValueDefinition) {
@@ -805,6 +767,32 @@ public abstract class DocumentParser {
 		}
 
 		return field;
+
+	}
+
+	FieldTypeAST readFieldTypeAST(Object fieldDef) {
+		if (fieldDef instanceof TypeName) {
+			TypeName typeName = (TypeName) fieldDef;
+			return new FieldTypeAST(typeName.getName());
+		} else if (fieldDef instanceof ListType) {
+			// This node contains a list. Let's recurse one.
+			ListType subNode = (ListType) fieldDef;
+			FieldTypeAST listItemTypeAST = readFieldTypeAST(subNode.getType());
+			// We return a list of the read subnode.
+			FieldTypeAST fieldTypeAST = new FieldTypeAST();
+			fieldTypeAST.setList(true);
+			fieldTypeAST.setListItemFieldTypeAST(listItemTypeAST);
+			return fieldTypeAST;
+		} else if (fieldDef instanceof NonNullType) {
+			// Let's recurse in the AST for this mandatory type
+			NonNullType subNode = (NonNullType) fieldDef;
+			FieldTypeAST fieldTypeAST = readFieldTypeAST(subNode.getType());
+			// The type is mandatory
+			fieldTypeAST.setMandatory(true);
+			return fieldTypeAST;
+		} else {
+			throw new RuntimeException("Non managed fieldDef: " + fieldDef.getClass().getName());
+		}
 
 	}
 

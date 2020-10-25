@@ -34,6 +34,7 @@ import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.AppliedDirectiveImpl;
 import com.graphql_java_generator.plugin.language.impl.DirectiveImpl;
@@ -223,8 +224,7 @@ class AddRelayConnectionsTest {
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
 				"test_addEdgeConnectionAndApplyNodeInterface_step2missingDirectiveOnInterfaceField", true);
 
-		FieldImpl f = (FieldImpl) getField("MyQueryType", "connectionWithoutParameters");
-		f.setList(false);
+		// connectionWithoutParameters is not a list, as it has already been transformed to a CharacterConnection
 
 		// Go, go, go
 		RuntimeException e = assertThrows(RuntimeException.class,
@@ -287,7 +287,10 @@ class AddRelayConnectionsTest {
 		dir.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		//
 		FieldImpl f = (FieldImpl) getField("AllFieldCasesInterfaceType", "id");
-		f.setList(true);// Necessary to pass the "is a list" test
+		// We need to pass the "is a list" test
+		FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(f.getFieldTypeAST()).build();
+		f.setFieldTypeAST(list);
+		//
 		AppliedDirectiveImpl d = new AppliedDirectiveImpl();
 		d.setDirective(dir);
 		f.setAppliedDirectives(new ArrayList<>());
@@ -667,11 +670,12 @@ class AddRelayConnectionsTest {
 				assertEquals(0, d.getMemberOfUnions().size(), "No unions");
 				assertEquals(1, d.getFields().size(), "One field");
 				assertEquals("id", d.getFields().get(0).getName(), "field is id");
-				assertEquals("ID", d.getFields().get(0).getGraphQLTypeName(), "field'stype is ID");
+				assertEquals("ID", d.getFields().get(0).getGraphQLTypeSimpleName(), "field'stype is ID");
 				assertEquals(true, d.getFields().get(0).isId(), "field is an ID");
-				assertEquals(false, d.getFields().get(0).isItemMandatory(), "field is not a list");
-				assertEquals(false, d.getFields().get(0).isList(), "field is not a list");
-				assertEquals(true, d.getFields().get(0).isMandatory(), "field is mandatory");
+				// assertEquals(false, d.getFields().get(0).getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
+				// "field is not a list");
+				assertEquals(false, d.getFields().get(0).getFieldTypeAST().isList(), "field is not a list");
+				assertEquals(true, d.getFields().get(0).getFieldTypeAST().isMandatory(), "field is mandatory");
 				assertEquals(documentParser, ((FieldImpl) d.getFields().get(0)).getDocumentParser());
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
 				assertEquals(false, d.isInputType(), "Not an input type");
@@ -761,10 +765,10 @@ class AddRelayConnectionsTest {
 				assertEquals(0, o.getMemberOfUnions().size(), "No unions");
 				int j = 0;
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-				checkField(o, j++, "hasNextPage", false, true, false, "Boolean", "Boolean", 0);
-				checkField(o, j++, "hasPreviousPage", false, true, false, "Boolean", "Boolean", 0);
-				checkField(o, j++, "startCursor", false, true, false, "String", "String", 0);
-				checkField(o, j++, "endCursor", false, true, false, "String", "String", 0);
+				checkField(o, j++, "hasNextPage", false, true, null, "Boolean", "Boolean", 0);
+				checkField(o, j++, "hasPreviousPage", false, true, null, "Boolean", "Boolean", 0);
+				checkField(o, j++, "startCursor", false, true, null, "String", "String", 0);
+				checkField(o, j++, "endCursor", false, true, null, "String", "String", 0);
 				//
 				assertEquals(null, o.getRequestType(), "not a query/mutation/subscription");
 				assertEquals(false, o.isInputType(), "Not an input type");
@@ -796,17 +800,17 @@ class AddRelayConnectionsTest {
 	 */
 	private void checkRelayConnectionDirectiveHasBeenApplied() {
 		assertEquals("CharacterConnection",
-				getField("MyQueryType", "connectionWithoutParameters").getGraphQLTypeName());
-		assertFalse(getField("MyQueryType", "connectionWithoutParameters").isList());
+				getField("MyQueryType", "connectionWithoutParameters").getGraphQLTypeSimpleName());
+		assertFalse(getField("MyQueryType", "connectionWithoutParameters").getFieldTypeAST().isList());
 
-		assertEquals("HumanConnection", getField("MyQueryType", "connectionOnHuman").getGraphQLTypeName());
-		assertFalse(getField("MyQueryType", "connectionOnHuman").isList());
+		assertEquals("HumanConnection", getField("MyQueryType", "connectionOnHuman").getGraphQLTypeSimpleName());
+		assertFalse(getField("MyQueryType", "connectionOnHuman").getFieldTypeAST().isList());
 
-		assertEquals("HumanConnection", getField("AllFieldCasesInterface", "friends").getGraphQLTypeName());
-		assertFalse(getField("AllFieldCasesInterface", "friends").isList());
+		assertEquals("HumanConnection", getField("AllFieldCasesInterface", "friends").getGraphQLTypeSimpleName());
+		assertFalse(getField("AllFieldCasesInterface", "friends").getFieldTypeAST().isList());
 
-		assertEquals("HumanConnection", getField("AllFieldCasesInterfaceType", "friends").getGraphQLTypeName());
-		assertFalse(getField("AllFieldCasesInterfaceType", "friends").isList());
+		assertEquals("HumanConnection", getField("AllFieldCasesInterfaceType", "friends").getGraphQLTypeSimpleName());
+		assertFalse(getField("AllFieldCasesInterfaceType", "friends").getFieldTypeAST().isList());
 	}
 
 	/** This method checks for one base type, that it implements the Node interface */
@@ -844,8 +848,8 @@ class AddRelayConnectionsTest {
 		assertEquals(2, edge.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-		checkField(edge, j++, "node", false, false, false, typeName, typeName, 0);
-		checkField(edge, j++, "cursor", false, true, false, "String", "String", 0);
+		checkField(edge, j++, "node", false, false, null, typeName, typeName, 0);
+		checkField(edge, j++, "cursor", false, true, null, "String", "String", 0);
 		//
 		assertEquals(null, edge.getIdentifier());
 		assertEquals(0, edge.getImplementz().size(), "0 until generic types are managed");
@@ -894,11 +898,12 @@ class AddRelayConnectionsTest {
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(documentParser, ((FieldImpl) field).getDocumentParser());
 		assertNotNull(field.getOwningType());
-		assertEquals(list, field.isList(), "field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(mandatory, field.isMandatory(),
+		assertEquals(list, field.getFieldTypeAST().isList(),
+				"field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
+		assertEquals(mandatory, field.getFieldTypeAST().isMandatory(),
 				"field mandatory is " + mandatory + " (for " + fieldDescForJUnitMessage + ")");
-		if (itemMandatory != null) {
-			assertEquals(itemMandatory, field.isItemMandatory(),
+		if (list && itemMandatory != null) {
+			assertEquals(itemMandatory, field.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
 					"field itemMandatory is " + itemMandatory + " (for " + fieldDescForJUnitMessage + ")");
 		}
 

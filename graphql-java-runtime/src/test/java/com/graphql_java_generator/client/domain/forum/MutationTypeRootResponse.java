@@ -10,7 +10,7 @@ import com.graphql_java_generator.client.response.Error;
 public class MutationTypeRootResponse {
 
 	@JsonProperty("mutation")
-	@GraphQLNonScalar(list = false, fieldName = "MutationType", graphQLTypeName = "MutationType", javaClass = MutationTypeResponse.class)
+	@GraphQLNonScalar( fieldName = "MutationType", graphQLTypeSimpleName = "MutationType", javaClass = MutationTypeResponse.class)
 	MutationTypeResponse mutation;
 
 	@JsonProperty("errors")

@@ -20,16 +20,16 @@ public class QueryType {
 		// No action
 	}
 
-	@GraphQLNonScalar(fieldName = "boards", graphQLTypeName = "Board", list = true, javaClass = Board.class)
+	@GraphQLNonScalar(fieldName = "boards", graphQLTypeSimpleName = "Board",  javaClass = Board.class)
 	List<Board> boards;
 
-	@GraphQLScalar(fieldName = "nbBoards", graphQLTypeName = "Int", list = false, javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbBoards", graphQLTypeSimpleName = "Int",  javaClass = Integer.class)
 	Integer nbBoards;
 
-	@GraphQLNonScalar(fieldName = "topics", graphQLTypeName = "Topic", list = true, javaClass = Topic.class)
+	@GraphQLNonScalar(fieldName = "topics", graphQLTypeSimpleName = "Topic",  javaClass = Topic.class)
 	List<Topic> topics;
 
-	@GraphQLNonScalar(fieldName = "findTopics", graphQLTypeName = "Topic", list = true, javaClass = Topic.class)
+	@GraphQLNonScalar(fieldName = "findTopics", graphQLTypeSimpleName = "Topic",  javaClass = Topic.class)
 	List<Topic> findTopics;
 
 	public void setBoards(List<Board> boards) {

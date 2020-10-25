@@ -17,7 +17,7 @@ public class AllFieldCasesWithoutIdSubtypeInput  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String name;
 
 

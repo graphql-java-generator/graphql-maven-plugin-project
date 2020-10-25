@@ -14,15 +14,15 @@ import java.util.List;
 @GraphQLInterfaceType("Commented")
 public interface Commented  {
 
-	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", list = false, javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeSimpleName = "Int",  javaClass = Integer.class)
 	public void setNbComments(Integer nbComments);
 
-	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", list = false, javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeSimpleName = "Int",  javaClass = Integer.class)
 	public Integer getNbComments();
 
-	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", list = true, javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	public void setComments(List<String> comments);
 
-	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", list = true, javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	public List<String> getComments();
 }

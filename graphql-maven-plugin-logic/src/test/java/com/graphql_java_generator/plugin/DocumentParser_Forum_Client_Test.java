@@ -90,30 +90,30 @@ class DocumentParser_Forum_Client_Test {
 		assertEquals("@GraphQLObjectType(\"Topic\")", topic.getAnnotation());
 		int i = 0;
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", list = false, javaClass = String.class)");
+				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date", ""//
 				+ "@JsonDeserialize(using = CustomScalarDeserializerDate.class)\n" //
 				+ "\t@JsonProperty(\"date\")\n" //
-				+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", list = false, javaClass = Date.class)");
+				+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author", "@JsonProperty(\"author\")\n"//
-				+ "\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", list = false, javaClass = Member.class)");
+				+ "\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable", ""//
 				+ "@JsonProperty(\"publiclyAvailable\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", list = false, javaClass = Boolean.class)");
+				+ "\t@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeSimpleName = \"Boolean\", javaClass = Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts", "" //
 				+ "@JsonProperty(\"nbPosts\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", list = false, javaClass = Integer.class)");
+				+ "\t@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeSimpleName = \"Int\", javaClass = Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title", ""//
 				+ "@JsonProperty(\"title\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
+				+ "\t@GraphQLScalar(fieldName = \"title\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content", ""//
 				+ "@JsonProperty(\"content\")\n"//
-				+ "\t@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
+				+ "\t@GraphQLScalar(fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts", ""//
 				+ "@JsonDeserialize(contentAs = Post.class)\n"//
 				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"})\n"
 				+ "\t@JsonProperty(\"posts\")\n"//
-				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", list = true, javaClass = Post.class)");
+				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = Post.class)");
 	}
 
 	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
@@ -132,7 +132,7 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
 				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
 						+ "	@JsonProperty(\"createBoard\")\n"
-						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", list = false, javaClass = Board.class)");
+						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 
 	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
@@ -150,7 +150,7 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
 				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
 						+ "	@JsonProperty(\"createBoard\")\n"
-						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeName = \"Board\", list = false, javaClass = Board.class)");
+						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 
 	/** Tests the Data Fetchers that are listed during parsing */
@@ -231,11 +231,12 @@ class DocumentParser_Forum_Client_Test {
 		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
 
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(list, field.isList(), "field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(mandatory, field.isMandatory(),
+		assertEquals(list, field.getFieldTypeAST().isList(),
+				"field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
+		assertEquals(mandatory, field.getFieldTypeAST().isMandatory(),
 				"field mandatory is " + mandatory + " (for " + fieldDescForJUnitMessage + ")");
-		if (itemMandatory != null) {
-			assertEquals(itemMandatory, field.isItemMandatory(),
+		if (list && itemMandatory != null) {
+			assertEquals(itemMandatory, field.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
 					"field itemMandatory is " + itemMandatory + " (for " + fieldDescForJUnitMessage + ")");
 		}
 
@@ -254,13 +255,14 @@ class DocumentParser_Forum_Client_Test {
 
 		assertEquals(name, inputValue.getName(),
 				type.getName() + " - name is " + name + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(list, inputValue.isList(),
+		assertEquals(list, inputValue.getFieldTypeAST().isList(),
 				type.getName() + " - list is " + list + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(mandatory, inputValue.isMandatory(),
+		assertEquals(mandatory, inputValue.getFieldTypeAST().isMandatory(),
 				type.getName() + " - mandatory is " + mandatory + " (for " + intputParamDescForJUnitMessage + ")");
 		if (itemMandatory != null) {
-			assertEquals(itemMandatory, inputValue.isItemMandatory(), type.getName() + " - itemMandatory is "
-					+ itemMandatory + " (for " + intputParamDescForJUnitMessage + ")");
+			assertEquals(itemMandatory, inputValue.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
+					type.getName() + " - itemMandatory is " + itemMandatory + " (for " + intputParamDescForJUnitMessage
+							+ ")");
 		}
 
 		Type fieldType = inputValue.getType();

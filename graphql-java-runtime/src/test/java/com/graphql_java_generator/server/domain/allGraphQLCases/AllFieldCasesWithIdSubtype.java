@@ -18,11 +18,11 @@ public class AllFieldCasesWithIdSubtype  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	UUID id;
 
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String name;
 
 

@@ -17,11 +17,11 @@ public class AnotherMutationType  {
 		// No action
 	}
 
-	@GraphQLNonScalar(fieldName = "createHuman", graphQLTypeName = "Human", list = false, javaClass = Human.class)
+	@GraphQLNonScalar(fieldName = "createHuman", graphQLTypeSimpleName = "Human",  javaClass = Human.class)
 	Human createHuman;
 
 
-	@GraphQLNonScalar(fieldName = "createAllFieldCases", graphQLTypeName = "AllFieldCases", list = false, javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "createAllFieldCases", graphQLTypeSimpleName = "AllFieldCases",  javaClass = AllFieldCases.class)
 	AllFieldCases createAllFieldCases;
 
 

@@ -16,27 +16,27 @@ import java.util.UUID;
 @GraphQLInterfaceType("Character")
 public interface Character  {
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	public void setId(UUID id);
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	public UUID getId();
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	public void setName(String name);
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	public String getName();
 
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "Character", list = true, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	public void setFriends(List<Character> friends);
 
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "Character", list = true, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	public List<Character> getFriends();
 
-	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", list = true, javaClass = Episode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeSimpleName = "Episode",  javaClass = Episode.class)
 	public void setAppearsIn(List<Episode> appearsIn);
 
-	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", list = true, javaClass = Episode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeSimpleName = "Episode",  javaClass = Episode.class)
 	public List<Episode> getAppearsIn();
 }

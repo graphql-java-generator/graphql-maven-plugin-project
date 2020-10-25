@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
@@ -110,7 +111,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field)");
 				}
-				if (!"ID".equals(i.getFields().get(0).getGraphQLTypeName())) {
+				if (!"ID".equals(i.getFields().get(0).getGraphQLTypeSimpleName())) {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, of the 'ID' type)");
 				}
@@ -118,11 +119,11 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is an identifier)");
 				}
-				if (i.getFields().get(0).isList()) {
+				if (i.getFields().get(0).getFieldTypeAST().isList()) {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is not a list)");
 				}
-				if (!i.getFields().get(0).isMandatory()) {
+				if (!i.getFields().get(0).getFieldTypeAST().isMandatory()) {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is mandatory)");
 				}
@@ -152,8 +153,9 @@ public class AddRelayConnections {
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			node = new InterfaceType(NODE, configuration);
 			// Adding the id field toe the Node interface
-			FieldImpl f = FieldImpl.builder().name("id").graphQLTypeName("ID").id(true).mandatory(true).owningType(node)
-					.documentParser(documentParser).build();
+			FieldImpl f = FieldImpl.builder().name("id").owningType(node).documentParser(documentParser)
+					.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("ID").mandatory(true).build())//
+					.build();
 			node.getFields().add(f);
 
 			documentParser.getInterfaceTypes().add(node);
@@ -204,7 +206,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the first field should be the 'pageInfo' field)");
 				}
-				if (!"PageInfo".equals(i.getFields().get(j).getGraphQLTypeName())) {
+				if (!"PageInfo".equals(i.getFields().get(j).getGraphQLTypeSimpleName())) {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field must be of the 'PageInfo' type)");
 				}
@@ -212,11 +214,11 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field may not be an identifier)");
 				}
-				if (i.getFields().get(j).isList()) {
+				if (i.getFields().get(j).getFieldTypeAST().isList()) {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field may not be a list)");
 				}
-				if (!i.getFields().get(j).isMandatory()) {
+				if (!i.getFields().get(j).getFieldTypeAST().isMandatory()) {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field must be mandatory)");
 				}
@@ -226,7 +228,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the first field should be the 'edges' field)");
 				}
-				if (!"Edge".equals(i.getFields().get(j).getGraphQLTypeName())) {
+				if (!"Edge".equals(i.getFields().get(j).getGraphQLTypeSimpleName())) {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field must be of the 'PageInfo' type)");
 				}
@@ -234,7 +236,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field may not be an identifier)");
 				}
-				if (!i.getFields().get(j).isList()) {
+				if (!i.getFields().get(j).getFieldTypeAST().isList()) {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field must be a list)");
 				}
@@ -256,10 +258,13 @@ public class AddRelayConnections {
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			InterfaceType i = new InterfaceType(CONNECTION, configuration);
 			// Adding the id field toe the Node interface
-			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName("Edge").list(true).owningType(i)
-					.documentParser(documentParser).build();
-			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
-					.owningType(i).documentParser(documentParser).build();
+			FieldTypeAST item = FieldTypeAST.builder().graphQLTypeSimpleName("Edge").build();
+			FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(item).build();
+			FieldImpl edges = FieldImpl.builder().name("edges").owningType(i).documentParser(documentParser)
+					.fieldTypeAST(list).build();
+			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").owningType(i).documentParser(documentParser)
+					.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("PageInfo").mandatory(true).build())//
+					.build();
 			i.getFields().add(edges);
 			i.getFields().add(pageInfo);
 
@@ -311,7 +316,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the first field should be the 'cursor' field)");
 				}
-				if (!"String".equals(i.getFields().get(j).getGraphQLTypeName())) {
+				if (!"String".equals(i.getFields().get(j).getGraphQLTypeSimpleName())) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should be a String field)");
 				}
@@ -319,11 +324,11 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should not be an identifier)");
 				}
-				if (i.getFields().get(j).isList()) {
+				if (i.getFields().get(j).getFieldTypeAST().isList()) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should not be a list)");
 				}
-				if (!i.getFields().get(j).isMandatory()) {
+				if (!i.getFields().get(j).getFieldTypeAST().isMandatory()) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should be mandatory)");
 				}
@@ -334,7 +339,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the second field should be the 'node' field)");
 				}
-				if (!"Node".equals(i.getFields().get(j).getGraphQLTypeName())) {
+				if (!"Node".equals(i.getFields().get(j).getGraphQLTypeSimpleName())) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should be of type [Edge])");
 				}
@@ -342,11 +347,11 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be an identifier)");
 				}
-				if (i.getFields().get(j).isList()) {
+				if (i.getFields().get(j).getFieldTypeAST().isList()) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be a list)");
 				}
-				if (i.getFields().get(j).isMandatory()) {
+				if (i.getFields().get(j).getFieldTypeAST().isMandatory()) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be mandatory)");
 				}
@@ -366,10 +371,12 @@ public class AddRelayConnections {
 			// We're in the standard case: the interface doesn't exist in the given schema(s). Let's define it.
 			InterfaceType i = new InterfaceType(EDGE, configuration);
 			// Adding the id field toe the Node interface
-			FieldImpl cursor = FieldImpl.builder().name("cursor").graphQLTypeName("String").mandatory(true)
-					.owningType(i).documentParser(documentParser).build();
-			FieldImpl node = FieldImpl.builder().name("node").graphQLTypeName("Node").owningType(i)
-					.documentParser(documentParser).build();
+			FieldImpl cursor = FieldImpl.builder().name("cursor").owningType(i).documentParser(documentParser)
+					.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(true).build())//
+					.build();
+			FieldImpl node = FieldImpl.builder().name("node").owningType(i).documentParser(documentParser)
+					.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("Node").build())//
+					.build();
 			i.getFields().add(cursor);
 			i.getFields().add(node);
 
@@ -396,14 +403,26 @@ public class AddRelayConnections {
 			// PageInfo is not defined in the GraphQL source schema. Let's add it.
 			ObjectType pageInfo = new ObjectType(PAGE_INFO, configuration);
 			// Adding the PageInfo's fields
-			pageInfo.getFields().add(FieldImpl.builder().name("hasNextPage").graphQLTypeName("Boolean").mandatory(true)
-					.owningType(pageInfo).documentParser(documentParser).build());
-			pageInfo.getFields().add(FieldImpl.builder().name("hasPreviousPage").graphQLTypeName("Boolean")
-					.mandatory(true).owningType(pageInfo).documentParser(documentParser).build());
-			pageInfo.getFields().add(FieldImpl.builder().name("startCursor").graphQLTypeName("String").mandatory(true)
-					.owningType(pageInfo).documentParser(documentParser).build());
-			pageInfo.getFields().add(FieldImpl.builder().name("endCursor").graphQLTypeName("String").mandatory(true)
-					.owningType(pageInfo).documentParser(documentParser).build());
+			pageInfo.getFields()
+					.add(FieldImpl.builder().name("hasNextPage").owningType(pageInfo).documentParser(documentParser)
+							.fieldTypeAST(
+									FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build())//
+							.build());
+			pageInfo.getFields()
+					.add(FieldImpl.builder().name("hasPreviousPage").owningType(pageInfo).documentParser(documentParser)
+							.fieldTypeAST(
+									FieldTypeAST.builder().graphQLTypeSimpleName("Boolean").mandatory(true).build()) //
+							.build());
+			pageInfo.getFields()
+					.add(FieldImpl.builder().name("startCursor").owningType(pageInfo).documentParser(documentParser)
+							.fieldTypeAST(
+									FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(true).build())//
+							.build());
+			pageInfo.getFields()
+					.add(FieldImpl.builder().name("endCursor").owningType(pageInfo).documentParser(documentParser)
+							.fieldTypeAST(
+									FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(true).build())//
+							.build());
 			//
 			documentParser.getObjectTypes().add(pageInfo);
 			documentParser.getTypes().put(PAGE_INFO, pageInfo);
@@ -484,7 +503,7 @@ public class AddRelayConnections {
 								// This Field has the @RelayConnection directive applied
 								//
 								// It must be a list
-								if (!f.isList()) {
+								if (!f.getFieldTypeAST().isList()) {
 									throw new RuntimeException("The " + f.getOwningType().getName() + "." + f.getName()
 											+ " field has the @RelayConnection directive applied, but is not a list. The @RelayConnection directive may only be applied on lists.");
 								}
@@ -576,7 +595,7 @@ public class AddRelayConnections {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		Set<String> connectionTypeNames = new HashSet<>();
 		for (Field f : fields) {
-			connectionTypeNames.add(f.getGraphQLTypeName());
+			connectionTypeNames.add(f.getGraphQLTypeSimpleName());
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -605,10 +624,9 @@ public class AddRelayConnections {
 		// removed from the final schema.
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (Field f : fields) {
-			((FieldImpl) f).setGraphQLTypeName(f.getGraphQLTypeName() + "Connection");
-			((FieldImpl) f).setList(false);
-			((FieldImpl) f).setMandatory(true);
-			((FieldImpl) f).setItemMandatory(false);// No more sense, for item lists
+			FieldTypeAST fieldTypeAST = FieldTypeAST.builder()
+					.graphQLTypeSimpleName(f.getGraphQLTypeSimpleName() + "Connection").mandatory(true).build();
+			((FieldImpl) f).setFieldTypeAST(fieldTypeAST);
 		}
 	}
 
@@ -634,13 +652,15 @@ public class AddRelayConnections {
 			for (Field f : xxxConnection.getFields()) {
 				switch (f.getName()) {
 				case "edges":
-					if (f.getType().getName().equals(type.getName() + "Edge") && !f.isMandatory() && f.isList()) {
+					if (f.getType().getName().equals(type.getName() + "Edge") && !f.getFieldTypeAST().isMandatory()
+							&& f.getFieldTypeAST().isList()) {
 						// This field is compliant to the Relay specification
 						edgesFound = true;
 					}
 					break;
 				case "pageInfo":
-					if (f.getType().getName().equals("PageInfo") && f.isMandatory() && !f.isList()) {
+					if (f.getType().getName().equals("PageInfo") && f.getFieldTypeAST().isMandatory()
+							&& !f.getFieldTypeAST().isList()) {
 						// This field is compliant to the Relay specification
 						pageInfoFound = true;
 					}
@@ -666,11 +686,15 @@ public class AddRelayConnections {
 			}
 			documentParser.getTypes().put(connectionTypeName, xxxConnectionObject);
 
-			FieldImpl edges = FieldImpl.builder().name("edges").graphQLTypeName(type.getName() + "Edge").list(true)
-					.documentParser(documentParser).owningType(xxxConnectionObject).build();
+			FieldTypeAST item = FieldTypeAST.builder().graphQLTypeSimpleName(type.getName() + "Edge").build();
+			FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(item).build();
+			FieldImpl edges = FieldImpl.builder().name("edges").documentParser(documentParser)
+					.owningType(xxxConnectionObject).fieldTypeAST(list).build();
 			xxxConnectionObject.getFields().add(edges);
-			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").graphQLTypeName("PageInfo").mandatory(true)
-					.documentParser(documentParser).owningType(xxxConnectionObject).build();
+			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").documentParser(documentParser)
+					.owningType(xxxConnectionObject)
+					.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("PageInfo").mandatory(true).build())//
+					.build();
 			xxxConnectionObject.getFields().add(pageInfo);
 
 			// The XxxConnection objects/interfaces will implement the Connection interface, once the Generic type are
@@ -709,13 +733,15 @@ public class AddRelayConnections {
 			for (Field f : xxxEdge.getFields()) {
 				switch (f.getName()) {
 				case "node":
-					if (f.getType().getName().equals(type.getName()) && !f.isMandatory() && !f.isList()) {
+					if (f.getType().getName().equals(type.getName()) && !f.getFieldTypeAST().isMandatory()
+							&& !f.getFieldTypeAST().isList()) {
 						// This field is compliant to the Relay specification
 						nodeFound = true;
 					}
 					break;
 				case "cursor":
-					if (f.getType().getName().equals("String") && f.isMandatory() && !f.isList()) {
+					if (f.getType().getName().equals("String") && f.getFieldTypeAST().isMandatory()
+							&& !f.getFieldTypeAST().isList()) {
 						// This field is compliant to the Relay specification
 						cursorFound = true;
 					}
@@ -740,11 +766,14 @@ public class AddRelayConnections {
 			}
 			documentParser.getTypes().put(edgeTypeName, xxxEdgeObject);
 
-			FieldImpl node = FieldImpl.builder().name("node").graphQLTypeName(type.getName())
-					.documentParser(documentParser).owningType(xxxEdgeObject).build();
+			FieldImpl node = FieldImpl.builder().name("node").documentParser(documentParser).owningType(xxxEdgeObject)
+					.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName(type.getName()).build())//
+					.build();
 			xxxEdgeObject.getFields().add(node);
-			FieldImpl cursor = FieldImpl.builder().name("cursor").graphQLTypeName("String").mandatory(true)
-					.documentParser(documentParser).owningType(xxxEdgeObject).build();
+			FieldImpl cursor = FieldImpl.builder().name("cursor").documentParser(documentParser)
+					.owningType(xxxEdgeObject)
+					.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(true).build())//
+					.build();
 			xxxEdgeObject.getFields().add(cursor);
 
 			// The XxxEdge objects/interfaces must implement the Edge interface, once the Generic type are
@@ -850,24 +879,27 @@ public class AddRelayConnections {
 					throw new RuntimeException("The value for the isId() property of the field '" + fieldName
 							+ "' of the type '" + type.getName() + "' is expected to be " + id + " but is " + f.isId());
 				}
-				if (list != f.isList()) {
+				if (list != f.getFieldTypeAST().isList()) {
+					throw new RuntimeException("The value for the isList() property of the field '" + fieldName
+							+ "' of the type '" + type.getName() + "' is expected to be " + list + " but is "
+							+ f.getFieldTypeAST().isList());
+				}
+				if (mandatory != f.getFieldTypeAST().isMandatory()) {
 					throw new RuntimeException(
-							"The value for the isList() property of the field '" + fieldName + "' of the type '"
-									+ type.getName() + "' is expected to be " + list + " but is " + f.isList());
+							"The value for the getFieldTypeAST().isMandatory() property of the field '" + fieldName
+									+ "' of the type '" + type.getName() + "' is expected to be " + mandatory
+									+ " but is " + f.getFieldTypeAST().isMandatory());
 				}
-				if (mandatory != f.isMandatory()) {
-					throw new RuntimeException("The value for the isMandatory() property of the field '" + fieldName
-							+ "' of the type '" + type.getName() + "' is expected to be " + mandatory + " but is "
-							+ f.isMandatory());
-				}
-				if (f.isList() && itemMandatory != null && (itemMandatory != f.isItemMandatory())) {
+				if (f.getFieldTypeAST().isList() && itemMandatory != null
+						&& (itemMandatory != f.getFieldTypeAST().getListItemFieldTypeAST().isMandatory())) {
 					throw new RuntimeException("The value for the isItemMandatory() property of the field '" + fieldName
 							+ "' of the type '" + type.getName() + "' is expected to be " + itemMandatory + " but is "
-							+ f.isItemMandatory());
+							+ f.getFieldTypeAST().getListItemFieldTypeAST().isMandatory());
 				}
-				if (!typeName.equals(f.getGraphQLTypeName())) {
-					throw new RuntimeException("The type of the field '" + fieldName + "' of the type '"
-							+ type.getName() + "' is expected to be " + typeName + " but is " + f.getGraphQLTypeName());
+				if (!typeName.equals(f.getGraphQLTypeSimpleName())) {
+					throw new RuntimeException(
+							"The type of the field '" + fieldName + "' of the type '" + type.getName()
+									+ "' is expected to be " + typeName + " but is " + f.getGraphQLTypeSimpleName());
 				}
 				if (f.getInputParameters().size() != nbParameters) {
 					throw new RuntimeException("The number of input parameters for the field '" + fieldName

@@ -34,7 +34,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 * You can implements this method like this:
 	 * <PRE>
 	 * @Override
-	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader, Human origin) {
+	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, ${dataFetcher.field.javaType}> dataLoader, Human origin) {
 	 *     List<${configuration.javaTypeForIDType}> friendIds = origin.getFriendIds();
 	 *     DataLoader<${configuration.javaTypeForIDType}, CharacterImpl> dataLoader = environment.getDataLoader("Character");
 	 *     return dataLoader.loadMany(friendIds);
@@ -69,12 +69,12 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 */
 ## If this dataFetcher is a completableFuture, we add a DataLoader parameter
 #if (${dataFetcher.completableFuture})
-	public CompletableFuture<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, #if(${argument.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${argument.list})>#end> dataLoader#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), #if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end  ${argument.javaName}#end);
+	public CompletableFuture<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, ${dataFetcher.field.javaType}> dataLoader#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${dataFetcher.field.javaType} ${argument.javaName}#end);
 #elseif ($dataFetcherDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
-	public Publisher<#if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), #if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end  ${argument.javaName}#end);
+	public Publisher<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
 #else
-	public #if(${dataFetcher.field.list})List<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.field.list})>#end ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), #if(${argument.list})List<#end${argument.type.classSimpleName}#if(${argument.list})>#end  ${argument.javaName}#end);
+	public ${dataFetcher.field.javaType} ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
 #end
 
 #end

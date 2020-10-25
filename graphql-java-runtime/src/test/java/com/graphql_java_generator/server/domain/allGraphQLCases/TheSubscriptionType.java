@@ -17,7 +17,7 @@ public class TheSubscriptionType  {
 		// No action
 	}
 
-	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeName = "Human", list = false, javaClass = Human.class)
+	@GraphQLNonScalar(fieldName = "subscribeNewHumanForEpisode", graphQLTypeSimpleName = "Human",  javaClass = Human.class)
 	Human subscribeNewHumanForEpisode;
 
 

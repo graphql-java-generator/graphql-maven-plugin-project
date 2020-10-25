@@ -21,19 +21,19 @@ public class PostInput  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "topicId", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "topicId", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	UUID topicId;
 
 
-	@GraphQLNonScalar(fieldName = "input", graphQLTypeName = "TopicPostInput", list = false, javaClass = TopicPostInput.class)
+	@GraphQLNonScalar(fieldName = "input", graphQLTypeSimpleName = "TopicPostInput",  javaClass = TopicPostInput.class)
 	TopicPostInput input;
 
 
-	@GraphQLScalar(fieldName = "from", graphQLTypeName = "Date", list = false, javaClass = Date.class)
+	@GraphQLScalar(fieldName = "from", graphQLTypeSimpleName = "Date",  javaClass = Date.class)
 	Date from;
 
 
-	@GraphQLScalar(fieldName = "in", graphQLTypeName = "Date", list = true, javaClass = Date.class)
+	@GraphQLScalar(fieldName = "in", graphQLTypeSimpleName = "Date",  javaClass = Date.class)
 	List<Date> in;
 
 

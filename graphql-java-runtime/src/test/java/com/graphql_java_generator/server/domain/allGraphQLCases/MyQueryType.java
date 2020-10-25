@@ -19,59 +19,59 @@ public class MyQueryType  {
 		// No action
 	}
 
-	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeName = "Character", list = true, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	List<Character> withoutParameters;
 
 
-	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeName = "Character", list = false, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	Character withOneOptionalParam;
 
 
-	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeName = "Character", list = false, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	Character withOneMandatoryParam;
 
 
-	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeName = "Character", list = false, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	Character withOneMandatoryParamDefaultValue;
 
 
-	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeName = "Droid", list = false, javaClass = Droid.class)
+	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid",  javaClass = Droid.class)
 	Droid withTwoMandatoryParamDefaultVal;
 
 
-	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeName = "Character", list = false, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	Character withEnum;
 
 
-	@GraphQLNonScalar(fieldName = "withList", graphQLTypeName = "Character", list = true, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	List<Character> withList;
 
 
-	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeName = "AllFieldCases", list = false, javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases",  javaClass = AllFieldCases.class)
 	AllFieldCases allFieldCases;
 
 
-	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeName = "AnyCharacter", list = true, javaClass = AnyCharacter.class)
+	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter",  javaClass = AnyCharacter.class)
 	List<AnyCharacter> unionTest;
 
 
-	@GraphQLNonScalar(fieldName = "error", graphQLTypeName = "Character", list = false, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	Character error;
 
 
-	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeName = "break", list = false, javaClass = _break.class)
+	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break",  javaClass = _break.class)
 	_break aBreak;
 
 
-	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeName = "String", list = true, javaClass = String.class)
+	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	List<String> directiveOnQuery;
 
 
-	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeName = "Character", list = false, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	Character directiveOnField;
 
 
-	@GraphQLNonScalar(fieldName = "relay", graphQLTypeName = "MyQueryType", list = false, javaClass = MyQueryType.class)
+	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType",  javaClass = MyQueryType.class)
 	MyQueryType relay;
 
 

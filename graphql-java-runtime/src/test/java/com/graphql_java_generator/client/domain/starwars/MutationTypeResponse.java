@@ -17,12 +17,12 @@ public class MutationTypeResponse {
 
 	@GraphQLInputParameters(names = { "name", "homePlanet" }, types = { "String", "String" })
 	@JsonProperty("createHuman")
-	@GraphQLNonScalar(list = false, fieldName = "createHuman", graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar( fieldName = "createHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
 	Human createHuman;
 
 	@GraphQLInputParameters(names = { "idCharacter", "idNewFriend" }, types = { "String", "String" })
 	@JsonProperty("addFriend")
-	@GraphQLNonScalar(list = false, fieldName = "addFriend", graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar( fieldName = "addFriend", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character addFriend;
 
 	public void setCreateHuman(Human createHuman) {

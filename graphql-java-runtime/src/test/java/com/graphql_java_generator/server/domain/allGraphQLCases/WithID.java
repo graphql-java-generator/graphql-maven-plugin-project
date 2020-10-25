@@ -14,9 +14,9 @@ import java.util.UUID;
 @GraphQLInterfaceType("WithID")
 public interface WithID  {
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	public void setId(UUID id);
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	public UUID getId();
 }

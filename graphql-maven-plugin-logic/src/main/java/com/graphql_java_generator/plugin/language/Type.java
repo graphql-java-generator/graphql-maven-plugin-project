@@ -22,7 +22,7 @@ public interface Type {
 	}
 
 	/**
-	 * The name of the object type
+	 * The GraphQL name of the object type
 	 * 
 	 * @return
 	 */

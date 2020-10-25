@@ -21,18 +21,18 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 public interface WithID  {
 
 	@JsonProperty("id")
-	@GraphQLScalar(list = false, fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar( fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
 	public void setId(String id);
 
 	@JsonProperty("id")
-	@GraphQLScalar(list = false, fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar( fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
 	public String getId();
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public void set__typename(String __typename);
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public String get__typename();
 }

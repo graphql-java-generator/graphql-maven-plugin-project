@@ -11,7 +11,7 @@ import com.graphql_java_generator.client.response.Error;
 public class MyQueryTypeRootResponse {
 
 	@JsonProperty("data")
-	@GraphQLNonScalar(list = false, fieldName = "MyQueryType", graphQLTypeName = "MyQueryType", javaClass = MyQueryType.class)
+	@GraphQLNonScalar( fieldName = "MyQueryType", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	MyQueryType query;
 
 	@JsonProperty("errors")

@@ -17,7 +17,7 @@ public class _class  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "default", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "default", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String _default;
 
 

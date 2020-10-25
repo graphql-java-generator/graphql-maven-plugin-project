@@ -20,59 +20,59 @@ public class AllFieldCasesInterfaceType implements AllFieldCasesInterface {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	UUID id;
 
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String name;
 
 
-	@GraphQLScalar(fieldName = "forname", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "forname", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String forname;
 
 
-	@GraphQLScalar(fieldName = "age", graphQLTypeName = "Long", list = false, javaClass = Long.class)
+	@GraphQLScalar(fieldName = "age", graphQLTypeSimpleName = "Long",  javaClass = Long.class)
 	Long age;
 
 
-	@GraphQLScalar(fieldName = "nbComments", graphQLTypeName = "Int", list = false, javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeSimpleName = "Int",  javaClass = Integer.class)
 	Integer nbComments;
 
 
-	@GraphQLScalar(fieldName = "comments", graphQLTypeName = "String", list = true, javaClass = String.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	List<String> comments;
 
 
-	@GraphQLScalar(fieldName = "booleans", graphQLTypeName = "Boolean", list = true, javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "booleans", graphQLTypeSimpleName = "Boolean",  javaClass = Boolean.class)
 	List<Boolean> booleans;
 
 
-	@GraphQLScalar(fieldName = "aliases", graphQLTypeName = "String", list = true, javaClass = String.class)
+	@GraphQLScalar(fieldName = "aliases", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	List<String> aliases;
 
 
-	@GraphQLScalar(fieldName = "planets", graphQLTypeName = "String", list = true, javaClass = String.class)
+	@GraphQLScalar(fieldName = "planets", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	List<String> planets;
 
 
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "Human", list = true, javaClass = Human.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Human",  javaClass = Human.class)
 	List<Human> friends;
 
 
-	@GraphQLNonScalar(fieldName = "oneWithIdSubType", graphQLTypeName = "AllFieldCasesWithIdSubtype", list = false, javaClass = AllFieldCasesWithIdSubtype.class)
+	@GraphQLNonScalar(fieldName = "oneWithIdSubType", graphQLTypeSimpleName = "AllFieldCasesWithIdSubtype",  javaClass = AllFieldCasesWithIdSubtype.class)
 	AllFieldCasesWithIdSubtype oneWithIdSubType;
 
 
-	@GraphQLNonScalar(fieldName = "listWithIdSubTypes", graphQLTypeName = "AllFieldCasesWithIdSubtype", list = true, javaClass = AllFieldCasesWithIdSubtype.class)
+	@GraphQLNonScalar(fieldName = "listWithIdSubTypes", graphQLTypeSimpleName = "AllFieldCasesWithIdSubtype",  javaClass = AllFieldCasesWithIdSubtype.class)
 	List<AllFieldCasesWithIdSubtype> listWithIdSubTypes;
 
 
-	@GraphQLNonScalar(fieldName = "oneWithoutIdSubType", graphQLTypeName = "AllFieldCasesWithoutIdSubtype", list = false, javaClass = AllFieldCasesWithoutIdSubtype.class)
+	@GraphQLNonScalar(fieldName = "oneWithoutIdSubType", graphQLTypeSimpleName = "AllFieldCasesWithoutIdSubtype",  javaClass = AllFieldCasesWithoutIdSubtype.class)
 	AllFieldCasesWithoutIdSubtype oneWithoutIdSubType;
 
 
-	@GraphQLNonScalar(fieldName = "listWithoutIdSubTypes", graphQLTypeName = "AllFieldCasesWithoutIdSubtype", list = true, javaClass = AllFieldCasesWithoutIdSubtype.class)
+	@GraphQLNonScalar(fieldName = "listWithoutIdSubTypes", graphQLTypeSimpleName = "AllFieldCasesWithoutIdSubtype",  javaClass = AllFieldCasesWithoutIdSubtype.class)
 	List<AllFieldCasesWithoutIdSubtype> listWithoutIdSubTypes;
 
 

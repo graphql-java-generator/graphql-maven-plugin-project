@@ -22,24 +22,24 @@ import java.util.Date;
 public class PostInput  {
 
 	@JsonProperty("topicId")
-	@GraphQLScalar(list = false, fieldName = "topicId", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar( fieldName = "topicId", graphQLTypeSimpleName = "ID", javaClass = String.class)
 	String topicId;
 
 
 	@JsonProperty("input")
-	@GraphQLNonScalar(list = false, fieldName = "input", graphQLTypeName = "TopicPostInput", javaClass = TopicPostInput.class)
+	@GraphQLNonScalar( fieldName = "input", graphQLTypeSimpleName = "TopicPostInput", javaClass = TopicPostInput.class)
 	TopicPostInput input;
 
 
 	@JsonProperty("from")
 	@JsonDeserialize(using = CustomScalarDeserializerDate.class)
-	@GraphQLScalar(list = false, fieldName = "from", graphQLTypeName = "Date", javaClass = Date.class)
+	@GraphQLScalar( fieldName = "from", graphQLTypeSimpleName = "Date", javaClass = Date.class)
 	Date from;
 
 
 	@JsonProperty("in")
 	@JsonDeserialize(contentAs = Date.class, using = CustomScalarDeserializerDate.class)
-	@GraphQLScalar(list = false, fieldName = "in", graphQLTypeName = "Date", javaClass = Date.class)
+	@GraphQLScalar( fieldName = "in", graphQLTypeSimpleName = "Date", javaClass = Date.class)
 	List<Date> in;
 
 

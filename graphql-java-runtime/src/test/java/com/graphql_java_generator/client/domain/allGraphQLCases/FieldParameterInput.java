@@ -21,13 +21,13 @@ public class FieldParameterInput  {
 	}
 
 	@JsonProperty("uppercase")
-	@GraphQLScalar(list = false, fieldName = "uppercase", graphQLTypeName = "Boolean", javaClass = Boolean.class)
+	@GraphQLScalar( fieldName = "uppercase", graphQLTypeSimpleName = "Boolean", javaClass = Boolean.class)
 	Boolean uppercase;
 
 
 	@JsonDeserialize(using = CustomScalarDeserializerDate.class)
 	@JsonProperty("date")
-	@GraphQLScalar(list = false, fieldName = "date", graphQLTypeName = "Date", javaClass = Date.class)
+	@GraphQLScalar( fieldName = "date", graphQLTypeSimpleName = "Date", javaClass = Date.class)
 	Date date;
 
 

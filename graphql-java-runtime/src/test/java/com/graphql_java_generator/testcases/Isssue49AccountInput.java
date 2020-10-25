@@ -13,7 +13,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
  */
 public class Isssue49AccountInput {
 
-	@GraphQLScalar(list = false, fieldName = "title", graphQLTypeName = "Issue49Title", javaClass = Issue49Title.class)
+	@GraphQLScalar( fieldName = "title", graphQLTypeSimpleName = "Issue49Title", javaClass = Issue49Title.class)
 	private Issue49Title title;
 
 	public Issue49Title getTitle() {

@@ -22,24 +22,24 @@ public class CharacterInput  {
 	}
 
 	@JsonProperty("name")
-	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonDeserialize(contentAs = CharacterInput.class)
 	@JsonProperty("friends")
-	@GraphQLNonScalar(list = false, fieldName = "friends", graphQLTypeName = "CharacterInput", javaClass = CharacterInput.class)
+	@GraphQLNonScalar( fieldName = "friends", graphQLTypeSimpleName = "CharacterInput", javaClass = CharacterInput.class)
 	List<CharacterInput> friends;
 
 
 	@JsonDeserialize(contentAs = Episode.class)
 	@JsonProperty("appearsIn")
-	@GraphQLScalar(list = false, fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar( fieldName = "appearsIn", graphQLTypeSimpleName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
 	@JsonProperty("type")
-	@GraphQLScalar(list = false, fieldName = "type", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "type", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String type;
 
 

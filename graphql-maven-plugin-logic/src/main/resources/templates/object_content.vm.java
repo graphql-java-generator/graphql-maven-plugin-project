@@ -5,17 +5,17 @@
 
 #foreach ($field in $object.fields)
 	${field.annotation}
-	#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
+	${field.javaType} ${field.javaName};
 
 
 #end
 
 #foreach ($field in $object.fields)
-	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}) {
+	public void set${field.pascalCaseName}(${field.javaType} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
 
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end get${field.pascalCaseName}() {
+	public ${field.javaType} get${field.pascalCaseName}() {
 		return ${field.javaName};
 	}
 
@@ -68,14 +68,14 @@
 	public static class Builder {
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
-		private #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName};
+		private ${field.javaType} ${field.javaName};
 #end
 #end
 
 
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
-		public Builder with${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName}) {
+		public Builder with${field.pascalCaseName}(${field.javaType} ${field.javaName}) {
 			this.${field.javaName} = ${field.javaName};
 			return this;
 		}

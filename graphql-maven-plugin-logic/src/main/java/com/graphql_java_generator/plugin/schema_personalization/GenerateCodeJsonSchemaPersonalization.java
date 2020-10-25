@@ -24,6 +24,7 @@ import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
@@ -93,19 +94,24 @@ public class GenerateCodeJsonSchemaPersonalization {
 										+ " already has a field of name " + field.getName());
 							}
 							// Ok, we can add this new field
-							FieldImpl newField = FieldImpl.builder().documentParser(documentParser).build();
-							newField.setName(field.getName());
-							newField.setOwningType(objectType);
-							newField.setGraphQLTypeName(field.getType());
-							if (field.getId() != null) {
-								newField.setId(field.getId());
+							FieldImpl newField;
+							if (field.getList() != null && field.getList()) {
+								// The new field is a list
+								FieldTypeAST listItem = FieldTypeAST.builder().graphQLTypeSimpleName(field.getType())
+										.build();
+								FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(listItem)
+										.mandatory(field.getMandatory()).build();
+								newField = FieldImpl.builder().documentParser(documentParser).name(field.getName())
+										.owningType(objectType).fieldTypeAST(list).build();
+							} else {
+								// The new field is not a list
+								newField = FieldImpl.builder().documentParser(documentParser).name(field.getName())
+										.id(field.getId()).owningType(objectType)
+										.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName(field.getType())
+												.mandatory(field.getMandatory()).build())//
+										.build();
 							}
-							if (field.getList() != null) {
-								newField.setList(field.getList());
-							}
-							if (field.getMandatory() != null) {
-								newField.setMandatory(field.getMandatory());
-							}
+
 							if (field.getAddAnnotation() != null) {
 								newField.addAnnotation(field.getAddAnnotation());
 							}
@@ -123,17 +129,28 @@ public class GenerateCodeJsonSchemaPersonalization {
 							FieldImpl existingField = (FieldImpl) findFieldFromName(objectType, field.getName());
 
 							existingField.setName(field.getName());
+							if (field.getList() != null
+									&& (field.getList() != existingField.getFieldTypeAST().isList())) {
+								// The list attribute changed
+								if (field.getList()) {
+									// It's now a list (and it wasn't before)
+									FieldTypeAST list = FieldTypeAST.builder().list(true)
+											.listItemFieldTypeAST(existingField.getFieldTypeAST()).build();
+									existingField.setFieldTypeAST(list);
+								} else {
+									// It's no more a list
+									existingField
+											.setFieldTypeAST(existingField.getFieldTypeAST().getListItemFieldTypeAST());
+								}
+							}
 							if (field.getType() != null) {
-								existingField.setGraphQLTypeName(field.getType());
+								existingField.getFieldTypeAST().setGraphQLTypeSimpleName(field.getType());
 							}
 							if (field.getId() != null) {
 								existingField.setId(field.getId());
 							}
-							if (field.getList() != null) {
-								existingField.setList(field.getList());
-							}
 							if (field.getMandatory() != null) {
-								existingField.setMandatory(field.getMandatory());
+								existingField.getFieldTypeAST().setMandatory(field.getMandatory());
 							}
 							if (field.getAddAnnotation() != null) {
 								existingField.addAnnotation(field.getAddAnnotation());

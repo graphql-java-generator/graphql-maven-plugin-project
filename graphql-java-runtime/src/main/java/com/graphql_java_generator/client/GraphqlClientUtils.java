@@ -371,7 +371,7 @@ public class GraphqlClientUtils {
 	public GraphQLScalarType getGraphQLCustomScalarType(AccessibleObject fieldOrMethod) {
 		String graphQLTypeName;
 		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
-			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLScalar.class).graphQLTypeName();
+			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLScalar.class).graphQLTypeSimpleName();
 		} else {
 			graphQLTypeName = null;
 		}

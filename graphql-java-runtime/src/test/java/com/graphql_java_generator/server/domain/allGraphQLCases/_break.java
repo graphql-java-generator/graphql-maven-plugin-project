@@ -17,7 +17,7 @@ public class _break  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "case", graphQLTypeName = "extends", list = false, javaClass = _extends.class)
+	@GraphQLScalar(fieldName = "case", graphQLTypeSimpleName = "extends",  javaClass = _extends.class)
 	_extends _case;
 
 

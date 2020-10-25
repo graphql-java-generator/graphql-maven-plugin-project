@@ -12,9 +12,9 @@ import org.apache.commons.lang.StringUtils;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
-import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.Type;
 
@@ -38,41 +38,29 @@ public class FieldImpl implements Field {
 	/** The name of the field */
 	private String name;
 
+	/**
+	 * Returns the GraphQL type information, as it has been read from the AST. See {@link FieldTypeAST} for more
+	 * information, here.
+	 * 
+	 * @return
+	 */
+	private FieldTypeAST fieldTypeAST;
+
+	/**
+	 * Is this field an identifier? <BR/>
+	 * By default, a field is an identifier if its GraphQL type is "ID". But this may be overridden with the
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
+	 * Personalization</A>
+	 */
+	@Builder.Default // Allows the default value to be used with the Lombok @Builder annotation on the class
+	Boolean id = null;
+
 	/** The {@link Type} which contains this field */
 	private Type owningType;
-
-	/**
-	 * The type of this field, as defined in the GraphQL schema. This type is either the type of the field (if it's not
-	 * a list), or the type of the items in the list (if it's a list)
-	 */
-	private String graphQLTypeName;
-
-	/**
-	 * Indicates whether this field is an id or not. It's used in {@link PluginMode#SERVER} mode to add the
-	 * javax.persistence annotations for the id fields. Default value is false. This field is set to true for GraphQL
-	 * fields which are of 'ID' type.
-	 */
-	@Builder.Default
-	private boolean id = false;
 
 	/** All fields in an object may have parameters. A parameter is actually a field. */
 	@Builder.Default // Allows the default value to be used with the Lombok @Builder annotation on the class
 	private List<Field> inputParameters = new ArrayList<>();
-
-	/** Is this field a list? */
-	@Builder.Default
-	private boolean list = false;
-
-	/**
-	 * Is this field mandatory? If this field is a list, then mandatory indicates whether the list itself is mandatory,
-	 * or may be nullable
-	 */
-	@Builder.Default
-	private boolean mandatory = false;
-
-	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
-	@Builder.Default
-	private boolean itemMandatory = false;
 
 	/**
 	 * Contains the default value, as defined in the GraphQL schema. For enums, it contains the label of the enum, not
@@ -100,19 +88,21 @@ public class FieldImpl implements Field {
 
 	@Override
 	public Type getType() {
-		return documentParser.getType(graphQLTypeName);
-	}
-
-	public void setGraphQLTypeName(String graphQLTypeName) {
-		this.graphQLTypeName = graphQLTypeName;
-		if (graphQLTypeName.equals("ID")) {
-			setId(true);
-		}
+		return documentParser.getType(getGraphQLTypeSimpleName());
 	}
 
 	@Override
 	public String getAnnotation() {
 		return (this.annotation == null) ? "" : this.annotation;
+	}
+
+	@Override
+	public boolean isId() {
+		if (id == null) {
+			return getGraphQLTypeSimpleName().equals("ID");
+		} else {
+			return id;
+		}
 	}
 
 	/**
@@ -187,15 +177,15 @@ public class FieldImpl implements Field {
 		StringBuilder sb = new StringBuilder();
 
 		// Field's name
-		sb.append("Field {name: ");
+		sb.append("Field{name:");
 		sb.append(getName());
 
 		// Field's type
-		sb.append(", type: ");
-		appendType(sb, this);
+		sb.append(", type:");
+		appendType(sb, getFieldTypeAST());
 
 		// Field's parameters
-		sb.append(", params: [");
+		sb.append(", params:[");
 		boolean appendSeparator = false;
 		for (Field param : inputParameters) {
 			if (appendSeparator)
@@ -203,22 +193,24 @@ public class FieldImpl implements Field {
 			else
 				appendSeparator = true;
 			sb.append(param.getName()).append(":");
-			appendType(sb, (FieldImpl) param);
+			appendType(sb, param.getFieldTypeAST());
 		} // for
 		sb.append("]}");
 
 		return sb.toString();
 	}
 
-	private void appendType(StringBuilder sb, FieldImpl field) {
-		if (field.isList())
+	private void appendType(StringBuilder sb, FieldTypeAST fieldTypeAST) {
+		if (fieldTypeAST.isList()) {
 			sb.append("[");
-		sb.append(field.graphQLTypeName);
-		if (field.isList() && field.isItemMandatory())
-			sb.append("!");
-		if (field.isList())
+			appendType(sb, fieldTypeAST.getListItemFieldTypeAST());
 			sb.append("]");
-		if (field.isMandatory())
+		} else {
+			sb.append(fieldTypeAST.getGraphQLTypeSimpleName());
+		}
+
+		if (fieldTypeAST.isMandatory())
 			sb.append("!");
 	}
+
 }

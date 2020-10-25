@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -114,21 +115,34 @@ class DocumentParserTest {
 
 		String[] fields = { "Object1", "GraphQLScalar", "Interface0", "Enum0", "Object2" };
 		for (int i = 0; i < 5; i += 1) {
-			FieldImpl f = FieldImpl.builder().documentParser(documentParser).build(); // Necessary to manage the
-																						// FieldImpl.getType() method
-			type.getFields().add(f);
 
-			f.setName("field" + i);
-			f.setList((i % 2) == 0);
-			f.setGraphQLTypeName(documentParser.getType(fields[i]).getName());
-			f.setOwningType(type);
+			// When the field is a list, there is two fieldTypeAST: the list, then the real type
+			FieldTypeAST fieldTypeAST;
+			if ((i % 2) == 0) {
+				FieldTypeAST realType = new FieldTypeAST(documentParser.getType(fields[i]).getName());
+				fieldTypeAST = FieldTypeAST.builder().list(true).listItemFieldTypeAST(realType).build();
+			} else {
+				fieldTypeAST = FieldTypeAST.builder().list(false)
+						.graphQLTypeSimpleName(documentParser.getType(fields[i]).getName()).build();
+			}
+			FieldImpl f = FieldImpl.builder().documentParser(documentParser).name("field" + i).owningType(type)
+					.fieldTypeAST(fieldTypeAST).build();
+			type.getFields().add(f);
 
 			// Let's create its argument list
 			List<Field> args = new ArrayList<>();
 			for (int j = 0; j < i; j += 1) {// means: the first field has
-				FieldImpl arg = FieldImpl.builder().documentParser(documentParser).build();
-				arg.setName("arg" + j);
-				arg.setList((j % 2) == 0);
+				// When the field is a list, there is two fieldTypeAST: the list, then the real type
+				FieldTypeAST argTypeAST;
+				if ((j % 2) == 0) {
+					FieldTypeAST realType = new FieldTypeAST(documentParser.getType(fields[i]).getName());
+					argTypeAST = FieldTypeAST.builder().list(true).listItemFieldTypeAST(realType).build();
+				} else {
+					argTypeAST = FieldTypeAST.builder().list(false)
+							.graphQLTypeSimpleName(documentParser.getType(fields[i]).getName()).build();
+				}
+				FieldImpl arg = FieldImpl.builder().documentParser(documentParser).name("arg" + j)
+						.fieldTypeAST(argTypeAST).build();
 				args.add(arg);
 			}
 			f.setInputParameters(args);
@@ -253,7 +267,7 @@ class DocumentParserTest {
 	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type,
 			String graphQLOriginType, List<Field> inputParameters) {
 		assertEquals(name, dataFetcher.getName(), "name");
-		assertEquals(list, dataFetcher.getField().isList(), "list");
+		assertEquals(list, dataFetcher.getField().getFieldTypeAST().isList(), "list");
 		assertEquals(type, dataFetcher.getField().getOwningType(), "type");
 		assertEquals(inputParameters, dataFetcher.getField().getInputParameters(), "arguments");
 		assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType(), "graphQLOriginType");

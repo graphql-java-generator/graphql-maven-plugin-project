@@ -1,16 +1,5 @@
 ######################################################################################################################################################
 ##
-##  The "fieldType" macro writes the field type, in GraphQL format: Type, Type!, [Type], [Type]!, [Type!] or [Type!]!
-##
-## parameters: 
-## 1) FieldImpl: the field, which type is to be displayed 
-##
-#macro(fieldType $field)#if($field.list)[#end${field.type.name}#if($field.itemMandatory)!#end#if($field.list)]#end#if($field.mandatory)!#end#end
-##
-##
-######
-######################################################################################################################################################
-##
 ##  The "objectFields" macro generates the list of fields for an ObjectType or for an InterfaceType
 ##
 ## parameters: 
@@ -26,11 +15,11 @@
 #if ($field.inputParameters.size() > 0)
 	${field.name} (## No newline here
 #foreach ($param in $field.inputParameters)
-${param.name}: #fieldType($param)#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#implementedDirective($param.appliedDirectives)#if($foreach.hasNext), #end##no newline here 
+${param.name}: ${param.graphQLType}#if($param.defaultValue)=${param.getDefaultValueAsText()}#end#implementedDirective($param.appliedDirectives)#if($foreach.hasNext), #end##no newline here 
 #end
-): #fieldType($field)#implementedDirective($field.appliedDirectives)$space
+): ${field.graphQLType}#implementedDirective($field.appliedDirectives)$space
 #else
-	${field.name}: #fieldType($field)#implementedDirective($field.appliedDirectives)$space
+	${field.name}: ${field.graphQLType}#implementedDirective($field.appliedDirectives)$space
 #end
 #end
 #end
@@ -106,7 +95,7 @@ directive @${directive.name} #if ($directive.arguments.size() > 0)(
 #else $space
 #end
 #foreach($arg in $directive.arguments)
-	${arg.name}: #fieldType($arg) #if($arg.defaultValue)= ${arg.getDefaultValueAsText()}#end $space
+	${arg.name}: ${arg.graphQLType} #if($arg.defaultValue)= ${arg.getDefaultValueAsText()}#end $space
 #end
 #if ($directive.arguments.size() > 0)
 )

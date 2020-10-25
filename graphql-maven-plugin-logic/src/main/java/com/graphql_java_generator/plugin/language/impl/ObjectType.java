@@ -119,16 +119,16 @@ public class ObjectType extends AbstractType {
 		StringBuilder sb = new StringBuilder();
 		boolean addSeparator;
 
-		sb.append(getClass().getSimpleName() + " {name: ").append(getName());
+		sb.append(getClass().getSimpleName() + " {name:").append(getName());
 
-		sb.append(", fields: {");
+		sb.append(", fields:{");
 		addSeparator = false;
 		for (Field f : getFields()) {
-			sb.append(f.toString());
 			if (addSeparator)
 				sb.append(",");
 			else
 				addSeparator = true;
+			sb.append(f.toString());
 		}
 		sb.append("}");
 

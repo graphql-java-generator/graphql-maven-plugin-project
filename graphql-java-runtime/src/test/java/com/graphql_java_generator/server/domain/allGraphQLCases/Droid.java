@@ -20,23 +20,23 @@ public class Droid implements Character, WithID, AnyCharacter {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	UUID id;
 
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String name;
 
 
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "Character", list = true, javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Character",  javaClass = Character.class)
 	List<Character> friends;
 
 
-	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", list = true, javaClass = Episode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeSimpleName = "Episode",  javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
-	@GraphQLScalar(fieldName = "primaryFunction", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "primaryFunction", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String primaryFunction;
 
 

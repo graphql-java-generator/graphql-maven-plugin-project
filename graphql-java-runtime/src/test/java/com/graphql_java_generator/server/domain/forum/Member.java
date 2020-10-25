@@ -19,19 +19,19 @@ public class Member {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	UUID id;
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String name;
 
-	@GraphQLScalar(fieldName = "alias", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "alias", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String alias;
 
-	@GraphQLScalar(fieldName = "email", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "email", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String email;
 
-	@GraphQLScalar(fieldName = "type", graphQLTypeName = "MemberType", list = false, javaClass = MemberType.class)
+	@GraphQLScalar(fieldName = "type", graphQLTypeSimpleName = "MemberType",  javaClass = MemberType.class)
 	MemberType type;
 
 	public void setId(UUID id) {

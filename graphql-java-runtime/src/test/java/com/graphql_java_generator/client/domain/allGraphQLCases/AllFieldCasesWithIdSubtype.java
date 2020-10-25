@@ -19,17 +19,17 @@ public class AllFieldCasesWithIdSubtype  {
 	}
 
 	@JsonProperty("id")
-	@GraphQLScalar(list = false, fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar( fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
 	String id;
 
 
 	@JsonProperty("name")
-	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String __typename;
 
 

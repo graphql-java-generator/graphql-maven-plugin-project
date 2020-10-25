@@ -22,27 +22,27 @@ import java.util.Date;
 public class __InputValue  {
 
 	@JsonProperty("name")
-	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("description")
-	@GraphQLScalar(list = false, fieldName = "description", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "description", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String description;
 
 
 	@JsonProperty("type")
-	@GraphQLNonScalar(list = false, fieldName = "type", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar( fieldName = "type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	__Type type;
 
 
 	@JsonProperty("defaultValue")
-	@GraphQLScalar(list = false, fieldName = "defaultValue", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "defaultValue", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String defaultValue;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String __typename;
 
 

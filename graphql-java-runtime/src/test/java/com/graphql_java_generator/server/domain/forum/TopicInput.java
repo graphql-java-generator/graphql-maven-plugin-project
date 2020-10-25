@@ -18,10 +18,10 @@ public class TopicInput {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "boardId", graphQLTypeName = "ID", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "boardId", graphQLTypeSimpleName = "ID",  javaClass = String.class)
 	String boardId;
 
-	@GraphQLNonScalar(fieldName = "input", graphQLTypeName = "TopicPostInput", list = false, javaClass = TopicPostInput.class)
+	@GraphQLNonScalar(fieldName = "input", graphQLTypeSimpleName = "TopicPostInput",  javaClass = TopicPostInput.class)
 	TopicPostInput input;
 
 	public void setBoardId(String boardId) {

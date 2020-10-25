@@ -27,23 +27,23 @@ public class DirectiveRegistryInitializer {
 		directive.setName("${directive.name}");
 		directive.setPackageName("${packageUtilName}");
 #foreach ($argument in $directive.arguments)
-		param = InputParameter.newHardCodedParameter("${argument.name}", null, ${argument.mandatory},
-#if ($argument.graphQLTypeName == "BigDecimal" || 
-	$argument.graphQLTypeName == "BigInteger" || 
-	$argument.graphQLTypeName == "Boolean" || 
-	$argument.graphQLTypeName == "Byte" || 
-	$argument.graphQLTypeName == "Char" || 
-	$argument.graphQLTypeName == "Float" || 
-	$argument.graphQLTypeName == "ID" || 
-	$argument.graphQLTypeName == "Int" || 
-	$argument.graphQLTypeName == "Long" || 
-	$argument.graphQLTypeName == "Short" || 
-	$argument.graphQLTypeName == "String"
+		param = InputParameter.newHardCodedParameter("${argument.name}", null, ${argument.fieldTypeAST.mandatory},
+#if ($argument.graphQLTypeSimpleName == "BigDecimal" || 
+	$argument.graphQLTypeSimpleName == "BigInteger" || 
+	$argument.graphQLTypeSimpleName == "Boolean" || 
+	$argument.graphQLTypeSimpleName == "Byte" || 
+	$argument.graphQLTypeSimpleName == "Char" || 
+	$argument.graphQLTypeSimpleName == "Float" || 
+	$argument.graphQLTypeSimpleName == "ID" || 
+	$argument.graphQLTypeSimpleName == "Int" || 
+	$argument.graphQLTypeSimpleName == "Long" || 
+	$argument.graphQLTypeSimpleName == "Short" || 
+	$argument.graphQLTypeSimpleName == "String"
 	)
-					graphql.Scalars.GraphQL${argument.graphQLTypeName}
+					graphql.Scalars.GraphQL${argument.graphQLTypeSimpleName}
 #else
 ## It must be a custom scalar
-					CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType("${argument.graphQLTypeName}")
+					CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType("${argument.graphQLTypeSimpleName}")
 #end
 				);
 		directive.getArguments().add(param);

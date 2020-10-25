@@ -19,16 +19,16 @@ public class MutationType {
 		// No action
 	}
 
-	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeName = "Board", list = false, javaClass = Board.class)
+	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeSimpleName = "Board",  javaClass = Board.class)
 	Board createBoard;
 
-	@GraphQLNonScalar(fieldName = "createTopic", graphQLTypeName = "Topic", list = false, javaClass = Topic.class)
+	@GraphQLNonScalar(fieldName = "createTopic", graphQLTypeSimpleName = "Topic",  javaClass = Topic.class)
 	Topic createTopic;
 
-	@GraphQLNonScalar(fieldName = "createPost", graphQLTypeName = "Post", list = false, javaClass = Post.class)
+	@GraphQLNonScalar(fieldName = "createPost", graphQLTypeSimpleName = "Post",  javaClass = Post.class)
 	Post createPost;
 
-	@GraphQLNonScalar(fieldName = "createPosts", graphQLTypeName = "Post", list = true, javaClass = Post.class)
+	@GraphQLNonScalar(fieldName = "createPosts", graphQLTypeSimpleName = "Post",  javaClass = Post.class)
 	List<Post> createPosts;
 
 	public void setCreateBoard(Board createBoard) {

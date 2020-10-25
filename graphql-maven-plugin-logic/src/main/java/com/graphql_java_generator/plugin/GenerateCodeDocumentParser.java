@@ -38,6 +38,7 @@ import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
@@ -254,7 +255,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				if (!type.isInputType()) {
 					for (Field field : type.getFields()) {
 						if (field.getType() instanceof ObjectType) {
-							RelationType relType = field.isList() ? RelationType.OneToMany : RelationType.ManyToOne;
+							RelationType relType = field.getFieldTypeAST().isList() ? RelationType.OneToMany
+									: RelationType.ManyToOne;
 							RelationImpl relation = new RelationImpl(type, field, relType);
 							//
 							((FieldImpl) field).setRelation(relation);
@@ -415,7 +417,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// type.
 		String contentAs = null;
 		String using = null;
-		if (field.isList()) {
+		if (field.getFieldTypeAST().isList()) {
 			field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
 			contentAs = field.getType().getClassSimpleName() + ".class";
 		}
@@ -437,7 +439,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			String separator = "";
 			for (Field param : field.getInputParameters()) {
 				names.append(separator).append('"').append(param.getName()).append('"');
-				types.append(separator).append('"').append(param.getGraphQLTypeName()).append('"');
+				types.append(separator).append('"').append(param.getGraphQLTypeSimpleName()).append('"');
 				separator = ", ";
 			}
 			field.addAnnotation("@GraphQLInputParameters(names = {" + names + "}, types = {" + types + "})");
@@ -465,7 +467,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				((FieldImpl) field).addAnnotation("@Id");
 				field.getOwningType().addImport(configuration.getPackageName(), GeneratedValue.class.getName());
 				((FieldImpl) field).addAnnotation("@GeneratedValue");
-			} else if (field.getRelation() != null || field.isList()) {
+			} else if (field.getRelation() != null || field.getFieldTypeAST().isList()) {
 				// We prevent JPA to manage the relations: we want the GraphQL Data Fetchers to do it, instead.
 				field.getOwningType().addImport(configuration.getPackageName(), Transient.class.getName());
 				((FieldImpl) field).addAnnotation("@Transient");
@@ -485,16 +487,14 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
 			field.getOwningType().addImport(configuration.getPackageName(), GraphQLScalar.class.getName());
-			((FieldImpl) field)
-					.addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName() + "\", graphQLTypeName = \""
-							+ field.getGraphQLTypeName() + "\", list = " + ((field.isList()) ? "true" : "false")
-							+ ", javaClass = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName()
+					+ "\", graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\", javaClass = "
+					+ field.getType().getClassSimpleName() + ".class)");
 		} else {
 			field.getOwningType().addImport(configuration.getPackageName(), GraphQLNonScalar.class.getName());
-			((FieldImpl) field)
-					.addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName() + "\", graphQLTypeName = \""
-							+ field.getGraphQLTypeName() + "\", list = " + ((field.isList()) ? "true" : "false")
-							+ ", javaClass = " + field.getType().getClassSimpleName() + ".class)");
+			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName()
+					+ "\", graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\", javaClass = "
+					+ field.getType().getClassSimpleName() + ".class)");
 		}
 	}
 
@@ -519,7 +519,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	void initDataFetcherForOneObject(ObjectType type) {
 
 		// No DataFetcher for input types
-		if (!type.isInputType()) {
+		if ((type instanceof ObjectType || type instanceof InterfaceType) && !type.isInputType()) {
 
 			// Creation of the DataFetchersDelegate. It will be added to the list only if it contains at least one
 			// DataFetcher.
@@ -532,22 +532,25 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					// informations is already parsed.
 					// There is no source for requests, as they are the root of the hierarchy
 					dataFetchers.add(new DataFetcherImpl(field, dataFetcherDelegate, true, false, null));
-				} else if (((type instanceof ObjectType || type instanceof InterfaceType) && //
-						(field.isList() || field.getType() instanceof ObjectType
-								|| field.getType() instanceof InterfaceType))) {
+				} else if (field.getFieldTypeAST().isList() || field.getType() instanceof ObjectType
+						|| field.getType() instanceof InterfaceType) {
 					// For Objects and Interfaces, we need to add a specific data fetcher. The objective there is to
 					// manage the relations with GraphQL. The aim is to use the GraphQL data loader :
 					// very important to limit the number of subqueries, when subobjects are queried. In these case, we
 					// need to create a new field that add the object ID as a parameter of the Data Fetcher
-					FieldImpl newField = FieldImpl.builder().documentParser(this).name(field.getName())
-							.list(field.isList()).owningType(field.getOwningType())
-							.graphQLTypeName(field.getGraphQLTypeName()).build();
 
-					// Let's add the id for the owning type of the field, then all its input parameters
-					for (Field inputParameter : field.getInputParameters()) {
-						List<Field> list = newField.getInputParameters();
-						list.add(inputParameter);
-					}
+					// What's the need to duplicate the field instance ???
+					FieldImpl newField = (FieldImpl) field;
+					// FieldImpl newField = FieldImpl.builder().documentParser(this).name(field.getName())
+					// .fieldTypeAST(FieldTypeAST.builder().list(field.getFieldTypeAST().isList())
+					// .graphQLTypeSimpleName(field.getgraphQLTypeSimpleName()).build())
+					// .owningType(field.getOwningType()).build();
+					//
+					// // Let's add the id for the owning type of the field, then all its input parameters
+					// for (Field inputParameter : field.getInputParameters()) {
+					// List<Field> list = newField.getInputParameters();
+					// list.add(inputParameter);
+					// }
 
 					// We'll add a data fetcher with a data loader, to use a Batch Loader, if:
 					// 1) It's a Data Fetcher from an object to another one (we're already in this case)
@@ -556,7 +559,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					// list
 					// graphql-java will then determines at runtime if a dataloader is needed in the running case, or
 					// not
-					boolean withDataLoader = field.getType().getIdentifier() != null && !field.isList();
+					boolean withDataLoader = field.getType().getIdentifier() != null
+							&& !field.getFieldTypeAST().isList();
 
 					if (withDataLoader) {
 						// We always have the 'standard' data fetcher in the DataFetcherDelegate. But only the one with
@@ -693,13 +697,16 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			for (ObjectType type : objectTypes) {
 				if (!type.isInputType()) {
 					type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
-							.graphQLTypeName("String").owningType(type).mandatory(false).build());
+							.fieldTypeAST(
+									FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(false).build())
+							.owningType(type).build());
 				}
 			}
 			configuration.getPluginLogger().debug("Adding __typename to each interface");
 			for (InterfaceType type : interfaceTypes) {
 				type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
-						.graphQLTypeName("String").owningType(type).mandatory(false).build());
+						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(false).build())
+						.owningType(type).build());
 			}
 		}
 	}
@@ -709,10 +716,13 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @return
 	 */
 	private FieldImpl get__TypeField(Type o) {
-		FieldImpl __type = FieldImpl.builder().documentParser(this).name("__type").graphQLTypeName("__Type")
-				.owningType(o).mandatory(true).build();
-		__type.getInputParameters().add(FieldImpl.builder().documentParser(this).name("name").graphQLTypeName("String")
-				.mandatory(true).build());
+		FieldImpl __type = FieldImpl.builder().documentParser(this).name("__type")
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("__Type").mandatory(true).build())//
+				.owningType(o).build();
+		__type.getInputParameters()
+				.add(FieldImpl.builder().documentParser(this).name("name")
+						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(true).build())//
+						.owningType(o).build());
 		return __type;
 	}
 
@@ -721,8 +731,9 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @return
 	 */
 	private FieldImpl get__SchemaField(Type o) {
-		FieldImpl __schema = FieldImpl.builder().documentParser(this).name("__schema").graphQLTypeName("__Schema")
-				.owningType(o).mandatory(true).build();
+		FieldImpl __schema = FieldImpl.builder().documentParser(this).name("__schema")
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("__Schema").mandatory(true).build())//
+				.owningType(o).build();
 		return __schema;
 	}
 
@@ -746,13 +757,13 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 			// Let's loop through all the fields
 			for (Field f : type.getFields()) {
-				if (f.isList()) {
+				if (f.getFieldTypeAST().isList()) {
 					addAnImportForOneType(type, List.class);
 				}
 				addAnImportForOneType(type, f.getType());
 
 				for (Field param : f.getInputParameters()) {
-					if (param.isList()) {
+					if (param.getFieldTypeAST().isList()) {
 						addAnImportForOneType(type, List.class);
 					}
 					addAnImportForOneType(type, param.getType());

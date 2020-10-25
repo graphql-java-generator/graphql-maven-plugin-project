@@ -22,28 +22,28 @@ public class Topic {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	UUID id;
 
-	@GraphQLScalar(fieldName = "date", graphQLTypeName = "Date", list = false, javaClass = Date.class)
+	@GraphQLScalar(fieldName = "date", graphQLTypeSimpleName = "Date",  javaClass = Date.class)
 	Date date;
 
-	@GraphQLNonScalar(fieldName = "author", graphQLTypeName = "Member", list = false, javaClass = Member.class)
+	@GraphQLNonScalar(fieldName = "author", graphQLTypeSimpleName = "Member",  javaClass = Member.class)
 	Member author;
 
-	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeName = "Boolean", list = false, javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeSimpleName = "Boolean",  javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
-	@GraphQLScalar(fieldName = "nbPosts", graphQLTypeName = "Int", list = false, javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbPosts", graphQLTypeSimpleName = "Int",  javaClass = Integer.class)
 	Integer nbPosts;
 
-	@GraphQLScalar(fieldName = "title", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "title", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String title;
 
-	@GraphQLScalar(fieldName = "content", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "content", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String content;
 
-	@GraphQLNonScalar(fieldName = "posts", graphQLTypeName = "Post", list = true, javaClass = Post.class)
+	@GraphQLNonScalar(fieldName = "posts", graphQLTypeSimpleName = "Post",  javaClass = Post.class)
 	List<Post> posts;
 
 	UUID boardId;

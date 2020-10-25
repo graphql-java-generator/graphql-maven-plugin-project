@@ -18,11 +18,11 @@ public class FieldParameterInput  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "uppercase", graphQLTypeName = "Boolean", list = false, javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "uppercase", graphQLTypeSimpleName = "Boolean",  javaClass = Boolean.class)
 	Boolean uppercase;
 
 
-	@GraphQLScalar(fieldName = "date", graphQLTypeName = "Date", list = false, javaClass = Date.class)
+	@GraphQLScalar(fieldName = "date", graphQLTypeSimpleName = "Date",  javaClass = Date.class)
 	Date date;
 
 

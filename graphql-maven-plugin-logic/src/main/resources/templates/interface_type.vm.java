@@ -14,9 +14,9 @@ public interface ${object.javaName} #if($object.implementz.size()>0)extends #for
 #foreach ($field in $object.fields)
 
 	${field.annotation}
-	public void set${field.pascalCaseName}(#if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end ${field.javaName});
+	public void set${field.pascalCaseName}(${field.javaType} ${field.javaName});
 
 	${field.annotation}
-	public #if(${field.list})List<#end${field.type.classSimpleName}#if(${field.list})>#end get${field.pascalCaseName}();
+	public ${field.javaType} get${field.pascalCaseName}();
 #end
 }

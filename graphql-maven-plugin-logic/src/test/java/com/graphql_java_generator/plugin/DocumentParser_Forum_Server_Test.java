@@ -101,21 +101,21 @@ class DocumentParser_Forum_Server_Test {
 		// For the test below, the String class is expected, as there is this config update in the setup, here above:
 		// pluginConfiguration.setJavaTypeForIDType("java.lang.String");
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeName = \"ID\", list = false, javaClass = String.class)");
+				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@GraphQLScalar(fieldName = \"date\", graphQLTypeName = \"Date\", list = false, javaClass = Date.class)");
+				"@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeName = \"Member\", list = false, javaClass = Member.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
-				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeName = \"Boolean\", list = false, javaClass = Boolean.class)");
+				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeSimpleName = \"Boolean\", javaClass = Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts",
-				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeName = \"Int\", list = false, javaClass = Integer.class)");
+				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeSimpleName = \"Int\", javaClass = Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title",
-				"@GraphQLScalar(fieldName = \"title\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"title\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content",
-				"@GraphQLScalar(fieldName = \"content\", graphQLTypeName = \"String\", list = false, javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeName = \"Post\", list = true, javaClass = Post.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {
@@ -165,8 +165,8 @@ class DocumentParser_Forum_Server_Test {
 		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "QueryType",
 				"findTopics", "Topic", true, false, null, "boardName", "keyword");
 		// Let's check the input parameters for this dataFetcher
-		assertFalse(dataFetcher.getField().getInputParameters().get(0).isList());
-		assertTrue(dataFetcher.getField().getInputParameters().get(1).isList());
+		assertFalse(dataFetcher.getField().getInputParameters().get(0).getFieldTypeAST().isList());
+		assertTrue(dataFetcher.getField().getInputParameters().get(1).getFieldTypeAST().isList());
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
 				false, false, null, "name", "publiclyAvailable");
@@ -283,7 +283,7 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
-		assertEquals(list, dataFetcher.getField().isList(), "list");
+		assertEquals(list, dataFetcher.getField().getFieldTypeAST().isList(), "list");
 		assertEquals(completableFuture, dataFetcher.isCompletableFuture(), "completableFuture");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 		assertEquals(sourceName, dataFetcher.getGraphQLOriginType(), "sourceName");

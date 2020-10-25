@@ -91,7 +91,7 @@ class DocumentParser_StarWars_Server_Test {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
-		assertEquals(list, dataFetcher.getField().isList(), "list");
+		assertEquals(list, dataFetcher.getField().getFieldTypeAST().isList(), "list");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 		assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType(), "graphQLOriginType");
 	}

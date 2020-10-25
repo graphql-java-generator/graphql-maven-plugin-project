@@ -21,12 +21,12 @@ public class TestExtScalar  {
 
 	@JsonDeserialize(using = CustomScalarDeserializerNonNegativeInt.class)
 	@JsonProperty("bad")
-	@GraphQLScalar(list = false, fieldName = "bad", graphQLTypeName = "NonNegativeInt", javaClass = Integer.class)
+	@GraphQLScalar( fieldName = "bad", graphQLTypeSimpleName = "NonNegativeInt", javaClass = Integer.class)
 	Integer bad;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String __typename;
 
 

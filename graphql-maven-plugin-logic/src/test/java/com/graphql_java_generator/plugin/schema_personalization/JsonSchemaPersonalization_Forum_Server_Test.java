@@ -74,17 +74,17 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 				"member annotation");
 		//
 		Field age = jsonSchemaPersonalization.findFieldFromName(member, "age");
-		assertEquals("int", age.getGraphQLTypeName(), "age type");
-		assertFalse(age.isId(), "age id");
-		assertFalse(age.isList(), "age list");
-		assertFalse(age.isMandatory(), "age mandatory");
+		assertEquals("int", age.getGraphQLTypeSimpleName(), "age type");
+		assertTrue(age.isId(), "age id");
+		assertFalse(age.getFieldTypeAST().isList(), "age list");
+		assertFalse(age.getFieldTypeAST().isMandatory(), "age mandatory");
 		assertEquals("@Annotation1", age.getAnnotation(), "age annotation");
 		//
 		Field age2 = jsonSchemaPersonalization.findFieldFromName(member, "age2");
-		assertEquals("int", age2.getGraphQLTypeName(), "age2 type");
-		assertTrue(age2.isId(), "age2 id");
-		assertTrue(age2.isList(), "age2 list");
-		assertTrue(age2.isMandatory(), "age2 mandatory");
+		assertEquals("int", age2.getGraphQLTypeSimpleName(), "age2 type");
+		assertFalse(age2.isId(), "age2 id");
+		assertTrue(age2.getFieldTypeAST().isList(), "age2 list");
+		assertTrue(age2.getFieldTypeAST().isMandatory(), "age2 mandatory");
 		assertEquals("@Annotation1", age2.getAnnotation(), "age2 annotation");
 
 		ObjectType board = jsonSchemaPersonalization.findObjectTypeFromName("Board");
@@ -95,7 +95,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 		//
 		Field name = jsonSchemaPersonalization.findFieldFromName(board, "name");
 		assertEquals(
-				"@GraphQLScalar(fieldName = \"name\", graphQLTypeName = \"String\", list = false, javaClass = String.class)\n\t@Column(name=\"column_name\")",
+				"@GraphQLScalar(fieldName = \"name\", graphQLTypeSimpleName = \"String\", javaClass = String.class)\n\t@Column(name=\"column_name\")",
 				name.getAnnotation(), "board.name annotation");
 	}
 

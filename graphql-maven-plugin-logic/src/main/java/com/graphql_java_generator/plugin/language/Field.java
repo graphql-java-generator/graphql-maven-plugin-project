@@ -38,6 +38,30 @@ public interface Field {
 	public String getName();
 
 	/**
+	 * The type of this field, as defined in the GraphQL schema. This type is either the type of the field (if it's not
+	 * a list), or the type of the items in the list (if it's a list)
+	 */
+	default public String getGraphQLTypeSimpleName() {
+		return getFieldTypeAST().getGraphQLTypeSimpleName();
+	}
+
+	/**
+	 * The full type of this field, as defined in the GraphQL schema. For instance, a list of list of String, where
+	 * everything is mandatory would be <I>[[String!]!]!</I>
+	 */
+	default public String getGraphQLType() {
+		return getFieldTypeAST().getGraphQLType();
+	}
+
+	/**
+	 * Returns the GraphQL type information, as it has been read from the AST. See {@link FieldTypeAST} for more
+	 * information, here.
+	 * 
+	 * @return
+	 */
+	public FieldTypeAST getFieldTypeAST();
+
+	/**
 	 * The name of the field, as it can be used in the Java code. If the name is a java keyword (class, default,
 	 * break...), the java name it prefixed by an underscore.
 	 * 
@@ -45,6 +69,15 @@ public interface Field {
 	 */
 	default public String getJavaName() {
 		return GraphqlUtils.graphqlUtils.getJavaName(getName());
+	}
+
+	/**
+	 * Returns the java type as it an be used to declare a variable or an attribute. For instance, a field of GraphQL
+	 * type <I>[ID]</I>, in client mode (where an ID is a java String), the result would be: <I>List&lt;String&gt;</I>.
+	 * This always uses the java short name. So the proper import must be added into the enclosing java file.
+	 */
+	default public String getJavaType() {
+		return getFieldTypeAST().getJavaType(getType().getClassSimpleName());
 	}
 
 	/**
@@ -62,12 +95,6 @@ public interface Field {
 	public Type getType();
 
 	/**
-	 * The type of this field, as defined in the GraphQL schema. This type is either the type of the field (if it's not
-	 * a list), or the type of the items in the list (if it's a list)
-	 */
-	public String getGraphQLTypeName();
-
-	/**
 	 * Indicates whether this field is an id or not. It's used in server mode to add the javax.persistence annotations
 	 * for the id fields. Default value is false. This field is set to true for GraphQL fields which are of 'ID' type.
 	 */
@@ -75,18 +102,6 @@ public interface Field {
 
 	/** All fields in an object may have parameters. A parameter is actually a field. */
 	public List<Field> getInputParameters();
-
-	/** Is this field a list? */
-	public boolean isList();
-
-	/**
-	 * Is this field mandatory? If this field is a list, then mandatory indicates whether the list itself is mandatory,
-	 * or may be nullable
-	 */
-	public boolean isMandatory();
-
-	/** Indicates whether the item in the list are not nullable, or not. Only used if this field is a list. */
-	public boolean isItemMandatory();
 
 	/**
 	 * Contains the default value.. Only used if this field is an input parameter. For enums, it contains the label of

@@ -19,19 +19,19 @@ public class DroidInput  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String name;
 
 
-	@GraphQLNonScalar(fieldName = "friends", graphQLTypeName = "CharacterInput", list = true, javaClass = CharacterInput.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "CharacterInput",  javaClass = CharacterInput.class)
 	List<CharacterInput> friends;
 
 
-	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeName = "Episode", list = true, javaClass = Episode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeSimpleName = "Episode",  javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
-	@GraphQLScalar(fieldName = "primaryFunction", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "primaryFunction", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String primaryFunction;
 
 

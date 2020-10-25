@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 /**
@@ -33,14 +34,12 @@ class ObjectTypeTest {
 		mode = PluginMode.server;
 		objectType = new ObjectType(name, pluginConfiguration);
 
-		FieldImpl f = FieldImpl.builder().documentParser(null).build();
-		f.setName("field1");
-		f.setGraphQLTypeName("ID");
+		FieldImpl f = FieldImpl.builder().documentParser(null).name("field1")
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("ID").build()).build();
 		objectType.getFields().add(f);
 
-		f = FieldImpl.builder().documentParser(null).build();
-		f.setName("field2");
-		f.setGraphQLTypeName("String");
+		f = FieldImpl.builder().documentParser(null).name("field2")
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").build()).build();
 		objectType.getFields().add(f);
 
 	}
@@ -61,9 +60,8 @@ class ObjectTypeTest {
 
 	@Test
 	void test_getIdentifier_TwoId() {
-		FieldImpl f = FieldImpl.builder().documentParser(null).build();
-		f.setName("field3");
-		f.setGraphQLTypeName("ID");
+		FieldImpl f = FieldImpl.builder().documentParser(null).name("field3")
+				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("ID").build()).build();
 		objectType.getFields().add(f);
 
 		assertNull(objectType.getIdentifier(),

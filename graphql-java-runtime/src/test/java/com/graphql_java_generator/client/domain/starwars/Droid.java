@@ -21,34 +21,34 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 public class Droid implements Character {
 
 	@JsonProperty("id")
-	@GraphQLScalar(list = false, fieldName = "id", graphQLTypeName = "ID", javaClass = String.class)
+	@GraphQLScalar( fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
 	String id;
 
 
 	@JsonProperty("name")
-	@GraphQLScalar(list = false, fieldName = "name", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String name;
 
 
 	@JsonProperty("friends")
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(list = false, fieldName = "friends", graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar( fieldName = "friends", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	List<Character> friends;
 
 
 	@JsonProperty("appearsIn")
 	@JsonDeserialize(contentAs = Episode.class)
-	@GraphQLScalar(list = false, fieldName = "appearsIn", graphQLTypeName = "Episode", javaClass = Episode.class)
+	@GraphQLScalar( fieldName = "appearsIn", graphQLTypeSimpleName = "Episode", javaClass = Episode.class)
 	List<Episode> appearsIn;
 
 
 	@JsonProperty("primaryFunction")
-	@GraphQLScalar(list = false, fieldName = "primaryFunction", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "primaryFunction", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String primaryFunction;
 
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(list = false, fieldName = "__typename", graphQLTypeName = "String", javaClass = String.class)
+	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String __typename;
 
 

@@ -21,16 +21,16 @@ public class Board {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "id", graphQLTypeName = "ID", list = false, javaClass = UUID.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID",  javaClass = UUID.class)
 	UUID id;
 
-	@GraphQLScalar(fieldName = "name", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String name;
 
-	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeName = "Boolean", list = false, javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeSimpleName = "Boolean",  javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
-	@GraphQLNonScalar(fieldName = "topics", graphQLTypeName = "Topic", list = true, javaClass = Topic.class)
+	@GraphQLNonScalar(fieldName = "topics", graphQLTypeSimpleName = "Topic",  javaClass = Topic.class)
 	List<Topic> topics;
 
 	public void setId(UUID id) {

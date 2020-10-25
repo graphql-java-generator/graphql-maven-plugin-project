@@ -17,7 +17,7 @@ public class TestExtScalar  {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "bad", graphQLTypeName = "NonNegativeInt", list = false, javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "bad", graphQLTypeSimpleName = "NonNegativeInt",  javaClass = Integer.class)
 	Integer bad;
 
 

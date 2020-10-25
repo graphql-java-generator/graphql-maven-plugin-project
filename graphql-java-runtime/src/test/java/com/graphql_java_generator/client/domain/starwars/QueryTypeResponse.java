@@ -20,32 +20,32 @@ public class QueryTypeResponse {
 
 	@GraphQLInputParameters(names = { "episode" }, types = { "Episode" })
 	@JsonProperty("hero")
-	@GraphQLNonScalar(list = false, fieldName = "hero", graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar( fieldName = "hero", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character hero;
 
 	@GraphQLInputParameters(names = { "episode" }, types = { "Episode" })
 	@JsonProperty("characters")
 	@JsonDeserialize(contentAs = Character.class)
-	@GraphQLNonScalar(list = false, fieldName = "characters", graphQLTypeName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar( fieldName = "characters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	List<Character> characters;
 
 	@GraphQLInputParameters(names = { "id" }, types = { "ID" })
 	@JsonProperty("human")
-	@GraphQLNonScalar(list = false, fieldName = "human", graphQLTypeName = "Human", javaClass = Human.class)
+	@GraphQLNonScalar( fieldName = "human", graphQLTypeSimpleName = "Human", javaClass = Human.class)
 	Human human;
 
 	@GraphQLInputParameters(names = { "id" }, types = { "ID" })
 	@JsonProperty("droid")
-	@GraphQLNonScalar(list = false, fieldName = "droid", graphQLTypeName = "Droid", javaClass = Droid.class)
+	@GraphQLNonScalar( fieldName = "droid", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	Droid droid;
 
 	@JsonProperty("__schema")
-	@GraphQLNonScalar(list = false, fieldName = "__schema", graphQLTypeName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar( fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	__Schema __schema;
 
 	@GraphQLInputParameters(names = { "name" }, types = { "String" })
 	@JsonProperty("__type")
-	@GraphQLNonScalar(list = false, fieldName = "__type", graphQLTypeName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar( fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	__Type __type;
 
 	public void setHero(Character hero) {

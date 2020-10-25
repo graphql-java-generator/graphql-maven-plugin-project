@@ -172,6 +172,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkField(objectType, j, "friends", true, false, true, "Human", "Human");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
+		// matrix: [[Float]]!
+		checkField(objectType, j, "matrix", true, true, false, "Float", "Double");
+		checkNbInputParameter(objectType, j, 0);
+		j += 1;
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
 		checkField(objectType, j, "oneWithIdSubType", false, false, null, "AllFieldCasesWithIdSubtype",
 				"AllFieldCasesWithIdSubtype");
@@ -240,10 +244,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
 		// The next test is deactivated, because of a bug in graphql-java v15.0. It should be restored, once the issue
 		// 2055 is solved
-		// checkDirectivesOnType(generateCodeDocumentParser.getType("Date"), true, "on Scalar", null, null, null, null, null,
+		// checkDirectivesOnType(generateCodeDocumentParser.getType("Date"), true, "on Scalar", null, null, null, null,
+		// null,
 		// null, null, true);
-		checkDirectivesOnType(generateCodeDocumentParser.getType("Long"), false, null, null, null, null, null, null, null,
-				null, false);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("Long"), false, null, null, null, null, null, null,
+				null, null, false);
 
 		// On schema
 		// Currently not managed (schema is not stored, and no java classes is generated afteward for the schema)
@@ -253,52 +258,57 @@ class DocumentParser_allGraphQLCases_Server_Test {
 				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
 		// The next test is deactivated, because of a bug in graphql-java v15.0. It should be restored, once the issue
 		// 2055 is solved
-		// checkDirectivesOnType(generateCodeDocumentParser.getType("Episode"), true, "on Enum", "69", 666, (float) 666.666,
+		// checkDirectivesOnType(generateCodeDocumentParser.getType("Episode"), true, "on Enum", "69", 666, (float)
+		// 666.666,
 		// true, "00000000-0000-0000-0000-000000000002", null, "2001-02-28", false);
-		checkDirectivesOnType(generateCodeDocumentParser.getType("Unit"), false, null, null, null, null, null, null, null,
-				null, false);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("Unit"), false, null, null, null, null, null, null,
+				null, null, false);
 
 		// On enum item
 		// The 3 below tests should be removed, and 3 next be uncommented, once the graphqm-java's issue 2055 is solved
-		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", false, "on Enum", "-1",
-				false);
+		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", false, "on Enum",
+				"-1", false);
 		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "JEDI", false, null, null, false);
 		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "EMPIRE", false, null, null, false);
 		// The next 3 tests are deactivated, because of a bug in graphql-java v15.0. It should be restored, once the
 		// issue 2055 is solved
-		// checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum", "-1",
+		// checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum",
+		// "-1",
 		// true);
 		// checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "JEDI", false, null, null, false);
 		// checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "EMPIRE", false, null, null, true);
 
 		// On interface
-		checkDirectivesOnType(generateCodeDocumentParser.getType("WithID"), true, "on Interface", "666", null, null, null,
-				null, null, null, false);
-		checkDirectivesOnType(generateCodeDocumentParser.getType("Character"), true, "on Character interface", null, null,
-				null, null, null, null, null, true);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("WithID"), true, "on Interface", "666", null, null,
+				null, null, null, null, false);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("Character"), true, "on Character interface", null,
+				null, null, null, null, null, null, true);
 		// On interface field
-		checkDirectivesOnField(generateCodeDocumentParser.getType("Character"), "name", true, "on interface field", null,
-				true, 0);
-		checkDirectivesOnField(generateCodeDocumentParser.getType("Character"), "appearsIn", false, null, null, true, 0);
+		checkDirectivesOnField(generateCodeDocumentParser.getType("Character"), "name", true, "on interface field",
+				null, true, 0);
+		checkDirectivesOnField(generateCodeDocumentParser.getType("Character"), "appearsIn", false, null, null, true,
+				0);
 		// On union
 		// checkDirectivesOnType(documentParser.getType("AnyCharacter"), true, "on Union", null, false);
 		// On input type
-		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCasesInput"), true, "on Input Type", null, null,
-				null, null, null, null, null, false);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCasesInput"), true, "on Input Type", null,
+				null, null, null, null, null, null, false);
 		// On input type field
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "id", true, "on Input Field", null,
+		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "id", true, "on Input Field",
+				null, false, 0);
+		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "name", false, null, null,
 				false, 0);
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "name", false, null, null, false,
-				0);
 		// On type
-		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCases"), true, "on Object", null, null, null, null,
-				null, null, null, true);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCases"), true, "on Object", null, null, null,
+				null, null, null, null, true);
 		// On type field
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "id", true, "on Field", null, false, 0);
-		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "name", false, null, null, false, 0);
+		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "id", true, "on Field", null, false,
+				0);
+		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "name", false, null, null, false,
+				0);
 		// On input parameter
-		checkDirectivesOnInputParameter(generateCodeDocumentParser.getType("AllFieldCases"), "forname", "uppercase", true,
-				"on Argument", null, false);
+		checkDirectivesOnInputParameter(generateCodeDocumentParser.getType("AllFieldCases"), "forname", "uppercase",
+				true, "on Argument", null, false);
 		checkDirectivesOnInputParameter(generateCodeDocumentParser.getType("AllFieldCases"), "forname",
 				"textToAppendToTheForname", false, null, null, false);
 	}
@@ -692,7 +702,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(16, type.getFields().size());
+		assertEquals(17, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -722,10 +732,14 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkInputParameter(type, j, 1, "num", false, false, null, "Int", "Integer",
 				new IntValue(BigInteger.valueOf(45)));
 		j += 1;
-		// withEnum(episode: Episode!): Character
+		// withEnum(episode: Episode! = NEWHOPE): Character
 		checkField(type, j, "withEnum", false, false, null, "Character", "Character");
 		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", "Episode",
 				new graphql.language.EnumValue("NEWHOPE"));
+		j += 1;
+		// withListOfList(matrix: [[Float]]!): AllFieldCases
+		checkField(type, j, "withListOfList", false, false, null, "AllFieldCases", "AllFieldCases");
+		checkInputParameter(type, j, 0, "matrix", true, true, false, "Float", "Double", null);
 		j += 1;
 		// withList(name: String!, friends: [Character]!): [Characters]
 		checkField(type, j, "withList", true, false, false, "Character", "Character");
@@ -885,11 +899,12 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
 
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(list, field.isList(), "field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(mandatory, field.isMandatory(),
+		assertEquals(list, field.getFieldTypeAST().isList(),
+				"field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
+		assertEquals(mandatory, field.getFieldTypeAST().isMandatory(),
 				"field mandatory is " + mandatory + " (for " + fieldDescForJUnitMessage + ")");
-		if (itemMandatory != null) {
-			assertEquals(itemMandatory, field.isItemMandatory(),
+		if (list && itemMandatory != null) {
+			assertEquals(itemMandatory, field.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
 					"field itemMandatory is " + itemMandatory + " (for " + fieldDescForJUnitMessage + ")");
 		}
 
@@ -913,13 +928,14 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		assertEquals(name, inputValue.getName(),
 				type.getName() + " - name is " + name + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(list, inputValue.isList(),
+		assertEquals(list, inputValue.getFieldTypeAST().isList(),
 				type.getName() + " - list is " + list + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(mandatory, inputValue.isMandatory(),
+		assertEquals(mandatory, inputValue.getFieldTypeAST().isMandatory(),
 				type.getName() + " - mandatory is " + mandatory + " (for " + intputParamDescForJUnitMessage + ")");
 		if (itemMandatory != null) {
-			assertEquals(itemMandatory, inputValue.isItemMandatory(), type.getName() + " - itemMandatory is "
-					+ itemMandatory + " (for " + intputParamDescForJUnitMessage + ")");
+			assertEquals(itemMandatory, inputValue.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
+					type.getName() + " - itemMandatory is " + itemMandatory + " (for " + intputParamDescForJUnitMessage
+							+ ")");
 		}
 
 		Type fieldType = inputValue.getType();

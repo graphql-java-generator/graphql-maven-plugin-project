@@ -19,19 +19,19 @@ public class TopicPostInput {
 		// No action
 	}
 
-	@GraphQLScalar(fieldName = "authorId", graphQLTypeName = "ID", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "authorId", graphQLTypeSimpleName = "ID",  javaClass = String.class)
 	String authorId;
 
-	@GraphQLScalar(fieldName = "date", graphQLTypeName = "Date", list = false, javaClass = Date.class)
+	@GraphQLScalar(fieldName = "date", graphQLTypeSimpleName = "Date",  javaClass = Date.class)
 	Date date;
 
-	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeName = "Boolean", list = false, javaClass = Boolean.class)
+	@GraphQLScalar(fieldName = "publiclyAvailable", graphQLTypeSimpleName = "Boolean",  javaClass = Boolean.class)
 	Boolean publiclyAvailable;
 
-	@GraphQLScalar(fieldName = "title", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "title", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String title;
 
-	@GraphQLScalar(fieldName = "content", graphQLTypeName = "String", list = false, javaClass = String.class)
+	@GraphQLScalar(fieldName = "content", graphQLTypeSimpleName = "String",  javaClass = String.class)
 	String content;
 
 	public void setAuthorId(String authorId) {

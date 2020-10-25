@@ -329,10 +329,10 @@ public class GraphqlUtils {
 				Object value;
 
 				if (graphQLScalar != null) {
-					value = getArgument(map.get(key), graphQLScalar.graphQLTypeName(), javaTypeForIDType,
+					value = getArgument(map.get(key), graphQLScalar.graphQLTypeSimpleName(), javaTypeForIDType,
 							graphQLScalar.javaClass());
 				} else if (graphQLNonScalar != null) {
-					value = getArgument(map.get(key), graphQLNonScalar.graphQLTypeName(), javaTypeForIDType,
+					value = getArgument(map.get(key), graphQLNonScalar.graphQLTypeSimpleName(), javaTypeForIDType,
 							graphQLNonScalar.javaClass());
 				} else {
 					throw new RuntimeException("Internal error: the field '" + clazz.getName() + "." + key

@@ -17,7 +17,7 @@ public class SubscriptionType  {
 		// No action
 	}
 
-	@GraphQLNonScalar(fieldName = "subscribeToNewPost", graphQLTypeName = "Post", list = false, javaClass = Post.class)
+	@GraphQLNonScalar(fieldName = "subscribeToNewPost", graphQLTypeSimpleName = "Post",  javaClass = Post.class)
 	Post subscribeToNewPost;
 
 

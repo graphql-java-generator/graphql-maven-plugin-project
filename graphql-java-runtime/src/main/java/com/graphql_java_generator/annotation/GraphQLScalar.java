@@ -26,13 +26,10 @@ public @interface GraphQLScalar {
 	public String fieldName();
 
 	/**
-	 * The name of the Custom Scalar type, as defined in the GraphQL schema. This name is used to retrieve the
-	 * associated converter, on runtime
+	 * The name of the Scalar type, as defined in the GraphQL schema, without indication of list or mandatory. This name
+	 * is used to retrieve the associated converter, on runtime.
 	 */
-	public String graphQLTypeName();
-
-	/** true if this GraphQL attribute is a list */
-	public boolean list();
+	public String graphQLTypeSimpleName();
 
 	/** Contains the java data type that is has used to store the data, on both the client and the server side. */
 	public Class<?> javaClass();
