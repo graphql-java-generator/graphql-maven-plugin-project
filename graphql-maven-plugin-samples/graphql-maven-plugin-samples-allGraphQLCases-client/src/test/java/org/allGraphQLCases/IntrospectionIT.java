@@ -34,7 +34,7 @@ public class IntrospectionIT {
 	MyQueryTypeExecutor myQuery = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "age", "aFloat", "date", "dates", "nbComments",
-			"comments", "booleans", "aliases", "planets", "friends", "oneWithIdSubType", "listWithIdSubTypes",
+			"comments", "booleans", "aliases", "planets", "friends", "matrix", "oneWithIdSubType", "listWithIdSubTypes",
 			"oneWithoutIdSubType", "listWithoutIdSubTypes" };
 	static List<String> AllFieldCases_FIELDNAMES = Arrays.asList(AllFieldCases_FIELDS);
 

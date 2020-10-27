@@ -3,6 +3,7 @@
  */
 package org.allGraphQLCases.server.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -54,6 +55,25 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	@Override
 	public List<Human> friends(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
 		return generator.generateInstanceList(Human.class, 10);
+	}
+
+	@Override
+	public List<List<Double>> matrix(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases origin) {
+		// When the request is "withListOfList", the matrix field is field from the input parameter.
+		// So, if this field is non null, we let its value. Otherwise, we provide one.
+		if (origin.getMatrix() != null) {
+			return origin.getMatrix();
+		} else {
+			List<List<Double>> list = new ArrayList<>();
+			for (int i = 0; i < 2; i += 1) {
+				List<Double> sublist = new ArrayList<>();
+				sublist.add(DataGenerator.RANDOM.nextDouble());
+				sublist.add(DataGenerator.RANDOM.nextDouble());
+				sublist.add(DataGenerator.RANDOM.nextDouble());
+				list.add(sublist);
+			}
+			return list;
+		}
 	}
 
 	@Override

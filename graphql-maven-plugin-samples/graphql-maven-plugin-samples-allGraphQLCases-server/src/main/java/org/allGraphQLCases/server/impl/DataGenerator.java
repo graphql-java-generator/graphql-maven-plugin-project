@@ -40,7 +40,7 @@ public class DataGenerator {
 	@Resource
 	GraphqlUtils graphqlUtils;
 
-	private static final Random RANDOM = new Random();
+	public static final Random RANDOM = new Random();
 	private static final int NB_ITEM_PER_LIST = 0;
 
 	/**

@@ -88,6 +88,13 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return c;
 	}
 
+	@Override
+	public AllFieldCases withListOfList(DataFetchingEnvironment dataFetchingEnvironment, List<List<Double>> matrix) {
+		AllFieldCases ret = new AllFieldCases();
+		ret.setMatrix(matrix);
+		return ret;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Character> withList(DataFetchingEnvironment dataFetchingEnvironment, String name,
@@ -291,4 +298,5 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

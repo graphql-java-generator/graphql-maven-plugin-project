@@ -22,6 +22,7 @@ type MyQueryType {
     withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
     withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num: Int = 45): Droid!
     withEnum(episode: Episode! = NEWHOPE): Character
+    withListOfList(matrix: [[Float]]!): AllFieldCases
     
     ################################################################################
     # withList return a list of Characters, matching the given list of CharacterInput.
@@ -100,6 +101,7 @@ input AllFieldCasesInput @testDirective(value:"on Input Type") {
     booleans: [Boolean!]
     aliases: [String]!
     planets: [String!]!
+    matrix: [[Float]]!
     withIdSubtype: [AllFieldCasesWithIdSubtypeInput!]
     withoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]
 }
@@ -141,6 +143,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     aliases: [String]!
     planets: [String!]!
     friends: [Human!]
+    matrix: [[Float]]!
     oneWithIdSubType: AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
