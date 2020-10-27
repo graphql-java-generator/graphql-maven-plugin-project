@@ -8,12 +8,12 @@ import java.util.List;
  * 
  * @author etienne-sf
  */
-public class CustomScalarDeserializerListListDouble extends AbstractCustomScalarDeserializer<List<List<Double>>> {
+public class CustomScalarDeserializerListBoolean extends AbstractCustomScalarDeserializer<List<Boolean>> {
 
 	private static final long serialVersionUID = 1L;
 
-	protected CustomScalarDeserializerListListDouble() {
-		super(new CustomScalarDeserializerListDouble(), true, Double.class, null);
+	protected CustomScalarDeserializerListBoolean() {
+		super(null, true, Boolean.class, null);
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.allGraphQLCases.test;
+package com.graphql_java_generator.client.response;
 
 import java.util.List;
 
@@ -8,12 +8,12 @@ import java.util.List;
  * 
  * @author etienne-sf
  */
-public class CustomScalarDeserializerDouble extends AbstractCustomScalarDeserializer<List<List<Double>>> {
+public class CustomJacksonDeserializerListString extends AbstractCustomJacksonDeserializer<List<String>> {
 
 	private static final long serialVersionUID = 1L;
 
-	protected CustomScalarDeserializerDouble() {
-		super(null, Double.class, graphql.Scalars.GraphQLFloat);
+	protected CustomJacksonDeserializerListString() {
+		super(null, true, String.class, null);
 	}
 
 }

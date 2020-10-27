@@ -92,7 +92,7 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
 				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date", ""//
-				+ "@JsonDeserialize(using = CustomScalarDeserializerDate.class)\n" //
+				+ "@JsonDeserialize(using = CustomJacksonDeserializerDate.class)\n" //
 				+ "\t@JsonProperty(\"date\")\n" //
 				+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author", "@JsonProperty(\"author\")\n"//

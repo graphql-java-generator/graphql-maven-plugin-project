@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.allGraphQLCases.test;
+package com.graphql_java_generator.client.response;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import graphql.schema.GraphQLScalarType;
  * 
  * @author etienne-sf
  */
-public abstract class AbstractCustomScalarDeserializer<T> extends StdDeserializer<T> {
+public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializer<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public abstract class AbstractCustomScalarDeserializer<T> extends StdDeserialize
 	 * The class that can deserialize the items in the list. This recursion allows to deserialize list of lists.<BR/>
 	 * This field must be null to deserialize non list objects. And it's mandatory, to deserialize lists.
 	 */
-	AbstractCustomScalarDeserializer<?> itemDeserializer;
+	AbstractCustomJacksonDeserializer<?> itemDeserializer;
 
 	// final int nbListLevels;
 
@@ -79,7 +79,7 @@ public abstract class AbstractCustomScalarDeserializer<T> extends StdDeserialize
 	 *            value read on the Jackson response from the server It is mandatory for custom scalars, and must null
 	 *            for other data types.
 	 */
-	protected AbstractCustomScalarDeserializer(Class<?> handledType, GraphQLScalarType graphQLScalarType) {
+	protected AbstractCustomJacksonDeserializer(Class<?> handledType, GraphQLScalarType graphQLScalarType) {
 		this(null, false, handledType, graphQLScalarType);
 	}
 
@@ -98,7 +98,7 @@ public abstract class AbstractCustomScalarDeserializer<T> extends StdDeserialize
 	 *            value read on the Jackson response from the server It is mandatory for custom scalars, and must null
 	 *            for other data types.
 	 */
-	protected AbstractCustomScalarDeserializer(AbstractCustomScalarDeserializer<?> itemDeserializer, boolean list,
+	protected AbstractCustomJacksonDeserializer(AbstractCustomJacksonDeserializer<?> itemDeserializer, boolean list,
 			Class<?> handledType, GraphQLScalarType graphQLScalarType) {
 		super(handledType);
 		this.itemDeserializer = itemDeserializer;
@@ -114,7 +114,9 @@ public abstract class AbstractCustomScalarDeserializer<T> extends StdDeserialize
 		JsonToken currentToken = p.currentToken();
 		logger.trace("Reading a {} token", currentToken);
 
-		if (list) {
+		if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
+			return null;
+		} else if (list) {
 
 			if (!p.currentToken().equals(JsonToken.START_ARRAY)) {
 				// Oups
@@ -128,37 +130,40 @@ public abstract class AbstractCustomScalarDeserializer<T> extends StdDeserialize
 			while (!p.nextToken().equals(JsonToken.END_ARRAY)) {
 				currentToken = p.currentToken();
 				if (p.currentToken().equals(JsonToken.START_ARRAY)) {
-					// We're starting a sublist. The itemDeserializer should manage sublist. So its own itemDeserializer
-					// must be non-null
+					// We're starting a sublist.
 					if (itemDeserializer == null) {
 						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
 								+ " JSON token, but the itemDeserializer is not defined. This JSON token can not be handled.");
 					} else if (!itemDeserializer.list) {
 						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
 								+ " JSON token, but the itemDeserializer doesn't manage list. Hint: The number of embedded lists doesn't match the defined deserializer for the GraphQL field.");
+					} else {
+						// Ok. Let's deserialize the sublist.
+						logger.trace("Sending deserialization for a sublist to {} with token {}",
+								itemDeserializer.getClass().getName(), p.currentToken());
+						list.add(itemDeserializer.deserialize(p, ctxt));
+						currentToken = p.currentToken();
 					}
-					// Ok. Let's deserialize the sublist.
-					logger.trace("Sending deserialization for a sublist to {} with token {}",
-							itemDeserializer.getClass().getName(), p.currentToken());
-					list.add(itemDeserializer.deserialize(p, ctxt));
-					currentToken = p.currentToken();
 				} else if (itemDeserializer != null) {
 					// We've found a final value (not a list).
-					if (itemDeserializer.list) {
+					if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
+						list.add(null);
+					} else if (itemDeserializer.list) {
 						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
 								+ " JSON token, but the itemDeserializer expects a list. Hint: the number of embedded lists doesn't match the defined deserializer for the GraphQL field.");
+					} else {
+						logger.trace("Sending deserialization for a value to {} with token {}",
+								itemDeserializer.getClass().getName(), p.currentToken());
+						list.add(itemDeserializer.deserialize(p, ctxt));
+						currentToken = p.currentToken();
 					}
-					logger.trace("Sending deserialization for a value to {} with token {}",
-							itemDeserializer.getClass().getName(), p.currentToken());
-					list.add(itemDeserializer.deserialize(p, ctxt));
-					currentToken = p.currentToken();
 				} else {
 					// It's a final value, and it is not a custom scalar (otherwise, itemDeserializer would be defined)
 					// Let's let Jackson parse this value.
 					logger.trace("Executing JsonParser.readValueAs({}) with token {}", handledType.getName(),
 							p.currentToken());
 					Object o = p.readValueAs(handledType);
-					logger.trace("  Read value was {}", o.toString());
+					logger.trace("  Read value was {}", o == null ? "null" : o.toString());
 					list.add(o);
 				}
 			} // while

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
-import com.graphql_java_generator.client.response.AbstractCustomScalarDeserializer;
+import com.graphql_java_generator.client.response.AbstractCustomJacksonDeserializer;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -18,7 +18,7 @@ import graphql.schema.GraphQLScalarType;
 /**
  * This class is a standard Deserializer for Jackson. It uses the {@link GraphQLScalarType} that is implemented by the project for this scalar
  */
-public class CustomScalarDeserializerelse  extends AbstractCustomScalarDeserializer<java.lang.String> {
+public class CustomScalarDeserializerelse  extends AbstractCustomJacksonDeserializer<java.lang.String> {
 
 	private static final long serialVersionUID = 1L;
 

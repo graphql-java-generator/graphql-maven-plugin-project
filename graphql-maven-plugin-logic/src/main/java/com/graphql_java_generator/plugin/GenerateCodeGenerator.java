@@ -184,11 +184,6 @@ public class GenerateCodeGenerator {
 			i += generateTargetFiles(generateCodeDocumentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
 					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER), true);
 
-			//
-			// Now useless? (to be confirmed after the first successful full build)
-			// configuration.getLog().debug("Generating query target files");
-			// i += generateQueryTargetType();
-
 			break;
 		}
 
