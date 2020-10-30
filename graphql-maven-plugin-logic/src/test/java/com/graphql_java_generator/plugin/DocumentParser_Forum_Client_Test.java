@@ -92,9 +92,9 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
 				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date", ""//
-				+ "@JsonDeserialize(using = CustomJacksonDeserializerDate.class)\n" //
-				+ "\t@JsonProperty(\"date\")\n" //
-				+ "	@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = Date.class)");
+				+ "@JsonProperty(\"date\")\n" //
+				+ "\t@JsonDeserialize(using = CustomJacksonDeserializerDate.class)\n" //
+				+ "\t@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author", "@JsonProperty(\"author\")\n"//
 				+ "\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable", ""//
@@ -110,9 +110,9 @@ class DocumentParser_Forum_Client_Test {
 				+ "@JsonProperty(\"content\")\n"//
 				+ "\t@GraphQLScalar(fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts", ""//
-				+ "@JsonDeserialize(contentAs = Post.class)\n"//
+				+ "@JsonProperty(\"posts\")\n"//
+				+ "\t@JsonDeserialize(using = CustomJacksonDeserializerListPost.class)\n"//
 				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"})\n"
-				+ "\t@JsonProperty(\"posts\")\n"//
 				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = Post.class)");
 	}
 
@@ -129,10 +129,10 @@ class DocumentParser_Forum_Client_Test {
 				+ "@GraphQLQuery(name = \"MutationType\", type = RequestType.mutation)\n"
 				+ "@GraphQLObjectType(\"MutationType\")", mutation.getAnnotation());
 		int i = 0;
-		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
-				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
-						+ "	@JsonProperty(\"createBoard\")\n"
-						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
+		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
+				+ "@JsonProperty(\"createBoard\")\n"
+				+ "	@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
+				+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 
 	/** Tests the annotation. We're in Client mode, thanks to the Spring Configuration used for this test */
@@ -147,10 +147,10 @@ class DocumentParser_Forum_Client_Test {
 				+ "@GraphQLQuery(name = \"MutationType\", type = RequestType.mutation)\n"
 				+ "@GraphQLObjectType(\"MutationType\")", mutation.getAnnotation());
 		int i = 0;
-		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard",
-				"@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
-						+ "	@JsonProperty(\"createBoard\")\n"
-						+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
+		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
+				+ "@JsonProperty(\"createBoard\")\n"
+				+ "\t@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
+				+ "\t@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 
 	/** Tests the Data Fetchers that are listed during parsing */

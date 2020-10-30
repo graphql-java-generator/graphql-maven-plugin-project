@@ -48,7 +48,8 @@ public class FieldTypeAST {
 	boolean mandatory = false;
 
 	/**
-	 * When this field type is a list, returns the properties for the item of this list.
+	 * When this field type is a list, returns the properties for the item of this list. This can also be a list, when
+	 * the GraphQL type is defined by nested arrays.
 	 * 
 	 * @return
 	 * @throws RuntimeException
@@ -64,6 +65,13 @@ public class FieldTypeAST {
 	/** The standard constructor */
 	public FieldTypeAST(String graphQLTypeName) {
 		this.graphQLTypeSimpleName = graphQLTypeName;
+	}
+
+	public int getListLevel() {
+		if (listItemFieldTypeAST == null)
+			return 0;
+		else
+			return 1 + listItemFieldTypeAST.getListLevel();
 	}
 
 	/**

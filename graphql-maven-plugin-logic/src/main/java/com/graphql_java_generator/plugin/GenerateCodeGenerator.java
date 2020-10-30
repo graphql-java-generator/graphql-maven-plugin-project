@@ -35,6 +35,7 @@ import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.generate_code.CustomDeserializer;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
@@ -174,15 +175,24 @@ public class GenerateCodeGenerator {
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer", true),
 					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
+			// Files for Custom Deserializer
+			for (CustomDeserializer cd : generateCodeDocumentParser.getCustomDeserializers()) {
+				VelocityContext context = getVelocityContext();
+				context.put("customDeserializer", cd);
+				if (cd.getListLevel() > 0) {
+					List<String> imports = new ArrayList<>();
+					imports.add("java.util.List");
+					context.put("imports", imports);
+				}
+				i += generateOneFile(getJavaFile(cd.getClassSimpleName(), true),
+						"Generating custom deserializer " + cd.getClassSimpleName(), context,
+						resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER));
+			}
 			// Files for Directives
 			configuration.getPluginLogger().debug("Generating DirectiveRegistryInitializer");
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer", true),
 					"Generating DirectiveRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
-			//
-			configuration.getPluginLogger().debug("Generating " + FILE_TYPE_JACKSON_DESERIALIZER);
-			i += generateTargetFiles(generateCodeDocumentParser.customScalars, FILE_TYPE_JACKSON_DESERIALIZER,
-					resolveTemplate(CodeTemplate.JACKSON_DESERIALIZER), true);
 
 			break;
 		}

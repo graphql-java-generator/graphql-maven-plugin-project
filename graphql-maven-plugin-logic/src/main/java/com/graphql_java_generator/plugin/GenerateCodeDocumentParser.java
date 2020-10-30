@@ -5,7 +5,10 @@ package com.graphql_java_generator.plugin;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
@@ -34,7 +37,9 @@ import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.generate_code.CustomDeserializer;
 import com.graphql_java_generator.plugin.language.BatchLoader;
+import com.graphql_java_generator.plugin.language.CustomScalar;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
@@ -112,6 +117,9 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 */
 	List<BatchLoader> batchLoaders = new ArrayList<>();
 
+	/** The list of {@link CustomDeserializer} that contains the custom deserializers that must be generated. */
+	private List<CustomDeserializer> customDeserializers = new ArrayList<>();
+
 	/** The configuration for the code generation must implement the {@link GenerateCodeCommonConfiguration} */
 	GenerateCodeCommonConfiguration configuration;
 
@@ -188,6 +196,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// Some annotations are needed for Jackson or JPA
 		configuration.getPluginLogger().debug("Add annotations");
 		addAnnotations();
+		// List of all Custom Deserializers
+		initCustomDeserializers();
 		// List all data fetchers
 		configuration.getPluginLogger().debug("Init data fetchers");
 		initDataFetchers();
@@ -413,22 +423,29 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForClientMode(FieldImpl field) {
-		// No json field annotation for interfaces or unions. The json annotation is directly on the interface or union
-		// type.
-		String contentAs = null;
-		String using = null;
-		if (field.getFieldTypeAST().isList()) {
-			field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
-			contentAs = field.getType().getClassSimpleName() + ".class";
-		}
-		if (field.getType().isCustomScalar()) {
-			String classname = "CustomScalarDeserializer" + field.getType().getName();
-			field.getOwningType().addImport(configuration.getPackageName(), getUtilPackageName() + "." + classname);
-			using = classname + ".class";
-		}
-		if (contentAs != null || using != null) {
-			field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
-			field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
+
+		field.getOwningType().addImport(configuration.getPackageName(), JsonProperty.class.getName());
+		field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
+
+		// No json deserialization for input type
+		if (!field.getOwningType().isInputType()) {
+			String contentAs = null;
+			String using = null;
+			if (field.getFieldTypeAST().isList()) {
+				field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
+			}
+			if (field.getFieldTypeAST().isList() || field.getType().isCustomScalar()) {
+				String classSimpleName = CustomDeserializer.getCustomDeserializerClassSimpleName(
+						field.getFieldTypeAST().getListLevel(), graphqlUtils.getJavaName(field.getType().getName()));
+				field.getOwningType().addImport(configuration.getPackageName(),
+						getUtilPackageName() + "." + classSimpleName);
+				using = classSimpleName + ".class";
+			}
+
+			if (contentAs != null || using != null) {
+				field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
+				field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
+			}
 		}
 
 		if (field.getInputParameters().size() > 0) {
@@ -444,9 +461,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			}
 			field.addAnnotation("@GraphQLInputParameters(names = {" + names + "}, types = {" + types + "})");
 		}
-
-		field.getOwningType().addImport(configuration.getPackageName(), JsonProperty.class.getName());
-		field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
 
 		addFieldAnnotationForBothClientAndServerMode(field);
 	}
@@ -808,6 +822,56 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		type.addImport(targetPackage, classname);
 		type.addImportForUtilityClasses(utilityPackage, classname);
+	}
+
+	/**
+	 * This method reads all the object and interface types, to identify all the {@link CustomDeserializer} that must be
+	 * defined.
+	 */
+	private void initCustomDeserializers() {
+		Map<Type, Integer> maxListLevelPerType = new HashMap<>();
+		Stream.concat(objectTypes.stream(), interfaceTypes.stream())
+				// We deserialize data from the response. So there is no custom deserializer for fields that belong to
+				// input types. Let's exclude the input types
+				.filter((o) -> !o.isInputType())
+				// Let's read all their fields
+				.flatMap((o) -> o.getFields().stream())
+				// Let's store, for each type, the maximum level of list we've found
+				.forEach((f) -> {
+					// listLevel: 0 for non array GraphQL types, 1 for arrays like [Int], 2 for nested arrays like
+					// [[Int]]...
+					int listLevel = f.getFieldTypeAST().getListLevel();
+
+					Integer alreadyDefinedListLevel = maxListLevelPerType.get(f.getType());
+					if (alreadyDefinedListLevel == null || alreadyDefinedListLevel < listLevel) {
+						// The current type is a deeper nested array
+						maxListLevelPerType.put(f.getType(), listLevel);
+					}
+				});
+
+		// We now know the maximum listLevel for each type. We can now define all the necessary custom deserializers
+		customDeserializers = new ArrayList<>();
+		for (Type t : maxListLevelPerType.keySet()) {
+			// First step: if this type is a custom scalar, we define its custom deserializer
+			CustomDeserializer customScalarDeserializer = null;
+			if (t.isCustomScalar()) {
+				customScalarDeserializer = new CustomDeserializer(t.getName(), t.getClassFullName(),
+						((CustomScalar) t).getCustomScalarDefinition(), 0, null);
+				customDeserializers.add(customScalarDeserializer);
+			}
+
+			// Then: we manage all the list levels for the embedded arrays of this type, as found in the GraphQL schema.
+			// So we loop from 1 (standard array) to the deepest level of embedded array found this type, as found in
+			// the GraphQL schema.
+			// found in this model for fields of this type
+			CustomDeserializer lowerListLevelCustomDeserializer = customScalarDeserializer;
+			for (int i = 1; i <= maxListLevelPerType.get(t); i += 1) {
+				CustomDeserializer currentListLevelCustomDeserializer = new CustomDeserializer(t.getName(),
+						t.getClassFullName(), null, i, lowerListLevelCustomDeserializer);
+				customDeserializers.add(currentListLevelCustomDeserializer);
+				lowerListLevelCustomDeserializer = currentListLevelCustomDeserializer;
+			}
+		}
 	}
 
 	/**
