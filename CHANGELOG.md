@@ -7,7 +7,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
-# Not released yet
+# 1.11
 
 Both modes (client and server):
 * Changes in goal(maven)/task(gradle) names, to make them clear and homogeneous between the gradle and the maven plugin:
@@ -20,6 +20,12 @@ Both modes (client and server):
 * New _generateGraphQLSchema_ goal/task that allows to generate the GraphQL schema file. It's interesting when:
     * There are several GraphQL schema files in input (for instance with the extends GraphQL capability)
     * The _addRelayConnections_ is used, that adds the _Node_ interface, and the _Edge_ and _Connection_ types to the schema.
+
+
+Client Mode (generateClientCode):
+* Corrected issue 50: could not work with nested arrays (for instance [[Float]])
+* Corrected issue 51: error with argument being a list of ID ([ID]) 
+
 
 
 # 1.10
