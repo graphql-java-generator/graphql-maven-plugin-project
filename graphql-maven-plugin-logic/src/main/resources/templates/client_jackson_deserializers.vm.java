@@ -21,12 +21,13 @@ import $import;
 /**
  * This class is a standard Deserializer for Jackson. It uses the {@link GraphQLScalarType} that is implemented by the project for this scalar
  */
-public class ${customDeserializer.classSimpleName} extends AbstractCustomJacksonDeserializer<${customDeserializer.javaClassFullName}> {
-
-	private static final long serialVersionUID = 1L;
-
-	public ${customDeserializer.classSimpleName}() {
-		super(
+public class CustomJacksonDeserializers {
+	
+#foreach ($customDeserializer in $customDeserializers)
+	public static class ${customDeserializer.classSimpleName} extends AbstractCustomJacksonDeserializer<${customDeserializer.javaClassFullName}> {
+		private static final long serialVersionUID = 1L;
+		public ${customDeserializer.classSimpleName}() {
+			super(
 #if (${customDeserializer.itemCustomDeserializer})
 				new ${customDeserializer.itemCustomDeserializer.classSimpleName}(),
 #else
@@ -52,6 +53,9 @@ public class ${customDeserializer.classSimpleName} extends AbstractCustomJackson
 #else
 				null
 #end
-				);
+			);
+		}
 	}
+
+#end	
 }

@@ -435,10 +435,12 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
 			}
 			if (field.getFieldTypeAST().isList() || field.getType().isCustomScalar()) {
-				String classSimpleName = CustomDeserializer.getCustomDeserializerClassSimpleName(
-						field.getFieldTypeAST().getListLevel(), graphqlUtils.getJavaName(field.getType().getName()));
+				String classSimpleName = "CustomJacksonDeserializers."//
+						+ CustomDeserializer.getCustomDeserializerClassSimpleName(
+								field.getFieldTypeAST().getListLevel(),
+								graphqlUtils.getJavaName(field.getType().getName()));
 				field.getOwningType().addImport(configuration.getPackageName(),
-						getUtilPackageName() + "." + classSimpleName);
+						getUtilPackageName() + ".CustomJacksonDeserializers");
 				using = classSimpleName + ".class";
 			}
 

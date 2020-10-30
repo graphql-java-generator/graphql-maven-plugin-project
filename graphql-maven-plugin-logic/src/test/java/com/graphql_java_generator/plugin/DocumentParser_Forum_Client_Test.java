@@ -93,7 +93,7 @@ class DocumentParser_Forum_Client_Test {
 				"@JsonProperty(\"id\")\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date", ""//
 				+ "@JsonProperty(\"date\")\n" //
-				+ "\t@JsonDeserialize(using = CustomJacksonDeserializerDate.class)\n" //
+				+ "\t@JsonDeserialize(using = CustomJacksonDeserializers.Date.class)\n" //
 				+ "\t@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author", "@JsonProperty(\"author\")\n"//
 				+ "\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = Member.class)");
@@ -111,7 +111,7 @@ class DocumentParser_Forum_Client_Test {
 				+ "\t@GraphQLScalar(fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts", ""//
 				+ "@JsonProperty(\"posts\")\n"//
-				+ "\t@JsonDeserialize(using = CustomJacksonDeserializerListPost.class)\n"//
+				+ "\t@JsonDeserialize(using = CustomJacksonDeserializers.ListPost.class)\n"//
 				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"})\n"
 				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = Post.class)");
 	}

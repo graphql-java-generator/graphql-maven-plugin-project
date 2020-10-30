@@ -24,33 +24,33 @@ class AbstractCustomJacksonDeserializerTest {
 	/** A class to test the Jackson serialization and deserialization with the custom deserialize */
 	public static class Test {
 
-		@JsonDeserialize(using = CustomJacksonDeserializerListListCharacter.class)
+		@JsonDeserialize(using = CustomJacksonDeserializers.ListListCharacter.class)
 		@JsonProperty("characters")
 		@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Human", javaClass = Character.class)
 		List<List<Character>> listOfListOfCharacters;
 
 		@JsonSerialize(contentUsing = CustomJacksonSerializerDate.class)
-		@JsonDeserialize(using = CustomJacksonDeserializerListDate.class)
+		@JsonDeserialize(using = CustomJacksonDeserializers.ListDate.class)
 		@JsonProperty("dates")
 		@GraphQLScalar(fieldName = "dates", graphQLTypeSimpleName = "Date", javaClass = Date.class)
 		List<Date> dates;
 
-		@JsonDeserialize(using = CustomJacksonDeserializerListString.class)
+		@JsonDeserialize(using = CustomJacksonDeserializers.ListString.class)
 		@JsonProperty("comments")
 		@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String", javaClass = String.class)
 		List<String> comments;
 
-		@JsonDeserialize(using = CustomJacksonDeserializerListBoolean.class)
+		@JsonDeserialize(using = CustomJacksonDeserializers.ListBoolean.class)
 		@JsonProperty("booleans")
 		@GraphQLScalar(fieldName = "booleans", graphQLTypeSimpleName = "Boolean", javaClass = Boolean.class)
 		List<Boolean> booleans;
 
-		@JsonDeserialize(using = CustomJacksonDeserializerListHuman.class)
+		@JsonDeserialize(using = CustomJacksonDeserializers.ListHuman.class)
 		@JsonProperty("friends")
 		@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Human", javaClass = Human.class)
 		List<Human> friends;
 
-		@JsonDeserialize(using = CustomJacksonDeserializerListListDouble.class)
+		@JsonDeserialize(using = CustomJacksonDeserializers.ListListDouble.class)
 		@JsonProperty("matrix")
 		@GraphQLScalar(fieldName = "matrix", graphQLTypeSimpleName = "Float", javaClass = Double.class)
 		List<List<Double>> matrix;

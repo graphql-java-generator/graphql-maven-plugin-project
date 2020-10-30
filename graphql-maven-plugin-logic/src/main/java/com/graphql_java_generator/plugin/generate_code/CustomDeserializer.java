@@ -99,7 +99,7 @@ public class CustomDeserializer {
 	 * @return
 	 */
 	public static String getCustomDeserializerClassSimpleName(int listLevel, String graphQLTypeName) {
-		StringBuilder sb = new StringBuilder("CustomJacksonDeserializer");
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < listLevel; i += 1) {
 			sb.append("List");
 		}
