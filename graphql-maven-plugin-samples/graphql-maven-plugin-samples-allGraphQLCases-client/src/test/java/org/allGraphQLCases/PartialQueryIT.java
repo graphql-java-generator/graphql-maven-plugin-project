@@ -5,11 +5,14 @@ package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,14 +25,17 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * @author etienne-sf
- */@Execution(ExecutionMode.CONCURRENT)
+ */
+@Execution(ExecutionMode.CONCURRENT)
 public class PartialQueryIT {
 	MyQueryTypeExecutor queryType;
+	AnotherMutationTypeExecutor mutation;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		// For some tests, we need to execute additional partialQueries
 		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		mutation = new AnotherMutationTypeExecutor(Main.GRAPHQL_ENDPOINT);
 	}
 
 	/**
@@ -68,5 +74,22 @@ public class PartialQueryIT {
 				assertEquals(i + j, sublist.get(j));
 			}
 		} // for
+	}
+
+	@Test
+	void test_Issue51_ListID() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		List<String> ids = new ArrayList<String>();
+		ids.add(UUID.randomUUID().toString());
+		ids.add(UUID.randomUUID().toString());
+		ids.add(UUID.randomUUID().toString());
+		//
+		GraphQLRequest graphQLRequest = mutation.getDeleteSnacksGraphQLRequest("");
+
+		// Go, go, go
+		Boolean ret = mutation.deleteSnacks(graphQLRequest, ids);
+
+		// Verification
+		assertTrue(ret);
 	}
 }

@@ -66,6 +66,9 @@ type MyQueryType {
 type AnotherMutationType {
 	createHuman(human: HumanInput!): Human!
 	createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
+	
+	# Tests for issue 51
+	deleteSnacks(id: [ID]) : Boolean
 }
 
 type TheSubscriptionType {

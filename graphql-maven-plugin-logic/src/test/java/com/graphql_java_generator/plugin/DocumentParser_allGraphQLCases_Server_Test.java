@@ -804,7 +804,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(2, type.getFields().size());
+		assertEquals(3, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
@@ -818,9 +818,16 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkInputParameter(type, j, 0, "human", false, true, null, "HumanInput", "HumanInput", null);
 		//
 		j += 1;
+		// createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
 		checkField(type, j, "createAllFieldCases", false, true, null, "AllFieldCases", "AllFieldCases");
 		checkNbInputParameter(type, j, 1);
 		checkInputParameter(type, j, 0, "input", false, true, null, "AllFieldCasesInput", "AllFieldCasesInput", null);
+		//
+		j += 1;
+		// deleteSnacks(id: [ID]) : Boolean
+		checkField(type, j, "deleteSnacks", false, false, null, "Boolean", "Boolean");
+		checkNbInputParameter(type, j, 1);
+		checkInputParameter(type, j, 0, "id", true, false, false, "ID", "UUID", null);
 	}
 
 	@Test

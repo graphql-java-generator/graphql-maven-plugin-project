@@ -4,6 +4,7 @@
 package org.allGraphQLCases.server.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -62,5 +63,11 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 				return d;
 		}
 		return null;
+	}
+
+	@Override
+	public Boolean deleteSnacks(DataFetchingEnvironment dataFetchingEnvironment, List<UUID> id) {
+		// We're happy. This beautiful nothing-to-do job didn't raise any error :)
+		return true;
 	}
 }
