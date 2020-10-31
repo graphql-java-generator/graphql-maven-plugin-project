@@ -8,4 +8,5 @@ com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
 org.allGraphQLCases
 org.allGraphQLCases.client
+org.allGraphQLCases.client.util
 org.allGraphQLCases.impl

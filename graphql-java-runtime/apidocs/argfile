@@ -27,7 +27,7 @@
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/request/package-info.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/request/QueryField.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/request/QueryTokenizer.java'
-'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/response/AbstractCustomScalarDeserializer.java'
+'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/response/AbstractCustomJacksonDeserializer.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/response/Error.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/response/Extension.java'
 'Z:/target/checkout/graphql-java-runtime/src/main/java/com/graphql_java_generator/client/response/JsonResponseWrapper.java'
