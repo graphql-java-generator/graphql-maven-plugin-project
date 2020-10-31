@@ -1,13 +1,12 @@
 /**
  * 
  */
-package com.graphql_java_generator.mavenplugin;
+package com.graphql_java_generator.plugin.conf;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +34,7 @@ public class DocumentsImpl implements Documents {
 	 * @param schemaStringProvider
 	 *            The String Provider
 	 * @return the {@link Document}s to read
-	 * @throws MojoExecutionException
+	 * @throws IOException
 	 *             When an error occurs while reading or parsing the graphql definition files
 	 */
 	@Override

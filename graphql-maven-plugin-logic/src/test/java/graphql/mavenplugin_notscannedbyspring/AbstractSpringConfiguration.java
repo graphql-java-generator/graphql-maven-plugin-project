@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -17,13 +16,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.graphql_java_generator.plugin.Documents;
-import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
 import graphql.language.Document;
-import graphql.parser.Parser;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -83,20 +80,4 @@ public abstract class AbstractSpringConfiguration {
 
 	protected abstract void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration);
 
-	/**
-	 * Loads the schema from the graphqls files. This method uses the {@link GraphQLJavaToolsAutoConfiguration} from the
-	 * 
-	 * project, to load the schema from the graphqls files
-	 * 
-	 * @throws IOException
-	 */
-	@Bean
-	public Documents documents(ResourceSchemaStringProvider schemaStringProvider) throws IOException {
-		Parser parser = new Parser();
-		List<Document> documents = schemaStringProvider.schemaStrings().stream().map(parser::parseDocument)
-				.collect(Collectors.toList());
-		DocumentsTestHelperImpl ret = new DocumentsTestHelperImpl();
-		ret.setDocuments(documents);
-		return ret;
-	}
 }
