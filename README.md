@@ -29,7 +29,9 @@ The next release will embed the __compatibility with the [relay connection](http
 ## Availibility: Maven and Gradle
 
 The generator is currently available both as a Maven plugin and as a Gradle plugin:
+
 * The __Maven plugin__ is available in the project ([graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project)) 
+
 * A __Gradle plugin__ is available in the project [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
 
 ## Documentation
