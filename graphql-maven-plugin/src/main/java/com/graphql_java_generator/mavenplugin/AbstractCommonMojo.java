@@ -24,9 +24,7 @@ import com.graphql_java_generator.plugin.conf.Logger;
  * This class is the super class of all Mojos. It contains all parameters that are common to all goals, and the
  * {@link #execute()} method.<BR/>
  * This avoids to redeclare each common parameter in each Mojo, including its comment. When a comment is updated, only
- * one update is necessary, instead of updating it in each Mojo.<BR/>
- * <BR/>
- * 
+ * one update is necessary, instead of updating it in each Mojo.
  * 
  * @author etienne-sf
  */
