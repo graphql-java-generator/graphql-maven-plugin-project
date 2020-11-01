@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Update the Tutorials to the 1.11 version (and use the generateClientCode and generateServerCode)
 * [WIP] Adding the relay connection capabilities (almost done, unit tests are Ok, remaining task: integration tests).
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
 * Switch to apache 2.0 licence

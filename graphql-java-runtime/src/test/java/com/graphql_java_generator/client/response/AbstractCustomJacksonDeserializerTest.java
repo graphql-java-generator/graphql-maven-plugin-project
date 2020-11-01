@@ -29,7 +29,7 @@ class AbstractCustomJacksonDeserializerTest {
 		@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Human", javaClass = Character.class)
 		List<List<Character>> listOfListOfCharacters;
 
-		@JsonSerialize(contentUsing = CustomJacksonSerializerDate.class)
+		@JsonSerialize(contentUsing = CustomJacksonSerializers.Date.class)
 		@JsonDeserialize(using = CustomJacksonDeserializers.ListDate.class)
 		@JsonProperty("dates")
 		@GraphQLScalar(fieldName = "dates", graphQLTypeSimpleName = "Date", javaClass = Date.class)
@@ -54,6 +54,11 @@ class AbstractCustomJacksonDeserializerTest {
 		@JsonProperty("matrix")
 		@GraphQLScalar(fieldName = "matrix", graphQLTypeSimpleName = "Float", javaClass = Double.class)
 		List<List<Double>> matrix;
+
+		@JsonDeserialize(using = CustomJacksonDeserializers.ListID.class)
+		@JsonProperty("ids")
+		@GraphQLScalar(fieldName = "ids", graphQLTypeSimpleName = "ID", javaClass = String.class)
+		List<String> ids;
 
 		public List<Date> getDates() {
 			return dates;
@@ -155,6 +160,11 @@ class AbstractCustomJacksonDeserializerTest {
 		sublist2.add(234.567);
 		matrix.add(sublist2);
 		test.matrix = matrix;
+		//
+		test.ids = new ArrayList<>();
+		test.ids.add("11111111-1111-1111-1111-111111111111");
+		test.ids.add("22222222-2222-2222-2222-222222222222");
+		test.ids.add("33333333-3333-3333-3333-333333333333");
 
 		String json = new ObjectMapper().writeValueAsString(test);
 
@@ -198,6 +208,11 @@ class AbstractCustomJacksonDeserializerTest {
 		assertEquals(-61.203425 * 2, verify.matrix.get(1).get(0));
 		assertEquals(0.2343257 * 2, verify.matrix.get(1).get(1));
 		assertEquals(234.567, verify.matrix.get(1).get(2));
+		//
+		assertEquals(3, test.ids.size());
+		assertEquals("11111111-1111-1111-1111-111111111111", test.ids.get(0));
+		assertEquals("22222222-2222-2222-2222-222222222222", test.ids.get(1));
+		assertEquals("33333333-3333-3333-3333-333333333333", test.ids.get(2));
 	}
 
 }

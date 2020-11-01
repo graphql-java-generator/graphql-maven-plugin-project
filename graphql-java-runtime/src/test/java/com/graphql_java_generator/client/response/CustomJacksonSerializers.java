@@ -3,7 +3,6 @@ package com.graphql_java_generator.client.response;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -15,18 +14,20 @@ import graphql.schema.GraphQLScalarType;
  * This class is a standard Deserializer for Jackson. It uses the {@link GraphQLScalarType} that is implemented by the
  * project for this scalar
  */
-public class CustomJacksonSerializerDate extends StdSerializer<java.util.Date> {
+public class CustomJacksonSerializers {
 
-	private static final long serialVersionUID = 1L;
-	final static String DATE_PATTERN = "yyyy-MM-dd";
-	final static SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN);
+	public static class Date extends StdSerializer<java.util.Date> {
+		private static final long serialVersionUID = 1L;
+		final static String DATE_PATTERN = "yyyy-MM-dd";
+		final static SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN);
 
-	public CustomJacksonSerializerDate() {
-		super(java.util.Date.class);
-	}
+		public Date() {
+			super(java.util.Date.class);
+		}
 
-	@Override
-	public void serialize(Date value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		gen.writeString(formater.format(value));
+		@Override
+		public void serialize(java.util.Date value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+			gen.writeString(formater.format(value));
+		}
 	}
 }

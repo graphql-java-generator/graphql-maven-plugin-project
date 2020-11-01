@@ -42,7 +42,9 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * <P>
 	 * In other words: when in server mode and <I>javaTypeForIDType</I> is not set, all GraphQL ID fields are UUID
 	 * attributes in java. When in server mode and <I>javaTypeForIDType</I> is set to the X type, all GraphQL ID fields
-	 * are X attributes in java.<BR/>
+	 * are X attributes in java.
+	 * </P>
+	 * <P>
 	 * Note: you can override this, by using the schema personalization capability. For more information, please have a
 	 * look at the
 	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema

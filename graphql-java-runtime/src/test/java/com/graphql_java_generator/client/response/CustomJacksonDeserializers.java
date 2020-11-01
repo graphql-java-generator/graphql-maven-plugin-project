@@ -43,11 +43,27 @@ public class CustomJacksonDeserializers {
 		}
 	}
 
-	public static class ListDouble extends AbstractCustomJacksonDeserializer<List<List<Double>>> {
+	public static class ListDouble extends AbstractCustomJacksonDeserializer<List<Double>> {
 		private static final long serialVersionUID = 1L;
 
 		public ListDouble() {
 			super(null, true, Double.class, null);
+		}
+	}
+
+	public static class ListListID extends AbstractCustomJacksonDeserializer<List<List<String>>> {
+		private static final long serialVersionUID = 1L;
+
+		public ListListID() {
+			super(new ListID(), true, String.class, null);
+		}
+	}
+
+	public static class ListID extends AbstractCustomJacksonDeserializer<List<String>> {
+		private static final long serialVersionUID = 1L;
+
+		public ListID() {
+			super(null, true, String.class, null);
 		}
 	}
 

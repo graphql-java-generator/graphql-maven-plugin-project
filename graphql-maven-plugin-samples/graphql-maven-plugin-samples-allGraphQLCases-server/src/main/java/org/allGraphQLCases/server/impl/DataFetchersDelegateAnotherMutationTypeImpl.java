@@ -65,9 +65,24 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 		return null;
 	}
 
+	/**
+	 * To check the serialization and deserialization of the requests, we check the content of the given list.<BR/>
+	 * Expected: a list that contains these three items:<BR/>
+	 * "11111111-1111-1111-1111-111111111111"<BR/>
+	 * "22222222-2222-2222-2222-222222222222"<BR/>
+	 * "33333333-3333-3333-3333-333333333333"
+	 * 
+	 * @return Returns true, if this condition is true
+	 */
 	@Override
 	public Boolean deleteSnacks(DataFetchingEnvironment dataFetchingEnvironment, List<UUID> id) {
-		// We're happy. This beautiful nothing-to-do job didn't raise any error :)
-		return true;
+		if (id != null && id.size() == 3) {
+			return id.get(0).toString().equals("11111111-1111-1111-1111-111111111111")
+					&& id.get(1).toString().equals("22222222-2222-2222-2222-222222222222")
+					&& id.get(2).toString().equals("33333333-3333-3333-3333-333333333333");
+		} else {
+			// The list doesn't contain the expected size
+			return false;
+		}
 	}
 }

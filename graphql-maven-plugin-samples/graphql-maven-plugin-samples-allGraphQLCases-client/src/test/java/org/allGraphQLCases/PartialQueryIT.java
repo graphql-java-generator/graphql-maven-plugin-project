@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
@@ -77,12 +76,13 @@ public class PartialQueryIT {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue51_ListID() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 		List<String> ids = new ArrayList<String>();
-		ids.add(UUID.randomUUID().toString());
-		ids.add(UUID.randomUUID().toString());
-		ids.add(UUID.randomUUID().toString());
+		ids.add("11111111-1111-1111-1111-111111111111");
+		ids.add("22222222-2222-2222-2222-222222222222");
+		ids.add("33333333-3333-3333-3333-333333333333");
 		//
 		GraphQLRequest graphQLRequest = mutation.getDeleteSnacksGraphQLRequest("");
 
