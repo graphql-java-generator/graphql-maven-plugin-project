@@ -2,7 +2,10 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Update the Tutorials to the 1.11 version (and use the generateClientCode and generateServerCode)
+* Update the README with the XxxxExecutor classes
+* Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
+==> update the four tutorials
+==> Check the documented default value
 * [WIP] Adding the relay connection capabilities (almost done, unit tests are Ok, remaining task: integration tests).
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
 * Switch to apache 2.0 licence
@@ -12,8 +15,6 @@ Here are the next tasks listed, as a TODO list:
 * Add a description of the GraphQL mojo
 * Waiting for [issue 2055](https://github.com/graphql-java/graphql-java/issues/2055) to be solved. Some test cases can then be run again (see the allGraphQLCases.graphqls file)
 * Add the Tutorial for Subscription, on the Client side
-* Looks like the code generation doesn't work with a schema without a query (see the schema in issue 49)
-* Update the README with the XxxxExecutor classes, when the next version is released
 * Analyze and response to issue #39 (@connection for relay)
 * Do a sample project based on the github GraphQL schema
 * Specifying an unknown template in the pom should raise an error
