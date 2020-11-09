@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>graphql-maven-plugin-samples-allGraphQLCases-server</module>
+		<module>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</module>
 		<module>graphql-maven-plugin-samples-allGraphQLCases-client</module>
 		<!-- The Basic sample is removed from the build, to accelerate it -->
 		<!-- module>graphql-maven-plugin-samples-Basic-server</module -->
