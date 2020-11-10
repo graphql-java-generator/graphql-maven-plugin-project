@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * To get the access token from the command line:
  * 
  * <PRE>
-curl -X POST "http://localhost:8080/oauth/token" -d "grant_type=password&username=humptydumpty&password=123456" -u "clientapp:clientpwd"
+curl -X POST "http://localhost:8181/oauth/token" -d "grant_type=password&username=humptydumpty&password=123456" -u "clientapp:clientpwd"
  * </PRE>
  * 
  * The response is, for instance:
