@@ -11,12 +11,17 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Currently unused
+ * 
+ * @author etienne-sf
+ */
 @RestController
 @EnableResourceServer
 @SpringBootApplication
 public class Application {
 
-	public static void main(String[] args) {
+	public static void main_NOT_USED(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 

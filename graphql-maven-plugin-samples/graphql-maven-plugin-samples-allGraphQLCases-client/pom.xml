@@ -106,7 +106,7 @@
 							<name>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</name>
 							<workingDir>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</workingDir>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8081/oauth/token</healthcheckUrl>
+							<healthcheckUrl>http://localhost:8081/index.html</healthcheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
