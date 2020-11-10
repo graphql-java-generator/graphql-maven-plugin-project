@@ -21,7 +21,7 @@ Here are the next tasks listed, as a TODO list:
 * Allow to change the GraphQL server path (for query/mutation and for subscription)
 * Change the JsonResponseWrapper as an interface, implemented by the XxxRootResponse classes
 * Allow aliases for query/mutation fields
-* [server side] Check graphql-java correction for issue 1844 (Directive values of type 'EnumValue' are not supported yet)
+* [server side] Check graphql-java correction for issue 1844 (Directive values of type 'EnumValue' are not supported yet), waiting for graphql-java v16 release
 * enum values may currently not be a java keyword (seems to be a graphql-java limitation). issue to raise in the graphql-java project
 * Check compatibility with the schema.public.graphqls (available in the plugin logic test resources folder)
 * Document generateJPAAnnotation 
