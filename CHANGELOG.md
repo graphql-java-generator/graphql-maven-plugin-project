@@ -7,6 +7,14 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
+
+# Not released yet
+
+
+Both modes (client and server):
+* Upgrade of spring boot from 2.2.6 to 2.3.3
+
+
 # 1.11
 
 Both modes (client and server):
