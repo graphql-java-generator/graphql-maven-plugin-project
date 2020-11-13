@@ -96,15 +96,15 @@
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
-						<!-- execution>
+						<execution>
 						<id>start OAuth Authorization server</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>start</goal>
 						</goals>
 						<configuration>
-							<name>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</name>
-							<workingDir>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</workingDir>
+							<name>graphql-maven-plugin-samples-OAuth-authorization-server</name>
+							<workingDir>OAuth-authorization-server</workingDir>
 							<processLogFile>${basedir}/target/OAuth-authorization-server.log</processLogFile>
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
@@ -112,10 +112,10 @@
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
-								<argument>${basedir}/../graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server/target/graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server-${project.version}.jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-OAuth-authorization-server/target/graphql-maven-plugin-samples-OAuth-authorization-server-${project.version}.jar</argument>
 							</arguments>
 						</configuration>
-					</execution-->
+					</execution>
 					<execution>
 						<id>start server</id>
 						<phase>pre-integration-test</phase>
@@ -184,7 +184,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</artifactId>
+			<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
 			<scope>test</scope>
 		</dependency>
 

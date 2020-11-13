@@ -30,9 +30,10 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory().withClient("clientapp").secret(passwordEncoder.encode("clientpwd"))
-				.authorizedGrantTypes("password", "authorization_code", "refresh_token").authorities("READ_ONLY_CLIENT")
-				.scopes("read_profile_info").resourceIds("oauth2-resource").redirectUris("http://localhost:8081/login")
-				.accessTokenValiditySeconds(5000).refreshTokenValiditySeconds(50000);
+				.authorizedGrantTypes("client_credentials", "password", "authorization_code", "refresh_token")
+				.authorities("READ_ONLY_CLIENT").scopes("read_profile_info").resourceIds("oauth2-resource")
+				.redirectUris("http://localhost:8081/login").accessTokenValiditySeconds(5000)
+				.refreshTokenValiditySeconds(50000);
 	}
 
 	// Added, thanks to https://stackoverflow.com/questions/52194081/spring-boot-oauth-unsupported-grant-type

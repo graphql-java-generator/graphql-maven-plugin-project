@@ -323,7 +323,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
-				<artifactId>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</artifactId>
+				<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

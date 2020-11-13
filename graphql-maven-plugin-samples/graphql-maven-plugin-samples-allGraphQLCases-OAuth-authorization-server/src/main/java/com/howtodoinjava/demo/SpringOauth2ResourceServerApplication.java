@@ -23,6 +23,9 @@ curl -X POST "http://localhost:8181/oauth/token" -d "grant_type=password&usernam
  * @see https://howtodoinjava.com/spring-boot2/oauth2-auth-server/
  * @see https://www.javainuse.com/spring/springboot-oauth2-password-grant
  * 
+ *      Below: allows to use oAuth on the client side, with the Jersy client ?
+ * @see https://www.baeldung.com/spring-security-social-login-jersey
+ * 
  * @author etienne-sf
  */
 @SpringBootApplication
