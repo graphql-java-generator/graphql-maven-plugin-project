@@ -3,6 +3,11 @@ package com.graphql_java_generator.samples.forum.client.graphql;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -13,10 +18,10 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Boar
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
 
@@ -33,10 +38,13 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author etienne-sf
  */
+@Component
 public class PartialPreparedRequests implements Queries {
 
-	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
-	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
+	@Autowired
+	QueryTypeExecutor queryTypeExecutor;
+	@Autowired
+	MutationTypeExecutor mutationTypeExecutor;
 
 	// Below are the ObjectResponses, that are created at initialization time.
 	GraphQLRequest boardsSimpleRequest;
@@ -49,38 +57,39 @@ public class PartialPreparedRequests implements Queries {
 	GraphQLRequest createPostRequest;
 	GraphQLRequest createPostsRequest;
 
-	public PartialPreparedRequests() throws GraphQLRequestPreparationException {
+	@PostConstruct
+	public void init() throws GraphQLRequestPreparationException {
 
 		// We have only one GraphQL server. So we just set the default configuration.
 		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT_URL));
 
 		// No field specified: all scalar fields of the root type will be queried
-		boardsSimpleRequest = queryType.getBoardsGraphQLRequest(null);
+		boardsSimpleRequest = queryTypeExecutor.getBoardsGraphQLRequest(null);
 
-		boardsAndTopicsRequest = queryType
+		boardsAndTopicsRequest = queryTypeExecutor
 				.getBoardsGraphQLRequest("{id name publiclyAvailable topics(since:?since){id}}");
 
-		topicAuthorPostAuthorRequest = queryType
+		topicAuthorPostAuthorRequest = queryTypeExecutor
 				.getTopicsGraphQLRequest("{id date author{name email alias id type} nbPosts title content " //
 						+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias} title content}}");
 
-		findTopicIdDateTitleContentRequest = queryType.getFindTopicsGraphQLRequest(" {id date title content} ");
+		findTopicIdDateTitleContentRequest = queryTypeExecutor.getFindTopicsGraphQLRequest(" {id date title content} ");
 
 		// No field defined, so all scalar fields are returned
-		createBoardRequest = mutationType.getCreateBoardGraphQLRequest(null);
+		createBoardRequest = mutationTypeExecutor.getCreateBoardGraphQLRequest(null);
 
 		// No field defined, so all scalar fields are returned
-		createTopicRequest = mutationType.getCreateTopicGraphQLRequest(null);
+		createTopicRequest = mutationTypeExecutor.getCreateTopicGraphQLRequest(null);
 
 		// {id name alias email type}
-		createMemberRequest = mutationType.getCreateMemberGraphQLRequest("{id name alias email type}");
+		createMemberRequest = mutationTypeExecutor.getCreateMemberGraphQLRequest("{id name alias email type}");
 
 		// "{id date author{id} title content publiclyAvailable}"
-		createPostRequest = mutationType
+		createPostRequest = mutationTypeExecutor
 				.getCreatePostGraphQLRequest("{id date author{id} title content publiclyAvailable}");
 
 		// "{id date author{id} title content publiclyAvailable}"
-		createPostsRequest = mutationType
+		createPostsRequest = mutationTypeExecutor
 				.getCreatePostsGraphQLRequest("{id date author{id} title content publiclyAvailable}");
 	}
 
@@ -88,7 +97,7 @@ public class PartialPreparedRequests implements Queries {
 	public List<Board> boardsSimple() throws GraphQLRequestExecutionException {
 		// boardsAndTopicsRequest has been create with this query string:
 		// (empty) which means that all scalars are returned
-		return queryType.boards(boardsSimpleRequest);
+		return queryTypeExecutor.boards(boardsSimpleRequest);
 	}
 
 	@Override
@@ -96,7 +105,7 @@ public class PartialPreparedRequests implements Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// boardsAndTopicsRequest has been create with this query string:
 		// {id name publiclyAvailable topics(since:?since){id}}
-		return queryType.boards(boardsAndTopicsRequest, "since", since);
+		return queryTypeExecutor.boards(boardsAndTopicsRequest, "since", since);
 	}
 
 	@Override
@@ -107,7 +116,7 @@ public class PartialPreparedRequests implements Queries {
 		//
 		// Here, the memberId and memberName are not used in the below method call: these parameters are not sent to the
 		// GraphQL server
-		return queryType.topics(topicAuthorPostAuthorRequest, boardName, "sinceParam", since);
+		return queryTypeExecutor.topics(topicAuthorPostAuthorRequest, boardName, "sinceParam", since);
 	}
 
 	@Override
@@ -115,7 +124,7 @@ public class PartialPreparedRequests implements Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// findTopicIdDateTitleContentRequest has been create with this query string:
 		// {id date title content}
-		return queryType.findTopics(findTopicIdDateTitleContentRequest, boardName, keyword);
+		return queryTypeExecutor.findTopics(findTopicIdDateTitleContentRequest, boardName, keyword);
 	}
 
 	@Override
@@ -123,7 +132,7 @@ public class PartialPreparedRequests implements Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// createBoardRequest has been create with this query string:
 		// (empty) which means that all scalars are returned
-		return mutationType.createBoard(createBoardRequest, name, publiclyAvailable);
+		return mutationTypeExecutor.createBoard(createBoardRequest, name, publiclyAvailable);
 	}
 
 	@Override
@@ -131,14 +140,14 @@ public class PartialPreparedRequests implements Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// createTopicRequest has been create with this query string:
 		// (empty) which means that all scalars are returned
-		return mutationType.createTopic(createTopicRequest, input);
+		return mutationTypeExecutor.createTopic(createTopicRequest, input);
 	}
 
 	@Override
 	public Member createMember(MemberInput input)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// createMember(input: &member) {id name alias email type}
-		return mutationType.createMember(createMemberRequest, input);
+		return mutationTypeExecutor.createMember(createMemberRequest, input);
 	}
 
 	@Override
@@ -146,7 +155,7 @@ public class PartialPreparedRequests implements Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// createPostRequest has been create with this query string:
 		// "{id date author{id} title content publiclyAvailable}"
-		return mutationType.createPost(createPostRequest, input);
+		return mutationTypeExecutor.createPost(createPostRequest, input);
 	}
 
 	@Override
@@ -154,6 +163,6 @@ public class PartialPreparedRequests implements Queries {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// createPostsRequest has been create with this query string:
 		// {id date author{id} title content publiclyAvailable}
-		return mutationType.createPosts(createPostsRequest, input);
+		return mutationTypeExecutor.createPosts(createPostsRequest, input);
 	}
 }

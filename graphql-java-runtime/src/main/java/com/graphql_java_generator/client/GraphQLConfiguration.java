@@ -28,10 +28,13 @@ public class GraphQLConfiguration {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public GraphQLConfiguration(String graphqlEndpoint) {
-		this.executor = new QueryExecutorImpl(graphqlEndpoint);
+		this.executor = new QueryExecutorSpringImpl(graphqlEndpoint);
 	}
 
 	/**
+	 * This method is deprecated since version v1.12. It is based on the Jersey {@link Client}, but this client has a
+	 * hard to use the OAuth implementation. The default implementation of this implementation is now based on
+	 * Spring<BR/>
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
 	 * http ones.<BR/>
 	 * For example: https://my.server.com/graphql<BR/>
@@ -46,13 +49,17 @@ public class GraphQLConfiguration {
 	 * @param sslContext
 	 * @param hostnameVerifier
 	 */
+	@Deprecated
 	public GraphQLConfiguration(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint, sslContext, hostnameVerifier);
 	}
 
 	/**
+	 * This method is deprecated since version v1.12. It is based on the Jersey {@link Client}, but this client has a
+	 * hard to use the OAuth implementation. The default implementation of this implementation is now based on
+	 * Spring<BR/>
 	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client that gives the opportunity
-	 * to customise the REST request<BR/>
+	 * to customize the REST request<BR/>
 	 * For example: http://my.server.com/graphql
 	 *
 	 * @param graphqlEndpoint
@@ -62,6 +69,7 @@ public class GraphQLConfiguration {
 	 * @param objectMapper
 	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
+	@Deprecated
 	public GraphQLConfiguration(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
 	}

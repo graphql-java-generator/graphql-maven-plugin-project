@@ -20,6 +20,10 @@ public class Main {
 		new Main().execAll();
 	}
 
+	OAuth:"https://www.baeldung.com/jersey-sse-client-request-headers";//
+	"https://www.baeldung.com/spring-webclient-oauth2#springsecurity-internals"//
+	"https://manhtai.github.io/posts/spring-webclient-oauth2-client-credentials/"
+
 	void execAll() throws Exception {
 
 		// Execution of three way to user the GraphQL client, to call the GraphQL server

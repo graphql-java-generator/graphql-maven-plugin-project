@@ -31,6 +31,8 @@ import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
+ * This class is deprecated since version v1.12. It is based on the Jersey {@link Client}, but this client has a hard to
+ * use the OAuth implementation. The default implementation of this implementation is now based on Spring<BR/>
  * This class is the query executor : a generic class, reponsible for calling the GraphQL server, for query, mutation
  * and subscription.<BR/>
  * It has one major parameter: the GraphQL endpoint. See the {@link #QueryExecutorImpl(String)} for more information.
@@ -70,6 +72,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 	}
 
 	/**
+	 * This method is deprecated since version v1.12. It is based on the Jersey {@link Client}, but this client has a
+	 * hard to use the OAuth implementation. The default implementation of this implementation is now based on
+	 * Spring<BR/>
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
 	 * http ones.<BR/>
 	 * For example: https://my.server.com/graphql<BR/>
@@ -94,8 +99,11 @@ public class QueryExecutorImpl implements QueryExecutor {
 	}
 
 	/**
+	 * This method is deprecated since version v1.12. It is based on the Jersey {@link Client}, but this client has a
+	 * hard to use the OAuth implementation. The default implementation of this implementation is now based on
+	 * Spring<BR/>
 	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client that gives the opportunity
-	 * to customise the REST request<BR/>
+	 * to customize the REST request<BR/>
 	 * For example: http://my.server.com/graphql
 	 *
 	 * @param graphqlEndpoint
@@ -105,6 +113,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @param objectMapper
 	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
+	@Deprecated
 	public QueryExecutorImpl(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		this.client = client;
 		this.graphqlEndpoint = graphqlEndpoint;

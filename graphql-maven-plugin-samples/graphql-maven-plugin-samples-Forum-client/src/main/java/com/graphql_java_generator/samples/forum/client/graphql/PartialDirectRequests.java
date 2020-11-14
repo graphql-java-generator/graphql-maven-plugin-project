@@ -3,17 +3,19 @@ package com.graphql_java_generator.samples.forum.client.graphql;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
 
@@ -22,10 +24,14 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author etienne-sf
  */
+@Component
 public class PartialDirectRequests implements Queries {
 
-	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
-	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
+	@Autowired
+	QueryTypeExecutor queryType;
+
+	@Autowired
+	MutationTypeExecutor mutationType;
 
 	@Override
 	public List<Board> boardsSimple() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
