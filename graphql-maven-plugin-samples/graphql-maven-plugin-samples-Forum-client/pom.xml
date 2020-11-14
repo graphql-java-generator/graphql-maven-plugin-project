@@ -145,6 +145,7 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<exclusions>
 				<exclusion>
+					<!-- This apps logs with log4j, so we must exclude this conf -->
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>

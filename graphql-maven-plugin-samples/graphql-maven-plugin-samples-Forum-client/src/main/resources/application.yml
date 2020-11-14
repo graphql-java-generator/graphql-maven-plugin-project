@@ -1,0 +1,4 @@
+spring:
+   main:
+      # We don't need the Netty web server to start
+      web-application-type: none

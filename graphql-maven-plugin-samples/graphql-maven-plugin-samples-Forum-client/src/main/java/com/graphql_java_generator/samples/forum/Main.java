@@ -20,6 +20,11 @@ import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequ
 import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 
+/**
+ * A Spring Boot client app. Very easy to use and to configure
+ * 
+ * @author etienne-sf
+ */
 @SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, QueryTypeExecutor.class })
 public class Main implements CommandLineRunner {
 	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
