@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.socket.WebSocketSession;
 
 /**
  * @author etienne-sf
@@ -19,7 +20,7 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
 
 	/** The web socket session. Allows to close the web socket */
-	org.springframework.web.socket.WebSocketSession session;
+	WebSocketSession session;
 
 	Thread mainThread;
 
@@ -35,7 +36,7 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	}
 
 	@Override
-	public void onConnect(org.springframework.web.socket.WebSocketSession session) {
+	public void onConnect(WebSocketSession session) {
 		this.session = session;
 		this.connected = true;
 		System.out.println(

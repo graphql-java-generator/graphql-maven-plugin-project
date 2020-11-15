@@ -5,16 +5,16 @@ package com.graphql_java_generator.samples.forum;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.socket.client.WebSocketClient;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
@@ -32,10 +32,11 @@ import reactor.core.publisher.Mono;
  * @since 1.12
  * @author etienne-sf
  */
-public class QueryExecutorSpringImpl implements QueryExecutor {
+@Component
+public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringReactiveImpl.class);
 
 	@Autowired
 	String graphqlEndpoint;
@@ -55,7 +56,7 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 	 * @param webClient
 	 */
 	@Autowired
-	public QueryExecutorSpringImpl(WebClient webClient) {
+	public QueryExecutorSpringReactiveImpl(WebClient webClient) {
 		this.webClient = webClient;
 	}
 
@@ -124,18 +125,11 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 		logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 
 		// Let's create and start the Web Socket
+		URI uri = QueryExecutorImpl.getWebSocketURI(graphqlEndpoint + "/subscription");
 		WebSocketClient client = new StandardWebSocketClient();
-		GraphQLWebSocketHandler webSocketHandler = new GraphQLWebSocketHandler<>(request, subscriptionName,
-				subscriptionCallback, subscriptionType, messageType);
-		client.doHandshake(webSocketHandler, getWebSocketURI(graphqlEndpoint) + "/subscription");
-
-		// WebSocketStompClient stompClient = new WebSocketStompClient(client);
-		// stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-		//
-		// StompSessionHandler sessionHandler = new GraphQLSubscriptionStompClient<>(request, subscriptionName,
-		// subscriptionCallback, subscriptionType, messageType);
-		// stompClient.connect(graphqlEndpoint + "/subscription", sessionHandler);
-
+		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
+				subscriptionName, subscriptionCallback, subscriptionType, messageType);
+		Mono<Void> result = client.execute(uri, webSocketHandler);
 		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 		// The line below is an "anti-reactive" pattern. But this insure the caller that no error occurs when creating
@@ -156,31 +150,10 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 				return;
 			}
 		}
-		//
-		// // Too bad, the web socket connection would not be established
-		// // Let's block, to retrieve the error.
-		// result.block();
+
+		// Too bad, the web socket connection would not be established
+		// Let's block, to retrieve the error.
+		result.block();
 	}
 
-	/**
-	 * Retrieves the URI for the Web Socket, based on the GraphQL endpoint that has been given to the Constructor
-	 * 
-	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 */
-	public static URI getWebSocketURI(String graphqlEndpoint) throws GraphQLRequestExecutionException {
-		if (graphqlEndpoint.startsWith("http:") || graphqlEndpoint.startsWith("https:")) {
-			// We'll use the ws or the wss protocol. Let's just replace http by ws for that
-			try {
-				return new URI("ws" + graphqlEndpoint.substring(4));
-			} catch (URISyntaxException e) {
-				throw new GraphQLRequestExecutionException(
-						"Error when trying to determine the Web Socket endpoint for GraphQL endpoint "
-								+ graphqlEndpoint,
-						e);
-			}
-		}
-		throw new GraphQLRequestExecutionException(
-				"non managed protocol for endpoint " + graphqlEndpoint + ". This method manages only http and https");
-	}
 }
