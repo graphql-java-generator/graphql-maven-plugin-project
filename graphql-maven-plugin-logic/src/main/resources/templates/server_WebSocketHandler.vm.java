@@ -55,7 +55,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession webSocketSession, TextMessage message) throws Exception {
 		String graphqlQuery = message.getPayload();
-		log.info("Websocket said {}", graphqlQuery);
+		log.trace("Websocket said {}", graphqlQuery);
 
 		QueryParameters parameters = QueryParameters.from(graphqlQuery);
 

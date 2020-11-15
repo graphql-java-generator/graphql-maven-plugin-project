@@ -49,6 +49,12 @@ public interface QueryExecutor {
 	public <R> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			Class<R> dataResponseType) throws GraphQLRequestExecutionException;
 
+Update the doc:*
+	No more return(void)//
+	Indicate how
+	to close
+	the websocket
+
 	/**
 	 * Executes the given <B>subscription</B> GraphQL request, and returns the relevant {@link WebSocketClient}. The
 	 * given <I>subscriptionCallback</I> will receive the notifications that have been subscribed by this subscription.
@@ -87,7 +93,7 @@ public interface QueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+	public <R, T> void execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
 			Class<T> messageType) throws GraphQLRequestExecutionException;
 

@@ -33,7 +33,7 @@ public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDel
 
 	@Override
 	public Publisher<Post> subscribeToNewPost(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
-		logger.debug("Received a Subscription for {}", boardName);
+		logger.info("Received a Subscription for {}", boardName);
 		return postPublisher.getPublisher(boardName);
 	}
 }

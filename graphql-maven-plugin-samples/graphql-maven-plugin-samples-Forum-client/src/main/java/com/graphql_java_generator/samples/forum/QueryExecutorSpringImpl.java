@@ -4,6 +4,7 @@
 package com.graphql_java_generator.samples.forum;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -12,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
-import com.graphql_java_generator.client.SubscriptionCallback;
-import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -36,6 +37,9 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringImpl.class);
+
+	@Autowired
+	String graphqlEndpoint;
 
 	WebClient webClient;
 
@@ -87,10 +91,69 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 	}
 
 	@Override
-	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+	public <R, T> void execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
 			Class<T> messageType) throws GraphQLRequestExecutionException {
-		throw new RuntimeException("not yet implemented");
+
+		// This method accepts only subscription at a time (no query and no mutation)
+		if (!graphQLRequest.getRequestType().equals(RequestType.subscription))
+			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions");
+
+		// Subscription may be subscribed only once at a time, as this method allows only one subscriptionCallback
+		if (graphQLRequest.getSubscription().getFields().size() != 1) {
+			throw new GraphQLRequestExecutionException(
+					"This method may be called only for one subscription at a time, but there was "
+							+ graphQLRequest.getSubscription().getFields().size()
+							+ " subscriptions in this GraphQLRequest");
+		}
+
+		// The subscription name must be the good one
+		if (!graphQLRequest.getSubscription().getFields().get(0).getName().equals(subscriptionName)) {
+			throw new GraphQLRequestExecutionException("The subscription provided in the GraphQLRequest is "
+					+ graphQLRequest.getSubscription().getFields().get(0).getName() + " but it should be "
+					+ subscriptionName);
+		}
+
+		// The returned type of this subscription must be the provided messageType
+		if (!graphQLRequest.getSubscription().getFields().get(0).getClazz().equals(messageType)) {
+			throw new GraphQLRequestExecutionException("This provided message type shoud be "
+					+ graphQLRequest.getSubscription().getFields().get(0).getClazz().getName() + " but is "
+					+ messageType.getName());
+		}
+
+		String request = graphQLRequest.buildRequest(parameters);
+		logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
+
+		// Let's create and start the Web Socket
+		URI uri = QueryExecutorImpl.getWebSocketURI(graphqlEndpoint + "/subscription");
+		WebSocketClient client = new StandardWebSocketClient();
+		GraphQLWebSocketHandler<R, T> webSocketHandler = new GraphQLWebSocketHandler<>(request, subscriptionName,
+				subscriptionCallback, subscriptionType, messageType);
+		Mono<Void> result = client.execute(uri, webSocketHandler);
+		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,
+				request);
+		// The line below is an "anti-reactive" pattern. But this insure the caller that no error occurs when creating
+		// the web socket.
+		// TODO allow a real reactive use of the Spring implementation.
+		// result.block();
+
+		// Let's wait 10s max, until the connection is active
+		final int TIMEOUT = 10000;
+		for (int i = 0; i < TIMEOUT / 10; i += 1) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
+			if (webSocketHandler.session != null) {
+				// Ok, we're connected. We're done
+				return;
+			}
+		}
+
+		// Too bad, the web socket connection would not be established
+		// Let's block, to retrieve the error.
+		result.block();
 	}
 
 }

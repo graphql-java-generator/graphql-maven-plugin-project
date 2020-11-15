@@ -14,6 +14,11 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 Both modes (client and server):
 * Upgrade of spring boot from 2.2.6 to 2.3.3
 
+Client mode:
+* The subscription management has been updated.
+==> Spring reactive WebSocketClient
+==> Removal of the SubscriptionClient interface. All interactions of the client code with the web socket are done through the SubscriptionCallback implementation, provided by the application code.
+==> The SubscriptionCallback has changed, to match the Spring reactive behavior
 
 # 1.11
 

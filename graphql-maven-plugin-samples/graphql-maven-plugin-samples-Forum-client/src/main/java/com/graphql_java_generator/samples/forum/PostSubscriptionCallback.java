@@ -1,0 +1,77 @@
+/**
+ * 
+ */
+package com.graphql_java_generator.samples.forum;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.socket.WebSocketSession;
+
+/**
+ * @author etienne-sf
+ */
+// The class that'll receive the notification from the GraphQL subscription
+
+public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
+
+	/** The logger for this class */
+	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
+
+	/** The web socket session. Allows to close the web socket */
+	WebSocketSession session;
+
+	Thread mainThread;
+
+	/** Indicates whether the Web Socket is connected or not */
+	boolean connected = false;
+
+	T lastReceivedMessage = null;
+	String lastReceivedClose = null;
+	Throwable lastReceivedError = null;
+
+	public PostSubscriptionCallback(Thread mainThread) {
+		this.mainThread = mainThread;
+	}
+
+	@Override
+	public void onConnect(WebSocketSession session) {
+		this.session = session;
+		this.connected = true;
+		System.out.println(
+				"The 'subscribeToNewPostWithBindValues' subscription is now active (the web socket is connected)");
+	}
+
+	@Override
+	public void onMessage(T t) {
+		this.lastReceivedMessage = t;
+		System.out.println(
+				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post: "
+						+ t.toString());
+
+		// We've received the notification. Let's interrupt the main thread, which is waiting for that.
+		mainThread.interrupt();
+	}
+
+	@Override
+	public void onClose(int statusCode, String reason) {
+		connected = false;
+		lastReceivedClose = statusCode + "-" + reason;
+		logger.debug("Received onClose: {}", lastReceivedClose);
+	}
+
+	@Override
+	public void onError(Throwable cause) {
+		connected = false;
+		lastReceivedError = cause;
+		logger.debug("Received onError: {}", cause);
+	}
+
+	/** Closes the web socket. This also ends the subscription: no more messages will be received. */
+	public void close() {
+		if (session != null) {
+			session.close();
+			session = null;
+		}
+	}
+
+}

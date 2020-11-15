@@ -1,8 +1,16 @@
 package com.graphql_java_generator.client;
 
+import java.util.Collections;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,13 +19,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * @author etienne-sf
  */
+@Component
 public class GraphQLConfiguration {
 
 	/**
 	 * The {@link QueryExecutor} is responsible for the execution of the GraphQLRequest, and for parsing the server
-	 * response
+	 * response.<BR/>
+	 * When the application is executed as a Spring app, then this field is field by the IoC Spring container.<BR/>
+	 * Otherwise, the default constructor should not be used. The other constructor will then build the relevant
+	 * instance of {@link QueryExecutor}.
 	 */
-	final QueryExecutor executor;
+	@Autowired
+	QueryExecutor executor;
+
+	/** The default constructor, that is used by Spring. */
+	@Autowired
+	public GraphQLConfiguration() {
+		// No action. All configuration is done through Spring injection
+	}
 
 	/**
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
@@ -28,7 +47,12 @@ public class GraphQLConfiguration {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public GraphQLConfiguration(String graphqlEndpoint) {
-		this.executor = new QueryExecutorSpringImpl(graphqlEndpoint);
+		this.executor = new QueryExecutorSpringImpl(WebClient.builder()//
+				.baseUrl(graphqlEndpoint)//
+				// .defaultCookie("cookieKey", "cookieValue")//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint))//
+				.build());
 	}
 
 	/**
