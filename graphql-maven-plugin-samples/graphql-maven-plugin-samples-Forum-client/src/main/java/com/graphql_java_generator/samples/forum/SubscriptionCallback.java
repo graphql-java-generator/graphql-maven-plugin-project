@@ -36,7 +36,7 @@ public interface SubscriptionCallback<T> {
 	 * @param session
 	 *            The newly created {@link WebSocketSession}
 	 */
-	public void onConnect(WebSocketSession session);
+	public void onConnect(org.springframework.web.socket.WebSocketSession session);
 
 	/**
 	 * This method is called each time a message is sent by the server, for this subscription. It's an information call:

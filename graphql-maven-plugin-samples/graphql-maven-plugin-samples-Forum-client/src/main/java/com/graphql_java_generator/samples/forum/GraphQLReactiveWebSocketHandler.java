@@ -7,16 +7,16 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketMessage;
+import org.springframework.web.reactive.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * This class implements the Web Socket, as needed by the Spring Web Socket implementation.
@@ -31,7 +31,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  *            subscription GraphQL type, for this subscribed subscription.
  * @author etienne-sf
  */
-public class GraphQLWebSocketHandler<R, T> implements WebSocketHandler {
+public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 
 	/** Logger for this class */
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -63,7 +63,7 @@ public class GraphQLWebSocketHandler<R, T> implements WebSocketHandler {
 	/** The session, that will receive upon connection of the web socket. */
 	WebSocketSession session = null;
 
-	public GraphQLWebSocketHandler(String request, String subscriptionName,
+	public GraphQLReactiveWebSocketHandler(String request, String subscriptionName,
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType) {
 		this.request = request;
 		this.subscriptionName = subscriptionName;
@@ -73,27 +73,31 @@ public class GraphQLWebSocketHandler<R, T> implements WebSocketHandler {
 	}
 
 	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+	public Mono<Void> handle(WebSocketSession session) {
+		this.session = session;
 
+		// Let actually execute the subscription
 		logger.debug("Web Socket connected (session {}) for request {}", session, request);
-		try {
-			session.sendMessage(new TextMessage(request));
-		} catch (Throwable t) {
-			subscriptionCallback.onError(new GraphQLRequestPreparationException(
-					"Error while submitting the subscription request<" + request + ">", t));
-			throw t;
-		}
+		Mono<Void> subscriptionSubmission = session.send(Flux.just(request).map(session::textMessage));
 
 		// We're executed the subscription. Let's transmit this good news to the application callback
 		subscriptionCallback.onConnect(session);
 
-		// Setting the session marks the subscription as active
-		this.session = session;
+		// Let's submit the callback for the received messages
+		Flux<WebSocketMessage> output = session.receive().doOnNext(message -> handleMessage(message));
+
+		return Mono.zip(output.then(), subscriptionSubmission).then();
 	}
 
-	@Override
-	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-		String msg = (String) message.getPayload();
+	/**
+	 * The callback that will receive the messages from the web socket. It will map these JSON messages to the relevant
+	 * java class, and call the application callback with this java cobjects
+	 * 
+	 * @param message
+	 *            The received JSON message
+	 */
+	private void handleMessage(WebSocketMessage message) {
+		String msg = message.getPayloadAsText();
 
 		try {
 
@@ -112,24 +116,6 @@ public class GraphQLWebSocketHandler<R, T> implements WebSocketHandler {
 			// Let's tell the application that an error occurs while reading a message
 			subscriptionCallback.onError(new GraphQLRequestExecutionException(errorMsg, e));
 		}
-
-	}
-
-	@Override
-	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean supportsPartialMessages() {
-		return false;
 	}
 
 }

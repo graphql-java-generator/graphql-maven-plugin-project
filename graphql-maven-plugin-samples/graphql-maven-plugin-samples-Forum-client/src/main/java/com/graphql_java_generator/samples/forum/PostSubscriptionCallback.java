@@ -3,9 +3,10 @@
  */
 package com.graphql_java_generator.samples.forum;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.reactive.socket.WebSocketSession;
 
 /**
  * @author etienne-sf
@@ -18,7 +19,7 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
 
 	/** The web socket session. Allows to close the web socket */
-	WebSocketSession session;
+	org.springframework.web.socket.WebSocketSession session;
 
 	Thread mainThread;
 
@@ -34,7 +35,7 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	}
 
 	@Override
-	public void onConnect(WebSocketSession session) {
+	public void onConnect(org.springframework.web.socket.WebSocketSession session) {
 		this.session = session;
 		this.connected = true;
 		System.out.println(
@@ -47,9 +48,6 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 		System.out.println(
 				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post: "
 						+ t.toString());
-
-		// We've received the notification. Let's interrupt the main thread, which is waiting for that.
-		mainThread.interrupt();
 	}
 
 	@Override
@@ -66,8 +64,12 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 		logger.debug("Received onError: {}", cause);
 	}
 
-	/** Closes the web socket. This also ends the subscription: no more messages will be received. */
-	public void close() {
+	/**
+	 * Closes the web socket. This also ends the subscription: no more messages will be received.
+	 * 
+	 * @throws IOException
+	 */
+	public void close() throws IOException {
 		if (session != null) {
 			session.close();
 			session = null;

@@ -1,5 +1,6 @@
 package com.graphql_java_generator.samples.forum;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -110,7 +111,8 @@ public class Main implements CommandLineRunner {
 		}
 	}
 
-	private void execSubscription() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	private void execSubscription()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, IOException {
 		// Preparation
 		GraphQLRequest subscriptionRequest = subscriptionTypeExecutor
 				.getSubscribeToNewPostGraphQLRequest("{id date author publiclyAvailable title content}");
@@ -145,16 +147,26 @@ public class Main implements CommandLineRunner {
 		// Let's wait 10 seconds max for the post creation notification (from the subscription). We'll get interrupted
 		// before, as soon as we receive the notification
 		// (see the callback implementation in the PostSubscriptionCallback class)
-		boolean gotInterrupted = false;
-		try {
-			Thread.sleep(10 * 1000);// 10s
-		} catch (InterruptedException e) {
-			// Got interrupted (the post notification has been received)
-			gotInterrupted = true;
+		Post notifiedPost = null;
+		// Let's wait 10s max, until the connection is active
+		final int TIMEOUT = 10;
+		for (int i = 0; i < TIMEOUT * 1000 / 10; i += 1) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
+			if ((notifiedPost = postSubscriptionCallback.lastReceivedMessage) != null) {
+				// Ok, we're connected. We're done
+				break;
+			}
 		}
-		if (!gotInterrupted) {
+		if (notifiedPost == null) {
 			throw new RuntimeException("The notification for the post creation was not received");
 		}
+
+		// We need to free the server resources, at the end
+		postSubscriptionCallback.close();
 	}
 
 	private TopicPostInput getTopicPostInput(Member author, String content, Date date, boolean publiclyAvailable,
