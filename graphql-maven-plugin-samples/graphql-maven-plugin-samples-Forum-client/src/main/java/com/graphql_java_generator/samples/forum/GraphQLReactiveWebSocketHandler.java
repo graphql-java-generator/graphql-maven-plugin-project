@@ -4,6 +4,7 @@
 package com.graphql_java_generator.samples.forum;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,19 +75,149 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 
 	@Override
 	public Mono<Void> handle(WebSocketSession session) {
-		this.session = session;
-
-		// Let actually execute the subscription
 		logger.debug("Web Socket connected (session {}) for request {}", session, request);
-		Mono<Void> subscriptionSubmission = session.send(Flux.just(request).map(session::textMessage));
-
-		// We're executed the subscription. Let's transmit this good news to the application callback
-		subscriptionCallback.onConnect(session);
 
 		// Let's submit the callback for the received messages
-		Flux<WebSocketMessage> output = session.receive().doOnNext(message -> handleMessage(message));
+		// reactor.util.Logger reactorLogger = new reactor.util.Logger() {
+		//
+		// @Override
+		// public String getName() {
+		// return logger.getName();
+		// }
+		//
+		// @Override
+		// public boolean isTraceEnabled() {
+		// return logger.isTraceEnabled();
+		// }
+		//
+		// @Override
+		// public void trace(String msg) {
+		// logger.trace(msg);
+		// }
+		//
+		// @Override
+		// public void trace(String format, Object... arguments) {
+		// logger.trace(format, arguments);
+		// }
+		//
+		// @Override
+		// public void trace(String msg, Throwable t) {
+		// trace(msg, t);
+		// }
+		//
+		// @Override
+		// public boolean isDebugEnabled() {
+		// return logger.isDebugEnabled();
+		// }
+		//
+		// @Override
+		// public void debug(String msg) {
+		// logger.debug(msg);
+		// }
+		//
+		// @Override
+		// public void debug(String format, Object... arguments) {
+		// logger.debug(format, arguments);
+		// }
+		//
+		// @Override
+		// public void debug(String msg, Throwable t) {
+		// logger.debug(msg, t);
+		// }
+		//
+		// @Override
+		// public boolean isInfoEnabled() {
+		// return logger.isInfoEnabled();
+		// }
+		//
+		// @Override
+		// public void info(String msg) {
+		// logger.info(msg);
+		// }
+		//
+		// @Override
+		// public void info(String format, Object... arguments) {
+		// logger.info(format, arguments);
+		// }
+		//
+		// @Override
+		// public void info(String msg, Throwable t) {
+		// logger.info(msg, t);
+		// }
+		//
+		// @Override
+		// public boolean isWarnEnabled() {
+		// return logger.isWarnEnabled();
+		// }
+		//
+		// @Override
+		// public void warn(String msg) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		//
+		// @Override
+		// public void warn(String format, Object... arguments) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		//
+		// @Override
+		// public void warn(String msg, Throwable t) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		//
+		// @Override
+		// public boolean isErrorEnabled() {
+		// // TODO Auto-generated method stub
+		// return false;
+		// }
+		//
+		// @Override
+		// public void error(String msg) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		//
+		// @Override
+		// public void error(String format, Object... arguments) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		//
+		// @Override
+		// public void error(String msg, Throwable t) {
+		// // TODO Auto-generated method stub
+		//
+		// };
+		// };
 
-		return Mono.zip(output.then(), subscriptionSubmission).then();
+		Flux<WebSocketMessage> input = session.receive().log("message received")
+				.doOnNext(message -> handleMessage(message));
+
+		Consumer<? super Void> onSuccess = new Consumer<Void>() {
+			@Override
+			public void accept(Void t) {
+				// We've executed the subscription. Let's transmit this good news to the application callback
+				subscriptionCallback.onConnect(session);
+			}
+		};
+		// Let actually execute the subscription
+		logger.trace("Before creating the Mono to send the subscription request into the web socket");
+		// Mono<Void> output =
+		session.send(Flux.just(request).map(session::textMessage)).doOnSuccess(onSuccess).subscribe();
+		logger.trace("After creating the Mono to send the subscription request into the web socket");
+
+		// // We're executed the subscription. Let's transmit this good news to the application callback
+		// subscriptionCallback.onConnect(session);
+
+		// Setting the session indicates that the connection is done. So we do it last.
+		this.session = session;
+
+		logger.trace("End of handle(session) method execution");
+		// return Mono.zip(output, input.then()).then();
+		return input.then();
 	}
 
 	/**
@@ -96,7 +227,9 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 	 * @param message
 	 *            The received JSON message
 	 */
-	private void handleMessage(WebSocketMessage message) {
+	public void handleMessage(WebSocketMessage message) {
+		logger.debug("Message received from the Web Socket: {}", message);
+
 		String msg = message.getPayloadAsText();
 
 		try {
@@ -117,5 +250,4 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 			subscriptionCallback.onError(new GraphQLRequestExecutionException(errorMsg, e));
 		}
 	}
-
 }

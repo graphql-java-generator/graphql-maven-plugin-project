@@ -27,7 +27,21 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import reactor.core.publisher.Mono;
 
 /**
- * This is the default implementation for the {@link QueryExecutor} This implementation has been added in version 1.12.
+ * This is the default implementation for the {@link QueryExecutor} This implementation has been added in version
+ * 1.12.<BR/>
+ * Dependencies to activate:
+ * 
+ * <PRE>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+		</dependence>
+ * </PRE>
+ * 
  * 
  * @since 1.12
  * @author etienne-sf

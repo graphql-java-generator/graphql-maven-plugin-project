@@ -129,7 +129,10 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		WebSocketClient client = new StandardWebSocketClient();
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
 				subscriptionName, subscriptionCallback, subscriptionType, messageType);
-		Mono<Void> result = client.execute(uri, webSocketHandler);
+		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
+				request);
+		// Mono<Void> result =
+		client.execute(uri, webSocketHandler).subscribe();
 		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 		// The line below is an "anti-reactive" pattern. But this insure the caller that no error occurs when creating
@@ -151,9 +154,13 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 			}
 		}
 
+		logger.warn("The webSocketHandler is not active, after {} seconds", TIMEOUT / 1000);
+
 		// Too bad, the web socket connection would not be established
 		// Let's block, to retrieve the error.
-		result.block();
+		// result.then();
+		// logger.trace("(after 'result.then()' (the webSocketHandler is not active, after {} seconds)", TIMEOUT /
+		// 1000);
 	}
 
 }
