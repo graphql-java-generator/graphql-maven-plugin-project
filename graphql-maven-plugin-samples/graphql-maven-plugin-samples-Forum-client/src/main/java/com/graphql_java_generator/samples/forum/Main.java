@@ -58,17 +58,17 @@ public class Main implements CommandLineRunner {
 	 */
 	@Override
 	public void run(String... args) throws Exception {
-		// System.out.println("");
-		// System.out.println("============================================================================");
-		// System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
-		// System.out.println("============================================================================");
-		// exec(partialDirectRequests, null);
-		//
-		// System.out.println("");
-		// System.out.println("============================================================================");
-		// System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		// System.out.println("============================================================================");
-		// exec(partialPreparedRequests, null);
+		System.out.println("");
+		System.out.println("============================================================================");
+		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
+		System.out.println("============================================================================");
+		exec(partialDirectRequests, null);
+
+		System.out.println("");
+		System.out.println("============================================================================");
+		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		System.out.println("============================================================================");
+		exec(partialPreparedRequests, null);
 
 		System.out.println("");
 		System.out.println("============================================================================");

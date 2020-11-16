@@ -46,6 +46,7 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	@Override
 	public void onMessage(T t) {
 		this.lastReceivedMessage = t;
+		// Do something useful with it
 		System.out.println(
 				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post: "
 						+ t.toString());

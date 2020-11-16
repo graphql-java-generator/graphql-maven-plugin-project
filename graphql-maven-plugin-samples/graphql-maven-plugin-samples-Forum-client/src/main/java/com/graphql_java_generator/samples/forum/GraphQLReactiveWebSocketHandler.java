@@ -77,125 +77,10 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 	public Mono<Void> handle(WebSocketSession session) {
 		logger.debug("Web Socket connected (session {}) for request {}", session, request);
 
-		// Let's submit the callback for the received messages
-		// reactor.util.Logger reactorLogger = new reactor.util.Logger() {
-		//
-		// @Override
-		// public String getName() {
-		// return logger.getName();
-		// }
-		//
-		// @Override
-		// public boolean isTraceEnabled() {
-		// return logger.isTraceEnabled();
-		// }
-		//
-		// @Override
-		// public void trace(String msg) {
-		// logger.trace(msg);
-		// }
-		//
-		// @Override
-		// public void trace(String format, Object... arguments) {
-		// logger.trace(format, arguments);
-		// }
-		//
-		// @Override
-		// public void trace(String msg, Throwable t) {
-		// trace(msg, t);
-		// }
-		//
-		// @Override
-		// public boolean isDebugEnabled() {
-		// return logger.isDebugEnabled();
-		// }
-		//
-		// @Override
-		// public void debug(String msg) {
-		// logger.debug(msg);
-		// }
-		//
-		// @Override
-		// public void debug(String format, Object... arguments) {
-		// logger.debug(format, arguments);
-		// }
-		//
-		// @Override
-		// public void debug(String msg, Throwable t) {
-		// logger.debug(msg, t);
-		// }
-		//
-		// @Override
-		// public boolean isInfoEnabled() {
-		// return logger.isInfoEnabled();
-		// }
-		//
-		// @Override
-		// public void info(String msg) {
-		// logger.info(msg);
-		// }
-		//
-		// @Override
-		// public void info(String format, Object... arguments) {
-		// logger.info(format, arguments);
-		// }
-		//
-		// @Override
-		// public void info(String msg, Throwable t) {
-		// logger.info(msg, t);
-		// }
-		//
-		// @Override
-		// public boolean isWarnEnabled() {
-		// return logger.isWarnEnabled();
-		// }
-		//
-		// @Override
-		// public void warn(String msg) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		//
-		// @Override
-		// public void warn(String format, Object... arguments) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		//
-		// @Override
-		// public void warn(String msg, Throwable t) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		//
-		// @Override
-		// public boolean isErrorEnabled() {
-		// // TODO Auto-generated method stub
-		// return false;
-		// }
-		//
-		// @Override
-		// public void error(String msg) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		//
-		// @Override
-		// public void error(String format, Object... arguments) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		//
-		// @Override
-		// public void error(String msg, Throwable t) {
-		// // TODO Auto-generated method stub
-		//
-		// };
-		// };
-
 		Flux<WebSocketMessage> input = session.receive().log("message received")
 				.doOnNext(message -> handleMessage(message));
 
+		// The onSuccess consumer will be called, once the subscription is written into the web socket
 		Consumer<? super Void> onSuccess = new Consumer<Void>() {
 			@Override
 			public void accept(Void t) {
@@ -204,19 +89,15 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 			}
 		};
 		// Let actually execute the subscription
-		logger.trace("Before creating the Mono to send the subscription request into the web socket");
-		// Mono<Void> output =
+		logger.trace("Before sending the subscription request into the web socket");
 		session.send(Flux.just(request).map(session::textMessage)).doOnSuccess(onSuccess).subscribe();
-		logger.trace("After creating the Mono to send the subscription request into the web socket");
-
-		// // We're executed the subscription. Let's transmit this good news to the application callback
-		// subscriptionCallback.onConnect(session);
+		logger.trace("After sending the subscription request into the web socket");
 
 		// Setting the session indicates that the connection is done. So we do it last.
 		this.session = session;
 
 		logger.trace("End of handle(session) method execution");
-		// return Mono.zip(output, input.then()).then();
+
 		return input.then();
 	}
 
