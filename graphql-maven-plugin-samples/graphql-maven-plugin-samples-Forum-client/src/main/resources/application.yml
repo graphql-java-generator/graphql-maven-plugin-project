@@ -1,3 +1,9 @@
+
+graphql:
+   endpoint:
+      url: http://localhost:8180/graphql
+      subscriptionUrl: http://localhost:8180/graphql/subscription
+
 spring:
    main:
       # We don't need the Netty web server to start

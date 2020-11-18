@@ -1,13 +1,15 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum;
+package com.graphql_java_generator.samples.forum.client.graphql;
 
 import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.socket.WebSocketSession;
+
+import com.graphql_java_generator.samples.forum.SubscriptionCallback;
 
 /**
  * @author etienne-sf

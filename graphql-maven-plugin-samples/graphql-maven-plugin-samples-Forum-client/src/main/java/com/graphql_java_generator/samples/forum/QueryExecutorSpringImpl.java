@@ -4,8 +4,6 @@
 package com.graphql_java_generator.samples.forum;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -51,8 +49,23 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringImpl.class);
 
+	/**
+	 * A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL endpoint, for
+	 * instance <I>https://my.serveur.com/graphql</I>
+	 */
 	@Autowired
 	String graphqlEndpoint;
+
+	/**
+	 * If the subscription is on a different endpoint than the main GraphQL endpoint, thant you can define a
+	 * <I>graphqlSubscriptionEndpoint</I> Spring bean, of type String, with this specific URL, for instance
+	 * <I>https://my.serveur.com/graphql/subscription</I>. For instance, Java servers suffer from a limitation which
+	 * prevent to server both GET/POST HTTP verbs and WebSockets on the same URL.<BR/>
+	 * If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I> URL is also
+	 * used for subscriptions (which is the standard case).
+	 */
+	@Autowired(required = false)
+	String graphqlSubscriptionEndpoint;
 
 	WebClient webClient;
 
@@ -141,7 +154,7 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 		WebSocketClient client = new StandardWebSocketClient();
 		GraphQLWebSocketHandler webSocketHandler = new GraphQLWebSocketHandler<>(request, subscriptionName,
 				subscriptionCallback, subscriptionType, messageType);
-		client.doHandshake(webSocketHandler, getWebSocketURI(graphqlEndpoint) + "/subscription");
+		client.doHandshake(webSocketHandler, getWebSocketURI());
 
 		// WebSocketStompClient stompClient = new WebSocketStompClient(client);
 		// stompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -182,19 +195,14 @@ public class QueryExecutorSpringImpl implements QueryExecutor {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public static URI getWebSocketURI(String graphqlEndpoint) throws GraphQLRequestExecutionException {
-		if (graphqlEndpoint.startsWith("http:") || graphqlEndpoint.startsWith("https:")) {
+	public String getWebSocketURI() throws GraphQLRequestExecutionException {
+		String endpoint = (graphqlSubscriptionEndpoint != null) ? graphqlSubscriptionEndpoint : graphqlEndpoint;
+		if (endpoint.startsWith("http:") || endpoint.startsWith("https:")) {
 			// We'll use the ws or the wss protocol. Let's just replace http by ws for that
-			try {
-				return new URI("ws" + graphqlEndpoint.substring(4));
-			} catch (URISyntaxException e) {
-				throw new GraphQLRequestExecutionException(
-						"Error when trying to determine the Web Socket endpoint for GraphQL endpoint "
-								+ graphqlEndpoint,
-						e);
-			}
+			return "ws" + endpoint.substring(4);
+		} else {
+			throw new GraphQLRequestExecutionException(
+					"non managed protocol for endpoint " + endpoint + ". This method manages only http and https");
 		}
-		throw new GraphQLRequestExecutionException(
-				"non managed protocol for endpoint " + graphqlEndpoint + ". This method manages only http and https");
 	}
 }

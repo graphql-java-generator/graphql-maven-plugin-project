@@ -5,6 +5,7 @@ package com.graphql_java_generator.samples.forum;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -38,8 +39,23 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringReactiveImpl.class);
 
+	/**
+	 * A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL endpoint, for
+	 * instance <I>https://my.serveur.com/graphql</I>
+	 */
 	@Autowired
 	String graphqlEndpoint;
+
+	/**
+	 * If the subscription is on a different endpoint than the main GraphQL endpoint, thant you can define a
+	 * <I>graphqlSubscriptionEndpoint</I> Spring bean, of type String, with this specific URL, for instance
+	 * <I>https://my.serveur.com/graphql/subscription</I>. For instance, Java servers suffer from a limitation which
+	 * prevent to server both GET/POST HTTP verbs and WebSockets on the same URL.<BR/>
+	 * If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I> URL is also
+	 * used for subscriptions (which is the standard case).
+	 */
+	@Autowired(required = false)
+	String graphqlSubscriptionEndpoint;
 
 	WebClient webClient;
 
@@ -125,17 +141,16 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 
 		// Let's create and start the Web Socket
-		URI uri = QueryExecutorImpl.getWebSocketURI(graphqlEndpoint + "/subscription");
 		WebSocketClient client = new StandardWebSocketClient();
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
 				subscriptionName, subscriptionCallback, subscriptionType, messageType);
 		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
-		client.execute(uri, webSocketHandler).subscribe();
+		client.execute(getWebSocketURI(), webSocketHandler).subscribe();
 		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 
-		// Let's wait 10s max, until the connection is active
+		// Let's let 10s max, for the connection to be active
 		final int TIMEOUT = 10000;
 		for (int i = 0; i < TIMEOUT / 10; i += 1) {
 			try {
@@ -152,4 +167,24 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		throw new RuntimeException("The webSocketHandler is not active, after " + (TIMEOUT / 1000) + " seconds");
 	}
 
+	/**
+	 * Retrieves the URI for the Web Socket, based on the GraphQL endpoint that has been given to the Constructor
+	 * 
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	public URI getWebSocketURI() throws GraphQLRequestExecutionException {
+		String endpoint = (graphqlSubscriptionEndpoint != null) ? graphqlSubscriptionEndpoint : graphqlEndpoint;
+		if (endpoint.startsWith("http:") || endpoint.startsWith("https:")) {
+			// We'll use the ws or the wss protocol. Let's just replace http by ws for that
+			try {
+				return new URI("ws" + endpoint.substring(4));
+			} catch (URISyntaxException e) {
+				throw new GraphQLRequestExecutionException(
+						"Error when trying to determine the Web Socket endpoint for GraphQL endpoint " + endpoint, e);
+			}
+		}
+		throw new GraphQLRequestExecutionException(
+				"non managed protocol for endpoint " + endpoint + ". This method manages only http and https");
+	}
 }

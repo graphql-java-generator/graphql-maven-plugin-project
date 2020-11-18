@@ -4,7 +4,6 @@
 package com.graphql_java_generator.samples.forum;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,18 +79,13 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 		Flux<WebSocketMessage> input = session.receive().log("message received")
 				.doOnNext(message -> handleMessage(message));
 
-		// The onSuccess consumer will be called, once the subscription is written into the web socket
-		Consumer<? super Void> onSuccess = new Consumer<Void>() {
-			@Override
-			public void accept(Void t) {
-				// We've executed the subscription. Let's transmit this good news to the application callback
-				subscriptionCallback.onConnect(session);
-			}
-		};
-		// Let actually execute the subscription
+		// Let actually execute the subscription (and wait for it to be accepted by the server)
 		logger.trace("Before sending the subscription request into the web socket");
-		session.send(Flux.just(request).map(session::textMessage)).doOnSuccess(onSuccess).subscribe();
+		session.send(Flux.just(request).map(session::textMessage)).block();
 		logger.trace("After sending the subscription request into the web socket");
+
+		// We've executed the subscription. Let's transmit this good news to the application callback
+		subscriptionCallback.onConnect(session);
 
 		// Setting the session indicates that the connection is done. So we do it last.
 		this.session = session;

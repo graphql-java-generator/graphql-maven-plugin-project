@@ -42,7 +42,9 @@ public class Main {
 		System.out.println("");
 		System.out.println("Sample application finished ... enjoy !    :)");
 		System.out.println("");
-		System.out.println("(please take a look at the other samples, for other use cases)");
+		System.out.println("Please take a look at the other samples, for other use cases");
+		System.out.println(
+				"You'll find more information on the plugin's web site: https://graphql-maven-plugin-project.graphql-java-generator.com/");
 	}
 
 	public void execOne(PartialQueries client)
