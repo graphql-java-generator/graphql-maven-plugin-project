@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum;
+package com.graphql_java_generator.samples.simple.client;
 
 import java.io.IOException;
 
@@ -13,6 +13,7 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 import reactor.core.publisher.Flux;
@@ -76,8 +77,7 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 	public Mono<Void> handle(WebSocketSession session) {
 		logger.debug("Web Socket connected (session {}) for request {}", session, request);
 
-		Flux<WebSocketMessage> input = session.receive().subsc
-				log("message received")
+		Flux<WebSocketMessage> input = session.receive().log("message received")
 				.doOnNext(message -> handleMessage(message));
 
 		// Let actually execute the subscription (and wait for it to be accepted by the server)
@@ -86,7 +86,7 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 		logger.trace("After sending the subscription request into the web socket");
 
 		// We've executed the subscription. Let's transmit this good news to the application callback
-		subscriptionCallback.onConnect(session);
+		subscriptionCallback.onConnect();
 
 		// Setting the session indicates that the connection is done. So we do it last.
 		this.session = session;

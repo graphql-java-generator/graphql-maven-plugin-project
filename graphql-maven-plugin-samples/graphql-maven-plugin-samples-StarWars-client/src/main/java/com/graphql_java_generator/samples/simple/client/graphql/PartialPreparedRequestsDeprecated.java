@@ -3,8 +3,10 @@
  */
 package com.graphql_java_generator.samples.simple.client.graphql;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
@@ -30,10 +32,13 @@ import com.graphql_java_generator.samples.simple.client.Queries;
  * 
  * @author etienne-sf
  */
+@Component
 public class PartialPreparedRequestsDeprecated implements Queries {
 
-	final QueryType queryType;
-	final MutationType mutationType;
+	@Autowired
+	QueryType queryType;
+	@Autowired
+	MutationType mutationType;
 
 	ObjectResponse heroFullResponse;
 	ObjectResponse heroPartialResponse;
@@ -61,16 +66,15 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 	 * @param hostnameVerifier
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public PartialPreparedRequestsDeprecated(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier)
-			throws GraphQLRequestPreparationException {
-		queryType = new QueryType(graphqlEndpoint, sslContext, hostnameVerifier);
-		mutationType = new MutationType(graphqlEndpoint, sslContext, hostnameVerifier);
+	@PostConstruct
+	public void init() throws GraphQLRequestPreparationException {
 
 		// The easiest way: don't precise which fields you want, and all known scalar fields are queried
 		heroFullResponse = queryType.getHeroResponseBuilder().build();
 
 		// Of course, you can precise the fields you want
-		heroPartialResponse = queryType.getHeroResponseBuilder().withQueryResponseDef("{appearsIn name}").build();
+		heroPartialResponse = queryType.getHeroResponseBuilder().withQueryResponseDef("{appearsIn name}")
+				.build();
 		heroFriendsFriendsFriendsResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef("{id appearsIn friends {name friends {friends{id name appearsIn}}}}").build();
 
@@ -78,8 +82,8 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 		humanFullResponse = queryType.getHumanResponseBuilder().build();
 
 		// Of course, you can precise the fields you want
-		humanPartialResponse = queryType.getHumanResponseBuilder().withQueryResponseDef("{appearsIn homePlanet name}")
-				.build();
+		humanPartialResponse = queryType.getHumanResponseBuilder()
+				.withQueryResponseDef("{appearsIn homePlanet name}").build();
 		humanFriendsFriendsFriendsResponse = queryType.getHumanResponseBuilder()
 				.withQueryResponseDef("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}")
 				.build();

@@ -19,6 +19,7 @@ Client mode:
 ==> Spring reactive WebSocketClient
 ==> Removal of the SubscriptionClient interface. All interactions of the client code with the web socket are done through the SubscriptionCallback implementation, provided by the application code.
 ==> The SubscriptionCallback has changed, to match the Spring reactive behavior
+* The SubscriptionCallback has evolved. Its onConnect() and onClose() methods now have no parameters. Unexpected end of the web socket are now received as an error.
 
 # 1.11
 

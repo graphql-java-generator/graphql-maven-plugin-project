@@ -19,6 +19,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
+import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequestsDeprecated;
 import com.graphql_java_generator.samples.forum.client.graphql.SubscriptionRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 
@@ -39,6 +40,8 @@ public class Main implements CommandLineRunner {
 	PartialDirectRequests partialDirectRequests;
 	@Autowired
 	PartialPreparedRequests partialPreparedRequests;
+	@Autowired
+	PartialPreparedRequestsDeprecated partialPreparedRequestsDeprecated;
 	@Autowired
 	SubscriptionRequests subscriptionRequests;
 
@@ -63,6 +66,12 @@ public class Main implements CommandLineRunner {
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
 		exec(partialPreparedRequests, null);
+
+		System.out.println("");
+		System.out.println("============================================================================");
+		System.out.println("======= DEPRECATED WAY (to check that it still works) ======================");
+		System.out.println("============================================================================");
+		exec(partialPreparedRequestsDeprecated, null);
 
 		System.out.println("");
 		System.out.println("============================================================================");
