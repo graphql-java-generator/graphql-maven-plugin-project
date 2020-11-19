@@ -24,7 +24,8 @@
 		</menu>
 
 		<menu name="Client mode">
-			<item name="Client usage" href="client.html" />
+			<item name="Client usage (spring)" href="client_spring.html" />
+			<item name="Client usage (old way)" href="client_jersey.html" />
 			<item name="Client Tutorial" href="client_tutorial.html" />
 			<item name="Subscription" href="client_subscription.html" />
 			<item name="Introspection" href="introspection.html" />
