@@ -142,34 +142,34 @@
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-client-dependencies</artifactId>
 			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- Spring is needed, to manage OAuth -->
-		<!-- dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<exclusions>
 				<exclusion>
-					<!- This apps logs with log4j, so we must exclude this conf ->
+					<!-- This apps logs with log4j, so we must exclude this conf -->
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency-->
-		<!-- dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-oauth2-client</artifactId>
-		</dependency-->
+		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-websocket</artifactId> </dependency> 
+			<dependency> <groupId>org.springframework.security</groupId> <artifactId>spring-security-oauth2-client</artifactId> </dependency -->
 		<!-- Below : are they necessary, once spring-boot-starter-websocket is added -->
 		<!-- dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-websocket</artifactId>
-		</dependency>
-		<dependency>
+		</dependency-->
+		<!-- dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
 		</dependency-->
