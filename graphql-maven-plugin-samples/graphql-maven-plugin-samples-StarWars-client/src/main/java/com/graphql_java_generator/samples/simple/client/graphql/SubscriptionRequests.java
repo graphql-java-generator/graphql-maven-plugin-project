@@ -23,8 +23,8 @@ public class SubscriptionRequests {
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, IOException {
 		// Preparation
 		GraphQLRequest subscriptionRequest = subscriptionTypeExecutor
-				.getNewCharacterGraphQLRequest("{is name __typename}");
-		GraphQLRequest createHumanRequest = mutationTypeExecutor.getCreateHumanGraphQLRequest("{is name __typename}");
+				.getNewCharacterGraphQLRequest("{id name __typename}");
+		GraphQLRequest createHumanRequest = mutationTypeExecutor.getCreateHumanGraphQLRequest("{id name __typename}");
 		NewCharacterSubscriptionCallback newCharacterSubscriptionCallback = new NewCharacterSubscriptionCallback();
 		String humaneName = "Anakin";
 		String homePlanet = "Tatooine";

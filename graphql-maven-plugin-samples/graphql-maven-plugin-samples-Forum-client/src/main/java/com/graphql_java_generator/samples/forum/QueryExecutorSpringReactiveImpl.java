@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +36,7 @@ import reactor.core.publisher.Mono;
 public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringReactiveImpl.class);
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL endpoint, for
@@ -57,7 +56,17 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	@Autowired(required = false)
 	String graphqlSubscriptionEndpoint;
 
+	/**
+	 * The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and mutations.
+	 */
 	WebClient webClient;
+
+	/**
+	 * The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to build the web
+	 * sockets, for GraphQL subscriptions.<BR/>
+	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
+	 */
+	WebSocketClient webSocketClient;
 
 	/**
 	 * The {@link ObjectMapper} that will read the json response, and map it to the correct java class, generated from
@@ -70,10 +79,18 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * applications.
 	 * 
 	 * @param webClient
+	 *            The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and
+	 *            mutations.
+	 * @param webSocketClient
+	 *            The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to
+	 *            build the web sockets, for GraphQL subscriptions.<BR/>
+	 *            This is mandatory if the application latter calls subscription. It may be null otherwise.
 	 */
 	@Autowired
-	public QueryExecutorSpringReactiveImpl(WebClient webClient) {
+	public QueryExecutorSpringReactiveImpl(WebClient webClient,
+			@Autowired(required = false) WebSocketClient webSocketClient) {
 		this.webClient = webClient;
+		this.webSocketClient = webSocketClient;
 	}
 
 	@Override
@@ -141,12 +158,11 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 
 		// Let's create and start the Web Socket
-		WebSocketClient client = new StandardWebSocketClient();
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
 				subscriptionName, subscriptionCallback, subscriptionType, messageType);
 		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
-		client.execute(getWebSocketURI(), webSocketHandler).subscribe();
+		webSocketClient.execute(getWebSocketURI(), webSocketHandler).subscribe();
 		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 

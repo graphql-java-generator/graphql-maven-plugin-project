@@ -7,14 +7,15 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.starwars.server.jpa.DroidRepository;
-import org.starwars.server.jpa.HumanRepository;
-
 import org.starwars.server.Character;
 import org.starwars.server.DataFetchersDelegateMutationType;
 import org.starwars.server.Droid;
 import org.starwars.server.Human;
+import org.starwars.server.jpa.DroidRepository;
+import org.starwars.server.jpa.HumanRepository;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.reactivex.subjects.Subject;
@@ -24,6 +25,9 @@ import io.reactivex.subjects.Subject;
  */
 @Component
 public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegateMutationType {
+
+	/** Logger for this class */
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
 	HumanRepository humanRepository;
@@ -41,6 +45,8 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 
 	@Override
 	public Human createHuman(DataFetchingEnvironment dataFetchingEnvironment, String name, String homePlanet) {
+		logger.trace("Creating a 'Human' of name '{}' and homePlanet ''", name, homePlanet);
+
 		Human human = new Human();
 		human.setName(name);
 		human.setHomePlanet(homePlanet);

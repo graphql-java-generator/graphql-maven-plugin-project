@@ -4,6 +4,7 @@ Here are the next tasks listed, as a TODO list:
 ## TODO list for the current version
 * Remove the SubscriptionClientWebSocket class
 * Finish updating the client_spring page
+* Check the WebClient with a default TLS configuration on a well known server
 * Update the README with the XxxxExecutor classes
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
 ==> update the four tutorials

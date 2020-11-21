@@ -11,7 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -22,6 +25,8 @@ import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRe
 import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequestsDeprecated;
 import com.graphql_java_generator.samples.forum.client.graphql.SubscriptionRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+
+import reactor.netty.http.client.HttpClient;
 
 /**
  * A Spring Boot client app. Very easy to use and to configure
@@ -136,8 +141,23 @@ public class Main implements CommandLineRunner {
 				.baseUrl(graphqlEndpoint)//
 				// .defaultCookie("cookieKey", "cookieValue")//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint))//
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint))
+				.clientConnector(new ReactorClientHttpConnector(HttpClient.create()))//
 				.build();
+	}
+
+	/**
+	 * The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to build the web
+	 * sockets, for GraphQL subscriptions.<BR/>
+	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
+	 */
+	@Bean
+	WebSocketClient webSocketClient(@Autowired(required = false) HttpClient httpClient) {
+		if (httpClient == null) {
+			return new ReactorNettyWebSocketClient(HttpClient.create());
+		} else {
+			return new ReactorNettyWebSocketClient(httpClient);
+		}
 	}
 
 }

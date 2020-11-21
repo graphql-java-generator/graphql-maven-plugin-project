@@ -2,6 +2,7 @@ package com.graphql_java_generator.samples.simple.client;
 
 import java.util.Collections;
 
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.generated.graphql.Episode;
 import com.generated.graphql.QueryTypeExecutor;
@@ -25,6 +28,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectRequests;
 import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedRequests;
+import com.graphql_java_generator.samples.simple.client.graphql.SubscriptionRequests;
 
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -49,10 +53,15 @@ public class Main implements CommandLineRunner {
 	@Value("${graphql.endpoint.subscriptionUrl}")
 	private String graphqlSubscriptionEndpoint;
 
+	@Autowired(required = false)
+	SSLContext sslContext;
+
 	@Autowired
 	PartialDirectRequests partialDirectRequests;
 	@Autowired
 	PartialPreparedRequests partialPreparedRequests;
+	@Autowired
+	SubscriptionRequests subscriptionRequests;
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(Main.class, args);
@@ -65,21 +74,26 @@ public class Main implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
+		if (sslContext != null) {
+			SSLContext.setDefault(sslContext);
+		}
+
 		// Execution of two ways that use the GraphQL client, to call the GraphQL server
 
-		System.out.println("============================================================================");
-		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
-		System.out.println("============================================================================");
-		execOne(partialDirectRequests);
+		// System.out.println("============================================================================");
+		// System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
+		// System.out.println("============================================================================");
+		// execOne(partialDirectRequests);
+		//
+		// System.out.println("============================================================================");
+		// System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		// System.out.println("============================================================================");
+		// execOne(partialPreparedRequests);
 
 		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		System.out.println("======= A SAMPLE SUBSCRIPTION ==============================================");
 		System.out.println("============================================================================");
-		execOne(partialPreparedRequests);
-
-		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		System.out.println("============================================================================");
+		subscriptionRequests.execSubscription();
 
 		System.out.println("");
 		System.out.println("");
@@ -160,13 +174,7 @@ public class Main implements CommandLineRunner {
 	// }
 
 	@Bean
-	WebClient webClient(String graphqlEndpoint/* , SslContext nettySslContext */) throws SSLException {
-		Builder ret = WebClient.builder()//
-				.baseUrl(graphqlEndpoint)//
-				// .defaultCookie("cookieKey", "cookieValue")//
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
-
+	HttpClient httpClient() throws SSLException {
 		int method = 2;
 
 		if (method == 1) {
@@ -180,18 +188,49 @@ public class Main implements CommandLineRunner {
 			TcpClient tcpClient = TcpClient.create()
 					.secure(sslProviderBuilder -> sslProviderBuilder.sslContext(sslContext));
 
-			ret.clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)));
+			return HttpClient.from(tcpClient);
 		} else if (method == 2) {
 			SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
 					.build();
 			HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
-			ret.clientConnector(new ReactorClientHttpConnector(httpClient));
+			return httpClient;
 		} else {
 			throw new RuntimeException("bad value");
 		}
 
+	}
+
+	/**
+	 * The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and mutations.
+	 */
+	@Bean
+	WebClient webClient(String graphqlEndpoint, @Autowired(required = false) HttpClient httpClient) {
+		Builder webClientBuilder = WebClient.builder()//
+				.baseUrl(graphqlEndpoint)//
+				// .defaultCookie("cookieKey", "cookieValue")//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
+
+		if (HttpClient.create() != null) {
+			webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient));
+		}
+
 		logger.debug("Created the Spring WebClient");
-		return ret.build();
+		return webClientBuilder.build();
+	}
+
+	/**
+	 * The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to build the web
+	 * sockets, for GraphQL subscriptions.<BR/>
+	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
+	 */
+	@Bean
+	WebSocketClient webSocketClient(@Autowired(required = false) HttpClient httpClient) {
+		if (httpClient == null) {
+			return new ReactorNettyWebSocketClient();
+		} else {
+			return new ReactorNettyWebSocketClient(httpClient);
+		}
 	}
 
 	/**
