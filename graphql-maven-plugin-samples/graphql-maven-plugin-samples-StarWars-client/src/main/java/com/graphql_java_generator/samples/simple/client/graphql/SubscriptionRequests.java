@@ -38,8 +38,8 @@ public class SubscriptionRequests {
 			throw new RuntimeException("The subscription should be active");
 		}
 
-		System.out.println(
-				"Creating a Human (for which we expect a notification) from this name: 'sdqsdqs' and this homePlanet: 'sdqsd'");
+		System.out.println("Creating a Human (for which we expect a notification) from this name: '" + humaneName
+				+ "' and this homePlanet: '" + homePlanet + "'");
 		mutationTypeExecutor.createHuman(createHumanRequest, humaneName, homePlanet);
 
 		//////////////////////////////////////////////////////////////////////////////////////

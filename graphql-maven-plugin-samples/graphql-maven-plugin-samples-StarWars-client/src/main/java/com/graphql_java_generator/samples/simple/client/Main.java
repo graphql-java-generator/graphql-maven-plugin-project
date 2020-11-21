@@ -227,7 +227,7 @@ public class Main implements CommandLineRunner {
 	@Bean
 	WebSocketClient webSocketClient(@Autowired(required = false) HttpClient httpClient) {
 		if (httpClient == null) {
-			return new ReactorNettyWebSocketClient();
+			return new ReactorNettyWebSocketClient(HttpClient.create());
 		} else {
 			return new ReactorNettyWebSocketClient(httpClient);
 		}
