@@ -4,6 +4,8 @@ import java.util.Collections;
 
 import javax.net.ssl.SSLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -28,6 +30,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.TcpClient;
 
 /**
  * The main class, which executes the same queries, built by three different methods. See {@link PartialDirectRequests},
@@ -37,6 +40,9 @@ import reactor.netty.http.client.HttpClient;
  */
 @SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, QueryTypeExecutor.class })
 public class Main implements CommandLineRunner {
+
+	/** Logger for this class */
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Value("${graphql.endpoint.url}")
 	private String graphqlEndpoint;
@@ -70,6 +76,10 @@ public class Main implements CommandLineRunner {
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
 		execOne(partialPreparedRequests);
+
+		System.out.println("============================================================================");
+		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		System.out.println("============================================================================");
 
 		System.out.println("");
 		System.out.println("");
@@ -143,23 +153,44 @@ public class Main implements CommandLineRunner {
 		return graphqlSubscriptionEndpoint;
 	}
 
-	@Bean
-	SslContext insecureSslContext() throws SSLException {
-		return SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-	}
+	// @Bean
+	// SslContext insecureSslContext() throws SSLException {
+	// SslContext ret = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+	// return ret;
+	// }
 
 	@Bean
-	WebClient webClient(String graphqlEndpoint, SslContext nettySslContext) {
+	WebClient webClient(String graphqlEndpoint/* , SslContext nettySslContext */) throws SSLException {
 		Builder ret = WebClient.builder()//
 				.baseUrl(graphqlEndpoint)//
 				// .defaultCookie("cookieKey", "cookieValue")//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
 
-		if (nettySslContext != null) {
-			HttpClient httpConnector = HttpClient.create().secure(t -> t.sslContext(nettySslContext));
-			ret.clientConnector(new ReactorClientHttpConnector(httpConnector));
+		int method = 2;
+
+		if (method == 1) {
+
+			// logger.debug("Activating Proxy for the Spring WebClient");
+			// tcpClient.proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP).host("127.0.0.1").port(3128));
+
+			logger.debug("Activating INSECURE SSL for the Spring WebClient");
+			SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
+					.build();
+			TcpClient tcpClient = TcpClient.create()
+					.secure(sslProviderBuilder -> sslProviderBuilder.sslContext(sslContext));
+
+			ret.clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient)));
+		} else if (method == 2) {
+			SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
+					.build();
+			HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
+			ret.clientConnector(new ReactorClientHttpConnector(httpClient));
+		} else {
+			throw new RuntimeException("bad value");
 		}
+
+		logger.debug("Created the Spring WebClient");
 		return ret.build();
 	}
 
@@ -198,18 +229,18 @@ public class Main implements CommandLineRunner {
 	//
 	// return sslContext;
 	// }
-	//
-	// /**
-	// * Creates a netty {@link SslContext} from a JDK {@link SSLContext}. It is called only if no netty
-	// * {@link SslContext} has already been defined.
-	// *
-	// * @return a default netty {@link SslContext}, if no JDK {@link SSLContext} Spring bean exists. And a netty
-	// * {@link SslContext} based on the existing JDK {@link SSLContext} Spring bean otherwise.
-	// * @throws SSLException
-	// */
+
+	/**
+	 * Creates a netty {@link SslContext} from a JDK {@link SSLContext}. It is called only if no netty
+	 * {@link SslContext} has already been defined.
+	 *
+	 * @return a default netty {@link SslContext}, if no JDK {@link SSLContext} Spring bean exists. And a netty
+	 *         {@link SslContext} based on the existing JDK {@link SSLContext} Spring bean otherwise.
+	 * @throws SSLException
+	 */
 	// @ConditionalOnMissingBean
 	// @Bean
-	// SslContext nettySslContext(SSLContext sslContext) throws SSLException {
+	// SslContext nettySslContext(@Autowired(required = false) SSLContext sslContext) throws SSLException {
 	// if (sslContext == null) {
 	// return SslContextBuilder.forClient().build();
 	// } else {

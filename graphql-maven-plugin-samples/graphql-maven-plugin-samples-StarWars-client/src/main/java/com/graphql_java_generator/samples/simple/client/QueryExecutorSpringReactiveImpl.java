@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.QueryExecutorImpl;
-import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
