@@ -65,6 +65,8 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 
 	public GraphQLReactiveWebSocketHandler(String request, String subscriptionName,
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType) {
+		logger.debug("Creating instance of {} for subscription {} with request {}", getClass(), subscriptionName,
+				request);
 		this.request = request;
 		this.subscriptionName = subscriptionName;
 		this.subscriptionCallback = subscriptionCallback;
@@ -81,7 +83,7 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 
 		// Let actually execute the subscription (and wait for it to be accepted by the server)
 		logger.trace("Before sending the subscription request into the web socket");
-		session.send(Flux.just(request).map(session::textMessage)).block();
+		session.send(Flux.just(request).map(session::textMessage)).subscribe();
 		logger.trace("After sending the subscription request into the web socket");
 
 		// We've executed the subscription. Let's transmit this good news to the application callback
