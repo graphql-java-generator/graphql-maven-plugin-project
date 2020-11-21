@@ -3,6 +3,8 @@ package com.graphql_java_generator.samples.forum.client.graphql;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -31,6 +33,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author etienne-sf
  */
+@Component
 public class PartialPreparedRequestsDeprecated implements Queries {
 
 	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);

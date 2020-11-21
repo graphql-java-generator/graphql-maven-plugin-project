@@ -76,8 +76,7 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 	public Mono<Void> handle(WebSocketSession session) {
 		logger.debug("Web Socket connected (session {}) for request {}", session, request);
 
-		Flux<WebSocketMessage> input = session.receive().subsc
-				log("message received")
+		Flux<WebSocketMessage> input = session.receive().log("message received")
 				.doOnNext(message -> handleMessage(message));
 
 		// Let actually execute the subscription (and wait for it to be accepted by the server)

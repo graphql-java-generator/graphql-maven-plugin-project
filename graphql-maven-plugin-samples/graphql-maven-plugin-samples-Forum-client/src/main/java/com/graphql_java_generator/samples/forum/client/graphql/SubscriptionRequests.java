@@ -33,8 +33,7 @@ public class SubscriptionRequests {
 		GraphQLRequest createPostRequest = mutationTypeExecutor
 				.getCreatePostGraphQLRequest("{id date author{id} title content publiclyAvailable}");
 
-		PostSubscriptionCallback<Post> postSubscriptionCallback = new PostSubscriptionCallback<>(
-				Thread.currentThread());
+		PostSubscriptionCallback postSubscriptionCallback = new PostSubscriptionCallback();
 		Member author = new Member();
 		author.setId("12");
 		PostInput postInput = new PostInput();

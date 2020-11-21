@@ -10,13 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
 import com.graphql_java_generator.samples.forum.SubscriptionCallback;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 
 /**
  * @author etienne-sf
  */
 // The class that'll receive the notification from the GraphQL subscription
 
-public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
+public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
@@ -24,18 +25,12 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	/** The web socket session. Allows to close the web socket */
 	WebSocketSession session;
 
-	Thread mainThread;
-
 	/** Indicates whether the Web Socket is connected or not */
 	boolean connected = false;
 
-	T lastReceivedMessage = null;
+	Post lastReceivedMessage = null;
 	String lastReceivedClose = null;
 	Throwable lastReceivedError = null;
-
-	public PostSubscriptionCallback(Thread mainThread) {
-		this.mainThread = mainThread;
-	}
 
 	@Override
 	public void onConnect(WebSocketSession session) {
@@ -46,7 +41,7 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	}
 
 	@Override
-	public void onMessage(T t) {
+	public void onMessage(Post t) {
 		this.lastReceivedMessage = t;
 		// Do something useful with it
 		System.out.println(
