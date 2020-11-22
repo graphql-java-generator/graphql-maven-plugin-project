@@ -1,25 +1,14 @@
 package com.graphql_java_generator.samples.simple.client;
 
-import java.util.Collections;
-
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.Builder;
-import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
-import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.generated.graphql.Episode;
 import com.generated.graphql.QueryTypeExecutor;
@@ -48,14 +37,6 @@ public class Main implements CommandLineRunner {
 	/** Logger for this class */
 	Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Value("${graphql.endpoint.url}")
-	private String graphqlEndpoint;
-	@Value("${graphql.endpoint.subscriptionUrl}")
-	private String graphqlSubscriptionEndpoint;
-
-	@Autowired(required = false)
-	SSLContext sslContext;
-
 	@Autowired
 	PartialDirectRequests partialDirectRequests;
 	@Autowired
@@ -73,10 +54,6 @@ public class Main implements CommandLineRunner {
 	 */
 	@Override
 	public void run(String... args) throws Exception {
-
-		if (sslContext != null) {
-			SSLContext.setDefault(sslContext);
-		}
 
 		// Execution of two ways that use the GraphQL client, to call the GraphQL server
 
@@ -157,24 +134,16 @@ public class Main implements CommandLineRunner {
 	////////////////// Below is the configuration, based on Spring beans
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * This sample uses in https, but with a self-signed certificate. So we need to avoid certificate controls. This
+	 * {@link HttpClient} just removes control on the certificate. <BR/>
+	 * This is ok for this integration test. But DON'T DO THAT IN PRODUCTION!
+	 * 
+	 * @return
+	 * @throws SSLException
+	 */
 	@Bean
-	String graphqlEndpoint() {
-		return graphqlEndpoint;
-	}
-
-	@Bean
-	String graphqlSubscriptionEndpoint() {
-		return graphqlSubscriptionEndpoint;
-	}
-
-	// @Bean
-	// SslContext insecureSslContext() throws SSLException {
-	// SslContext ret = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-	// return ret;
-	// }
-
-	@Bean
-	HttpClient httpClient() throws SSLException {
+	HttpClient insecureHttpClient() throws SSLException {
 		int method = 2;
 
 		if (method == 1) {
@@ -199,92 +168,4 @@ public class Main implements CommandLineRunner {
 		}
 
 	}
-
-	/**
-	 * The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and mutations.
-	 */
-	@Bean
-	WebClient webClient(String graphqlEndpoint, @Autowired(required = false) HttpClient httpClient) {
-		Builder webClientBuilder = WebClient.builder()//
-				.baseUrl(graphqlEndpoint)//
-				// .defaultCookie("cookieKey", "cookieValue")//
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
-
-		if (HttpClient.create() != null) {
-			webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient));
-		}
-
-		logger.debug("Created the Spring WebClient");
-		return webClientBuilder.build();
-	}
-
-	/**
-	 * The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to build the web
-	 * sockets, for GraphQL subscriptions.<BR/>
-	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
-	 */
-	@Bean
-	WebSocketClient webSocketClient(@Autowired(required = false) HttpClient httpClient) {
-		if (httpClient == null) {
-			return new ReactorNettyWebSocketClient(HttpClient.create());
-		} else {
-			return new ReactorNettyWebSocketClient(httpClient);
-		}
-	}
-
-	/**
-	 * Returns a Dummy SSLContext, that won't check the server certificate. With a real check, an exception is thrown,
-	 * as it is self signed.<BR/>
-	 * DON'T USE IT IN PRODUCTION.
-	 * 
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyManagementException
-	 */
-	// @Bean
-	// public SSLContext sslContext() throws NoSuchAlgorithmException, KeyManagementException {
-	// SSLContext sslContext = SSLContext.getInstance("TLSv1");
-	//
-	// // Very, very bad. Don't do that in production !
-	// KeyManager[] keyManagers = null;
-	// TrustManager[] trustManager = { new X509TrustManager() {
-	// @Override
-	// public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
-	// }
-	//
-	// @Override
-	// public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
-	// }
-	//
-	// @Override
-	// public X509Certificate[] getAcceptedIssuers() {
-	// return new X509Certificate[0];
-	// }
-	// } };
-	// SecureRandom secureRandom = new SecureRandom();
-	//
-	// sslContext.init(keyManagers, trustManager, secureRandom);
-	//
-	// return sslContext;
-	// }
-
-	/**
-	 * Creates a netty {@link SslContext} from a JDK {@link SSLContext}. It is called only if no netty
-	 * {@link SslContext} has already been defined.
-	 *
-	 * @return a default netty {@link SslContext}, if no JDK {@link SSLContext} Spring bean exists. And a netty
-	 *         {@link SslContext} based on the existing JDK {@link SSLContext} Spring bean otherwise.
-	 * @throws SSLException
-	 */
-	// @ConditionalOnMissingBean
-	// @Bean
-	// SslContext nettySslContext(@Autowired(required = false) SSLContext sslContext) throws SSLException {
-	// if (sslContext == null) {
-	// return SslContextBuilder.forClient().build();
-	// } else {
-	// // return new JdkSslContext(sslContext, true, null, null, null, ClientAuth.NONE, null, true);
-	// return new JdkSslContext(sslContext, true, ClientAuth.NONE);
-	// }
-	// }
 }
