@@ -5,7 +5,7 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This class represents a GraphQL Data Fetcher. It's a piece of code that reads non scalar fields on GraphQL objects,

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
@@ -41,7 +41,7 @@ public class GraphQLRequest extends ObjectResponse {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(GraphQLRequest.class);
 
-	final com.graphql_java_generator.GraphqlUtils graphqlUtils = new GraphqlUtils();
+	final com.graphql_java_generator.util.GraphqlUtils graphqlUtils = new GraphqlUtils();
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	// This initialization must occur before the execution of the constructors, in order to properly parse the GraphQL request

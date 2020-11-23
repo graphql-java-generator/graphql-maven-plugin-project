@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -25,6 +24,7 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
+import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 

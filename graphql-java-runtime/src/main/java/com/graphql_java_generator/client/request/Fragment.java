@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * @author etienne-sf

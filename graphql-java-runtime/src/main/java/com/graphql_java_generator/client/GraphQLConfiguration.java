@@ -1,16 +1,11 @@
 package com.graphql_java_generator.client;
 
-import java.util.Collections;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,12 +42,10 @@ public class GraphQLConfiguration {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public GraphQLConfiguration(String graphqlEndpoint) {
-		this.executor = new QueryExecutorSpringImpl(WebClient.builder()//
-				.baseUrl(graphqlEndpoint)//
-				// .defaultCookie("cookieKey", "cookieValue")//
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint))//
-				.build());
+		// Let's "manually" reuse the default configuration, as defined in the Spring Auto Configuration bean
+		GraphQLAutoConfiguration conf = new GraphQLAutoConfiguration();
+		this.executor = new QueryExecutorSpringReactiveImpl(conf.webClient(graphqlEndpoint, null),
+				conf.webSocketClient(null));
 	}
 
 	/**

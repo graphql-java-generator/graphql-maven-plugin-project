@@ -32,6 +32,7 @@ import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDServer;
 import com.graphql_java_generator.testcases.Isssue49AccountInput;
 import com.graphql_java_generator.testcases.Issue49Title;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 @Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {

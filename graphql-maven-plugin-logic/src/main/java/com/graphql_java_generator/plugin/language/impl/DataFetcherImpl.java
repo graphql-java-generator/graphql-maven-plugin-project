@@ -3,13 +3,13 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Data;
 

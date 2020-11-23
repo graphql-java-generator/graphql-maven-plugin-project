@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum;
+package com.graphql_java_generator.client;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,19 +12,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.QueryExecutorImpl;
-import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * This is the default implementation for the {@link QueryExecutor} This implementation has been added in version 1.12.
@@ -32,11 +32,11 @@ import reactor.core.publisher.Mono;
  * @since 1.12
  * @author etienne-sf
  */
-// @Component
+@Component
 public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */
-	private Logger logger = LoggerFactory.getLogger(getClass());
+	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringReactiveImpl.class);
 
 	/**
 	 * A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL endpoint, for
@@ -124,7 +124,7 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	}
 
 	@Override
-	public <R, T> void execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
 			Class<T> messageType) throws GraphQLRequestExecutionException {
 
@@ -158,29 +158,18 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 
 		// Let's create and start the Web Socket
+
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
 				subscriptionName, subscriptionCallback, subscriptionType, messageType);
 		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
-		webSocketClient.execute(getWebSocketURI(), webSocketHandler).subscribe();
+		Disposable disposable = webSocketClient.execute(getWebSocketURI(), webSocketHandler)
+				.subscribeOn(Schedulers.single())// Let's have a dedicated thread
+				.subscribe();
 		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 
-		// Let's let 10s max, for the connection to be active
-		final int TIMEOUT = 10000;
-		for (int i = 0; i < TIMEOUT / 10; i += 1) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
-			if (webSocketHandler.session != null) {
-				// Ok, we're connected. We're done
-				return;
-			}
-		}
-
-		throw new RuntimeException("The webSocketHandler is not active, after " + (TIMEOUT / 1000) + " seconds");
+		return new SubscriptionClientReactiveImpl(disposable, webSocketHandler.getSession());
 	}
 
 	/**

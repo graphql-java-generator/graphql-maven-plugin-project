@@ -24,8 +24,8 @@ import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.WithID;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This sample is not connected to a database : its aim is just to check all the GraphQL schema possibilities, to insure

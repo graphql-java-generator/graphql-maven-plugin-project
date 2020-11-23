@@ -13,7 +13,7 @@
 	</Appenders>
 
 	<Loggers>
-		<Logger name="com.graphql_java_generator" level="warn" />
+		<Logger name="com.graphql_java_generator" level="trace" />
 		<Logger name="com.graphql_java_generator.samples" level="trace" />
 		<Root level="warn">
 			<AppenderRef ref="Console" />

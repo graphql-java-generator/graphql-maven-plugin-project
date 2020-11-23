@@ -5,7 +5,7 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.List;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This class represents a GraphQL Data Fetcher Delegate. A DataFetchersDelegate aggregates all {@link DataFetcher} for

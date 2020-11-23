@@ -4,6 +4,7 @@ Here are the next tasks listed, as a TODO list:
 ## TODO list for the current version
 * Remove the SubscriptionClientWebSocket class
 * Finish updating the client_spring page
+* Add unit test in runtime, to test the Reactive stuff
 * Check the WebClient with a default TLS configuration on a well known server
 * Update the README with the XxxxExecutor classes
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
@@ -11,6 +12,9 @@ Here are the next tasks listed, as a TODO list:
 ==> Check the documented default value
 * [WIP] Adding the relay connection capabilities (almost done, unit tests are Ok, remaining task: integration tests).
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
+	OAuth:"https://www.baeldung.com/jersey-sse-client-request-headers";//
+	"https://www.baeldung.com/spring-webclient-oauth2#springsecurity-internals"//
+	"https://manhtai.github.io/posts/spring-webclient-oauth2-client-credentials/"
 * Switch to apache 2.0 licence
 * Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 * Replace all the thrown RuntimeException by meaningfull exceptions

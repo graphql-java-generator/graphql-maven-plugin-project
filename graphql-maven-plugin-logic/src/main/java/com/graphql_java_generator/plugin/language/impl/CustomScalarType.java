@@ -3,11 +3,11 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.language.CustomScalar;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

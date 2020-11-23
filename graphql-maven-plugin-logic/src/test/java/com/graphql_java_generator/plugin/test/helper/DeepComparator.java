@@ -17,7 +17,7 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This class deep compares two objects, say a and b. It:

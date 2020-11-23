@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Data;
 

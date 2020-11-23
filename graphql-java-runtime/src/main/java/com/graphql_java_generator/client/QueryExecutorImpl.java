@@ -149,6 +149,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	}
 
 	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
 	@Override
 	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,

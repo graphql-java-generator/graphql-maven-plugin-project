@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.GenerateCodeGenerator;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.ThreadSafe;
 
@@ -56,7 +58,7 @@ public class GraphQLMojo extends AbstractGraphQLMojo {
 
 	@Configuration
 	@Import({ JacksonAutoConfiguration.class })
-	@ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
+	@ComponentScan(basePackageClasses = { DocumentParser.class, GraphqlUtils.class }, excludeFilters = {
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateServerCode.*") })

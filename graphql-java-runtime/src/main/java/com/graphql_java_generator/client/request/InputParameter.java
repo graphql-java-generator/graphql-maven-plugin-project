@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import org.apache.commons.text.StringEscapeUtils;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
@@ -20,6 +19,7 @@ import com.graphql_java_generator.client.QueryExecutorImpl;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.GraphQLScalarType;
 

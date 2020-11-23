@@ -6,9 +6,9 @@ package com.graphql_java_generator.client.request;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This builder is provided for compatibility of existing code, that would have been developed before the 1.6 release.

@@ -17,7 +17,7 @@ import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.DataFetcher;
 

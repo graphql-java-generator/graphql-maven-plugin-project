@@ -14,7 +14,7 @@ import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.TopicRepository;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.DataFetchingEnvironment;
 

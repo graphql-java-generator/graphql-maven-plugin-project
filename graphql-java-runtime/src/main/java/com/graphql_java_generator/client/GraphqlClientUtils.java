@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLEnumType;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInterfaceType;
@@ -31,6 +30,7 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.GraphQLScalarType;
 

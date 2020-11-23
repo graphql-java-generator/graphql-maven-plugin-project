@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
@@ -43,7 +44,22 @@ public class SubscriptionRequests {
 
 		// Go, go, go
 		System.out.println("Submitting the 'subscribeToNewPostWithBindValues' GraphQL subscription");
-		subscriptionTypeExecutor.subscribeToNewPost(subscriptionRequest, postSubscriptionCallback, "Board name 1");
+		SubscriptionClient subscriptionClient = subscriptionTypeExecutor.subscribeToNewPost(subscriptionRequest,
+				postSubscriptionCallback, "Board name 1");
+
+		// For this test, we need to be sure that the subscription is active, before creating the post (that we will
+		// receive a notification about)
+		final int TIMEOUT1 = 1000;
+		for (int i = 0; i < TIMEOUT1 / 10; i += 1) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
+			if (postSubscriptionCallback.connected) {
+				break;
+			}
+		}
 
 		// Let's check that everything is ready
 		if (!postSubscriptionCallback.connected) {
@@ -62,8 +78,8 @@ public class SubscriptionRequests {
 		// (see the callback implementation in the PostSubscriptionCallback class)
 		Post notifiedPost = null;
 		// Let's wait 10s max, until the connection is active
-		final int TIMEOUT = 10;
-		for (int i = 0; i < TIMEOUT * 1000 / 10; i += 1) {
+		final int TIMEOUT2 = 10;
+		for (int i = 0; i < TIMEOUT2 * 1000 / 10; i += 1) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -79,7 +95,7 @@ public class SubscriptionRequests {
 		}
 
 		// We need to free the server resources, at the end
-		postSubscriptionCallback.close();
+		subscriptionClient.unsubscribe();
 	}
 
 	private TopicPostInput getTopicPostInput(Member author, String content, Date date, boolean publiclyAvailable,

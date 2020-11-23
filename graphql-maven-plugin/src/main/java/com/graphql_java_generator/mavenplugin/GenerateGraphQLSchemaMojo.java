@@ -12,7 +12,9 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.GenerateGraphQLSchema;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.ThreadSafe;
 
@@ -43,7 +45,7 @@ public class GenerateGraphQLSchemaMojo extends AbstractGenerateGraphQLSchemaMojo
 	// See the explanation in the AbstractCommonMojo for more details.
 
 	@Configuration
-	@ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
+	@ComponentScan(basePackageClasses = { DocumentParser.class, GraphqlUtils.class }, excludeFilters = {
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
 			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateCode.*"),

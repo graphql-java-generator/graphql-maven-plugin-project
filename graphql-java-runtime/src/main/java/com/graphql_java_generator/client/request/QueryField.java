@@ -8,7 +8,6 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLInterfaceType;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -18,6 +17,7 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This class gives parsing capabilities for the QueryString for one object.<BR/>

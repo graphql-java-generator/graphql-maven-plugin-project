@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator;
+package com.graphql_java_generator.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

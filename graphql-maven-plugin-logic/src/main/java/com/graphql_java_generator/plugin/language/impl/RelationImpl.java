@@ -1,10 +1,10 @@
 package com.graphql_java_generator.plugin.language.impl;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Data;
 import lombok.NonNull;

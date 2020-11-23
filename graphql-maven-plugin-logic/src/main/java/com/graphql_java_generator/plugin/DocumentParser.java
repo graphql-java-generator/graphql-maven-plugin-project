@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -37,6 +36,7 @@ import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.plugin.language.impl.UnionType;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.language.AbstractNode;
 import graphql.language.Argument;

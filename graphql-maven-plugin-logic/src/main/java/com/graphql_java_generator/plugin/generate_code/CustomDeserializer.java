@@ -2,8 +2,8 @@ package com.graphql_java_generator.plugin.generate_code;
 
 import java.util.List;
 
-import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.GraphQLScalarType;
 import lombok.AllArgsConstructor;

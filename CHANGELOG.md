@@ -12,14 +12,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 
 Both modes (client and server):
-* Upgrade of spring boot from 2.2.6 to 2.3.3
-
+* Upgrade of spring boot from 2.2.6 to 2.4.0
+* [minor] The GraphqlUtils class has been moved into the com.graphql_java_generator.util package
 Client mode:
 * The subscription management has been updated.
 ==> Spring reactive WebSocketClient
 ==> Removal of the SubscriptionClient interface. All interactions of the client code with the web socket are done through the SubscriptionCallback implementation, provided by the application code.
 ==> The SubscriptionCallback has changed, to match the Spring reactive behavior
 * The SubscriptionCallback has evolved. Its onConnect() and onClose() methods now have no parameters. Unexpected end of the web socket are now received as an error.
+
 
 # 1.11
 

@@ -2,7 +2,7 @@ package com.graphql_java_generator.plugin.language;
 
 import java.util.List;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * Represents one of the possible values of a GraphQL Enum. An {@link EnumValue} is actually a name, and the list of
