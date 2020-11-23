@@ -9,7 +9,7 @@
 		<version>local-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</artifactId>
+	<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
 
 
 	<!-- <parent> <groupId>com.graphql-java-generator</groupId> <artifactId>graphql-maven-plugin-samples</artifactId> <version>local-SNAPSHOT</version> 
