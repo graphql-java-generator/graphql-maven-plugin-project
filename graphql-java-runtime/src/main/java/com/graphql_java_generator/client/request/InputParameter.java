@@ -526,16 +526,19 @@ public class InputParameter {
 		String separator = "";
 
 		for (Field field : object.getClass().getDeclaredFields()) {
-			Object val = graphqlUtils.invokeGetter(object, field.getName());
+			// Synthetic fields must be ignored
+			if (!field.isSynthetic()) {
+				Object val = graphqlUtils.invokeGetter(object, field.getName());
 
-			if (val != null) {
-				result.append(separator);
+				if (val != null) {
+					result.append(separator);
 
-				result.append(field.getName());
-				result.append(":");
-				result.append(getValueForGraphqlQuery(val, graphqlClientUtils.getGraphQLCustomScalarType(field)));
+					result.append(field.getName());
+					result.append(":");
+					result.append(getValueForGraphqlQuery(val, graphqlClientUtils.getGraphQLCustomScalarType(field)));
 
-				separator = ",";
+					separator = ",";
+				}
 			}
 		} // for
 
