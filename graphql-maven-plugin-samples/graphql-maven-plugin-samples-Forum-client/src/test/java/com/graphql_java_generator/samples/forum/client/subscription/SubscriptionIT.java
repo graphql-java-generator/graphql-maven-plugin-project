@@ -12,19 +12,27 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.PostConstruct;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.SpringTestConfig;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
 
 /**
@@ -33,21 +41,27 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * 
  * @author etienne-sf
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+@TestPropertySource("classpath:application.properties")
 class SubscriptionIT {
 
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory.getLogger(SubscriptionIT.class);
 
-	SubscriptionType subscriptionType;
-	MutationType mutationType;
+	@Autowired
+	SubscriptionTypeExecutor subscriptionType;
+
+	@Autowired
+	MutationTypeExecutor mutationType;
+
 	GraphQLRequest subscriptionRequest;
 	GraphQLRequest createPostRequest;
 
 	public static Thread currentThread;
 
-	SubscriptionIT() throws GraphQLRequestPreparationException {
-		subscriptionType = new SubscriptionType("http://localhost:8180/graphql/subscription");
-		mutationType = new MutationType("http://localhost:8180/graphql");
+	@PostConstruct
+	public void init() throws GraphQLRequestPreparationException {
 		subscriptionRequest = subscriptionType
 				.getSubscribeToNewPostGraphQLRequest("{id date author publiclyAvailable title content}");
 		createPostRequest = mutationType
@@ -58,7 +72,7 @@ class SubscriptionIT {
 	@Test
 	void testSubscription() throws GraphQLRequestExecutionException, InterruptedException, ExecutionException {
 		// Preparation
-		PostSubscriptionCallback<Post> postSubscriptionCallback = new PostSubscriptionCallback<>();
+		PostSubscriptionCallback postSubscriptionCallback = new PostSubscriptionCallback();
 		Member author = new Member();
 		author.setId("12");
 		PostInput postInput = new PostInput();
@@ -70,6 +84,15 @@ class SubscriptionIT {
 		logger.debug("Subscribing to the GraphQL subscription");
 		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest, postSubscriptionCallback,
 				"Board name 1");
+
+		// Due to parallel treatments on the same computer during the IT tests, it may happen that the subscription is
+		// not totally active yet. So we wait a little, to let the subscription by plainly active on both the client and
+		// the server side.
+		try {
+			Thread.sleep(100); // Wait 0,1s
+		} catch (InterruptedException e) {
+			logger.debug("Got interrupted");
+		}
 
 		logger.debug("Creating the post, for which we should receice the notification");
 		CompletableFuture<Post> createdPostASync = CompletableFuture.supplyAsync(() -> {

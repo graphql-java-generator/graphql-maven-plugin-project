@@ -107,26 +107,17 @@
 	<dependencies>
 		<!-- Dependencies for tests -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<!-- This apps logs with log4j, so we must exclude this conf -->
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -162,21 +153,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
 		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-websocket</artifactId> </dependency> 
 			<dependency> <groupId>org.springframework.security</groupId> <artifactId>spring-security-oauth2-client</artifactId> </dependency -->
 		<!-- Below : are they necessary, once spring-boot-starter-websocket is added -->
-		<!-- dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-websocket</artifactId>
-		</dependency-->
-		<!-- dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-messaging</artifactId>
-		</dependency-->
-		<!-- dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
-		</dependency-->
+		<!-- dependency> <groupId>org.springframework</groupId> <artifactId>spring-websocket</artifactId> </dependency -->
+		<!-- dependency> <groupId>org.springframework</groupId> <artifactId>spring-messaging</artifactId> </dependency -->
+		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-websocket</artifactId> </dependency -->
 	</dependencies>
 
 	<reporting>

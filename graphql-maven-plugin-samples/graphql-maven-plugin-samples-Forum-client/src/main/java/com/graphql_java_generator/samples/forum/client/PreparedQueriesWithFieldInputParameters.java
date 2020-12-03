@@ -19,11 +19,13 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  */
 public class PreparedQueriesWithFieldInputParameters {
 
+	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
+
 	final QueryType queryType;
 	final GraphQLRequest topicAuthorPostAuthorResponse;
 
 	public PreparedQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {
-		queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
+		queryType = new QueryType(GRAPHQL_ENDPOINT_URL);
 		topicAuthorPostAuthorResponse = queryType.getTopicsGraphQLRequest(
 				"{id date author{name email alias id type} nbPosts title content posts(memberId:?memberId, memberName:?memberName, since:?since){id date author{name email alias} title content}}");
 	}

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.client.graphql;
+package com.graphql_java_generator.samples.forum.client.subscription;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -8,13 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.SpringTestConfig;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.__Schema;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.__Type;
 
@@ -24,10 +30,14 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.__Ty
  * 
  * @author etienne-sf
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+@TestPropertySource("classpath:application.properties")
 @Execution(ExecutionMode.CONCURRENT)
 public class IntrospectionIT {
 
-	QueryType myQuery = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
+	@Autowired
+	QueryTypeExecutor myQuery;
 
 	@Test
 	void testSchema() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -54,12 +64,9 @@ public class IntrospectionIT {
 
 	@Test
 	void test__datatype_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Verification
-		QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
 
 		// Go, go, go
-		// AllFieldCases ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
-		List<Board> ret = queryType.boards("{id __typename}");
+		List<Board> ret = myQuery.boards("{id __typename}");
 
 		// Verification
 		assertEquals("Board", ret.get(0).get__typename());

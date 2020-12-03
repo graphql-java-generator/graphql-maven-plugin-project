@@ -29,13 +29,15 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Quer
 @Execution(ExecutionMode.CONCURRENT)
 public class FullRequestWithFragmentIT {
 
+	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
+
 	static GraphQLRequest boardsRequestWithGlobalFragments;
 	static GraphQLRequest boardsRequestWithInlineFragments;
 
 	@BeforeAll
 	static void setupAll() throws GraphQLRequestPreparationException {
 		// We have one GraphQL endpoint. So we use the static configuration.
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT_URL));
+		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(GRAPHQL_ENDPOINT_URL));
 
 		// Let's build once the request, and use it for each further execution
 		boardsRequestWithGlobalFragments = new GraphQLRequest(""//

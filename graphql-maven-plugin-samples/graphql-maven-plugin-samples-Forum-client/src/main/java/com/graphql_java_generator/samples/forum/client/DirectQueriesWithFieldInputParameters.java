@@ -18,13 +18,15 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  */
 public class DirectQueriesWithFieldInputParameters {
 
+	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
+
 	QueryType queryType;
 
 	final String DATE_FORMAT = "yyyy-MM-dd";
 	final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
 	public DirectQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {
-		queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
+		queryType = new QueryType(GRAPHQL_ENDPOINT_URL);
 	}
 
 	public List<Topic> topics_since(String boardName, Date since)

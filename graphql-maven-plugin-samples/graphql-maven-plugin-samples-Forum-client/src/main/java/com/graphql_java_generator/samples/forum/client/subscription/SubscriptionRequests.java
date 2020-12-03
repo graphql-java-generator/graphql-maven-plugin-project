@@ -1,4 +1,4 @@
-package com.graphql_java_generator.samples.forum.client.graphql;
+package com.graphql_java_generator.samples.forum.client.subscription;
 
 import java.io.IOException;
 import java.util.Date;

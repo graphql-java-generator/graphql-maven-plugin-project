@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
@@ -36,8 +35,10 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 @Component
 public class PartialPreparedRequestsDeprecated implements Queries {
 
-	QueryType queryType = new QueryType(Main.GRAPHQL_ENDPOINT_URL);
-	MutationType mutationType = new MutationType(Main.GRAPHQL_ENDPOINT_URL);
+	final static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
+
+	QueryType queryType = new QueryType(GRAPHQL_ENDPOINT_URL);
+	MutationType mutationType = new MutationType(GRAPHQL_ENDPOINT_URL);
 
 	// Below are the ObjectResponses, that are created at initialization time.
 	ObjectResponse boardsSimpleResponse;

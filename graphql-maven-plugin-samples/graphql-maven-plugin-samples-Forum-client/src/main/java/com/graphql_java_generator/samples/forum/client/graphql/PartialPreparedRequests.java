@@ -8,11 +8,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.Main;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
@@ -59,9 +57,6 @@ public class PartialPreparedRequests implements Queries {
 
 	@PostConstruct
 	public void init() throws GraphQLRequestPreparationException {
-
-		// We have only one GraphQL server. So we just set the default configuration.
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT_URL));
 
 		// No field specified: all scalar fields of the root type will be queried
 		boardsSimpleRequest = queryTypeExecutor.getBoardsGraphQLRequest(null);
