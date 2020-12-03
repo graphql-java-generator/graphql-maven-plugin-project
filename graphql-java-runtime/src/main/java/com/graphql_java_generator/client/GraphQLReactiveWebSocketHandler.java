@@ -182,7 +182,6 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 
 	@Override
 	public void onSubscribe(Subscription s) {
-		logger.debug("onSubscribe received for Subscription {}, on WebSocketSession {}", s, session);
 		// We've executed the subscription. Let's transmit this good news to the application callback
 		subscriptionCallback.onConnect();
 	}
