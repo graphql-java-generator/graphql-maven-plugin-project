@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.EmitResult;
 import reactor.core.publisher.Sinks.One;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * This class implements the Web Socket, as needed by the Spring Web Socket implementation.
@@ -91,31 +92,11 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 				.then();
 
 		logger.trace("Before sending the subscription request into the web socket");
-		session.send(Flux.just(request).map(session::textMessage)).block();
+		session.send(Flux.just(request).map(session::textMessage)).subscribeOn(Schedulers.single()).subscribe();
 		logger.trace("After sending the subscription request into the web socket");
 
 		logger.trace("End of handle(session) method execution");
 		return input;
-	}
-
-	public Mono<Void> handleOld(WebSocketSession session) {
-		logger.debug("Web Socket connected (session {}) for request {}", session, request);
-
-		// Let's subscribe to the input Flux of data
-		session.receive().subscribe(this);
-
-		// Let actually execute the subscription (and wait for it to be accepted by the server)
-		logger.trace("Before sending the subscription request into the web socket");
-		session.send(Flux.just(request).map(session::textMessage)).subscribe();
-		logger.trace("After sending the subscription request into the web socket");
-
-		// Setting the session indicates that the connection is done. So we do it last.
-		this.session = session;
-
-		logger.trace("End of handle(session) method execution");
-
-		// And we return a Mono that will complete when the input stream completes, ot that will throw an error.
-		return subscriptionMono.asMono();
 	}
 
 	public WebSocketSession getSession() {
@@ -124,7 +105,7 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 
 	/**
 	 * The callback that will receive the messages from the web socket. It will map these JSON messages to the relevant
-	 * java class, and call the application callback with this java cobjects
+	 * java class, and call the application callback with this java objects
 	 * 
 	 * @param message
 	 *            The received JSON message

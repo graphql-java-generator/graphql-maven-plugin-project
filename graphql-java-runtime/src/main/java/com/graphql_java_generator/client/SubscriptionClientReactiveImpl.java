@@ -22,10 +22,10 @@ class SubscriptionClientReactiveImpl implements SubscriptionClient {
 	 * The {@link Disposable} That allows to close the underlying {@link Flux}, that receive the subscription
 	 * notifications
 	 */
-	final Disposable disposable;
+	Disposable disposable;
 
 	/** The connected {@link WebSocketSession} */
-	final WebSocketSession session;
+	WebSocketSession session;
 
 	/**
 	 * 
@@ -43,8 +43,14 @@ class SubscriptionClientReactiveImpl implements SubscriptionClient {
 	@Override
 	public void unsubscribe() throws GraphQLRequestExecutionException {
 		try {
-			session.close(CloseStatus.NORMAL);
-			disposable.dispose();
+			if (session != null) {
+				session.close(CloseStatus.NORMAL);
+				session = null;
+			}
+			if (disposable != null) {
+				disposable.dispose();
+				disposable = null;
+			}
 		} catch (Exception e) {
 			throw new GraphQLRequestExecutionException(e.getMessage(), e);
 		}

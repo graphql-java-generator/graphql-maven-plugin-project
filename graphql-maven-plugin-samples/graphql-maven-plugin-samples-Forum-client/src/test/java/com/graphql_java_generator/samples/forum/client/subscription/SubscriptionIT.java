@@ -89,7 +89,7 @@ class SubscriptionIT {
 		// not totally active yet. So we wait a little, to let the subscription by plainly active on both the client and
 		// the server side.
 		try {
-			Thread.sleep(1000); // Wait 1s
+			Thread.sleep(2000); // Wait 2s (sic!)
 		} catch (InterruptedException e) {
 			logger.debug("Got interrupted");
 		}
