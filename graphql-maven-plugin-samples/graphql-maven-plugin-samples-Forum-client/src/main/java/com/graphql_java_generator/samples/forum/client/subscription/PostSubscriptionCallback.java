@@ -37,6 +37,9 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 	public void onMessage(Post t) {
 		this.lastReceivedMessage = t;
 		// Do something useful with it
+		logger.debug(
+				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post {} ",
+				t);
 		System.out.println(
 				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post: "
 						+ t.toString());

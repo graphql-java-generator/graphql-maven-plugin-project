@@ -22,7 +22,7 @@ import io.reactivex.subjects.Subject;
 public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDelegateSubscriptionType {
 
 	/** The logger for this instance */
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+	static Logger logger = LoggerFactory.getLogger(DataFetchersDelegateSubscriptionTypeImpl.class);
 
 	/**
 	 * This {@link Subject} will be notified for each Post creation. This is the basis for the <I>subscribeToNewPost</I>
@@ -33,7 +33,9 @@ public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDel
 
 	@Override
 	public Publisher<Post> subscribeToNewPost(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
-		logger.info("Received a Subscription for {}", boardName);
-		return postPublisher.getPublisher(boardName);
+		logger.debug("Received a Subscription for {}", boardName);
+		Publisher<Post> publisher = postPublisher.getPublisher(boardName);
+		logger.trace("The publisher has been acquired for the Subscription for {}", boardName);
+		return publisher;
 	}
 }
