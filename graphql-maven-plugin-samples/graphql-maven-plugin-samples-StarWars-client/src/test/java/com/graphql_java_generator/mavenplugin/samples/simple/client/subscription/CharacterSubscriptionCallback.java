@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.mavenplugin.samples.simple.client.subscription;
 
-import javax.websocket.ClientEndpoint;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +12,7 @@ import com.graphql_java_generator.client.SubscriptionCallback;
 /**
  * @author etienne-sf
  */
-// The class that'll receive the notification from the GraphQL subscription
-@ClientEndpoint
+// The class that'll receive the notification from the GraphQL subscriptions
 public class CharacterSubscriptionCallback implements SubscriptionCallback<Character> {
 
 	/** The logger for this instance */

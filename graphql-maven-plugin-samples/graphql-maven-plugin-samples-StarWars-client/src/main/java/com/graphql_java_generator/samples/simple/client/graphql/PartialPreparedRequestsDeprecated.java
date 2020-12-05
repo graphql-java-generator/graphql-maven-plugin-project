@@ -3,9 +3,19 @@
  */
 package com.graphql_java_generator.samples.simple.client.graphql;
 
-import javax.annotation.PostConstruct;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.springframework.stereotype.Component;
 
 import com.generated.graphql.Character;
@@ -35,9 +45,11 @@ import com.graphql_java_generator.samples.simple.client.Queries;
 @Component
 public class PartialPreparedRequestsDeprecated implements Queries {
 
-	@Autowired
+	final static String GRAPHQL_ENDPOINT = "https://localhost:8443/starwars/graphql";
+
+	// QueryType can not be autowired by Spring. Only QueryTypeExecutor can. It's built in the constructor
 	QueryType queryType;
-	@Autowired
+	// MutationType can not be autowired by Spring. Only MutationTypeExecutor can. It's built in the constructor
 	MutationType mutationType;
 
 	ObjectResponse heroFullResponse;
@@ -54,6 +66,11 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 
 	ObjectResponse createHuman;
 	ObjectResponse addFriend;
+
+	public PartialPreparedRequestsDeprecated() throws KeyManagementException, NoSuchAlgorithmException {
+		queryType = new QueryType(GRAPHQL_ENDPOINT, getNoCheckSslContext(), new NoOpHostnameVerifier());
+		mutationType = new MutationType(GRAPHQL_ENDPOINT, getNoCheckSslContext(), new NoOpHostnameVerifier());
+	}
 
 	/**
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
@@ -73,8 +90,7 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 		heroFullResponse = queryType.getHeroResponseBuilder().build();
 
 		// Of course, you can precise the fields you want
-		heroPartialResponse = queryType.getHeroResponseBuilder().withQueryResponseDef("{appearsIn name}")
-				.build();
+		heroPartialResponse = queryType.getHeroResponseBuilder().withQueryResponseDef("{appearsIn name}").build();
 		heroFriendsFriendsFriendsResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef("{id appearsIn friends {name friends {friends{id name appearsIn}}}}").build();
 
@@ -82,8 +98,8 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 		humanFullResponse = queryType.getHumanResponseBuilder().build();
 
 		// Of course, you can precise the fields you want
-		humanPartialResponse = queryType.getHumanResponseBuilder()
-				.withQueryResponseDef("{appearsIn homePlanet name}").build();
+		humanPartialResponse = queryType.getHumanResponseBuilder().withQueryResponseDef("{appearsIn homePlanet name}")
+				.build();
 		humanFriendsFriendsFriendsResponse = queryType.getHumanResponseBuilder()
 				.withQueryResponseDef("{id appearsIn name friends {name friends {friends{id name appearsIn}}}}")
 				.build();
@@ -186,5 +202,59 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 	public Character addFriend(String idCharacter, String idNewFriend)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return mutationType.addFriend(addFriend, idCharacter, idNewFriend);
+	}
+
+	/**
+	 * Returns a Dummy SSLContext, that won't check the server certificate. With a real check, an exception is thrown,
+	 * as it is self signed.<BR/>
+	 * DON'T USE IT IN PRODUCTION.
+	 * 
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyManagementException
+	 */
+	public SSLContext getNoCheckSslContext() throws NoSuchAlgorithmException, KeyManagementException {
+		SSLContext sslContext = SSLContext.getInstance("TLSv1");
+
+		// Very, very bad. Don't do that in production !
+		KeyManager[] keyManagers = null;
+		TrustManager[] trustManager = { new NoOpTrustManager() };
+		SecureRandom secureRandom = new SecureRandom();
+
+		sslContext.init(keyManagers, trustManager, secureRandom);
+
+		return sslContext;
+	}
+
+	/**
+	 * A dummy checker. DON'T USE IT IN PRODUCTION. But we can't buy a real certificat for this project.
+	 * 
+	 * @return
+	 */
+	public HostnameVerifier getHostnameVerifier() {
+		// Very, very bad. Don't do that in production !
+		return new NoOpHostnameVerifier();
+	}
+
+	public class NoOpTrustManager implements X509TrustManager {
+		@Override
+		public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {
+		}
+
+		@Override
+		public X509Certificate[] getAcceptedIssuers() {
+			return new X509Certificate[0];
+		}
+	}
+
+	public class NoOpHostnameVerifier implements HostnameVerifier {
+		@Override
+		public boolean verify(String s, SSLSession sslSession) {
+			return true;
+		}
 	}
 }

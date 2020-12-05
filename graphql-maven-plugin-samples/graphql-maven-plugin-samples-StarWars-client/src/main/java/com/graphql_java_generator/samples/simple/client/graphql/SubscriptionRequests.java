@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.generated.graphql.GraphQLRequest;
 import com.generated.graphql.MutationTypeExecutor;
 import com.generated.graphql.SubscriptionTypeExecutor;
+import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -31,7 +32,8 @@ public class SubscriptionRequests {
 
 		// Go, go, go
 		System.out.println("Submitting the 'subscribeToNewPostWithBindValues' GraphQL subscription");
-		subscriptionTypeExecutor.newCharacter(subscriptionRequest, newCharacterSubscriptionCallback);
+		SubscriptionClient subscriptionClient = subscriptionTypeExecutor.newCharacter(subscriptionRequest,
+				newCharacterSubscriptionCallback);
 
 		// Let's check that everything is ready
 		if (!newCharacterSubscriptionCallback.connected) {
@@ -67,7 +69,7 @@ public class SubscriptionRequests {
 		}
 
 		// We need to free the server resources, at the end
-		newCharacterSubscriptionCallback.close();
+		subscriptionClient.unsubscribe();
 	}
 
 }

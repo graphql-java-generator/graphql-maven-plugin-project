@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.util.GraphqlUtils;
+import com.graphql_java_generator.GraphqlUtils;
 
 import graphql.schema.DataFetchingEnvironment;
 

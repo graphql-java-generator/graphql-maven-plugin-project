@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -67,7 +68,7 @@
 				<configuration>
 					<container>
 						<containerId>tomcat9x</containerId>
-						<timeout>180000</timeout> <!-- 3 minutes: McAfee is such a sh..., up to 98% of CPU, and I can't configure it as it's an enterprise computer-->
+						<timeout>180000</timeout> <!-- 3 minutes: McAfee is such a sh..., up to 98% of CPU, and I can't configure it as it's an enterprise computer -->
 						<zipUrlInstaller>
 							<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/9.0.39/tomcat-9.0.39.zip</url>
 							<downloadDir>${project.basedir}/downloads</downloadDir>
@@ -110,23 +111,14 @@
 	<dependencies>
 		<!-- Dependencies for tests -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
+			<type>war</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -161,7 +153,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>

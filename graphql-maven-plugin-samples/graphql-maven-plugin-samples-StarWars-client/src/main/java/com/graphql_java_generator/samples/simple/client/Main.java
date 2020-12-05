@@ -166,6 +166,5 @@ public class Main implements CommandLineRunner {
 		} else {
 			throw new RuntimeException("bad value");
 		}
-
 	}
 }

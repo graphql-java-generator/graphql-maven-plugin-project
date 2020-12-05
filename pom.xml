@@ -338,6 +338,7 @@
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
+				<type>war</type>
 				<version>${project.version}</version>
 			</dependency>
 

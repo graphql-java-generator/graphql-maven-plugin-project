@@ -3,6 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * Remove all log4j dependencies from the client and server pom dependencies (issue #52)
+   Remove exclusions in poms, like spring-boot-starter-logging
 * Check this issue: when executing the full Forum client test case for the first time after starting the server, the subscription test won't work. It works everytime if executed alone, or with the full test case starting from the second execution.
 * Remove the SubscriptionClientWebSocket class
 * Check the client dependencies (from all client samples)
