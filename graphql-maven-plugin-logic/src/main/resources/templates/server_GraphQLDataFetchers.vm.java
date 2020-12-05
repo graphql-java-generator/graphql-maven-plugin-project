@@ -73,7 +73,9 @@ public class GraphQLDataFetchers {
 						() -> ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end));
 #elseif (${dataFetcher.field.fieldTypeAST.list})
 			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end ${dataFetcher.field.javaType}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+#if (${dataFetcher.dataFetcherDelegate.type.requestType}!="subscription")
 			logger.debug("${dataFetcher.name}: {} found rows", (ret==null) ? 0 : ret.size());
+#end
 
 			return ret;
 #else

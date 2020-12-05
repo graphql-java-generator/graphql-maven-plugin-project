@@ -2,6 +2,7 @@ package org.allGraphQLCases;
 
 import org.allGraphQLCases.impl.PartialDirectQueries;
 import org.allGraphQLCases.impl.PartialPreparedQueries;
+import org.allGraphQLCases.subscription.ExecSubscription;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -33,6 +34,11 @@ public class Main {
 		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
 		System.out.println("============================================================================");
 		execOne(new PartialPreparedQueries(GRAPHQL_ENDPOINT));
+
+		System.out.println("============================================================================");
+		System.out.println("======= EXECUTING A SUBSCRIPTION ===========================================");
+		System.out.println("============================================================================");
+		new ExecSubscription().exec();
 
 		System.out.println("");
 		System.out.println("");

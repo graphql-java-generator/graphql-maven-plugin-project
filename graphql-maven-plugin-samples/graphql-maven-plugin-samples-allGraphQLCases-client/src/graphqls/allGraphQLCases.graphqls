@@ -74,6 +74,8 @@ type AnotherMutationType {
 type TheSubscriptionType {
 	# Will be notified for each Human added to this Episode
 	subscribeNewHumanForEpisode(episode: Episode!): Human!
+	#Issue 54
+	subscribeToAList: [Int]!
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {

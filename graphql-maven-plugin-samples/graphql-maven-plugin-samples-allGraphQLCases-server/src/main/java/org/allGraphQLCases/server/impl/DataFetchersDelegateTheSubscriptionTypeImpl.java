@@ -3,13 +3,20 @@
  */
 package org.allGraphQLCases.server.impl;
 
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.util.DataFetchersDelegateTheSubscriptionType;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import reactor.core.publisher.Flux;
 
 /**
  * @author etienne-sf
@@ -18,11 +25,33 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchersDelegateTheSubscriptionType {
 
+	@Autowired
+	DataGenerator dataGenerator;
+
 	@Override
 	public Publisher<Human> subscribeNewHumanForEpisode(DataFetchingEnvironment dataFetchingEnvironment,
 			Episode episode) {
-		// TODO Auto-generated method stub
-		return null;
+		// The Flux class, from Spring reactive, implements the Publisher interface.
+		// Let's return one Human, every second
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> {
+					Human h = dataGenerator.generateInstance(Human.class);
+					h.setId(UUID.fromString(l.toString()));
+					return h;
+				});
+	}
+
+	@Override
+	public Publisher<List<Integer>> subscribeToAList(DataFetchingEnvironment dataFetchingEnvironment) {
+		// The Flux class, from Spring reactive, implements the Publisher interface.
+		// Let's return one list of integer, every second
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> {
+					// This message is a list of two integers
+					return Arrays.asList(l.intValue(), 2 * l.intValue());
+				});
 	}
 
 }
