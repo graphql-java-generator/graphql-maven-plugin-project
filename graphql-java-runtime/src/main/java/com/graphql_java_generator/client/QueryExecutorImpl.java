@@ -164,13 +164,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 					+ subscriptionName);
 		}
 
-		// The returned type of this subscription must be the provided messageType
-		if (!graphQLRequest.getSubscription().getFields().get(0).getClazz().equals(messageType)) {
-			throw new GraphQLRequestExecutionException("This provided message type shoud be "
-					+ graphQLRequest.getSubscription().getFields().get(0).getClazz().getName() + " but is "
-					+ messageType.getName());
-		}
-
 		String request = graphQLRequest.buildRequest(parameters);
 		logger.trace(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 

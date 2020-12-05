@@ -16,6 +16,7 @@ package ${packageUtilName};
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -327,7 +328,10 @@ public class ${object.classSimpleName}Executor {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, ${field.type.classSimpleName}.class);
+#if($field.fieldTypeAST.list)
+		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
+#end 
+		return configuration.getQueryExecutor().execute(objectResponse, parameters,#if($field.fieldTypeAST.list) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.list)List#else${field.type.classSimpleName}#end.class);
 	}
 
 	/**
@@ -414,7 +418,10 @@ public class ${object.classSimpleName}Executor {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 		
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, ${field.type.classSimpleName}.class);
+#if($field.fieldTypeAST.list)
+		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
+#end 
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, #if($field.fieldTypeAST.list) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.list)List#else${field.type.classSimpleName}#end.class);
 	}
 
 	/**

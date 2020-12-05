@@ -10,9 +10,14 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
+Both modes (client and server):
+
+
+#1.11.1
 
 Both modes (client and server):
-* Upgrade of spring boot from 2.2.6 to 2.3.3
+* Upgrade of spring boot from 2.3.3 to 2.4.0
+* Issue 54: The generated code would not compile for subscriptions that return a list
 
 
 # 1.11

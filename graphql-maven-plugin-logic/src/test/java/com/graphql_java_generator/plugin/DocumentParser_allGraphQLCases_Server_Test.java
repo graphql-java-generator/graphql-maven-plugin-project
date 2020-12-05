@@ -852,7 +852,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(1, type.getFields().size());
+		assertEquals(2, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
@@ -864,6 +864,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkField(type, j, "subscribeNewHumanForEpisode", false, true, null, "Human", "Human");
 		checkNbInputParameter(type, j, 1);
 		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", "Episode", null);
+		j += 1;
+		// subscribeToAList: [Int]!
+		checkField(type, j, "subscribeToAList", true, true, false, "Int", "Integer");
+		checkNbInputParameter(type, j, 0);
 		j += 1;
 	}
 
