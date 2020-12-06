@@ -13,12 +13,11 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.graphql_java_generator" level="trace" additivity="false">
-		<appender-ref ref="File" />
-	</logger>
-
+	<logger name="com.graphql_java_generator" level="debug" />
+	<logger name="com.graphql_java_generator.samples" level="trace" />
 	<root level="warn">
 		<appender-ref ref="Console" />
+		<appender-ref ref="File" />
 	</root>
 
 </configuration>
