@@ -45,7 +45,7 @@ import com.graphql_java_generator.samples.simple.client.Queries;
 @Component
 public class PartialPreparedRequestsDeprecated implements Queries {
 
-	final static String GRAPHQL_ENDPOINT = "https://localhost:8443/starwars/graphql";
+	public final static String GRAPHQL_ENDPOINT = "https://localhost:8443/starwars/graphql";
 
 	// QueryType can not be autowired by Spring. Only QueryTypeExecutor can. It's built in the constructor
 	QueryType queryType;
@@ -213,7 +213,7 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public SSLContext getNoCheckSslContext() throws NoSuchAlgorithmException, KeyManagementException {
+	public static SSLContext getNoCheckSslContext() throws NoSuchAlgorithmException, KeyManagementException {
 		SSLContext sslContext = SSLContext.getInstance("TLSv1");
 
 		// Very, very bad. Don't do that in production !
@@ -231,12 +231,12 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 	 * 
 	 * @return
 	 */
-	public HostnameVerifier getHostnameVerifier() {
+	public static HostnameVerifier getHostnameVerifier() {
 		// Very, very bad. Don't do that in production !
 		return new NoOpHostnameVerifier();
 	}
 
-	public class NoOpTrustManager implements X509TrustManager {
+	public static class NoOpTrustManager implements X509TrustManager {
 		@Override
 		public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
 		}
@@ -251,7 +251,7 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 		}
 	}
 
-	public class NoOpHostnameVerifier implements HostnameVerifier {
+	public static class NoOpHostnameVerifier implements HostnameVerifier {
 		@Override
 		public boolean verify(String s, SSLSession sslSession) {
 			return true;

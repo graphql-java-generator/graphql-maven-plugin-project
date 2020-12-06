@@ -1,15 +1,16 @@
 package com.graphql_java_generator.mavenplugin.samples.simple.client.graphql;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.generated.graphql.QueryType;
-import com.graphql_java_generator.samples.simple.client.Main;
-import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedRequests;
+import com.generated.graphql.QueryTypeExecutor;
+import com.graphql_java_generator.mavenplugin.samples.SpringTestConfig;
+import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectRequests;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
@@ -17,20 +18,17 @@ import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedR
  * 
  * @author etienne-sf
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+@TestPropertySource("classpath:application.properties")
 @Execution(ExecutionMode.CONCURRENT)
 class PartialPreparedRequestsIT extends AbstractIT {
 
-	@BeforeEach
-	void setUp() throws Exception {
-		Main main = new Main();
-		SSLContext sslContext = main.getNoCheckSslContext();
-		HostnameVerifier hostNameVerifier = main.getHostnameVerifier();
-		// For some tests, we need to execute additional queries
-		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);
-
-		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new PartialPreparedRequests(Main.graphqlEndpoint, main.getNoCheckSslContext(),
-				main.getHostnameVerifier());
+	@Autowired
+	// Spring will inject the necessary beans into this constructor
+	public PartialPreparedRequestsIT(PartialDirectRequests queries, QueryTypeExecutor queryType) {
+		super.queries = queries;
+		this.queryType = queryType;
 	}
 
 }

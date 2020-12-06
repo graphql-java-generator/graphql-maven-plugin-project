@@ -17,6 +17,8 @@ import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,7 @@ import com.graphql_java_generator.mavenplugin.samples.SpringTestConfig;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { SpringTestConfig.class })
 @TestPropertySource("classpath:application.properties")
+@Execution(ExecutionMode.CONCURRENT)
 class SubscriptionIT {
 
 	/** The logger for this class */
@@ -71,6 +74,7 @@ class SubscriptionIT {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testSubscription() throws GraphQLRequestExecutionException, InterruptedException, ExecutionException {
 		// Preparation
 		CharacterSubscriptionCallback callback = new CharacterSubscriptionCallback();

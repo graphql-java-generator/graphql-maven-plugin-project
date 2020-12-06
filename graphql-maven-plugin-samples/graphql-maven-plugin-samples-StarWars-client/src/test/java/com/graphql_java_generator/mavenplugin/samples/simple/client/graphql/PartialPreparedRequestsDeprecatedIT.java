@@ -1,14 +1,16 @@
 package com.graphql_java_generator.mavenplugin.samples.simple.client.graphql;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.generated.graphql.QueryType;
-import com.graphql_java_generator.samples.simple.client.Main;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedRequestsDeprecated;
 
 /**
@@ -20,17 +22,17 @@ import com.graphql_java_generator.samples.simple.client.graphql.PartialPreparedR
 @Execution(ExecutionMode.CONCURRENT)
 class PartialPreparedRequestsDeprecatedIT extends AbstractIT {
 
-	@BeforeEach
-	void setUp() throws Exception {
-		Main main = new Main();
-		SSLContext sslContext = main.getNoCheckSslContext();
-		HostnameVerifier hostNameVerifier = main.getHostnameVerifier();
-		// For some tests, we need to execute additional queries
-		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);
+	public PartialPreparedRequestsDeprecatedIT()
+			throws KeyManagementException, NoSuchAlgorithmException, GraphQLRequestPreparationException {
+		SSLContext sslContext = PartialPreparedRequestsDeprecated.getNoCheckSslContext();
+		HostnameVerifier hostNameVerifier = PartialPreparedRequestsDeprecated.getHostnameVerifier();
+
+		// This integration test is about the deprecated QueryType (new code should use XxxxTypeExecutor classes)
+		queryType = new QueryType(PartialPreparedRequestsDeprecated.GRAPHQL_ENDPOINT, sslContext, hostNameVerifier);
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new PartialPreparedRequestsDeprecated(Main.graphqlEndpoint, main.getNoCheckSslContext(),
-				main.getHostnameVerifier());
+		queries = new PartialPreparedRequestsDeprecated();
+		((PartialPreparedRequestsDeprecated) queries).init();
 	}
 
 }

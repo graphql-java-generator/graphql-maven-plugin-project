@@ -1,14 +1,15 @@
 package com.graphql_java_generator.mavenplugin.samples.simple.client.graphql;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.generated.graphql.QueryType;
-import com.graphql_java_generator.samples.simple.client.Main;
+import com.generated.graphql.QueryTypeExecutor;
+import com.graphql_java_generator.mavenplugin.samples.SpringTestConfig;
 import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectRequests;
 
 /**
@@ -17,26 +18,17 @@ import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectReq
  * 
  * @author etienne-sf
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+@TestPropertySource("classpath:application.properties")
 @Execution(ExecutionMode.CONCURRENT)
 class PartialDirectRequestsIT extends AbstractIT {
 
-	@BeforeEach
-	void setUp() throws Exception {
-		Main main = new Main();
-
-		// As we don't have a proper certificate (it's a self-signed one), we must avoid SSL checks.
-		//
-		// DO NOT DO THIS IN PRODUCTION
-		//
-		SSLContext sslContext = main.getNoCheckSslContext();
-		HostnameVerifier hostNameVerifier = main.getHostnameVerifier();
-
-		// For some tests, we need to execute additional queries
-		queryType = new QueryType(Main.graphqlEndpoint, sslContext, hostNameVerifier);
-
-		// Creation of the instance, against which we'll execute the JUnit tests
-		queries = new PartialDirectRequests(Main.graphqlEndpoint, sslContext, hostNameVerifier);
-
+	@Autowired
+	// Spring will inject the necessary beans into this constructor
+	public PartialDirectRequestsIT(PartialDirectRequests queries, QueryTypeExecutor queryType) {
+		super.queries = queries;
+		this.queryType = queryType;
 	}
 
 }

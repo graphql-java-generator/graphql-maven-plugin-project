@@ -15,7 +15,7 @@ import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
 import com.generated.graphql.Episode;
 import com.generated.graphql.Human;
-import com.generated.graphql.QueryType;
+import com.generated.graphql.QueryTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.Queries;
@@ -29,7 +29,7 @@ import com.graphql_java_generator.samples.simple.client.Queries;
 @Execution(ExecutionMode.CONCURRENT)
 abstract class AbstractIT {
 
-	QueryType queryType;
+	QueryTypeExecutor queryType;
 	Queries queries;
 
 	@Test
