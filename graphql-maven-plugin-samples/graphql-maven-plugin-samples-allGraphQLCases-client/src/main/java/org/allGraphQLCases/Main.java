@@ -1,9 +1,14 @@
 package org.allGraphQLCases;
 
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.allGraphQLCases.impl.PartialDirectQueries;
 import org.allGraphQLCases.impl.PartialPreparedQueries;
 import org.allGraphQLCases.subscription.ExecSubscription;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -13,15 +18,21 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
-public class Main {
+@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
+public class Main implements CommandLineRunner {
 
 	public static final String GRAPHQL_ENDPOINT = "http://localhost:8180/graphql";
 
-	public static void main(String[] args) throws Exception {
-		new Main().execAll();
+	public static void main(String[] args) {
+		SpringApplication.run(Main.class, args);
 	}
 
-	void execAll() throws Exception {
+	/**
+	 * This method is started by Spring, once the Spring context has been loaded. This is run, as this class implements
+	 * {@link CommandLineRunner}
+	 */
+	@Override
+	public void run(String... args) throws Exception {
 
 		// Execution of three way to user the GraphQL client, to call the GraphQL server
 
