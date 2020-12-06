@@ -2,6 +2,8 @@ package com.graphql_java_generator.samples.simple.client.graphql;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,9 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Component
 public class SubscriptionRequests {
+
+	/** Logger for this class */
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	MutationTypeExecutor mutationTypeExecutor;
@@ -34,6 +39,14 @@ public class SubscriptionRequests {
 		System.out.println("Submitting the 'subscribeToNewPostWithBindValues' GraphQL subscription");
 		SubscriptionClient subscriptionClient = subscriptionTypeExecutor.newCharacter(subscriptionRequest,
 				newCharacterSubscriptionCallback);
+
+		// Let's wait 1 seconds max, that the web socket is properly connected
+		// (the connection is done in a parallel thread, as it's a reactive stuff)
+		try {
+			Thread.sleep(1000);// Wait 1s
+		} catch (InterruptedException e) {
+			logger.debug("Got interrupted (1)");
+		}
 
 		// Let's check that everything is ready
 		if (!newCharacterSubscriptionCallback.connected) {

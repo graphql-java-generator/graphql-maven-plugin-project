@@ -57,15 +57,15 @@ public class Main implements CommandLineRunner {
 
 		// Execution of two ways that use the GraphQL client, to call the GraphQL server
 
-		// System.out.println("============================================================================");
-		// System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
-		// System.out.println("============================================================================");
-		// execOne(partialDirectRequests);
-		//
-		// System.out.println("============================================================================");
-		// System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		// System.out.println("============================================================================");
-		// execOne(partialPreparedRequests);
+		System.out.println("============================================================================");
+		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
+		System.out.println("============================================================================");
+		execOne(partialDirectRequests);
+
+		System.out.println("============================================================================");
+		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		System.out.println("============================================================================");
+		execOne(partialPreparedRequests);
 
 		System.out.println("============================================================================");
 		System.out.println("======= A SAMPLE SUBSCRIPTION ==============================================");
