@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
@@ -27,12 +26,13 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 /**
- * This is the default implementation for the {@link QueryExecutor} This implementation has been added in version 1.12.
+ * This is the default implementation for the {@link QueryExecutor} This implementation has been added in version
+ * 1.12.<BR/>
+ * It is loaded by the {@link GraphQLAutoConfiguration} Spring auto-configuration class.
  * 
  * @since 1.12
  * @author etienne-sf
  */
-@Component
 public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */
@@ -42,7 +42,6 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL endpoint, for
 	 * instance <I>https://my.serveur.com/graphql</I>
 	 */
-	@Autowired
 	String graphqlEndpoint;
 
 	/**
@@ -53,7 +52,6 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I> URL is also
 	 * used for subscriptions (which is the standard case).
 	 */
-	@Autowired(required = false)
 	String graphqlSubscriptionEndpoint;
 
 	/**
@@ -78,6 +76,16 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * This constructor may be called by Spring, once it has build a {@link WebClient} bean, or directly, in non Spring
 	 * applications.
 	 * 
+	 * @param graphqlEndpoint
+	 *            A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL
+	 *            endpoint, for instance <I>https://my.serveur.com/graphql</I>
+	 * @param graphqlSubscriptionEndpoint
+	 *            If the subscription is on a different endpoint than the main GraphQL endpoint, thant you can define a
+	 *            <I>graphqlSubscriptionEndpoint</I> Spring bean, of type String, with this specific URL, for instance
+	 *            <I>https://my.serveur.com/graphql/subscription</I>. For instance, Java servers suffer from a
+	 *            limitation which prevent to server both GET/POST HTTP verbs and WebSockets on the same URL.<BR/>
+	 *            If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I>
+	 *            URL is also used for subscriptions (which is the standard case).
 	 * @param webClient
 	 *            The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and
 	 *            mutations.
@@ -87,8 +95,12 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 *            This is mandatory if the application latter calls subscription. It may be null otherwise.
 	 */
 	@Autowired
-	public QueryExecutorSpringReactiveImpl(WebClient webClient,
+	public QueryExecutorSpringReactiveImpl(String graphqlEndpoint, //
+			@Autowired(required = false) String graphqlSubscriptionEndpoint, //
+			WebClient webClient, //
 			@Autowired(required = false) WebSocketClient webSocketClient) {
+		this.graphqlEndpoint = graphqlEndpoint;
+		this.graphqlSubscriptionEndpoint = graphqlSubscriptionEndpoint;
 		this.webClient = webClient;
 		this.webSocketClient = webSocketClient;
 	}

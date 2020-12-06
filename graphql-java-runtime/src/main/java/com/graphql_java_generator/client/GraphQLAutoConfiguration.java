@@ -63,6 +63,41 @@ public class GraphQLAutoConfiguration {
 	}
 
 	/**
+	 * This bean provides a default implementation of the {@link QueryExecutor}. It will be used to execute
+	 * query/mutation/subscription against the GraphQL server.<BR/>
+	 * Applications can provides there own Spring bean of this type. In which case, this default implementation is not
+	 * used. applications.
+	 * 
+	 * @param graphqlEndpoint
+	 *            A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL
+	 *            endpoint, for instance <I>https://my.serveur.com/graphql</I>
+	 * @param graphqlSubscriptionEndpoint
+	 *            If the subscription is on a different endpoint than the main GraphQL endpoint, thant you can define a
+	 *            <I>graphqlSubscriptionEndpoint</I> Spring bean, of type String, with this specific URL, for instance
+	 *            <I>https://my.serveur.com/graphql/subscription</I>. For instance, Java servers suffer from a
+	 *            limitation which prevent to server both GET/POST HTTP verbs and WebSockets on the same URL.<BR/>
+	 *            If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I>
+	 *            URL is also used for subscriptions (which is the standard case).
+	 * @param webClient
+	 *            The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and
+	 *            mutations.
+	 * @param webSocketClient
+	 *            The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to
+	 *            build the web sockets, for GraphQL subscriptions.<BR/>
+	 *            This is mandatory if the application latter calls subscription. It may be null otherwise.
+	 */
+	@Bean
+	@ConditionalOnMissingBean
+	QueryExecutor queryExecutor(//
+			String graphqlEndpoint, //
+			@Autowired(required = false) String graphqlSubscriptionEndpoint, //
+			WebClient webClient, //
+			@Autowired(required = false) WebSocketClient webSocketClient) {
+		return new QueryExecutorSpringReactiveImpl(graphqlEndpoint, graphqlSubscriptionEndpoint, webClient,
+				webSocketClient);
+	}
+
+	/**
 	 * The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and mutations.
 	 */
 	@Bean

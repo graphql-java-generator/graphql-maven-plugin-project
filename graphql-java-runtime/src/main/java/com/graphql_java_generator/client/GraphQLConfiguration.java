@@ -44,8 +44,8 @@ public class GraphQLConfiguration {
 	public GraphQLConfiguration(String graphqlEndpoint) {
 		// Let's "manually" reuse the default configuration, as defined in the Spring Auto Configuration bean
 		GraphQLAutoConfiguration conf = new GraphQLAutoConfiguration();
-		this.executor = new QueryExecutorSpringReactiveImpl(conf.webClient(graphqlEndpoint, null),
-				conf.webSocketClient(null));
+		this.executor = new QueryExecutorSpringReactiveImpl(graphqlEndpoint, null,
+				conf.webClient(graphqlEndpoint, null), conf.webSocketClient(null));
 	}
 
 	/**
