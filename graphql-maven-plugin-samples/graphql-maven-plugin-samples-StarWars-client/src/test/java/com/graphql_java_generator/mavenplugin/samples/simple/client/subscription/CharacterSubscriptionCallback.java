@@ -32,7 +32,7 @@ public class CharacterSubscriptionCallback implements SubscriptionCallback<Chara
 
 	@Override
 	public void onMessage(Character t) {
-		this.lastReceivedMessage = t;
+		lastReceivedMessage = t;
 		logger.debug("Received {} {}", t.getClass().getSimpleName(), t);
 		SubscriptionIT.currentThread.interrupt();
 	}

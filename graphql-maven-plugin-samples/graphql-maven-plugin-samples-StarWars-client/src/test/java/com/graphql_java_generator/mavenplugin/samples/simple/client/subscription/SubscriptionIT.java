@@ -79,6 +79,13 @@ class SubscriptionIT {
 		logger.debug("Subscribing to the GraphQL subscription");
 		SubscriptionClient client = subscriptionType.newCharacter(subscriptionRequest, callback);
 
+		// Let's wait 1 seconds max, that the web socket is properly connected
+		try {
+			Thread.sleep(1000);// Wait 1s
+		} catch (InterruptedException e) {
+			logger.debug("Got interrupted (1)");
+		}
+
 		logger.debug("Creating the post, for which we should receice the notification");
 		CompletableFuture<Character> createdPostASync = CompletableFuture.supplyAsync(() -> {
 			try {
@@ -100,7 +107,7 @@ class SubscriptionIT {
 		try {
 			Thread.sleep(5 * 1000);
 		} catch (InterruptedException e) {
-			logger.debug("Got interrupted");
+			logger.debug("Got interrupted (2)");
 		}
 
 		// Verification
