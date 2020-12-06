@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -95,7 +96,7 @@
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
-						<execution>
+					<execution>
 						<id>start OAuth Authorization server</id>
 						<phase>pre-integration-test</phase>
 						<goals>
@@ -194,6 +195,14 @@
 			<artifactId>graphql-java-client-dependencies</artifactId>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
+		</dependency>
 		<!-- In this pom, we choose not to copy the runtime. It allows to replace it by another one, for instance one updated for 
 			your needs. You then need to add this runtime as a dependency -->
 		<dependency>
@@ -204,12 +213,6 @@
 		<dependency>
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-extended-scalars</artifactId>
-		</dependency>
-
-		<!-- The logging framework -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
 		</dependency>
 
 	</dependencies>

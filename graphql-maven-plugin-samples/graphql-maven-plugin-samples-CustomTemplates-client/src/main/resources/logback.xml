@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="File" class="ch.qos.logback.core.FileAppender">
+		<file>target/client.log</file>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.graphql_java_generator" level="trace" additivity="false">
+		<appender-ref ref="File" />
+	</logger>
+
+	<root level="warn">
+		<appender-ref ref="Console" />
+	</root>
+
+</configuration>

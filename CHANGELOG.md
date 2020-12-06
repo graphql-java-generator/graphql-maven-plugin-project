@@ -12,7 +12,10 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 
 Both modes (client and server):
+* Removed all dependencies to log4j
 * [minor] The GraphqlUtils class has been moved into the com.graphql_java_generator.util package
+
+
 Client mode:
 * The subscription management has been updated.
 ==> Spring reactive WebSocketClient

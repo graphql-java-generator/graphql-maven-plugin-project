@@ -61,12 +61,6 @@
 			<artifactId>graphql-java-extended-scalars</artifactId> 
 			<scope>test</scope>
 		</dependency>		
-		<!-- The logging framework (for tests only) -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
