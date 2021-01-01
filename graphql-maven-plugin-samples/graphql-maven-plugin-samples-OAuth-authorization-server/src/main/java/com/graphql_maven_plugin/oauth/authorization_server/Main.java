@@ -1,15 +1,13 @@
-package com.howtodoinjava.demo;
+package com.graphql_maven_plugin.oauth.authorization_server;
 
 import java.security.Principal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.keycloak.services.managers.AuthenticationManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.MediaType;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,9 +31,10 @@ curl -X POST "http://localhost:8181/oauth/token" -i -d "grant_type=client_creden
 curl -X POST http://localhost:8180/graphql -i -d "{\"query\":\"query{withoutParameters{name}}\",\"variables\":null,\"operationName\":null}" -H "authorization: Bearer aa9aa23f-7679-4513-b286-07ca583b2773" --noproxy "*"
  * </PRE>
  * 
+ * 
  * @see https://aaronparecki.com/oauth-2-simplified/
  * @see https://howtodoinjava.com/spring-boot2/oauth2-auth-server/
- * @see https://www.javainuse.com/spring/springboot-oauth2-password-grant
+ * @see https://www.javainuse.com/spring/springboot-oauth2-client-grant
  * @see https://www.javainuse.com/spring/springboot-oauth2-client-grant
  * @see https://www.baeldung.com/spring-security-oauth-resource-server
  * 
@@ -46,29 +45,28 @@ curl -X POST http://localhost:8180/graphql -i -d "{\"query\":\"query{withoutPara
  */
 @SpringBootApplication
 @RestController
-public class SpringOauth2ResourceServerApplication extends WebSecurityConfigurerAdapter {
-
-	/** Logger for this class */
-	Logger logger = LoggerFactory.getLogger(getClass());
+@EnableResourceServer
+public class Main extends WebSecurityConfigurerAdapter {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringOauth2ResourceServerApplication.class, args);
+		SpringApplication.run(Main.class, args);
 	}
 
 	/**
 	 * This method will be used to check if the user has a valid token to access the resource.
-	 *
+	 * 
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = "/validateUser", produces = MediaType.APPLICATION_JSON_VALUE)
-	@GetMapping
-	@PostMapping
-	public String user(Principal user) {
-		logger.debug("Received a request on /validateUser, with Principal '{}'", user);
-		// return (user == null) ? new GenericPrincipal("no name", "no password", Arrays.asList("USER")) : user;
-		// return (user == null) ? "no name" : user.getName();
-		return "{\"active=\": true, \"scope\": \"USER\"}"; // Let's always say yes
+	@RequestMapping("/validateUser")
+	public Principal user(Principal user) {
+		return user;
+	}
+
+	@Override
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 
 }

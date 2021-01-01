@@ -1,0 +1,21 @@
+This text file sums up the tries I did to make client_credentials work :
+
+
+https://www.javainuse.com/spring/springboot-oauth2-client-grant
+
+Seems nice and clear.
+But the sample doesn't work: ArrayIndexOutOfBoundsException in hibernate, despite there is no use of hibernate there.
+It's probably possible to make this work, but it needs lots of updates in the pom configuration.
+A try with a more recente version of Spring Boot leads to additional Spring security configuration that needs to be added, but it still doesn't work.
+
+Baeldung
+There is a rich Keycloak sample. But it doesn't seem to work with client_credentials.
+The https://www.baeldung.com/spring-webclient-oauth2 seems interesting. But there isn't the OAuth provider details.
+
+https://dzone.com/articles/build-a-spring-boot-app-with-secure-server-to-serv
+Needs an Okta account.
+But I don't want Okta, as I want a build that can work in offline mode.
+
+
+Spring Boot doc
+https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/
