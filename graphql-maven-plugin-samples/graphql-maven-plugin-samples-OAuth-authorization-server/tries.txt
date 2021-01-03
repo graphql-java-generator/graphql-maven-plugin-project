@@ -1,12 +1,17 @@
 This text file sums up the tries I did to make client_credentials work :
 
+There are numerous tutorial and documentation across the web, about OAuth. But about no tutorial or doc leads to a working set. There are a lots of issues :
+* Old samples that would not work with recent Spring Boot versions
+* Lots of issues with JDK >= 9
+* Some samples compiles, and even their server starts. But then there are issues using them (OAuth errors)
+
 
 https://www.javainuse.com/spring/springboot-oauth2-client-grant
 
 Seems nice and clear.
-But the sample doesn't work: ArrayIndexOutOfBoundsException in hibernate, despite there is no use of hibernate there.
+But the sample doesn't work: ArrayIndexOutOfBoundsException in hibernate, despite there is no use of hibernate there (this is probably due to my use of JDK 13)
 It's probably possible to make this work, but it needs lots of updates in the pom configuration.
-A try with a more recente version of Spring Boot leads to additional Spring security configuration that needs to be added, but it still doesn't work.
+A try with a more recent version of Spring Boot leads to additional Spring security configuration that needs to be added, but it still doesn't work.
 
 Baeldung
 There is a rich Keycloak sample. But it doesn't seem to work with client_credentials.
@@ -19,3 +24,14 @@ But I don't want Okta, as I want a build that can work in offline mode.
 
 Spring Boot doc
 https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/
+But I can't make it work (See below)
+
+C:\Users\gauthiereti\git\spring-auth-server-jwt\.git
+Sergey apparently struggle also "against" the Spring Boot doc. He says he succeeded.
+But when running his sample, I get this error "invalid_token",  error_description="An error occurred while attempting to decode the Jwt: Signed JWT rejected: Invalid signature"
+As Sergey mentionned the Marcos Barbero's Blog, I did it a try (see below)
+
+Marcos Barbero's Blog
+https://blog.marcosbarbero.com/
+Opaque tokens:
+https://blog.marcosbarbero.com/oauth2-centralized-authorization-opaque-jdbc-spring-boot2/

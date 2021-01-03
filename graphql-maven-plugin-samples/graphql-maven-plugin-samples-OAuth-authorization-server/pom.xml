@@ -30,7 +30,10 @@
 			<version>2.4.0</version> </dependency -->
 
 		<!-- configuration from https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/ -->
-		<dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> </dependency> 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
@@ -40,6 +43,11 @@
 			<groupId>org.springframework.security.oauth.boot</groupId>
 			<artifactId>spring-security-oauth2-autoconfigure</artifactId>
 			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<!-- Needed for JWT -->
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
 		</dependency>
 
 
