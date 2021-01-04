@@ -1,10 +1,15 @@
 package org.allGraphQLCases;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import org.allGraphQLCases.client.CharacterInput;
+import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.allGraphQLCases.impl.PartialDirectQueries;
 import org.allGraphQLCases.impl.PartialPreparedQueries;
+import org.allGraphQLCases.subscription.ExecSubscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -34,10 +39,12 @@ import reactor.netty.http.client.HttpClient;
 @SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
 public class Main implements CommandLineRunner {
 
-	public static final String GRAPHQL_ENDPOINT = "http://localhost:8180/graphql";
-
 	@Autowired
 	PartialDirectQueries partialDirectQueries;
+	@Autowired
+	PartialPreparedQueries partialPreparedQueries;
+	@Autowired
+	ExecSubscription execSubscription;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Main.class, args);
@@ -57,15 +64,15 @@ public class Main implements CommandLineRunner {
 		System.out.println("============================================================================");
 		execOne(partialDirectQueries);
 
-		// System.out.println("============================================================================");
-		// System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		// System.out.println("============================================================================");
-		// execOne(new PartialPreparedQueries(GRAPHQL_ENDPOINT));
-		//
-		// System.out.println("============================================================================");
-		// System.out.println("======= EXECUTING A SUBSCRIPTION ===========================================");
-		// System.out.println("============================================================================");
-		// new ExecSubscription().exec();
+		System.out.println("============================================================================");
+		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		System.out.println("============================================================================");
+		execOne(partialPreparedQueries);
+
+		System.out.println("============================================================================");
+		System.out.println("======= EXECUTING A SUBSCRIPTION ===========================================");
+		System.out.println("============================================================================");
+		execSubscription.exec();
 
 		System.out.println("");
 		System.out.println("");
@@ -84,23 +91,22 @@ public class Main implements CommandLineRunner {
 			System.out.println("----------------  withoutParameters  ----------------------------------------------");
 			System.out.println(client.withoutParameters());
 
-			// System.out.println("---------------- withOneOptionalParam -------------------------------------------");
-			// System.out.println(client.withOneOptionalParam(Episode.NEWHOPE));
-			//
-			// System.out.println("---------------- withOneMandatoryParam ------------------------------------------");
-			// System.out.println(client.withOneMandatoryParam(Episode.NEWHOPE));
-			//
-			// System.out.println("---------------- withOneMandatoryParamDefaultValue ------------------------------");
-			// System.out.println(client.withOneMandatoryParamDefaultValue(Episode.NEWHOPE));
-			//
-			// System.out.println("---------------- withTwoMandatoryParamDefaultVal --------------------------------");
-			// System.out.println(client.withTwoMandatoryParamDefaultVal(Episode.NEWHOPE));
-			//
-			// System.out.println("---------------- withEnum -------------------------------------------------------");
-			// System.out.println(client.withEnum(Episode.NEWHOPE));
-			//
-			// System.out.println("---------------- withList -------------------------------------------------------");
-			// System.out.println(client.withList(Episode.NEWHOPE));
+			System.out.println("---------------- withOneOptionalParam -------------------------------------------");
+			CharacterInput ci1 = CharacterInput.builder().withName("my name")
+					.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).withType("Droid").build();
+			System.out.println(client.withOneOptionalParam(ci1));
+
+			System.out.println("---------------- withOneMandatoryParam ------------------------------------------");
+			CharacterInput ci2 = CharacterInput.builder().withName("my other name").withAppearsIn(Arrays.asList())
+					.withType("Human").build();
+			System.out.println(client.withOneMandatoryParam(ci2));
+
+			System.out.println("---------------- withEnum -------------------------------------------------------");
+			System.out.println(client.withEnum(Episode.NEWHOPE));
+
+			System.out.println("---------------- withList -------------------------------------------------------");
+			List<CharacterInput> chars = Arrays.asList(ci1, ci2);
+			System.out.println(client.withList("The name", chars));
 
 		} catch (javax.ws.rs.ProcessingException e) {
 			throw new RuntimeException(
