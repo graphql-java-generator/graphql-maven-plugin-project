@@ -16,6 +16,8 @@ import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -25,23 +27,13 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
+@Component
 public class PartialDirectQueries implements PartialQueries {
 
-	final MyQueryTypeExecutor queryType;
-	final AnotherMutationTypeExecutor mutationType;
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: https://my.server.com/graphql
-	 * 
-	 * @param graphqlEndpoint
-	 *            the https URI for the GraphQL endpoint
-	 */
-	public PartialDirectQueries(String graphqlEndpoint) {
-		queryType = new MyQueryTypeExecutor(graphqlEndpoint);
-		mutationType = new AnotherMutationTypeExecutor(graphqlEndpoint);
-	}
+	@Autowired
+	MyQueryTypeExecutor queryType;
+	@Autowired
+	AnotherMutationTypeExecutor mutationType;
 
 	@Override
 	public List<Character> withoutParameters()

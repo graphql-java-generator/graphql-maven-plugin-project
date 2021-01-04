@@ -1,16 +1,29 @@
 package org.allGraphQLCases;
 
+import java.util.Collections;
+
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.allGraphQLCases.impl.PartialDirectQueries;
 import org.allGraphQLCases.impl.PartialPreparedQueries;
-import org.allGraphQLCases.subscription.ExecSubscription;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import reactor.netty.http.client.HttpClient;
 
 /**
  * The main class, which executes the same partialQueries, built by three different methods. See
@@ -22,6 +35,9 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class Main implements CommandLineRunner {
 
 	public static final String GRAPHQL_ENDPOINT = "http://localhost:8180/graphql";
+
+	@Autowired
+	PartialDirectQueries partialDirectQueries;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Main.class, args);
@@ -39,17 +55,17 @@ public class Main implements CommandLineRunner {
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		execOne(new PartialDirectQueries(GRAPHQL_ENDPOINT));
+		execOne(partialDirectQueries);
 
-		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		System.out.println("============================================================================");
-		execOne(new PartialPreparedQueries(GRAPHQL_ENDPOINT));
-
-		System.out.println("============================================================================");
-		System.out.println("======= EXECUTING A SUBSCRIPTION ===========================================");
-		System.out.println("============================================================================");
-		new ExecSubscription().exec();
+		// System.out.println("============================================================================");
+		// System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		// System.out.println("============================================================================");
+		// execOne(new PartialPreparedQueries(GRAPHQL_ENDPOINT));
+		//
+		// System.out.println("============================================================================");
+		// System.out.println("======= EXECUTING A SUBSCRIPTION ===========================================");
+		// System.out.println("============================================================================");
+		// new ExecSubscription().exec();
 
 		System.out.println("");
 		System.out.println("");
@@ -91,5 +107,25 @@ public class Main implements CommandLineRunner {
 					"Please start the server from the project graphql-maven-plugin-samples-StarWars-server, before executing the client part",
 					e);
 		}
+	}
+
+	@Bean
+	WebClient webClient(String graphqlEndpoint, @Autowired(required = false) HttpClient httpClient,
+			ReactiveClientRegistrationRepository clientRegistrations) {
+		Builder webClientBuilder = WebClient.builder()//
+				.baseUrl(graphqlEndpoint)//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
+
+		if (httpClient != null) {
+			webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient));
+		}
+
+		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
+				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
+		oauth.setDefaultClientRegistrationId("provider_test");
+		webClientBuilder.filter(oauth);
+
+		return webClientBuilder.build();
 	}
 }

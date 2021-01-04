@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration debug="true">
+<configuration>
 
 	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -13,11 +13,12 @@
 		</encoder>
 	</appender>
 
-
-
-	<root level="debug">
+	<logger name="com.graphql_java_generator" level="trace" additivity="false">
 		<appender-ref ref="File" />
-		<appender-ref ref="Console" />
+	</logger>
+
+	<root level="warn">
+		<appender-ref ref="File" />
 	</root>
 
 </configuration>

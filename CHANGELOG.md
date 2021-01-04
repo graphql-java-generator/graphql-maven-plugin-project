@@ -10,7 +10,6 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
-
 Both modes (client and server):
 * Removed all dependencies to log4j
 * [minor] The GraphqlUtils class has been moved into the com.graphql_java_generator.util package
@@ -29,6 +28,8 @@ Both modes (client and server):
 * Upgrade of spring boot from 2.3.3 to 2.4.0
 * Issue 54: The generated code would not compile for subscriptions that return a list
 
+Gradle plugin:
+* The plugin is now compatible with a JDK/JRE 8 (it previously needed java 13)
 
 # 1.11
 

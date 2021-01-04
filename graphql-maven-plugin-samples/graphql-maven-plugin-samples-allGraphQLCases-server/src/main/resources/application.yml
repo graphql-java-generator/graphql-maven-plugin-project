@@ -2,12 +2,14 @@
 server:
   port: 8180
 
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8181/profile/me
+#      introspection-client-id: clientId
+#      introspection-client-secret: secret
 
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        opaque:
-          introspection-uri: http://localhost:8180/simulated_oauth_authorization_server/token/introspect
-          introspection-client-id: barClient
-          introspection-client-secret: barClientSecret
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true

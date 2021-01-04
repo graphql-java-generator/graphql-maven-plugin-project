@@ -1,1 +1,0 @@
-package org.allGraphQLCases.oauth2_authorization_server;

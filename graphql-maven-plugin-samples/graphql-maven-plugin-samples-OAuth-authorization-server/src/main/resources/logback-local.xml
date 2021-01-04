@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration debug="true">
+<configuration>
 
 	<!-- to use this logging configuration, please execute : -->
-	<!-- java -Dlogging.config=classpath:logback-local.xml -jar target\graphql-maven-plugin-samples-OAuth-authorization-server-local-SNAPSHOT.jar -->
+	<!-- java -Dlogging.config=classpath:logback-local.xml -jar target\graphql-maven-plugin-samples-allGraphQLCases-server-local-SNAPSHOT.jar -->
 
 	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -17,8 +17,9 @@
 	</appender>
 
 
-
-	<root level="debug">
+	<logger name="com.graphql_java_generator" level="trace" />
+	<logger name="org.springframework" level="debug" />
+	<root level="info">
 		<appender-ref ref="File" />
 		<appender-ref ref="Console" />
 	</root>

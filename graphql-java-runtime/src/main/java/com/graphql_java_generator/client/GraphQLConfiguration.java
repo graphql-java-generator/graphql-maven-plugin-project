@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
  * This class contains a GraphQL configuration for the GraphQL client. The main element of this configuration contains

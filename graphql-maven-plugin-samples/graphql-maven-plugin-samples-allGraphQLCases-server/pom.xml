@@ -25,7 +25,7 @@
 				</executions>
 				<configuration>
 					<!-- addRelayConnections will generate all the Relay Connection stuff (Node, Edge and Connection interfaces, and creating 
-						the XxxEdge and XxxConnection interfaces or objects), for fields marked with the @RelatConnection directive. See the documentation 
+						the XxxEdge and XxxConnection interfaces or objects), for fields marked with the RelayConnection directive. See the documentation 
 						for more information -->
 					<addRelayConnections>true</addRelayConnections>
 					<packageName>org.allGraphQLCases.server</packageName>
@@ -59,7 +59,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<inherited>true</inherited>
-					<executions>
+				<executions>
 					<execution>
 						<id>add-source</id>
 						<phase>generate-sources</phase>
@@ -108,8 +108,18 @@
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.security.oauth.boot</groupId>
+			<artifactId>spring-security-oauth2-autoconfigure</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>oauth2-oidc-sdk</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<!-- dependency> <!- This transparently add support for OAuth to the GraphQL server -> <groupId>org.springframework.security</groupId> 
 			<artifactId>spring-security-oauth2-resource-server</artifactId> </dependency -->

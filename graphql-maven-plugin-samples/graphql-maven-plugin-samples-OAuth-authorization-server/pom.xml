@@ -9,64 +9,33 @@
 		<version>local-SNAPSHOT</version>
 	</parent>
 
-	<!-- parent> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-parent</artifactId> <version>1.3.0.RELEASE</version> 
-		</parent> <groupId>com.graphql-java-generator</groupId> <version>local-SNAPSHOT</version -->
 	<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
-
-
-
-
-	<!-- <parent> <groupId>com.graphql-java-generator</groupId> <artifactId>graphql-maven-plugin-samples</artifactId> <version>local-SNAPSHOT</version> 
-		</parent> <artifactId>graphql-maven-plugin-samples-allGraphQLCases-OAuth-authorization-server</artifactId> -->
+	<description>Playground project for OAuth2 + Opaque Token using Spring Security. Based on https://blog.marcosbarbero.com/</description>
 
 	<dependencies>
-
-		<!-- configuration from https://www.javainuse.com/spring/springboot-oauth2-client-grant -->
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> </dependency> 
-			<dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-actuator</artifactId> </dependency> 
-			< dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> </dependency> 
-			<dependency> <groupId>org.springframework.security.oauth</groupId> <artifactId>spring-security-oauth2</artifactId> <version>2.4.0</version> 
-			</dependency> <dependency> <groupId>org.springframework.security.oauth.boot</groupId> <artifactId>spring-security-oauth2-autoconfigure</artifactId> 
-			<version>2.4.0</version> </dependency -->
-
-		<!-- configuration from https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security.oauth</groupId>
-			<artifactId>spring-security-oauth2</artifactId>
-			<version>2.5.0.RELEASE</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security.oauth.boot</groupId>
 			<artifactId>spring-security-oauth2-autoconfigure</artifactId>
-			<version>2.4.0</version>
+			<version>2.1.2.RELEASE</version>
 		</dependency>
 		<dependency>
-			<!-- Needed for JWT -->
-			<groupId>com.nimbusds</groupId>
-			<artifactId>nimbus-jose-jwt</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
-
-		<!-- dependency> <groupId>org.springframework.security.oauth.boot</groupId> <artifactId>spring-security-oauth2-autoconfigure</artifactId> 
-			<version>2.1.8.RELEASE</version> </dependency> <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> 
-			</dependency -->
-
-
-		<!-- Below : conf for Keycloak baeldung sample -->
-		<!-- properties> <infinispan.version>10.1.8.Final</infinispan.version> </properties -->
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> </dependency> 
-			<dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-actuator</artifactId> </dependency> 
-			<dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-jpa</artifactId> </dependency> 
-			<dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> <scope>runtime</scope> </dependency> <dependency> 
-			<groupId>org.jboss.resteasy</groupId> <artifactId>resteasy-jackson2-provider</artifactId> <version>3.12.1.Final</version> 
-			</dependency> <dependency> <groupId>org.keycloak</groupId> <artifactId>keycloak-dependencies-server-all</artifactId> <version>11.0.2</version> 
-			<type>pom</type> </dependency -->
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> </dependency> 
-			<dependency> <groupId>org.springframework.security.oauth</groupId> <artifactId>spring-security-oauth2</artifactId> </dependency -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -77,6 +46,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
 
 </project>

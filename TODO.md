@@ -6,6 +6,7 @@ Here are the next tasks listed, as a TODO list:
    Remove exclusions in poms, like spring-boot-starter-logging
 * Check this issue: when executing the full Forum client test case for the first time after starting the server, the subscription test won't work. It works everytime if executed alone, or with the full test case starting from the second execution.
 * Remove the SubscriptionClientWebSocket class
+* Check subscription against the Hasura setup (answer to issue 54) : https://hasura.io/
 * Check the client dependencies (from all client samples)
 * Finish updating the client_spring page
 * Add unit test in runtime, to test the Reactive stuff

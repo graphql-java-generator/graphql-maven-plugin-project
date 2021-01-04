@@ -20,6 +20,7 @@ import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
