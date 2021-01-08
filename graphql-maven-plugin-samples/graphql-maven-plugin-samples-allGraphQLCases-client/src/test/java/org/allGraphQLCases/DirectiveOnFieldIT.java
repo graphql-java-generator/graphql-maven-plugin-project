@@ -21,7 +21,7 @@ class DirectiveOnFieldIT {
 
 	@BeforeEach
 	void setup() {
-		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 	}
 
 	@Test

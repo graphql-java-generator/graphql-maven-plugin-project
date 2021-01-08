@@ -33,8 +33,8 @@ public class PartialQueryIT {
 	@BeforeEach
 	void setUp() throws Exception {
 		// For some tests, we need to execute additional partialQueries
-		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
-		mutation = new AnotherMutationTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
+		mutation = new AnotherMutationTypeExecutor("http://localhost:8180/graphql");
 	}
 
 	/**

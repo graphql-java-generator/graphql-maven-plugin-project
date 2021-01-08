@@ -38,8 +38,8 @@ class FullQueriesDeprecatedIT {
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
-		mutationType = new AnotherMutationTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
+		mutationType = new AnotherMutationTypeExecutor("http://localhost:8180/graphql");
 
 		// The response preparation should be somewhere in the application initialization code.
 		mutationWithDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//

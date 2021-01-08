@@ -35,6 +35,26 @@ public class PartialDirectQueries implements PartialQueries {
 	@Autowired
 	AnotherMutationTypeExecutor mutationType;
 
+	/**
+	 * The default Spring Constructor, that is when this class is used as a Spring Bean
+	 */
+	@Autowired
+	PartialDirectQueries() {
+
+	}
+
+	/**
+	 * The constructor, when creating this class from the "new" Java operator, like:
+	 * 
+	 * <PRE>
+	 * PartialDirectQueries queries = new PartialDirectQueries("http://localhost/graphql");
+	 * </PRE>
+	 */
+	PartialDirectQueries(String uri) {
+		queryType = new MyQueryTypeExecutor(uri);
+		mutationType = new AnotherMutationTypeExecutor(uri);
+	}
+
 	@Override
 	public List<Character> withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {

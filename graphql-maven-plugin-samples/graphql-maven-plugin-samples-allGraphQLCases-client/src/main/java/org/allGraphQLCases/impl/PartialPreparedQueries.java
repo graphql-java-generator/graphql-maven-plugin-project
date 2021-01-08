@@ -68,6 +68,27 @@ public class PartialPreparedQueries implements PartialQueries {
 	GraphQLRequest createHumanResponse;
 
 	/**
+	 * The default Spring Constructor, that is when this class is used as a Spring Bean
+	 */
+	@Autowired
+
+	PartialPreparedQueries() {
+
+	}
+
+	/**
+	 * The constructor, when creating this class from the "new" Java operator, like:
+	 * 
+	 * <PRE>
+	 * PartialPreparedQueries queries = new PartialPreparedQueries("http://localhost/graphql");
+	 * </PRE>
+	 */
+	public PartialPreparedQueries(String uri) {
+		queryType = new MyQueryTypeExecutor(uri);
+		mutationType = new AnotherMutationTypeExecutor(uri);
+	}
+
+	/**
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
 	 * https ones.<BR/>
 	 * For example: https://my.server.com/graphql

@@ -37,7 +37,7 @@ class FullQueriesIT {
 	void setup() throws GraphQLRequestPreparationException {
 
 		// We have only one GraphQL server. So we just set the default configuration.
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT));
+		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration("http://localhost:8180/graphql"));
 
 		// The response preparation should be somewhere in the application initialization code.
 		mutationWithDirectiveRequest = new GraphQLRequest(//
@@ -63,7 +63,7 @@ class FullQueriesIT {
 	@Test
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 
 		// Go, go, go
 		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery}"); // Direct queries should be used only for very
@@ -79,7 +79,7 @@ class FullQueriesIT {
 	@Test
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 
 		// Go, go, go
 

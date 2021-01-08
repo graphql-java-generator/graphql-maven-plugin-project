@@ -32,9 +32,28 @@ import reactor.netty.http.client.HttpClient;
 
 /**
  * The main class, which executes the same partialQueries, built by three different methods. See
- * {@link PartialDirectQueries}, {@link PartialPreparedQueries}, {@link PartialWithBuilder}
+ * {@link PartialDirectQueries}, {@link PartialPreparedQueries}, {@link PartialWithBuilder}<BR/>
+ * 
+ * A sample query, to get an OAuth token:
+ * 
+ * <pre>
+curl -u "clientId:secret" -X POST "http://localhost:8181/oauth/token?grant_type=client_credentials" --noproxy "*" -i
+ * </pre>
+ * 
+ * Then, reuse the previous token in the next query:
+ * 
+ * <pre>
+curl -i -X POST "http://localhost:8180/graphql" --noproxy "*" -H "Authorization: Bearer 8c8e4a5b-d903-4ed6-9738-6f7f364b87ec"
+ * </pre>
+ * 
+ * And, to check the token:
+ * 
+ * <pre>
+curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorization: Bearer 8c8e4a5b-d903-4ed6-9738-6f7f364b87ec"
+ * </pre>
  * 
  * @author etienne-sf
+ * @see https://michalgebauer.github.io/spring-graphql-security/
  */
 @SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
 public class Main implements CommandLineRunner {
@@ -57,7 +76,7 @@ public class Main implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// Execution of three way to user the GraphQL client, to call the GraphQL server
+		// Execution of two ways of calling the GraphQL server
 
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
@@ -134,4 +153,5 @@ public class Main implements CommandLineRunner {
 
 		return webClientBuilder.build();
 	}
+
 }

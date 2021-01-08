@@ -19,10 +19,10 @@ class PartialPreparedQueriesIT extends AbstractIT {
 	void setUp() throws Exception {
 
 		// For some tests, we need to execute additional partialQueries
-		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		partialQueries = new PartialPreparedQueries(Main.GRAPHQL_ENDPOINT);
+		partialQueries = new PartialPreparedQueries("http://localhost:8180/graphql");
 	}
 
 }

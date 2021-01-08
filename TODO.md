@@ -2,6 +2,8 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Check <copyGraphQLJavaSources>false</copyGraphQLJavaSources>  (it seems that the code is still copied)
+* Make subscription also work with OAuth protected servers (integration test is in graphql-maven-plugin-samples-allGraphQLCases-client)
 * Remove all log4j dependencies from the client and server pom dependencies (issue #52)
    Remove exclusions in poms, like spring-boot-starter-logging
 * Check this issue: when executing the full Forum client test case for the first time after starting the server, the subscription test won't work. It works everytime if executed alone, or with the full test case starting from the second execution.

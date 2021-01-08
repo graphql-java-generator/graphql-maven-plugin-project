@@ -19,10 +19,10 @@ class PartialDirectQueriesIT extends AbstractIT {
 	void setUp() throws Exception {
 
 		// For some tests, we need to execute additional partialQueries
-		queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 
 		// Creation of the instance, against which we'll execute the JUnit tests
-		partialQueries = new PartialDirectQueries(Main.GRAPHQL_ENDPOINT);
+		partialQueries = new PartialDirectQueries("http://localhost:8180/graphql");
 	}
 
 }

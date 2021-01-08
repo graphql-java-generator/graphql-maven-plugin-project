@@ -31,7 +31,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 public class IntrospectionIT {
 
-	MyQueryTypeExecutor myQuery = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+	MyQueryTypeExecutor myQuery = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 
 	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "age", "aFloat", "date", "dates", "nbComments",
 			"comments", "booleans", "aliases", "planets", "friends", "matrix", "oneWithIdSubType", "listWithIdSubTypes",
@@ -75,7 +75,7 @@ public class IntrospectionIT {
 	@Test
 	void test__datatype_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 
 		// Go, go, go
 		// AllFieldCases ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
@@ -89,7 +89,7 @@ public class IntrospectionIT {
 	void test__datatype_withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Verification
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
 
 		// Go, go, go
 		List<Character> ret = queryType.withoutParameters(" {id __typename}");

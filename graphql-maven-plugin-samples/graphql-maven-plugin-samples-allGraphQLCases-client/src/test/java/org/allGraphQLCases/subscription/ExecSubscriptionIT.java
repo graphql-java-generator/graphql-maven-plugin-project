@@ -21,7 +21,7 @@ public class ExecSubscriptionIT {
 
 	@BeforeEach
 	public void setup() {
-		subscriptionExecutor = new TheSubscriptionTypeExecutor(Main.GRAPHQL_ENDPOINT + "/subscription");
+		subscriptionExecutor = new TheSubscriptionTypeExecutor("http://localhost:8180/graphql" + "/subscription");
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)

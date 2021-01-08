@@ -38,7 +38,7 @@ class UnionIT {
 	@BeforeEach
 	void setup() {
 		// Default configuration for GraphQLRequest
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT));
+		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration("http://localhost:8180/graphql"));
 
 		// A useful init for some tests
 		humanInput1 = new HumanInput();
