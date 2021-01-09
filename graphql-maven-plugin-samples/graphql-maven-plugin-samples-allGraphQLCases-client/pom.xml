@@ -190,16 +190,6 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-allGraphQLCases-server</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
-			<scope>test</scope>
-		</dependency>
 
 
 		<!-- Dependencies for the generated code -->

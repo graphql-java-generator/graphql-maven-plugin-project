@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -339,7 +340,9 @@ public class ${object.classSimpleName}Executor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(fullRequest);
+		GraphQLRequest ret = new GraphQLRequest(fullRequest);
+		ret.setInstanceConfiguration(configuration);
+		return ret;
 	}
 
 #foreach ($field in $object.fields)

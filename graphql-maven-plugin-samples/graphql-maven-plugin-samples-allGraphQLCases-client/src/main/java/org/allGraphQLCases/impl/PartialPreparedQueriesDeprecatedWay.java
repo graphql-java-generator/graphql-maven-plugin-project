@@ -6,6 +6,8 @@ package org.allGraphQLCases.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
@@ -19,6 +21,8 @@ import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -39,10 +43,13 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
+@Component
 public class PartialPreparedQueriesDeprecatedWay implements PartialQueries {
 
-	final MyQueryTypeExecutor queryType;
-	final AnotherMutationTypeExecutor mutationType;
+	@Autowired
+	MyQueryTypeExecutor queryType;
+	@Autowired
+	AnotherMutationTypeExecutor mutationType;
 
 	// PartialQueries
 	ObjectResponse withoutParametersResponse;
@@ -60,20 +67,12 @@ public class PartialPreparedQueriesDeprecatedWay implements PartialQueries {
 	ObjectResponse createHumanResponse;
 
 	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: https://my.server.com/graphql
+	 * Preparation of the GraphQL requests (queries, mutations)
 	 * 
-	 * @param graphqlEndpoint
-	 *            the https URI for the GraphQL endpoint
-	 * @param sslContext
-	 * @param hostnameVerifier
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public PartialPreparedQueriesDeprecatedWay(String graphqlEndpoint) throws GraphQLRequestPreparationException {
-		queryType = new MyQueryTypeExecutor(graphqlEndpoint);
-		mutationType = new AnotherMutationTypeExecutor(graphqlEndpoint);
-
+	@PostConstruct
+	public void init() throws GraphQLRequestPreparationException {
 		withoutParametersResponse = queryType.getWithoutParametersResponseBuilder()
 				.withQueryResponseDef("{appearsIn name}").build();
 		withOneOptionalParamResponse = queryType.getWithOneOptionalParamResponseBuilder()

@@ -19,10 +19,10 @@
 		<module>graphql-maven-plugin-samples-allGraphQLCases-server</module>
 		<module>graphql-maven-plugin-samples-OAuth-authorization-server</module>
 		<module>graphql-maven-plugin-samples-allGraphQLCases-client</module>
-		<module>graphql-maven-plugin-samples-Forum-server</module>
 		<module>graphql-maven-plugin-samples-Forum-client</module>
-		<module>graphql-maven-plugin-samples-StarWars-client</module>
+		<module>graphql-maven-plugin-samples-Forum-server</module>
 		<module>graphql-maven-plugin-samples-StarWars-server</module>
+		<module>graphql-maven-plugin-samples-StarWars-client</module>
 		<module>graphql-maven-plugin-samples-CustomTemplates-resttemplate</module>
 		<module>graphql-maven-plugin-samples-CustomTemplates-client</module>
 	</modules>

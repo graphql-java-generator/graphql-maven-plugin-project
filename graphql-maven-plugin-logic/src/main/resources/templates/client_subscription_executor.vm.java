@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class ${object.classSimpleName}Executor {
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	@Autowired
-	GraphQLConfiguration configuration;
+	GraphQLConfiguration configuration = null;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
@@ -453,11 +454,13 @@ public class ${object.classSimpleName}Executor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
+		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
 #foreach ($inputParameter in $field.inputParameters)
 		, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.fieldTypeAST.mandatory}, null)
 #end
 		);
+		ret.setInstanceConfiguration(configuration);
+		return ret;
 	}
 	
 #end

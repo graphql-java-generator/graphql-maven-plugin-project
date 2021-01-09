@@ -20,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -28,7 +30,9 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 class FullQueriesDeprecatedIT {
 
-	MyQueryTypeExecutor queryType;
+	ApplicationContext ctx;
+
+	MyQueryTypeExecutor myQuery;
 	AnotherMutationTypeExecutor mutationType;
 
 	ObjectResponse mutationWithDirectiveResponse;
@@ -38,8 +42,11 @@ class FullQueriesDeprecatedIT {
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
-		mutationType = new AnotherMutationTypeExecutor("http://localhost:8180/graphql");
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(myQuery);
+		mutationType = ctx.getBean(AnotherMutationTypeExecutor.class);
+		assertNotNull(mutationType);
 
 		// The response preparation should be somewhere in the application initialization code.
 		mutationWithDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//
@@ -51,11 +58,11 @@ class FullQueriesDeprecatedIT {
 				"mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}"//
 		).build();
 
-		withDirectiveTwoParametersResponse = queryType.getResponseBuilder().withQueryResponseDef(
+		withDirectiveTwoParametersResponse = myQuery.getResponseBuilder().withQueryResponseDef(
 				"query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}")
 				.build();
 
-		multipleQueriesResponse = queryType.getResponseBuilder().withQueryResponseDef("{"//
+		multipleQueriesResponse = myQuery.getResponseBuilder().withQueryResponseDef("{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
 				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
@@ -67,8 +74,8 @@ class FullQueriesDeprecatedIT {
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-																			// simple cases
+		MyQueryTypeResponse resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+																		// simple cases
 
 		// Verifications
 		assertNotNull(resp);
@@ -81,7 +88,7 @@ class FullQueriesDeprecatedIT {
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
+		MyQueryTypeResponse resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
 				"value", "the value", "skip", Boolean.FALSE);
 
 		// Verifications
@@ -97,7 +104,7 @@ class FullQueriesDeprecatedIT {
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = queryType.exec(withDirectiveTwoParametersResponse, //
+		MyQueryTypeResponse resp = myQuery.exec(withDirectiveTwoParametersResponse, //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -174,7 +181,7 @@ class FullQueriesDeprecatedIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		MyQueryTypeResponse resp = queryType.exec(multipleQueriesResponse, //
+		MyQueryTypeResponse resp = myQuery.exec(multipleQueriesResponse, //
 				"value", "An expected returned string", //
 				"skipAppearsIn", true, //
 				"skipName", false);
@@ -199,7 +206,7 @@ class FullQueriesDeprecatedIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		resp = queryType.exec(multipleQueriesResponse, //
+		resp = myQuery.exec(multipleQueriesResponse, //
 				"value", "An expected returned string", //
 				"skipAppearsIn", false, //
 				"skipName", true);

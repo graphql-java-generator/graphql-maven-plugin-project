@@ -18,6 +18,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -30,11 +32,17 @@ public class PartialQueryIT {
 	MyQueryTypeExecutor queryType;
 	AnotherMutationTypeExecutor mutation;
 
+	ApplicationContext ctx;
+
 	@BeforeEach
-	void setUp() throws Exception {
+	void setup() {
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+
 		// For some tests, we need to execute additional partialQueries
-		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
-		mutation = new AnotherMutationTypeExecutor("http://localhost:8180/graphql");
+		queryType = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(queryType);
+		mutation = ctx.getBean(AnotherMutationTypeExecutor.class);
+		assertNotNull(mutation);
 	}
 
 	/**

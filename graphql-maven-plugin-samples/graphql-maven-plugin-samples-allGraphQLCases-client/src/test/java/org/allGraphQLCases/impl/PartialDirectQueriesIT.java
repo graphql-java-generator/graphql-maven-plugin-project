@@ -1,8 +1,6 @@
 package org.allGraphQLCases.impl;
 
-import org.allGraphQLCases.Main;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.junit.jupiter.api.BeforeEach;
+import org.allGraphQLCases.PartialQueries;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
@@ -15,14 +13,9 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 @Execution(ExecutionMode.CONCURRENT)
 class PartialDirectQueriesIT extends AbstractIT {
 
-	@BeforeEach
-	void setUp() throws Exception {
-
-		// For some tests, we need to execute additional partialQueries
-		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
-
-		// Creation of the instance, against which we'll execute the JUnit tests
-		partialQueries = new PartialDirectQueries("http://localhost:8180/graphql");
+	@Override
+	protected PartialQueries getQueries() {
+		return ctx.getBean(PartialDirectQueries.class);
 	}
 
 }

@@ -16,25 +16,32 @@ import org.allGraphQLCases.client.Droid;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class FragmentIT {
 
+	ApplicationContext ctx;
+
+	MyQueryTypeExecutor myQuery;
+
 	CharacterInput input;
 	Map<String, Object> params = new HashMap<>();
 
 	@BeforeEach
 	void setup() {
-		// Default configuration for GraphQLRequest
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration("http://localhost:8180/graphql"));
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(myQuery);
 
 		// A useful init for some tests
 		input = new CharacterInput();
@@ -56,7 +63,7 @@ class FragmentIT {
 	@Test
 	void test_ThreeGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
+		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
 				+ "query{withoutParameters{appearsIn ...fragment1}} " //
 				+ "fragment fragment1 on Character {id appearsIn friends{id ...fragment3 ...fragment2 }}"//
 				+ "fragment fragment2 on Character {id name(uppercase: &uppercaseTrue)}"//
@@ -85,7 +92,7 @@ class FragmentIT {
 	@Test
 	void test_InlineAndGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
+		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
 				+ "query{" //
 				+ "  withoutParameters{"//
 				+ "    appearsIn " //
@@ -124,7 +131,7 @@ class FragmentIT {
 	void test_InlineAndGlobalFragments_withOneOptionalParam_Droid()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
+		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
 				+ "query{" //
 				+ "  withOneOptionalParam(character: &input){"//
 				+ "    appearsIn " //
@@ -156,7 +163,7 @@ class FragmentIT {
 	void test_InlineAndGlobalFragments_withOneOptionalParam_Human()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
+		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
 				+ "query{" //
 				+ "  withOneOptionalParam(character: &input){"//
 				+ "    appearsIn " //

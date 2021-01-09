@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.PartialQueries;
+import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -21,9 +22,12 @@ import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -39,6 +43,22 @@ abstract class AbstractIT {
 
 	MyQueryTypeExecutor queryType;
 	PartialQueries partialQueries;
+
+	protected ApplicationContext ctx;
+
+	@BeforeEach
+	void setup() {
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+
+		queryType = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(queryType);
+
+		partialQueries = getQueries();
+		assertNotNull(partialQueries);
+	}
+
+	/** Get the class that will execute the queries. This is a particular class, for each test */
+	protected abstract PartialQueries getQueries();
 
 	@Test
 	void test_withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {

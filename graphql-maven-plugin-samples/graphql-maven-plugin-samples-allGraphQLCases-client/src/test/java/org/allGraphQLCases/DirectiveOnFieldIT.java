@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -19,9 +21,15 @@ class DirectiveOnFieldIT {
 
 	MyQueryTypeExecutor queryType;
 
+	ApplicationContext ctx;
+
 	@BeforeEach
 	void setup() {
-		queryType = new MyQueryTypeExecutor("http://localhost:8180/graphql");
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+
+		// For some tests, we need to execute additional partialQueries
+		queryType = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(queryType);
 	}
 
 	@Test
