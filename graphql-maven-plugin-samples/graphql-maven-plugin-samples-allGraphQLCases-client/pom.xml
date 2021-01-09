@@ -110,7 +110,7 @@
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>start OAuth Authorization server</id>
+						<id>start_OAuth_Authorization_server</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>start</goal>
@@ -130,7 +130,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>start server</id>
+						<id>start_GraphQL_server</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>start</goal>
