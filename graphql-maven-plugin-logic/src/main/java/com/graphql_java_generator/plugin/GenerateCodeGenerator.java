@@ -211,8 +211,9 @@ public class GenerateCodeGenerator {
 		try (JarInputStream jar = new JarInputStream(res.getInputStream())) {
 			while ((entry = jar.getNextJarEntry()) != null) {
 				boolean metaInf = entry.getName().startsWith("META-INF");
-				boolean serverAndIsClientFile = entry.getName().contains("com/graphql_java_generator/client")
-						&& configuration.getMode().equals(PluginMode.server);
+				boolean serverAndIsClientFile = configuration.getMode().equals(PluginMode.server)
+						&& (entry.getName().contains("com/graphql_java_generator/client")
+								|| entry.getName().contains("com/graphql_java_generator/spring/client"));
 				boolean clientAndIsServerFile = entry.getName().contains("com/graphql_java_generator/server")
 						&& configuration.getMode().equals(PluginMode.client);
 
