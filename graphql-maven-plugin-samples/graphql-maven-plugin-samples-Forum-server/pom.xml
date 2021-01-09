@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -14,14 +15,12 @@
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Needed to properly package the jar or war, so that spring can link 
-					all resources together -->
+				<!-- Needed to properly package the jar or war, so that spring can link all resources together -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<!-- This is core of graphql-java-generator: it generates the boilerplate 
-					code for you -->
+				<!-- This is core of graphql-java-generator: it generates the boilerplate code for you -->
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
@@ -36,7 +35,7 @@
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<javaTypeForIDType>java.lang.Long</javaTypeForIDType>
 					<packageName>org.forum.server.graphql</packageName>
-					<scanBasePackages>org.forum.server.jpa ,  org.forum.server.specific_code </scanBasePackages>
+					<scanBasePackages>org.forum.server.jpa , org.forum.server.specific_code </scanBasePackages>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
 					<customScalars>
 						<customScalar>
@@ -48,11 +47,23 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- This helps by adding the generated source in the build path of your 
-					IDE -->
+				<!-- This helps by adding the generated source in the build path of your IDE -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<inherited>true</inherited>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<!-- We don't want to spam the repository with test/sample artefacts -->
