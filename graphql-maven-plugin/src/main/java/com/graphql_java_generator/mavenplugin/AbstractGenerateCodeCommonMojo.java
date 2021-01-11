@@ -4,10 +4,15 @@
 package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -25,6 +30,8 @@ import graphql.schema.GraphQLScalarType;
  */
 public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 		implements GenerateCodeCommonConfiguration {
+
+	int nbGeneratedClasses = 0;
 
 	/**
 	 * <P>
@@ -118,6 +125,10 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;
 
+	/** The folder where resources will be generated */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetResourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_RESOURCE_FOLDER)
+	String targetResourceFolder;
+
 	/** The folder where source code for the generated classes will be generated */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	String targetSourceFolder;
@@ -147,6 +158,11 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	}
 
 	@Override
+	public File getTargetResourceFolder() {
+		return new File(getTargetFolder(), targetResourceFolder);
+	}
+
+	@Override
 	public File getTargetSourceFolder() {
 		return new File(getTargetFolder(), targetSourceFolder);
 	}
@@ -168,5 +184,32 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 
 	protected AbstractGenerateCodeCommonMojo(Class<?> springConfigurationClass) {
 		super(springConfigurationClass);
+	}
+
+	@Override
+	protected void executeSpecificJob() throws IOException {
+		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
+		nbGeneratedClasses = codeGenerator.generateCode();
+
+		File targetDir = new File(project.getBasedir(), "target");
+		String generatedSourceFolder = new File(targetDir, targetSourceFolder).getPath();
+		project.addCompileSourceRoot(generatedSourceFolder);
+		getLog().debug("Added the generated source folder: " + generatedSourceFolder);
+
+		Resource generatedResources = new Resource();
+		String generatedResourceFolder = new File(targetDir, targetResourceFolder).getPath();
+		generatedResources.setDirectory(generatedResourceFolder);
+		generatedResources.setIncludes(Arrays.asList("**/*"));
+		generatedResources.setExcludes(null);
+		// One of the two below is probably useless
+		project.getBuild().addResource(generatedResources);
+		project.addResource(generatedResources);
+		getLog().debug("Added the generated resources folder: " + generatedResourceFolder);
+	}
+
+	@Override
+	protected void logResult(Duration duration) {
+		getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '" + schemaFilePattern
+				+ "' in the package '" + packageName + "' in " + duration.getSeconds() + " seconds");
 	}
 }

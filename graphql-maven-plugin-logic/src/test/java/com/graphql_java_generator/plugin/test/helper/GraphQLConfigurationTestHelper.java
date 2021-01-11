@@ -44,6 +44,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public boolean separateUtilityClasses = false;
 	public String sourceEncoding = "UTF-8";
 	public File targetClassFolder = null;
+	public File targetResourceFolder = null;
 	public File targetSourceFolder = null;
 	public Map<String, String> templates = new HashMap<String, String>();
 

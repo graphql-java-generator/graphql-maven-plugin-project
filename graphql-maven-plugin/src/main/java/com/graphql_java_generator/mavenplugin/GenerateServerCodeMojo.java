@@ -3,10 +3,6 @@
  */
 package com.graphql_java_generator.mavenplugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.Duration;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
@@ -18,7 +14,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.util.GraphqlUtils;
 
@@ -66,8 +61,6 @@ public class GenerateServerCodeMojo extends AbstractGenerateServerCodeMojo {
 	// structure of the Maven goals.
 	// See the explanation in the AbstractCommonMojo for more details.
 
-	int nbGeneratedClasses = 0;
-
 	@Configuration
 	@Import({ JacksonAutoConfiguration.class })
 	@ComponentScan(basePackageClasses = { DocumentParser.class, GraphqlUtils.class }, excludeFilters = {
@@ -82,18 +75,4 @@ public class GenerateServerCodeMojo extends AbstractGenerateServerCodeMojo {
 		super(SpringConfiguration.class);
 	}
 
-	@Override
-	protected void executeSpecificJob() throws IOException {
-		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
-		nbGeneratedClasses = codeGenerator.generateCode();
-
-		File targetDir = new File(project.getBasedir(), "target");
-		project.addCompileSourceRoot(new File(targetDir, targetSourceFolder).getAbsolutePath());
-	}
-
-	@Override
-	protected void logResult(Duration duration) {
-		getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '" + schemaFilePattern
-				+ "' in the package '" + packageName + "' in " + duration.getSeconds() + " seconds");
-	}
 }

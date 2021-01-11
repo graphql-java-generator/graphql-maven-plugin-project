@@ -6,6 +6,7 @@ Here are the next tasks listed, as a TODO list:
 * Make subscription also work with OAuth protected servers (integration test is in graphql-maven-plugin-samples-allGraphQLCases-client)
 * Remove all log4j dependencies from the client and server pom dependencies (issue #52)
    Remove exclusions in poms, like spring-boot-starter-logging
+* Add a unit test to check the spring AutoConfiguration in the generated resources (client mode only)
 * Check this issue: when executing the full Forum client test case for the first time after starting the server, the subscription test won't work. It works everytime if executed alone, or with the full test case starting from the second execution.
 * Remove the SubscriptionClientWebSocket class
 * Check subscription against the Hasura setup (answer to issue 54) : https://hasura.io/

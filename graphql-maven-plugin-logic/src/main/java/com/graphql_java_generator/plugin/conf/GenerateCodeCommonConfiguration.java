@@ -20,6 +20,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
+	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "/generated-resources/graphql-maven-plugin";
 	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
 
 	/**
@@ -81,6 +82,9 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 * compilation
 	 */
 	public File getTargetClassFolder();
+
+	/** The folder where the generated resources will be generated */
+	public File getTargetResourceFolder();
 
 	/** The folder where the source code for the generated classes will be generated */
 	public File getTargetSourceFolder();

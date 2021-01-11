@@ -48,6 +48,7 @@ class CodeGeneratorTest {
 	GraphQLConfigurationTestHelper pluginConfiguration;
 	MavenTestHelper mavenTestHelper;
 
+	private File targetResourceFolder;
 	private File targetSourceFolder;
 	private File targetRuntimeClassesSourceFolder;
 	private File testRuntimeSourcesFile;
@@ -59,11 +60,16 @@ class CodeGeneratorTest {
 		pluginConfiguration = context.getBean(GraphQLConfigurationTestHelper.class);
 		mavenTestHelper = context.getBean(MavenTestHelper.class);
 
+		targetResourceFolder = mavenTestHelper.getTargetResourceFolder(this.getClass().getSimpleName());
 		targetSourceFolder = mavenTestHelper.getTargetSourceFolder(this.getClass().getSimpleName());
 		targetRuntimeClassesSourceFolder = mavenTestHelper
 				.getTargetRuntimeClassesBaseSourceFolder(this.getClass().getSimpleName());
 		testRuntimeSourcesFile = mavenTestHelper.getTestRutimeSourcesJarFile();
 
+		if (targetResourceFolder.exists()) {
+			FileUtils.forceDelete(targetResourceFolder);
+			targetResourceFolder.mkdirs();
+		}
 		if (targetSourceFolder.exists()) {
 			FileUtils.forceDelete(targetSourceFolder);
 			targetSourceFolder.mkdirs();
@@ -198,6 +204,7 @@ class CodeGeneratorTest {
 		String packageName = "my.package";
 		pluginConfiguration.packageName = packageName;
 		pluginConfiguration.separateUtilityClasses = false;
+		pluginConfiguration.targetResourceFolder = targetResourceFolder;
 		pluginConfiguration.targetSourceFolder = targetSourceFolder;
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,7 +242,8 @@ class CodeGeneratorTest {
 		file = codeGenerator.getJavaFile(name, true);
 		// Verification
 		expectedEndOfPath = (targetSourceFolder.getCanonicalPath() + '/' + packageName + '/'
-				+ GenerateCodeDocumentParser.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/') + ".java";
+				+ GenerateCodeDocumentParser.UTIL_PACKAGE_NAME + '/' + name).replace('.', '/').replace('\\', '/')
+				+ ".java";
 		assertEquals(expectedEndOfPath, file.getCanonicalPath().replace('\\', '/'), "The file path should end with "
 				+ expectedEndOfPath + ", but is " + file.getCanonicalPath().replace('\\', '/'));
 	}
@@ -249,12 +257,13 @@ class CodeGeneratorTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testGenerateCode_copyRuntimeSources() throws IOException {
-
+		// Preparation
 		pluginConfiguration.mode = PluginMode.client;
 		pluginConfiguration.packageName = "test.generatecode.enabled";
 		pluginConfiguration.copyRuntimeSources = true;
 		pluginConfiguration.schemaFileFolder = new File("src/test/resources");
 		pluginConfiguration.schemaFilePattern = "basic.graphqls";
+		pluginConfiguration.targetResourceFolder = targetResourceFolder;
 		pluginConfiguration.targetSourceFolder = targetSourceFolder;
 		pluginConfiguration.targetClassFolder = targetSourceFolder;
 
@@ -262,9 +271,23 @@ class CodeGeneratorTest {
 			createRuntimeSourcesJar();
 		}
 
+		// Go, go, go
 		codeGenerator.generateCode();
+
+		// Verification
 		assertTrue(targetRuntimeClassesSourceFolder.exists());
 		assertTrue(targetRuntimeClassesSourceFolder.isDirectory());
+		assertTrue(targetResourceFolder.exists());
+		assertTrue(targetResourceFolder.isDirectory());
+		assertTrue(targetRuntimeClassesSourceFolder.exists());
+		assertTrue(targetRuntimeClassesSourceFolder.isDirectory());
+		//
+		File metaInf = new File(targetResourceFolder, "META-INF");
+		assertTrue(metaInf.exists());
+		assertTrue(metaInf.isDirectory());
+		String[] metaInfChildren = metaInf.list();
+		assertEquals(1, metaInfChildren.length);
+		assertTrue(metaInfChildren[0].equals("spring.factories"));
 	}
 
 	/**
@@ -282,6 +305,7 @@ class CodeGeneratorTest {
 		pluginConfiguration.copyRuntimeSources = false;
 		pluginConfiguration.schemaFileFolder = new File("src/test/resources");
 		pluginConfiguration.schemaFilePattern = "basic.graphqls";
+		pluginConfiguration.targetResourceFolder = targetResourceFolder;
 		pluginConfiguration.targetSourceFolder = targetSourceFolder;
 		pluginConfiguration.targetClassFolder = targetSourceFolder;
 
