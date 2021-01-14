@@ -84,13 +84,13 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	@Override
 	public CompletableFuture<AllFieldCasesWithIdSubtype> oneWithIdSubType(
 			DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
-			AllFieldCases source) {
+			AllFieldCases source, Boolean uppercase) {
 		return dataLoader.load(UUID.randomUUID());
 	}
 
 	@Override
 	public AllFieldCasesWithIdSubtype oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCases origin) {
+			AllFieldCases origin, Boolean uppercase) {
 		return generator.generateInstance(AllFieldCasesWithIdSubtype.class);
 	}
 

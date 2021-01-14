@@ -13,6 +13,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 Both modes (client and server):
 
 
+#1.11.2
+
+server mode:
+* The generated code would not compile for fields with parameters (when the field's type is an entity with an id)
+
+
 #1.11.1
 
 Both modes (client and server):
