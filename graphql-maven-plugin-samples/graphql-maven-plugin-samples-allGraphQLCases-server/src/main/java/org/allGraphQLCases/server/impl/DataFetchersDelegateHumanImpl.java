@@ -10,6 +10,7 @@ import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.util.DataFetchersDelegateHuman;
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +55,7 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	}
 
 	@Override
-	public List<Human> batchLoader(List<UUID> keys) {
+	public List<Human> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		return generator.generateInstanceList(Human.class, keys.size());
 	}
 

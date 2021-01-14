@@ -41,10 +41,11 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 
 	@Override
 	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
-		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
-		configuration.mode = PluginMode.server;
-		configuration.schemaPersonalizationFile = null;
 		configuration.customScalars = customScalars;
+		configuration.generateBatchLoaderEnvironment = true;
+		configuration.mode = PluginMode.server;
+		configuration.schemaFilePattern = "allGraphQLCases*.graphqls";
+		configuration.schemaPersonalizationFile = null;
 		configuration.separateUtilityClasses = true;
 	}
 }

@@ -27,6 +27,7 @@
 						the XxxEdge and XxxConnection interfaces or objects), for fields marked with the @RelatConnection directive. See the documentation 
 						for more information -->
 					<addRelayConnections>true</addRelayConnections>
+					<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 					<packageName>org.allGraphQLCases.server</packageName>
 					<separateUtilityClasses>true</separateUtilityClasses>
 					<customScalars>

@@ -31,6 +31,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow
 	// to load several generated source folders in the IDE.
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
+	public boolean generateBatchLoaderEnvironment = false;
 	public boolean generateDeprecatedRequestResponse = true;
 	public boolean generateJPAAnnotation = true;
 	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;

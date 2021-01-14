@@ -17,6 +17,7 @@ import org.allGraphQLCases.server.HumanConnection;
 import org.allGraphQLCases.server.HumanEdge;
 import org.allGraphQLCases.server.PageInfo;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesInterfaceType;
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -151,7 +152,7 @@ public class DataFetchersDelegateAllFieldCasesInterfaceTypeImpl
 	}
 
 	@Override
-	public List<AllFieldCasesInterfaceType> batchLoader(List<UUID> keys) {
+	public List<AllFieldCasesInterfaceType> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		List<AllFieldCasesInterfaceType> ret = new ArrayList<>();
 
 		for (UUID key : keys) {

@@ -18,6 +18,7 @@ import org.allGraphQLCases.server.HumanConnection;
 import org.allGraphQLCases.server.HumanEdge;
 import org.allGraphQLCases.server.PageInfo;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesInterface;
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -150,7 +151,7 @@ public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetch
 	}
 
 	@Override
-	public List<AllFieldCasesInterface> batchLoader(List<UUID> keys) {
+	public List<AllFieldCasesInterface> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		List<AllFieldCasesInterface> ret = new ArrayList<>();
 
 		for (UUID key : keys) {

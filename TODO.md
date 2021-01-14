@@ -6,6 +6,7 @@ Here are the next tasks listed, as a TODO list:
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
 ==> update the four tutorials
 ==> Check the documented default value
+* Better document the BatchLoader (including the generateBatchLoaderEnvironment parameter)
 * [WIP] Adding the relay connection capabilities (almost done, unit tests are Ok, remaining task: integration tests).
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
 * Switch to apache 2.0 licence

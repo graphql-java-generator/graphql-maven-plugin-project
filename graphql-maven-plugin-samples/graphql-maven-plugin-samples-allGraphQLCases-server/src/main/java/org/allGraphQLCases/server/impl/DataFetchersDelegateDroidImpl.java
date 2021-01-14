@@ -12,6 +12,7 @@ import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.util.DataFetchersDelegateDroid;
+import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -37,7 +38,7 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 	}
 
 	@Override
-	public List<Droid> batchLoader(List<UUID> keys) {
+	public List<Droid> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		return generator.generateInstanceList(Droid.class, keys.size());
 	}
 
