@@ -37,10 +37,10 @@ public class Forum_Client_SpringConfiguration extends AbstractSpringConfiguratio
 
 	@Override
 	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
-		configuration.schemaFilePattern = "forum.graphqls";
-		configuration.mode = PluginMode.client;
-		configuration.schemaPersonalizationFile = null;
 		configuration.customScalars = customScalars;
+		configuration.mode = PluginMode.client;
+		configuration.schemaFilePattern = "forum.graphqls";
+		configuration.schemaPersonalizationFile = null;
 		configuration.separateUtilityClasses = false;
 	}
 }

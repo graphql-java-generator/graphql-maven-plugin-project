@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.RelationType;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
 import graphql.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
 
@@ -30,11 +34,15 @@ class DocumentParser_Forum_Client_Test {
 
 	AbstractApplicationContext ctx = null;
 	GenerateCodeDocumentParser documentParser;
+	GenerateCodeGenerator codeGenerator;
+	GraphQLConfigurationTestHelper configuration;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		ctx = new AnnotationConfigApplicationContext(Forum_Client_SpringConfiguration.class);
 		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
+		codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
+		configuration = ctx.getBean(GraphQLConfigurationTestHelper.class);
 
 		documentParser.parseDocuments();
 	}
@@ -223,6 +231,44 @@ class DocumentParser_Forum_Client_Test {
 				"expecting com.graphql_java_generator.annotation.GraphQLObjectType");
 		assertTrue(post.getImports().contains("com.graphql_java_generator.annotation.GraphQLScalar"),
 				"expecting com.graphql_java_generator.annotation.GraphQLScalar");
+	}
+
+	/**
+	 * Checks that the spring Autoconfiguration and META-INF/spring.factories are properly copied with the runtime
+	 * sources
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	void check_AutoConfiguration() throws IOException {
+		// Preparation
+		// We need to activate the copy of the runtime sources
+		configuration.setCopyRuntimeSources(true);
+		// Let's copy these file in a dedicated folder
+		File parentFile = new File(configuration.targetSourceFolder.getParentFile().getParentFile(),
+				"DocumentParser_Forum_Client_Test");
+		File targetParentFolder = new File(parentFile, "autoconfiguration_test");
+		File targetSourceFolder = new File(targetParentFolder, "java");
+		configuration.setTargetSourceFolder(targetSourceFolder);
+		File targetResourceFolder = new File(targetParentFolder, "resources");
+		configuration.setTargetResourceFolder(targetResourceFolder);
+
+		// Go, go, go
+		codeGenerator.copyRuntimeSources();
+
+		// Verification
+		File autoconfigurationFile = new File(targetSourceFolder,
+				"com/graphql_java_generator/spring/client/GraphQLAutoConfiguration.java");
+		assertTrue(autoconfigurationFile.exists() && autoconfigurationFile.isFile(),
+				"GraphQLAutoConfiguration should exist");
+
+		File metaInf = new File(targetResourceFolder, "META-INF");
+		assertTrue(metaInf.exists(), "spring.factories should exist");
+		assertTrue(metaInf.isDirectory(), "spring.factories should be a folder");
+
+		File springMetaFileFActoriesFile = new File(metaInf, "spring.factories");
+		assertTrue(springMetaFileFActoriesFile.exists(), "spring.factories should exist");
+		assertTrue(springMetaFileFActoriesFile.isFile(), "spring.factories should be a file");
 	}
 
 	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
