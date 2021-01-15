@@ -33,6 +33,23 @@ public class PartialDirectRequests implements Queries {
 	@Autowired
 	MutationTypeExecutor mutationType;
 
+	/** The constructor used, when this class is loaded as a Spring bean (useless if there is no other constructor) */
+	@Autowired
+	public PartialDirectRequests() {
+		// No action.
+	}
+
+	/**
+	 * The constructor to use, when not in a Spring context. To remove, when in a Spring app
+	 * 
+	 * @param url
+	 *            The url for the GraphQL endpoint
+	 */
+	public PartialDirectRequests(String url) {
+		queryType = new QueryTypeExecutor(url);
+		mutationType = new MutationTypeExecutor(url);
+	}
+
 	@Override
 	public List<Board> boardsSimple() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		return queryType.boards("");

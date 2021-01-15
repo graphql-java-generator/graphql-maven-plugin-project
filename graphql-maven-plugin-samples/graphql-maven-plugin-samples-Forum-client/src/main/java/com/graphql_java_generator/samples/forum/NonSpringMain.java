@@ -2,40 +2,32 @@ package com.graphql_java_generator.samples.forum;
 
 import java.util.Calendar;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
-import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
-import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequestsDeprecated;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.subscription.SubscriptionRequests;
 
 /**
- * A Spring Boot client app. Very easy to use and to configure
+ * A standard client app (non spring)
  * 
  * @author etienne-sf
  */
-@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, QueryTypeExecutor.class })
-public class Main implements CommandLineRunner {
+public class NonSpringMain implements CommandLineRunner {
 
-	@Autowired
 	PartialDirectRequests partialDirectRequests;
-	@Autowired
-	PartialPreparedRequests partialPreparedRequests;
-	@Autowired
-	PartialPreparedRequestsDeprecated partialPreparedRequestsDeprecated;
-	@Autowired
 	SubscriptionRequests subscriptionRequests;
 
-	public static void main(String[] args) {
-		SpringApplication.run(Main.class, args);
+	public static void main(String[] args) throws Exception {
+		NonSpringMain main = new NonSpringMain();
+		String url = "http://localhost:8180/graphql";
+		String subscriptionUrl = "http://localhost:8180/graphql/subscription";
+		main.partialDirectRequests = new PartialDirectRequests(url);
+		main.subscriptionRequests = new SubscriptionRequests(url, subscriptionUrl);
+
+		main.run(args);
 	}
 
 	/**
@@ -49,18 +41,6 @@ public class Main implements CommandLineRunner {
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
 		exec(partialDirectRequests, null);
-
-		System.out.println("");
-		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
-		System.out.println("============================================================================");
-		exec(partialPreparedRequests, null);
-
-		System.out.println("");
-		System.out.println("============================================================================");
-		System.out.println("======= DEPRECATED WAY (to check that it still works) ======================");
-		System.out.println("============================================================================");
-		exec(partialPreparedRequestsDeprecated, null);
 
 		System.out.println("");
 		System.out.println("============================================================================");
