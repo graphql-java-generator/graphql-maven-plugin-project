@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.util.DataFetchersDelegateCharacter;
+import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -36,7 +37,7 @@ public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCh
 	}
 
 	@Override
-	public List<Character> batchLoader(List<UUID> keys) {
+	public List<Character> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		return generator.generateInstanceList(Character.class, keys.size());
 	}
 

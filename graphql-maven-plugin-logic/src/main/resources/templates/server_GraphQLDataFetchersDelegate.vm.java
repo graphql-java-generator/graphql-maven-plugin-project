@@ -6,10 +6,14 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
 import graphql.schema.DataFetchingEnvironment;
+#if($configuration.generateBatchLoaderEnvironment)
+import org.dataloader.BatchLoaderEnvironment;
+#end
 
 #foreach($import in $imports)
 import $import;
@@ -69,7 +73,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 */
 ## If this dataFetcher is a completableFuture, we add a DataLoader parameter
 #if (${dataFetcher.completableFuture})
-	public CompletableFuture<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, ${dataFetcher.field.javaType}> dataLoader#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${dataFetcher.field.javaType} ${argument.javaName}#end);
+	public CompletableFuture<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, ${dataFetcher.field.javaType}> dataLoader#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
 #elseif ($dataFetcherDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
 	public Publisher<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
@@ -90,7 +94,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 *            A list of ${batchLoader.type.identifier.type.name}'s id
 	 * @return A list of ${batchLoader.type.identifier.type.name}s
 	 */
-	public List<${batchLoader.type.classSimpleName}> batchLoader(List<${batchLoader.type.identifier.type.classSimpleName}> keys);
+	public List<${batchLoader.type.classSimpleName}> batchLoader(List<${batchLoader.type.identifier.type.classSimpleName}> keys#if($configuration.generateBatchLoaderEnvironment), BatchLoaderEnvironment environment#end);
 
 #end
 }

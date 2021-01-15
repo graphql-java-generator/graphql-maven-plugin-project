@@ -179,7 +179,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
 		checkField(objectType, j, "oneWithIdSubType", false, false, null, "AllFieldCasesWithIdSubtype",
 				"AllFieldCasesWithIdSubtype");
-		checkNbInputParameter(objectType, j, 0);
+		checkNbInputParameter(objectType, j, 1);
+		checkInputParameter(objectType, j, 0, "uppercase", false, false, null, "Boolean", "Boolean", null);
 		j += 1;
 		// listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean,
 		// textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]

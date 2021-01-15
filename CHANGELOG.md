@@ -3,7 +3,7 @@
 New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
 Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
 Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
-* copyRuntimeSources: false
+* generateBatchLoaderEnvironment: true
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
@@ -21,6 +21,14 @@ Client mode:
 ==> Removal of the SubscriptionClient interface. All interactions of the client code with the web socket are done through the SubscriptionCallback implementation, provided by the application code.
 ==> The SubscriptionCallback has changed, to match the Spring reactive behavior
 * The SubscriptionCallback has evolved. Its onConnect() and onClose() methods now have no parameters. Unexpected end of the web socket are now received as an error.
+
+
+#1.11.2
+
+server mode:
+* The generated code would not compile for fields with parameters (when the field's type is an entity with an id)
+* Add of the generateBatchLoaderEnvironment parameter. When in server mode, it allows the batch loader to retrieve the context, for instance the field parameters associated to this id.
+
 
 #1.11.1
 

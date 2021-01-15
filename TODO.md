@@ -2,7 +2,9 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Check <copyGraphQLJavaSources>false</copyGraphQLJavaSources>  (it seems that the code is still copied)
+* Publish the Gradle 1.11.2 version
+* Publish the site for the 1.11.2 version, but this issue appears:
+Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.9.0:site (default-site) on project graphql-maven-plugin-project: SiteToolException: The site descriptor cannot be resolved from the repository: ArtifactResolutionException: Unable to locate site descriptor: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:xml:site_en:2.4.0 from/to mavencentral_releases (https://mvnrepository.com/artifact): Authorization failed for https://mvnrepository.com/artifact/org/springframework/boot/spring-boot-starter-parent/2.4.0/spring-boot-starter-parent-2.4.0-site_en.xml 403 Forbidden
 * Make subscription also work with OAuth protected servers (integration test is in graphql-maven-plugin-samples-allGraphQLCases-client)
 * Remove all log4j dependencies from the client and server pom dependencies (issue #52)
    Remove exclusions in poms, like spring-boot-starter-logging
@@ -18,6 +20,7 @@ Here are the next tasks listed, as a TODO list:
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
 ==> update the four tutorials
 ==> Check the documented default value
+* Better document the BatchLoader (including the generateBatchLoaderEnvironment parameter)
 * [WIP] Adding the relay connection capabilities (almost done, unit tests are Ok, remaining task: integration tests).
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
 	OAuth:"https://www.baeldung.com/jersey-sse-client-request-headers";//

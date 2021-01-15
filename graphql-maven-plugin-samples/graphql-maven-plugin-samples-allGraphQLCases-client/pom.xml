@@ -42,7 +42,7 @@
 						<configuration>
 							<!-- In this pom, we choose not to copy the runtime. It allows to replace it by another one, for instance one updated 
 								for your needs. You then need to add this runtime as a dependency -->
-							<copyGraphQLJavaSources>false</copyGraphQLJavaSources>
+							<copyRuntimeSources>false</copyRuntimeSources>
 							<packageName>org.allGraphQLCases.client</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
 							<separateUtilityClasses>true</separateUtilityClasses>

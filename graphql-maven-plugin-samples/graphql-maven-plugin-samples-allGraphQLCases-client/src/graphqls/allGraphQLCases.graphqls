@@ -149,7 +149,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     planets: [String!]!
     friends: [Human!]
     matrix: [[Float]]!
-    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    oneWithIdSubType(uppercase: Boolean): AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
     listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]

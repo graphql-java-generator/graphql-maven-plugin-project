@@ -17,6 +17,7 @@ import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCases;
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -77,20 +78,20 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	}
 
 	@Override
-	public List<AllFieldCases> batchLoader(List<UUID> keys) {
+	public List<AllFieldCases> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		return generator.generateInstanceList(AllFieldCases.class, keys.size());
 	}
 
 	@Override
 	public CompletableFuture<AllFieldCasesWithIdSubtype> oneWithIdSubType(
 			DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
-			AllFieldCases source) {
-		return dataLoader.load(UUID.randomUUID());
+			AllFieldCases source, Boolean uppercase) {
+		return dataLoader.load(UUID.randomUUID(), uppercase);
 	}
 
 	@Override
 	public AllFieldCasesWithIdSubtype oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCases origin) {
+			AllFieldCases origin, Boolean uppercase) {
 		return generator.generateInstance(AllFieldCasesWithIdSubtype.class);
 	}
 

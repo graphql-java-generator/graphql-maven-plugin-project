@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.WithID;
 import org.allGraphQLCases.server.util.DataFetchersDelegateWithID;
+import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,7 +24,7 @@ public class DataFetchersDelegateWithIDImpl implements DataFetchersDelegateWithI
 	DataGenerator generator;
 
 	@Override
-	public List<WithID> batchLoader(List<UUID> keys) {
+	public List<WithID> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		return generator.generateInstanceList(WithID.class, keys.size());
 	}
 
