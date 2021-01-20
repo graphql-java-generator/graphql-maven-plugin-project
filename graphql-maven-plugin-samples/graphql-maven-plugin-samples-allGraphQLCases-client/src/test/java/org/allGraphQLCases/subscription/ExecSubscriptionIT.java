@@ -2,12 +2,14 @@ package org.allGraphQLCases.subscription;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.allGraphQLCases.Main;
+import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -16,12 +18,15 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 public class ExecSubscriptionIT {
 
+	ApplicationContext ctx;
+
 	TheSubscriptionTypeExecutor subscriptionExecutor;
 	SubscriptionCallbackListIntegerForTest callback = new SubscriptionCallbackListIntegerForTest();
 
 	@BeforeEach
 	public void setup() {
-		subscriptionExecutor = new TheSubscriptionTypeExecutor("http://localhost:8180/graphql" + "/subscription");
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+		subscriptionExecutor = ctx.getBean(TheSubscriptionTypeExecutor.class);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)

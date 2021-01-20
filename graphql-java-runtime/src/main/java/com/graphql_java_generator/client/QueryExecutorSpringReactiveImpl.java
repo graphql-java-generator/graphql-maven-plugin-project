@@ -190,9 +190,8 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		}
 
 		// Is there an OAuth authentication to handle?
-		HttpHeaders headers = null;
+		HttpHeaders headers = new HttpHeaders();
 		if (serverOAuth2AuthorizedClientExchangeFilterFunction != null && oAuthTokenExtractor != null) {
-			headers = new HttpHeaders();
 			String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
 			logger.debug("Got this OAuth token (authorization header value): {}", authorizationHeaderValue);
 			headers.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
