@@ -1,7 +1,6 @@
 package org.allGraphQLCases;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.allGraphQLCases.client.CharacterInput;
@@ -15,20 +14,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-
-import reactor.netty.http.client.HttpClient;
 
 /**
  * The main class, which executes the same partialQueries, built by three different methods. See
@@ -55,6 +47,7 @@ curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorizatio
  * @author etienne-sf
  * @see https://michalgebauer.github.io/spring-graphql-security/
  */
+@SuppressWarnings("deprecation")
 @SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
 public class Main implements CommandLineRunner {
 
@@ -135,23 +128,12 @@ public class Main implements CommandLineRunner {
 	}
 
 	@Bean
-	WebClient webClient(String graphqlEndpoint, @Autowired(required = false) HttpClient httpClient,
+	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction(
 			ReactiveClientRegistrationRepository clientRegistrations) {
-		Builder webClientBuilder = WebClient.builder()//
-				.baseUrl(graphqlEndpoint)//
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
-
-		if (httpClient != null) {
-			webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient));
-		}
-
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
 				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
 		oauth.setDefaultClientRegistrationId("provider_test");
-		webClientBuilder.filter(oauth);
-
-		return webClientBuilder.build();
+		return oauth;
 	}
 
 }

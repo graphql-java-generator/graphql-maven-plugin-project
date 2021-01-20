@@ -11,6 +11,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 # Not released yet
 
 Both modes (client and server):
+* Added support for OAuth 2
 * Removed all dependencies to log4j
 * [minor] The GraphqlUtils class has been moved into the com.graphql_java_generator.util package
 

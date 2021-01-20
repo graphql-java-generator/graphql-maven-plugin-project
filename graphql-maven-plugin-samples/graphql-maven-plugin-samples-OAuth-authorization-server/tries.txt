@@ -69,14 +69,14 @@ The WebSocketClient can be configured using:
 For jetty httpclient:
 
 To be checked: https://developers.google.com/api-client-library/java/google-oauth-java-client/oauth2
-
+https://www.javatips.net/api/org.eclipse.jetty.client.httpclient
 
 
 
 If Web socket with Reactive Spring
 ---------------------------------
 
-Then the Netty websocketclient is used 
+Then the Netty websocketclient is used. The Sample below SEEMS NICE: 
 https://github.com/spring-projects/spring-security/issues/6711
 
 AsyncHttpClient (AHC) is a library, based on Netty,
@@ -84,3 +84,4 @@ https://www.baeldung.com/async-http-client-websockets
 https://asynchttpclient.github.io/async-http-client/oauth.html
 The one below seems promising:
 https://github.com/AsyncHttpClient/async-http-client
+

@@ -11,7 +11,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
@@ -56,6 +58,18 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	String graphqlSubscriptionEndpoint;
 
 	/**
+	 * The optional {@link ServerOAuth2AuthorizedClientExchangeFilterFunction} that manages the OAuth Authorization
+	 * header, on client side
+	 */
+	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction;
+
+	/**
+	 * The optional {@link OAuthTokenExtractor} that extracts the OAuth Authorization header, once the
+	 * {@link ServerOAuth2AuthorizedClientExchangeFilterFunction} has gotten it
+	 */
+	OAuthTokenExtractor oAuthTokenExtractor;
+
+	/**
 	 * The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and mutations.
 	 */
 	WebClient webClient;
@@ -94,16 +108,31 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 *            The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to
 	 *            build the web sockets, for GraphQL subscriptions.<BR/>
 	 *            This is mandatory if the application latter calls subscription. It may be null otherwise.
+	 * @param serverOAuth2AuthorizedClientExchangeFilterFunction
+	 *            The {@link ServerOAuth2AuthorizedClientExchangeFilterFunction} is responsible for getting OAuth token
+	 *            from the OAuth authorization server. It is optional, and may be provided by the App's spring config.
+	 *            If it is not provided, then there is no OAuth authentication on client side. If provided, then the
+	 *            client uses it to provide the OAuth2 authorization token, when accessing the GraphQL resource server
+	 *            for queries/mutations/subscriptions.
+	 * @param oAuthTokenExtractor
+	 *            This class is responsible for extracting the OAuth token, once the
+	 *            {@link ServerOAuth2AuthorizedClientExchangeFilterFunction} has done its job, and added the OAuth2
+	 *            token into the request, in the Authorization header. See the {@link OAuthTokenExtractor} doc for more
+	 *            information.
 	 */
 	@Autowired
 	public QueryExecutorSpringReactiveImpl(String graphqlEndpoint, //
 			@Autowired(required = false) String graphqlSubscriptionEndpoint, //
 			WebClient webClient, //
-			@Autowired(required = false) WebSocketClient webSocketClient) {
+			@Autowired(required = false) WebSocketClient webSocketClient,
+			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction,
+			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractor) {
 		this.graphqlEndpoint = graphqlEndpoint;
 		this.graphqlSubscriptionEndpoint = graphqlSubscriptionEndpoint;
 		this.webClient = webClient;
 		this.webSocketClient = webSocketClient;
+		this.serverOAuth2AuthorizedClientExchangeFilterFunction = serverOAuth2AuthorizedClientExchangeFilterFunction;
+		this.oAuthTokenExtractor = oAuthTokenExtractor;
 	}
 
 	@Override
@@ -160,16 +189,27 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 					+ subscriptionName);
 		}
 
+		// Is there an OAuth authentication to handle?
+		HttpHeaders headers = null;
+		if (serverOAuth2AuthorizedClientExchangeFilterFunction != null && oAuthTokenExtractor != null) {
+			headers = new HttpHeaders();
+			String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
+			logger.debug("Got this OAuth token (authorization header value): {}", authorizationHeaderValue);
+			headers.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
+		} else {
+			logger.debug(
+					"No serverOAuth2AuthorizedClientExchangeFilterFunction or no oAuthTokenExtractor where provided. No OAuth token is provided.");
+		}
+
 		String request = graphQLRequest.buildRequest(parameters);
 		logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 
 		// Let's create and start the Web Socket
-
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
 				subscriptionName, subscriptionCallback, subscriptionType, messageType);
 		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
-		Disposable disposable = webSocketClient.execute(getWebSocketURI(), webSocketHandler)
+		Disposable disposable = webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler)
 				.subscribeOn(Schedulers.single())// Let's have a dedicated thread
 				.subscribe();
 		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,

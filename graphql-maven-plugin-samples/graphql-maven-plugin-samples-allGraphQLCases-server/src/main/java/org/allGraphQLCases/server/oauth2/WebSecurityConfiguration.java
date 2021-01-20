@@ -36,7 +36,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			// entering in production
 				.cors().and().csrf().disable()//
 				.authorizeRequests(authz -> authz//
-						.antMatchers(HttpMethod.GET, "/graphql/subscription").permitAll()// .access("hasRole('ROLE_CLIENT')")//
+						.antMatchers(HttpMethod.GET, "/graphql/subscription").authenticated()// .access("hasRole('ROLE_CLIENT')")//
 						.antMatchers(HttpMethod.POST, "/graphql").authenticated()// .access("hasRole('ROLE_CLIENT')")//
 						.antMatchers(HttpMethod.GET, "/graphiql").permitAll()//
 						// All other URL accesses are prohibited

@@ -6,7 +6,6 @@ Here are the next tasks listed, as a TODO list:
 * Publish the site for the 1.11.2 version, but this issue appears:
 Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.9.0:site (default-site) on project graphql-maven-plugin-project: SiteToolException: The site descriptor cannot be resolved from the repository: ArtifactResolutionException: Unable to locate site descriptor: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:xml:site_en:2.4.0 from/to mavencentral_releases (https://mvnrepository.com/artifact): Authorization failed for https://mvnrepository.com/artifact/org/springframework/boot/spring-boot-starter-parent/2.4.0/spring-boot-starter-parent-2.4.0-site_en.xml 403 Forbidden
 * Add documentation for OAuth use
-* Make subscription also work with OAuth protected servers (integration test is in graphql-maven-plugin-samples-allGraphQLCases-client)
 * Remove all log4j dependencies from the client and server pom dependencies (issue #52)
    Remove exclusions in poms, like spring-boot-starter-logging
 * Check this issue: when executing the full Forum client test case for the first time after starting the server, the subscription test won't work. It works everytime if executed alone, or with the full test case starting from the second execution.
