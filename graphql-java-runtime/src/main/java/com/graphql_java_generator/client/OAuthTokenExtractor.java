@@ -89,7 +89,7 @@ public class OAuthTokenExtractor {
 	 * provided, then there is no OAuth authentication on client side. If provided, then the client uses it to provide
 	 * the OAuth2 authorization token, when accessing the GraphQL resource server, for queries/mutations/subscriptions.
 	 */
-	@Autowired
+	@Autowired(required = false)
 	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction;
 
 	/** The filter which retrieves the Authorization header value */
@@ -103,16 +103,18 @@ public class OAuthTokenExtractor {
 
 	@PostConstruct
 	void init() {
-		oAuthTokenFilter = new OAuthTokenFilter();
+		if (serverOAuth2AuthorizedClientExchangeFilterFunction != null) {
+			oAuthTokenFilter = new OAuthTokenFilter();
 
-		// The filter will be applied in their reverse order.
-		getOAuthTokenExchangeFunction = ExchangeFunctions.create(new ReactorClientHttpConnector())
-				.filter(oAuthTokenFilter).filter(serverOAuth2AuthorizedClientExchangeFilterFunction);
+			// The filter will be applied in their reverse order.
+			getOAuthTokenExchangeFunction = ExchangeFunctions.create(new ReactorClientHttpConnector())
+					.filter(oAuthTokenFilter).filter(serverOAuth2AuthorizedClientExchangeFilterFunction);
 
-		try {
-			dummyHttpRequest = ClientRequest.create(HttpMethod.GET, new URI(DUMMY_REQUEST)).build();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e.getMessage(), e);
+			try {
+				dummyHttpRequest = ClientRequest.create(HttpMethod.GET, new URI(DUMMY_REQUEST)).build();
+			} catch (URISyntaxException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		}
 	}
 
