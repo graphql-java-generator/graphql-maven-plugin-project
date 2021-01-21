@@ -153,6 +153,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
     listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+    issue65(inputs: [FieldParameterInput!]): [AllFieldCasesWithoutIdSubtype]
 }
 
 # This interface is a clone of the AllFieldCases type. 

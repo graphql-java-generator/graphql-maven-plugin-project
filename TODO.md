@@ -8,6 +8,9 @@ Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.9.0:site (de
 * Add documentation for OAuth use
 * Remove all log4j dependencies from the client and server pom dependencies (issue #52)
    Remove exclusions in poms, like spring-boot-starter-logging
+* Issue 65: add some more info when someone a request like one of those:
+    * "{id name subObject(types: [TYPE1, TYPE2])}"   (the list should be an input parameter)
+    * "{id name subObject(type: {some json})}"       (the json should be an input parameter)
 * Check this issue: when executing the full Forum client test case for the first time after starting the server, the subscription test won't work. It works everytime if executed alone, or with the full test case starting from the second execution.
 * Remove the SubscriptionClientWebSocket class
 * Check subscription against the Hasura setup (answer to issue 54) : https://hasura.io/

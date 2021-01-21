@@ -146,4 +146,22 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		return generator.generateInstanceList(Date.class, 5);
 	}
 
+	@Override
+	public List<AllFieldCasesWithoutIdSubtype> issue65(DataFetchingEnvironment dataFetchingEnvironment,
+			AllFieldCases origin, List<FieldParameterInput> inputs) {
+
+		List<AllFieldCasesWithoutIdSubtype> ret = generator.generateInstanceList(AllFieldCasesWithoutIdSubtype.class,
+				inputs.size());
+
+		// Let's put in uppercase the name, for items in the return list that match the inputs that have uppercase set
+		// to true
+		for (int i = 0; i < inputs.size(); i += 1) {
+			AllFieldCasesWithoutIdSubtype item = ret.get(i);
+			if (inputs.get(i).getUppercase()) {
+				item.setName(item.getName().toUpperCase());
+			}
+		}
+		return ret;
+	}
+
 }
