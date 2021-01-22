@@ -129,14 +129,14 @@ public interface CommonConfiguration {
 	 * As a sum-up, if <I>addRelayConnections</I> is set to true, the plugin will add into the in-memory GraphQL schema:
 	 * </P>
 	 * <UL>
-	 * <LI>Check that the <I>&#064;@RelayConnexion</I> directive definition exist in the GraphQL schema, and is
+	 * <LI>Check that the <I>&#064;@RelayConnection</I> directive definition exist in the GraphQL schema, and is
 	 * compliant with the above definition.</LI>
 	 * <LI>Add the <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
 	 * defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
 	 * <LI>Add the <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined
 	 * in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
 	 * <LI>All the Edge and Connection type in the GraphQL schema, for each type that is marked by the
-	 * <I>&#064;@RelayConnexion</I> directive.</LI>
+	 * <I>&#064;@RelayConnection</I> directive.</LI>
 	 * </UL>
 	 */
 	public boolean isAddRelayConnections();

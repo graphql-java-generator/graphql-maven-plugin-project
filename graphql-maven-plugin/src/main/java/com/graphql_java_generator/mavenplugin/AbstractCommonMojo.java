@@ -42,7 +42,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	 * <UL>
 	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
 	 * defined in the given schema, but is not compliant, then an error is thrown.</LI>
-	 * <LI>The <I>@RelayConnexion</I> directive definition in the GraphQL schema (if not already defined). If this is
+	 * <LI>The <I>@RelayConnection</I> directive definition in the GraphQL schema (if not already defined). If this is
 	 * already defined in the given schema, but is not compliant with the relay specification, then an error is
 	 * thrown.</LI>
 	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
@@ -50,7 +50,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	 * <LI>The <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined in
 	 * the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
 	 * <LI>All the Edge and Connection type in the GraphQL schema, for each type that is marked by the
-	 * <I>@RelayConnexion</I> directive.</LI>
+	 * <I>@RelayConnection</I> directive.</LI>
 	 * </UL>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.addRelayConnections", defaultValue = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS)
