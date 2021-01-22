@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
 * Publish the Gradle 1.11.2 version
 * Publish the site for the 1.11.2 version, but this issue appears:
 Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.9.0:site (default-site) on project graphql-maven-plugin-project: SiteToolException: The site descriptor cannot be resolved from the repository: ArtifactResolutionException: Unable to locate site descriptor: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:xml:site_en:2.4.0 from/to mavencentral_releases (https://mvnrepository.com/artifact): Authorization failed for https://mvnrepository.com/artifact/org/springframework/boot/spring-boot-starter-parent/2.4.0/spring-boot-starter-parent-2.4.0-site_en.xml 403 Forbidden
