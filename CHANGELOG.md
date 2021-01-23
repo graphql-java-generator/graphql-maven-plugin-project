@@ -23,12 +23,14 @@ Client mode:
 ==> The SubscriptionCallback has changed, to match the Spring reactive behavior
 * The SubscriptionCallback has evolved. Its onConnect() and onClose() methods now have no parameters. Unexpected end of the web socket are now received as an error.
 
+Server mode:
+* Corrected a regression in 1.11.2, due to _generateBatchLoaderEnvironment_ (see issue #64)
 
 #1.11.2
 
 server mode:
 * The generated code would not compile for fields with parameters (when the field's type is an entity with an id)
-* Add of the generateBatchLoaderEnvironment parameter. When in server mode, it allows the batch loader to retrieve the context, for instance the field parameters associated to this id.
+* Add of the _generateBatchLoaderEnvironment_ parameter. When in server mode, it allows the batch loader to retrieve the context, for instance the field parameters associated to this id.
 
 
 #1.11.1

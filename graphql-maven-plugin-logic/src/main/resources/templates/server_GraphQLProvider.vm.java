@@ -42,7 +42,11 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 
+#if($configuration.generateBatchLoaderEnvironment)
+import com.graphql_java_generator.server.util.BatchLoaderDelegateWithContext;
+#else
 import com.graphql_java_generator.server.util.BatchLoaderDelegate;
+#end
 
 #foreach($import in $imports)
 import $import;
@@ -88,8 +92,13 @@ public class GraphQLProvider {
 		DataLoaderRegistry registry = new DataLoaderRegistry();
 		DataLoader<Object, Object> dl;
 
+#if($configuration.generateBatchLoaderEnvironment)
+		for (BatchLoaderDelegateWithContext<?, ?> batchLoaderDelegate : applicationContext
+				.getBeansOfType(BatchLoaderDelegateWithContext.class).values()) {
+#else
 		for (BatchLoaderDelegate<?, ?> batchLoaderDelegate : applicationContext
 				.getBeansOfType(BatchLoaderDelegate.class).values()) {
+#end
 			// Let's check that we didn't already register a BatchLoaderDelegate with this name
 			if ((dl = registry.getDataLoader(batchLoaderDelegate.getName())) != null) {
 				throw new RuntimeException(
