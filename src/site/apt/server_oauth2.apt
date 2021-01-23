@@ -24,7 +24,7 @@ Implementing an OAuth2 secured GraphQL server
 * {Sample}
 ~~~~~~~~~~~~~~~~~~~
 
-  This page is based on the {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client}graphql-maven-plugin-samples-allGraphQLCases-client} sample.
+  This page is based on the {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client}graphql-maven-plugin-samples-allGraphQLCases-client}} sample.
   
   This sample can be executed, when the servers below are started. They are available in the maven plugin project:
   
@@ -61,7 +61,7 @@ Implementing an OAuth2 secured GraphQL server
 
   As usual, it may happen (hum, ok, it always happens :) ) that some issue prevents your code to work as expected. So here are some useful commands, to check if the whole system is properly configured or not.
   
-  All these commands are based on the <graphql-maven-plugin-samples-allGraphQLCases> resource server, and the <graphql-maven-plugin-samples-OAuth-authorization-server> authorization server, as provided in the  {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project}maven GraphQL plugin project}.
+  All these commands are based on the <graphql-maven-plugin-samples-allGraphQLCases> resource server, and the <graphql-maven-plugin-samples-OAuth-authorization-server> authorization server, as provided in the  {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project}maven GraphQL plugin project}}.
 
   This commands:
   
@@ -113,7 +113,7 @@ curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorizatio
 		</dependency>
 +--------------------------------------------------------------------------------------------
 
-  There is an issue here: take care at the version for the <spring-security-oauth2-autoconfigure> dependency. As of 2.4.0, its version is not managed. That is: there is no default value for it. So you must give a value. The issue is that this version must the same as the version for the other versions of Spring Boot autoconfiguration.
+  There is an issue here: take care at the version for the <spring-security-oauth2-autoconfigure> dependency. As of 2.4.0, its version is not managed. That is: there is no default value for it. So you must give its version a value. The issue is that this version must the same as the version for the other versions of Spring Boot autoconfiguration.
   
   So, when you update the graphql plugin version, take a look at the effective pom, and check the <org.springframework.boot:spring-boot-autoconfigure> version. In eclipse, once a pom file is open, you see the effective pom by clicking on <Effective POM>, in the lower part of the window.  
   
@@ -218,7 +218,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 								.introspectionUri(this.introspectionUri)
 								.introspectionClientCredentials(this.clientId, this.clientSecret)
 				)
-				);
+			);
 	}
 
 	public String getIntrospectionUri() {
@@ -244,8 +244,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void setClientSecret(String clientSecret) {
 		this.clientSecret = clientSecret;
 	}
-
-}+--------------------------------------------------------------------------------------------
+}
++--------------------------------------------------------------------------------------------
 
   For more information, don't hesitate to browse the web: there are tons of information on how to manage this, with Spring.
   

@@ -112,6 +112,7 @@ Creating a client app
   Then, add the plugin either to your POM file (if you're using Maven) or your build.gradle file (if you're using Gradle):
 
   The POM file looks like this:
+
 +--------------------------------------------------------------------------------------------
 <project ...>
 ...
@@ -153,7 +154,6 @@ Creating a client app
 						</customScalar>
 					</customScalars>
 					<!-- The parameters below change the 1.x default behavior. They are set to respect the default behavior of the future 2.x versions -->
-					<copyRuntimeSources>false</copyRuntimeSources>
 					<generateDeprecatedRequestResponse>false</generateDeprecatedRequestResponse>
 					<separateUtilityClasses>true</separateUtilityClasses>
 					<!-- You can add here other plugin parameters -->
@@ -211,6 +211,7 @@ Creating a client app
 +--------------------------------------------------------------------------------------------
 
   The build.gradle file looks like this:
+
 +--------------------------------------------------------------------------------------------
 plugins {
 	id "com.graphql_java_generator.graphql-gradle-plugin" version "${lastReleasedVersion}"
@@ -246,7 +247,6 @@ generateClientCodeConf {
 	] ]
 
 	// The parameters below change the 1.x default behavior. They are set to respect the default behavior of the future 2.x versions 
-	copyRuntimeSources = false
 	generateDeprecatedRequestResponse = false
 	separateUtilityClasses = true
 	
@@ -285,8 +285,7 @@ gradle clean build
 ~~~~~~~~~~~~~~~~~~~
 
   We can now create a first app. As we're in a Spring mode, we're using Spring Boot.
-  
-  
+
 +--------------------------------------------------------------------------------------------
 package com.graphql_java_generator.minimal_app;
 
@@ -334,3 +333,5 @@ public class MinimalNonSpringApp {
     * The runtime value of the parameter.
         
   []
+
+  

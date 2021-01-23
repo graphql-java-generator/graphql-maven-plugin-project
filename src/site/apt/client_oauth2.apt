@@ -42,7 +42,7 @@ Accessing to an OAuth2 GraphQL server
 * {Sample}
 ~~~~~~~~~~~~~~~~~~~
 
-  This page is based on the {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client}graphql-maven-plugin-samples-allGraphQLCases-client} sample.
+  This page is based on the {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client}graphql-maven-plugin-samples-allGraphQLCases-client}} sample.
   
   This sample can be executed, when the servers below are started. They are available in the maven plugin project:
   
@@ -78,7 +78,7 @@ Accessing to an OAuth2 GraphQL server
 
   As usual, it may happen (hum, ok, it always happens :) ) that some issue prevents your code to work as expected. So here are some useful commands, to check if the whole system is properly configured or not.
   
-  All these commands are based on the <graphql-maven-plugin-samples-allGraphQLCases> resource server, and the <graphql-maven-plugin-samples-OAuth-authorization-server> authorization server, as provided in the  {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project}maven GraphQL plugin project}.
+  All these commands are based on the <graphql-maven-plugin-samples-allGraphQLCases> resource server, and the <graphql-maven-plugin-samples-OAuth-authorization-server> authorization server, as provided in the  {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project}maven GraphQL plugin project}}.
 
   This commands:
   
@@ -149,7 +149,8 @@ spring.security.oauth2.client.registration.provider_test.authorization-grant-typ
 spring.security.oauth2.client.registration.provider_test.client-id=clientId
 spring.security.oauth2.client.registration.provider_test.client-secret=secret
 
-spring.security.oauth2.client.provider.provider_test.token-uri=http://localhost:8181/oauth/token+--------------------------------------------------------------------------------------------
+spring.security.oauth2.client.provider.provider_test.token-uri=http://localhost:8181/oauth/token
++--------------------------------------------------------------------------------------------
 
   The first part is the GraphQL configuration part.
   
@@ -167,13 +168,12 @@ spring.security.oauth2.client.provider.provider_test.token-uri=http://localhost:
 * {Enable OAuth2 on client side, with Spring Boot}
 ~~~~~~~~~~~~~~~~~~~
 
-  We're starting with the {{{https://graphql-maven-plugin-project.graphql-java-generator.com/client_spring.html}basic Spring app}}.
+  We're starting with the {{{./client_spring.html}basic Spring app}}.
   
   Adding the OAuth2 capability is as simple as adding the <ServerOAuth2AuthorizedClientExchangeFilterFunction>, like in the sample below:
 
 +--------------------------------------------------------------------------------------------
-@SpringBootApplication(scanBasePackageClasses = { MinimalOAuthApp.class, GraphQLConfiguration.class,
-		MyQueryTypeExecutor.class })
+@SpringBootApplication(scanBasePackageClasses = { MinimalOAuthApp.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
 public class MinimalOAuthApp implements CommandLineRunner {
 
 	@Autowired
@@ -223,5 +223,5 @@ public class MinimalOAuthApp implements CommandLineRunner {
   
   []
   
-  The important point, here, is to <<define the provider's name>> as it is named in the <application.properties> file. 
+  The important point, here, is to <<define the provider's name>> as it is named in the <application.properties> file. In this sample, its name is <provider_test>.
    
