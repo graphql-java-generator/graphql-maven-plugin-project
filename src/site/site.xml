@@ -24,18 +24,21 @@
 		</menu>
 
 		<menu name="Client mode">
-			<item name="Overview (spring)" href="client_spring.html" />
-			<item name="Overview (non spring)" href="client_jersey.html" />
+			<item name="Creating a first app (spring)" href="client_spring.html" />
+			<item name="Creating a first app (non spring)" href="client_non_spring.html" />
+			<item name="Execute GraphQL requests" href="exec_graphql_requests.html" />
 			<item name="Client Tutorial" href="client_tutorial.html" />
 			<item name="Subscription" href="client_subscription.html" />
 			<item name="Introspection" href="introspection.html" />
 			<item name="Runtime Classes" href="runtimeclasses.html" />
+			<item name="Access to an OAuth2 GraphQL server" href="client_oauth2.html" />
 		</menu>
 
 		<menu name="Server mode">
 			<item name="Server usage" href="server.html" />
 			<item name="Server Tutorial" href="server_tutorial.html" />
 			<item name="Subscription" href="server_subscription.html" />
+			<item name="Implement an OAuth2 GraphQL server" href="server_oauth2.html" />
 			<item name="Howto personalize the generated code" href="schema_personalization.html" />
 		</menu>
 

@@ -13,16 +13,6 @@ Client mode usage description
 * {Introduction}
 ~~~~~~~~~~~~~~~~~~~
 
-  This page describes the old way of building a GraphQL client with this plugin. It's based on the Jersey Client.
-  
-  The issue here is that this client doesn't manage the OAuth stuff.
-  
-  So, since the 1.12 release, the recommended way to build a client with this plugin, is to use the Spring client. Check the relevant doc on the {{{./client_spring.html}Client usage (spring)}} page
- 
-	
-* {Summary}
-~~~~~~~~~~~~~~~~~~~
-
   The client mode makes it easy for a Java GraphQL client-side application, to execute queries/mutations/subscriptions against a GraphQL server. 
   The graphql-maven-plugin generates all the necessary code, so that a Java application can call a GraphQL server by simply calling the relevant Java method.
   
@@ -30,9 +20,11 @@ Client mode usage description
   
   * The <<Full request>>: it's actually a standard GraphQL request, that you can test within graphiql
   
-  * The <<Partial request>>: you can call a java method that executes one of the queries/mutations/subscriptions defined in the schema. This java method accepts one parameter, for each parameter of this query/mutation/subscription.
+  * The <<Partial request>>: you can call a java method that executes one of the queries/mutations/subscriptions defined in the schema. 
+  This java method accepts one parameter for each parameter of this query/mutation/subscription.
   
   []
+  
   
   It manages two ways of executing the request:
   
@@ -40,101 +32,20 @@ Client mode usage description
   
   * The recommended <<prepared execution>>: 
   
-    * A GraphQLRequest object is created by the application, if possible at application startup. This allows to analyze the request only once. And it avoids errors during the app execution, as all the GraphQL requests have been checked at startup.
+    * A GraphQLRequest object is created by the application. This allows to analyze the request only once. 
+    If you create these GraphQLRequest at application startup, then the syntax control is done once for every requests at startup. This avoids to have errors occurring later, 
+    during the app execution.
     
     * Each GraphQL request execution is executed from this object. 
     
-    * <Note: the GraphQLRequest object has been created in the 1.6 release. The prepared object was before stored into a ObjectResponse. This ObjectResponse has been maintained when used with the withQueryResponseDef Builder method, and the code that uses will continue to work. Support for other Builder method has been removed.>
-    
-      * <There is no plan yet to remove the ObjectResponse object and the withQueryResponseDef Builder method. But they should be avoided in new code.>
+    * <Note: the GraphQLRequest object has been created in the 1.6 release. The prepared object was before stored into a ObjectResponse. 
+    This ObjectResponse has been maintained when used with the withQueryResponseDef Builder method, and the code that uses will continue to work.
+    Support for other Builder method has been removed. There is no plan yet to remove the ObjectResponse object and the withQueryResponseDef Builder method. 
+    But they should be avoided in new code.>
 
   []
   
-  Both kinds of requests, and both modes of execution allows to use bind parameters into your query definitions.  
-
-* {How does it work?}
-~~~~~~~~~~~~~~~~~~~
-
-  When configuring the graphql-maven-plugin in client mode, it reads a GraphQL schema file, and generates all the necessary code to make it easy to call a GraphQL server. 
-
-  As an overview, it generates:
-
-  * One java class for each Query/Mutation/Subscription object. This object contains all the method allowing to execute a full query, and shortcuts methods to execute each of the queries defined in the query/mutation/subscription.
-  
-    * The introspection queries (__schema and __type) are added to the query defined in the GraphQL schema. If no query exists in the schema, a default one is created, named QueryType.
-  
-  * One POJO for each standard object of the GraphQL object
-  
-  * One GraphQLRequest object
-  
-  * All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone.
-  
-    * So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
-    
-      * <<This is why we call it an accelerator>>: you can generate the code once, and get rid of graphql-java-generator if you wish. BTW: we think its better to continue using it! But you're free to leave, and keep the generated code. :)
-      
-      * You can change this default behavior, and use the runtime into an external dependency. Read the {{{./schema_personalization.html}Howto personalize the generated code}} for more information.
-
-  []
-
-* {How to use the plugin?}
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  First, you'll have to create or get your GraphQL schema. The GraphQL plugin expects a <.graphqls> file. 
-  See the {{{https://graphql.org/learn/schema/}GraphQL schema doc}} for all the details.
-
-  Then, add the plugin to your Maven POM file:
-
-+--------------------------------------------------------------------------------------------
-<project ...>
-...
-
-	<build>
-		<plugins>
-...
-			<plugin>
-				<groupId>com.graphql-java-generator</groupId>
-				<artifactId>graphql-maven-plugin</artifactId>
-				<version>${lastReleasedVersion}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generateClientCode</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<packageName>my.target.package</packageName>
-				</configuration>
-			</plugin>
-...
-			<extensions>
-				<!-- Adding these extensions prevents the error below, with JDK 9 and higher: -->
-				<!-- NoSuchMethodError: 'java.lang.String javax.annotation.Resource.lookup()' -->
-				<extension>
-					<groupId>javax.annotation</groupId>
-					<artifactId>javax.annotation-api</artifactId>
-					<version>1.3.2</version>
-				</extension>
-				<extension>
-					<groupId>javax.annotation</groupId>
-					<artifactId>jsr250-api</artifactId>
-					<version>1.0</version>
-				</extension>
-			</extensions>
-	
-		</plugins>
-	</build>
-...
-</project>
-+--------------------------------------------------------------------------------------------
-
-  You can define the package that will contain the generated code. If you don't, the default package is <com.generated.graphql>. 
-  This package contains the generated code. 
-
-  The necessary runtime code source is joined into the generated code, and remains in its original package, which is <com.graphql_java_generator.*>. 
-  So everything is embedded. Read the {{{./schema_personalization.html}Howto personalize the generated code}} if you want to change this default behavior.
-
+  Both kinds of requests, and both modes of execution allows to use <<bind parameters>> into your queries/mutations/subscriptions (see below for more information on that)  
 
 * {Full requests versus Partial requests}
 ~~~~~~~~~~~~~~~~~~~
@@ -203,7 +114,7 @@ void exec(Date since) {
 	// This sample :
 	// - gives a value for the mandatory (as it starts with &) sinceParam bind parameter,
 	// - gives no value for the optional (as it starts with ?) memberIdParam bind parameter.
-	// So only the since input parameter will be sent to the server. 
+	// So only the since bind parameter will be sent to the server. 
 	List<Board> boards = request.execQuery("sinceParam", since).getBoards();
 
 	// Do something with boards
@@ -258,7 +169,7 @@ void exec(Date since, String memberName, String memberId) {
 	// This sample :
 	// - gives a value for the mandatory (as it starts with &) sinceParam bind parameter,
 	// - gives no value for the optional (as it starts with ?) memberIdParam bind parameter.
-	// So only the since input parameter will be sent to the server. 
+	// So only the since bind parameter will be sent to the server. 
 	List<Board> boards = request.execQuery(params).getBoards();
 
 	// Do something with boards
@@ -373,7 +284,7 @@ void exec(Date since, String memberName, String memberId) {
 * {Use direct queries}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  If you don't want to store the <GraphQLRequest>, you can avoid that, by using direct queries. But please not that there is an overhead, as the query must be analyzed at runtime by the plugin to manage input parameters, and add the <__typename> GraphQL introspection attribute where it is missing, to insure proper java deserialization of the response.
+  If you don't want to store the <GraphQLRequest>, you can avoid that, by using direct queries. But please note that there is an overhead, as the query must be analyzed at runtime by the plugin to manage bind parameters, and add the <__typename> GraphQL introspection attribute where it is missing, to insure proper java deserialization of the response.
   
   So using direct queries generates an overhead at each execution, whereas with prepared queries, the request analysis is done only once.
   

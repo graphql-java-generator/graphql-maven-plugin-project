@@ -3,20 +3,15 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
-* Publish the Gradle 1.11.2 version
-* Publish the site for the 1.11.2 version, but this issue appears:
-Failed to execute goal org.apache.maven.plugins:maven-site-plugin:3.9.0:site (default-site) on project graphql-maven-plugin-project: SiteToolException: The site descriptor cannot be resolved from the repository: ArtifactResolutionException: Unable to locate site descriptor: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:xml:site_en:2.4.0 from/to mavencentral_releases (https://mvnrepository.com/artifact): Authorization failed for https://mvnrepository.com/artifact/org/springframework/boot/spring-boot-starter-parent/2.4.0/spring-boot-starter-parent-2.4.0-site_en.xml 403 Forbidden
-* Add documentation for OAuth use
+* Publish the Gradle 1.12 version
 * Remove all log4j dependencies from the client and server pom dependencies (issue #52)
-   Remove exclusions in poms, like spring-boot-starter-logging
+   Done. But still to be checked: Remove exclusions in poms, like spring-boot-starter-logging
 * Issue 65: add some more info when someone a request like one of those:
     * "{id name subObject(types: [TYPE1, TYPE2])}"   (the list should be an input parameter)
     * "{id name subObject(type: {some json})}"       (the json should be an input parameter)
-* Check this issue: when executing the full Forum client test case for the first time after starting the server, the subscription test won't work. It works everytime if executed alone, or with the full test case starting from the second execution.
 * Remove the SubscriptionClientWebSocket class
 * Check subscription against the Hasura setup (answer to issue 54) : https://hasura.io/
 * Check the client dependencies (from all client samples)
-* Finish updating the client_spring page
 * Add unit test in runtime, to test the Reactive stuff
 * Check the WebClient with a default TLS configuration on a well known server
 * Update the README with the XxxxExecutor classes

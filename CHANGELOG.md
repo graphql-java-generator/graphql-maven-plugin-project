@@ -3,9 +3,9 @@
 New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
 Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
 Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
-* generateBatchLoaderEnvironment: true
-* generateDeprecatedRequestResponse: false
-* separateUtilityClasses: true
+* generateBatchLoaderEnvironment: true     (server only)
+* generateDeprecatedRequestResponse: false (client only)
+* separateUtilityClasses: true             (both client and server mode)
 
 
 # Not released yet

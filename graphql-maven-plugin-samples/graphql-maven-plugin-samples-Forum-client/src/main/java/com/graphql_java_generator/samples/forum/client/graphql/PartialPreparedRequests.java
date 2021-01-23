@@ -44,7 +44,7 @@ public class PartialPreparedRequests implements Queries {
 	@Autowired
 	MutationTypeExecutor mutationTypeExecutor;
 
-	// Below are the ObjectResponses, that are created at initialization time.
+	// Below are the GraphQLRequest, that are created at initialization time. They contain the prepared requests
 	GraphQLRequest boardsSimpleRequest;
 	GraphQLRequest boardsAndTopicsRequest;
 	GraphQLRequest topicAuthorPostAuthorRequest;

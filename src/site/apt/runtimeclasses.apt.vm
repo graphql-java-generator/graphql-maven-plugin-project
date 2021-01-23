@@ -13,7 +13,7 @@ Runtime Classes
 * {Presentation}
 ~~~~~~~~~~~~~~~~~~~
 
-  As the result of the execution of graphql-maven-plugin:graphql two type of source code is generated
+  As the result of the execution of <graphql-maven-plugin:generateClientCode> maven goal or gradle task, two type of source code is generated
   
   * The Query, Mutation and POJOs classes
   
@@ -22,11 +22,7 @@ Runtime Classes
   []
   
   The runtime classes are copied as source code so, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
-   
-  But if for any reason you don't what the the runtime classes in your generated source code (and you just want to add them as a dependency), 
-  it is possible to customize the plugin execution so that they are not generated.
-  
-  
+    
 
 * {How to use the configure source code generation to no include runtime classes?}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
