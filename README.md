@@ -52,11 +52,17 @@ The same two tutorials exist for the Gradle plugin:
 
 ### The plugin's goals
 
+All maven goals and gradle tasks are described on [this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/plugin-info.html)
+
 This plugin contains these goals (Maven) / tasks (Gradle):
-* __graphql__ is the main goal, that generates the code from the Graphql schema file(s)
-    * The plugin parameters for this goal/task are [described here](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/graphql-mojo.html) 
+* __generateClientCode__ : this goal generates the client code from the Graphql schema file(s)
+    * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateClientCode-mojo.html)
+* __generateClientCode__ : this goal generates the server code from the Graphql schema file(s)
+    * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateServerCode-mojo.html)
+* __graphql__ was the previous main goal. It's now __deprecated__. It can generate both the client and the server code, thanks to its <mode> parameter. 
+    * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/graphql-mojo.html) 
 * __merge__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
-    * The plugin parameters for this goal/task are [described here](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/merge-mojo.html) 
+    * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/merge-mojo.html) 
 
 
 ### The full project documentation
