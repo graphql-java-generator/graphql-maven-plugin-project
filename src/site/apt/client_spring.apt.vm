@@ -213,6 +213,7 @@ Creating a Spring client app
 +--------------------------------------------------------------------------------------------
 
   The build.gradle file looks like this:
+
 +--------------------------------------------------------------------------------------------
 plugins {
 	id "com.graphql_java_generator.graphql-gradle-plugin" version "${lastReleasedVersion}"
