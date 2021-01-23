@@ -40,6 +40,35 @@ The generator is currently available both as a Maven plugin and as a Gradle plug
 
 This README gives you a quick overview of what this plugin offers
 
+### The full project documentation
+
+The [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
+
+For the client mode, you'll find there a description on how to:
+
+* Start with a [Spring app](https://graphql-maven-plugin-project.graphql-java-generator.com/client_spring.html)
+
+* Start with a [non Spring app](https://graphql-maven-plugin-project.graphql-java-generator.com/client_non_spring.html)
+
+* [Execute GraphQL requests](https://graphql-maven-plugin-project.graphql-java-generator.com/exec_graphql_requests.html) with the help of this plugin
+
+* [Customize the templates](https://graphql-maven-plugin-project.graphql-java-generator.com/customtemplates.html) to change the generated code, according to your needs.
+
+* [Access to an OAuth2](https://graphql-maven-plugin-project.graphql-java-generator.com/client_oauth2.html) GraphQL server
+
+
+For the server mode, you'll find explanations on how to:
+
+* [Build a GraphQL server](https://graphql-maven-plugin-project.graphql-java-generator.com/server.html) with the help of this plugin
+
+* [Implement subscriptions](https://graphql-maven-plugin-project.graphql-java-generator.com/server_subscription.html)
+
+* [Personalize the generated code](https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html)
+
+* [Customize the templates](https://graphql-maven-plugin-project.graphql-java-generator.com/customtemplates.html) to change the generated code, according to your needs.
+
+* Implement [an OAuth2 GraphQL server](https://graphql-maven-plugin-project.graphql-java-generator.com/server_oauth2.html)
+
 ### The tutorials
 
 Two tutorials are available for the Maven plugin:
@@ -64,10 +93,6 @@ This plugin contains these goals (Maven) / tasks (Gradle):
 * __merge__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/merge-mojo.html) 
 
-
-### The full project documentation
-
-The [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
 
 ## Aim of this project
 
