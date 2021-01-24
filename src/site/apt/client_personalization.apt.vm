@@ -1,0 +1,49 @@
+               ------------------------------------------
+               Client app personalization
+               ------------------------------------------
+               ------------------------------------------
+               ------------------------------------------
+
+
+Client app personalization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%{toc}
+
+
+* {How to personalize the plugin behavior?}
+~~~~~~~~~~~~~~~~~~~
+
+
+** {[Spring app] provide Spring beans}
+~~~~~~~~~~~~~~~~~~~
+
+  As explained on the {{{./client_spring.html}Client Spring page}}, the GraphQL plugin defines an auto-configuration class, that provides default Spring beans. And the whole system is built as a Spring Boot app.
+  
+  So, you can personalize the plugin behavior by:
+  
+  * Define the proper properties in the <application.properties> or <application.yml> file
+  
+  * Define Spring bean, that can override:
+  
+    * the beans defined in the GraphQL plugin's auto-configuration class. Take a look at the {{{./client_spring.html}Client Spring page}} for more information.
+    
+    * the beans defined by Sprint Boot. You'll find lots of documentation about this on the net.
+  
+  []
+
+** {[Deprecated] Use a preconfigured Jersey client}
+~~~~~~~~~~~~~~~~~~~
+
+  If you don't use the Spring app, you can use a preconfigured Jersey client instance to support customization of the rest request:
+
++--------------------------------------------------------------------------------------------
+    public QueryTypeExecutor(String graphqlEndpoint, Client client, ObjectMapper objectMapper)
++--------------------------------------------------------------------------------------------  
+
+** {Use your own code templates}
+~~~~~~~~~~~~~~~~~~~
+
+  The plugin generates the code, from a Velocity templates. You can override the provided templates.
+  
+  Please take a look at the {{{./customtemplates.html}custom templates doc}} for all the details. 

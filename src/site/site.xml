@@ -32,6 +32,7 @@
 			<item name="Introspection" href="introspection.html" />
 			<item name="Runtime Classes" href="runtimeclasses.html" />
 			<item name="Access to an OAuth2 GraphQL server" href="client_oauth2.html" />
+			<item name="How to personalize the client app" href="client_personalization.html" />
 		</menu>
 
 		<menu name="Server mode">
