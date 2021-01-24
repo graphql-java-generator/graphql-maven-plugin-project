@@ -544,7 +544,7 @@ public class MyComponentThatExecutesGraphQLQueries {
 
 
 
-* {How does it work? (GraphQL autoconfiguration, and specific Spring beans}
+* {How does it work? (GraphQL autoconfiguration, and specific Spring beans)}
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   As explained here above, the Main class is marked by the <@SpringBootApplication> annotation.
@@ -565,9 +565,9 @@ public class MyComponentThatExecutesGraphQLQueries {
     
     * If you want to get back to the "old" one, you can define a <queryExecutor> bean, for instance in your Main class, that will return an instance of the <com.graphql_java_generator.client.QueryExecutorImpl>.
     
-  * A <webClient> bean, of type <org.springframework.web.reactive.function.client.WebClient> is the one that is used to execute the queries and mutations.
+  * A <webClient> bean, of type <org.springframework.web.reactive.function.client.WebClient>, that executes the queries and mutations.
   
-  * A <webSocketClient>, of type <org.springframework.web.reactive.socket.client.WebSocketClient>, that executes the subscriptions. 
+  * A <webSocketClient> bean, of type <org.springframework.web.reactive.socket.client.WebSocketClient>, that executes the subscriptions. 
   
   []
   
