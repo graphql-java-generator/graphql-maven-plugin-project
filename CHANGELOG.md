@@ -3,9 +3,9 @@
 New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
 Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
 Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
-* generateBatchLoaderEnvironment: true     (server only)
-* generateDeprecatedRequestResponse: false (client only)
-* separateUtilityClasses: true             (both client and server mode)
+* generateBatchLoaderEnvironment: true _(server only)_
+* generateDeprecatedRequestResponse: false _(client only)_
+* separateUtilityClasses: true _(both client and server mode)_
 
 
 # 1.12
@@ -25,14 +25,14 @@ Client mode:
 Server mode:
 * Corrected a regression in 1.11.2, due to _generateBatchLoaderEnvironment_ plugin parameter (see issue #64)
 
-#1.11.2
+# 1.11.2
 
 server mode:
 * The generated code would not compile for fields with parameters (when the field's type is an entity with an id)
 * Add of the _generateBatchLoaderEnvironment_ parameter. When in server mode, it allows the batch loader to retrieve the context, for instance the field parameters associated to this id.
 
 
-#1.11.1
+# 1.11.1
 
 Both modes (client and server):
 * Upgrade of spring boot from 2.3.3 to 2.4.0
