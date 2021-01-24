@@ -40,9 +40,7 @@ public interface SubscriptionCallback<T> {
 
 	/**
 	 * A callback to make the program aware of the end of the subscription channel. It's an information call: no special
-	 * action is expected.<BR/>
-	 * Note: this method will never get called, when using the implementation based on Spring Reactive, which is the
-	 * default since release 1.12
+	 * action is expected.
 	 * 
 	 * @param statusCode
 	 * @param reason
