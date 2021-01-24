@@ -3,7 +3,9 @@ com.graphql_java_generator.annotation
 com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
 com.graphql_java_generator.server.util
+com.graphql_java_generator.util
 org.allGraphQLCases.server
 org.allGraphQLCases.server.impl
 org.allGraphQLCases.server.impl.relayConnection
+org.allGraphQLCases.server.oauth2
 org.allGraphQLCases.server.util

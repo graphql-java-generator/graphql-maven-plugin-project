@@ -9,3 +9,5 @@ com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
 com.graphql_java_generator.samples.simple.client
 com.graphql_java_generator.samples.simple.client.graphql
+com.graphql_java_generator.spring.client
+com.graphql_java_generator.util

@@ -1,12 +1,6 @@
-com.graphql_java_generator
-com.graphql_java_generator.annotation
-com.graphql_java_generator.client
-com.graphql_java_generator.client.directive
-com.graphql_java_generator.client.request
-com.graphql_java_generator.client.response
-com.graphql_java_generator.customscalars
-com.graphql_java_generator.exception
 org.allGraphQLCases
+org.allGraphQLCases_minApp
 org.allGraphQLCases.client
 org.allGraphQLCases.client.util
 org.allGraphQLCases.impl
+org.allGraphQLCases.subscription
