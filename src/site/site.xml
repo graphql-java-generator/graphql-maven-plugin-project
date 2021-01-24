@@ -13,7 +13,7 @@
 
 	<body>
 		<links>
-			<item name="Project on Github" href="project.html" />
+			<item name="Project on Github" href="/project.html" />
 		</links>
 
 		<menu name="Plugin Usage">
