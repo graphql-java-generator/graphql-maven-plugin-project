@@ -4,7 +4,7 @@ Here are the next tasks listed, as a TODO list:
 ## TODO list for the current version
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
 * Publish the Gradle 1.12 version
-* Remove all log4j dependencies from the client and server pom dependencies (issue #52)
+* [Almost done] Remove all log4j dependencies from the client and server pom dependencies (issue #52)
    Done. But still to be checked: Remove exclusions in poms, like spring-boot-starter-logging
 * Issue 65: add some more info when someone a request like one of those:
     * "{id name subObject(types: [TYPE1, TYPE2])}"   (the list should be an input parameter)
@@ -12,7 +12,7 @@ Here are the next tasks listed, as a TODO list:
 * Remove the SubscriptionClientWebSocket class
 * Check subscription against the Hasura setup (answer to issue 54) : https://hasura.io/
 * Check the client dependencies (from all client samples)
-* Add unit test in runtime, to test the Reactive stuff
+* Add unit test in runtime, to confirm the use of the BatchLoader
 * Check the WebClient with a default TLS configuration on a well known server
 * Update the README with the XxxxExecutor classes
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)

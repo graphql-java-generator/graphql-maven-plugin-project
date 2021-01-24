@@ -8,23 +8,22 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true             (both client and server mode)
 
 
-# Not released yet
+# 1.12
 
 Both modes (client and server):
 * Added support for OAuth 2
 * Removed all dependencies to log4j
-* [minor] The GraphqlUtils class has been moved into the com.graphql_java_generator.util package
+* [internal] The GraphqlUtils class has been moved into the com.graphql_java_generator.util package
 
 
 Client mode:
+* The client can now be a Spring Boot app (and that's now the recommended way to build a GraphQL app). see the [plugin web site](https://graphql-maven-plugin-project.graphql-java-generator.com/client_spring.html) for more info on this
 * The subscription management has been updated.
 ==> Spring reactive WebSocketClient
-==> Removal of the SubscriptionClient interface. All interactions of the client code with the web socket are done through the SubscriptionCallback implementation, provided by the application code.
-==> The SubscriptionCallback has changed, to match the Spring reactive behavior
-* The SubscriptionCallback has evolved. Its onConnect() and onClose() methods now have no parameters. Unexpected end of the web socket are now received as an error.
+==> The _SubscriptionClient_ interface has a new method: _WebSocketSession getSession()_, which allows to retrieve the Spring reactive _WebSocketSession_. 
 
 Server mode:
-* Corrected a regression in 1.11.2, due to _generateBatchLoaderEnvironment_ (see issue #64)
+* Corrected a regression in 1.11.2, due to _generateBatchLoaderEnvironment_ plugin parameter (see issue #64)
 
 #1.11.2
 
