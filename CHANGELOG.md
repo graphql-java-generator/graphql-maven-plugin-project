@@ -8,6 +8,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 
 
+# Not released yet
+
+
+Server mode:
+* The server won't start when the _graphql-java-runtime_ dependency is in the classpath (that is when the _copyRuntimeSources_ plugin parameter is set to false)
+
 # 1.12
 
 Both modes (client and server):

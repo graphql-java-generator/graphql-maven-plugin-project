@@ -27,6 +27,7 @@
 						the XxxEdge and XxxConnection interfaces or objects), for fields marked with the RelayConnection directive. See the documentation 
 						for more information -->
 					<addRelayConnections>true</addRelayConnections>
+					<copyRuntimeSources>false</copyRuntimeSources>
 					<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 					<packageName>org.allGraphQLCases.server</packageName>
 					<separateUtilityClasses>true</separateUtilityClasses>
@@ -92,8 +93,7 @@
 		<!-- Dependencies for the generated code -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-server-dependencies</artifactId>
-			<type>pom</type>
+			<artifactId>graphql-java-runtime</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -121,15 +121,6 @@
 			<artifactId>oauth2-oidc-sdk</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- dependency> <!- This transparently add support for OAuth to the GraphQL server -> <groupId>org.springframework.security</groupId> 
-			<artifactId>spring-security-oauth2-resource-server</artifactId> </dependency -->
-		<!-- dependency> <!- This is needed to use spring-security-oauth2-resource-server -> <groupId>org.springframework.security</groupId> 
-			<artifactId>spring-security-config</artifactId> </dependency -->
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-security-oauth2</artifactId> <version></version> 
-			</dependency -->
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-security-oauth2-autoconfigure</artifactId> 
-			<version>2.3.4.RELEASE</version> </dependency -->
-		<!-- Complementary graphql dependencies -->
 		<dependency>
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-extended-scalars</artifactId>
