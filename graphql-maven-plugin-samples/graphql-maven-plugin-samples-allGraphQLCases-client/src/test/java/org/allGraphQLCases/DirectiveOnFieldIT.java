@@ -32,6 +32,7 @@ class DirectiveOnFieldIT {
 		assertNotNull(queryType);
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -47,6 +48,7 @@ class DirectiveOnFieldIT {
 		assertEquals("this is a value", ret.getName());
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void testsIssue35() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 

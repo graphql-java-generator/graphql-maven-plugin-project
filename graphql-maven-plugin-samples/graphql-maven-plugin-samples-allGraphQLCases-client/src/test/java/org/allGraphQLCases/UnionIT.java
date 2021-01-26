@@ -86,6 +86,7 @@ class UnionIT {
 		params.put("uppercaseTrue", true);
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_unionTest_withAFragmentForEachMember()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
@@ -148,6 +149,7 @@ class UnionIT {
 		assertEquals("name droid2", droid2.getName(), "to uppercase field parameter set to false");
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_unionTest_withMissingFragments()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {

@@ -69,6 +69,7 @@ class FullQueriesIT {
 
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -83,6 +84,7 @@ class FullQueriesIT {
 		assertEquals(0, ret.size());
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -101,6 +103,7 @@ class FullQueriesIT {
 		assertEquals("THE VALUE", ret.get(0));
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -118,6 +121,7 @@ class FullQueriesIT {
 		assertEquals("the other value", ret.get(1));
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
@@ -168,6 +172,7 @@ class FullQueriesIT {
 	 * }
 	 * </PRE>
 	 */
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void multipleQueriesResponse() throws GraphQLRequestExecutionException {
 		/*

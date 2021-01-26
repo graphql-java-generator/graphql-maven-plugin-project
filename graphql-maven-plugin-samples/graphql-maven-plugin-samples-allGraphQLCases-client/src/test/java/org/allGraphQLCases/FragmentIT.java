@@ -60,6 +60,7 @@ class FragmentIT {
 		params.put("uppercaseTrue", true);
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_ThreeGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
@@ -89,6 +90,7 @@ class FragmentIT {
 		assertNull(firstFriend.getFriends(), "friends has not been requested");
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_InlineAndGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
@@ -127,6 +129,7 @@ class FragmentIT {
 		assertNull(firstFriend.getFriends(), "friends of friends has not been requested");
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_InlineAndGlobalFragments_withOneOptionalParam_Droid()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
@@ -159,6 +162,7 @@ class FragmentIT {
 		assertNotNull(((Droid) withOneOptionalParam).getPrimaryFunction(), "primaryFunction is requested for droids");
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_InlineAndGlobalFragments_withOneOptionalParam_Human()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {

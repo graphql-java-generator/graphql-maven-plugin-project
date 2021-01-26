@@ -52,6 +52,7 @@ public class IntrospectionIT {
 		assertNotNull(myQuery);
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void testSchema() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -69,6 +70,7 @@ public class IntrospectionIT {
 		}
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void testType() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -86,6 +88,7 @@ public class IntrospectionIT {
 		}
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test__datatype_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -97,6 +100,7 @@ public class IntrospectionIT {
 		assertEquals("AllFieldCases", ret.get__typename());
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test__datatype_withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
