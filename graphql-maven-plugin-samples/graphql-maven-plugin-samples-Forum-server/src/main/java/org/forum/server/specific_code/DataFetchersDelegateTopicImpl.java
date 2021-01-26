@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.forum.server.graphql.DataFetchersDelegateTopic;
 import org.forum.server.graphql.Member;
@@ -124,7 +125,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
-	public List<Topic> batchLoader(List<Long> keys) {
+	public List<Topic> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
 	}

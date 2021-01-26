@@ -31,6 +31,7 @@
 				</executions>
 				<configuration>
 					<mode>server</mode>
+					<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<javaTypeForIDType>java.lang.Long</javaTypeForIDType>
 					<packageName>org.forum.server.graphql</packageName>

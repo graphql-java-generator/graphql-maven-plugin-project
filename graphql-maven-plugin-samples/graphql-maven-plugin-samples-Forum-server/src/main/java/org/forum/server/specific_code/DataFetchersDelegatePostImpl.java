@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.forum.server.graphql.DataFetchersDelegatePost;
 import org.forum.server.graphql.Member;
@@ -42,7 +43,7 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 	}
 
 	@Override
-	public List<Post> batchLoader(List<Long> keys) {
+	public List<Post> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} posts", keys.size());
 		return postRepository.findByIds(keys);
 	}

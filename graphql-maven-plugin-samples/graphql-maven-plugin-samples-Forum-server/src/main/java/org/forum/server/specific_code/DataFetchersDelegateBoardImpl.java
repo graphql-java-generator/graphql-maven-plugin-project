@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.DataFetchersDelegateBoard;
 import org.forum.server.graphql.Topic;
@@ -46,7 +47,7 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 	}
 
 	@Override
-	public List<Board> batchLoader(List<Long> keys) {
+	public List<Board> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return boardRepository.findByIds(keys);
 	}

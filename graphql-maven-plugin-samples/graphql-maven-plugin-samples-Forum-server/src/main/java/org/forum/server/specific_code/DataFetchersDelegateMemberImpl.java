@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.forum.server.graphql.DataFetchersDelegateMember;
 import org.forum.server.graphql.Member;
 import org.forum.server.jpa.MemberRepository;
@@ -21,7 +22,7 @@ public class DataFetchersDelegateMemberImpl implements DataFetchersDelegateMembe
 	MemberRepository memberRepository;
 
 	@Override
-	public List<Member> batchLoader(List<Long> keys) {
+	public List<Member> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} members", keys.size());
 		List<Member> ret = memberRepository.findByIds(keys);
 
