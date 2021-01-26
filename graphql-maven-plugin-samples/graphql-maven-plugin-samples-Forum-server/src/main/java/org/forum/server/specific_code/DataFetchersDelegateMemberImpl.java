@@ -23,7 +23,15 @@ public class DataFetchersDelegateMemberImpl implements DataFetchersDelegateMembe
 	@Override
 	public List<Member> batchLoader(List<Long> keys) {
 		logger.debug("Batch loading {} members", keys.size());
-		return memberRepository.findByIds(keys);
+		List<Member> ret = memberRepository.findByIds(keys);
+
+		// Let's mark all the entries retrieved here by [BL] (Batch Loader), to check this in integration tests.
+		// These tests are in the graphql-maven-plugin-samples-Forum-client project
+		for (Member m : ret) {
+			m.setName("[BL] " + m.getName());
+		}
+
+		return ret;
 	}
 
 }
