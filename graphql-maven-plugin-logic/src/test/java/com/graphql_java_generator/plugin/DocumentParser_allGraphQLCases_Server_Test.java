@@ -89,13 +89,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("subscription", generateCodeDocumentParser.subscriptionType.getRequestType());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Checks if the boolean completableFuture is set correctly:
-		// - the first one is the basic one
-		// - the second one is the "dataLoader" one
 		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 1);
-		assertFalse(dataFetcher.isCompletableFuture(), "oneWithIdSubType: the standard one");
-
-		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 2);
 		assertTrue(dataFetcher.isCompletableFuture(), "oneWithIdSubType: the dataLoader one");
 		//
 		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithIdSubTypes", 1);

@@ -3,7 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
-* Publish the Gradle 1.12 version
+* Publish the Gradle 1.12.1 version
 * [Almost done] Remove all log4j dependencies from the client and server pom dependencies (issue #52)
    Done. But still to be checked: Remove exclusions in poms, like spring-boot-starter-logging
 * Issue 65: add some more info when someone a request like one of those:
@@ -15,6 +15,7 @@ Here are the next tasks listed, as a TODO list:
 * Add unit test in runtime, to confirm the use of the BatchLoader
 * Check the WebClient with a default TLS configuration on a well known server
 * Update the README with the XxxxExecutor classes
+* Remove the WithDataLoader at the end of the DataFetcher names (no impact on the user's code)
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
 ==> update the four tutorials
 ==> Check the documented default value

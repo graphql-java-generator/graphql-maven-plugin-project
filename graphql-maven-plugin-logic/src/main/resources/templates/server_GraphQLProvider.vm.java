@@ -160,9 +160,6 @@ public class GraphQLProvider {
 			// Data fetchers for ${dataFetchersDelegate.name}
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 			.type(newTypeWiring("${dataFetcher.field.owningType.javaName}").dataFetcher("${dataFetcher.field.javaName}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}#if(${dataFetcher.completableFuture})WithDataLoader#end()))
-#if ($dataFetcher.field.owningType.class.simpleName == "InterfaceType")
-			.type(newTypeWiring("${dataFetcher.field.owningType.classSimpleName}").dataFetcher("${dataFetcher.field.javaName}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}()))
-#end
 #end
 #end
 #if ($interfaces.size() > 0)

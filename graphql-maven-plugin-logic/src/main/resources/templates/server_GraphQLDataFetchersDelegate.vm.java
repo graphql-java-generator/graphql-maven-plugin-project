@@ -26,10 +26,15 @@ import $import;
 public interface ${dataFetcherDelegate.pascalCaseName} {
 	
 #foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
+##
+##
+##
+##
+## If this dataFetcher is a completableFuture, we add a DataLoader parameter
+#if (${dataFetcher.completableFuture})
 	/**
 	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. 
 	 * <BR/>
-#if (${dataFetcher.completableFuture})
 	 * For optimization, this method returns a CompletableFuture. This allows to use 
 	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
 	 * number of requests to the server.<BR/>
@@ -44,18 +49,15 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 *     return dataLoader.loadMany(friendIds);
 	 * }
 	 * </PRE>
-#end
 	 * <BR/>
 	 * 
 	 * @param dataFetchingEnvironment 
 	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
-#if(${dataFetcher.completableFuture}) 
 	 * @param dataLoader
 	 *            The {@link DataLoader} allows to load several data in one query. It allows to solve the (n+1) queries
 	 *            issues, and greatly optimizes the response time.<BR/>
 	 *            You'll find more informations here: <A HREF=
 	 *            "https://github.com/graphql-java/java-dataloader">https://github.com/graphql-java/java-dataloader</A>
-#end
 #if($dataFetcher.graphQLOriginType)
 	 * @param origin 
 	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the ${dataFetcher.name} attribute
@@ -71,15 +73,47 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
-## If this dataFetcher is a completableFuture, we add a DataLoader parameter
-#if (${dataFetcher.completableFuture})
 	public CompletableFuture<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, ${dataFetcher.field.javaType}> dataLoader#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
-#elseif ($dataFetcherDelegate.type.requestType == "subscription")
+#end ## #if (${dataFetcher.completableFuture})
+
+	/**
+	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. 
+	 * <BR/>
+	 * 
+	 * @param dataFetchingEnvironment 
+	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
+	#if($dataFetcher.graphQLOriginType)
+	 * @param origin 
+	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the ${dataFetcher.name} attribute
+	 *    of the <I>origin</I>, which is an instance of {$dataFetcher.graphQLOriginType}. It depends on your data modle, but it typically contains 
+	 *    the id to use in the query.
+	#end
+	#foreach($argument in $dataFetcher.field.inputParameters)
+	 * @param ${argument.camelCaseName} 
+	 *     The input parameter sent in the query by the GraphQL consumer, as defined in the GraphQL schema.
+	#end
+	 * @throws NoSuchElementException 
+	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
+	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
+	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
+	 */
+#if ($dataFetcherDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
 	public Publisher<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
 #else
 	public ${dataFetcher.field.javaType} ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
-#end
+#end 
+
+##
+##
+##
+##
+##
+##
+##
+##
+##
+##
 
 #end
 #foreach ($batchLoader in $dataFetcherDelegate.batchLoaders)

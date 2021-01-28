@@ -148,7 +148,7 @@ class DocumentParser_Forum_Server_Test {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_initDataFetchers() {
-		assertEquals(16, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
+		assertEquals(14, documentParser.dataFetchers.size(), "nb of data fetchers in server mode");
 
 		int i = 0;
 		//
@@ -184,14 +184,10 @@ class DocumentParser_Forum_Server_Test {
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, false,
 				"Board", "since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", false, false,
-				"Topic");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", false, true,
 				"Topic");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", true, false, "Topic",
 				"memberId", "memberName", "since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, false,
-				"Post");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, true,
 				"Post");
 
@@ -231,10 +227,8 @@ class DocumentParser_Forum_Server_Test {
 		j = 0;
 		assertEquals("DataFetchersDelegateTopic", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(3, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
+		assertEquals(2, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("author", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
-				"Name of DataFetcher " + j++ + " for delegate " + i);
 		assertEquals("author", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 		assertEquals("posts", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
@@ -245,10 +239,8 @@ class DocumentParser_Forum_Server_Test {
 		j = 0;
 		assertEquals("DataFetchersDelegatePost", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
-		assertEquals(2, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
+		assertEquals(1, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);
-		assertEquals("author", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
-				"Name of DataFetcher " + j++ + " for delegate " + i);
 		assertEquals("author", documentParser.dataFetchersDelegates.get(i).getDataFetchers().get(j).getName(),
 				"Name of DataFetcher " + j++ + " for delegate " + i);
 	}

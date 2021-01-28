@@ -572,25 +572,13 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					// 1) It's a Data Fetcher from an object to another one (we're already in this case)
 					// 2) That target object has an id (it can be either a list or a single object)
 					// 3) The Relation toward the target object is OneToOne or ManyToOne. That is this field is not a
-					// list
-					// graphql-java will then determines at runtime if a dataloader is needed in the running case, or
-					// not
+					// list graphql-java will then determines at runtime if a dataloader is needed in the running case,
+					// or not
 					boolean withDataLoader = field.getType().getIdentifier() != null
 							&& !field.getFieldTypeAST().isList();
 
-					if (withDataLoader) {
-						// We always have the 'standard' data fetcher in the DataFetcherDelegate. But only the one with
-						// the data loader is declared in the GraphQLProvider and the GraphQLDataFetchers classes.
-						dataFetchers
-								.add(new DataFetcherImpl(newField, dataFetcherDelegate, false, false, type.getName()));
-						// Then the datafetcher with the data loader
-						dataFetchers
-								.add(new DataFetcherImpl(newField, dataFetcherDelegate, true, true, type.getName()));
-					} else {
-						// We always have the 'standard' data fetcher
-						dataFetchers
-								.add(new DataFetcherImpl(newField, dataFetcherDelegate, true, false, type.getName()));
-					}
+					dataFetchers.add(
+							new DataFetcherImpl(newField, dataFetcherDelegate, true, withDataLoader, type.getName()));
 				}
 			} // for
 

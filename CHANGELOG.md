@@ -13,6 +13,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 Server mode:
 * The server won't start when the _graphql-java-runtime_ dependency is in the classpath (that is when the _copyRuntimeSources_ plugin parameter is set to false)
+* When a DataFetcher has a BatchLoader, two datafetchers would be wired, instead of just one. This is internal to the generated code, and has no impact on the "user's" code.
 
 # 1.12
 
