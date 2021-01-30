@@ -32,26 +32,21 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 
 	/**
 	 * <P>
-	 * True if the plugin is configured to add the relay connection capabilities, as
-	 * <A HREF="https://relay.dev/docs/en/graphql-server-specification.html">described here</A> and specified on the
-	 * <A HREF="https://relay.dev/graphql/connections.htm">.
+	 * True if the plugin is configured to add the Relay connection capabilities to the field marked by the
+	 * <I>&#064;RelayConnection</I> directive.
 	 * </P>
 	 * <P>
-	 * If set to true, the plugin will add:
+	 * If so, the plugin reads the provided GraphQL schema file(s), and enriches them with the interfaces and types
+	 * needed to respect the Relay Connection specification. The entry point for that is the
+	 * <I>&#064;RelayConnection</I> directive.
 	 * </P>
-	 * <UL>
-	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
-	 * defined in the given schema, but is not compliant, then an error is thrown.</LI>
-	 * <LI>The <I>@RelayConnection</I> directive definition in the GraphQL schema (if not already defined). If this is
-	 * already defined in the given schema, but is not compliant with the relay specification, then an error is
-	 * thrown.</LI>
-	 * <LI>The <I>Node</I> interface in the GraphQL schema (if not already defined). If this interface is already
-	 * defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
-	 * <LI>The <I>PageInfo</I> type in the GraphQL schema (if not already defined). If this type is already defined in
-	 * the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
-	 * <LI>All the Edge and Connection type in the GraphQL schema, for each type that is marked by the
-	 * <I>@RelayConnection</I> directive.</LI>
-	 * </UL>
+	 * <P>
+	 * You'll find all the information on the plugin web site. Please check the <A
+	 * HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client_add_relay_connection.html>client
+	 * Relay capability page</A> or the <A
+	 * HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/server_add_relay_connection.html>server
+	 * Relay capability page</A>.
+	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.addRelayConnections", defaultValue = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS)
 	boolean addRelayConnections;

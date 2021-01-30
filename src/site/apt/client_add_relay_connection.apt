@@ -1,0 +1,178 @@
+               ------------------------------------------
+               Managing the Relay Connection capability (in client mode)
+               ------------------------------------------
+               ------------------------------------------
+               ------------------------------------------
+
+
+Managing the Relay Connection capability (in client mode)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+%{toc}
+
+	
+* {Introduction}
+~~~~~~~~~~~~~~~~~~~
+
+  The <addRelayConnections> parameter configures the plugin, so that it uses the <@RelayConnection> directive as a marker, to apply the relay connection capabilities, as defined in the Relay specification. For more information, you can check {{{https://relay.dev/docs/en/graphql-server-specification.html} The Relay GraphQL server specification}} or the {{{https://relay.dev/graphql/connections.htm}Relay connection specification}}.
+  
+  <<When the addRelayConnections parameter is set to true>>, the plugin reads the GraphQL schema file(s), and enriches them it with the interfaces and types needed to respect the Relay Connection specification. The entry point for that is the <@RelayConnection> directive. It is specific to this plugin. It can be added to any field, that is, typically: queries, mutations, interface's fields and any object's field.
+  
+  The <addRelayConnections> parameter may be used in these goals/tasks of the plugin:
+  
+  * <generateClientCode>: this allows to generate a schema, with its XxxConnection and XxxEdge classes, the Node interface, the PageInfo type... The you can use the generated GraphQL schema in any tool you want.
+  
+  * <generateClientCode>: this allows to have a GraphQL client that is able to call a server with these XxxConnection and XxxEdge classes, Node interface, PageInfo type...
+  
+  * <generateServerCode>: this allows to create a GraphQL server that manages these XxxConnection and XxxEdge classes, Node interface, PageInfo type...
+  
+  * <graphql> This deprecated goal/task should be avoided. But if you use it, it can use the <addRelayConnections> parameter as the <generateClientCode> and <generateServerCode> tasks/goals.
+  
+  [] 
+
+* {What does the plugin, to manage the Relay Connection capability}
+~~~~~~~~~~~~~~~~~~~
+  
+  It must be declared in the given GraphQL schema file(s) like this:
+
++------------------------------------------------------------------------------------------------------------
+directive @RelayConnection on FIELD_DEFINITION
++------------------------------------------------------------------------------------------------------------
+
+  Then the <@RelayConnection> directive may be added to every field that should be used through a Relay connection. That is: <<the field's type, whether it's a list or not, is replaced by the relevant XxxConnection type>>. 
+  
+  For instance the query: 
+
++------------------------------------------------------------------------------------------------------------
+query {
+  ...  
+  allHumans(criteria: String): [Human] @RelayConnection,
+  ...
+}
++------------------------------------------------------------------------------------------------------------
+
+  is replaced by:
+
++------------------------------------------------------------------------------------------------------------
+query {
+  ...  
+  allHumans(criteria: String): HumanConnection! @RelayConnection,
+  ...
+}
+type HumanConnection {
+	edges: [HumanEdge] 
+	pageInfo: PageInfo! 
+}
+
+type HumanEdge {
+	node: Human 
+	cursor: String! 
+}
+
+type PageInfo {
+	hasNextPage: Boolean! 
+	hasPreviousPage: Boolean! 
+	startCursor: String! 
+	endCursor: String! 
+}
+
+interface Node {
+	id: ID! 
+}
+
+# The Character interface is marked as implementing the Node interface
+type Human implements Node { 
+  ...
+} 
+
++------------------------------------------------------------------------------------------------------------
+  
+  
+  And the field:
+  
++------------------------------------------------------------------------------------------------------------
+Human {
+   ...
+   friends: Character @RelayConnection,
+   ...
+}
++------------------------------------------------------------------------------------------------------------
+
+  is replaced by:
+  
++------------------------------------------------------------------------------------------------------------
+Human {
+   ...
+   friends: CharacterConnection! @RelayConnection,
+   ...
+}
+
+interface CharacterConnection {
+	edges: [CharacterEdge] 
+	pageInfo: PageInfo! 
+}
+
+interface CharacterEdge {
+	node: Character 
+	cursor: String! 
+}
+
+
+type PageInfo {
+	hasNextPage: Boolean! 
+	hasPreviousPage: Boolean! 
+	startCursor: String! 
+	endCursor: String! 
+}
+
+interface Node {
+	id: ID! 
+}
+
+# The Character interface is marked as implementing the Node interface
+interface Character implements Node { 
+  ...
+} 
++------------------------------------------------------------------------------------------------------------
+
+
+  Please note that :
+  
+  * This page is relevant only for the <<client mode>>. If you're generating a GraphQL server code, please check the {{{./server_add_relay_connection.html}server Relay Connection page}}.
+  
+  * The field's type marked with the <@RelayConnection> may be either a type or an interface. As it's a field's type, it may not be an input type.
+  
+  * The field's type marked with the <@RelayConnection> <<MUST>> contain an <id> field, of type ID. Otherwise, an error is thrown at code generation time.
+  
+  * If the <@RelayConnection> is set on a field of an interface, it will be applied to this interface's field, and to this field for all type that implements this interface. 
+  
+    * In this later case, the directive should also be set to this field, for all the implementing type. If not, a warning is generated.
+    
+  * If the <@RelayConnection> is <B>not set</B> on a field of an interface, but is set in the same field, for one type that implements this interface, then an error is generated. 
+  
+  * For each type marked at least once, with the <@RelayConnection> directive (the <Human> type, and the <Character> interface, here above), the relevant XxxConnection and XxxEdge type ares added to the in-memory schema.
+  
+  * The <Node> interface is added as being implemented by each type marked at least once, with the <@RelayConnection> directive. For instance, in the two samples above, the <Human> type and the <Character> interface are marked as implementing the <Node> interface.
+  
+  []
+  
+* {What tasks are executed by the plugin?}
+~~~~~~~~~~~~~~~~~~~
+
+  To sum-up, if <addRelayConnections> plugin parameter is set to true, the plugin will:
+  
+  * Check that the <@RelayConnection> directive definition exists in the GraphQL schema, and is compliant with the above definition
+  
+  * Add the <Node> interface in the GraphQL schema (if not already defined).
+  
+    * If this interface is already defined in the given schema, but is not compliant with the relay specification, then an error is thrown.</LI>
+  
+  * Add the <PageInfo> type in the GraphQL schema (if not already defined).
+  
+    * If this type is already defined in the given schema, but is not compliant with the relay specification, then an error is thrown.
+    
+  * All the Edge and Connection type in the GraphQL schema, for each attribute's type that is marked by the <@RelayConnection> directive.
+  
+  []
+  
+  

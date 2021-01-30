@@ -180,11 +180,23 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	@Override
 	public int parseDocuments() throws IOException {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Let's start by reading the GraphQL documents
+		// Let's start by some controls on the configuration parameters
+		//
+		// In server mode, the graphql-java needs to have access to the GraphQL schema.
+		if (configuration.getMode().equals(PluginMode.server)) {
+			if (configuration.isAddRelayConnections()) {
+				throw new IllegalArgumentException("");
+			} else {
+				throw new IllegalArgumentException("");
+			}
+		}
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Then we read the GraphQL documents
 		super.parseDocuments();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Then, we add the capabilities for code generation
+		// And to finish, we calculate and store the capabilities for code generation
 
 		// Add introspection capabilities (the introspection schema has already been read, as it is added by
 		// ResourceSchemaStringProvider in the documents list

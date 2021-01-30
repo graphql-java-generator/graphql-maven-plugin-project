@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Add the _addRelayConnections_ capability to the Gradle plugin
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
 * Publish the Gradle 1.12.1 version
 * [Almost done] Remove all log4j dependencies from the client and server pom dependencies (issue #52)
