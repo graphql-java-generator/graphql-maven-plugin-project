@@ -52,7 +52,8 @@ public class ResourceSchemaStringProvider {
 			fullPathPattern = configuration.getSchemaFilePattern();
 		} else {
 			if (configuration.getPluginLogger().isDebugEnabled()) {
-				configuration.getPluginLogger().debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
+				configuration.getPluginLogger()
+						.debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
 				configuration.getSchemaFileFolder().getCanonicalPath();
 			}
 			fullPathPattern = "file:///" + configuration.getSchemaFileFolder().getCanonicalPath()
@@ -75,7 +76,8 @@ public class ResourceSchemaStringProvider {
 
 		// We musts have found at least one schema
 		if (ret.size() == 0) {
-			throw new RuntimeException("No GraphQL schema found!");
+			throw new RuntimeException("No GraphQL schema found (the searched file pattern is: '"
+					+ configuration.getSchemaFilePattern() + "')");
 		}
 
 		// In client mode, we need to read the introspection schema
