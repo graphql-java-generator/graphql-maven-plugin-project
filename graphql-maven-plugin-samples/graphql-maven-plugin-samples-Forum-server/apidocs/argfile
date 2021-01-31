@@ -4,6 +4,7 @@
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/jpa/MemberRepository.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/jpa/PostRepository.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/jpa/TopicRepository.java'
+'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/specific_code/CustomExecutionContext.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/specific_code/DataFetchersDelegateBoardImpl.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/specific_code/DataFetchersDelegateMemberImpl.java'
 'Z:/target/checkout/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/specific_code/DataFetchersDelegateMutationTypeImpl.java'
