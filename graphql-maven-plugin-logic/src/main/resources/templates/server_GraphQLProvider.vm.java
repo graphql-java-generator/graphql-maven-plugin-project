@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.PostConstruct;
 
@@ -22,11 +23,15 @@ import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.context.request.WebRequest;
 
+import graphql.ExecutionInput;
+import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.TypeResolutionEnvironment;
 import graphql.language.FieldDefinition;
@@ -41,6 +46,10 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import graphql.spring.web.servlet.ExecutionInputCustomizer;
+import graphql.spring.web.servlet.GraphQLInvocation;
+import graphql.spring.web.servlet.GraphQLInvocationData;
+import graphql.spring.web.servlet.components.DefaultGraphQLInvocation;
 
 #if($configuration.generateBatchLoaderEnvironment)
 import com.graphql_java_generator.server.util.BatchLoaderDelegateWithContext;
@@ -73,44 +82,6 @@ public class GraphQLProvider {
 
 	private GraphQLSchema graphQLSchema;
 	private GraphQL graphQL;
-
-	@Bean
-	public GraphQL graphQL() {
-		return graphQL;
-	}
-
-	/**
-	 * The {@link DataLoaderRegistry} will be autowired by Spring in the GraphQL Java Spring Boot framework. It will
-	 * then be wired for each request execution, as specified in this page:
-	 * <A HREF="https://www.graphql-java.com/documentation/master/batching/">graphql-java batching</A>
-	 * 
-	 * @return
-	 */
-	@Bean
-	public DataLoaderRegistry dataLoaderRegistry() {
-		logger.debug("Creating DataLoader registry");
-		DataLoaderRegistry registry = new DataLoaderRegistry();
-		DataLoader<Object, Object> dl;
-
-#if($configuration.generateBatchLoaderEnvironment)
-		for (BatchLoaderDelegateWithContext<?, ?> batchLoaderDelegate : applicationContext
-				.getBeansOfType(BatchLoaderDelegateWithContext.class).values()) {
-#else
-		for (BatchLoaderDelegate<?, ?> batchLoaderDelegate : applicationContext
-				.getBeansOfType(BatchLoaderDelegate.class).values()) {
-#end
-			// Let's check that we didn't already register a BatchLoaderDelegate with this name
-			if ((dl = registry.getDataLoader(batchLoaderDelegate.getName())) != null) {
-				throw new RuntimeException(
-						"Only one BatchLoaderDelegate with a given name is allows, but two have been found: "
-								+ dl.getClass().getName() + " and " + batchLoaderDelegate.getClass().getName());
-			}
-			// Ok, let's register this new one.
-			registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
-		}
-
-		return registry;
-	}
 	
 	@PostConstruct
 	public void init() throws IOException {
@@ -131,6 +102,51 @@ public class GraphQLProvider {
 #end
 #end
 		this.graphQL = GraphQL.newGraphQL(buildSchema(sdl.toString())).build();
+	}
+
+	@Bean
+	public GraphQL graphQL() {
+		return graphQL;
+	}
+
+	/**
+	 * This method returns a clone of the {@link DefaultGraphQLInvocation}, with a Data Loader being created for each request. This insure a "per request" {@link DataLoaderRegistry}
+	 * @param executionInputCustomizer
+	 * @return
+	 */
+	@Bean
+	@Primary
+	GraphQLInvocation customGraphQLInvocation(ExecutionInputCustomizer executionInputCustomizer) {
+		return new GraphQLInvocation() {
+
+			@Override
+			public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData,
+					WebRequest webRequest) {
+				ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
+						.query(invocationData.getQuery()).operationName(invocationData.getOperationName())
+						.variables(invocationData.getVariables());
+
+				DataLoaderRegistry registry = new DataLoaderRegistry();
+				DataLoader<Object, Object> dl;
+
+#if($configuration.generateBatchLoaderEnvironment)
+				for (BatchLoaderDelegateWithContext<?, ?> batchLoaderDelegate : applicationContext
+						.getBeansOfType(BatchLoaderDelegateWithContext.class).values()) {
+#else
+				for (BatchLoaderDelegate<?, ?> batchLoaderDelegate : applicationContext
+						.getBeansOfType(BatchLoaderDelegate.class).values()) {
+#end
+					registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
+				}
+				executionInputBuilder.dataLoaderRegistry(registry);
+
+				ExecutionInput executionInput = executionInputBuilder.build();
+				CompletableFuture<ExecutionInput> customizedExecutionInput = executionInputCustomizer
+						.customizeExecutionInput(executionInput, webRequest);
+				return customizedExecutionInput.thenCompose(graphQL::executeAsync);
+			}
+
+		};
 	}
 
 	private GraphQLSchema buildSchema(String sdl) {
