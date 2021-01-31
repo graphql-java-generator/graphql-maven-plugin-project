@@ -603,16 +603,7 @@ public class AddRelayConnections {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (String typeName : connectionTypeNames) {
 			Type type = documentParser.getType(typeName);
-			// Add the Node interface to the implemented interface, if it's not already the case
-			if (0 == ((ObjectType) type).getImplementz().stream()
-					.filter((interfaceName) -> interfaceName.equals("Node")).count()) {
-				// This type didn't implement the Node interface :
-				// 1) We add the Node interface to its list of implemented interfaces.
-				((ObjectType) type).getImplementz().add("Node");
-				// 2) We add this type to the list of types that are implemented by the Node interface
-				node.getImplementingTypes().add((ObjectType) type);
-			}
-
+			addNodeInterfaceToType(type);
 			generateConnectionType(type);
 			generateEdgeType(type);
 		}
@@ -627,6 +618,33 @@ public class AddRelayConnections {
 			FieldTypeAST fieldTypeAST = FieldTypeAST.builder()
 					.graphQLTypeSimpleName(f.getGraphQLTypeSimpleName() + "Connection").mandatory(true).build();
 			((FieldImpl) f).setFieldTypeAST(fieldTypeAST);
+		}
+	}
+
+	/**
+	 * Add the <I>Node</I> interface as being implemented by the given type. If this type is an interface, then the
+	 * <I>Node</I> interface must also be marked a simplemented by all interfaces and types that implement this
+	 * interface.
+	 * 
+	 * @param type
+	 */
+	private void addNodeInterfaceToType(Type type) {
+		// Add the Node interface to the list of implemented interfaces, if it's not already the case
+		if (0 == ((ObjectType) type).getImplementz().stream().filter((interfaceName) -> interfaceName.equals("Node"))
+				.count()) {
+			// This type didn't implement the Node interface :
+
+			// 1) We add the Node interface to its list of implemented interfaces.
+			((ObjectType) type).getImplementz().add("Node");
+
+			// 2) We add this type to the list of types that are implemented by the Node interface
+			node.getImplementingTypes().add((ObjectType) type);
+
+			// 3) If this type is an interface, you must also loop into each of the interfaces and types that implement
+			// it, to also add the Node interface as implemented by them (as specified by the GraphQL specification)
+			if (type instanceof InterfaceType) {
+				((InterfaceType) type).getImplementingTypes().stream().forEach((t) -> addNodeInterfaceToType(t));
+			}
 		}
 	}
 
