@@ -168,19 +168,12 @@ interface Character implements Node {
 * {Important note about the GraphQL schema (only when in server mode)}
 ~~~~~~~~~~~~~~~~~~~
 
-  The generated code is based on the graphql-java engine. This engine, when it starts the GraphQL server, needs to have access to the GraphQL schema. As the plugin updates the given GraphQL schema, based on the applied <@RelayConnection> directives, this has two consequences:
+  The generated code is based on the graphql-java engine. This engine, when it starts the GraphQL server, needs to have access to the GraphQL schema. As the plugin updates the given GraphQL schema, based on the applied <@RelayConnection> directives, it also generates a GraphQL schema file.
   
-  * The given schema should not be visible to the graphql-java engine. So it <<MAY NOT>> be in the <src/main/resources> folder. To do this, you'll have to use the <schemaFileFolder> plugin parameter. The recommended way is to:
+  This generated GraphQL schema file is named <generated_schema.graphqls>.
   
-    * Put the your GraphQL schema in the <src/main/graphqls> folder
-    
-    * Update your pom or your gradle file, and set the <schemaFileFolder> plugin parameter to this value (<src/main/graphqls>).
-    
-    * You'll find a sample in the {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-server/pom.xml}allGraphQLCases-server sample's pom file}}.
+  As a consequence, the provided must either have another name, or be stored in another place than the <src/main/resources> folder. To do this, you'll have to use the <schemaFileFolder> plugin parameter.
   
-  * The plugin copies the generated GraphQL schema at the root of the classes folder, so that it is available to the graphql-java engine at runtime.
-  
-  []
 
 * {What tasks are executed by the plugin?}
 ~~~~~~~~~~~~~~~~~~~

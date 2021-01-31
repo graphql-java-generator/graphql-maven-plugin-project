@@ -38,27 +38,51 @@ import com.graphql_java_generator.util.GraphqlUtils;
 @Component
 public class GenerateGraphQLSchema {
 
-	@Autowired
-	GenerateGraphQLSchemaDocumentParser documentParser;
+	DocumentParser documentParser;
 
-	@Autowired
 	GraphqlUtils graphqlUtils;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
-	@Autowired
 	GenerateGraphQLSchemaConfiguration configuration;
 
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
 
-	public GenerateGraphQLSchema() {
-		// Initialization for Velocity
-		velocityEngine = new VelocityEngine();
-		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-		velocityEngine.init();
+	/**
+	 * The constructor that Spring will use to load this Spring bean
+	 * 
+	 * @param documentParser
+	 *            The document parser, that loads the GraphQL schema into memory, and prepares the data for the schema
+	 *            generation.
+	 * @param graphqlUtils
+	 *            A runtime utility class
+	 * @param configuration
+	 *            The configuration for the <I>generateGraphQLSchema</I> task/goal
+	 */
+	@Autowired
+	public GenerateGraphQLSchema(GenerateGraphQLSchemaDocumentParser documentParser, GraphqlUtils graphqlUtils,
+			GenerateGraphQLSchemaConfiguration configuration) {
+		this.documentParser = documentParser;
+		this.graphqlUtils = graphqlUtils;
+		this.configuration = configuration;
+	}
+
+	/**
+	 * A constructor that can be called by other tasks/goals. For instance, the {@link GenerateCodeGenerator} class
+	 * creates an instance of this class, when in server mode and addRelayConnections is true, to generate the GraphQL
+	 * schema, as it is necessary for the graphql-java at runtime.
+	 * 
+	 * @param documentParser
+	 * @param graphqlUtils
+	 * @param configuration
+	 */
+	public GenerateGraphQLSchema(DocumentParser documentParser, GraphqlUtils graphqlUtils,
+			GenerateGraphQLSchemaConfiguration configuration) {
+		this.documentParser = documentParser;
+		this.graphqlUtils = graphqlUtils;
+		this.configuration = configuration;
 	}
 
 	/** This method is the entry point, for the generation of the schema that merges the GraphQL source schema files */
@@ -85,7 +109,7 @@ public class GenerateGraphQLSchema {
 			context.put("queryType", documentParser.queryType);
 			context.put("subscriptionType", documentParser.subscriptionType);
 			context.put("unionTypes", documentParser.unionTypes);
-			Template template = velocityEngine.getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");
+			Template template = getVelocityEngine().getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");
 
 			targetFile.getParentFile().mkdirs();
 			Writer writer = new FileWriterWithEncoding(targetFile,
@@ -112,5 +136,16 @@ public class GenerateGraphQLSchema {
 		} else {
 			return template.getDefaultValue();
 		}
+	}
+
+	private VelocityEngine getVelocityEngine() {
+		if (velocityEngine == null) {
+			// Initialization for Velocity
+			velocityEngine = new VelocityEngine();
+			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+			velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+			velocityEngine.init();
+		}
+		return velocityEngine;
 	}
 }

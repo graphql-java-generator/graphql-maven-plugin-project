@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -20,40 +21,41 @@
 						<goals>
 							<goal>generateServerCode</goal>
 						</goals>
+						<configuration>
+							<!-- addRelayConnections will generate all the Relay Connection stuff (Node, Edge and Connection interfaces, and creating 
+								the XxxEdge and XxxConnection interfaces or objects), for fields marked with the RelayConnection directive. See the documentation 
+								for more information -->
+							<addRelayConnections>true</addRelayConnections>
+							<copyRuntimeSources>false</copyRuntimeSources>
+							<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
+							<packageName>org.allGraphQLCases.server</packageName>
+							<schemaFileFolder>src/main/graphqls</schemaFileFolder>
+							<separateUtilityClasses>true</separateUtilityClasses>
+							<customScalars>
+								<customScalar>
+									<graphQLTypeName>Date</graphQLTypeName>
+									<javaType>java.util.Date</javaType>
+									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
+									<graphQLTypeName>else</graphQLTypeName>
+									<javaType>java.lang.String</javaType>
+									<graphQLScalarTypeGetter>org.allGraphQLCases.server.impl.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
+								</customScalar>
+								<customScalar>
+									<graphQLTypeName>Long</graphQLTypeName>
+									<javaType>java.lang.Long</javaType>
+									<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
+									<graphQLTypeName>NonNegativeInt</graphQLTypeName>
+									<javaType>java.lang.Integer</javaType>
+									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
+								</customScalar>
+							</customScalars>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<!-- addRelayConnections will generate all the Relay Connection stuff (Node, Edge and Connection interfaces, and creating 
-						the XxxEdge and XxxConnection interfaces or objects), for fields marked with the RelayConnection directive. See the documentation 
-						for more information -->
-					<addRelayConnections>true</addRelayConnections>
-					<copyRuntimeSources>false</copyRuntimeSources>
-					<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
-					<packageName>org.allGraphQLCases.server</packageName>
-					<separateUtilityClasses>true</separateUtilityClasses>
-					<customScalars>
-						<customScalar>
-							<graphQLTypeName>Date</graphQLTypeName>
-							<javaType>java.util.Date</javaType>
-							<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
-						</customScalar>
-						<customScalar>
-							<graphQLTypeName>else</graphQLTypeName>
-							<javaType>java.lang.String</javaType>
-							<graphQLScalarTypeGetter>org.allGraphQLCases.server.impl.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
-						</customScalar>
-						<customScalar>
-							<graphQLTypeName>Long</graphQLTypeName>
-							<javaType>java.lang.Long</javaType>
-							<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
-						</customScalar>
-						<customScalar>
-							<graphQLTypeName>NonNegativeInt</graphQLTypeName>
-							<javaType>java.lang.Integer</javaType>
-							<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
-						</customScalar>
-					</customScalars>
-				</configuration>
 			</plugin>
 			<plugin>
 				<!-- This helps by adding the generated source in the build path of your IDE -->

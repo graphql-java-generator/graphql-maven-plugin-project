@@ -24,9 +24,9 @@ import com.graphql_java_generator.plugin.test.helper.DeepComparator;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.ComparisonRule;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.Difference;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator.DifferenceType;
-import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.language.Document;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
@@ -162,7 +162,7 @@ class GenerateGraphQLSchemaTest {
 		// Go, go, go
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
 		GenerateGraphQLSchema sourceRelaySchema = ctx.getBean(GenerateGraphQLSchema.class);
-		GenerateGraphQLSchemaDocumentParser sourceDocumentParser = sourceRelaySchema.documentParser;
+		GenerateGraphQLSchemaDocumentParser sourceDocumentParser = (GenerateGraphQLSchemaDocumentParser) sourceRelaySchema.documentParser;
 		sourceDocumentParser.parseDocuments();
 		sourceRelaySchema.generateGraphQLSchema();
 		// Let's log the current configuration (this will do something only when in debug mode)

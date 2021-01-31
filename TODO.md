@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Correct doc for serve when addRelayConnections true (no need to control /src/main/Resource, but file name)
 * Add the _addRelayConnections_ capability to the Gradle plugin
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
 * Publish the Gradle 1.12.1 version

@@ -4,19 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 
-import graphql.language.Document;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration_KO;
 import graphql.schema.GraphQLScalarType;
 
@@ -29,17 +28,6 @@ import graphql.schema.GraphQLScalarType;
 class DocumentParser_allGraphQLCases_Server_KO_Test {
 
 	AbstractApplicationContext ctx = null;
-	GenerateCodeDocumentParser documentParser;
-	GraphQLConfiguration pluginConfiguration;
-	List<Document> documents;
-
-	@BeforeEach
-	void loadApplicationContext() throws IOException {
-		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
-		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
-		documents = documentParser.documents.getDocuments();
-	}
 
 	@AfterEach
 	void cleanUp() {
@@ -50,9 +38,34 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_parseOneDocument_allGraphQLCases() {
+	void test_parseOneDocument_allGraphQLCases() throws IOException {
+		// Preparation
+		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
+		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
+		documentParser.documents.getDocuments();
+
 		// Go, go, go
 		Exception e = assertThrows(Exception.class, () -> documentParser.parseDocuments());
 		assertTrue(e.getMessage().contains("must provide an implementation for the Custom Scalar 'Date'"));
 	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_allGraphQLCases_relayConnTrue_defaultGraphqlsFolder() throws IOException {
+		// Preparation
+		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
+		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
+		GraphQLConfigurationTestHelper pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
+		documentParser.documents.getDocuments();
+
+		// Let's update some configuration parameters AFTER the documents are loaded, to check the control tests, when
+		// the parsing starts
+		pluginConfiguration.addRelayConnections = true;
+		pluginConfiguration.schemaFilePattern = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+
+		// Go, go, go
+		Exception e = assertThrows(IllegalArgumentException.class, () -> documentParser.parseDocuments());
+		assertTrue(e.getMessage().contains("addRelayConnections is set to true"));
+	}
+
 }

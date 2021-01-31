@@ -35,6 +35,7 @@ import com.graphql_java_generator.annotation.GraphQLUnionType;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.CustomDeserializer;
@@ -181,13 +182,15 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	public int parseDocuments() throws IOException {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's start by some controls on the configuration parameters
-		//
-		// In server mode, the graphql-java needs to have access to the GraphQL schema.
 		if (configuration.getMode().equals(PluginMode.server)) {
-			if (configuration.isAddRelayConnections()) {
-				throw new IllegalArgumentException("");
-			} else {
-				throw new IllegalArgumentException("");
+			if (configuration.isAddRelayConnections() && // Let's have a test that works for windows (\) and unix (/)
+					configuration.getSchemaFilePattern()
+							.endsWith(GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)) {
+				// In server mode, the graphql-java needs to have access to the GraphQL schema.
+				throw new IllegalArgumentException(
+						"When the addRelayConnections is set to true, the GraphQL schema must be provided have another name than '"
+								+ GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME
+								+ "'. Please check the https://graphql-maven-plugin-project.graphql-java-generator.com/server_add_relay_connection.html page for more information");
 			}
 		}
 

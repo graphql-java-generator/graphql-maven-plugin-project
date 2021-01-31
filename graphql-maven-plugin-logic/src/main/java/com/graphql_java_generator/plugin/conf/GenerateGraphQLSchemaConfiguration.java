@@ -18,7 +18,7 @@ public interface GenerateGraphQLSchemaConfiguration extends CommonConfiguration 
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
-	public final String DEFAULT_TARGET_SCHEMA_FILE_NAME = "schema.graphqls";
+	public final String DEFAULT_TARGET_SCHEMA_FILE_NAME = "generated_schema.graphqls";
 	public final String DEFAULT_RESOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_TARGET_FOLDER = "/generated-resources/graphql-maven-plugin_generate-relay-schema";
 
@@ -35,6 +35,7 @@ public interface GenerateGraphQLSchemaConfiguration extends CommonConfiguration 
 	public String getTargetSchemaFileName();
 
 	/** Logs all the configuration parameters, in the debug level */
+	@Override
 	public default void logConfiguration() {
 		if (getPluginLogger().isDebugEnabled()) {
 			getPluginLogger().debug("The graphql-java-generator Plugin Configuration for the 'merge' goal is -->");

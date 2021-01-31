@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import javax.annotation.Generated;
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -44,7 +45,6 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 
 #if($configuration.generateBatchLoaderEnvironment)
 import com.graphql_java_generator.server.util.BatchLoaderDelegateWithContext;
-#else
 import com.graphql_java_generator.server.util.BatchLoaderDelegate;
 #end
 
@@ -116,11 +116,19 @@ public class GraphQLProvider {
 	public void init() throws IOException {
 		Resource res;
 		StringBuffer sdl = new StringBuffer();
+#if($configuration.addRelayConnections)
+## When addRelayConnections is true, then graphql-java should use the Generated schema, instead of the source schema
+		res = new ClassPathResource("/${configuration.defaultTargetSchemaFileName}");
+		try(Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"))) {
+			sdl.append(FileCopyUtils.copyToString(reader));
+		}
+#else
 #foreach ($schemaFile in $schemaFiles)
 		res = new ClassPathResource("/${schemaFile}");
 		try(Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"))) {
 			sdl.append(FileCopyUtils.copyToString(reader));
 		}
+#end
 #end
 		this.graphQL = GraphQL.newGraphQL(buildSchema(sdl.toString())).build();
 	}

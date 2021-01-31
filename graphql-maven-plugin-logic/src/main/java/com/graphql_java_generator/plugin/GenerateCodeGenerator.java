@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.jar.JarEntry;
@@ -33,6 +34,8 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -372,6 +375,62 @@ public class GenerateCodeGenerator {
 		configuration.getPluginLogger().debug("Generating WebSocketHandler");
 		ret += generateOneFile(getJavaFile("WebSocketHandler", true), "generating WebSocketHandler", context,
 				resolveTemplate(CodeTemplate.WEB_SOCKET_HANDLER));
+
+		// When the addRelayConnections parameter is true, and we're in server mode, we must generate the resulting
+		// GraphQL schema, so that the graphql-java can access it at runtime.
+		if (configuration.isAddRelayConnections() && configuration.getMode().equals(PluginMode.server)) {
+			GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
+
+				@Override
+				public Logger getPluginLogger() {
+					return configuration.getPluginLogger();
+				}
+
+				@Override
+				public File getSchemaFileFolder() {
+					return configuration.getSchemaFileFolder();
+				}
+
+				@Override
+				public String getSchemaFilePattern() {
+					return configuration.getSchemaFilePattern();
+				}
+
+				@Override
+				public Map<String, String> getTemplates() {
+					return configuration.getTemplates();
+				}
+
+				@Override
+				public boolean isAddRelayConnections() {
+					return configuration.isAddRelayConnections();
+				}
+
+				@Override
+				public String getResourceEncoding() {
+					return "UTF-8";
+				}
+
+				@Override
+				public File getTargetFolder() {
+					return configuration.getTargetClassFolder();
+				}
+
+				@Override
+				public String getTargetSchemaFileName() {
+					return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+				}
+
+				@Override
+				public String getDefaultTargetSchemaFileName() {
+					return DEFAULT_TARGET_SCHEMA_FILE_NAME;
+				}
+
+			};
+			GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
+					graphqlUtils, generateGraphQLSchemaConf);
+			generateGraphQLSchema.generateGraphQLSchema();
+		}
 
 		return ret;
 

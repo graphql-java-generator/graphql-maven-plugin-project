@@ -100,6 +100,14 @@ public interface CommonConfiguration {
 	 */
 	public boolean isAddRelayConnections();
 
+	/**
+	 * The default name of the target filename.<BR/>
+	 * This method must be accessible by the Velocity engine. Thus, it can not be a <I>default</I> interface method.
+	 */
+	default public String getDefaultTargetSchemaFileName() {
+		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+	}
+
 	/** Logs all the configuration parameters (only when in the debug level) */
 	public void logConfiguration();
 
