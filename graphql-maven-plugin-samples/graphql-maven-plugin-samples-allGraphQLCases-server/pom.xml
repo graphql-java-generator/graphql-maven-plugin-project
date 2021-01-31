@@ -29,7 +29,6 @@
 							<copyRuntimeSources>false</copyRuntimeSources>
 							<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 							<packageName>org.allGraphQLCases.server</packageName>
-							<schemaFileFolder>src/main/graphqls</schemaFileFolder>
 							<separateUtilityClasses>true</separateUtilityClasses>
 							<customScalars>
 								<customScalar>
