@@ -13,7 +13,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-import javax.annotation.Generated;
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -45,6 +44,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 
 #if($configuration.generateBatchLoaderEnvironment)
 import com.graphql_java_generator.server.util.BatchLoaderDelegateWithContext;
+#else
 import com.graphql_java_generator.server.util.BatchLoaderDelegate;
 #end
 
