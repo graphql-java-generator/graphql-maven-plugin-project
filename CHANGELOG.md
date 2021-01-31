@@ -8,7 +8,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 
 
-# Not released yet
+# 1.12.1
 
 Both modes (client and server):
 * Correction for the _addRelayConnections_: the _Node_ interface was not properly copied to all implementing subtypes and subinterfaces
