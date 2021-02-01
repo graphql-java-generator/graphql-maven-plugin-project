@@ -8,6 +8,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 
 
+# Not released yet
+
+Server mode:
+* The generated code would not allow the specific implementation to override the GraphQLInvocation Spring Bean
+
+
 # 1.12.1
 
 Both modes (client and server):

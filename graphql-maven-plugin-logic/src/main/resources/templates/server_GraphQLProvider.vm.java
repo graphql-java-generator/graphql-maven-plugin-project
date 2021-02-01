@@ -23,7 +23,6 @@ import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -49,6 +48,7 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import graphql.spring.web.servlet.ExecutionInputCustomizer;
 import graphql.spring.web.servlet.GraphQLInvocation;
 import graphql.spring.web.servlet.GraphQLInvocationData;
+import graphql.spring.web.servlet.OnDemandDataLoaderRegistry;
 import graphql.spring.web.servlet.components.DefaultGraphQLInvocation;
 
 #if($configuration.generateBatchLoaderEnvironment)
@@ -108,24 +108,11 @@ public class GraphQLProvider {
 	public GraphQL graphQL() {
 		return graphQL;
 	}
-
-	/**
-	 * This method returns a clone of the {@link DefaultGraphQLInvocation}, with a Data Loader being created for each request. This insure a "per request" {@link DataLoaderRegistry}
-	 * @param executionInputCustomizer
-	 * @return
-	 */
+	
 	@Bean
-	@Primary
-	GraphQLInvocation customGraphQLInvocation(ExecutionInputCustomizer executionInputCustomizer) {
-		return new GraphQLInvocation() {
-
-			@Override
-			public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData,
-					WebRequest webRequest) {
-				ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
-						.query(invocationData.getQuery()).operationName(invocationData.getOperationName())
-						.variables(invocationData.getVariables());
-
+	OnDemandDataLoaderRegistry onDemandDataLoaderRegistry() {
+		return new OnDemandDataLoaderRegistry() {
+			public DataLoaderRegistry getNewDataLoaderRegistry() {
 				DataLoaderRegistry registry = new DataLoaderRegistry();
 				DataLoader<Object, Object> dl;
 
@@ -137,8 +124,42 @@ public class GraphQLProvider {
 						.getBeansOfType(BatchLoaderDelegate.class).values()) {
 #end
 					registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
-				}
-				executionInputBuilder.dataLoaderRegistry(registry);
+				}//for
+
+				return registry;
+			}
+		};
+	}
+
+	/**
+	 * This method returns a clone of the {@link DefaultGraphQLInvocation}, with a Data Loader being created for each 
+	 * request. This insure a "per request" {@link DataLoaderRegistry}.<BR/>
+	 * You can override this component by your own {@link GraphQLInvocation}, by defining a Primary Spring Bean:
+	 * <PRE>
+	 * @Bean
+	 * @Primary // This marks your bean as the one to take into account
+	 * GraphQLInvocation customGraphQLInvocation(ExecutionInputCustomizer executionInputCustomizer) {
+	 *    return new GraphQLInvocation() {
+	 * 	     ...
+	 * 	  }
+	 * }
+	 * <PRE/>
+	 * @param executionInputCustomizer
+	 * @param onDemandDataLoaderRegistry The component that will provide a new {@link DataLoaderRegistry} for each request
+	 * @return
+	 */
+	@Bean
+	GraphQLInvocation customGraphQLInvocation(ExecutionInputCustomizer executionInputCustomizer, OnDemandDataLoaderRegistry onDemandDataLoaderRegistry) {
+		return new GraphQLInvocation() {
+
+			@Override
+			public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData,
+					WebRequest webRequest) {
+				ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
+						.query(invocationData.getQuery()).operationName(invocationData.getOperationName())
+						.variables(invocationData.getVariables());
+
+				executionInputBuilder.dataLoaderRegistry(onDemandDataLoaderRegistry.getNewDataLoaderRegistry());
 
 				ExecutionInput executionInput = executionInputBuilder.build();
 				CompletableFuture<ExecutionInput> customizedExecutionInput = executionInputCustomizer

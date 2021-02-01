@@ -65,12 +65,14 @@ public class GraphQLDataFetchers {
 #if (${dataFetcher.completableFuture})
 			DataLoader<${dataFetcher.field.type.identifier.type.classSimpleName}, ${dataFetcher.field.javaType}> dataLoader = dataFetchingEnvironment.getDataLoader("${dataFetcher.field.type.classSimpleName}"); 
 			
-			// This dataLoader may be null. Let's hande that:
-			if (dataLoader != null) 
+			// This dataLoader may be null. Let's handle that:
+			if (dataLoader != null) { 
 				return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
-			else
+			} else {
+				logger.warn("No DataLoader found for key '{}'", "${dataFetcher.field.type.classSimpleName}");
 				return CompletableFuture.supplyAsync(
 						() -> ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end));
+			}
 #elseif (${dataFetcher.field.fieldTypeAST.list})
 			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end ${dataFetcher.field.javaType}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 #if (${dataFetcher.dataFetcherDelegate.type.requestType}!="subscription")

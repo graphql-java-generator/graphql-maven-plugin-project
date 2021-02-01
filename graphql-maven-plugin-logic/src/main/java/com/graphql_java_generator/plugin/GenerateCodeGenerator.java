@@ -562,6 +562,7 @@ public class GenerateCodeGenerator {
 		if (serverContext == null) {
 			serverContext = getVelocityContext();
 			serverContext.put("dataFetchersDelegates", generateCodeDocumentParser.getDataFetchersDelegates());
+			serverContext.put("batchLoaders", generateCodeDocumentParser.getBatchLoaders());
 			serverContext.put("interfaces", generateCodeDocumentParser.getInterfaceTypes());
 			serverContext.put("unions", generateCodeDocumentParser.getUnionTypes());
 
