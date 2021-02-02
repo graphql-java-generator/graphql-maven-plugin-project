@@ -6,7 +6,6 @@ Here are the next tasks listed, as a TODO list:
 * Add a control at runtime, that the runtime is the good version, as the plugin that generated the code.
 * Add the _addRelayConnections_ capability to the Gradle plugin
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
-* [Almost done] Remove all log4j dependencies from the client and server pom dependencies (issue #52)
 * Removed unused integration test in the plugin 
    Done. But still to be checked: Remove exclusions in poms, like spring-boot-starter-logging
 * Issue 65: add some more info when someone a request like one of those:
