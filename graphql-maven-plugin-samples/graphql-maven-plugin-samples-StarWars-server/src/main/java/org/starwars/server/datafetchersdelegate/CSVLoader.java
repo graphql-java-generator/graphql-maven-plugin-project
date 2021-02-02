@@ -25,7 +25,7 @@ import com.opencsv.CSVReader;
  * <LI>Table name and file name are the same (filename must be postfixed by ".csv"</LI>
  * <LI>This class expect the csv file to be provided on the given path of the classpath</LI>
  * <LI>Removed support for a specific separator</LI>
- * <LI>Add of log4j logging</LI>
+ * <LI>Add of logging</LI>
  * </UL>
  * 
  * @author Viral Patel

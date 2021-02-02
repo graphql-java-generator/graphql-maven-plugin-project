@@ -230,7 +230,6 @@ repositories {
 dependencies {
 	// THE VERSION MUST BE THE SAME AS THE PLUGIN's ONE
 	implementation "com.graphql-java-generator:graphql-java-runtime:${lastReleasedVersion}"
-	implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.12.1"
 }
 
 // The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time

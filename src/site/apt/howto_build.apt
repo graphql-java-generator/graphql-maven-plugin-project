@@ -128,12 +128,12 @@ How-to build the project
 ~~~~~~~~~~~~~~~~~~~
 
 
-  To avoid polluting the maven output, the default log4j configuration file sent all the output into the log file. You can check that in the /src/main/resources/log4j2.xml file.
+  To avoid polluting the maven output, the default log configuration file sent all the output into the log file. You can check that in the /src/main/resources/logback.xml file.
   
-  Another file is available, that shows more information, and output it on the console: /src/main/resources/log4j2-local.xml 
+  Another file is available, that shows more information, and output it on the console: /src/main/resources/logback-local.xml 
   
   To have all the output in the console (very useful when testing), you can start the GraphQLServerMain with this JVM parameter:
 
 +---------------------------------------------------------------------------------------------
-GraphQLServerMain -Dlog4j2.configurationFile=log4j2-local.xml
+GraphQLServerMain -Dlogging.config=classpath:logback-local.xml
 +---------------------------------------------------------------------------------------------

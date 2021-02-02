@@ -7,7 +7,7 @@
 		</encoder>
 	</appender>
 	<appender name="File" class="ch.qos.logback.core.FileAppender">
-		<file>target/JUnit-tests.log4j</file>
+		<file>target/JUnit-tests.log</file>
 		<encoder>
 			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
 		</encoder>
