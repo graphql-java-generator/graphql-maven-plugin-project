@@ -11,7 +11,9 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 # Not released yet
 
 Server mode:
+* The graphql-java version has been upgraded to 16.2 (the latest version at this time)
 * The generated code would not allow the specific implementation to override the GraphQLInvocation Spring Bean
+
 
 
 # 1.12.1
