@@ -111,6 +111,12 @@ public interface CommonConfiguration {
 	 * <I>generateClientCode</I> won't generate the sources.
 	 * </P>
 	 * <P>
+	 * Please note that if your pom adds the generated source folder with the <I>build-helper-maven-plugin</I>, it seems
+	 * that the compiler will always compile the sources, even if they didn't change. If you still want to use this
+	 * <I>build-helper-maven-plugin</I>, you can have a look at the
+	 * <A HREF="https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69">Issue 69</I> for a
+	 * hint on how to avoid it.
+	 * <P>
 	 * Of course, after a <I>clean</I> goal/taks execution, the target folder won't exist, and the sources or resources
 	 * will be created again during the next build.
 	 * </P>
