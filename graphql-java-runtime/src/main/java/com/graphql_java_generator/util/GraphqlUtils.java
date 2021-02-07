@@ -969,17 +969,18 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Returns the maximum or minimum value for the lastModified of the given file
+	 * Returns the maximum or minimum value for the lastModified of the given file, or of all the files (not folders)
+	 * contained into this folder.
 	 * 
 	 * @param fileOrFolder
 	 *            A file or a folder
 	 * @param maxValue
 	 *            If true and fileOrFolder is a folder, then this method returns the maximum {@link File#lastModified()}
-	 *            found for all its children. If false, then the minimum value is returned.
+	 *            found for all its files. If false, then the minimum value is returned.
 	 * @return if fileOrFolder doesn't exist, then returns null. If fileOrFolder is a file, then returns its
 	 *         {@link File#lastModified()} value. Otherwise its a folder. Then it loops into this folder, its subfolders
-	 *         (and so on), and returns the maximum or the minimum lastModified date found (depending on the value of
-	 *         maxValue)
+	 *         (and so on), and returns the maximum or the minimum (depending on the value of maxValue) lastModified
+	 *         date found for the files found. The date of the directories are ignored.
 	 */
 	public Long getLastModified(File fileOrFolder, boolean maxValue) {
 		if (fileOrFolder == null || !fileOrFolder.exists()) {
@@ -990,13 +991,17 @@ public class GraphqlUtils {
 			throw new RuntimeException("Unknown file type for " + fileOrFolder.getAbsolutePath());
 		} else {
 			// We have a folder. Let's recurse into its content.
-			long lastModifed = fileOrFolder.lastModified(); // Let's start with the lastModified value of this folder
+			Long lastModifed = null;
 			for (File f : fileOrFolder.listFiles()) {
-				long contentLastModified = getLastModified(f, maxValue);
-				if (maxValue && contentLastModified > lastModifed) {
-					lastModifed = contentLastModified;
-				} else if (!maxValue && contentLastModified < lastModifed) {
-					lastModifed = contentLastModified;
+				Long contentLastModified = getLastModified(f, maxValue);
+				if (contentLastModified != null) {
+					if (lastModifed == null) {
+						lastModifed = contentLastModified;
+					} else if (maxValue && contentLastModified > lastModifed) {
+						lastModifed = contentLastModified;
+					} else if (!maxValue && contentLastModified < lastModifed) {
+						lastModifed = contentLastModified;
+					}
 				}
 			} // for
 			return lastModifed;

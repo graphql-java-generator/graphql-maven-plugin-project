@@ -128,6 +128,10 @@ public class GenerateGraphQLSchema {
 			template.merge(context, writer);
 			writer.flush();
 			writer.close();
+
+			configuration.getPluginLogger()
+					.info("The GraphQL schema has been generated in '" + targetFile.getAbsolutePath() + "'");
+
 		} catch (ResourceNotFoundException | ParseErrorException | TemplateInitException | MethodInvocationException
 				| IOException e) {
 			throw new RuntimeException("Error when " + msg, e);

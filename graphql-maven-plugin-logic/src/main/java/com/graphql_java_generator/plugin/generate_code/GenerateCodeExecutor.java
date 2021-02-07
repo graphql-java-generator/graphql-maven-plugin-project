@@ -64,12 +64,7 @@ public class GenerateCodeExecutor implements PluginExecutor {
 		} else {
 			// Let's do the job
 			documentParser.parseDocuments();
-			int nbGeneratedClasses = generator.generateCode();
-			configuration.getPluginLogger()
-					.info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
-							+ configuration.getSchemaFilePattern() + "' in the package '"
-							+ configuration.getPackageName() + "'");
-
+			generator.generateCode();
 		}
 	}
 
