@@ -2,15 +2,19 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Publish a PR to have a per request cache, in graphql-java-spring ==> Done. Waiting for the PR to be accepted (and then a new release)
+* Publish a PR to have a per request cache, in graphql-java-spring 
+    * Done. Waiting for the PR to be accepted (and then a new release)
 * Document how-to avoid the code generation (or find a better idea)
-   https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69
+    * https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69
 * Add a control at runtime, that the runtime is the good version, as the plugin that generated the code.
 * Add the _addRelayConnections_ capability to the Gradle plugin
 * Add the _skipGenerationIfSchemaHasNotChanged_ capability to the Gradle plugin
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
+* Finish the job for the _generatePOJO_ goal/task.
+    * The _GeneratePOJOConfiguration_ interface has been created, with some default value. But how to prevent these parameters to be displayed in the doc. _GeneratePOJOConfiguration_ should probably be the super interface for the _GenerateCodeCommonConfiguration_ (and not the reverse as currently).
+    * Also check the _GenerateCodeDocumentParser.initScalarTypes_ method 
 * Removed unused integration test in the plugin 
-   Done. But still to be checked: Remove exclusions in poms, like spring-boot-starter-logging
+    * Done. But still to be checked: Remove exclusions in poms, like spring-boot-starter-logging
 * Issue 65: add some more info when someone a request like one of those:
     * "{id name subObject(types: [TYPE1, TYPE2])}"   (the list should be an input parameter)
     * "{id name subObject(type: {some json})}"       (the json should be an input parameter)
@@ -22,8 +26,8 @@ Here are the next tasks listed, as a TODO list:
 * Update the README with the XxxxExecutor classes
 * Remove the WithDataLoader at the end of the DataFetcher names (no impact on the user's code)
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
-==> update the four tutorials
-==> Check the documented default value
+    * update the four tutorials
+    * Check the documented default value
 * Better document the BatchLoader (including the generateBatchLoaderEnvironment parameter)
 * [WIP] Adding the relay connection capabilities (almost done, unit tests are Ok, remaining task: integration tests).
 * Check the #0038 issue: how to update a OAuth token with a javax.ws.rs.client.Client 
