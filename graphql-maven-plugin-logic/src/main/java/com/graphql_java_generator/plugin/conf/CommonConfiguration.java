@@ -113,9 +113,10 @@ public interface CommonConfiguration {
 	 * <P>
 	 * Please note that if your pom adds the generated source folder with the <I>build-helper-maven-plugin</I>, it seems
 	 * that the compiler will always compile the sources, even if they didn't change. If you still want to use this
-	 * <I>build-helper-maven-plugin</I>, you can have a look at the
+	 * <I>build-helper-maven-plugin</I>, you'll have to put it into a dedicated profile, so that you can activte it or
+	 * not as you want. You can have a look at the
 	 * <A HREF="https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69">Issue 69</I> for a
-	 * hint on how to avoid it.
+	 * hint on this.
 	 * <P>
 	 * Of course, after a <I>clean</I> goal/taks execution, the target folder won't exist, and the sources or resources
 	 * will be created again during the next build.
@@ -124,8 +125,6 @@ public interface CommonConfiguration {
 	 * As of 1.x version of the plugin, the default value is <I>false</I>, so that only people aware of it try it.
 	 * Starting from 2.x version, its default value will be <I>true</I>.
 	 * </P>
-	 * 
-	 * @return
 	 */
 	public boolean isSkipGenerationIfSchemaHasNotChanged();
 
