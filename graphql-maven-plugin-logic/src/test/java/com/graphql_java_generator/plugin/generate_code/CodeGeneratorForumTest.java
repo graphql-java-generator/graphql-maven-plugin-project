@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import javax.annotation.Resource;
 

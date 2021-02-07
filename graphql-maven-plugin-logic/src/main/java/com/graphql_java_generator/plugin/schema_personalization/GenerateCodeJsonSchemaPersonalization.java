@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
@@ -46,7 +46,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 
 	@Autowired
-	GenerateCodeDocumentParser documentParser;
+	DocumentParser documentParser;
 
 	@Autowired
 	CommonConfiguration configuration;

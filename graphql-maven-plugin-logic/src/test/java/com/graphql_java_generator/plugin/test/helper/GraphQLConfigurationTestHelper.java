@@ -43,6 +43,8 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String schemaFilePattern = null;
 	public File schemaPersonalizationFile = null;
 	public boolean separateUtilityClasses = false;
+	// As the GraphQL schema won't change, and we always want to regenerate the sources, we won't skip it
+	public boolean skipGenerationIfSchemaHasNotChanged = false;
 	public String sourceEncoding = "UTF-8";
 	public File targetClassFolder = null;
 	public File targetResourceFolder = null;

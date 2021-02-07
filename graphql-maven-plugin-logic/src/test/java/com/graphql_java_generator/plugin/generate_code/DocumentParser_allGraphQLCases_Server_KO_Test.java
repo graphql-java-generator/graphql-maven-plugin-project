@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,7 +42,7 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 		// Preparation
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		documentParser.documents.getDocuments();
+		documentParser.getDocuments().getDocuments();
 
 		// Go, go, go
 		Exception e = assertThrows(Exception.class, () -> documentParser.parseDocuments());
@@ -56,7 +56,7 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		GraphQLConfigurationTestHelper pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
-		documentParser.documents.getDocuments();
+		documentParser.getDocuments().getDocuments();
 
 		// Let's update some configuration parameters AFTER the documents are loaded, to check the control tests, when
 		// the parsing starts

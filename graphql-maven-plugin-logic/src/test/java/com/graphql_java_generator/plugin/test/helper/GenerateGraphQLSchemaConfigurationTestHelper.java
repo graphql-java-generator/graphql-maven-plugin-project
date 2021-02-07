@@ -25,6 +25,8 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	public String packageName = "my.test.package";
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
+	// As the GraphQL schema won't change, and we always want to regenerate the schema, we won't skip it
+	public boolean skipGenerationIfSchemaHasNotChanged = false;
 	public String resourceEncoding = "UTF-8";
 	public File targetFolder = null;
 	public String targetSchemaFileName = null;

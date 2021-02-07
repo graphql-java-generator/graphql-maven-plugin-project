@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.mavenplugin;
 
-import java.time.Duration;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.GenerateGraphQLSchema;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.ThreadSafe;
@@ -60,13 +57,6 @@ public class GenerateGraphQLSchemaMojo extends AbstractGenerateGraphQLSchemaMojo
 
 	@Override
 	protected void executeSpecificJob() throws Exception {
-		GenerateGraphQLSchema generateGraphQLSchema = ctx.getBean(GenerateGraphQLSchema.class);
-		generateGraphQLSchema.generateGraphQLSchema();
+		// No specific action
 	}
-
-	@Override
-	protected void logResult(Duration duration) {
-		getLog().debug("Finished generation of the GraphQL schema");
-	}
-
 }

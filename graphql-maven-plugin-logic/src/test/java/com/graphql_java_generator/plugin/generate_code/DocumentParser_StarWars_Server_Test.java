@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +36,7 @@ class DocumentParser_StarWars_Server_Test {
 		ctx = new AnnotationConfigApplicationContext(StarWars_Server_SpringConfiguration.class);
 		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
-		documents = documentParser.documents.getDocuments();
+		documents = documentParser.getDocuments().getDocuments();
 
 		documentParser.parseDocuments();
 	}
@@ -99,8 +99,8 @@ class DocumentParser_StarWars_Server_Test {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_initListOfImplementations() {
-		assertEquals(1, documentParser.interfaceTypes.size(), "Only one interface");
-		List<ObjectType> implementingTypes = documentParser.interfaceTypes.get(0).getImplementingTypes();
+		assertEquals(1, documentParser.getInterfaceTypes().size(), "Only one interface");
+		List<ObjectType> implementingTypes = documentParser.getInterfaceTypes().get(0).getImplementingTypes();
 		assertEquals(2, implementingTypes.size(), "2 types for this interface");
 		assertEquals("Human", implementingTypes.get(0).getName());
 		assertEquals("Droid", implementingTypes.get(1).getName());

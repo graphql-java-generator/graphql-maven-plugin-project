@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -32,11 +32,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.CodeTemplate;
+import com.graphql_java_generator.plugin.Generator;
+import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
@@ -46,14 +50,13 @@ import com.graphql_java_generator.util.GraphqlUtils;
 /**
  * This class generates the code for the graphql goal/task of the plugin, from the classes coming from the
  * com.graphql_java_generator.plugin.language package. This classes have been created by {link
- * {@link GenerateCodeDocumentParser}
+ * {@link GenerateCodeDocumentParser}.<BR/>
+ * This class should not be used directly. Please use the {@link GenerateCodeExecutor} instead.
  * 
  * @author etienne-sf
  */
 @Component
-public class GenerateCodeGenerator {
-
-	public static final String FILE_TYPE_JACKSON_DESERIALIZER = "Jackson deserializer";
+public class GenerateCodeGenerator implements Generator {
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
@@ -93,6 +96,7 @@ public class GenerateCodeGenerator {
 	 * @throws MojoExecutionException
 	 * @throws IOException
 	 */
+	@Override
 	public int generateCode() throws IOException {
 
 		configuration.getPluginLogger().debug("Starting code generation");
@@ -200,8 +204,9 @@ public class GenerateCodeGenerator {
 			copyRuntimeSources();
 		}
 
+		configuration.getPluginLogger().info(i + " java classes have been generated from the schema(s) '"
+				+ configuration.getSchemaFilePattern() + "' in the package '" + configuration.getPackageName() + "'");
 		return i;
-
 	}
 
 	void copyRuntimeSources() throws IOException {
@@ -426,9 +431,16 @@ public class GenerateCodeGenerator {
 					return DEFAULT_TARGET_SCHEMA_FILE_NAME;
 				}
 
+				@Override
+				public boolean isSkipGenerationIfSchemaHasNotChanged() {
+					// If we're here, it means the the code generation is done. So the addRelayConnection schema must be
+					// always created. We won't skip it.
+					return false;
+				}
+
 			};
 			GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
-					graphqlUtils, generateGraphQLSchemaConf);
+					graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
 			generateGraphQLSchema.generateGraphQLSchema();
 		}
 
@@ -550,8 +562,8 @@ public class GenerateCodeGenerator {
 		context.put("isPluginModeClient", configuration.getMode() == PluginMode.client);
 
 		context.put("packageUtilName", generateCodeDocumentParser.getUtilPackageName());
-		context.put("customScalars", generateCodeDocumentParser.customScalars);
-		context.put("directives", generateCodeDocumentParser.directives);
+		context.put("customScalars", generateCodeDocumentParser.getCustomScalars());
+		context.put("directives", generateCodeDocumentParser.getDirectives());
 		return context;
 	}
 
@@ -573,7 +585,7 @@ public class GenerateCodeGenerator {
 			final String utilityPackage = configuration.getPackageName()
 					+ ((configuration.isSeparateUtilityClasses()) ? ("." + GenerateCodeDocumentParser.UTIL_PACKAGE_NAME)
 							: "");
-			generateCodeDocumentParser.types.values().parallelStream().forEach(o -> {
+			generateCodeDocumentParser.getTypes().values().parallelStream().forEach(o -> {
 				if (o instanceof ScalarType) {
 					graphqlUtils.addImport(imports, utilityPackage,
 							((ScalarType) o).getPackageName() + "." + ((ScalarType) o).getClassSimpleName());

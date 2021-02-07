@@ -29,6 +29,7 @@
 								for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<schemaFileFolder>${basedir}/src/graphqls/</schemaFileFolder>
+							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<targetFolder>${basedir}/target/generated-resources/graphql-merge</targetFolder>
 							<targetSchemaFileName>merged_schemas.graphqls</targetSchemaFileName>
 						</configuration>
@@ -45,6 +46,7 @@
 							<packageName>org.allGraphQLCases.client</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
 							<separateUtilityClasses>true</separateUtilityClasses>
+							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>

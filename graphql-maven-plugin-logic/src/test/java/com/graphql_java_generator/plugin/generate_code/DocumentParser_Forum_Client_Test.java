@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -92,7 +92,8 @@ class DocumentParser_Forum_Client_Test {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Topic_client() {
 		// Preparation
-		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
+		Type topic = documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("Topic")).findFirst()
+				.get();
 
 		// Verification
 		assertEquals("@GraphQLObjectType(\"Topic\")", topic.getAnnotation());
@@ -129,8 +130,8 @@ class DocumentParser_Forum_Client_Test {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Mutation1_client() {
 		// Preparation
-		Type mutation = documentParser.objectTypes.stream().filter(o -> o.getName().equals("MutationType")).findFirst()
-				.get();
+		Type mutation = documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("MutationType"))
+				.findFirst().get();
 
 		// Verification
 		assertEquals(""//
@@ -148,7 +149,7 @@ class DocumentParser_Forum_Client_Test {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Mutation2_client() {
 		// Preparation
-		Type mutation = documentParser.mutationType;
+		Type mutation = documentParser.getMutationType();
 
 		// Verification
 		assertEquals("" //
@@ -171,8 +172,8 @@ class DocumentParser_Forum_Client_Test {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_checkIntrospectionQueries() {
-		assertNotNull(documentParser.queryType);
-		ObjectType query = documentParser.queryType;
+		assertNotNull(documentParser.getQueryType());
+		ObjectType query = documentParser.getQueryType();
 
 		// Verification
 		assertEquals("QueryType", query.getName());

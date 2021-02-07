@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -93,7 +93,8 @@ class DocumentParser_Forum_Server_Test {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_server() {
 		// Preparation
-		Type topic = documentParser.objectTypes.stream().filter(o -> o.getName().equals("Topic")).findFirst().get();
+		Type topic = documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("Topic")).findFirst()
+				.get();
 
 		// Verification
 		assertEquals("@Entity\n@GraphQLObjectType(\"Topic\")", topic.getAnnotation(), "Entity annotation");
@@ -332,7 +333,7 @@ class DocumentParser_Forum_Server_Test {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_initListOfImplementations() {
-		assertEquals(0, documentParser.interfaceTypes.size(), "No interface");
+		assertEquals(0, documentParser.getInterfaceTypes().size(), "No interface");
 	}
 
 	@Test

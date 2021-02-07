@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_schema;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
 
@@ -18,7 +19,7 @@ public class GenerateGraphQLSchemaDocumentParser extends DocumentParser {
 	 * This class doesn't need an implementation for the Custom Scalars. So a dummy one is returned. {@inheritDoc}
 	 */
 	@Override
-	CustomScalarType getCustomScalarType(String name) {
+	protected CustomScalarType getCustomScalarType(String name) {
 
 		// If this custom scalar has already been added to the list, let's return it
 		for (CustomScalarType customScalarType : customScalars) {

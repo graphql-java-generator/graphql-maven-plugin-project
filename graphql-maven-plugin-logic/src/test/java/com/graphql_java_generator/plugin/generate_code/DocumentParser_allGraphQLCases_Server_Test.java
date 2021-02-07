@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -20,6 +20,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.plugin.Documents;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -75,18 +76,18 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(27, i, "Nb java files are generated");
-		assertEquals(7, generateCodeDocumentParser.directives.size(), "Nb directives");
-		assertEquals(19, generateCodeDocumentParser.objectTypes.size(), "Nb objects");
-		assertEquals(4, generateCodeDocumentParser.customScalars.size(), "Nb custom scalars");
-		assertEquals(5, generateCodeDocumentParser.interfaceTypes.size(), "Nb interfaces");
-		assertEquals(3, generateCodeDocumentParser.enumTypes.size(), "Nb enums");
-		assertNotNull(generateCodeDocumentParser.queryType, "One query");
-		assertNotNull(generateCodeDocumentParser.mutationType, "One mutation");
-		assertNotNull(generateCodeDocumentParser.subscriptionType, "One subscription");
+		assertEquals(7, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
+		assertEquals(19, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(4, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
+		assertEquals(5, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
+		assertEquals(3, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
+		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
+		assertNotNull(generateCodeDocumentParser.getMutationType(), "One mutation");
+		assertNotNull(generateCodeDocumentParser.getSubscriptionType(), "One subscription");
 
-		assertEquals("query", generateCodeDocumentParser.queryType.getRequestType());
-		assertEquals("mutation", generateCodeDocumentParser.mutationType.getRequestType());
-		assertEquals("subscription", generateCodeDocumentParser.subscriptionType.getRequestType());
+		assertEquals("query", generateCodeDocumentParser.getQueryType().getRequestType());
+		assertEquals("mutation", generateCodeDocumentParser.getMutationType().getRequestType());
+		assertEquals("subscription", generateCodeDocumentParser.getSubscriptionType().getRequestType());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 1);
@@ -226,13 +227,13 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Checks of directive parsing
 		i = 0;
-		assertEquals("skip", generateCodeDocumentParser.directives.get(i++).getName());
-		assertEquals("include", generateCodeDocumentParser.directives.get(i++).getName());
-		assertEquals("defer", generateCodeDocumentParser.directives.get(i++).getName());
-		assertEquals("deprecated", generateCodeDocumentParser.directives.get(i++).getName());
-		assertEquals("RelayConnection", generateCodeDocumentParser.directives.get(i++).getName());
-		assertEquals("testDirective", generateCodeDocumentParser.directives.get(i++).getName());
-		assertEquals("anotherTestDirective", generateCodeDocumentParser.directives.get(i++).getName());
+		assertEquals("skip", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("include", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("defer", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("deprecated", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("RelayConnection", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("testDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("anotherTestDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 
 		// On Scalar
 		assertEquals(0, generateCodeDocumentParser.getType("Date").getAppliedDirectives().size(),
@@ -529,7 +530,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// We need to parse the whole document, to get the types map filled.
 		generateCodeDocumentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.objectTypes = new ArrayList<>();
+		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
 		// Go, go, go
 		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);
@@ -594,7 +595,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// We need to parse the whole document, to get the types map filled.
 		generateCodeDocumentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.objectTypes = new ArrayList<>();
+		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
 		// Go, go, go
 		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);
@@ -650,7 +651,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		} // for
 		assertNotNull(schema, "We should have found our test case (" + objectName + ")");
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.objectTypes = new ArrayList<>();
+		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
 		// Go, go, go
 		generateCodeDocumentParser.readSchemaDefinition(schema, queries, mutations, subscriptions);
@@ -757,11 +758,12 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to read the directives first
 		generateCodeDocumentParser.postConstruct();
-		generateCodeDocumentParser.documents.getDocuments().get(0).getDefinitions().stream()
-				.filter(n -> (n instanceof DirectiveDefinition)).forEach(node -> generateCodeDocumentParser.directives
+		generateCodeDocumentParser.getDocuments().getDocuments().get(0).getDefinitions().stream()
+				.filter(n -> (n instanceof DirectiveDefinition))
+				.forEach(node -> generateCodeDocumentParser.getDirectives()
 						.add(generateCodeDocumentParser.readDirectiveDefinition((DirectiveDefinition) node)));
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.queryType = null;
+		generateCodeDocumentParser.setQueryType(null);
 
 		// Go, go, go
 		EnumType type = generateCodeDocumentParser.readEnumType(def);
@@ -792,7 +794,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// We need to parse the whole document, to get the types map filled.
 		generateCodeDocumentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.mutationType = null;
+		generateCodeDocumentParser.setMutationType(null);
 
 		// Go, go, go
 		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);
@@ -840,7 +842,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// We need to parse the whole document, to get the types map filled.
 		generateCodeDocumentParser.parseDocuments();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.subscriptionType = null;
+		generateCodeDocumentParser.setSubscriptionType(null);
 
 		// Go, go, go
 		ObjectType type = generateCodeDocumentParser.readObjectTypeDefinition(def);

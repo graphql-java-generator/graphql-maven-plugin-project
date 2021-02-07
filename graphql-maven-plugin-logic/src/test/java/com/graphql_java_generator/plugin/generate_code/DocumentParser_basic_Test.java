@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -56,9 +56,10 @@ class DocumentParser_basic_Test {
 		documentParser.parseOneDocument(doc);
 
 		// Verification
-		int nbClasses = (documentParser.queryType == null ? 0 : 1) + (documentParser.subscriptionType == null ? 0 : 1)
-				+ (documentParser.mutationType == null ? 0 : 1) + documentParser.objectTypes.size()
-				+ documentParser.enumTypes.size() + documentParser.interfaceTypes.size();
+		int nbClasses = (documentParser.getQueryType() == null ? 0 : 1)
+				+ (documentParser.getSubscriptionType() == null ? 0 : 1)
+				+ (documentParser.getMutationType() == null ? 0 : 1) + documentParser.getObjectTypes().size()
+				+ documentParser.getEnumTypes().size() + documentParser.getInterfaceTypes().size();
 		assertEquals(2, nbClasses);
 	}
 }

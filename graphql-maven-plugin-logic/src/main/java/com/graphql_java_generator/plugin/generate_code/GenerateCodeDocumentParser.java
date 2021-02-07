@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_code;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,12 +33,13 @@ import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.GraphQLUnionType;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
-import com.graphql_java_generator.plugin.generate_code.CustomDeserializer;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.CustomScalar;
 import com.graphql_java_generator.plugin.language.DataFetcher;
@@ -72,7 +73,8 @@ import lombok.Getter;
  * {@link Parser}. <BR/>
  * The graphQL-java library maps both FieldDefinition and InputValueDefinition in very similar structures, which are
  * actually trees. These structures are too hard too read in a Velocity template, and we need to parse down to a
- * properly structures way for that.
+ * properly structures way for that.<BR/>
+ * This class should not be used directly. Please use the {@link GenerateCodeExecutor} instead.
  * 
  * @author etienne-sf
  */
@@ -128,7 +130,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	void initConfiguration() {
 		if (!(super.configuration instanceof GenerateCodeCommonConfiguration)) {
 			throw new RuntimeException(
-					"[Internal error] The plugin configuration must implement the GenerateCodeCommonConfiguration interface");
+					"[Internal error] The plugin configuration must implement the GenerateCodeCommonConfiguration interface, but is '"
+							+ super.configuration.getClass().getName() + "'");
 		}
 		configuration = (GenerateCodeCommonConfiguration) super.configuration;
 
@@ -162,8 +165,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		if (configuration.getCustomScalars() != null) {
 			for (CustomScalarDefinition customScalarDef : configuration.getCustomScalars()) {
 				CustomScalarType type = new CustomScalarType(customScalarDef, configuration);
-				customScalars.add(type);
-				types.put(type.getName(), type);
+				getCustomScalars().add(type);
+				getTypes().put(type.getName(), type);
 			}
 		}
 		configuration.getPluginLogger().debug("Storing custom scalar's implementations [END]");
@@ -227,9 +230,9 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		jsonSchemaPersonalization.applySchemaPersonalization();
 
 		// We're done
-		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
+		int nbClasses = getObjectTypes().size() + getEnumTypes().size() + getInterfaceTypes().size();
 		configuration.getPluginLogger()
-				.debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
+				.debug(getDocuments().getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
 
@@ -306,18 +309,18 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		switch (configuration.getMode()) {
 		case client:
 			// Type annotations
-			graphqlUtils.concatStreams(Type.class, true, null, null, null, interfaceTypes, objectTypes, unionTypes)
+			graphqlUtils.concatStreams(Type.class, true, null, null, null, interfaceTypes, getObjectTypes(), unionTypes)
 					.forEach(o -> addTypeAnnotationForClientMode(o));
 
 			// Field annotations
-			graphqlUtils.concatStreams(Type.class, true, null, null, null, objectTypes, interfaceTypes)
+			graphqlUtils.concatStreams(Type.class, true, null, null, null, getObjectTypes(), interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForClientMode((FieldImpl) f));
 
 			break;
 		case server:
-			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, objectTypes, interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, getObjectTypes(), interfaceTypes)
 					.forEach(o -> addTypeAnnotationForServerMode(o));
-			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, objectTypes, interfaceTypes)
+			graphqlUtils.concatStreams(ObjectType.class, true, null, null, null, getObjectTypes(), interfaceTypes)
 					.flatMap(o -> o.getFields().stream()).forEach(f -> addFieldAnnotationForServerMode(f));
 			break;
 		}
@@ -534,7 +537,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 */
 	void initDataFetchers() {
 		if (configuration.getMode().equals(PluginMode.server)) {
-			objectTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
+			getObjectTypes().stream().forEach(o -> initDataFetcherForOneObject(o));
 			interfaceTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
 			unionTypes.stream().forEach(o -> initDataFetcherForOneObject(o));
 		}
@@ -616,7 +619,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 			// We fetch only the objects, here. The interfaces are managed just after
 			configuration.getPluginLogger().debug("Init batch loader for objects");
-			objectTypes.stream().filter(o -> (o.getGraphQlType() == GraphQlType.OBJECT && !o.isInputType()))
+			getObjectTypes().stream().filter(o -> (o.getGraphQlType() == GraphQlType.OBJECT && !o.isInputType()))
 					.forEach(o -> initOneBatchLoader(o));
 
 			// Let's go through all interfaces.
@@ -699,7 +702,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				queryType.setRequestType("query");
 
 				// Let's first add the regular object that'll receive the server response (in the default package)
-				objectTypes.add(queryType);
+				getObjectTypes().add(queryType);
 				types.put(queryType.getName(), queryType);
 			}
 
@@ -713,7 +716,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// That is : in all regular object types and interfaces.
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			configuration.getPluginLogger().debug("Adding __typename to each object");
-			for (ObjectType type : objectTypes) {
+			for (ObjectType type : getObjectTypes()) {
 				if (!type.isInputType()) {
 					type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
 							.fieldTypeAST(
@@ -835,7 +838,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 */
 	private void initCustomDeserializers() {
 		Map<Type, Integer> maxListLevelPerType = new HashMap<>();
-		Stream.concat(objectTypes.stream(), interfaceTypes.stream())
+		Stream.concat(getObjectTypes().stream(), interfaceTypes.stream())
 				// We deserialize data from the response. So there is no custom deserializer for fields that belong to
 				// input types. Let's exclude the input types
 				.filter((o) -> !o.isInputType())
@@ -889,7 +892,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @return
 	 */
 	@Override
-	String getUtilPackageName() {
+	protected String getUtilPackageName() {
 		if (configuration.isSeparateUtilityClasses()) {
 			return configuration.getPackageName() + "." + UTIL_PACKAGE_NAME;
 		} else {
@@ -898,7 +901,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	}
 
 	@Override
-	CustomScalarType getCustomScalarType(String name) {
+	protected CustomScalarType getCustomScalarType(String name) {
 		for (CustomScalarType customScalarType : customScalars) {
 			if (customScalarType.getName().equals(name)) {
 				return customScalarType;

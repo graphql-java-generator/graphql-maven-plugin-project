@@ -31,6 +31,7 @@ import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
+import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
@@ -84,7 +85,7 @@ class AddRelayConnectionsTest {
 		ctx.getBean(GenerateGraphQLSchemaConfiguration.class).logConfiguration();
 		documentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
 		addRelayConnections = ctx.getBean(AddRelayConnections.class);
-		configuration = documentParser.configuration;
+		configuration = documentParser.getConfiguration();
 
 		// Go, go, go
 		if (executeParseDocuments) {

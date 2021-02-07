@@ -29,6 +29,7 @@ public interface CommonConfiguration {
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
+	public final String DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED = "false";
 
 	/**
 	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
@@ -99,6 +100,28 @@ public interface CommonConfiguration {
 	 * </P>
 	 */
 	public boolean isAddRelayConnections();
+
+	/**
+	 * <P>
+	 * (this parameter is in beta version) If true, and the generated sources or resources are older than the GraphQL
+	 * schema file(s), then there is no source or resource generation.
+	 * </P>
+	 * <P>
+	 * For instance, the <I>generateGraphQLSchema</I> goal won't (re)generate the target schema, and the
+	 * <I>generateClientCode</I> won't generate the sources.
+	 * </P>
+	 * <P>
+	 * Of course, after a <I>clean</I> goal/taks execution, the target folder won't exist, and the sources or resources
+	 * will be created again during the next build.
+	 * </P>
+	 * <P>
+	 * As of 1.x version of the plugin, the default value is <I>false</I>, so that only people aware of it try it.
+	 * Starting from 2.x version, its default value will be <I>true</I>.
+	 * </P>
+	 * 
+	 * @return
+	 */
+	public boolean isSkipGenerationIfSchemaHasNotChanged();
 
 	/**
 	 * The default name of the target filename.<BR/>

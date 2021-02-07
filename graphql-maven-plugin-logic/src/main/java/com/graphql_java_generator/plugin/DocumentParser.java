@@ -60,6 +60,7 @@ import graphql.language.TypeName;
 import graphql.language.UnionTypeDefinition;
 import graphql.parser.Parser;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class generates the Java classes, from the documents. These documents are read from the
@@ -75,26 +76,26 @@ import lombok.Getter;
 @Getter
 public abstract class DocumentParser {
 
-	final String DEFAULT_QUERY_NAME = "Query";
-	final String DEFAULT_MUTATION_NAME = "Mutation";
-	final String DEFAULT_SUBSCRIPTION_NAME = "Subscription";
+	protected final String DEFAULT_QUERY_NAME = "Query";
+	protected final String DEFAULT_MUTATION_NAME = "Mutation";
+	protected final String DEFAULT_SUBSCRIPTION_NAME = "Subscription";
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
 	@Autowired
-	CommonConfiguration configuration;
+	protected CommonConfiguration configuration;
 
 	/**
 	 * A utility that adds Relay Connection capabilities to the read schema. It is called if the
 	 * {@link CommonConfiguration#isAddRelayConnections()} is true
 	 */
 	@Autowired
-	AddRelayConnections addRelayConnections;
+	protected AddRelayConnections addRelayConnections;
 
 	/** Various utilities, grouped in a dedicated class */
 	@Autowired
-	GraphqlUtils graphqlUtils;
+	protected GraphqlUtils graphqlUtils;
 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 	// Internal attributes for this class
@@ -106,73 +107,84 @@ public abstract class DocumentParser {
 	 * generated code.
 	 */
 	@Autowired
-	Documents documents;
+	protected Documents documents;
 
 	/** List of all the directives that have been read in the GraphQL schema */
 	@Getter
-	List<Directive> directives = new ArrayList<>();
+	@Setter
+	protected List<Directive> directives = new ArrayList<>();
 
 	/** The Query root operation for this Document */
 	@Getter
-	ObjectType queryType = null;
+	@Setter
+	protected ObjectType queryType = null;
 
 	/**
 	 * The Subscription root operation for this Document, if defined (that is: if this schema implements one or more
 	 * subscriptions)
 	 */
 	@Getter
-	ObjectType subscriptionType = null;
+	@Setter
+	protected ObjectType subscriptionType = null;
 
 	/**
 	 * The Mutation root operation for this Document, if defined (that is: if this schema implements one or more
 	 * mutations)
 	 */
 	@Getter
-	ObjectType mutationType = null;
+	@Setter
+	protected ObjectType mutationType = null;
 
 	/**
 	 * All the {@link ObjectType} which have been read during the reading of the documents
 	 */
 	@Getter
+	@Setter
 	List<ObjectType> objectTypes = new ArrayList<>();
 
 	/**
 	 * We store all the found object extensions (extend GraphQL keyword), to manage them once all object definitions
 	 * have been read
 	 */
-	List<ObjectTypeExtensionDefinition> objectTypeExtensionDefinitions = new ArrayList<>();
+	protected List<ObjectTypeExtensionDefinition> objectTypeExtensionDefinitions = new ArrayList<>();
 
 	/**
 	 * All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents
 	 */
 	@Getter
-	List<InterfaceType> interfaceTypes = new ArrayList<>();
+	@Setter
+	protected List<InterfaceType> interfaceTypes = new ArrayList<>();
 
 	/**
 	 * All the {@link UnionTypeDefinition} which have been read during the reading of the documents
 	 */
 	@Getter
-	List<UnionType> unionTypes = new ArrayList<>();
+	@Setter
+	protected List<UnionType> unionTypes = new ArrayList<>();
 
 	/** All the {@link ObjectType} which have been read during the reading of the documents */
 	@Getter
-	List<EnumType> enumTypes = new ArrayList<>();
+	@Setter
+	protected List<EnumType> enumTypes = new ArrayList<>();
 
 	/**
 	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
 	 * java code
 	 */
-	List<ScalarType> scalarTypes = new ArrayList<>();
+	@Setter
+	protected List<ScalarType> scalarTypes = new ArrayList<>();
 
 	/** All the {@link CustomScalarType} which have been read during the reading of the documents */
-	List<CustomScalarType> customScalars = new ArrayList<>();
+	protected List<CustomScalarType> customScalars = new ArrayList<>();
 
 	/**
 	 * All the {@link Type}s that have been parsed, added by the default scalars. So it contains the query, the mutation
 	 * (if defined), the subscription (if defined), the types, the input types, all the scalars (including the default
 	 * ones), the interfaces, the unions and the enums
 	 */
-	Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
+	@Getter
+	@Setter
+	protected Map<String, com.graphql_java_generator.plugin.language.Type> types = new HashMap<>();
 
 	@PostConstruct
 	public void postConstruct() {
@@ -298,7 +310,7 @@ public abstract class DocumentParser {
 	 * 
 	 * @param document
 	 */
-	void parseOneDocument(Document document) {
+	public void parseOneDocument(Document document) {
 		// List of all the names of the query types. There should be only one. But we're ready for more (for instance if
 		// several schema files have been merged)
 		List<String> queryObjectNames = new ArrayList<>();
@@ -424,7 +436,7 @@ public abstract class DocumentParser {
 	 * schema. This allow to get the properties from their type, as only their type's name is known when parsing the
 	 * schema.
 	 */
-	void fillTypesMap() {
+	public void fillTypesMap() {
 		// Directive are directly added to the types map.
 		// TODO remove this method, and add each type in the types map as it is read
 
@@ -441,7 +453,7 @@ public abstract class DocumentParser {
 	 * @param node
 	 * @return
 	 */
-	Directive readDirectiveDefinition(DirectiveDefinition node) {
+	public Directive readDirectiveDefinition(DirectiveDefinition node) {
 		DirectiveImpl directive = new DirectiveImpl();
 
 		directive.setName(node.getName());
@@ -459,7 +471,7 @@ public abstract class DocumentParser {
 		return directive;
 	}
 
-	Directive getDirectiveDefinition(String name) {
+	public Directive getDirectiveDefinition(String name) {
 		for (Directive d : directives) {
 			if (d.getName().equals(name)) {
 				return d;
@@ -507,7 +519,7 @@ public abstract class DocumentParser {
 	 * @param subscriptionObjectNames
 	 * 
 	 */
-	void readSchemaDefinition(SchemaDefinition schemaDef, List<String> queryObjectNames,
+	public void readSchemaDefinition(SchemaDefinition schemaDef, List<String> queryObjectNames,
 			List<String> mutationObjectNames, List<String> subscriptionObjectNames) {
 
 		for (OperationTypeDefinition opDef : schemaDef.getOperationTypeDefinitions()) {
@@ -535,7 +547,7 @@ public abstract class DocumentParser {
 	 * @param node
 	 * @return
 	 */
-	ObjectType readObjectTypeDefinition(ObjectTypeDefinition node) {
+	public ObjectType readObjectTypeDefinition(ObjectTypeDefinition node) {
 		ObjectType objectType = new ObjectType(node.getName(), configuration);
 		return addObjectTypeDefinition(objectType, node);
 	}
@@ -699,7 +711,7 @@ public abstract class DocumentParser {
 	 * @param name
 	 * @return
 	 */
-	abstract CustomScalarType getCustomScalarType(String name);
+	protected abstract CustomScalarType getCustomScalarType(String name);
 
 	/**
 	 * Reads an enum definition, and create the relevant {@link EnumType}
@@ -707,7 +719,7 @@ public abstract class DocumentParser {
 	 * @param node
 	 * @return
 	 */
-	EnumType readEnumType(EnumTypeDefinition node) {
+	public EnumType readEnumType(EnumTypeDefinition node) {
 		EnumType enumType = new EnumType(node.getName(), configuration);
 
 		enumType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
@@ -861,7 +873,7 @@ public abstract class DocumentParser {
 	 * 
 	 * @return
 	 */
-	String getUtilPackageName() {
+	protected String getUtilPackageName() {
 		return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
 	}
 

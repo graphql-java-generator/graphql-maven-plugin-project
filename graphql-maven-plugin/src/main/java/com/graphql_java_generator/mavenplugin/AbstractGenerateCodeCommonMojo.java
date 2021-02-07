@@ -5,14 +5,12 @@ package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -188,9 +186,6 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 
 	@Override
 	protected void executeSpecificJob() throws IOException {
-		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
-		nbGeneratedClasses = codeGenerator.generateCode();
-
 		File targetDir = new File(project.getBasedir(), "target");
 		String generatedSourceFolder = new File(targetDir, targetSourceFolder).getPath();
 		project.addCompileSourceRoot(generatedSourceFolder);
@@ -207,9 +202,4 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 		getLog().debug("Added the generated resources folder: " + generatedResourceFolder);
 	}
 
-	@Override
-	protected void logResult(Duration duration) {
-		getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '" + schemaFilePattern
-				+ "' in the package '" + packageName + "' in " + duration.getSeconds() + " seconds");
-	}
 }

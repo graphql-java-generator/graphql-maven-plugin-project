@@ -6,9 +6,14 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * generateBatchLoaderEnvironment: true _(server only)_
 * generateDeprecatedRequestResponse: false _(client only)_
 * separateUtilityClasses: true _(both client and server mode)_
+* skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
 # Not released yet
+
+
+Both modes (client and server):
+* Added the _skipGenerationIfSchemaHasNotChanged_ parameter. It's in beta version. It prevents code and resource generation, of the schema file(s) are older than these generated sources or resources. It's default value is false in 1.x releases.
 
 Server mode:
 * The graphql-java version has been upgraded to 16.2 (the latest version at this time)

@@ -29,6 +29,7 @@
 							<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 							<packageName>org.allGraphQLCases.server</packageName>
 							<separateUtilityClasses>true</separateUtilityClasses>
+							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>

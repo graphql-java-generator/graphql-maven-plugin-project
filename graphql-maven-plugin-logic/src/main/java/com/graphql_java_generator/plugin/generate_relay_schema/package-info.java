@@ -1,1 +1,0 @@
-package com.graphql_java_generator.plugin.generate_relay_schema;

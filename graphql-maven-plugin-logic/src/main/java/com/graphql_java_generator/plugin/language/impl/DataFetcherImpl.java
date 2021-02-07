@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
-import com.graphql_java_generator.plugin.GenerateCodeGenerator;
-import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -19,8 +17,8 @@ import lombok.Data;
  * for regular GraphQL objects. <BR/>
  * They are grouped into {@link DataFetchersDelegate}s (see {@link DataFetchersDelegate} doc for more information on
  * that).<BR/>
- * Its characteristics are read by {@link GenerateCodeDocumentParser}, and used by {@link GenerateCodeGenerator} and the Velocity templates
- * to generate the code of the DataFechers, and their declaration in the GraphQLProvider.<BR/>
+ * Its characteristics are read by {@link GenerateCodeDocumentParser}, and used by {@link GenerateCodeGenerator} and the
+ * Velocity templates to generate the code of the DataFechers, and their declaration in the GraphQLProvider.<BR/>
  * The arguments for the data fetcher are the arguments of its source field in the GraphQL schema.
  * 
  * @author etienne-sf

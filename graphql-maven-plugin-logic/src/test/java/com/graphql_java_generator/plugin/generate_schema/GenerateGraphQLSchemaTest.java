@@ -1,4 +1,4 @@
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_schema;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
+import com.graphql_java_generator.plugin.AddRelayConnections;
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -69,13 +71,17 @@ class GenerateGraphQLSchemaTest {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(
+				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
 				"configuration");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(
+				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
 				"graphqlUtils");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(
+				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
 				"documents");
-		deepComparator.addIgnoredFields(com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser.class,
+		deepComparator.addIgnoredFields(
+				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
 				"objectTypeExtensionDefinitions");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.FieldTypeAST;

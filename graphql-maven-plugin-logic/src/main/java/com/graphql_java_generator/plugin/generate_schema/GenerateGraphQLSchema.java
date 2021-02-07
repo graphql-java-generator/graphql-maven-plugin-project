@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.plugin;
+package com.graphql_java_generator.plugin.generate_schema;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +21,12 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.CodeTemplate;
+import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
@@ -41,6 +45,9 @@ public class GenerateGraphQLSchema {
 	DocumentParser documentParser;
 
 	GraphqlUtils graphqlUtils;
+
+	/** The component that reads the GraphQL schema from the file system */
+	ResourceSchemaStringProvider resourceSchemaStringProvider;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
@@ -63,10 +70,12 @@ public class GenerateGraphQLSchema {
 	 */
 	@Autowired
 	public GenerateGraphQLSchema(GenerateGraphQLSchemaDocumentParser documentParser, GraphqlUtils graphqlUtils,
-			GenerateGraphQLSchemaConfiguration configuration) {
+			GenerateGraphQLSchemaConfiguration configuration,
+			ResourceSchemaStringProvider resourceSchemaStringProvider) {
 		this.documentParser = documentParser;
 		this.graphqlUtils = graphqlUtils;
 		this.configuration = configuration;
+		this.resourceSchemaStringProvider = resourceSchemaStringProvider;
 	}
 
 	/**
@@ -79,17 +88,19 @@ public class GenerateGraphQLSchema {
 	 * @param configuration
 	 */
 	public GenerateGraphQLSchema(DocumentParser documentParser, GraphqlUtils graphqlUtils,
-			GenerateGraphQLSchemaConfiguration configuration) {
+			GenerateGraphQLSchemaConfiguration configuration,
+			ResourceSchemaStringProvider resourceSchemaStringProvider) {
 		this.documentParser = documentParser;
 		this.graphqlUtils = graphqlUtils;
 		this.configuration = configuration;
+		this.resourceSchemaStringProvider = resourceSchemaStringProvider;
 	}
 
 	/** This method is the entry point, for the generation of the schema that merges the GraphQL source schema files */
 	public void generateGraphQLSchema() {
-
 		String msg = null;
 		try {
+
 			File targetFile = new File(configuration.getTargetFolder(), configuration.getTargetSchemaFileName());
 			msg = "Generating relay schema in this file: " + targetFile.getAbsolutePath();
 			configuration.getPluginLogger().debug(msg);
@@ -100,15 +111,15 @@ public class GenerateGraphQLSchema {
 			context.put("documentParser", documentParser);
 			context.put("graphqlUtils", graphqlUtils);
 			//
-			context.put("customScalars", documentParser.customScalars);
-			context.put("directives", documentParser.directives);
-			context.put("enumTypes", documentParser.enumTypes);
-			context.put("interfaceTypes", documentParser.interfaceTypes);
-			context.put("mutationType", documentParser.mutationType);
-			context.put("objectTypes", documentParser.objectTypes);
-			context.put("queryType", documentParser.queryType);
-			context.put("subscriptionType", documentParser.subscriptionType);
-			context.put("unionTypes", documentParser.unionTypes);
+			context.put("customScalars", documentParser.getCustomScalars());
+			context.put("directives", documentParser.getDirectives());
+			context.put("enumTypes", documentParser.getEnumTypes());
+			context.put("interfaceTypes", documentParser.getInterfaceTypes());
+			context.put("mutationType", documentParser.getMutationType());
+			context.put("objectTypes", documentParser.getObjectTypes());
+			context.put("queryType", documentParser.getQueryType());
+			context.put("subscriptionType", documentParser.getSubscriptionType());
+			context.put("unionTypes", documentParser.getUnionTypes());
 			Template template = getVelocityEngine().getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");
 
 			targetFile.getParentFile().mkdirs();

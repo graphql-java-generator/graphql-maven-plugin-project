@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.util;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -964,6 +965,41 @@ public class GraphqlUtils {
 			return sb.toString();
 		} else {
 			throw new RuntimeException("Value of type " + value.getClass().getName() + " is not managed");
+		}
+	}
+
+	/**
+	 * Returns the maximum or minimum value for the lastModified of the given file
+	 * 
+	 * @param fileOrFolder
+	 *            A file or a folder
+	 * @param maxValue
+	 *            If true and fileOrFolder is a folder, then this method returns the maximum {@link File#lastModified()}
+	 *            found for all its children. If false, then the minimum value is returned.
+	 * @return if fileOrFolder doesn't exist, then returns null. If fileOrFolder is a file, then returns its
+	 *         {@link File#lastModified()} value. Otherwise its a folder. Then it loops into this folder, its subfolders
+	 *         (and so on), and returns the maximum or the minimum lastModified date found (depending on the value of
+	 *         maxValue)
+	 */
+	public Long getLastModified(File fileOrFolder, boolean maxValue) {
+		if (fileOrFolder == null || !fileOrFolder.exists()) {
+			return null;
+		} else if (fileOrFolder.isFile()) {
+			return fileOrFolder.lastModified();
+		} else if (!fileOrFolder.isDirectory()) {
+			throw new RuntimeException("Unknown file type for " + fileOrFolder.getAbsolutePath());
+		} else {
+			// We have a folder. Let's recurse into its content.
+			long lastModifed = fileOrFolder.lastModified(); // Let's start with the lastModified value of this folder
+			for (File f : fileOrFolder.listFiles()) {
+				long contentLastModified = getLastModified(f, maxValue);
+				if (maxValue && contentLastModified > lastModifed) {
+					lastModifed = contentLastModified;
+				} else if (!maxValue && contentLastModified < lastModifed) {
+					lastModifed = contentLastModified;
+				}
+			} // for
+			return lastModifed;
 		}
 	}
 }
