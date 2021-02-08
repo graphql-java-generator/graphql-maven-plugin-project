@@ -10,6 +10,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.FieldTypeAST;
@@ -17,6 +18,7 @@ import com.graphql_java_generator.plugin.language.Relation;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.language.Comment;
 import graphql.language.Value;
 import lombok.Builder;
 import lombok.Data;
@@ -84,6 +86,10 @@ public class FieldImpl implements Field {
 	/** All directives that have been defined in the GraphQL schema for this field */
 	@Builder.Default
 	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
+
+	/** The comments that have been found for this field, in the provided GraphQL schema */
+	@Builder.Default
+	private List<String> comments = new ArrayList<>();
 
 	@Override
 	public Type getType() {
@@ -169,6 +175,13 @@ public class FieldImpl implements Field {
 	 */
 	public String getDefaultValueAsText() {
 		return GraphqlUtils.graphqlUtils.getValueAsText(defaultValue);
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = new ArrayList<>(comments.size());
+		for (Comment c : comments) {
+			this.comments.add(c.getContent());
+		}
 	}
 
 	@Override

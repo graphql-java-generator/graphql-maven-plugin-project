@@ -12,6 +12,7 @@ import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.language.Comment;
 import lombok.Data;
 
 @Data
@@ -44,6 +45,9 @@ public abstract class AbstractType implements Type {
 
 	/** All directives that have been defined in the GraphQL schema for this type */
 	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
+
+	/** The comments that have been found for this object, in the provided GraphQL schema */
+	private List<String> comments = new ArrayList<>();
 
 	/** The GraphQL type for this type */
 	final private GraphQlType graphQlType;
@@ -81,7 +85,19 @@ public abstract class AbstractType implements Type {
 
 	@Override
 	public String toString() {
-		return name;
+		StringBuilder sb = new StringBuilder(name);
+
+		if (getComments() == null) {
+			sb.append(", comments=null");
+		} else if (getComments().size() > 0) {
+			sb.append(", comments=empty");
+		} else {
+			sb.append(", comments \"");
+			sb.append(String.join("\\n", getComments()));
+			sb.append("\"");
+		}
+
+		return sb.toString();
 	}
 
 	@Override
@@ -148,4 +164,10 @@ public abstract class AbstractType implements Type {
 		addAnnotation(annotationToAdd);
 	}
 
+	public void setComments(List<Comment> comments) {
+		this.comments = new ArrayList<>(comments.size());
+		for (Comment c : comments) {
+			this.comments.add(c.getContent());
+		}
+	}
 }

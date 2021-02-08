@@ -50,6 +50,12 @@ import ${configuration.packageName}.${object.classSimpleName};
 
 
 /**
+#foreach ($comment in $object.comments)
+ * $comment
+#end
+#if ($object.comments.size() > 0)
+ * <BR/>
+#end
  * This class contains the methods that allows the execution of the queries or mutations that are defined in the ${object.name} of the GraphQL schema.<BR/>
  * These methods allows:
  * <UL>
@@ -347,6 +353,12 @@ public class ${object.classSimpleName}Executor {
 
 #foreach ($field in $object.fields)
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
 	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
 	 * after</U></B> the query name.<BR/>
@@ -394,6 +406,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
 	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
 	 * after</U></B> the query name.<BR/>
@@ -438,6 +456,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
@@ -503,6 +527,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
 	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
@@ -579,6 +609,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * Get the {@link com.graphql_java_generator.client.request.Builder} for the ${field.type.classSimpleName}, as expected by the ${field.name} query.
 	 * 
 	 * @return
@@ -594,6 +630,12 @@ public class ${object.classSimpleName}Executor {
 
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * Get the {@link GraphQLRequest} for the ${field.name} $type, created with the given Partial request.
 	 * 
 	 * @param partialRequest

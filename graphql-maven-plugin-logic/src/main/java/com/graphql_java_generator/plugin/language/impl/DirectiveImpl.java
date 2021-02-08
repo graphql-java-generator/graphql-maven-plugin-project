@@ -10,6 +10,7 @@ import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.Field;
 
+import graphql.language.Comment;
 import lombok.Data;
 
 /**
@@ -28,9 +29,19 @@ public class DirectiveImpl implements Directive {
 	/** Returns the list of location that this directive may have */
 	private List<DirectiveLocation> directiveLocations = new ArrayList<>();
 
+	/** The comments that have been found for this object, in the provided GraphQL schema */
+	private List<String> comments = new ArrayList<>();
+
 	/**
 	 * True if this directive is a standard GraphQL directive, or if it has been defined in the GraphQL schema. Default
 	 * value is false (non standard)
 	 */
 	private boolean standard = false;
+
+	public void setComments(List<Comment> comments) {
+		this.comments = new ArrayList<>(comments.size());
+		for (Comment c : comments) {
+			this.comments.add(c.getContent());
+		}
+	}
 }

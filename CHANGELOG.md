@@ -15,6 +15,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 Both modes (client and server):
 * Added the _skipGenerationIfSchemaHasNotChanged_ parameter. It's in beta version. It prevents code and resource generation, of the schema file(s) are older than these generated sources or resources. It's default value is false in 1.x releases.
 * When the _addRelayConnections_ parameter is true, the XxxConnection types of the fields marked with @RelayConnection are now non mandatory.
+* The comments read in the provided schema are reported into the generated code and the generated GraphQL schemas.
 
 Server mode:
 * The graphql-java version has been upgraded to 16.2 (the latest version at this time)

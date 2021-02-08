@@ -462,6 +462,9 @@ public abstract class DocumentParser {
 		directive.setArguments(node.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
 				.collect(Collectors.toList()));
 
+		// Let's store its comments
+		directive.setComments(node.getComments());
+
 		// and all its locations
 		for (graphql.language.DirectiveLocation dl : node.getDirectiveLocations()) {
 			DirectiveLocation dirLoc = DirectiveLocation.valueOf(DirectiveLocation.class, dl.getName());
@@ -579,6 +582,9 @@ public abstract class DocumentParser {
 		objectType.getFields().addAll(node.getFieldDefinitions().stream().map(def -> readField(def, objectType))
 				.collect(Collectors.toList()));
 
+		// Let's store its comments
+		objectType.setComments(node.getComments());
+
 		// Let's read all the interfaces this object implements
 		for (graphql.language.Type type : node.getImplements()) {
 			if (type instanceof TypeName) {
@@ -606,6 +612,9 @@ public abstract class DocumentParser {
 		objectType.setInputType(true);
 
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
+
+		// Let's store its comments
+		objectType.setComments(node.getComments());
 
 		// Let's read all its fields
 		for (InputValueDefinition def : node.getInputValueDefinitions()) {
@@ -636,6 +645,9 @@ public abstract class DocumentParser {
 
 		interfaceType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
+		// Let's store its comments
+		interfaceType.setComments(node.getComments());
+
 		// Let's read all its fields
 		interfaceType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, interfaceType))
 				.collect(Collectors.toList()));
@@ -660,11 +672,11 @@ public abstract class DocumentParser {
 	 * @return
 	 */
 	UnionType readUnionType(UnionTypeDefinition node) {
-		// Let's check if it's a real object, or part of a schema (query, subscription,
-		// mutation) definition
-
 		UnionType unionType = new UnionType(node.getName(), configuration);
 		unionType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
+
+		// Let's store its comments
+		unionType.setComments(node.getComments());
 
 		for (graphql.language.Type<?> memberType : node.getMemberTypes()) {
 			String memberTypeName = (String) graphqlUtils.invokeMethod("getName", memberType);
@@ -702,6 +714,10 @@ public abstract class DocumentParser {
 
 		CustomScalarType customScalarType = getCustomScalarType(name);
 		customScalarType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
+
+		// Let's store its comments
+		customScalarType.setComments(node.getComments());
+
 		return customScalarType;
 	}
 
@@ -723,6 +739,9 @@ public abstract class DocumentParser {
 		EnumType enumType = new EnumType(node.getName(), configuration);
 
 		enumType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
+
+		// Let's store its comments
+		enumType.setComments(node.getComments());
 
 		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
 			EnumValue val = EnumValueImpl.builder().name(enumValDef.getName())
@@ -750,6 +769,9 @@ public abstract class DocumentParser {
 		// Let's read all its input parameters
 		field.setInputParameters(fieldDef.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
 				.collect(Collectors.toList()));
+
+		// Let's store its comments
+		field.setComments(fieldDef.getComments());
 
 		return field;
 	}

@@ -133,8 +133,18 @@ public class ObjectType extends AbstractType {
 		sb.append("}");
 
 		if (getImplementz().size() > 0) {
-			sb.append("implements ");
+			sb.append(", implements ");
 			sb.append(String.join(",", getImplementz()));
+		}
+
+		if (getComments() == null) {
+			sb.append(", comments=null");
+		} else if (getComments().size() > 0) {
+			sb.append(", comments=empty");
+		} else {
+			sb.append(", comments \"");
+			sb.append(String.join("\\n", getComments()));
+			sb.append("\"");
 		}
 
 		return sb.toString();

@@ -9,6 +9,11 @@
 #macro(objectFields $fields)
 #foreach ($field in $fields)
 ##
+## Let's start by the field's comment (if any)
+#foreach ($comment in $field.comments)
+	#$comment
+#end
+##
 ## To make this template readable, the parameters are written one per line. Which means that the way the field
 ## is written depends on whether this field has or doesn't have input parameters
 ##
@@ -70,6 +75,9 @@ $argName: ${graphqlUtils.getValueAsText($appliedDir.argumentValues[$argName])}#i
 ################  Custom Scalars  #############################################################################
 ###############################################################################################################
 #foreach ($customScalar in $customScalars)
+#foreach ($comment in $customScalar.comments)
+	#$comment
+#end
 scalar ${customScalar.name}#implementedDirective($customScalar.appliedDirectives)$space
 
 #end
@@ -78,6 +86,9 @@ scalar ${customScalar.name}#implementedDirective($customScalar.appliedDirectives
 ################  Enums           #############################################################################
 ###############################################################################################################
 #foreach ($enum in $enumTypes)
+#foreach ($comment in $enum.comments)
+	#$comment
+#end
 enum ${enum.name}#implementedDirective($enum.appliedDirectives) {
 #foreach ($value in $enum.values)
 	${value.name}#implementedDirective($value.appliedDirectives)$space
@@ -90,6 +101,9 @@ enum ${enum.name}#implementedDirective($enum.appliedDirectives) {
 ################  Directives      #############################################################################
 ###############################################################################################################
 #foreach ($directive in $directives)
+#foreach ($comment in $directive.comments)
+	#$comment
+#end
 #if (! $directive.standard)
 directive @${directive.name} #if ($directive.arguments.size() > 0)(
 #else $space
@@ -125,6 +139,9 @@ schema {
 ################  Unions          #############################################################################
 ###############################################################################################################
 #foreach ($union in $unionTypes)
+#foreach ($comment in $union.comments)
+	#$comment
+#end
 union ${union.name}#implementedDirective($union.appliedDirectives)$space
 = #foreach ($type in $union.memberTypes)${type.name}#if($foreach.hasNext) | #end#end
 
@@ -134,6 +151,9 @@ union ${union.name}#implementedDirective($union.appliedDirectives)$space
 ################  Interfaces      #############################################################################
 ###############################################################################################################
 #foreach ($interface in $interfaceTypes)
+#foreach ($comment in $interface.comments)
+	#$comment
+#end
 interface ${interface.name}#implements($interface.implementz)#implementedDirective($interface.appliedDirectives) {
 #objectFields($interface.fields)
 }
@@ -144,6 +164,9 @@ interface ${interface.name}#implements($interface.implementz)#implementedDirecti
 ################  Objects         #############################################################################
 ###############################################################################################################
 #foreach ($objectType in $objectTypes)
+#foreach ($comment in $objectType.comments)
+	#$comment
+#end
 #if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz)#implementedDirective($objectType.appliedDirectives) {
 #objectFields($objectType.fields)
 }

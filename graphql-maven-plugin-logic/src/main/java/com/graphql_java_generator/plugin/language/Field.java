@@ -127,6 +127,9 @@ public interface Field {
 	 */
 	public String getAnnotation();
 
+	/** Returns the comments that have been found for this object, in the provided GraphQL schema */
+	public List<String> getComments();
+
 	/**
 	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case
 	 * string (for instance: ThisIsCamelCase).

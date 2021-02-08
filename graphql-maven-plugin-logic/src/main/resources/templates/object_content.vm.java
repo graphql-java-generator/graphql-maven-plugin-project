@@ -4,6 +4,15 @@
 	}
 
 #foreach ($field in $object.fields)
+#if ($field.comments.size() > 0)
+	/**
+#end	
+#foreach ($comment in $field.comments)
+	 * $comment
+#end
+#if ($field.comments.size() > 0)
+	 */
+#end
 	${field.annotation}
 	${field.javaType} ${field.javaName};
 
@@ -11,10 +20,28 @@
 #end
 
 #foreach ($field in $object.fields)
+#if ($field.comments.size() > 0)
+	/**
+#end	
+#foreach ($comment in $field.comments)
+	 * $comment
+#end
+#if ($field.comments.size() > 0)
+	 */
+#end
 	public void set${field.pascalCaseName}(${field.javaType} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
 
+#if ($field.comments.size() > 0)
+	/**
+#end	
+#foreach ($comment in $field.comments)
+	 * $comment
+#end
+#if ($field.comments.size() > 0)
+	 */
+#end
 	public ${field.javaType} get${field.pascalCaseName}() {
 		return ${field.javaName};
 	}

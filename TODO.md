@@ -36,7 +36,6 @@ Here are the next tasks listed, as a TODO list:
 	"https://www.baeldung.com/spring-webclient-oauth2#springsecurity-internals"//
 	"https://manhtai.github.io/posts/spring-webclient-oauth2-client-credentials/"
 * Switch to apache 2.0 licence
-* Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
 * Replace all the thrown RuntimeException by meaningfull exceptions
 * Allow to control the list of schema files, and their order (necessary to properly manage the extend keyword)
 * Add a description of the GraphQL mojo

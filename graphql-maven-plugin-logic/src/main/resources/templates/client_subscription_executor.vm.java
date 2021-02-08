@@ -52,6 +52,12 @@ import ${configuration.packageName}.${object.classSimpleName};
 
 
 /**
+#foreach ($comment in $object.comments)
+ * $comment
+#end
+#if ($object.comments.size() > 0)
+ * <BR/>
+#end
  * This class contains the methods that allows the execution of the subscriptions that are defined in the ${object.name} of the GraphQL schema.<BR/>
  * These methods allows:
  * <UL>
@@ -137,6 +143,12 @@ public class ${object.classSimpleName}Executor {
 	
 #foreach ($field in $object.fields)
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
 	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
 	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
@@ -201,6 +213,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
 	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
 	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
@@ -263,6 +281,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
 	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
 	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
@@ -340,6 +364,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * This method registers a subscription, by executing a direct partial request against the GraphQL server. This
 	 * subscription is one of the fields defined in the GraphQL subscription object. The queryResponseDef contains the
 	 * part of the subscription that <B><U>is after</U></B> the subscription name (see the sample below), for instance
@@ -430,6 +460,12 @@ public class ${object.classSimpleName}Executor {
 	}
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * Get the {@link com.graphql_java_generator.client.request.Builder} for the ${field.type.classSimpleName}, as expected by the ${field.name} subscription.
 	 * 
 	 * @return
@@ -445,6 +481,12 @@ public class ${object.classSimpleName}Executor {
 
 
 	/**
+#foreach ($comment in $field.comments)
+	 * ${field.content}
+#end
+#if ($field.comments.size() > 0)
+	 * <BR/>
+#end
 	 * Get the {@link GraphQLRequest} for the ${field.name} $type, created with the given Partial request.
 	 * 
 	 * @param partialRequest
