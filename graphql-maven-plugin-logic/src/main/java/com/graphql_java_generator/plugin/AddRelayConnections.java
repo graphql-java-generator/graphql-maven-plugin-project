@@ -616,7 +616,7 @@ public class AddRelayConnections {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (Field f : fields) {
 			FieldTypeAST fieldTypeAST = FieldTypeAST.builder()
-					.graphQLTypeSimpleName(f.getGraphQLTypeSimpleName() + "Connection").mandatory(true).build();
+					.graphQLTypeSimpleName(f.getGraphQLTypeSimpleName() + "Connection").mandatory(false).build();
 			((FieldImpl) f).setFieldTypeAST(fieldTypeAST);
 		}
 	}

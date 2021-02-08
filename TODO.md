@@ -10,6 +10,7 @@ Here are the next tasks listed, as a TODO list:
 * Add the _addRelayConnections_ capability to the Gradle plugin
 * Add the _skipGenerationIfSchemaHasNotChanged_ capability to the Gradle plugin
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
+* When addRelayConnection is true, the _generated_schema.graphqls_ should be generated in the generated_resources instead of the classes folder
 * Finish the job for the _generatePOJO_ goal/task.
     * The _GeneratePOJOConfiguration_ interface has been created, with some default value. But how to prevent these parameters to be displayed in the doc. _GeneratePOJOConfiguration_ should probably be the super interface for the _GenerateCodeCommonConfiguration_ (and not the reverse as currently).
     * Also check the _GenerateCodeDocumentParser.initScalarTypes_ method 
