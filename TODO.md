@@ -7,8 +7,6 @@ Here are the next tasks listed, as a TODO list:
 * Document how-to avoid the code generation (or find a better idea)
     * https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69
 * Add a control at runtime, that the runtime is the good version, as the plugin that generated the code.
-* Add the _addRelayConnections_ capability to the Gradle plugin
-* Add the _skipGenerationIfSchemaHasNotChanged_ capability to the Gradle plugin
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
 * When addRelayConnection is true, the _generated_schema.graphqls_ should be generated in the generated_resources instead of the classes folder
 * Finish the job for the _generatePOJO_ goal/task.
