@@ -169,6 +169,9 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+				<configuration>
+					<source>8</source>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>

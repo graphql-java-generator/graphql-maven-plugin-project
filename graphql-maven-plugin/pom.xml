@@ -124,6 +124,9 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+				<configuration>
+					<source>8</source>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
