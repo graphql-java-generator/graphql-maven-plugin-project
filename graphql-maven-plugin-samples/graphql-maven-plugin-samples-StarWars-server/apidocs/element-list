@@ -4,6 +4,7 @@ com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
 com.graphql_java_generator.server.util
 com.graphql_java_generator.util
+graphql.spring.web.servlet
 org.starwars.server
 org.starwars.server.datafetchersdelegate
 org.starwars.server.jpa

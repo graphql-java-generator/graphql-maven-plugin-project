@@ -1,0 +1,10 @@
+com.graphql_java_generator.client
+com.graphql_java_generator.client.domain.allGraphQLCases
+com.graphql_java_generator.client.domain.forum
+com.graphql_java_generator.client.domain.starwars
+com.graphql_java_generator.client.domain.starwars.scalar
+com.graphql_java_generator.client.response
+com.graphql_java_generator.customscalars
+com.graphql_java_generator.server.domain.allGraphQLCases
+com.graphql_java_generator.server.domain.forum
+com.graphql_java_generator.testcases

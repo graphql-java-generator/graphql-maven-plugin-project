@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.marcosbarbero.lab.sec.oauth.opaque"},{"l":"com.marcosbarbero.lab.sec.oauth.opaque.config"},{"l":"com.marcosbarbero.lab.sec.oauth.opaque.web"}]

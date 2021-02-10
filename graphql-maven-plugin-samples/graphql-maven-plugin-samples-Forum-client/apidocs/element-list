@@ -14,3 +14,4 @@ com.graphql_java_generator.samples.forum.client.graphql.forum.client
 com.graphql_java_generator.samples.forum.client.subscription
 com.graphql_java_generator.spring.client
 com.graphql_java_generator.util
+graphql.spring.web.servlet
