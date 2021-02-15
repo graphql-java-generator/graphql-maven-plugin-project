@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+	title="FAQ for the client mode" toplink="false">
+
+	<part id="Code Generation">
+		<title>Code Generation</title>
+
+		<!-- faq id="multiple_servers">
+			<question>
+				How can I generate a client that can attack several GraphQL servers? 
+			</question>
+			<answer>
+				<p>some markup goes here</p>
+
+				<source>some source code</source>
+
+				<p>some markup goes here</p>
+			</answer>
+		</faq-->
+
+	</part>
+</faqs>

@@ -21,6 +21,7 @@
 			<item name="Change Log" href="change_log.html" />
 			<item name="Custom Scalars" href="customscalars.html" />
 			<item name="Custom Code Templates" href="customtemplates.html" />
+			<item name="FAQ (for both client and server mode)" href="faq_client_and_server.html"/>
 		</menu>
 
 		<menu name="Client mode">
@@ -34,6 +35,7 @@
 			<item name="Runtime Classes" href="runtimeclasses.html" />
 			<item name="Access to an OAuth2 GraphQL server" href="client_oauth2.html" />
 			<item name="How to personalize the client app" href="client_personalization.html" />
+			<item name="FAQ (client mode)" href="faq_client.html"/>
 		</menu>
 
 		<menu name="Server mode">

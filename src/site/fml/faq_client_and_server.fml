@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+	title="FAQ common to the client and the server modes" toplink="false">
+
+	<part id="Code Generation">
+		<title>Code Generation</title>
+
+		<faq id="avoid_useless_generation">
+			<question>
+				How can I avoid the plugin to generate the code, when the GraphQL schema(s) has not changed?
+			</question>
+			<answer>
+				<p>
+					Since release 1.12.2, the plugin contains a
+					<I>skipGenerationIfSchemaHasNotChanged</I>
+					parameter. The default value is set to
+					<I>false</I>
+					, as this parameter is currently an incubating feature. Its default value will be changed to
+					<I>true</I>
+					starting from 2.x releases. See the
+					<A
+						HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateClientCode-mojo.html#skipGenerationIfSchemaHasNotChanged">plugin doc</A>
+					for more information.
+				</p>
+			</answer>
+		</faq>
+
+	</part>
+</faqs>
