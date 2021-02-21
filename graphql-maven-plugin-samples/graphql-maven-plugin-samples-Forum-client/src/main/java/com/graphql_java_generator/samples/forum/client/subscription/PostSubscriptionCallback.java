@@ -29,8 +29,7 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 	@Override
 	public void onConnect() {
 		this.connected = true;
-		System.out.println(
-				"The 'subscribeToNewPostWithBindValues' subscription is now active (the web socket is connected)");
+		logger.debug("The 'subscribeToNewPostWithBindValues' subscription is now active (the web socket is connected)");
 	}
 
 	@Override
@@ -40,9 +39,6 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 		logger.debug(
 				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post {} ",
 				t);
-		System.out.println(
-				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post: "
-						+ t.toString());
 	}
 
 	@Override
