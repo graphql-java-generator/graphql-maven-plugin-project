@@ -19,7 +19,13 @@ public class JsonResponseWrapper {
 	 */
 	public JsonNode data;
 
+	/** This optional field contains the errors, when one or more errors occurred */
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
+	/**
+	 * This field is absent from the GraphQL specification. But Shopify returns it. So this field is here, only to allow
+	 * the JSON response parsing. Its content is not parsed.
+	 */
+	public JsonNode extensions;
 }
