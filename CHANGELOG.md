@@ -9,14 +9,14 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
-# Not released yet
+# 1.12.3
 
 
 Both mode:
 * Corrected a multithreading issue with the provided custom scalars GraphQLScalarTypeDate and GraphQLScalarTypeDateTime
 
 Server mode:
-* Issue #70: The subscription notifications would not be properly sent when more than one client subscribed to a subscription.
+* Issue #72: The subscription notifications would not be properly sent when more than one client subscribed to a subscription.
 
 Client mode:
 * The GraphQL server response could not be deserialized, when it contains the (non standard) _extensions_ entry
