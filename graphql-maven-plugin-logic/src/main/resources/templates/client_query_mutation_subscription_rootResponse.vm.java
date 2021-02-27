@@ -4,6 +4,7 @@ package ${packageUtilName};
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -23,6 +24,9 @@ public class ${object.classSimpleName}RootResponse {
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
+	@JsonProperty("extensions")
+	public JsonNode extensions;
+
 	// This getter is needed for the Json serialization
 	public ${object.classSimpleName} getData() {
 		return this.${object.requestType};
@@ -39,6 +43,14 @@ public class ${object.classSimpleName}RootResponse {
 
 	public void setErrors(List<Error> errors) {
 		this.errors = errors;
+	}
+
+	public JsonNode getExtensions() {
+		return extensions;
+	}
+
+	public void setExtensions(JsonNode extensions) {
+		this.extensions = extensions;
 	}
 
 }
