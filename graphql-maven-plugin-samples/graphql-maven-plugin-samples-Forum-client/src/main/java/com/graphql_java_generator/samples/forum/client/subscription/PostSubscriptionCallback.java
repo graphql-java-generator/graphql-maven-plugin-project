@@ -22,6 +22,7 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 	/** Indicates whether the Web Socket is connected or not */
 	boolean connected = false;
 
+	int nbReceivedMessages = 0;
 	Post lastReceivedMessage = null;
 	String lastReceivedClose = null;
 	Throwable lastReceivedError = null;
@@ -34,7 +35,8 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 
 	@Override
 	public void onMessage(Post t) {
-		this.lastReceivedMessage = t;
+		nbReceivedMessages += 1;
+		lastReceivedMessage = t;
 		// Do something useful with it
 		logger.debug(
 				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post {} ",

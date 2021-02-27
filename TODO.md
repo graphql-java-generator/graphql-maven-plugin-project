@@ -2,7 +2,9 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Publish a PR to have a per request cache, in graphql-java-spring 
+* Issue when two client subscribed to the same subscription
+   https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/72
+* [Waiting for an answer] Publish a PR to have a per request cache, in graphql-java-spring 
     * Done. Waiting for the PR to be accepted (and then a new release)
 * Document how-to avoid the code generation (or find a better idea)
     * https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69
@@ -23,6 +25,7 @@ Here are the next tasks listed, as a TODO list:
 * Add unit test in runtime, to confirm the use of the BatchLoader
 * Check the WebClient with a default TLS configuration on a well known server
 * Update the README with the XxxxExecutor classes
+* Remove the useless interface  com.graphql_java_generator.client.response.RootResponse (from the runtime)
 * Remove the WithDataLoader at the end of the DataFetcher names (no impact on the user's code)
 * Make the Maven plugin generate its code in the graphql-maven-plugin folder (like the gradle plugin)
     * update the four tutorials
@@ -50,6 +53,7 @@ Here are the next tasks listed, as a TODO list:
 * Check compatibility with the schema.public.graphqls (available in the plugin logic test resources folder)
 * Document generateJPAAnnotation 
 * Stop generating SubscriptionTypeResponse and SubscriptionTypeRootResponse ?
+* Have a look to https://github.com/kobylynskyi/graphql-java-codegen
 
 ## TODO List for 2.0 version:
 * Remove the query/mutation/subscription Response type (currently deprecated)
@@ -68,17 +72,3 @@ Tutorials:
 - https://www.howtographql.com/
 - dev zone
 
-
-
-Hello,
-
-  You can try one of the com.graphql-java-generator maven or gradle plugins.
-They generates the POJOs and utility classes from the GraphQL schema, to let you execute GraphQL request from your java code:
-
-https://github.com/graphql-java-generator/graphql-maven-plugin-project
-
-https://github.com/graphql-java-generator/graphql-gradle-plugin-project
-
-FYI, these plugins also have a server mode, to help developing GraphQL servers, in Java.
-
-Etienne  

@@ -63,7 +63,7 @@ public class PostPublisher {
 	 * @param post
 	 */
 	void onNext(Post post) {
-		logger.debug("Emitting suscription notification for {}", post);
+		logger.trace("Emitting suscription notification for {}", post);
 		subject.onNext(post);
 	}
 

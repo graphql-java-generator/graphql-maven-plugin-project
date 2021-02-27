@@ -11,11 +11,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
+
+Both mode:
+* Corrected a multithreading issue with the provided custom scalars GraphQLScalarTypeDate and GraphQLScalarTypeDateTime
+
 Server mode:
 * Issue #70: The subscription notifications would not be properly sent when more than one client subscribed to a subscription.
 
 Client mode:
-* The response could not be deserialized, when it contains the (non standard) _extensions_ entry
+* The GraphQL server response could not be deserialized, when it contains the (non standard) _extensions_ entry
 
 
 # 1.12.2

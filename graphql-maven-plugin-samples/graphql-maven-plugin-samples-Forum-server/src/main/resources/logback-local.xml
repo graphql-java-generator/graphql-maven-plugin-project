@@ -17,7 +17,7 @@
 		<appender-ref ref="File" />
 	</logger>
 
-	<logger name="org.forum" level="debug" />
+	<logger name="org.forum" level="trace" />
 	<logger name="com.graphql_java_generator" level="debug" />
 	<logger name="org.springframework" level="debug" />
 	<root level="info">

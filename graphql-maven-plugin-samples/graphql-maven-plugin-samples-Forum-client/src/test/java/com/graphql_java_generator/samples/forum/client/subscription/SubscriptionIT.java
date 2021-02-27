@@ -6,11 +6,12 @@ package com.graphql_java_generator.samples.forum.client.subscription;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.BooleanSupplier;
 
 import javax.annotation.PostConstruct;
 
@@ -72,69 +73,82 @@ class SubscriptionIT {
 	@Test
 	void testSubscription() throws GraphQLRequestExecutionException, InterruptedException, ExecutionException {
 		// Preparation
-		PostSubscriptionCallback postSubscriptionCallback = new PostSubscriptionCallback();
+		logger.debug("--------------------------------------------------------------------------------------------");
+		logger.info("Starting testSubscription");
+		PostSubscriptionCallback callback = new PostSubscriptionCallback();
 		Member author = new Member();
 		author.setId("12");
 		PostInput postInput = new PostInput();
 		postInput.setTopicId("22");
 		postInput.setInput(getTopicPostInput(author, "Some other content",
-				new GregorianCalendar(2020, 11 - 1, 21).getTime(), false, "The good title for a post"));
+				new GregorianCalendar(2000, 11 - 1, 21).getTime(), false, "The good title for a post"));
 
 		// Go, go, go
 		logger.debug("Subscribing to the GraphQL subscription");
-		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest, postSubscriptionCallback,
-				"Board name 1");
+		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest, callback, "Board name 1");
 
 		// Due to parallel treatments on the same computer during the IT tests, it may happen that the subscription is
-		// not totally active yet. So we wait a little, to let the subscription by plainly active on both the client and
-		// the server side.
-		try {
-			Thread.sleep(2000); // Wait 2s (sic!)
-		} catch (InterruptedException e) {
-			logger.debug("Got interrupted");
-		}
+		// not totally active yet. So we wait a little (my PC is very slow...), to let the subscription by plainly
+		// active on both the client and the server side.
+		waitForEvent(10, () -> {
+			return callback.connected;
+		}, "Waiting for the subscription to be active");
 
-		logger.debug("Creating the post, for which we should receice the notification");
-		CompletableFuture<Post> createdPostASync = CompletableFuture.supplyAsync(() -> {
-			try {
-				// We need to wait a little, to be sure the subscription is done, before creating the post.
-				// But we wait as little as possible
-				for (int i = 0; i < 100; i += 1) {
-					Thread.sleep(10);
-					if (postSubscriptionCallback.connected)
-						break;
-				}
-				return mutationType.createPost(createPostRequest, postInput);
-			} catch (GraphQLRequestExecutionException | InterruptedException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
-		});
+		// The subscription may be executed a little latter on server side, due to parallel jobs
+		Thread.sleep(500); // Wait 0.5s
 
-		// Let's wait 5 seconds max . We'll get interrupted before, if we receive a notification
-		// (see the callback implementation in the PostSubscriptionCallback class)
-		try {
-			Thread.sleep(5 * 1000);
-		} catch (InterruptedException e) {
-			logger.debug("Got interrupted");
-		}
+		Post createdPost = mutationType.createPost(createPostRequest, postInput);
+
+		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
+		waitForEvent(10, () -> {
+			return callback.lastReceivedMessage != null;
+		}, "Waiting for the notifications to come");
 
 		// Verification
-		assertNull(postSubscriptionCallback.lastReceivedClose,
-				"We should have received no close message (" + postSubscriptionCallback.lastReceivedClose + ")");
-		assertNull(postSubscriptionCallback.lastReceivedError,
-				"We should have received no error (" + postSubscriptionCallback.lastReceivedError + ")");
-		assertNotNull(postSubscriptionCallback.lastReceivedMessage, "We should have received a post");
+		assertNull(callback.lastReceivedClose,
+				"We should have received no close message (" + callback.lastReceivedClose + ")");
+		assertNull(callback.lastReceivedError, "We should have received no error (" + callback.lastReceivedError + ")");
+		assertEquals(1, callback.nbReceivedMessages, "We should have received exactly one notification");
+		assertNotNull(callback.lastReceivedMessage, "We should have received a post");
 
-		Post createdPost = createdPostASync.get();
-		assertEquals(createdPost.getId(), postSubscriptionCallback.lastReceivedMessage.getId(),
-				"Is it 'our' new Post?");
-		assertEquals(new GregorianCalendar(2020, 11 - 1, 21).getTime(),
-				postSubscriptionCallback.lastReceivedMessage.getDate(), "Check of a custom scalar date");
+		assertEquals(createdPost.getId(), callback.lastReceivedMessage.getId(), "Is it 'our' new Post?");
+		assertEquals(new GregorianCalendar(2000, 11 - 1, 21).getTime(), callback.lastReceivedMessage.getDate(),
+				"Check of a custom scalar date");
 
 		// We must free the server resource at the end
 		client.unsubscribe();
 
 		logger.debug("Stopped listening");
+	}
+
+	/**
+	 * Wait for as long as the given delay, but will return as soon as the test is ok. If the given delay expires, then
+	 * this method fails
+	 * 
+	 * @param nbSeconds
+	 * @param test
+	 * @param expectedEvent
+	 */
+	public static void waitForEvent(int nbSeconds, BooleanSupplier test, String expectedEvent) {
+		logger.debug("Starting to wait for '{}'", expectedEvent);
+		int increment = 20;
+		for (int i = 0; i < nbSeconds * 1000 / increment; i += 1) {
+			if (test.getAsBoolean()) {
+				// The condition is met. Let's return to the caller.
+				logger.debug("Finished waiting for '{}' (the condition is met)", expectedEvent);
+				return;
+			}
+			try {
+				Thread.sleep(increment);
+			} catch (InterruptedException e) {
+				logger.trace("got interrupted");
+			}
+		}
+
+		// Too bad...
+		String msg = "The delay has expired, when waiting for '" + expectedEvent + "'";
+		logger.error(msg);
+		fail(msg);
 	}
 
 	private TopicPostInput getTopicPostInput(Member author, String content, Date date, boolean publiclyAvailable,

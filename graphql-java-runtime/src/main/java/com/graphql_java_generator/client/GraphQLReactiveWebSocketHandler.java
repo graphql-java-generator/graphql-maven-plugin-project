@@ -16,13 +16,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.util.GraphqlUtils;
 
-import reactor.core.CoreSubscriber;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.EmitResult;
 import reactor.core.publisher.Sinks.One;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * This class implements the Web Socket, as needed by the Spring Web Socket implementation.
@@ -37,7 +34,7 @@ import reactor.core.scheduler.Schedulers;
  *            subscription GraphQL type, for this subscribed subscription.
  * @author etienne-sf
  */
-public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, CoreSubscriber<WebSocketMessage> {
+public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 
 	/** Logger for this class */
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -84,15 +81,21 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 	public Mono<Void> handle(WebSocketSession session) {
 		this.session = session;
 
-		Mono<Void> input = session.receive()//
-				.doOnNext(message -> onNext(message))//
-				.doOnError(t -> onError(t))//
-				.doOnComplete(() -> onComplete())//
-				.doOnSubscribe(s -> onSubscribe(s))//
-				.then();
+		logger.trace("new web socket session received: {}", session);
 
 		logger.trace("Before sending the subscription request into the web socket");
-		session.send(Flux.just(request).map(session::textMessage)).subscribeOn(Schedulers.single()).subscribe();
+		Mono<Void> input = //
+				session//
+						.send(Mono.//
+								just(session.textMessage(request))//
+								.doAfterTerminate(() -> logger
+										.trace("The subscription request has been written on the Websocket")))//
+						.thenMany(session.receive())//
+						.doOnSubscribe(s -> onSubscribe(s))//
+						.doOnNext(message -> onNext(message))//
+						.doOnError(t -> onError(t))//
+						.doOnComplete(() -> onComplete())//
+						.then();
 		logger.trace("After sending the subscription request into the web socket");
 
 		logger.trace("End of handle(session) method execution");
@@ -110,11 +113,9 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 	 * @param message
 	 *            The received JSON message
 	 */
-	@Override
 	public void onNext(WebSocketMessage message) {
-		logger.trace("Message received from the Web Socket: {} (on session {})", message, session);
-
 		String msg = message.getPayloadAsText();
+		logger.trace("Message received from the Web Socket: {} (on session {})", msg, session);
 
 		try {
 
@@ -135,7 +136,6 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 		}
 	}
 
-	@Override
 	public void onError(Throwable t) {
 		logger.trace("Error received for WebSocketSession {}: {}", session, t.getMessage());
 		// Let's forward the information to the application callback
@@ -144,7 +144,6 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 		subscriptionMono.tryEmitError(t);
 	}
 
-	@Override
 	public void onComplete() {
 		logger.trace("onComplete received for WebSocketSession {}: {}", session);
 		// Let's forward the information to the application callback
@@ -161,7 +160,6 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler, 
 		}
 	}
 
-	@Override
 	public void onSubscribe(Subscription s) {
 		// We've executed the subscription. Let's transmit this good news to the application callback
 		subscriptionCallback.onConnect();

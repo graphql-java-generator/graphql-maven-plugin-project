@@ -112,7 +112,9 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 	public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
 		JsonToken currentToken = p.currentToken();
-		logger.trace("Reading a {} token", currentToken);
+		if (logger.isTraceEnabled()) {
+			logger.trace("Reading a {} token. Its String value is '{}'", currentToken, p.getCurrentValue());
+		}
 
 		if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
 			return null;
