@@ -64,7 +64,9 @@ public class GraphQLScalarTypeDateTime {
 								throw new CoercingSerializeException(
 										"Can't parse the '" + input.toString() + "' string to a DateTime");
 							} else {
-								return formater.format((Date) input);
+								synchronized (formater) {
+									return formater.format((Date) input);
+								}
 							}
 						}
 
@@ -90,7 +92,9 @@ public class GraphQLScalarTypeDateTime {
 										"Can't parse the '" + o.toString() + "' string to a DateTime");
 							} else {
 								try {
-									return formater.parse((String) o);
+									synchronized (formater) {
+										return formater.parse((String) o);
+									}
 								} catch (ParseException e) {
 									throw new CoercingParseValueException(e.getMessage(), e);
 								}
@@ -121,7 +125,9 @@ public class GraphQLScalarTypeDateTime {
 										"Can't parse the '" + o.toString() + "' string to a DateTime");
 							} else {
 								try {
-									return formater.parse(((StringValue) o).getValue());
+									synchronized (formater) {
+										return formater.parse(((StringValue) o).getValue());
+									}
 								} catch (ParseException e) {
 									throw new CoercingParseValueException(e.getMessage(), e);
 								}

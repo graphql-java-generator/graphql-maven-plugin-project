@@ -7,6 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import graphql.language.StringValue;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
@@ -22,6 +25,9 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public class GraphQLScalarTypeDate {
+
+	/** Logger for this class */
+	private static Logger logger = LoggerFactory.getLogger(GraphQLScalarTypeDate.class);
 
 	/** Custom Scalar for Date management. It serializes dates in String, formatted as: YYYY-MM-DD */
 	public static GraphQLScalarType Date = GraphQLScalarType.newScalar().name("Date")
@@ -62,7 +68,9 @@ public class GraphQLScalarTypeDate {
 										+ "' Date to a String (it should be a Date but is a "
 										+ input.getClass().getName() + ")");
 							} else {
-								return formater.format((Date) input);
+								synchronized (formater) {
+									return formater.format((Date) input);
+								}
 							}
 						}
 
@@ -89,7 +97,9 @@ public class GraphQLScalarTypeDate {
 										+ ")");
 							} else {
 								try {
-									return formater.parse((String) o);
+									synchronized (formater) {
+										return formater.parse((String) o);
+									}
 								} catch (ParseException e) {
 									throw new CoercingParseValueException(e.getMessage(), e);
 								}
@@ -114,6 +124,7 @@ public class GraphQLScalarTypeDate {
 						 */
 						@Override
 						public Date parseLiteral(Object o) throws CoercingParseLiteralException {
+							String val = null;
 							// o is an AST, that is: an instance of a class that implements graphql.language.Value
 							if (!(o instanceof StringValue)) {
 								throw new CoercingParseValueException("Can't parse the '" + o.toString()
@@ -121,9 +132,14 @@ public class GraphQLScalarTypeDate {
 										+ o.getClass().getName() + ")");
 							} else {
 								try {
-									return formater.parse(((StringValue) o).getValue());
+									val = ((StringValue) o).getValue();
+									logger.trace("Parsing date from this literal: '{}'", val);
+									synchronized (formater) {
+										return formater.parse(val);
+									}
 								} catch (ParseException e) {
-									throw new CoercingParseValueException(e.getMessage(), e);
+									throw new CoercingParseValueException(
+											e.getMessage() + " when trying to parse '" + val + "'", e);
 								}
 							}
 						}
