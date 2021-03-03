@@ -197,6 +197,8 @@ public abstract class DocumentParser {
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL standard directives
+		//
+		// @skip
 		DirectiveImpl skip = new DirectiveImpl();
 		skip.setName("skip");
 		skip.getArguments()
@@ -209,6 +211,7 @@ public abstract class DocumentParser {
 		skip.setStandard(true);
 		directives.add(skip);
 		//
+		// @include
 		DirectiveImpl include = new DirectiveImpl();
 		include.setName("include");
 		include.getArguments()
@@ -221,6 +224,7 @@ public abstract class DocumentParser {
 		include.setStandard(true);
 		directives.add(include);
 		//
+		// @defer
 		DirectiveImpl defer = new DirectiveImpl();
 		defer.setName("defer");
 		defer.getArguments()
@@ -231,6 +235,7 @@ public abstract class DocumentParser {
 		defer.setStandard(true);
 		directives.add(defer);
 		//
+		// @deprecated
 		DirectiveImpl deprecated = new DirectiveImpl();
 		deprecated.setName("deprecated");
 		// deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeSimpleName("String")
