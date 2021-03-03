@@ -170,6 +170,9 @@ abstract class AbstractIT {
 		Board board = queries.createBoard(name, publiclyAvailable);
 
 		// Verification
+		assertEquals(name + " (Overriden DataFetcher)", board.getName(),
+				"The DataFetcher for this mutation should have been overriden. See the CustomGraphQLDataFetchers class in the Forum server sample.");
+		//
 		List<Board> after = queries.boardsAndTopicsWithFieldParameter(cal.getTime());
 		assertEquals(before.size() + 1, after.size());
 		assertNull(contains(before, board.getId()));

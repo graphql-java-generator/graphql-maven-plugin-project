@@ -8,6 +8,11 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+Server mode:
+* It's now possible to override any method of the GraphQLProvider class (thus allowing overriding of the default behaviour, like the type wiring)
+
 
 # 1.12.3
 
