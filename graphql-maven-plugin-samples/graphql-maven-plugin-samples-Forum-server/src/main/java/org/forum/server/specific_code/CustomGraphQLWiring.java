@@ -14,7 +14,7 @@ import graphql.schema.idl.TypeRuntimeWiring;
  */
 @Component
 @Primary
-public class CustomGraphQLProvider extends GraphQLWiring {
+public class CustomGraphQLWiring extends GraphQLWiring {
 
 	@Override
 	protected TypeRuntimeWiring.Builder addWiringForSubscriptionType(TypeRuntimeWiring.Builder typeWiring) {
