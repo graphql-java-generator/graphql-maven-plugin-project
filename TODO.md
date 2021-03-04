@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+
 * Issue when two client subscribed to the same subscription
    https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/72
 * [Waiting for an answer] Publish a PR to have a per request cache, in graphql-java-spring 
@@ -11,6 +12,7 @@ Here are the next tasks listed, as a TODO list:
 * Add a control at runtime, that the runtime is the good version, as the plugin that generated the code.
 * @RelayConnection error when applied on a list: https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/62
 * When addRelayConnection is true, the _generated_schema.graphqls_ should be generated in the generated_resources instead of the classes folder
+* mvn clean install -DskipTests should prevent the app server to start
 * Finish the job for the _generatePOJO_ goal/task.
     * The _GeneratePOJOConfiguration_ interface has been created, with some default value. But how to prevent these parameters to be displayed in the doc. _GeneratePOJOConfiguration_ should probably be the super interface for the _GenerateCodeCommonConfiguration_ (and not the reverse as currently).
     * Also check the _GenerateCodeDocumentParser.initScalarTypes_ method 

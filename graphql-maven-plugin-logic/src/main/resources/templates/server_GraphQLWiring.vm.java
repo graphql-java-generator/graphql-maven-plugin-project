@@ -63,119 +63,13 @@ import $import;
  * @author etienne-sf
  */
 @Component
-public class GraphQLProvider {
+public class GraphQLWiring {
 
 	/** The logger for this instance */
-	protected Logger logger = LoggerFactory.getLogger(GraphQLProvider.class);
+	protected Logger logger = LoggerFactory.getLogger(GraphQLWiring.class);
 
 	@Autowired
-	ApplicationContext applicationContext;
-
-	@Autowired
-	GraphQLDataFetchers graphQLDataFetchers;
-
-	private GraphQLSchema graphQLSchema;
-	private GraphQL graphQL;
-	
-	@PostConstruct
-	public void init() throws IOException {
-		Resource res;
-		StringBuffer sdl = new StringBuffer();
-#if($configuration.addRelayConnections)
-## When addRelayConnections is true, then graphql-java should use the Generated schema, instead of the source schema
-		res = new ClassPathResource("/${configuration.defaultTargetSchemaFileName}");
-		try(Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"))) {
-			sdl.append(FileCopyUtils.copyToString(reader));
-		}
-#else
-#foreach ($schemaFile in $schemaFiles)
-		res = new ClassPathResource("/${schemaFile}");
-		try(Reader reader = new InputStreamReader(res.getInputStream(), Charset.forName("UTF8"))) {
-			sdl.append(FileCopyUtils.copyToString(reader));
-		}
-#end
-#end
-		this.graphQL = GraphQL.newGraphQL(buildSchema(sdl.toString())).build();
-	}
-
-	@Bean
-	public GraphQL graphQL() {
-		return graphQL;
-	}
-	
-	@Bean
-	protected OnDemandDataLoaderRegistry onDemandDataLoaderRegistry() {
-		return new OnDemandDataLoaderRegistry() {
-			public DataLoaderRegistry getNewDataLoaderRegistry() {
-				DataLoaderRegistry registry = new DataLoaderRegistry();
-				DataLoader<Object, Object> dl;
-
-#if($configuration.generateBatchLoaderEnvironment)
-				for (BatchLoaderDelegateWithContext<?, ?> batchLoaderDelegate : applicationContext
-						.getBeansOfType(BatchLoaderDelegateWithContext.class).values()) {
-#else
-				for (BatchLoaderDelegate<?, ?> batchLoaderDelegate : applicationContext
-						.getBeansOfType(BatchLoaderDelegate.class).values()) {
-#end
-					registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
-				}//for
-
-				return registry;
-			}
-		};
-	}
-
-	/**
-	 * This method returns a clone of the {@link DefaultGraphQLInvocation}, with a Data Loader being created for each 
-	 * request. This insure a "per request" {@link DataLoaderRegistry}.<BR/>
-	 * You can override this component by your own {@link GraphQLInvocation}, by defining a Primary Spring Bean:
-	 * <PRE>
-	 * @Bean
-	 * @Primary // This marks your bean as the one to take into account
-	 * GraphQLInvocation customGraphQLInvocation(ExecutionInputCustomizer executionInputCustomizer) {
-	 *    return new GraphQLInvocation() {
-	 * 	     ...
-	 * 	  }
-	 * }
-	 * <PRE/>
-	 * @param executionInputCustomizer
-	 * @param onDemandDataLoaderRegistry The component that will provide a new {@link DataLoaderRegistry} for each request
-	 * @return
-	 */
-	@Bean
-	protected GraphQLInvocation customGraphQLInvocation(ExecutionInputCustomizer executionInputCustomizer, OnDemandDataLoaderRegistry onDemandDataLoaderRegistry) {
-		return new GraphQLInvocation() {
-
-			@Override
-			public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData,
-					WebRequest webRequest) {
-				ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
-						.query(invocationData.getQuery()).operationName(invocationData.getOperationName())
-						.variables(invocationData.getVariables());
-
-				executionInputBuilder.dataLoaderRegistry(onDemandDataLoaderRegistry.getNewDataLoaderRegistry());
-
-				ExecutionInput executionInput = executionInputBuilder.build();
-				CompletableFuture<ExecutionInput> customizedExecutionInput = executionInputCustomizer
-						.customizeExecutionInput(executionInput, webRequest);
-				return customizedExecutionInput.thenCompose(graphQL::executeAsync);
-			}
-
-		};
-	}
-
-	protected GraphQLSchema buildSchema(String sdl) {
-		TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
-
-		RuntimeWiring runtimeWiring = buildWiring();
-		SchemaGenerator schemaGenerator = new SchemaGenerator();
-		graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
-		return graphQLSchema;
-	}
-	
-	public GraphQLSchema getGraphQLSchema() {
-		return graphQLSchema;
-	}
+	protected GraphQLDataFetchers graphQLDataFetchers;
 
 	protected RuntimeWiring buildWiring() {
 		return RuntimeWiring.newRuntimeWiring()

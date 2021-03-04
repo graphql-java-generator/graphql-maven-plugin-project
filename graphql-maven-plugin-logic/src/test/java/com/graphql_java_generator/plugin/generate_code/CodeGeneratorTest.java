@@ -321,8 +321,7 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	protected void testResolveTemplateDefault() {
 		pluginConfiguration.templates.clear();
-		assertEquals(CodeTemplate.PROVIDER.getDefaultValue(),
-				this.codeGenerator.resolveTemplate(CodeTemplate.PROVIDER));
+		assertEquals(CodeTemplate.WIRING.getDefaultValue(), this.codeGenerator.resolveTemplate(CodeTemplate.WIRING));
 		;
 	}
 
@@ -333,8 +332,8 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	protected void testResolveTemplateCustom() {
 		pluginConfiguration.templates.clear();
-		pluginConfiguration.templates.put(CodeTemplate.PROVIDER.name(), "/my/custom/template");
-		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.PROVIDER));
+		pluginConfiguration.templates.put(CodeTemplate.WIRING.name(), "/my/custom/template");
+		assertEquals("/my/custom/template", this.codeGenerator.resolveTemplate(CodeTemplate.WIRING));
 		;
 	}
 

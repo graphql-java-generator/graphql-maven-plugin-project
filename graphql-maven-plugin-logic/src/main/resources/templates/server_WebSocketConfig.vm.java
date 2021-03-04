@@ -9,15 +9,19 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
+import graphql.schema.GraphQLSchema;
+
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-	private final GraphQLProvider graphQLProvider;
+	private final GraphQLSchema graphQLSchema;
+	private final GraphQLWiring graphQLWiring;
 
 	@Autowired
-	public WebSocketConfig(GraphQLProvider graphQLProvider) {
-		this.graphQLProvider = graphQLProvider;
+	public WebSocketConfig(GraphQLWiring graphQLWiring, GraphQLSchema graphQLSchema) {
+		this.graphQLWiring = graphQLWiring;
+		this.graphQLSchema = graphQLSchema;
 	}
 
 	@Bean
@@ -30,7 +34,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(new WebSocketHandler(graphQLProvider), "/graphql/subscription").setAllowedOrigins("*");
+		registry.addHandler(new WebSocketHandler(graphQLWiring, graphQLSchema), "/graphql/subscription").setAllowedOrigins("*");
 	}
 
 }

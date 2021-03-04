@@ -26,18 +26,21 @@ import graphql.GraphQL;
 import graphql.execution.instrumentation.ChainedInstrumentation;
 import graphql.execution.instrumentation.Instrumentation;
 import graphql.execution.instrumentation.tracing.TracingInstrumentation;
+import graphql.schema.GraphQLSchema;
 
 public class WebSocketHandler extends TextWebSocketHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketHandler.class);
 
-	GraphQLProvider graphQLProvider;
+	GraphQLSchema graphQLSchema;
+	GraphQLWiring graphQLWiring;
 
 	// Key (String) is SessionId
 	private final HashMap<String, Subscription> subscriptionRef = new HashMap<>();
 
-	public WebSocketHandler(GraphQLProvider graphQLProvider) {
-		this.graphQLProvider = graphQLProvider;
+	public WebSocketHandler(GraphQLWiring graphQLWiring, GraphQLSchema graphQLSchema) {
+		this.graphQLWiring = graphQLWiring;
+		this.graphQLSchema = graphQLSchema;
 	}
 
 	@Override
@@ -74,8 +77,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		// In order to have subscriptions in graphql-java you MUST use the
 		// SubscriptionExecutionStrategy strategy.
 		//
-		GraphQL graphQL = GraphQL.newGraphQL(graphQLProvider.getGraphQLSchema()).instrumentation(instrumentation)
-				.build();
+		GraphQL graphQL = GraphQL.newGraphQL(graphQLSchema).instrumentation(instrumentation).build();
 
 		ExecutionResult executionResult = graphQL.execute(executionInput);
 

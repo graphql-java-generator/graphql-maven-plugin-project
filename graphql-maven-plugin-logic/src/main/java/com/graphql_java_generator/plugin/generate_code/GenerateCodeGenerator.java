@@ -349,9 +349,9 @@ public class GenerateCodeGenerator implements Generator {
 		ret += generateOneFile(getJavaFile("GraphQLServerMain", true), "generating GraphQLServerMain", context,
 				resolveTemplate(CodeTemplate.SERVER));
 
-		configuration.getPluginLogger().debug("Generating GraphQLProvider");
-		ret += generateOneFile(getJavaFile("GraphQLProvider", true), "generating GraphQLProvider", context,
-				resolveTemplate(CodeTemplate.PROVIDER));
+		configuration.getPluginLogger().debug("Generating GraphQLWiring");
+		ret += generateOneFile(getJavaFile("GraphQLWiring", true), "generating GraphQLWiring", context,
+				resolveTemplate(CodeTemplate.WIRING));
 
 		configuration.getPluginLogger().debug("Generating GraphQLDataFetchers");
 		ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,

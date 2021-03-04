@@ -39,10 +39,10 @@ public enum CodeTemplate {
 	BATCH_LOADER_DELEGATE_IMPL(CodeTemplateScope.SERVER, "templates/server_BatchLoaderDelegateImpl.vm.java"), //
 	DATA_FETCHER(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchers.vm.java"), //
 	DATA_FETCHER_DELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), //
-	PROVIDER(CodeTemplateScope.SERVER, "templates/server_GraphQLProvider.vm.java"), //
 	SERVER(CodeTemplateScope.SERVER, "templates/server_GraphQLServerMain.vm.java"), //
 	WEB_SOCKET_CONFIG(CodeTemplateScope.SERVER, "templates/server_WebSocketConfig.vm.java"), //
-	WEB_SOCKET_HANDLER(CodeTemplateScope.SERVER, "templates/server_WebSocketHandler.vm.java"),
+	WEB_SOCKET_HANDLER(CodeTemplateScope.SERVER, "templates/server_WebSocketHandler.vm.java"), //
+	WIRING(CodeTemplateScope.SERVER, "templates/server_GraphQLWiring.vm.java"), //
 
 	// Template for the GraphQL relay schema generation
 	RELAY_SCHEMA(CodeTemplateScope.GENERATE_RELAY_SCHEMA, "templates/generateRelaySchema.vm.graphqls");
