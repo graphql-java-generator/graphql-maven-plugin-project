@@ -8,11 +8,11 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
-# Not released yet
+# 1.12.4
 
 Server mode:
 * It's now possible to override the type wiring, thanks to the new `GraphQLWiring` class.
-* It's now possible to override the DataFetcher definitions, by overriding `GraphQLDataFetchers`
+* It's now possible to override the DataFetcher definitions, by overriding `GraphQLDataFetchers`. This allows, for instance, to change the DataLoader behavior.
 * [Internal] The `GraphQLProvider` class has been removed. The Spring beans it created are now created by the `GraphQLServerMain` class. The type wiring has been moved in the new `GraphQLWiring` class. This allows an easier overriding of the generated type wiring.
 
 
