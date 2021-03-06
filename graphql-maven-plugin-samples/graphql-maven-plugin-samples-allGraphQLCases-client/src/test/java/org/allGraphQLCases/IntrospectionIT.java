@@ -37,7 +37,7 @@ public class IntrospectionIT {
 
 	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "age", "aFloat", "date", "dates", "nbComments",
 			"comments", "booleans", "aliases", "planets", "friends", "matrix", "oneWithIdSubType", "listWithIdSubTypes",
-			"oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65" };
+			"oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65", "issue66" };
 	static List<String> AllFieldCases_FIELDNAMES = Arrays.asList(AllFieldCases_FIELDS);
 
 	MyQueryTypeExecutor myQuery;

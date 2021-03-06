@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.AllFieldCases;
+import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
 import org.allGraphQLCases.server.FieldParameterInput;
@@ -162,6 +163,20 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			}
 		}
 		return ret;
+	}
+
+	@Override
+	public CompletableFuture<AllFieldCases> issue66(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, AllFieldCases> dataLoader, AllFieldCases origin, List<AllFieldCasesInput> input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AllFieldCases issue66(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases origin,
+			List<AllFieldCasesInput> input) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
