@@ -1,6 +1,8 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,7 +108,6 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	void testBuild_Full_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 
 		// Go, go, go
 		GraphQLRequest graphQLRequest = new GraphQLRequest(//
@@ -120,6 +121,40 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
 				+ "\",\"variables\":null,\"operationName\":null}", //
 				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
+	void testBuild_Full_createHuman_KOInput()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+
+		// Go, go, go
+		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRequest(//
+						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [J]!\r\n"
+								+ "    # type should be one of Human or Droid\r\n"
+								+ "    type: String!) @testDirective(value:&value, anotherValue:?anotherValue)   "//
+								+ "{id name appearsIn friends {id name}}}"//
+				));
+
+		// Verification
+		assertTrue(e.getMessage().contains("Encountered a '{' while reading parameters for the field"));
+	}
+
+	@Test
+	void testBuild_Full_createHuman_KOList()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+
+		// Go, go, go
+		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRequest(//
+						"query {allFieldCases (input: [\"a\", \"dummy\", \"list\"]) {id}"//
+				));
+
+		// Verification
+		assertTrue(e.getMessage().contains("Encountered a '[' while reading parameters for the field"),
+				"Got this error message: " + e.getMessage());
 	}
 
 }

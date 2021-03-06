@@ -232,12 +232,14 @@ public class InputParameter {
 			case ":":
 				// We're about to read an input parameter value.
 				break;
+			case "[":
 			case "{":
-				throw new GraphQLRequestPreparationException(
-						"Encountered a '{' while reading parameters for the field '" + fieldName
-								+ "' : if this is an input type as a parameter value, please use bind variable instead. "
-								+ "For instance: \"" + parameterName + ":?" + parameterName
-								+ "Param\", and provide a value for the " + parameterName + "Param bind parameter");
+				throw new GraphQLRequestPreparationException("Encountered a '" + token
+						+ "' while reading parameters for the field '" + fieldName
+						+ "' : if this is an input type as a parameter value, please use bind variable instead. "
+						+ "For instance: \"" + parameterName + ":?" + parameterName
+						+ "Param\", and provide a value for the " + parameterName
+						+ "Param bind parameter (please check the graphql-maven-plugin-project.graphql-java-generator.com site for more information on how to 'Execute GraphQL requests')");
 			case ",":
 				if (step != InputParameterStep.NAME) {
 					throw new GraphQLRequestPreparationException("Misplaced comma for the field '" + fieldName
