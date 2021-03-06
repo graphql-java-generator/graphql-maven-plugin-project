@@ -59,6 +59,8 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<!--  cd graphql-maven-plugin-samples\graphql-maven-plugin-samples-StarWars-client -->
+				<!-- mvn cargo:run -->
 				<groupId>org.codehaus.cargo</groupId>
 				<artifactId>cargo-maven2-plugin</artifactId>
 				<version>1.7.4</version>
