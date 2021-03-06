@@ -117,6 +117,7 @@
 							<goal>start</goal>
 						</goals>
 						<configuration>
+							<skip>${skipTests}</skip>
 							<name>graphql-maven-plugin-samples-OAuth-authorization-server</name>
 							<workingDir>OAuth-authorization-server</workingDir>
 							<processLogFile>${basedir}/target/OAuth-authorization-server.log</processLogFile>
@@ -137,6 +138,7 @@
 							<goal>start</goal>
 						</goals>
 						<configuration>
+							<skip>${skipTests}</skip>
 							<name>allGraphQLCases sample GraphQL server</name>
 							<workingDir>allGraphQLCases_graphql_server</workingDir>
 							<!-- processLogFile>${basedir}/target/allGraphQLCases_graphql_server.log</processLogFile -->

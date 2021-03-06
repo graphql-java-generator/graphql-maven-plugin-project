@@ -90,6 +90,7 @@
 							<goal>start</goal>
 						</goals>
 						<configuration>
+							<skip>${skipTests}</skip>
 							<name>Forum GraphQL server</name>
 							<workingDir>forum_graphql_server</workingDir>
 							<waitForInterrupt>false</waitForInterrupt>
