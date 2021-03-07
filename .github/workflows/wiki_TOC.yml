@@ -6,8 +6,13 @@ name: Wiki TOC
 on:
   # Triggers the workflow on any change on the wiki (on the master branch)
   #gollum:    # This is triggered each time a file is changed on the wiki, including when the this script automatically run!
+  
+  # Below: push on the wiki, for the master branch
   push:
-    branches: [main]
+    paths:
+      - 'wiki/**'
+    branches:
+      - master
 
   # Allows you to run this workflow manually from the Actions tab
   # workflow_dispatch:
