@@ -698,7 +698,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(17, type.getFields().size());
+		assertEquals(18, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -849,7 +849,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(2, type.getFields().size());
+		assertEquals(3, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :

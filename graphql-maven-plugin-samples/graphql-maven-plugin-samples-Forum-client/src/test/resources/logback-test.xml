@@ -14,7 +14,7 @@
 	</appender>
 
 	<logger name="com.graphql_java_generator" level="trace" additivity="false">
-		<logger name="org.springframework.web.reactive.socket" level="debug" />
+		<!-- logger name="org.springframework.web.reactive.socket" level="debug" / -->
 		<appender-ref ref="File" />
 		<!--Appender-ref ref="Console" / -->
 	</logger>

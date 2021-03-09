@@ -120,11 +120,12 @@ public class OAuthTokenExtractor {
 
 	/**
 	 * Returns the Authorization header value, as it has been returned by the
-	 * {@link ServerOAuth2AuthorizedClientExchangeFilterFunction}, from the OAuth authorization server.
+	 * {@link ServerOAuth2AuthorizedClientExchangeFilterFunction}, from the OAuth authorization server. The method is
+	 * synchronized to avoid that the client, when using multi-threading, try to retrieve two token simultaneously.
 	 * 
 	 * @return
 	 */
-	public String getAuthorizationHeaderValue() {
+	public synchronized String getAuthorizationHeaderValue() {
 		return getOAuthTokenExchangeFunction.exchange(dummyHttpRequest)
 				.map(response -> response.bodyToMono(String.class).block()).block();
 	}

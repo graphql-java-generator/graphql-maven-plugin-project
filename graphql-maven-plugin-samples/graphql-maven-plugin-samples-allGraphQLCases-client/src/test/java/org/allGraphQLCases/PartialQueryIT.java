@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.client.AllFieldCases;
@@ -122,5 +124,23 @@ public class PartialQueryIT {
 				"The first name should be in uppercase");
 		assertNotEquals(ret.getIssue65().get(1).getName().toUpperCase(), ret.getIssue65().get(1).getName(),
 				"The second name should NOT be in uppercase");
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue53_DateQueryParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2018, 02, 01);// Month is 0-based, so this date is 2018, January the first
+		Date date = cal.getTime();
+		//
+		GraphQLRequest graphQLRequest = queryType.getIssue53GraphQLRequest("");
+
+		// Go, go, go
+		Date ret = queryType.issue53(graphQLRequest, date);
+
+		// Verification
+		assertEquals(date, ret);
 	}
 }

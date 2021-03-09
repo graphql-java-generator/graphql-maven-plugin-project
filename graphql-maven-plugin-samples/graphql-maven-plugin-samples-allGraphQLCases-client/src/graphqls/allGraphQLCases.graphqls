@@ -61,6 +61,12 @@ type MyQueryType {
     # queries to check the addRelayConnections capability
     connectionWithoutParameters: [Character] @RelayConnection
     connectionOnHuman(planet: String, episode: Episode): [Human] @RelayConnection
+    
+    ################################################################################
+    # queries created to test some issues
+    
+    #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+    issue53(date: Date!): Date!
 }
 
 type AnotherMutationType {
@@ -72,10 +78,15 @@ type AnotherMutationType {
 }
 
 type TheSubscriptionType {
+	
 	# Will be notified for each Human added to this Episode
 	subscribeNewHumanForEpisode(episode: Episode!): Human!
+	
 	#Issue 54
 	subscribeToAList: [Int]!
+	
+    #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+    issue53(date: Date!): Date!
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {

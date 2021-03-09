@@ -1,6 +1,10 @@
 package org.allGraphQLCases.subscription;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
@@ -86,5 +90,40 @@ public class ExecSubscriptionIT {
 
 		assertNotNull(client1.callback.lastReceivedMessage, "The client 1 should have received a message");
 		assertNotNull(client2.callback.lastReceivedMessage, "The client 2 should have received a message");
+	}
+
+	@Execution(ExecutionMode.CONCURRENT)
+	@Test
+	public void test_subscribeToADate_issue53()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+		TheSubscriptionTypeExecutor subscriptionExecutor = ctx.getBean(TheSubscriptionTypeExecutor.class);
+
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2018, 02, 01);// Month is 0-based, so this date is 2018, January the first
+		Date date1 = cal.getTime();
+
+		cal.clear();
+		cal.set(2018, 02, 02);// Month is 0-based, so this date is 2018, January the second
+		Date date2 = cal.getTime();
+
+		// To test the issue 53, we create two clients for the subscription, and check that each of them properly
+		// receives the notifications
+		SubscribeToADate client1 = new SubscribeToADate(subscriptionExecutor, "client1", date1);
+		SubscribeToADate client2 = new SubscribeToADate(subscriptionExecutor, "client2", date2);
+
+		Thread thread1 = new Thread(client1);
+		Thread thread2 = new Thread(client2);
+
+		thread1.start();
+		thread2.start();
+
+		// Let's wait for the end of our two subscription client threads
+		thread1.join();
+		thread2.join();
+
+		assertEquals(date1, client1.callback.lastReceivedMessage, "The client 1 should have received a message");
+		assertEquals(date2, client2.callback.lastReceivedMessage, "The client 2 should have received a message");
 	}
 }

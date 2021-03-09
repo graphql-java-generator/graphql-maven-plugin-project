@@ -8,6 +8,11 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# 1.12.5
+
+Client mode:
+* Issue #53: custom scalars would not be properly managed when they are a parameter of a query, mutation or subscription.
+
 # 1.12.4
 
 Server mode:

@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.client.AnotherMutationType;
@@ -223,5 +225,22 @@ class FullQueriesIT {
 		assertTrue(withoutParameters.size() > 0);
 		assertNotNull(withoutParameters.get(0).getAppearsIn());
 		assertNull(withoutParameters.get(0).getName());
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue53_DateQueryParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2018, 02, 01);// Month is 0-based, so this date is 2018, January the first
+		Date date = cal.getTime();
+		//
+		// Go, go, go
+		MyQueryType resp = myQuery.exec("{issue53(date: &date)}", "date", date);
+
+		// Verifications
+		assertNotNull(resp);
+		assertEquals(date, resp.getIssue53());
 	}
 }

@@ -1,6 +1,7 @@
 package org.allGraphQLCases.server.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -297,6 +298,14 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			Episode episode) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * No action. It just returns the date parameter, to check serialization and deserialization on both sides
+	 */
+	@Override
+	public Date issue53(DataFetchingEnvironment dataFetchingEnvironment, Date date) {
+		return date;
 	}
 
 }

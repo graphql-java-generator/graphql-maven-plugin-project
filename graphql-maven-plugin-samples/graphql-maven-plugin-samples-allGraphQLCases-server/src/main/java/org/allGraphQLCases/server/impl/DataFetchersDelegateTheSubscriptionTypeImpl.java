@@ -5,6 +5,7 @@ package org.allGraphQLCases.server.impl;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +52,18 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				.map((l) -> {
 					// This message is a list of two integers
 					return Arrays.asList(l.intValue(), 2 * l.intValue());
+				});
+	}
+
+	@Override
+	public Publisher<Date> issue53(DataFetchingEnvironment dataFetchingEnvironment, Date date) {
+		// The Flux class, from Spring reactive, implements the Publisher interface.
+		// Let's returns one item, the date that has been provided as a parameter
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> {
+					// This message is always the date provided as a parameter
+					return date;
 				});
 	}
 
