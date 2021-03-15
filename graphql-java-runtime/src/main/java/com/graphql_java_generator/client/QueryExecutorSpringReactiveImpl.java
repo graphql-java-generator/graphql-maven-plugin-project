@@ -36,6 +36,7 @@ import reactor.core.scheduler.Schedulers;
  * @since 1.12
  * @author etienne-sf
  */
+// This is not a Spring Bean. It is created by the GraphQLAutoConfiguration
 public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */

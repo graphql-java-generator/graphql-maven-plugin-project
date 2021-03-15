@@ -3,6 +3,9 @@ server:
   port: 8180
 
 
+# Changing the server path
+graphql:
+  url: /my/updated/graphql/path
 
 # https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/#oauth2-boot-resource-server-token-info
 security:

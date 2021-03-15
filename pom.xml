@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -62,11 +63,12 @@
 	<modules>
 		<!-- Below are the module that are always in the build -->
 		<!-- The samples (within graphql-maven-plugin-samples module) are activated only when not in release mode (see profiles) -->
-		<module>graphql-java-runtime</module>
-		<module>graphql-maven-plugin</module>
 		<module>graphql-java-client-dependencies</module>
 		<module>graphql-java-server-dependencies</module>
+		<module>graphql-java-runtime</module>
+		<module>graphql-java-spring-mvc</module>
 		<module>graphql-maven-plugin-logic</module>
+		<module>graphql-maven-plugin</module>
 	</modules>
 
 	<properties>
@@ -293,6 +295,11 @@
 			<!-- dependencies within this project -->
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-java-spring-mvc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-java-client-dependencies</artifactId>
 				<version>${project.version}</version>
 				<type>pom</type>
@@ -360,7 +367,7 @@
 				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
 				<groupId>com.graphql-java-kickstart</groupId>
 				<artifactId>graphiql-spring-boot-starter</artifactId>
-				<version>6.0.1</version>
+				<version>11.0.0</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>

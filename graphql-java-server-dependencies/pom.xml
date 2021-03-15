@@ -15,8 +15,10 @@
 
 	<dependencies>
 		<!-- Dependencies for GraphQL -->
-		<dependency>
-			<!-- The needed runtime to link graphql-java to the spring boot stuff -->
+		<!--  The dependency below is removed, until the necessary PR as accepted and published :
+			The necessary code has been added into the graphql-java-runtime module -->
+		<!-- dependency>
+			<!- The needed runtime to link graphql-java to the spring boot stuff ->
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
 			<exclusions>
@@ -29,6 +31,10 @@
 					<artifactId>jackson-databind</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency -->
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-spring-mvc</artifactId>
 		</dependency>
 
 		<!-- Other dependencies -->

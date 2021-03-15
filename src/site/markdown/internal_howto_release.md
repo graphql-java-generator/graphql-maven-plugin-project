@@ -57,6 +57,23 @@ From the root of the Gradle project, execute:
 gradlew copySamplesFromMavenPlugin
 ```
 
+In order to make this command work, you need to update the `.gradle/gradle.properties` file, and add these lines:
+
+```
+systemProp.http.proxyHost=...
+systemProp.http.proxyPort=...
+systemProp.https.proxyHost=...
+systemProp.https.proxyPort=...
+
+# Properties for the graphql-gradle-plugin-project project
+systemProp.graphqlGradlePlugin.graphqlMavenPluginProject.path=path_of/graphql-maven-plugin-project
+
+# Gradle publish keys for the https://plugins.gradle.org site, for graphql-java-generator
+gradle.publish.key=...
+gradle.publish.secret=...
+```
+
+
 4) [not always] Adapt the dependencies version(see the _graphql-gradle-plugin/common_conf.gradle_ file)
 
 5) [not always] Adapt the _build.gradle_ files, for instance if some plugin options have changed in the samples

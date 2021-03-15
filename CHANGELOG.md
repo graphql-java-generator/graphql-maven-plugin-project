@@ -8,6 +8,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+Server mode:
+* The Query/Mutation/Subscription are now available on the same URL (/graphql by default). This is the standard GraphQL behavior, but it was tricky to build, due to a Java limitation.
+
+
 # 1.12.5
 
 Client mode:

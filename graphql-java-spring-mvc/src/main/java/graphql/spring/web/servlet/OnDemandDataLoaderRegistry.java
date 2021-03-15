@@ -11,9 +11,9 @@ import org.dataloader.DataLoaderRegistry;
 public interface OnDemandDataLoaderRegistry {
 
 	/**
-	 * Retrieves a new DataLoaderRegistry, that can be associated to each request.
+	 * Retrieves a new {@link DataLoaderRegistry}, that can be associated to each request.
 	 * 
-	 * @return
+	 * @return A new {@link DataLoaderRegistry} that is created each time this method is called.
 	 */
 	public DataLoaderRegistry getNewDataLoaderRegistry();
 

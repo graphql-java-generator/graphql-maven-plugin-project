@@ -19,6 +19,7 @@
 
 	<logger name="org.forum" level="trace" />
 	<logger name="com.graphql_java_generator" level="debug" />
+	<logger name="graphql" level="trace" />
 	<logger name="org.springframework" level="debug" />
 	<root level="info">
 		<appender-ref ref="File" />

@@ -38,10 +38,12 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class GraphQLAutoConfiguration {
 
-	@Value("${graphql.endpoint.url}")
-	private String graphqlEndpoint;
-	@Value("${graphql.endpoint.subscriptionUrl}")
-	private String graphqlSubscriptionEndpoint;
+	@Value(value = "${graphql.endpoint.url}")
+	private String graphqlEndpointUrl;
+
+	@Value("${graphql.endpoint.subscriptionUrl:${graphql.endpoint.url}}")
+	@Deprecated
+	private String graphqlEndpointSubscriptionUrl;
 
 	/**
 	 * This beans defines the GraphQL endpoint, as a {@link String}
@@ -52,7 +54,7 @@ public class GraphQLAutoConfiguration {
 	 */
 	@Bean
 	String graphqlEndpoint() {
-		return graphqlEndpoint;
+		return graphqlEndpointUrl;
 	}
 
 	/**
@@ -66,8 +68,9 @@ public class GraphQLAutoConfiguration {
 	 * @see https://docs.spring.io/spring-boot/docs/2.3.3.RELEASE/reference/html/spring-boot-features.html#boot-features-external-config
 	 */
 	@Bean
+	@Deprecated
 	String graphqlSubscriptionEndpoint() {
-		return graphqlSubscriptionEndpoint;
+		return graphqlEndpointSubscriptionUrl;
 	}
 
 	/**

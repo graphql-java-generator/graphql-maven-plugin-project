@@ -39,6 +39,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * 
  * @author etienne-sf
  */
+@Deprecated
 public class QueryExecutorImpl implements QueryExecutor {
 
 	static {

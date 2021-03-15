@@ -106,13 +106,13 @@ Customizing code templates
 *--+--+--+
 | GRAPHQLUTIL | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLUtil.vm.java}templates/server_GraphQLUtil.vm.java}} |
 *--+--+--+
-| PROVIDER | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLProvider.vm.java}templates/server_GraphQLProvider.vm.java}} |
-*--+--+--+
 | SERVER | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLServerMain.vm.java}templates/server_GraphQLServerMain.vm.java}} |
 *--+--+--+
 | WEB_SOCKET_CONFIG | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_WebSocketConfig.vm.java}templates/server_WebSocketConfig.vm.java}} |
 *--+--+--+
 | WEB_SOCKET_HANDLER | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_WebSocketHandler.vm.java}templates/server_WebSocketHandler.vm.java}} |
+*--+--+--+
+| WIRING | SERVER | {{{http://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates/server_GraphQLWiring.vm.java}templates/server_GraphQLWiring.vm.java}} |
 *--+--+--+
 
 * Examples

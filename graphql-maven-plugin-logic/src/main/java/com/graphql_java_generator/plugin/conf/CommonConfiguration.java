@@ -115,7 +115,7 @@ public interface CommonConfiguration {
 	 * that the compiler will always compile the sources, even if they didn't change. If you still want to use this
 	 * <I>build-helper-maven-plugin</I>, you'll have to put it into a dedicated profile, so that you can activte it or
 	 * not as you want. You can have a look at the
-	 * <A HREF="https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69">Issue 69</I> for a
+	 * <A HREF="https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69">Issue 69</A> for a
 	 * hint on this.
 	 * <P>
 	 * Of course, after a <I>clean</I> goal/taks execution, the target folder won't exist, and the sources or resources
