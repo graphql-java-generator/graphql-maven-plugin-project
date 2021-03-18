@@ -3,7 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 
-* Investigate the [websocket issue](https://docs.spring.io/spring-framework/docs/5.3.4/reference/html/web.html#websocket-server-deployment) that seems to be solved for most application servers.
+* Add an option to add the Serialisable interface for generated POJOs
 * Issue when two client subscribed to the same subscription
    https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/72
 * [Waiting for an answer] Publish a PR to have a per request cache, in graphql-java-spring 

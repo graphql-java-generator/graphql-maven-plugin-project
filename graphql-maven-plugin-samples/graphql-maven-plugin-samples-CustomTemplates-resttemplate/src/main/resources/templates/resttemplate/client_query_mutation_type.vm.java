@@ -48,6 +48,9 @@ public class ${object.javaName} {
 	private static Logger logger = LoggerFactory.getLogger(${object.name}.class);
 
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
+	
+	/** The field below is the only change from the original template. It is here only to check that this template is actually used */ 
+	public boolean thisIsADummyFieldToCheckThatThisTemplateIsUsed = true;
 
 #if(!${pluginConfiguration.separateUtilityClasses})
 #parse ("templates/object_content.vm.java")

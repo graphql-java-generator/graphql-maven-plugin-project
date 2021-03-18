@@ -38,6 +38,14 @@ public interface CommonConfiguration {
 	public Logger getPluginLogger();
 
 	/**
+	 * Get the {@link File} for the current project's directory. This allows to compute the full path of file that are
+	 * within this project (like custom templates for instance)
+	 * 
+	 * @return
+	 */
+	public File getProjectDir();
+
+	/**
 	 * The main resources folder, typically '/src/main/resources' of the current project. That's where the GraphQL
 	 * schema(s) are expected to be: in this folder, or one of these subfolders
 	 */

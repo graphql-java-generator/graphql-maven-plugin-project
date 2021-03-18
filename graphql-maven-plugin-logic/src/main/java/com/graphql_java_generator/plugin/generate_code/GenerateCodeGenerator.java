@@ -18,6 +18,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -75,17 +77,30 @@ public class GenerateCodeGenerator implements Generator {
 	GraphqlUtils graphqlUtils;
 
 	/** The Velocity engine used to generate the target file */
-	VelocityEngine velocityEngine = null;
+	VelocityEngine velocityEngineFromClasspath = null;
+	/**
+	 * The context for Velocity, when the templates are on the file system (that is for custom templates provided for
+	 * the project being build
+	 */
+	VelocityEngine velocityEngineFromFile = null;
 
 	/** The context for server mode. Stored here, so that it is calculated only once */
 	VelocityContext serverContext = null;
 
-	public GenerateCodeGenerator() {
+	@PostConstruct
+	void init() {
 		// Initialization for Velocity
-		velocityEngine = new VelocityEngine();
-		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-		velocityEngine.init();
+		velocityEngineFromClasspath = new VelocityEngine();
+		velocityEngineFromClasspath.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+		velocityEngineFromClasspath.setProperty("classpath.resource.loader.class",
+				ClasspathResourceLoader.class.getName());
+		velocityEngineFromClasspath.init();
+
+		velocityEngineFromFile = new VelocityEngine();
+		velocityEngineFromFile.setProperty(RuntimeConstants.RESOURCE_LOADER, "file");
+		velocityEngineFromFile.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH,
+				configuration.getProjectDir().getAbsolutePath());
+		velocityEngineFromFile.init();
 	}
 
 	/**
@@ -392,6 +407,11 @@ public class GenerateCodeGenerator implements Generator {
 				}
 
 				@Override
+				public File getProjectDir() {
+					return configuration.getProjectDir();
+				}
+
+				@Override
 				public File getSchemaFileFolder() {
 					return configuration.getSchemaFileFolder();
 				}
@@ -437,7 +457,6 @@ public class GenerateCodeGenerator implements Generator {
 					// always created. We won't skip it.
 					return false;
 				}
-
 			};
 			GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
 					graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
@@ -465,9 +484,16 @@ public class GenerateCodeGenerator implements Generator {
 	int generateOneFile(File targetFile, String msg, VelocityContext context, String templateFilename) {
 		try {
 			Writer writer = null;
+			Template template = null;
 
+			File localFile = new File(configuration.getProjectDir(), templateFilename);
 			configuration.getPluginLogger().debug(msg);
-			Template template = velocityEngine.getTemplate(templateFilename, "UTF-8");
+
+			if (localFile.exists()) {
+				template = velocityEngineFromFile.getTemplate(templateFilename, "UTF-8");
+			} else {
+				template = velocityEngineFromClasspath.getTemplate(templateFilename, "UTF-8");
+			}
 
 			targetFile.getParentFile().mkdirs();
 			if (configuration.getSourceEncoding() != null) {

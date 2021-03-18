@@ -38,6 +38,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
 	public Packaging packaging = null;
+	public File projectDir = new File("./graphql-maven-plugin-logic");
 	public String scanBasePackages = "null";
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;

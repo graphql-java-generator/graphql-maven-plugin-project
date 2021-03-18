@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -32,12 +33,14 @@
 						</customScalar>
 					</customScalars>
 					<templates>
+						<!-- The QUERY_MUTATION is found in the graphql-maven-plugin-samples-CustomTemplates-resttemplate dependency -->
 						<QUERY_MUTATION>templates/resttemplate/client_query_mutation_type.vm.java</QUERY_MUTATION>
+						<!-- The SUBSCRIPTION_EXECUTOR is found in this project, int the src/graphql/customtemplates folder -->
+						<SUBSCRIPTION_EXECUTOR>src/graphql/customtemplates/custom_client_subscription_executor.vm.java</SUBSCRIPTION_EXECUTOR>
 					</templates>
 				</configuration>
 				<dependencies>
-					<!-- Dependency contains the custom template parametrized in plugin 
-						and a QueryExecutor bases on Spring Rest Template -->
+					<!-- Dependency contains the custom template parametrized in plugin and a QueryExecutor bases on Spring Rest Template -->
 					<dependency>
 						<groupId>com.graphql-java-generator</groupId>
 						<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>
@@ -78,8 +81,7 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot Forum-server in the background 
-					during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot Forum-server in the background during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
@@ -123,8 +125,7 @@
 	</build>
 
 	<dependencies>
-		<!-- Dependency contains the custom template parametrized in plugin and 
-			a QueryExecutor bases on Spring Rest Template -->
+		<!-- Dependency contains the custom template parametrized in plugin and a QueryExecutor bases on Spring Rest Template -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-CustomTemplates-resttemplate</artifactId>

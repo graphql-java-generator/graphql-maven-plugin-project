@@ -154,6 +154,11 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	}
 
 	@Override
+	public File getProjectDir() {
+		return project.getBasedir();
+	}
+
+	@Override
 	public File getSchemaFileFolder() {
 		return schemaFileFolder;
 	}

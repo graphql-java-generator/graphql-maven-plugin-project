@@ -17,7 +17,17 @@ Customizing code templates
   are located in the project at {{{https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-logic/src/main/resources/templates}graphql-maven-plugin-logic/src/main/resources/templates}}
 
   If for any reason you may need to customize the template to modify the generated code
-  this can be done by using the plugin parameter <<templates>>
+  this can be done by using the plugin parameter <<templates>>. You can then provide your own templates. There are two possibilities for that:
+  
+  
+  * By putting them in a _jar_, that will be added as a dependency for the _graphql-maven-plugin_.
+
+  * (since v1.13) By putting them in your current project or module, and give a reference to it
+  
+  []
+
+  You can combine both styles in one pom or gradle.build file.
+  
 
 
 * {templates param usage}
@@ -47,7 +57,13 @@ Customizing code templates
 			<configuration>
 				<mode>client</mode>
 				<templates>
+
+					<!-- The QUERY_MUTATION is found in the dependency, added just below WITHIN the plugin definition -->
 					<QUERY_MUTATION>classpath/entry/to/customtemplate.java.vm</QUERY_MUTATION>
+
+					<!-- The SUBSCRIPTION_EXECUTOR is found in this project, int the src/graphql/customtemplates folder -->
+					<SUBSCRIPTION_EXECUTOR>src/graphql/customtemplates/custom_client_subscription_executor.vm.java</SUBSCRIPTION_EXECUTOR>
+
 				</templates>
 			</configuration>
 			<dependencies>

@@ -23,6 +23,7 @@ import java.util.zip.ZipEntry;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.junit.jupiter.api.AfterEach;
@@ -93,7 +94,7 @@ class CodeGeneratorTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testCodeGenerator() {
-		assertNotNull(codeGenerator.velocityEngine, "Velocity engine must be initialized");
+		assertNotNull(codeGenerator.velocityEngineFromClasspath, "Velocity engine must be initialized");
 	}
 
 	/**
@@ -105,9 +106,10 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_client() {
 		// Let's mock the Velocity engine, to check how it is called
-		codeGenerator.velocityEngine = mock(VelocityEngine.class);
+		codeGenerator.velocityEngineFromClasspath = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
+		when(codeGenerator.velocityEngineFromClasspath.getTemplate(anyString(), anyString()))
+				.thenReturn(mockedTemplate);
 
 		codeGenerator.generateCodeDocumentParser = mock(GenerateCodeDocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
@@ -130,7 +132,8 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
+		verify(codeGenerator.velocityEngineFromClasspath, times(1)).getTemplate(argument1.capture(),
+				argument2.capture());
 		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 
@@ -157,9 +160,10 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_server() {
 		// Let's mock the Velocity engine, to check how it is called
-		codeGenerator.velocityEngine = mock(VelocityEngine.class);
+		codeGenerator.velocityEngineFromClasspath = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
+		when(codeGenerator.velocityEngineFromClasspath.getTemplate(anyString(), anyString()))
+				.thenReturn(mockedTemplate);
 
 		pluginConfiguration.mode = PluginMode.server;
 
@@ -179,7 +183,8 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
+		verify(codeGenerator.velocityEngineFromClasspath, times(1)).getTemplate(argument1.capture(),
+				argument2.capture());
 		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 
@@ -195,6 +200,34 @@ class CodeGeneratorTest {
 		assertEquals(object1, argumentContext.getValue().get("object"), "Context: checks the package");
 		assertEquals(type, argumentContext.getValue().get("type"), "Context: checks the package");
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_generateOneFile_inClasspath() throws IOException {
+		// Preparation
+		VelocityContext velocityContext = new VelocityContext();
+		File targetFile = new File(targetResourceFolder + "/testTemplate_inClasspath");
+
+		// Go, go, go
+		codeGenerator.generateOneFile(targetFile, "In test_generateOneFile_InClasspath", velocityContext,
+				"testTemplate.vm");
+
+		// If there is no error, then the template has been found. The test is Ok
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_generateOneFile_inFileSystem() throws IOException {
+		// Preparation
+		VelocityContext velocityContext = new VelocityContext();
+		File targetFile = new File(targetResourceFolder + "/testTemplate_inFileSystem");
+
+		// Go, go, go
+		codeGenerator.generateOneFile(targetFile, "In test_generateOneFile_InClasspath", velocityContext,
+				"/src/test/resources/testTemplate.vm");
+
+		// If there is no error, then the template has been found. The test is Ok
 	}
 
 	@Test

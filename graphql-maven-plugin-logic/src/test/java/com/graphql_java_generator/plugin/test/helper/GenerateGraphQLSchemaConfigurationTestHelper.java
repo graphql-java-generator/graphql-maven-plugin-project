@@ -23,6 +23,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 
 	public boolean addRelayConnections = false;
 	public String packageName = "my.test.package";
+	public File projectDir = new File("./graphql-maven-plugin-logic");
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
 	// As the GraphQL schema won't change, and we always want to regenerate the schema, we won't skip it
