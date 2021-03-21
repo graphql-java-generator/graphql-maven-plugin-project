@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
+import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -124,7 +125,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			Class<R> dataResponseType) throws GraphQLRequestExecutionException {
 
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
@@ -239,8 +240,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @throws JsonProcessingException
 	 * @throws GraphQLRequestExecutionException
 	 */
-	static <T> T parseDataFromGraphQLServerResponse(ObjectMapper objectMapper, JsonResponseWrapper response,
-			Class<T> valueType) throws GraphQLRequestExecutionException, JsonProcessingException {
+	static <T extends GraphQLRequestObject> T parseDataFromGraphQLServerResponse(ObjectMapper objectMapper,
+			JsonResponseWrapper response, Class<T> valueType)
+			throws GraphQLRequestExecutionException, JsonProcessingException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Response data: {}", objectMapper.writeValueAsString(response.data));
 			logger.trace("Response errors: {}", objectMapper.writeValueAsString(response.errors));
@@ -248,7 +250,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 		if (response.errors == null || response.errors.size() == 0) {
 			// No errors. Let's parse the data
-			return objectMapper.treeToValue(response.data, valueType);
+			T ret = objectMapper.treeToValue(response.data, valueType);
+			ret.setExtensions(response.extensions);
+			return ret;
 		} else {
 			int nbErrors = 0;
 			String agregatedMessage = null;

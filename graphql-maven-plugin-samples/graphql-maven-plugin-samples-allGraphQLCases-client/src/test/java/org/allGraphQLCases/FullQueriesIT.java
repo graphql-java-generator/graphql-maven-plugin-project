@@ -26,6 +26,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -41,6 +42,11 @@ class FullQueriesIT {
 	GraphQLRequest mutationWithoutDirectiveRequest;
 	GraphQLRequest withDirectiveTwoParametersRequest;
 	GraphQLRequest multipleQueriesRequest;
+
+	public static class ExtensionValue {
+		public String name;
+		public String forname;
+	}
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
@@ -84,6 +90,27 @@ class FullQueriesIT {
 		List<String> ret = resp.getDirectiveOnQuery();
 		assertNotNull(ret);
 		assertEquals(0, ret.size());
+	}
+
+	@Execution(ExecutionMode.CONCURRENT)
+	@Test
+	void extensionsResponseField()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
+
+		// Go, go, go
+		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+																// simple cases
+
+		// Verifications
+		// The extensions field contains a Human instance, for the key "aValueToTestTheExtensionsField".
+		// Check the org.allGraphQLCases.server.extensions.CustomBeans (creation of the customGraphQL Spring bean)
+		assertNotNull(resp);
+		assertNotNull(resp.getExtensions());
+		assertNotNull(resp.getExtensionsAsMap());
+		assertNotNull(resp.getExtensionsAsMap().get("aValueToTestTheExtensionsField"));
+		ExtensionValue value = resp.getExtensionsField("aValueToTestTheExtensionsField", ExtensionValue.class);
+		assertEquals("The name", value.name);
+		assertEquals("The forname", value.forname);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)

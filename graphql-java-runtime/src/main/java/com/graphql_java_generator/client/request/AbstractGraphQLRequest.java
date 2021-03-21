@@ -18,6 +18,7 @@ import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
+import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -258,7 +259,8 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public <T> T exec(Class<T> t, Map<String, Object> params) throws GraphQLRequestExecutionException {
+	public <T extends GraphQLRequestObject> T exec(Class<T> t, Map<String, Object> params)
+			throws GraphQLRequestExecutionException {
 		if (instanceConfiguration != null) {
 			return instanceConfiguration.getQueryExecutor().execute(this, params, t);
 		} else if (staticConfiguration != null) {

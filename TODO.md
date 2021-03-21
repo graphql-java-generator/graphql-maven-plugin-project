@@ -3,7 +3,8 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 
-* Add an option to add the Serialisable interface for generated POJOs
+* Document in the Client FAQ how to retrieve the extensions response's values
+* Add an option to add the Serializable interface for generated POJOs
 * Issue when two client subscribed to the same subscription
    https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/72
 * [Waiting for an answer] Publish a PR to have a per request cache, in graphql-java-spring 

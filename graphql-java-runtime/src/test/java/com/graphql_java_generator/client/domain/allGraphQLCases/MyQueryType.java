@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.GraphQLField;
@@ -26,6 +27,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -37,7 +39,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 @GraphQLQuery(name = "MyQueryType", type = RequestType.query)
 @GraphQLObjectType("MyQueryType")
-public class MyQueryType {
+public class MyQueryType implements GraphQLRequestObject {
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(MyQueryType.class);
@@ -52,82 +54,82 @@ public class MyQueryType {
 
 	@JsonDeserialize(contentAs = Character.class)
 	@JsonProperty("withoutParameters")
-	@GraphQLNonScalar( fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	List<Character> withoutParameters;
 
 	@GraphQLInputParameters(names = { "character" }, types = { "CharacterInput" })
 	@JsonProperty("withOneOptionalParam")
-	@GraphQLNonScalar( fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character withOneOptionalParam;
 
 	@GraphQLInputParameters(names = { "character" }, types = { "CharacterInput" })
 	@JsonProperty("withOneMandatoryParam")
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character withOneMandatoryParam;
 
 	@GraphQLInputParameters(names = { "nbResultat" }, types = { "Int" })
 	@JsonProperty("withOneMandatoryParamDefaultValue")
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character withOneMandatoryParamDefaultValue;
 
 	@GraphQLInputParameters(names = { "theHero", "num" }, types = { "DroidInput", "Int" })
 	@JsonProperty("withTwoMandatoryParamDefaultVal")
-	@GraphQLNonScalar( fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
+	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	Droid withTwoMandatoryParamDefaultVal;
 
 	@GraphQLInputParameters(names = { "episode" }, types = { "Episode" })
 	@JsonProperty("withEnum")
-	@GraphQLNonScalar( fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character withEnum;
 
 	@JsonDeserialize(contentAs = Character.class)
 	@GraphQLInputParameters(names = { "firstName", "characters" }, types = { "String", "CharacterInput" })
 	@JsonProperty("withList")
-	@GraphQLNonScalar( fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	List<Character> withList;
 
 	@GraphQLInputParameters(names = { "input" }, types = { "AllFieldCasesInput" })
 	@JsonProperty("allFieldCases")
-	@GraphQLNonScalar( fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	AllFieldCases allFieldCases;
 
 	@JsonDeserialize(contentAs = AnyCharacter.class)
 	@GraphQLInputParameters(names = { "human1", "human2", "droid1", "droid2" }, types = { "HumanInput", "HumanInput",
 			"DroidInput", "DroidInput" })
 	@JsonProperty("unionTest")
-	@GraphQLNonScalar( fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
+	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	List<AnyCharacter> unionTest;
 
 	@GraphQLInputParameters(names = { "errorLabel" }, types = { "String" })
 	@JsonProperty("error")
-	@GraphQLNonScalar( fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character error;
 
 	@JsonProperty("aBreak")
-	@GraphQLNonScalar( fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
+	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	_break aBreak;
 
 	@JsonDeserialize(contentAs = String.class)
 	@GraphQLInputParameters(names = { "uppercase" }, types = { "Boolean" })
 	@JsonProperty("directiveOnQuery")
-	@GraphQLScalar( fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
 	List<String> directiveOnQuery;
 
 	@JsonProperty("directiveOnField")
-	@GraphQLNonScalar( fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	Character directiveOnField;
 
 	@JsonProperty("relay")
-	@GraphQLNonScalar( fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
+	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	MyQueryType relay;
 
 	@JsonProperty("__schema")
-	@GraphQLNonScalar( fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	__Schema __schema;
 
 	@GraphQLInputParameters(names = { "name" }, types = { "String" })
 	@JsonProperty("__type")
-	@GraphQLNonScalar( fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	__Type __type;
 
 	public void setWithoutParameters(List<Character> withoutParameters) {
@@ -727,7 +729,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParametersWithBindValues(
 			String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -768,7 +770,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParameters(
 			String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -813,7 +815,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParametersWithBindValues(
 			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -865,7 +867,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParameters(
 			ObjectResponse objectResponse, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -956,7 +958,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParamWithBindValues(
 			String queryResponseDef, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -999,7 +1001,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParam(
 			String queryResponseDef, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1046,7 +1048,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParamWithBindValues(
 			ObjectResponse objectResponse, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -1102,7 +1104,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParam(
 			ObjectResponse objectResponse, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
@@ -1197,7 +1199,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamWithBindValues(
 			String queryResponseDef, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1240,7 +1242,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParam(
 			String queryResponseDef, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1287,7 +1289,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamWithBindValues(
 			ObjectResponse objectResponse, CharacterInput character, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -1343,7 +1345,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParam(
 			ObjectResponse objectResponse, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
@@ -1439,7 +1441,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValueWithBindValues(
 			String queryResponseDef, Integer nbResultat, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1483,7 +1485,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValue(
 			String queryResponseDef, Integer nbResultat, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1531,7 +1533,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValueWithBindValues(
 			ObjectResponse objectResponse, Integer nbResultat, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -1588,7 +1590,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValue(
 			ObjectResponse objectResponse, Integer nbResultat, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
@@ -1688,7 +1690,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
+	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultValWithBindValues(
 			String queryResponseDef, DroidInput theHero, Integer num, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1735,7 +1737,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
+	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultVal(
 			String queryResponseDef, DroidInput theHero, Integer num, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1786,7 +1788,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
+	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultValWithBindValues(
 			ObjectResponse objectResponse, DroidInput theHero, Integer num, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -1847,7 +1849,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
+	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultVal(
 			ObjectResponse objectResponse, DroidInput theHero, Integer num, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
@@ -1948,7 +1950,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnumWithBindValues(
 			String queryResponseDef, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -1990,7 +1992,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnum(String queryResponseDef,
 			Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -2036,7 +2038,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnumWithBindValues(
 			ObjectResponse objectResponse, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -2092,7 +2094,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnum(ObjectResponse objectResponse,
 			Episode episode, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -2187,7 +2189,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withListWithBindValues(
 			String queryResponseDef, String firstName, List<CharacterInput> characters, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -2231,7 +2233,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withList(String queryResponseDef,
 			String firstName, List<CharacterInput> characters, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -2279,7 +2281,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withListWithBindValues(
 			ObjectResponse objectResponse, String firstName, List<CharacterInput> characters,
 			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
@@ -2338,7 +2340,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withList(
 			ObjectResponse objectResponse, String firstName, List<CharacterInput> characters, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
@@ -2435,7 +2437,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCasesWithBindValues(
 			String queryResponseDef, AllFieldCasesInput input, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -2478,7 +2480,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCases(String queryResponseDef,
 			AllFieldCasesInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -2525,7 +2527,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCasesWithBindValues(
 			ObjectResponse objectResponse, AllFieldCasesInput input, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -2581,7 +2583,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
+	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCases(
 			ObjectResponse objectResponse, AllFieldCasesInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
@@ -2682,7 +2684,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
+	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTestWithBindValues(
 			String queryResponseDef, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
 			Map<String, Object> parameters)
@@ -2731,7 +2733,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
+	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTest(
 			String queryResponseDef, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -2783,7 +2785,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
+	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTestWithBindValues(
 			ObjectResponse objectResponse, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
 			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
@@ -2849,7 +2851,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
+	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
 	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTest(
 			ObjectResponse objectResponse, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
@@ -2951,7 +2953,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character errorWithBindValues(
 			String queryResponseDef, String errorLabel, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -2993,7 +2995,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character error(String queryResponseDef,
 			String errorLabel, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -3039,7 +3041,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character errorWithBindValues(
 			ObjectResponse objectResponse, String errorLabel, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -3095,7 +3097,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character error(ObjectResponse objectResponse,
 			String errorLabel, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -3184,7 +3186,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
+	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreakWithBindValues(String queryResponseDef,
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -3223,7 +3225,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
+	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreak(String queryResponseDef,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'aBreak' in query mode: {} ", queryResponseDef);
@@ -3265,7 +3267,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
+	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreakWithBindValues(
 			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -3317,7 +3319,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
+	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreak(ObjectResponse objectResponse,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -3406,7 +3408,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLScalar( fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public List<java.lang.String> directiveOnQueryWithBindValues(String queryResponseDef, Boolean uppercase,
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -3449,7 +3451,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLScalar( fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public List<java.lang.String> directiveOnQuery(String queryResponseDef, Boolean uppercase,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'directiveOnQuery' in query mode: {} ", queryResponseDef);
@@ -3495,7 +3497,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLScalar( fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public List<java.lang.String> directiveOnQueryWithBindValues(ObjectResponse objectResponse, Boolean uppercase,
 			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -3550,7 +3552,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLScalar( fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "directiveOnQuery", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public List<java.lang.String> directiveOnQuery(ObjectResponse objectResponse, Boolean uppercase,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -3642,7 +3644,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnFieldWithBindValues(
 			String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -3683,7 +3685,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnField(String queryResponseDef,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'directiveOnField' in query mode: {} ", queryResponseDef);
@@ -3727,7 +3729,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnFieldWithBindValues(
 			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -3779,7 +3781,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnField(
 			ObjectResponse objectResponse, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -3868,7 +3870,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
+	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relayWithBindValues(
 			String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -3908,7 +3910,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
+	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relay(String queryResponseDef,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query 'relay' in query mode: {} ", queryResponseDef);
@@ -3950,7 +3952,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
+	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relayWithBindValues(
 			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -4002,7 +4004,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
+	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relay(ObjectResponse objectResponse,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -4089,7 +4091,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schemaWithBindValues(
 			String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -4129,7 +4131,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schema(String queryResponseDef,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '__schema' in query mode: {} ", queryResponseDef);
@@ -4172,7 +4174,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schemaWithBindValues(
 			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -4224,7 +4226,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
+	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schema(ObjectResponse objectResponse,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -4314,7 +4316,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __typeWithBindValues(String queryResponseDef,
 			String name, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -4356,7 +4358,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __type(String queryResponseDef, String name,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing of query '__type' in query mode: {} ", queryResponseDef);
@@ -4401,7 +4403,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __typeWithBindValues(
 			ObjectResponse objectResponse, String name, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -4457,7 +4459,7 @@ public class MyQueryType {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@GraphQLNonScalar( fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
+	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
 	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __type(ObjectResponse objectResponse,
 			String name, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
@@ -4511,6 +4513,12 @@ public class MyQueryType {
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "__type",
 				InputParameter.newBindParameter("name", "myQueryType__typeName", true, null));
+	}
+
+	@Override
+	public void setExtensions(JsonNode extensions) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

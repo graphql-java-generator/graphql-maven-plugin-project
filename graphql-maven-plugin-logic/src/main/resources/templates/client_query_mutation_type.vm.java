@@ -23,6 +23,10 @@ import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
@@ -67,9 +71,18 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
 @Deprecated
 #end
 ${object.annotation}
-public class ${object.classSimpleName} extends ${object.classSimpleName}Executor {
+public class ${object.classSimpleName} extends ${object.classSimpleName}Executor #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.response.GraphQLRequestObject #end{
 
 #if(!${configuration.separateUtilityClasses})
+##
+## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
+##
+#if(${object.requestType})
+	private ObjectMapper mapper = null;
+	private JsonNode extensions;
+	private Map<String, JsonNode> extensionsAsMap = null;
+
+#end
 #parse ("templates/object_content.vm.java")
 #end
 
@@ -87,6 +100,57 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	public ${object.classSimpleName}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
 		super(graphqlEndpoint, client, objectMapper);
 	}
+
+##
+## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
+##
+#if(!${configuration.separateUtilityClasses} && ${object.requestType})
+	private ObjectMapper getMapper() {
+		if (mapper == null) {
+			mapper = new ObjectMapper();
+		}
+		return mapper;
+	}
+	
+	public JsonNode getExtensions() {
+		return extensions;
+	}
+	
+	public void setExtensions(JsonNode extensions) {
+		this.extensions = extensions;
+	}
+	
+	/**
+	 * Returns the extensions as a map. The values can't be deserialized, as their type is unknown.
+	 * 
+	 * @return
+	 */
+	public Map<String, JsonNode> getExtensionsAsMap() {
+		if (extensionsAsMap == null) {
+			ObjectMapper mapper = new ObjectMapper();
+			extensionsAsMap = mapper.convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+			});
+		}
+		return extensionsAsMap;
+	}
+	
+	/**
+	 * Parse the value for the given _key_, as found in the <I>extensions</I> field of the GraphQL server's response,
+	 * into the given _t_ class.
+	 * 
+	 * @param <T>
+	 * @param key
+	 * @param t
+	 * @return null if the key is not in the <I>extensions</I> map. Otherwise: the value for this _key_, as a _t_
+	 *         instance
+	 * @throws JsonProcessingException
+	 *             When there is an error when converting the key's value into the _t_ class
+	 */
+	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
+		JsonNode node = getExtensionsAsMap().get(key);
+		return (node == null) ? null : getMapper().treeToValue(node, t);
+	}
+#end
 
 	/**
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 

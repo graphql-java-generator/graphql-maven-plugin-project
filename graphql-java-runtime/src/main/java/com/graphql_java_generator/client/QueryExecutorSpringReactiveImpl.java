@@ -20,6 +20,7 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
+import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
@@ -137,8 +138,8 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	}
 
 	@Override
-	public <R> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			Class<R> dataResponseType) throws GraphQLRequestExecutionException {
+	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest,
+			Map<String, Object> parameters, Class<R> dataResponseType) throws GraphQLRequestExecutionException {
 
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");

@@ -11,6 +11,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
+import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
@@ -46,7 +47,7 @@ public interface QueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <R> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
+	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			Class<R> dataResponseType) throws GraphQLRequestExecutionException;
 
 	/**

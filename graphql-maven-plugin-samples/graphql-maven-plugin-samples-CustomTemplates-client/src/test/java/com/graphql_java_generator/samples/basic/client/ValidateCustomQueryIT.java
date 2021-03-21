@@ -16,6 +16,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.QueryTypeExecutor;
 import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.SubscriptionTypeExecutor;
 
 @SpringBootTest()
@@ -24,7 +25,7 @@ import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.c
 class ValidateCustomQueryIT {
 
 	@Autowired
-	QueryType query;
+	QueryTypeExecutor query;
 
 	@Autowired
 	SubscriptionTypeExecutor subscription;
@@ -39,7 +40,7 @@ class ValidateCustomQueryIT {
 	void test_customTemplateInAnExternalJar()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Let's check that our QueryType is generated from the custom template
-		assertTrue(query.thisIsADummyFieldToCheckThatThisTemplateIsUsed);
+		assertTrue(new QueryType().thisIsADummyFieldToCheckThatThisTemplateIsUsed);
 
 		// And that it still works! :)
 		List<Board> response = query.boards("{id name}");

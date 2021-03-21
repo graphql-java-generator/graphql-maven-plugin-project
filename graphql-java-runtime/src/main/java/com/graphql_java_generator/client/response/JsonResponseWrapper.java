@@ -24,8 +24,11 @@ public class JsonResponseWrapper {
 	public List<Error> errors;
 
 	/**
-	 * This field is absent from the GraphQL specification. But Shopify returns it. So this field is here, only to allow
-	 * the JSON response parsing. Its content is not parsed.
+	 * This field is described in the <A HREF= "https://spec.graphql.org/June2018/#sec-Response">GraphQL
+	 * specification</A>. It is stored here, without further mapping. It's actually a map, where value can be any
+	 * object. So we can't deserialize here. And it would slow down the deserialization process.<BR/>
+	 * To get the value from this field, one must execute full queries, and retrieve from the received object. See the
+	 * client FAQ about this.
 	 */
 	public JsonNode extensions;
 }

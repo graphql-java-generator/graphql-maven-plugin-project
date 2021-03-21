@@ -19,6 +19,7 @@ import com.graphql_java_generator.client.QueryExecutor;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
+import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -57,8 +58,8 @@ public class RestTemplateQueryExecutor implements QueryExecutor {
 	// }
 
 	@Override
-	public <T> T execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters, Class<T> valueType)
-			throws GraphQLRequestExecutionException {
+	public <T extends GraphQLRequestObject> T execute(AbstractGraphQLRequest graphQLRequest,
+			Map<String, Object> parameters, Class<T> valueType) throws GraphQLRequestExecutionException {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
