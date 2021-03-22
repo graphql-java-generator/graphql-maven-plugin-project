@@ -14,23 +14,28 @@ This project is an accelerator to develop __GraphQL clients__ and __GraphQL serv
 
 That is: graphql-java-generator generates the boilerplate code, and lets you concentrate on what's specific to your use case. Then, the running code __doesn't depend on any dependencies from graphql-java-generator__. So you can get rid of graphql-java-generator at any time: just put the generated code in your SCM, and that's it.
 
-* In __client mode__ : graphql-java-generator generates a class for each query, mutation type and/or subscription type. These classes contain the methods to call the queries, mutations and subscriptions. That is, to call the GraphQL server, you just call one of this method.
-    * graphql-java-generator also generates the POJOs from the GraphQL schema. The __GraphQL response is stored in these POJOs__, for easy and standard use in Java.
+* In __client mode__ : graphql-java-generator generates a class for each query, mutation type and/or subscription type. These classes contain the methods to call the queries, mutations and subscriptions. That is: to call the GraphQL server, you just call one of this method. In client mode, the plugin generates:
+    * The POJOs from the GraphQL schema. That is: one class, interface or enum for each item in the provided GraphQL schema file(s)
+    * The utility classes that allows you to execute queries, mutations and subscriptions, and to retrieve their result (including the GraphQL response's _extensions field)
+    * The support for the full GraphQL specification (relay cursors, subscription, custom scalars, fragment, directive...), out of aliases on client side (due to the mapping of the response into the POJOs classes and java's compile time checking). An enhancement will come about this issue.
+    * The capability to use bind parameters within your queries, mutations and subscriptions
+    * It can be used as a spring boot app, or in non-spring apps. When using as a spring boot app, each Spring component can be overridden. This allows fine tuning, like connecting to __OAuth__ server, changing the _HttpClient_, and much more
 * In __server mode__ : graphql-java-generator generates the whole heart of the GraphQL server. The developer has only to develop request to the data. That is :
-    * graphql-java-generator generates the main method (in a jar project) or the main servler (in a war project), and all the Spring wiring, based on [graphql-java-spring](https://github.com/graphql-java/graphql-java-spring), itself being build on top of [graphql-java](https://www.graphql-java.com/).
-    * graphql-java-generator generates the POJOs. An option allows to annotate them with the standard JPA annotations, to make it easy to link with a database. But of course, you can also implement your GraphQL server based on REST resources, or any other kind of data storage.  
-    * graphql-java-generator also generates interfaces, named DataFetchersDelegate. It expects a Spring Bean to be defined.
-    * The developer just has to implement each DataFetchersDelegate, and the GraphQL server is ready to go!
+    * The generated code is (almost) a _ready to go GraphQL server_, package either in a __jar__ (starting as a Java application) or a __war__ (starting in a Java container like tomcat or jetty): the data fetchers are up to your use case, and you must implement them.
+    * graphql-java-generator generates the main method (in a jar project) or the main servlet class (in a war project), and all the Spring wiring, based on [graphql-java-spring](https://github.com/graphql-java/graphql-java-spring), itself being build on top of [graphql-java](https://www.graphql-java.com/).
+    * It generates the POJOs for the provided GraphQL schema file(s). 
+    * It supports the full GraphQL specification (relay cursors, query/mutation/subscription, custom scalars, fragment, directive, aliases...)
+    * The generated code is a Spring boot app, or servlet. You can override all the default components, to personalize your server: GraphQL components (add isntrumentation, type wiring, field wiring...), HTTP stuff (Spring Security, OAuth, OpenID Connect...) and much more
+    * Various options allows to personalize the generated code (standard JPA annotations, Java type for ID fields, custom scalars, specific annotations...)
+    * The developer just has to implement each DataFetchersDelegate, based on the provided interfaces, and the GraphQL server is ready to go!
 
-Please, take a look at the projects that are within the graphql-maven-plugin-samples: they show various ways to implement a GraphQL server, based on the graphql-java library.
+Other point that a worth to say:
+* A big effort is done to avoid any impact on your code, when the plugin evolves. 
+* A maven/gradle goal/task allows to merge several schemas in one, adding (for instance) relay capability in the generated schema
 
-__The interesting part is that graphql-java-generator is just an accelerator: you don't depend on any library from graphql-java-generator__. So, it just helps you to build application based on [graphql-java](https://www.graphql-java.com) .
-If the generated code doesn't fully suit your needs, you can take what's generated as a full sample for graphql-java usage, based on your use case. You can then update the generated code, where it's not compliant for you. And that's it. The only thing, there, is that we would like to know what was not correct for your use case, so that we can embed it into next versions. Or perhaps, if it's just a matter of documentation, to better explain how to use it...
+__The interesting part is that graphql-java-generator is an accelerator: you don't depend on any library from graphql-java-generator__. So, it just helps you to build application based on [graphql-java](https://www.graphql-java.com).
+At any time, you can take the generated code as a full sample for your graphql-java usage. You can then update the generated code, where it's not compliant for you. The other way is to use the personalization capability, and stay with the generated code as a basis.
 
-The next release will embed the __compatibility with the [relay connection](https://relay.dev/graphql/connections.htm)__:
-* Automatically add this capacity to the schema read by the plugin (add of the Node interface, the PageInfo type, and all the XxxxEdge and XxxxConnection types, as needed).
-* When using the _graphql_ goal/task, the java code for these items will also be generated.
-* When using the _merge_ goal/task (new), a GraphQL schema file is generated, based on the GraphQL schema given to the plugin. This generated GraphQL schema file will include the relay connection capabilities.   
 
 ## Availibility: Maven and Gradle
 
@@ -98,17 +103,6 @@ This plugin contains these goals (Maven) / tasks (Gradle):
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/graphql-mojo.html) 
 * __merge__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/merge-mojo.html) 
-
-
-## Aim of this project
-
-The aim of this project is to:
-
-* Hide all the GraphQL technical stuff and boilerplate code
-* Let the developer concentrate on his/her specific use case
-* Make it __very easy__ to create a GaphQL client, based on the generated POJOs. The calls to the GraphQL server are hidden. The client code just call a generated Java method, with Java parameters.
-* Make it __easy__ to create a GraphQL server. The plugin generated the server boilerplate code and the POJOs. But it's still up to the developer to map the GraphQL schema to the database schema. See the provided samples for different ways to do this. The generated POJOs integrate the JPA schema, making the database access easy, thanks to the Spring Data Repositories.
-* Let the generated code work as a standalone code. That is: your project, when it runs, doesn't depend on any dependency from graphql-java-generator.
 
 ## How to use it?
 
@@ -270,9 +264,8 @@ This plugin respects quite all the GraphQL specification:
 - Use of Bind Parameters to map Java variables with input parameters
 - easy execution of just a query/mutation/subscription (one field of the query, mutation or subscription type) as a standard method call
 - execution of a full GraphQL request, which allows to execute several queries or several mutations at once
-
-You'll find below the main changes, that are planned in the near future:
-- Comments coming from the graphQL schema should be reported in the generated code, especially the POJOs and the queries, mutations and subscriptions
+- Management of the GraphQL response's _extensions_ field
+- Comments coming from the GraphQL schema are reported in the generated code
 
 
 # Change log
@@ -290,11 +283,6 @@ If you want to compile the maven project, you'll have to add the lombok.jar file
 
 If you use eclipse, please use the __code formatter__ given with the project (file _graphql-java-generator (eclipse code formatter).xml_ at the root of the project). This allows to have the sample code formatting: the code is then homogeneous, and the comparison between versions is simpler. To do this, go to the eclipse preferences, select Java/Code Style/Formatter, and import this file. Then, in the Java/Editor/Save Actions, check the "Perform the selected action on save", "Format source code", "Format all lines", "Organize imports" and "Additional actions" which its default content
 
-
-
-# Full project documentation
-
-For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/)
 
 # License
 
