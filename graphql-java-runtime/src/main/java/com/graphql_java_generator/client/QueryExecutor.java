@@ -11,7 +11,6 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
-import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**

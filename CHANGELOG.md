@@ -13,6 +13,9 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 Both mode:
 * Custom Templates can now be defined as a resource in the current project (no need to embed them in a jar prior to use them). See the [CustomTemplates-client pom file](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-CustomTemplates-client/pom.xml) as a sample for that.
 
+Client mode:
+* The _extensions_ field of the GraphQL server response can be retrieved by using Full Queries. More information on the [Client page about request execution](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_exec_graphql_requests)
+
 Server mode:
 * The Query/Mutation/Subscription are now available on the same URL (/graphql by default). This is the standard GraphQL behavior, but it was tricky to build, due to a Java limitation.
 

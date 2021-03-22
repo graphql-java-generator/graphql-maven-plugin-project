@@ -23,7 +23,7 @@ import $import;
 ${object.annotation}
 public class ${targetFileName} 
 #if($object.implementz.size()>0)	implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end
-#if(${configuration.mode}=="client" && ${object.requestType})	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.response.GraphQLRequestObject#end
+#if(${configuration.mode}=="client" && ${object.requestType})	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end
 {
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field

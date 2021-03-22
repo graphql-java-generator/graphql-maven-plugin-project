@@ -73,7 +73,7 @@ import com.graphql_java_generator.client.SubscriptionClient;
 @Deprecated
 #end
 ${object.annotation}
-public class ${object.classSimpleName} extends ${object.classSimpleName}Executor #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.response.GraphQLRequestObject #end{
+public class ${object.classSimpleName} extends ${object.classSimpleName}Executor #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.GraphQLRequestObject #end{
 
 #if(!${configuration.separateUtilityClasses})
 ##

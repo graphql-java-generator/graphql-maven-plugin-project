@@ -16,9 +16,9 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
-import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

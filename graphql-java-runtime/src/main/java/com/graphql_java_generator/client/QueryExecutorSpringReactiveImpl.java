@@ -20,7 +20,6 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
-import com.graphql_java_generator.client.response.GraphQLRequestObject;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;

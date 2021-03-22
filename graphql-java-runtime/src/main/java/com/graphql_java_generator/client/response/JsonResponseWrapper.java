@@ -28,7 +28,9 @@ public class JsonResponseWrapper {
 	 * specification</A>. It is stored here, without further mapping. It's actually a map, where value can be any
 	 * object. So we can't deserialize here. And it would slow down the deserialization process.<BR/>
 	 * To get the value from this field, one must execute full queries, and retrieve from the received object. See the
-	 * client FAQ about this.
+	 * <A
+	 * HREF="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_exec_graphql_requests>Client
+	 * page about request execution</A> about this.
 	 */
 	public JsonNode extensions;
 }

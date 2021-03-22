@@ -10,7 +10,7 @@ __Table of Content__
 
 The GraphQL Java Generator makes it easy to work in Java with graphQL in a schema first approach.
 
-This project is an accelerator to develop __GraphQL clients__ and __GraphQL servers__ in java.
+This project is a code generator, that allows to quickly develop __GraphQL clients__ and __GraphQL servers__ in java.
 
 That is: graphql-java-generator generates the boilerplate code, and lets you concentrate on what's specific to your use case. Then, the running code __doesn't depend on any dependencies from graphql-java-generator__. So you can get rid of graphql-java-generator at any time: just put the generated code in your SCM, and that's it.
 

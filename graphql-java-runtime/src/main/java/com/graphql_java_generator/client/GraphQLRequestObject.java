@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.response;
+package com.graphql_java_generator.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -16,7 +16,9 @@ public interface GraphQLRequestObject {
 	/**
 	 * Set the GraphQL response's extensions field. The generated classes for the query, mutation and subscription of a
 	 * GraphQL schema implement this interface. This allows to access to the _extensions_ field, when using Full
-	 * Queries. See the Client FAQ for more information.
+	 * Queries. See the <A
+	 * HREF="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_exec_graphql_requests>Client
+	 * page about request execution</A> for more information.
 	 * 
 	 * @param extensions
 	 */
