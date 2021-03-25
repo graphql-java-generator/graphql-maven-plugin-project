@@ -1,5 +1,6 @@
 package com.graphql_java_generator.client.response;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -99,6 +100,21 @@ public class Error {
 			});
 		}
 		return extensionsAsMap;
+	}
+
+	/**
+	 * Returns the extensions as a map. The values can't be deserialized, as their type is unknown.
+	 * 
+	 * @return
+	 */
+	public Map<String, String> getExtensionsAsMapStringString() {
+		getExtensionsAsMap();
+		Map<String, String> extensionsAsMapStringString = new HashMap<>();
+
+		for (String key : extensionsAsMap.keySet()) {
+			extensionsAsMapStringString.put(key, extensionsAsMap.get(key).toString());
+		}
+		return extensionsAsMapStringString;
 	}
 
 	/**
