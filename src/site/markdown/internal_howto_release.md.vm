@@ -1,3 +1,16 @@
+<!--ts-->
+   * [Introduction](internal_howto_release.md#introduction)
+   * [Before publishing:](internal_howto_release.md#before-publishing)
+   * [HowTo release the Maven Plugin](internal_howto_release.md#howto-release-the-maven-plugin)
+   * [How to release the Gradle Plugin](internal_howto_release.md#how-to-release-the-gradle-plugin)
+   * [HowTo publish the site](internal_howto_release.md#howto-publish-the-site)
+      * [Configuring the domain name](internal_howto_release.md#configuring-the-domain-name)
+      * [Generating the site](internal_howto_release.md#generating-the-site)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:51 UTC 2021 -->
+
+<!--te-->
+
 # Introduction
 
 This page is more an internal howto, to remind of the step to:
@@ -73,7 +86,6 @@ gradle.publish.key=...
 gradle.publish.secret=...
 ```
 
-
 4) [not always] Adapt the dependencies version(see the _graphql-gradle-plugin/common_conf.gradle_ file)
 
 5) [not always] Adapt the _build.gradle_ files, for instance if some plugin options have changed in the samples
@@ -124,7 +136,7 @@ graphql-maven-plugin-project 1800 IN CNAME graphql-java-generator.github.io.
 
 And in the settings, define the Custom domain to be: graphql-maven-plugin-project.graphql-java-generator.com
 
-Then, the project site is available at [https://graphql-maven-plugin-project.graphql-java-generator.com](graphql-maven-plugin-project.graphql-java-generator.com) with the site published on the gh-pages branch of the project.
+Then, the project site is available at [https://graphql-maven-plugin-project.graphql-java-generator.com](https://graphql-maven-plugin-project.graphql-java-generator.com) with the site published on the gh-pages branch of the project.
 
 
 ## Generating the site

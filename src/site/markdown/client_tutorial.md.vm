@@ -1,3 +1,11 @@
+<!--ts-->
+   * [The Client tutorials](client_tutorial.md#the-client-tutorials)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:50 UTC 2021 -->
+
+<!--te-->
+
+
 # The Client tutorials
 
 These tutorials describe how to use this plugin, when building a GraphQL client:

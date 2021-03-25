@@ -1,4 +1,14 @@
-# GraphQL Maven Plugin (server mode)
+<!--ts-->
+   * [GraphQL Maven Plugin (server mode usage)](server.md#graphql-maven-plugin-server-mode-usage)
+   * [A war or a Spring Boot application](server.md#a-war-or-a-spring-boot-application)
+   * [The exposed URL](server.md#the-exposed-url)
+   * [The pom.xml file](server.md#the-pomxml-file)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:51 UTC 2021 -->
+
+<!--te-->
+
+# GraphQL Maven Plugin (server mode usage)
 
 This project is a maven plugin, which makes it easy to work in Java with graphQL in a schema first approach.
 
@@ -17,7 +27,7 @@ Please note that the generated code uses dataloader to greatly improve the serve
 
 Once all this is generated, you'll have to implement the DataFetchersDelegate interfaces. The DataFetchersDelegate implementation is the only work that remains on your side. They are the link between the GraphQL schema and your data storage. See below for more details.    
 
-## A war or a Spring Boot application
+# A war or a Spring Boot application
 
 Depending on your use case, you can set the maven packaging to jar or war, in your pom. This changes the generated code. But your specific code is exactly the same. That is: __you can change the packaging at any time__, and it will still produce a ready-to-go product without any other modification from you.  
 
@@ -26,7 +36,7 @@ Below you'll find:
 * A sample pom to start with
 * The explanation about the DataFetchersDelegate interfaces you'll have to implement.
 
-## The exposed URL
+# The exposed URL
 
 The parameters for the server are stored in the _application.properties_ file.
 
@@ -34,7 +44,7 @@ You can have a look at this file, in the given server samples. It's a standard s
 
 If you want to expose your Spring Boot app in __https__, take a look at the doc on the net. All parameters will go in the _application.properties_. For instance, [Thomas Vitale](https://www.thomasvitale.com/https-spring-boot-ssl-certificate/) provides a doc for that.
 
-The important parameter is: __server.port__ (for instance <server.port = 8180>), which determines the app port, when running as a spring boot app, that is, when it's packaged as a jar.
+The important parameter is: __server.port__ (for instance _server.port = 8180_), which determines the app port, when running as a spring boot app, that is, when it's packaged as a jar.
 
 The __path__ depends on the way the GraphQL is run:
 
@@ -43,7 +53,7 @@ The __path__ depends on the way the GraphQL is run:
 * If packaged as a war: the paths is /{WebAppContext}/graphql
 
  
-## The pom.xml file
+# The pom.xml file
 
 Create a new Maven Project, with this pom, for instance :
 
@@ -189,9 +199,11 @@ In usual cases, this mapping is actually declaring the [Spring Data Repositories
 If the GraphQL schema is really different from the data model, then you may have to implement the relevant logic to fit your data model into the GraphQL model.  
 
 ==> You can see such an example in the [StarWars server sample](https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-StarWars-server). This sample is embedded into the plugin project, and is used as an integration test.
-
+
+
 __Write your implementation for the DataFetchersDelegate__:
-
+
+
 Basically, the plugin generates one DataFetchersDelegate interfaces for each object in the GraphQL schema, whether they are regular objects or query/mutation/subscription objects.
 
 These DataFetchersDelegate interfaces contains one method for each Data Fetcher that must be implemented, and a _batchLoader_ method used by the DataLoader:
@@ -212,7 +224,8 @@ The methods implemented by a DataFetchersDelegate are the actual DataFetchers. T
 * Xxx (not a CompletableFuture): the request will be executed for each object, and must return the expected Xxx data. 
 
 
-The DataFetchersDelegate implementation must be a Spring Bean (marked by the @Component spring framework annotation): Spring will magically discover them during the app or war startup: Spring is fantastic! :)
+
+The DataFetchersDelegate implementation must be a Spring Bean (marked by the @Component spring framework annotation): Spring will magically discover them during the app or war startup: Spring is fantastic! :)
 
 The only constraint you __must__ respect is that these DataFetchersDelegate implementations are in the same package or a sub-package of the target package of the generated code. This package is:
 

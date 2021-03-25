@@ -1,0 +1,117 @@
+<!-- Subscription in client mode -->
+
+<!--ts-->
+   * [Subscription in client mode](client_subscription.md#subscription-in-client-mode)
+   * [How to use subscriptions with the plugin?](client_subscription.md#how-to-use-subscriptions-with-the-plugin)
+      * [Partial requests](client_subscription.md#partial-requests)
+   * [Use direct queries](client_subscription.md#use-direct-queries)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:50 UTC 2021 -->
+
+<!--te-->
+
+
+# Subscription in client mode
+
+The client mode makes it easy for a Java GraphQL client-side application, to execute subscriptions against a GraphQL server. The graphql-maven-plugin generates all the necessary code, so that a Java application can call a GraphQL server by simply calling the relevant Java method.
+
+The subscription works only with __Partial Request__ , as a Callback class must be given for each Subscription. You'll find the difference between Full and Partial requests on the [client page](./client_exec_graphql_requests.html).
+
+As for queries and mutations, subscription can be executed in two ways:
+* The __direct execution__: you call the generated method with the GraphQL request (partial or full), and you receive the result into Java objects. This is simpler, but slower: for technical reasons, the plugin has two analyze the content of the request. 
+  	* As Subscription is usually executed once, the direct execution is the recommended way to execute subscriptions.
+* The __prepared execution__: 
+    * A GraphQLRequest object is created by the application, if possible at application startup. This allows to analyze the request only once. And it avoids errors during the app execution, as all the GraphQL requests have been checked at startup.
+    * Each GraphQL request execution is executed from this object. 
+
+Both kinds of requests, and both modes of execution allows to use bind parameters into your query definitions.  
+
+
+# How to use subscriptions with the plugin?
+
+First, you'll have to create or get your GraphQL schema. The GraphQL plugin expects a _.graphqls_ file. See the [GraphQL schema doc](https://graphql.org/learn/schema/) for all the details.
+
+Then, add the plugin to your Maven POM file, as described in the [client page](./client_exec_graphql_requests.html).
+
+
+## Partial requests
+
+Full request don't allow Subscription execution. So only Partial requests are described here.
+
+In each query/mutation/subscription class, the plugin also generates _Xxxx_ and _XxxxWithBindValues_ methods, where _Xxxx_ is successively each query/mutation/subscription defined in this query/mutation/subscription object.
+
+In these methods:
+* The query/mutation/subscription parameters (as defined in the GraphQL schema) become parameters of the relevant generated java methods. So you don't need to define and map bind parameters for them.
+    * But you can still use bind parameters for input parameters of the fields you request, of course
+* The subscription methods return an instance of [SubscriptionClient](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-java-runtime/apidocs/com/graphql_java_generator/client/SubscriptionClient.html). 
+    * This interface has only one method: _unsubscribe()_, which allows to unsubscribe from this subscribed subscription. This frees resources on both the client and the server, and the network of course. 
+
+Below is a sample of the client code:
+  
+```
+SubscriptionTypeExecutor subscriptionExecutor;
+GraphQLRequest subscriptionRequest;
+SubscriptionClient client;
+
+void setup() {
+		// Instantiate a Subscription executor, with the relevant GraphQL endpoint.
+		// The classname of the Subscription is the type name, as defined in the GraphQL schema 
+		subscriptionExecutor = new SubscriptionTypeExecutor("http://localhost:8180/graphql/subscription");
+				
+		// Create the GraphQL request
+		// The expected notifications are Post, with these fields: {id date author publiclyAvailable title content}
+		// As author is an object without fields defined, all its fields will be returned
+		subscriptionRequest = subscriptionExecutor
+				.getSubscribeToNewPostGraphQLRequest("{id date author publiclyAvailable title content}");
+}
+
+void subscribe() {
+	// We create the callback that'll receive the notifications. 
+	// It must be an instance of SubscriptionCallback<Post>, as this subscription returns a Post 
+	PostSubscriptionCallback<Post> postSubscriptionCallback = new PostSubscriptionCallback<>();
+	
+	// The subscription request accepts one parameter. If you don't want to provide it, you can give it the null value
+	client = subscriptionExecutor.subscribeToNewPost(subscriptionRequest, postSubscriptionCallback, "Board name 1");
+
+}
+```
+
+Please note the particular URL, here: there seems to be a limitation in the Java implementation for Web Sockets. This impacts GraphQL subscription, as they are implemented by a Web Socket. This java limitation, is that it seems not possible to have both standard HTTP request (GET, POST) and Web Socket request on the same URL.
+
+So if your GraphQL server is a Java one, you need a specific path for the subscription.
+
+If you're using another GraphQL server implementation, then you should be able to have the same URL for queries, mutations and subscriptions, as expected by the GraphQL specification.
+
+The subscription specific part is the __creation of the callback__. The code for the _PostSubscriptionCallback_ class used in the above sample is [available on github](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/c300871d4e92bbef8cae17abde6452447c69ce1c/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client/src/main/java/com/graphql_java_generator/samples/forum/client/subscription/PostSubscriptionCallback.java#).
+
+Of course, you can use bind variables, as with queries and mutations.
+  
+  
+# Use direct queries
+
+If you don't want to store the _GraphQLRequest_, you can avoid that, by using direct queries. The overhead that exists at each execution is not an issue here, as you'll probably execute the subscription only once.
+
+You still need to provide the callback, that'll receive the notifications you've subscribed to.
+
+Here is a sample with the bind parameters value given as method parameters: 
+
+```
+SubscriptionTypeExecutor subscriptionExecutor;
+SubscriptionClient client;
+
+void setup() {
+		// Instantiate a Subscription executor, with the relevant GraphQL endpoint.
+		// The classname of the Subscription is the type name (as defined in the GraphQL schema) suffixed by Executor
+		subscriptionExecutor = new SubscriptionTypeExecutor("http://localhost:8180/graphql/subscription");
+}
+
+void subscribe() {
+	// We create the callback that'll receive the notifications. 
+	// It must be an instance of SubscriptionCallback<Post>, as this subscription returns a Post 
+	PostSubscriptionCallback<Post> postSubscriptionCallback = new PostSubscriptionCallback<>();
+	
+	// The subscription request accepts one parameter. If you don't want to provide it, you can give it the null value
+	client = subscriptionExecutor.subscribeToNewPost("{id date author publiclyAvailable title content}", postSubscriptionCallback, "Board name 1");
+
+}
+```

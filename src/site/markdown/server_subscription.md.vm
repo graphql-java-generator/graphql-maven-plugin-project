@@ -1,0 +1,47 @@
+
+<!--ts-->
+   * [Subscription in server mode](server_subscription.md#subscription-in-server-mode)
+   * [A (big) java limitation](server_subscription.md#a-big-java-limitation)
+   * [Sample explanation](server_subscription.md#sample-explanation)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:52 UTC 2021 -->
+
+<!--te-->
+
+
+# Subscription in server mode
+
+The server mode helps to create Java GraphQL server-side application, as explained in the [server page](./server.html).
+
+The graphql-java project documents how to create subscription, in [its subscription doc](https://www.graphql-java.com/documentation/v14/subscriptions/). But once you've read that, there is a journey left to have a working implementation of a Subscription.
+
+The plugin hides all its complexity to you. This page is based on one of the samples provided in the project.
+
+# A (big) java limitation
+
+The [spring page on Web Socket](https://docs.spring.io/spring-framework/docs/5.3.4/reference/html/web.html#websocket-server-deployment) describes this limitation.
+
+The consequence for GraphQL server is that a Java server can not serve both standard HTTP request (POST/GET) and WebSocket request on the same URL.
+
+As a consequence, Subscription must be exposed on a specific path.
+
+As a consequence, this plugin exposes the subscription on this URL:
+* If packaged as a jar: the path is /graphql/subscription
+* If packaged as a war: the paths is /{WebAppContext}/graphql/subscription
+
+
+# Sample explanation
+
+You'll find below an explanation of the Forum server sample. This sample is available on github in:
+* The Maven project, at [this URL]  TODO: put the URL
+
+The Subscription server sample, in the _graphql-maven-plugin-samples-Forum-server_ sample does this:
+* A Reactive Subject is created at startup, as a Spring Bean.
+    * You'll find information on Reactive Subject [here](http://reactivex.io/documentation/subject.html)
+* Every post creation is notified to the `onNext(Post)` method of this Subject.
+    * As of data creation, the relevant Data Fetcher is the mutation one, [available on github](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/specific_code/DataFetchersDelegateMutationTypeImpl.java). Take a look at the end of the `createPost` method.
+    * So this Subject is notified for each post creation
+* When a _subscribeToNewPost_ subscription arrives, the subscription datafetcher returns a new Publisher from this subject.
+    * You can check the Data Fetcher code for this subscription [on this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server/src/main/java/org/forum/server/specific_code/DataFetchersDelegateSubscriptionTypeImpl.java).
+    * This new Publisher will automagicaly receive each newly created post, as it is created from the Subject that receives the new Post, from the mutation Data Fetecher (see above).
+    * Then graphql-java will transmit on the Web Socket that has been created, when the subscription was submitted.

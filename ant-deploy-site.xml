@@ -29,7 +29,7 @@
 			<arg value="/c" />
 			<arg value="mvn" />
 			<arg value="install" />
-			<arg value="-Dmaven.test.skip=true" />
+			<arg value="-DskipTests" />
 		</exec>
 		
 		<!-- Prepares the site (this command is very long to execute -->

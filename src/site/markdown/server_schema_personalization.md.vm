@@ -1,3 +1,14 @@
+<!--ts-->
+   * [Schema Personalization (for server mode)](server_schema_personalization.md#schema-personalization-for-server-mode)
+      * [Presentation](server_schema_personalization.md#presentation)
+      * [Principle](server_schema_personalization.md#principle)
+      * [How to configure the plugin](server_schema_personalization.md#how-to-configure-the-plugin)
+      * [Java class (Entity) personalization](server_schema_personalization.md#java-class-entity-personalization)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:51 UTC 2021 -->
+
+<!--te-->
+
 # Schema Personalization (for server mode)
 
 ## Presentation

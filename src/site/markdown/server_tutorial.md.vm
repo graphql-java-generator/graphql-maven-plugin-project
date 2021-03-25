@@ -1,3 +1,11 @@
+
+<!--ts-->
+   * [The Server tutorials](server_tutorial.md#the-server-tutorials)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:52 UTC 2021 -->
+
+<!--te-->
+
 # The Server tutorials
 
 These tutorials describe how to use this plugin, when building a GraphQL servver:

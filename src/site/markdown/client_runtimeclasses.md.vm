@@ -1,0 +1,85 @@
+<!-- GraphQL Maven Plugin (client mode) -->
+
+<!--ts-->
+   * [Runtime Classes](client_runtimeclasses.md#runtime-classes)
+   * [How to use the configure source code generation to no include runtime classes?](client_runtimeclasses.md#how-to-use-the-configure-source-code-generation-to-no-include-runtime-classes)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:50 UTC 2021 -->
+
+<!--te-->
+
+
+# Runtime Classes
+
+As the result of the execution of <graphql-maven-plugin:generateClientCode> maven goal or gradle task, two type of source code is generated:  
+* The Query, Mutation and POJOs classes, that are the Java part for the GraphQL schema
+* All the necessary runtime classes that do not depend on the schema and support the client execution
+
+The runtime classes are copied as source code so, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
+    
+
+# How to use the configure source code generation to no include runtime classes?
+
+To copy the generation of runtime classes you can use the parameter __copyRuntimeSources__ (-Dcom.graphql_java_generator.mavenplugin.copyRuntimeSources). If copyRuntimeSources is _false_, then the runtime classes won't be copied. By default, the parameter value is _true_.
+
+The main purpose for adding this feature to the plugin is double:
+* Do not generate/keep non-model dependent code if it's already in a dependency. If for some reason an upgrade or patch of the runtime classes is released, the code does not need to be regenerated and just the graphql-java-runtime dependency version must be updated.
+* On the other hand, in some cases, you may want to customize the runtime classes with customized behavior. I know that this may sound a bit strange but I found myself in this situation.
+
+Here there's an example of plugin configuration to not generate runtime classes
+
+```
+<project ...>
+...
+
+	<build>
+		<plugins>
+...
+			<plugin>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-maven-plugin</artifactId>
+				<version>${lastReleasedVersion}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>graphql</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mode>client</mode>
+					<packageName>my.target.package</packageName>
+					<copyRuntimeSources>false</copyRuntimeSources>					
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+...
+</project>
+```
+
+Remember that if you decide not to copy the runtime classes, __com.graphql-java-generator:graphql-java-runtime:${lastReleasedVersion}>>, or an equivalent dependency of you own must be somehow included in your classpath.
+
+  
+```
+<project ...>
+...
+  	<dependencies>
+  		...
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-runtime</artifactId>
+			<version>${lastReleasedVersion}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.graphql-java-generator</groupId>
+					<artifactId>graphql-java-server-dependencies</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+  		...
+  	</dependencies>
+...
+</project>
+```
+  

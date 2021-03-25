@@ -1,3 +1,13 @@
+<!--ts-->
+   * [HowTo manage PGP keys](internal_howto_pgp_key.md#howto-manage-pgp-keys)
+      * [Install PGP (windows)](internal_howto_pgp_key.md#install-pgp-windows)
+      * [Create and check the key](internal_howto_pgp_key.md#create-and-check-the-key)
+      * [Publish the key](internal_howto_pgp_key.md#publish-the-key)
+
+<!-- Added by: runner, at: Thu Mar 18 20:36:51 UTC 2021 -->
+
+<!--te-->
+
 # HowTo manage PGP keys
 
 This page is more an internal howto, to remind of the step to manage the PGP keys.
