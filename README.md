@@ -1,6 +1,6 @@
 __Table of Content__
 
-<!--ts--> or <!--te-->
+<!--ts--><!--te-->
 
 
 
