@@ -45,6 +45,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_scalarInputParameters() throws GraphQLRequestPreparationException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
@@ -65,6 +66,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Partial_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
@@ -86,6 +88,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_withBuilder()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
@@ -106,6 +109,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 
@@ -124,37 +128,74 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	}
 
 	@Test
-	void testBuild_Full_createHuman_KOInput()
+	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_Full_createHuman_WithHardCodedParameters()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
+		params = new HashMap<>();
+		params.put("value", "the directive value");
+		params.put("anotherValue", "the other directive value");
+
+		// Go, go, go
+		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+				"mutation {createHuman (human:  {name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]} )"
+						+ "@testDirective(value:?value, anotherValue:?anotherValue, "
+						+ "anArray  : [  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ] , \r\n"
+						+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})   "//
+						+ "{id name appearsIn friends {id name}}}"//
+		);
+
+		// Verification
+		assertEquals("{\"query\":\"mutation" //
+				+ "{createHuman(human:{name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]})"
+				+ " @testDirective(value:\\\"the directive value\\\",anotherValue:\\\"the other directive value\\\","
+				+ "anArray:[  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ],"
+				+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}" //
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_Full_createHuman_KOInput1()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		params = new HashMap<>();
+		params.put("value", "the directive value");
+		params.put("anotherValue", "the other directive value");
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRequest(//
-						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [J]!\r\n"
-								+ "    # type should be one of Human or Droid\r\n"
-								+ "    type: String!) @testDirective(value:&value, anotherValue:?anotherValue)   "//
+						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\")"
+								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\" ] , \r\n"
+								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//
 								+ "{id name appearsIn friends {id name}}}"//
 				));
 
 		// Verification
-		assertTrue(e.getMessage().contains("Encountered a '{' while reading parameters for the field"));
+		assertTrue(e.getMessage().contains("The list of parameters for the field 'createHuman' is not finished"),
+				"check of this error message: " + e.getMessage());
 	}
 
 	@Test
-	void testBuild_Full_createHuman_KOList()
+	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_Full_createHuman_KOInput2()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRequest(//
-						"query {allFieldCases (input: [\"a\", \"dummy\", \"list\"]) {id}"//
+						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\"})"
+								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\"  , \r\n"
+								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//
+								+ "{id name appearsIn friends {id name}}}"//
 				));
 
 		// Verification
-		assertTrue(e.getMessage().contains("Encountered a '[' while reading parameters for the field"),
-				"Got this error message: " + e.getMessage());
+		assertTrue(e.getMessage().contains("Found the end of the GraphQL request before the end of the list"),
+				"check of this error message: " + e.getMessage());
 	}
-
 }

@@ -8,7 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
@@ -269,5 +271,30 @@ class FullQueriesIT {
 		// Verifications
 		assertNotNull(resp);
 		assertEquals(date, resp.getIssue53());
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue65_withGraphQLValuedParameter()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		Map<String, Object> params = new HashMap<>();
+		params = new HashMap<>();
+		// params.put("value", "the directive value");
+		// params.put("anotherValue", "the other directive value");
+
+		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+				"mutation {createHuman (human:  {name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]} )"
+						+ "@testDirective(value:?value, anotherValue:?anotherValue, "
+						+ "anArray  : [  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ] , \r\n"
+						+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})   "//
+						+ "{id name appearsIn friends {id name}}}"//
+		);
+
+		// Go, go, go
+		Human human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
+
+		// Verifications
+		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
 	}
 }

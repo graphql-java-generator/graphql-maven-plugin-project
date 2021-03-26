@@ -232,14 +232,6 @@ public class InputParameter {
 			case ":":
 				// We're about to read an input parameter value.
 				break;
-			case "[":
-			case "{":
-				throw new GraphQLRequestPreparationException("Encountered a '" + token
-						+ "' while reading parameters for the field '" + fieldName
-						+ "' : if this is an input type as a parameter value, please use bind variable instead. "
-						+ "For instance: \"" + parameterName + ":?" + parameterName
-						+ "Param\", and provide a value for the " + parameterName
-						+ "Param bind parameter (please check the graphql-maven-plugin-project.graphql-java-generator.com site for more information on how to 'Execute GraphQL requests')");
 			case ",":
 				if (step != InputParameterStep.NAME) {
 					throw new GraphQLRequestPreparationException("Misplaced comma for the field '" + fieldName
@@ -271,13 +263,66 @@ public class InputParameter {
 					} else if (token.startsWith("&")) {
 						ret.add(new InputParameter(parameterName, token.substring(1), null, true,
 								graphqlClientUtils.getGraphQLType(directive, owningClass, fieldName, parameterName)));
+					} else if (token.equals("[") || token.equals("{")) {
+						// We've found the start of a JSON list or JSON object. Let's read this object.
+						// We'll store it as a String, and write it back in the request toward the GraphQL server
+						// request
+						StringBuffer sb = new StringBuffer(token);
+						String previousToken;
+						boolean list = token.startsWith("[");
+						boolean withinAString = false;
+						int recursiveLevel = 1;// Counts the depth of [ or { we're in. When it's back to 0, we're done
+												// reading this list or object
+						while (true) {
+							if (!qt.hasMoreTokens(true)) {
+								throw new GraphQLRequestPreparationException(
+										"Found the end of the GraphQL request before the end of the "
+												+ (list ? "list" : "object") + ": '" + sb.toString() + "'");
+							}
+							previousToken = token;
+							token = qt.nextToken(true);
+							if (token.contentEquals("\"")) {
+								// We've found a double quote. So we probably are starting or leaving a string.
+
+								// We're within a String, and it's escaped. So, then we're still in the string (it's
+								// not the end of the string).
+								// As the query parameter is a string, the string delimiters are thesemlves escaped. So
+								// an escaped double-quote within a string of a paremeter needs two \ to be escaped
+								// within a string parameter in the query string of the json.
+								boolean doubleQuoteEscapedWithinAString = withinAString
+										&& previousToken.endsWith("\\\\");
+								if (!doubleQuoteEscapedWithinAString) {
+									// We've found the start or the end of the string value. This important, as []{}
+									// characters should be ignored, when in a string
+									withinAString = !withinAString;
+								}
+							}
+							sb.append(token);
+							if (!withinAString) {
+								if ((list && token.equals("[") || (!list && token.equals("{")))) {
+									// We're going deeper in the list or object
+									recursiveLevel += 1;
+								} else if ((list && token.equals("]") || (!list && token.equals("}")))) {
+									// We're going up once.
+									recursiveLevel -= 1;
+									if (recursiveLevel == 0) {
+										// Ok, we're done for this list or object
+										break;
+									}
+								}
+							}
+						} // while (true)
+
+						// It's a GraphQL list or object. We store the read characters as is.
+						ret.add(new InputParameter(parameterName, null, new RawGraphQLString(sb.toString()), true,
+								null));
 					} else if (token.equals("\"")) {
 						// We've found a String value: let's read the string content
 						StringBuffer sb = new StringBuffer();
 						while (true) {
 							if (!qt.hasMoreTokens(true)) {
 								throw new GraphQLRequestPreparationException(
-										"Found the end of string before the end of the string parameter '"
+										"Found the end of the GraphQL request before the end of the string parameter '"
 												+ sb.toString() + "'");
 							}
 							token = qt.nextToken(true);
@@ -430,7 +475,7 @@ public class InputParameter {
 		if (this.bindParameterName == null) {
 			// It's a hard coded value
 			return this.getValueForGraphqlQuery(this.value, graphQLCustomScalarType);
-		} else
+		}
 		// It's a Bind Variable.
 
 		// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
@@ -467,7 +512,11 @@ public class InputParameter {
 				return getStringValue((String) ret);
 			else
 				return ret.toString();
+		} else if (val instanceof RawGraphQLString) {
+			// The value is a part of the GraphQL request. Let's write it as is.
+			return ((RawGraphQLString) val).toString();
 		} else if (val instanceof String) {
+			// The value is a String. Let's limit it by double quotes
 			return getStringValue((String) val);
 		} else if (val instanceof UUID) {
 			return getStringValue(((UUID) val).toString());

@@ -13,6 +13,8 @@ import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanInput;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAnotherMutationType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import graphql.language.Argument;
@@ -27,11 +29,15 @@ import graphql.schema.DataFetchingEnvironment;
 @Component
 public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchersDelegateAnotherMutationType {
 
+	static protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateAnotherMutationTypeImpl.class);
+
 	@Resource
 	DataGenerator generator;
 
 	@Override
 	public Human createHuman(DataFetchingEnvironment dataFetchingEnvironment, HumanInput human) {
+		logger.trace("createHuman: received this list of appearsIn: {}", human.getAppearsIn());
+
 		Human ret = generator.generateInstance(Human.class);
 		ret.setName(human.getName());
 		ret.setAppearsIn(human.getAppearsIn());
@@ -42,10 +48,14 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 
 		if (testDirective != null) {
 			for (Argument arg : testDirective.getArguments()) {
-				String val = ((StringValue) arg.getValue()).getValue();
-				ret.setName(val);
+				if (arg.getValue() instanceof StringValue) {
+					String val = ((StringValue) arg.getValue()).getValue();
+					ret.setName(val);
+				}
 			}
 		}
+
+		logger.trace("createHuman: sending back this list of appearsIn: {}", ret.getAppearsIn());
 
 		return ret;
 	}
