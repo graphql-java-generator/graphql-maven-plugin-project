@@ -400,7 +400,7 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>25.1-android</version>
+				<version>29.0-android</version>
 			</dependency>
 			<dependency>
 				<groupId>com.h2database</groupId>
