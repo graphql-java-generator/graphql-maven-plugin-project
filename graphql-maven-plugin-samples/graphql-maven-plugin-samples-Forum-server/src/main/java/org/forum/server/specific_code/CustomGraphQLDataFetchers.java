@@ -34,8 +34,8 @@ public class CustomGraphQLDataFetchers extends org.forum.server.graphql.GraphQLD
 
 			Board ret = null;
 			try {
-				// HERE IS WHAT's CHANGED IN THIS OVERRIDEN VERSION:
-				// We add " (Overriden DataFetcher)" to the name
+				// HERE IS WHAT's CHANGED IN THIS OVERRIDDEN VERSION:
+				// We add " (Overridden DataFetcher)" to the name
 				ret = dataFetchersDelegateMutationType.createBoard(dataFetchingEnvironment,
 						name + " (Overriden DataFetcher)", publiclyAvailable);
 			} catch (NoSuchElementException e) {
@@ -43,9 +43,9 @@ public class CustomGraphQLDataFetchers extends org.forum.server.graphql.GraphQLD
 			}
 
 			if (ret != null)
-				logger.debug("createBoard (Overriden DataFetcher): 1 result found");
+				logger.debug("createBoard (Overridden DataFetcher): 1 result found");
 			else
-				logger.debug("createBoard (Overriden DataFetcher): no result found");
+				logger.debug("createBoard (Overridden DataFetcher): no result found");
 
 			return ret;
 		};
