@@ -1,4 +1,5 @@
 org.allGraphQLCases.server
+org.allGraphQLCases.server.extensions
 org.allGraphQLCases.server.impl
 org.allGraphQLCases.server.impl.relayConnection
 org.allGraphQLCases.server.oauth2
