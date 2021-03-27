@@ -56,8 +56,8 @@ import graphql.spring.web.servlet.components.DefaultGraphQLInvocation;
 @ComponentScan(basePackages = { "${configuration.packageName}", "com.graphql_java_generator.server",
 		"com.graphql_java_generator.util", "graphql.spring.web.servlet.components" ${configuration.quotedScanBasePackages}}, 
 	excludeFilters = {
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = GraphQLEndpointConfiguration.class),
-		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = DefaultGraphQLInvocation.class) })
+		@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = GraphQLEndpointConfiguration.class)
+		})
 #if($configuration.generateJPAAnnotation)
 @EnableJpaRepositories(basePackages = { "${configuration.packageName}", "com.graphql_java_generator" ${configuration.quotedScanBasePackages} })
 @EntityScan(basePackages = { "${configuration.packageName}", "com.graphql_java_generator" ${configuration.quotedScanBasePackages} })
@@ -130,46 +130,4 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 			}
 		};
 	}
-	
-	/**
-	 * This method returns a clone of the {@link DefaultGraphQLInvocation}, with a Data Loader being created for each
-	 * request. This insure a "per request" {@link DataLoaderRegistry}.<BR/>
-	 * You can override this component by your own {@link GraphQLInvocation}, by defining a Primary Spring Bean:
-	 * 
-	 * <PRE>
-	 * 
-	 * @Bean
-	 * @Primary // This marks your bean as the one to take into account GraphQLInvocation
-	 *          customGraphQLInvocation(ExecutionInputCustomizer executionInputCustomizer) { return new
-	 *          GraphQLInvocation() { ... } }
-	 * 
-	 *          <PRE/>
-	 * @param executionInputCustomizer
-	 * @param onDemandDataLoaderRegistry
-	 *            The component that will provide a new {@link DataLoaderRegistry} for each request
-	 * @return
-	 */
-	@Bean
-	protected GraphQLInvocation customGraphQLInvocation(GraphQL graphQL,
-			ExecutionInputCustomizer executionInputCustomizer, OnDemandDataLoaderRegistry onDemandDataLoaderRegistry) {
-		return new GraphQLInvocation() {
-	
-			@Override
-			public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData,
-					WebRequest webRequest) {
-				ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
-						.query(invocationData.getQuery()).operationName(invocationData.getOperationName())
-						.variables(invocationData.getVariables());
-	
-				executionInputBuilder.dataLoaderRegistry(onDemandDataLoaderRegistry.getNewDataLoaderRegistry());
-	
-				ExecutionInput executionInput = executionInputBuilder.build();
-				CompletableFuture<ExecutionInput> customizedExecutionInput = executionInputCustomizer
-						.customizeExecutionInput(executionInput, webRequest);
-				return customizedExecutionInput.thenCompose(graphQL::executeAsync);
-			}
-	
-		};
-	}
-
 }
