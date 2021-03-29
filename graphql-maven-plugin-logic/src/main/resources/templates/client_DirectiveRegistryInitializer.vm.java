@@ -6,6 +6,7 @@ import com.graphql_java_generator.client.directive.DirectiveLocation;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.client.request.InputParameter;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 
 public class DirectiveRegistryInitializer {
@@ -27,7 +28,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("${directive.name}");
 		directive.setPackageName("${packageUtilName}");
 #foreach ($argument in $directive.arguments)
-		param = InputParameter.newHardCodedParameter("${argument.name}", null, ${argument.fieldTypeAST.mandatory},
+		param = InputParameter.newHardCodedParameter("${argument.name}", null,
 #if ($argument.graphQLTypeSimpleName == "BigDecimal" || 
 	$argument.graphQLTypeSimpleName == "BigInteger" || 
 	$argument.graphQLTypeSimpleName == "Boolean" || 

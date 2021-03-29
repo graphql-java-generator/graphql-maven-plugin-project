@@ -2,9 +2,10 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Project's wiki:
-    * Add a link to client and server FAQ
-    * Link toward the project's web site
+
+* Understand why in the generated code, there was both optional and mandatory parameters for directive arguments
+    * InputParameter.java, line 357, the "} else if (directive != null) {" is probably never true (old code, to be removed)
+    * Add check with standard directives (with no parameter, optional params and mandatory params)
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Add an option to add the Serializable interface for generated POJOs
 * Issue when two client subscribed to the same subscription

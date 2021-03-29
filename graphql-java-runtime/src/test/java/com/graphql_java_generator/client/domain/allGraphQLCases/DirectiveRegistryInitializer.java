@@ -25,7 +25,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("skip");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
-		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
+		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -38,7 +38,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("include");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
-		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
+		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -51,7 +51,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("defer");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
-		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
+		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directiveRegistry.registerDirective(directive);
@@ -72,24 +72,24 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("testDirective");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
-		param = InputParameter.newHardCodedParameter("value", null, true, graphql.Scalars.GraphQLString);
+		param = InputParameter.newHardCodedParameter("value", null, graphql.Scalars.GraphQLString);
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("anotherValue", null, false, graphql.Scalars.GraphQLString);
+		param = InputParameter.newHardCodedParameter("anotherValue", null, graphql.Scalars.GraphQLString);
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("anArray", null, false, graphql.Scalars.GraphQLString);
+		param = InputParameter.newHardCodedParameter("anArray", null, graphql.Scalars.GraphQLString);
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("anObject", null, false,
+		param = InputParameter.newHardCodedParameter("anObject", null,
 				CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType("CharacterInput"));
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("anInt", null, false, graphql.Scalars.GraphQLInt);
+		param = InputParameter.newHardCodedParameter("anInt", null, graphql.Scalars.GraphQLInt);
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("aFloat", null, false, graphql.Scalars.GraphQLFloat);
+		param = InputParameter.newHardCodedParameter("aFloat", null, graphql.Scalars.GraphQLFloat);
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("aBoolean", null, false, graphql.Scalars.GraphQLBoolean);
+		param = InputParameter.newHardCodedParameter("aBoolean", null, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("anID", null, false, graphql.Scalars.GraphQLID);
+		param = InputParameter.newHardCodedParameter("anID", null, graphql.Scalars.GraphQLID);
 		directive.getArguments().add(param);
-		param = InputParameter.newHardCodedParameter("aCustomScalarDate", null, false,
+		param = InputParameter.newHardCodedParameter("aCustomScalarDate", null,
 				CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType("Date"));
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.QUERY);

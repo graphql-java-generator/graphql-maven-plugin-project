@@ -23,6 +23,7 @@ import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -958,8 +959,8 @@ public class QueryType implements GraphQLRequestObject {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getTopicsResponseBuilder() throws GraphQLRequestPreparationException {
-		return new Builder(GraphQLRequest.class, "topics", RequestType.query,
-				InputParameter.newBindParameter("boardName", "queryTypeTopicsBoardName", true, null));
+		return new Builder(GraphQLRequest.class, "topics", RequestType.query, InputParameter
+				.newBindParameter("boardName", "queryTypeTopicsBoardName", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -973,8 +974,8 @@ public class QueryType implements GraphQLRequestObject {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "topics",
-				InputParameter.newBindParameter("boardName", "queryTypeTopicsBoardName", true, null));
+		return new GraphQLRequest(partialRequest, RequestType.query, "topics", InputParameter
+				.newBindParameter("boardName", "queryTypeTopicsBoardName", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1203,8 +1204,10 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public Builder getFindTopicsResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(GraphQLRequest.class, "findTopics", RequestType.query,
-				InputParameter.newBindParameter("boardName", "queryTypeFindTopicsBoardName", true, null),
-				InputParameter.newBindParameter("keyword", "queryTypeFindTopicsKeyword", false, null));
+				InputParameter.newBindParameter("boardName", "queryTypeFindTopicsBoardName",
+						InputParameterType.MANDATORY, null),
+				InputParameter.newBindParameter("keyword", "queryTypeFindTopicsKeyword", InputParameterType.OPTIONAL,
+						null));
 	}
 
 	/**
@@ -1219,8 +1222,10 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getFindTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "findTopics",
-				InputParameter.newBindParameter("boardName", "queryTypeFindTopicsBoardName", true, null),
-				InputParameter.newBindParameter("keyword", "queryTypeFindTopicsKeyword", false, null));
+				InputParameter.newBindParameter("boardName", "queryTypeFindTopicsBoardName",
+						InputParameterType.MANDATORY, null),
+				InputParameter.newBindParameter("keyword", "queryTypeFindTopicsKeyword", InputParameterType.OPTIONAL,
+						null));
 	}
 
 	/**
@@ -1659,7 +1664,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public Builder get__typeResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(GraphQLRequest.class, "__type", RequestType.query,
-				InputParameter.newBindParameter("name", "queryType__typeName", true, null));
+				InputParameter.newBindParameter("name", "queryType__typeName", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1674,7 +1679,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "__type",
-				InputParameter.newBindParameter("name", "queryType__typeName", true, null));
+				InputParameter.newBindParameter("name", "queryType__typeName", InputParameterType.MANDATORY, null));
 	}
 
 	@Override

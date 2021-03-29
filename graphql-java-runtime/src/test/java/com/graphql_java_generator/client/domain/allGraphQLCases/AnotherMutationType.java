@@ -24,6 +24,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -618,8 +619,8 @@ public class AnotherMutationType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getCreateHumanResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createHuman",
-				RequestType.mutation,
-				InputParameter.newBindParameter("human", "anotherMutationTypeCreateHumanHuman", true, null));
+				RequestType.mutation, InputParameter.newBindParameter("human", "anotherMutationTypeCreateHumanHuman",
+						InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -634,8 +635,8 @@ public class AnotherMutationType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getCreateHumanGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createHuman",
-				InputParameter.newBindParameter("human", "anotherMutationTypeCreateHumanHuman", true, null));
+		return new GraphQLRequest(partialRequest, RequestType.mutation, "createHuman", InputParameter
+				.newBindParameter("human", "anotherMutationTypeCreateHumanHuman", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -861,8 +862,8 @@ public class AnotherMutationType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getCreateAllFieldCasesResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createAllFieldCases",
-				RequestType.mutation,
-				InputParameter.newBindParameter("input", "anotherMutationTypeCreateAllFieldCasesInput", true, null));
+				RequestType.mutation, InputParameter.newBindParameter("input",
+						"anotherMutationTypeCreateAllFieldCasesInput", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -878,7 +879,8 @@ public class AnotherMutationType implements GraphQLRequestObject {
 	public GraphQLRequest getCreateAllFieldCasesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.mutation, "createAllFieldCases",
-				InputParameter.newBindParameter("input", "anotherMutationTypeCreateAllFieldCasesInput", true, null));
+				InputParameter.newBindParameter("input", "anotherMutationTypeCreateAllFieldCasesInput",
+						InputParameterType.MANDATORY, null));
 	}
 
 	@Override

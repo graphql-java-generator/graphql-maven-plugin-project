@@ -1,9 +1,7 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -17,6 +15,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.forum.Board;
 import com.graphql_java_generator.client.domain.forum.QueryType;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -66,7 +65,7 @@ class AbstractGraphQLRequest_ForumTest {
 		assertEquals("since", posts.inputParameters.get(i).name);
 		assertEquals(null, posts.inputParameters.get(i).value);
 		assertEquals("sinceParam", posts.inputParameters.get(i).bindParameterName);
-		assertEquals(false, posts.inputParameters.get(i).mandatory);
+		assertEquals(InputParameterType.OPTIONAL, posts.inputParameters.get(i).type);
 		//
 		assertEquals("{\"query\":\"query{boards" //
 				+ "{id name publiclyAvailable"//
@@ -131,14 +130,14 @@ class AbstractGraphQLRequest_ForumTest {
 		assertEquals(null, postsInputParameters.get(i).getValue());
 		assertEquals("\\\"a member Name\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(params));
 		assertEquals("memberName", postsInputParameters.get(i).bindParameterName);
-		assertFalse(postsInputParameters.get(i).mandatory);
+		assertEquals(InputParameterType.OPTIONAL, postsInputParameters.get(i).type);
 		i = 1;
 		// The second parameter is a bind variable
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
 		assertEquals("\\\"1900-10-24\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(params));
 		assertEquals("sinceParam", postsInputParameters.get(i).bindParameterName);
-		assertTrue(postsInputParameters.get(i).mandatory);
+		assertEquals(InputParameterType.MANDATORY, postsInputParameters.get(i).type);
 
 		// Check of the built request
 		assertEquals("{\"query\":\"query{boards"//

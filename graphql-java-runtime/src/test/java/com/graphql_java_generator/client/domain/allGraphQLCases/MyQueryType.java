@@ -27,6 +27,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -1143,8 +1144,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getWithOneOptionalParamResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "withOneOptionalParam",
-				RequestType.query,
-				InputParameter.newBindParameter("character", "myQueryTypeWithOneOptionalParamCharacter", false, null));
+				RequestType.query, InputParameter.newBindParameter("character",
+						"myQueryTypeWithOneOptionalParamCharacter", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -1160,7 +1161,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public GraphQLRequest getWithOneOptionalParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "withOneOptionalParam",
-				InputParameter.newBindParameter("character", "myQueryTypeWithOneOptionalParamCharacter", false, null));
+				InputParameter.newBindParameter("character", "myQueryTypeWithOneOptionalParamCharacter",
+						InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -1384,8 +1386,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getWithOneMandatoryParamResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "withOneMandatoryParam",
-				RequestType.query,
-				InputParameter.newBindParameter("character", "myQueryTypeWithOneMandatoryParamCharacter", true, null));
+				RequestType.query, InputParameter.newBindParameter("character",
+						"myQueryTypeWithOneMandatoryParamCharacter", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1401,7 +1403,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public GraphQLRequest getWithOneMandatoryParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "withOneMandatoryParam",
-				InputParameter.newBindParameter("character", "myQueryTypeWithOneMandatoryParamCharacter", true, null));
+				InputParameter.newBindParameter("character", "myQueryTypeWithOneMandatoryParamCharacter",
+						InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1630,7 +1633,7 @@ public class MyQueryType implements GraphQLRequestObject {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class,
 				"withOneMandatoryParamDefaultValue", RequestType.query, InputParameter.newBindParameter("nbResultat",
-						"myQueryTypeWithOneMandatoryParamDefaultValueNbResultat", true, null));
+						"myQueryTypeWithOneMandatoryParamDefaultValueNbResultat", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1646,8 +1649,9 @@ public class MyQueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getWithOneMandatoryParamDefaultValueGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "withOneMandatoryParamDefaultValue", InputParameter
-				.newBindParameter("nbResultat", "myQueryTypeWithOneMandatoryParamDefaultValueNbResultat", true, null));
+		return new GraphQLRequest(partialRequest, RequestType.query, "withOneMandatoryParamDefaultValue",
+				InputParameter.newBindParameter("nbResultat", "myQueryTypeWithOneMandatoryParamDefaultValueNbResultat",
+						InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1890,9 +1894,10 @@ public class MyQueryType implements GraphQLRequestObject {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class,
 				"withTwoMandatoryParamDefaultVal", RequestType.query,
-				InputParameter.newBindParameter("theHero", "myQueryTypeWithTwoMandatoryParamDefaultValTheHero", true,
-						null),
-				InputParameter.newBindParameter("num", "myQueryTypeWithTwoMandatoryParamDefaultValNum", false, null));
+				InputParameter.newBindParameter("theHero", "myQueryTypeWithTwoMandatoryParamDefaultValTheHero",
+						InputParameterType.MANDATORY, null),
+				InputParameter.newBindParameter("num", "myQueryTypeWithTwoMandatoryParamDefaultValNum",
+						InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -1909,9 +1914,10 @@ public class MyQueryType implements GraphQLRequestObject {
 	public GraphQLRequest getWithTwoMandatoryParamDefaultValGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "withTwoMandatoryParamDefaultVal",
-				InputParameter.newBindParameter("theHero", "myQueryTypeWithTwoMandatoryParamDefaultValTheHero", true,
-						null),
-				InputParameter.newBindParameter("num", "myQueryTypeWithTwoMandatoryParamDefaultValNum", false, null));
+				InputParameter.newBindParameter("theHero", "myQueryTypeWithTwoMandatoryParamDefaultValTheHero",
+						InputParameterType.MANDATORY, null),
+				InputParameter.newBindParameter("num", "myQueryTypeWithTwoMandatoryParamDefaultValNum",
+						InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -2132,8 +2138,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getWithEnumResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "withEnum",
-				RequestType.query,
-				InputParameter.newBindParameter("episode", "myQueryTypeWithEnumEpisode", true, null));
+				RequestType.query, InputParameter.newBindParameter("episode", "myQueryTypeWithEnumEpisode",
+						InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -2147,8 +2153,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getWithEnumGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "withEnum",
-				InputParameter.newBindParameter("episode", "myQueryTypeWithEnumEpisode", true, null));
+		return new GraphQLRequest(partialRequest, RequestType.query, "withEnum", InputParameter
+				.newBindParameter("episode", "myQueryTypeWithEnumEpisode", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -2381,8 +2387,10 @@ public class MyQueryType implements GraphQLRequestObject {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "withList",
 				RequestType.query,
-				InputParameter.newBindParameter("firstName", "myQueryTypeWithListFirstName", true, null),
-				InputParameter.newBindParameter("characters", "myQueryTypeWithListCharacters", true, null));
+				InputParameter.newBindParameter("firstName", "myQueryTypeWithListFirstName",
+						InputParameterType.MANDATORY, null),
+				InputParameter.newBindParameter("characters", "myQueryTypeWithListCharacters",
+						InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -2397,8 +2405,10 @@ public class MyQueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getWithListGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "withList",
-				InputParameter.newBindParameter("firstName", "myQueryTypeWithListFirstName", true, null),
-				InputParameter.newBindParameter("characters", "myQueryTypeWithListCharacters", true, null));
+				InputParameter.newBindParameter("firstName", "myQueryTypeWithListFirstName",
+						InputParameterType.MANDATORY, null),
+				InputParameter.newBindParameter("characters", "myQueryTypeWithListCharacters",
+						InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -2622,8 +2632,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getAllFieldCasesResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "allFieldCases",
-				RequestType.query,
-				InputParameter.newBindParameter("input", "myQueryTypeAllFieldCasesInput", false, null));
+				RequestType.query, InputParameter.newBindParameter("input", "myQueryTypeAllFieldCasesInput",
+						InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -2638,8 +2648,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getAllFieldCasesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "allFieldCases",
-				InputParameter.newBindParameter("input", "myQueryTypeAllFieldCasesInput", false, null));
+		return new GraphQLRequest(partialRequest, RequestType.query, "allFieldCases", InputParameter
+				.newBindParameter("input", "myQueryTypeAllFieldCasesInput", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -2893,10 +2903,15 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getUnionTestResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "unionTest",
-				RequestType.query, InputParameter.newBindParameter("human1", "myQueryTypeUnionTestHuman1", false, null),
-				InputParameter.newBindParameter("human2", "myQueryTypeUnionTestHuman2", false, null),
-				InputParameter.newBindParameter("droid1", "myQueryTypeUnionTestDroid1", false, null),
-				InputParameter.newBindParameter("droid2", "myQueryTypeUnionTestDroid2", false, null));
+				RequestType.query,
+				InputParameter.newBindParameter("human1", "myQueryTypeUnionTestHuman1", InputParameterType.OPTIONAL,
+						null),
+				InputParameter.newBindParameter("human2", "myQueryTypeUnionTestHuman2", InputParameterType.OPTIONAL,
+						null),
+				InputParameter.newBindParameter("droid1", "myQueryTypeUnionTestDroid1", InputParameterType.OPTIONAL,
+						null),
+				InputParameter.newBindParameter("droid2", "myQueryTypeUnionTestDroid2", InputParameterType.OPTIONAL,
+						null));
 	}
 
 	/**
@@ -2911,10 +2926,14 @@ public class MyQueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getUnionTestGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "unionTest",
-				InputParameter.newBindParameter("human1", "myQueryTypeUnionTestHuman1", false, null),
-				InputParameter.newBindParameter("human2", "myQueryTypeUnionTestHuman2", false, null),
-				InputParameter.newBindParameter("droid1", "myQueryTypeUnionTestDroid1", false, null),
-				InputParameter.newBindParameter("droid2", "myQueryTypeUnionTestDroid2", false, null));
+				InputParameter.newBindParameter("human1", "myQueryTypeUnionTestHuman1", InputParameterType.OPTIONAL,
+						null),
+				InputParameter.newBindParameter("human2", "myQueryTypeUnionTestHuman2", InputParameterType.OPTIONAL,
+						null),
+				InputParameter.newBindParameter("droid1", "myQueryTypeUnionTestDroid1", InputParameterType.OPTIONAL,
+						null),
+				InputParameter.newBindParameter("droid2", "myQueryTypeUnionTestDroid2", InputParameterType.OPTIONAL,
+						null));
 	}
 
 	/**
@@ -3135,7 +3154,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getErrorResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "error", RequestType.query,
-				InputParameter.newBindParameter("errorLabel", "myQueryTypeErrorErrorLabel", true, null));
+				InputParameter.newBindParameter("errorLabel", "myQueryTypeErrorErrorLabel",
+						InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -3149,8 +3169,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getErrorGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "error",
-				InputParameter.newBindParameter("errorLabel", "myQueryTypeErrorErrorLabel", true, null));
+		return new GraphQLRequest(partialRequest, RequestType.query, "error", InputParameter
+				.newBindParameter("errorLabel", "myQueryTypeErrorErrorLabel", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -3590,8 +3610,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder getDirectiveOnQueryResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "directiveOnQuery",
-				RequestType.query,
-				InputParameter.newBindParameter("uppercase", "myQueryTypeDirectiveOnQueryUppercase", false, null));
+				RequestType.query, InputParameter.newBindParameter("uppercase", "myQueryTypeDirectiveOnQueryUppercase",
+						InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -3607,7 +3627,8 @@ public class MyQueryType implements GraphQLRequestObject {
 	public GraphQLRequest getDirectiveOnQueryGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "directiveOnQuery",
-				InputParameter.newBindParameter("uppercase", "myQueryTypeDirectiveOnQueryUppercase", false, null));
+				InputParameter.newBindParameter("uppercase", "myQueryTypeDirectiveOnQueryUppercase",
+						InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -4497,7 +4518,7 @@ public class MyQueryType implements GraphQLRequestObject {
 	public com.graphql_java_generator.client.request.Builder get__typeResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "__type", RequestType.query,
-				InputParameter.newBindParameter("name", "myQueryType__typeName", true, null));
+				InputParameter.newBindParameter("name", "myQueryType__typeName", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -4512,7 +4533,7 @@ public class MyQueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "__type",
-				InputParameter.newBindParameter("name", "myQueryType__typeName", true, null));
+				InputParameter.newBindParameter("name", "myQueryType__typeName", InputParameterType.MANDATORY, null));
 	}
 
 	@Override

@@ -22,6 +22,7 @@ import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.Builder;
 import com.graphql_java_generator.client.request.InputParameter;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -517,7 +518,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public Builder getHeroResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(GraphQLRequest.class, "hero", RequestType.query,
-				InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null));
+				InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -532,7 +533,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getHeroGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "hero",
-				InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false, null));
+				InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -750,8 +751,8 @@ public class QueryType implements GraphQLRequestObject {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Builder getCharactersResponseBuilder() throws GraphQLRequestPreparationException {
-		return new Builder(GraphQLRequest.class, "characters", RequestType.query,
-				InputParameter.newBindParameter("episode", "queryTypeCharactersEpisode", false, null));
+		return new Builder(GraphQLRequest.class, "characters", RequestType.query, InputParameter
+				.newBindParameter("episode", "queryTypeCharactersEpisode", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -765,8 +766,8 @@ public class QueryType implements GraphQLRequestObject {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getCharactersGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "characters",
-				InputParameter.newBindParameter("episode", "queryTypeCharactersEpisode", false, null));
+		return new GraphQLRequest(partialRequest, RequestType.query, "characters", InputParameter
+				.newBindParameter("episode", "queryTypeCharactersEpisode", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -981,7 +982,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public Builder getHumanResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(GraphQLRequest.class, "human", RequestType.query,
-				InputParameter.newBindParameter("id", "queryTypeHumanId", false, null));
+				InputParameter.newBindParameter("id", "queryTypeHumanId", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -996,7 +997,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getHumanGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "human",
-				InputParameter.newBindParameter("id", "queryTypeHumanId", false, null));
+				InputParameter.newBindParameter("id", "queryTypeHumanId", InputParameterType.OPTIONAL, null));
 	}
 
 	/**
@@ -1211,7 +1212,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public Builder getDroidResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(GraphQLRequest.class, "droid", RequestType.query,
-				InputParameter.newBindParameter("id", "queryTypeDroidId", true, null));
+				InputParameter.newBindParameter("id", "queryTypeDroidId", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1226,7 +1227,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest getDroidGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "droid",
-				InputParameter.newBindParameter("id", "queryTypeDroidId", true, null));
+				InputParameter.newBindParameter("id", "queryTypeDroidId", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1665,7 +1666,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public Builder get__typeResponseBuilder() throws GraphQLRequestPreparationException {
 		return new Builder(GraphQLRequest.class, "__type", RequestType.query,
-				InputParameter.newBindParameter("name", "queryType__typeName", true, null));
+				InputParameter.newBindParameter("name", "queryType__typeName", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -1680,7 +1681,7 @@ public class QueryType implements GraphQLRequestObject {
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "__type",
-				InputParameter.newBindParameter("name", "queryType__typeName", true, null));
+				InputParameter.newBindParameter("name", "queryType__typeName", InputParameterType.MANDATORY, null));
 	}
 
 	@Override

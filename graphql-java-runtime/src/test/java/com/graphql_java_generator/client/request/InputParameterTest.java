@@ -27,6 +27,7 @@ import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitia
 import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.domain.starwars.Episode;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -58,9 +59,12 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals("\\\"This is a string with two \\\\\\\"\\\\\\\", a \\\\uD83C\\\\uDF89 and some \\\\r \\\\t \\\\\\\\ to be escaped\\\"", param.getValueForGraphqlQuery(null),
-				"escaped value");
-		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(null))), "roundtripped value");
+		assertEquals(
+				"\\\"This is a string with two \\\\\\\"\\\\\\\", a \\\\uD83C\\\\uDF89 and some \\\\r \\\\t \\\\\\\\ to be escaped\\\"",
+				param.getValueForGraphqlQuery(null), "escaped value");
+		assertEquals('"' + value + '"',
+				StringEscapeUtils.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(null))),
+				"roundtripped value");
 	}
 
 	@Test
@@ -181,7 +185,8 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_MandatoryBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, true, null);
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName,
+				InputParameterType.MANDATORY, null);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
@@ -202,7 +207,8 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_OptionalBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName, false, null);
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter(name, bindParameterName,
+				InputParameterType.OPTIONAL, null);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
@@ -221,8 +227,8 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_BindParameter_CustomScalar_Date_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName, false,
-				GraphQLScalarTypeDate.Date);
+		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName,
+				InputParameterType.OPTIONAL, GraphQLScalarTypeDate.Date);
 
 		Map<String, Object> badValues = new HashMap<>();
 		badValues.put("variableName", "A bad date");
@@ -243,8 +249,8 @@ class InputParameterTest {
 		GraphQLScalarType graphQLScalarTypeLong = Scalars.GraphQLLong;
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName, false,
-				graphQLScalarTypeLong);
+		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName,
+				InputParameterType.OPTIONAL, graphQLScalarTypeLong);
 
 		Map<String, Object> badValues = new HashMap<>();
 		badValues.put("variableName", "A bad long");
@@ -273,7 +279,8 @@ class InputParameterTest {
 		postInput.setFrom(getDateFromDifferentFormat("01-01-2020"));
 		postInput.setIn(asList(getDateFromDifferentFormat("01-02-2020"), getDateFromDifferentFormat("01-03-2020")));
 
-		InputParameter inputTypeInputParameter = InputParameter.newBindParameter(name, bindParameterName, false);
+		InputParameter inputTypeInputParameter = InputParameter.newBindParameter(name, bindParameterName,
+				InputParameterType.OPTIONAL);
 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put(bindParameterName, postInput);

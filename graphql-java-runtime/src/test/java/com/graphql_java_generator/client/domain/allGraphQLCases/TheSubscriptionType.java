@@ -24,6 +24,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -605,7 +606,7 @@ public class TheSubscriptionType implements GraphQLRequestObject {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class,
 				"subscribeNewHumanForEpisode", RequestType.subscription, InputParameter.newBindParameter("episode",
-						"theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", true, null));
+						"theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY, null));
 	}
 
 	/**
@@ -623,7 +624,7 @@ public class TheSubscriptionType implements GraphQLRequestObject {
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeNewHumanForEpisode",
 				InputParameter.newBindParameter("episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode",
-						true, null));
+						InputParameterType.MANDATORY, null));
 	}
 
 	@Override

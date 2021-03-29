@@ -24,7 +24,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("skip");
 		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
-		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
+		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -34,7 +34,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("include");
 		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
-		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
+		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -44,7 +44,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("defer");
 		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
-		param = InputParameter.newHardCodedParameter("if", null, true, graphql.Scalars.GraphQLBoolean);
+		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directiveRegistry.registerDirective(directive);
@@ -52,7 +52,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("deprecated");
 		directive.setPackageName(DirectiveRegistryInitializer.class.getPackage().getName());
-		param = InputParameter.newHardCodedParameter("reason", null, false, graphql.Scalars.GraphQLString);
+		param = InputParameter.newHardCodedParameter("reason", null, graphql.Scalars.GraphQLString);
 		directive.getArguments().add(param);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		directive.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
