@@ -23,7 +23,6 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
@@ -124,8 +123,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			Class<R> dataResponseType) throws GraphQLRequestExecutionException {
+	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest,
+			Map<String, Object> parameters, Class<R> dataResponseType) throws GraphQLRequestExecutionException {
 
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");
@@ -142,7 +141,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 			JsonResponseWrapper response = invocationBuilder
 					.post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON), JsonResponseWrapper.class);
 
-			return parseDataFromGraphQLServerResponse(objectMapper, response, dataResponseType);
+			return QueryExecutorSpringReactiveImpl.parseDataFromGraphQLServerResponse(objectMapper, response,
+					dataResponseType);
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + jsonRequest + ">: " + e.getMessage(), e);
@@ -150,7 +150,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 	}
 
 	/** {@inheritDoc} */
-	@SuppressWarnings("deprecation")
 	@Override
 	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
 			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
@@ -225,52 +224,5 @@ public class QueryExecutorImpl implements QueryExecutor {
 		}
 		throw new GraphQLRequestExecutionException(
 				"non managed protocol for endpoint " + graphqlEndpoint + ". This method manages only http and https");
-	}
-
-	/**
-	 * Extract the data from the {@link JsonResponseWrapper#data} json node, and return it as a T instance.
-	 * 
-	 * @param <T>
-	 * @param response
-	 *            The json response, read from the GraphQL response
-	 * @param valueType
-	 *            The expected T class
-	 * @return
-	 * @throws JsonProcessingException
-	 * @throws GraphQLRequestExecutionException
-	 */
-	static <T extends GraphQLRequestObject> T parseDataFromGraphQLServerResponse(ObjectMapper objectMapper,
-			JsonResponseWrapper response, Class<T> valueType)
-			throws GraphQLRequestExecutionException, JsonProcessingException {
-		if (logger.isTraceEnabled()) {
-			logger.trace("Response data: {}", objectMapper.writeValueAsString(response.data));
-			logger.trace("Response errors: {}", objectMapper.writeValueAsString(response.errors));
-		}
-
-		if (response.errors == null || response.errors.size() == 0) {
-			// No errors. Let's parse the data
-			T ret = objectMapper.treeToValue(response.data, valueType);
-			ret.setExtensions(response.extensions);
-			return ret;
-		} else {
-			int nbErrors = 0;
-			String agregatedMessage = null;
-			for (com.graphql_java_generator.client.response.Error error : response.errors) {
-				String msg = error.toString();
-				nbErrors += 1;
-				logger.error(GRAPHQL_MARKER, msg);
-				if (agregatedMessage == null) {
-					agregatedMessage = msg;
-				} else {
-					agregatedMessage += ", ";
-					agregatedMessage += msg;
-				}
-			}
-			if (nbErrors == 0) {
-				throw new GraphQLRequestExecutionException("An unknown error occured");
-			} else {
-				throw new GraphQLRequestExecutionException(nbErrors + " errors occured: " + agregatedMessage);
-			}
-		}
 	}
 }

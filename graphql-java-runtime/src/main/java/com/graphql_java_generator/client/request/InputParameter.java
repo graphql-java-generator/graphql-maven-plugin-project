@@ -15,7 +15,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
-import com.graphql_java_generator.client.QueryExecutorImpl;
+import com.graphql_java_generator.client.QueryExecutorSpringReactiveImpl;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -89,7 +89,7 @@ public class InputParameter {
 	 *            If mandatory is false and the parameter's value is not provided, this input parameter is not sent to
 	 *            the server
 	 * @return
-	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
+	 * @see QueryExecutorSpringReactiveImpl#execute(String, ObjectResponse, List, Class)
 	 */
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory) {
 		if (bindParameterName == null) {
@@ -121,7 +121,7 @@ public class InputParameter {
 	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
 	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
 	 * @return
-	 * @see QueryExecutorImpl#execute(String, ObjectResponse, List, Class)
+	 * @see QueryExecutorSpringReactiveImpl#execute(String, ObjectResponse, List, Class)
 	 */
 	public static InputParameter newBindParameter(String name, String bindParameterName, boolean mandatory,
 			GraphQLScalarType graphQLScalarType) {
