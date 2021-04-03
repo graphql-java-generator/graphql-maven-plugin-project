@@ -410,7 +410,7 @@ public class GraphqlUtils {
 
 		// Let's check if this type is a Custom Scalar
 		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.customScalarRegistry
-				.getGraphQLScalarType(parameterType);
+				.getGraphQLCustomScalarType(parameterType);
 
 		if (graphQLScalarType != null) {
 			// This type is a Custom Scalar. Let's ask the CustomScalar implementation to translate this value.

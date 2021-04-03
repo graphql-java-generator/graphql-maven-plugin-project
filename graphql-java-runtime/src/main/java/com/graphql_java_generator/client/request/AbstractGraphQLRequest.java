@@ -19,6 +19,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -77,12 +78,17 @@ public abstract class AbstractGraphQLRequest {
 	 * queryName is the name of the query, mutation or subscription. This allow to check that the GraphQLRequest is the
 	 * good to be executed for this partial query.
 	 */
-	final String queryName;
+	final String requestName;
 	/**
 	 * The package name, where the GraphQL generated classes are. It's used to load the class definition, and get the
 	 * GraphQL metadata coming from the GraphQL schema.
 	 */
 	protected final String packageName;
+
+	/** Indicates what is being read, when reading the GraphQL variable list */
+	private enum Step {
+		NAME, TYPE
+	};
 
 	/**
 	 * Create the instance, from the GraphQL request, for a partial request.<BR/>
@@ -100,22 +106,23 @@ public abstract class AbstractGraphQLRequest {
 	 *            page</A> for more information, including hints and limitations.
 	 * @param requestType
 	 *            The information whether this queryName is actually a query, a mutation or a subscription
-	 * @param queryName
-	 *            The name of the query, mutation or subscription
+	 * @param fieldName
+	 *            The name of the query, mutation or subscription, for instance "titi", in the GraphQL request "query
+	 *            titi {...}".
 	 * @param inputParams
 	 *            The list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
+	public AbstractGraphQLRequest(String graphQLRequest, RequestType requestType, String fieldName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
 		if (requestType == null) {
 			throw new NullPointerException("requestType is mandatory, but a null value has been provided");
 		}
-		if (queryName == null) {
-			throw new NullPointerException("queryName is mandatory, but a null value has been provided");
+		if (fieldName == null) {
+			throw new NullPointerException("fieldName is mandatory, but a null value has been provided");
 		}
 		this.requestType = requestType;
-		this.queryName = queryName;
+		this.requestName = null;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = getGraphQLClassesPackageName();
 
@@ -123,17 +130,17 @@ public abstract class AbstractGraphQLRequest {
 		switch (requestType) {
 		case query:
 			query = getQueryContext();// Get the query field from the concrete class
-			field = new QueryField(query.clazz, queryName);
+			field = new QueryField(query.clazz, fieldName);
 			query.fields.add(field);
 			break;
 		case mutation:
 			mutation = getMutationContext();// Get the mutation field from the concrete class
-			field = new QueryField(mutation.clazz, queryName);
+			field = new QueryField(mutation.clazz, fieldName);
 			mutation.fields.add(field);
 			break;
 		case subscription:
 			subscription = getSubscriptionContext();// Get the subscription field from the concrete class
-			field = new QueryField(subscription.clazz, queryName);
+			field = new QueryField(subscription.clazz, fieldName);
 			subscription.fields.add(field);
 			break;
 		default:
@@ -187,11 +194,14 @@ public abstract class AbstractGraphQLRequest {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public AbstractGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
-		this.queryName = null;
+		String localQueryName = null;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = getGraphQLClassesPackageName();
 		this.requestType = RequestType.query; // query is the default value, as if there is no query, mutation or
 												// subscription keyword, then it must be a query.
+		boolean requestTypeHasBeenRead = false; // Used for a basic check in unknown tokens, to see if this token can be
+												// the request name
+		List<InputParameter> inputParameters = new ArrayList<>(); // The list of GraphQL variables for this query
 
 		// Ok, we have to parse a string which looks like that: "query {human(id: &humanId) { id name friends{name}}}"
 		// We tokenize the string, by using the space as a delimiter, and all other special GraphQL characters
@@ -209,20 +219,32 @@ public abstract class AbstractGraphQLRequest {
 			case "mutation":
 			case "subscription":
 				requestType = RequestType.valueOf(token);
+				requestTypeHasBeenRead = true;// We'll know accept an unknown token as the request name
+				break;
+			case "(":
+				try {
+					readRequestParameters(qt, inputParameters);
+				} catch (Exception e) {
+					throw new GraphQLRequestPreparationException(
+							e.getMessage() + " (while reading the request parameters)", e);
+				}
 				break;
 			case "{":
 				// We read the query/mutation/subscription like any field.
 				switch (requestType) {
 				case query:
 					query = getQueryContext();// Get the query field from the concrete class
+					query.inputParameters = inputParameters;
 					query.readTokenizerForResponseDefinition(qt);
 					break;
 				case mutation:
 					mutation = getMutationContext();// Get the mutation field from the concrete class
+					mutation.inputParameters = inputParameters;
 					mutation.readTokenizerForResponseDefinition(qt);
 					break;
 				case subscription:
 					subscription = getSubscriptionContext();// Get the subscription field from the concrete class
+					subscription.inputParameters = inputParameters;
 					subscription.readTokenizerForResponseDefinition(qt);
 					break;
 				default:
@@ -231,8 +253,12 @@ public abstract class AbstractGraphQLRequest {
 				}
 				break;
 			default:
-				throw new GraphQLRequestPreparationException(
-						"Unknown token '" + token + " while reading the GraphQL request: " + graphQLRequest);
+				if (requestTypeHasBeenRead) {
+					localQueryName = token;
+				} else {
+					throw new GraphQLRequestPreparationException(
+							"Unknown token '" + token + " while reading the GraphQL request: " + graphQLRequest);
+				}
 			}
 		}
 
@@ -241,7 +267,126 @@ public abstract class AbstractGraphQLRequest {
 		}
 
 		// Let's finish the job
+
+		// As the query name can't be changed, we have to set in a temporary variable, to allow changing its value when
+		// we found one
+		this.requestName = localQueryName;
 		finishRequestPreparation();
+	}
+
+	/**
+	 * Reads the parameters of the request. These parameters are actually GraphQL variables, according to the GraphQL
+	 * spec.
+	 * 
+	 * @param qt
+	 *            The {@link QueryTokenizer} current token is the '(' that starts the parameter list. When the method
+	 *            returns, the {@link QueryTokenizer} current token is the ')'
+	 * @param inputParameters
+	 *            The empty list if {@link InputParameter}s.
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private void readRequestParameters(QueryTokenizer qt, List<InputParameter> inputParameters)
+			throws GraphQLRequestPreparationException {
+		String token;
+		// We're reading the request parameters. It should be something like "($param1: Type1, $param2: Type2!)"
+		Step step = Step.NAME;
+		String name = null;
+		String graphQLTypeName = null;
+		boolean mandatory = false;
+		int listDepth = 0;
+		boolean itemMandatory = false;
+
+		while (true) {
+			token = qt.nextToken();
+
+			// Are we done?
+			if (token.equals(")")) {
+				if (step.equals(Step.TYPE)) {
+					throw new GraphQLRequestPreparationException(
+							"Found a ')', while expecting a value for the '" + name + "' query parameter");
+				} else {
+					// Ok we're done
+					break;
+				}
+			} else if (token.equals(",")) {
+				// We should be waiting for the name of the GraphQL variable
+				if (!step.equals(Step.NAME)) {
+					throw new GraphQLRequestPreparationException("unexpected ','");
+				}
+				// Let's go to the next token, that should be the GraphQL type
+				token = qt.nextToken();
+			} else if (token.equals(":")) {
+				// We should be waiting for the type of the GraphQL variable
+				if (!step.equals(Step.TYPE)) {
+					throw new GraphQLRequestPreparationException("unexpected ':'");
+				}
+				// Let's go to the next token, that should be the GraphQL type
+				token = qt.nextToken();
+			}
+
+			switch (step) {
+			case NAME:
+				if (!token.startsWith("$")) {
+					throw new GraphQLRequestPreparationException(
+							"The GraphQL variable names should start by a '$', but this one doesn't: '" + token + "'");
+				}
+				// We store the name, without the leading '$'
+				name = token.substring(1);
+				// The next token should be the value
+				step = Step.TYPE;
+				break;
+			case TYPE:
+				// The current token is the GraphQL variable type, for instance "[[Human!]]!". Let's parse it.
+				int currentDepth = 0;
+				while (true) {
+					switch (token) {
+					case "[":
+						listDepth += 1;
+						currentDepth += 1;
+						break;
+					case "]":
+						currentDepth -= 1;
+						break;
+					case "!":
+						// If we're here, it means the depth is at least one.
+						itemMandatory = true;
+						break;
+					case ",":
+					case ")":// Too bad, the query is wrongly written
+						throw new GraphQLRequestPreparationException(
+								"Syntax error in the query, while reading the type of the '" + name
+										+ "' parameter of the request");
+					default:
+						// We have the GraphQL type name
+						graphQLTypeName = token;
+					}
+
+					// Are we done?
+					if (currentDepth == 0) {
+						break;
+					}
+
+					token = qt.nextToken();
+				}
+				;
+
+				// We get here if the item is not a list, or after reading the last ']'.
+				// Let's check if there is a trailing '!'
+				if (qt.checkNextToken("!")) {
+					mandatory = true;
+					// Then we pass this token
+					token = qt.nextToken();
+				} else {
+					mandatory = false;
+				}
+
+				inputParameters.add(InputParameter.newGraphQLVariableParameter(name, graphQLTypeName, mandatory,
+						listDepth, itemMandatory));
+				// The next token should be either the end of parameters (with a ')') or a name
+				step = Step.NAME;
+				break;
+			}// switch
+		} // while
 	}
 
 	/**
@@ -423,17 +568,76 @@ public abstract class AbstractGraphQLRequest {
 		}
 
 		// Then the other parts of the request
+		QueryField request;
 		if (query != null) {
-			query.appendToGraphQLRequests(sb, params, true);
-		}
-		if (mutation != null) {
-			mutation.appendToGraphQLRequests(sb, params, true);
-		}
-		if (subscription != null) {
-			subscription.appendToGraphQLRequests(sb, params, true);
+			request = query;
+		} else if (mutation != null) {
+			request = mutation;
+		} else if (subscription != null) {
+			request = subscription;
+		} else {
+			throw new GraphQLRequestExecutionException("[Internal error] no request has been initialized");
 		}
 
-		sb.append("\",\"variables\":null,\"operationName\":null}");
+		// The name of the query/mutation/subscription follows special rules (including the request name and GraphQL
+		// variables). So we need to add these things here, and not from the QueryField class.
+		sb.append(request.name);
+		if (requestName != null) {
+			sb.append(" ").append(requestName);
+		}
+		// Let's add all GraphQL variables here
+		StringBuilder sbGraphQLVariables = new StringBuilder();
+		StringBuilder sbGraphQLValues = new StringBuilder();
+		String separator = "";
+		for (InputParameter param : request.inputParameters) {
+			if (param.getType() == InputParameterType.GRAPHQL_VARIABLE) {
+				//////////////////////////////////////////////////////////////////////
+				// Let's complete the variable list,
+				sbGraphQLVariables.append(separator)//
+						.append("$")//
+						.append(param.getBindParameterName())//
+						.append(":");
+
+				// The String.repeat(int) method needs Java 11 minimum
+				for (int i = 0; i < param.getListDepth(); i += 1) {
+					sbGraphQLVariables.append("[");
+				} // for
+
+				sbGraphQLVariables.append(param.getGraphQLTypeName())//
+						.append(param.isItemMandatory() ? "!" : "");
+
+				// The String.repeat(int) method needs Java 11 minimum
+				for (int i = 0; i < param.getListDepth(); i += 1) {
+					sbGraphQLVariables.append("]");
+				} // for
+
+				sbGraphQLVariables.append(param.isMandatory() ? "!" : "");
+
+				//////////////////////////////////////////////////////////////////////
+				// And the variable value list (for the json variables field)
+				sbGraphQLValues.append(separator)//
+						.append("\\\"")//
+						.append(param.getBindParameterName())//
+						.append("\\\":")//
+						.append(param.getValueForGraphqlQuery(params));
+
+				separator = ",";
+			}
+		}
+
+		// Are there some GraphQL variables?
+		String graphQLVariables = sbGraphQLVariables.toString();
+		if (graphQLVariables.length() > 0) {
+			sb.append("(").append(graphQLVariables).append(")");
+		}
+
+		// Let's add the whole request
+		request.appendToGraphQLRequests(sb, params, false);
+
+		// Let's finish the json string
+		sb.append("\",\"variables\":")//
+				.append((graphQLVariables.length() > 0) ? "{" + sbGraphQLValues + "}" : "null")//
+				.append(",\"operationName\":null}");
 
 		return sb.toString();
 	}
@@ -491,8 +695,8 @@ public abstract class AbstractGraphQLRequest {
 		return requestType;
 	}
 
-	public String getQueryName() {
-		return queryName;
+	public String getRequestName() {
+		return requestName;
 	}
 
 	/**

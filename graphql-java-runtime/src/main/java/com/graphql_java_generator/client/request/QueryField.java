@@ -168,7 +168,7 @@ public class QueryField {
 				break;
 			case "(":
 				if (currentField != null) {
-					// We're starting the reading of field parameters for the current
+					// We're starting the reading of field parameters for the current field
 					currentField.inputParameters = InputParameter.readTokenizerForInputParameters(qt, null,
 							currentField.owningClazz, currentField.name);
 				} else {
@@ -258,19 +258,16 @@ public class QueryField {
 			throws GraphQLRequestExecutionException {
 
 		//////////////////////////////////////////////////////////
-		// We start with the field name
+		// We start with the field name and the parameters
 		if (appendName) {
 			if (alias == null) {
 				sb.append(name);
 			} else {
 				sb.append(alias).append(":").append(name);
 			}
+
+			InputParameter.appendInputParametersToGraphQLRequests(sb, inputParameters, parameters);
 		}
-
-		//////////////////////////////////////////////////////////
-		// Then the input parameters
-		InputParameter.appendInputParametersToGraphQLRequests(sb, inputParameters, parameters);
-
 		//////////////////////////////////////////////////////////
 		// Then the directives
 		for (Directive d : directives) {

@@ -23,28 +23,28 @@ import java.util.List;
 public interface Commented  {
 
 	@JsonProperty("nbComments")
-	@GraphQLScalar( fieldName = "nbComments", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
 	public void setNbComments(Integer nbComments);
 
 	@JsonProperty("nbComments")
-	@GraphQLScalar( fieldName = "nbComments", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
 	public Integer getNbComments();
 
-	@JsonDeserialize(contentAs = String.class)
 	@JsonProperty("comments")
-	@GraphQLScalar( fieldName = "comments", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@JsonDeserialize(using = CustomJacksonDeserializers.ListString.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public void setComments(List<String> comments);
 
-	@JsonDeserialize(contentAs = String.class)
 	@JsonProperty("comments")
-	@GraphQLScalar( fieldName = "comments", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@JsonDeserialize(using = CustomJacksonDeserializers.ListString.class)
+	@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public List<String> getComments();
 
 	@JsonProperty("__typename")
-	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public void set__typename(String __typename);
 
 	@JsonProperty("__typename")
-	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public String get__typename();
 }

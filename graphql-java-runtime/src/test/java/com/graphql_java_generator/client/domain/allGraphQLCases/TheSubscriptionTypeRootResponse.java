@@ -4,25 +4,33 @@ package com.graphql_java_generator.client.domain.allGraphQLCases;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
+import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.Error;
+
 
 public class TheSubscriptionTypeRootResponse {
 
 	@JsonProperty("data")
-	@GraphQLNonScalar( fieldName = "TheSubscriptionType", graphQLTypeSimpleName = "TheSubscriptionType", javaClass = TheSubscriptionType.class)
+	@GraphQLNonScalar(fieldName = "TheSubscriptionType", graphQLTypeSimpleName = "TheSubscriptionType", javaClass = TheSubscriptionType.class)
 	TheSubscriptionType subscription;
 
 	@JsonProperty("errors")
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
-	public TheSubscriptionType getSubscription() {
-		return subscription;
+	@JsonProperty("extensions")
+	public JsonNode extensions;
+
+	// This getter is needed for the Json serialization
+	public TheSubscriptionType getData() {
+		return this.subscription;
 	}
 
-	public void setSubscription(TheSubscriptionType subscription) {
+	// This setter is needed for the Json deserialization
+	public void setData(TheSubscriptionType subscription) {
 		this.subscription = subscription;
 	}
 
@@ -32,6 +40,14 @@ public class TheSubscriptionTypeRootResponse {
 
 	public void setErrors(List<Error> errors) {
 		this.errors = errors;
+	}
+
+	public JsonNode getExtensions() {
+		return extensions;
+	}
+
+	public void setExtensions(JsonNode extensions) {
+		this.extensions = extensions;
 	}
 
 }

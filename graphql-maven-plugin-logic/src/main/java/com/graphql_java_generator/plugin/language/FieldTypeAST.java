@@ -47,6 +47,10 @@ public class FieldTypeAST {
 	@Builder.Default // Allows the default value to be used with the Lombok @Builder annotation on the class
 	boolean mandatory = false;
 
+	/** Only used if this type is a list: it indicates if the items for this list are mandatory? */
+	@Builder.Default // Allows the default value to be used with the Lombok @Builder annotation on the class
+	boolean itemMandatory = false;
+
 	/**
 	 * When this field type is a list, returns the properties for the item of this list. This can also be a list, when
 	 * the GraphQL type is defined by nested arrays.

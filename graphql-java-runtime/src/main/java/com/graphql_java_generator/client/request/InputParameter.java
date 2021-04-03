@@ -4,6 +4,7 @@
 package com.graphql_java_generator.client.request;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.QueryExecutorSpringReactiveImpl;
 import com.graphql_java_generator.client.directive.Directive;
+import com.graphql_java_generator.client.directive.DirectiveRegistry;
+import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -37,6 +40,9 @@ import graphql.schema.GraphQLScalarType;
  */
 public class InputParameter {
 
+	/** The registry for all known GraphQL directives. */
+	DirectiveRegistry directiveRegistry = DirectiveRegistryImpl.directiveRegistry;
+
 	/** A utility class, that's used here */
 	private static GraphqlUtils graphqlUtils = new GraphqlUtils();
 	/** A utility class, that's used here */
@@ -51,7 +57,12 @@ public class InputParameter {
 		/** An optional {@link InputParameter}, that is one which declaration starts with a '?' */
 		OPTIONAL,
 		/** A GraphQL value provided in the request being parsed */
-		GRAPHQL_VALUE
+		GRAPHQL_VALUE,
+		/**
+		 * A GraphQL variable, marked by a '$', that will be transmitted to the server in the variables json attribute
+		 * of the request
+		 */
+		GRAPHQL_VARIABLE
 	};
 
 	/** Indicates what is being read by the {@link #readTokenizerForInputParameters(StringTokenizer) method */
@@ -74,15 +85,22 @@ public class InputParameter {
 	/** Indicates whether this parameter is mandatory or not */
 	final InputParameterType type;
 
+	/** The GraphQL type name of this parameter. For instance: "Human", for the type "[[Human]]" */
+	final String graphQLTypeName;
+	/** The Scalar GraphQL type name of this parameter. Null if this parameter is not a Scalar */
+	final GraphQLScalarType graphQLScalarType;
+
 	/**
-	 * If this input parameter's type is a GraphQL Custom Scalar, it is initialized in the constructor. Otherwise, it is
-	 * null. <BR/>
-	 * graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a String that
-	 * can be written in the GraphQL request, or convert from a String that is found in the GraphQL response. If this
-	 * type is not a GraphQL Custom Scalar, it must be null.
-	 *
+	 * Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false otherwise
 	 */
-	final GraphQLScalarType graphQLCustomScalarType;
+	final private boolean itemMandatory;
+	/**
+	 * The depth of the list for this input parameter: 0 if this parameter is not a list. And 2, for instance, if the
+	 * parameter's type is "[[Int]]"
+	 */
+	final private int listDepth;
+	/** True if this parameter is mandatory */
+	final private boolean mandatory;
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
@@ -96,52 +114,50 @@ public class InputParameter {
 	 *            for more information on input parameters and bind variables.
 	 * @param type
 	 *            The kind of {@link InputParameter} to create
-	 * @return
-	 * @see QueryExecutorSpringReactiveImpl#execute(String, ObjectResponse, List, Class)
-	 */
-	public static InputParameter newBindParameter(String name, String bindParameterName, InputParameterType type) {
-		return InputParameter.newBindParameter(name, bindParameterName, type, null);
-	}
-
-	/**
-	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
-	 * this bind variable must be provided, when calling the request execution.
-	 *
-	 * @param name
-	 * @param bindParameterName
-	 *            The name of the bind parameter, as defined in the GraphQL response definition. It is mandator for bind
-	 *            parameters, so it may not be null here. Please read the
-	 *            <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">client doc</A>
-	 *            for more information on input parameters and bind variables.
-	 * @param type
-	 *            The kind of {@link InputParameter} to create
-	 * @param graphQLCustomScalarType
-	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
-	 *            null. <BR/>
-	 *            graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a
-	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
-	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
-	 * @return
+	 * @param graphQLTypeName
+	 *            The GraphQL type name of this parameter. For instance: "Human", for the type "[[Human]]"
+	 * @param mandatory
+	 *            True if this parameter is mandatory
+	 * @param listDepth
+	 *            The depth of the list for this input parameter: 0 if this parameter is not a list. And 2, for
+	 *            instance, if the parameter's type is "[[Int]]"
+	 * @param itemMandatory
+	 *            Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false
+	 *            otherwise
+	 * @return The newly created {@link InputParameter}, according to these parameters
 	 * @see QueryExecutorSpringReactiveImpl#execute(String, ObjectResponse, List, Class)
 	 */
 	public static InputParameter newBindParameter(String name, String bindParameterName, InputParameterType type,
-			GraphQLScalarType graphQLScalarType) {
+			String graphQLTypeName, boolean mandatory, int listDepth, boolean itemMandatory) {
 		if (bindParameterName == null) {
 			throw new NullPointerException("[Internal error] The bind parameter name is mandatory");
 		}
-		return new InputParameter(name, bindParameterName, null, type, graphQLScalarType);
+		return new InputParameter(name, bindParameterName, null, type, graphQLTypeName, mandatory, listDepth,
+				itemMandatory);
 	}
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which value is given, and can not be changed
-	 * afterwards
+	 * afterwards.
 	 *
 	 * @param name
-	 * @param value
-	 * @return
+	 *            The parameter name, as defined in the GraphQL schema
+	 * @param graphQLTypeName
+	 *            The GraphQL type name of this parameter. For instance: "Human", for the type "[[Human]]"
+	 * @param mandatory
+	 *            True if this parameter is mandatory
+	 * @param listDepth
+	 *            The depth of the list for this input parameter: 0 if this parameter is not a list. And 2, for
+	 *            instance, if the parameter's type is "[[Int]]"
+	 * @param itemMandatory
+	 *            Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false
+	 *            otherwise
+	 * @return The newly created {@link InputParameter}, according to these parameters
 	 */
-	public static InputParameter newHardCodedParameter(String name, Object value) {
-		return new InputParameter(name, null, value, InputParameterType.HARD_CODED, null);
+	public static InputParameter newGraphQLVariableParameter(String name, String graphQLTypeName, boolean mandatory,
+			int listDepth, boolean itemMandatory) {
+		return new InputParameter(name, name, null, InputParameterType.GRAPHQL_VARIABLE, graphQLTypeName, mandatory,
+				listDepth, itemMandatory);
 	}
 
 	/**
@@ -153,17 +169,22 @@ public class InputParameter {
 	 * @param value
 	 *            The value to send, for this input parameter. If null, it's a bind parameter. The bindParameterName is
 	 *            then mandatory.
-	 * @param graphQLCustomScalarType
-	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
-	 *            null. <BR/>
-	 *            graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a
-	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
-	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
-	 * @return
+	 * @param graphQLTypeName
+	 *            The GraphQL type name of this parameter. For instance: "Human", for the type "[[Human]]"
+	 * @param mandatory
+	 *            True if this parameter is mandatory
+	 * @param listDepth
+	 *            The depth of the list for this input parameter: 0 if this parameter is not a list. And 2, for
+	 *            instance, if the parameter's type is "[[Int]]"
+	 * @param itemMandatory
+	 *            Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false
+	 *            otherwise
+	 * @return The newly created {@link InputParameter}, according to these parameters
 	 */
-	public static InputParameter newHardCodedParameter(String name, Object value,
-			GraphQLScalarType graphQLCustomScalarType) {
-		return new InputParameter(name, null, value, InputParameterType.HARD_CODED, graphQLCustomScalarType);
+	public static InputParameter newHardCodedParameter(String name, Object value, String graphQLTypeName,
+			boolean mandatory, int listDepth, boolean itemMandatory) {
+		return new InputParameter(name, null, value, InputParameterType.HARD_CODED, graphQLTypeName, mandatory,
+				listDepth, itemMandatory);
 	}
 
 	/**
@@ -182,15 +203,19 @@ public class InputParameter {
 	 *            then mandatory.
 	 * @param type
 	 *            The kind of {@link InputParameter} to create
-	 * @param graphQLCustomScalarType
-	 *            If this input parameter's type is a GraphQL Custom Scalar, it must be provided. Otherwise, it must be
-	 *            null. <BR/>
-	 *            graphQLCustomScalarType contains the {@link GraphQLScalarType} that allows to convert the value to a
-	 *            String that can be written in the GraphQL request, or convert from a String that is found in the
-	 *            GraphQL response. If this type is not a GraphQL Custom Scalar, it must be null.
+	 * @param graphQLTypeName
+	 *            The GraphQL type name of this parameter. For instance: "Human", for the type "[[Human]]"
+	 * @param mandatory
+	 *            True if this parameter is mandatory
+	 * @param listDepth
+	 *            The depth of the list for this input parameter: 0 if this parameter is not a list. And 2, for
+	 *            instance, if the parameter's type is "[[Int]]"
+	 * @param itemMandatory
+	 *            Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false
+	 *            otherwise
 	 */
 	private InputParameter(String name, String bindParameterName, Object value, InputParameterType type,
-			GraphQLScalarType graphQLCustomScalarType) {
+			String graphQLTypeName, boolean mandatory, int listDepth, boolean itemMandatory) {
 		if (name == null) {
 			throw new NullPointerException("The input parameter's name is mandatory");
 		}
@@ -199,7 +224,139 @@ public class InputParameter {
 		this.bindParameterName = bindParameterName;
 		this.value = value;
 		this.type = type;
-		this.graphQLCustomScalarType = graphQLCustomScalarType;
+		this.graphQLTypeName = graphQLTypeName;
+		this.graphQLScalarType = graphqlClientUtils.getGraphQLCustomScalarTypeFromName(graphQLTypeName);
+		this.mandatory = mandatory;
+		this.listDepth = listDepth;
+		this.itemMandatory = itemMandatory;
+	}
+
+	/**
+	 * The constructor is private. Instances must be created with one of these helper methods:
+	 * {@link #newBindParameter(String, String)} or {@link #newHardCodedParameter(String, Object)}
+	 *
+	 * @param name
+	 *            The parameter name, as defined in the GraphQL schema
+	 * @param parameterName
+	 *            The name of the bind parameter, as defined in the GraphQL response definition. If null, it's a hard
+	 *            coded value. The value will be sent to the server, when the request is executed. Please read the
+	 *            <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">client doc</A>
+	 *            for more information on input parameters and bind variables.
+	 * @param value
+	 *            The value to send, for this input parameter. If null, it's a bind parameter. The bindParameterName is
+	 *            then mandatory.
+	 * @param type
+	 *            The kind of {@link InputParameter} to create
+	 * @param directive
+	 *            If not null, then we're looking for an argument of a GraphQL directive. Oherwise, it's a field
+	 *            argument, and the owningClass and fieldName parameters will be used.
+	 * @param owningClass
+	 *            The class that contains this field
+	 * @param fieldName
+	 *            The field name
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private InputParameter(String name, String parameterName, Object value, InputParameterType type,
+			Directive directive, Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
+		String localGraphQLCustomScalarType = null;
+		boolean localMandatory = false;
+		int localList = 0;
+		boolean localItemMandatory = false;
+
+		if (name == null) {
+			throw new NullPointerException("The input parameter's name is mandatory");
+		}
+
+		if (directive != null) {
+			// Let's find the definition for this directive
+			Directive dirDef = directiveRegistry.getDirective(directive.getName());
+			if (dirDef == null) {
+				throw new GraphQLRequestPreparationException(
+						"Could not find directive definition for the directive '" + directive.getName() + "'");
+			}
+
+			// Let's find the GraphQL type of this argument
+			boolean found = false;
+			for (InputParameter param : dirDef.getArguments()) {
+				if (param.getName().equals(name)) {
+					found = true;
+					localGraphQLCustomScalarType = param.getGraphQLTypeName();
+					localMandatory = param.isMandatory();
+					localList = param.getListDepth();
+					localItemMandatory = param.isItemMandatory();
+				}
+			} // for
+
+			if (!found) {
+				throw new GraphQLRequestPreparationException("The parameter of name '" + name
+						+ "' has not been found for the directive '" + directive.getName() + "'");
+			}
+		} else {
+			GraphQLInputParameters inputParams;
+
+			if (owningClass.isInterface()) {
+				Method method;
+				try {
+					method = owningClass
+							.getMethod("get" + graphqlUtils.getPascalCase(graphqlUtils.getJavaName(fieldName)));
+					inputParams = method.getAnnotation(GraphQLInputParameters.class);
+				} catch (NoSuchMethodException | SecurityException e) {
+					throw new GraphQLRequestPreparationException("Error while looking for the the getter for <"
+							+ fieldName + "> in the interface '" + owningClass.getName() + "'", e);
+				}
+			} else {
+				try {
+					Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
+					inputParams = field.getAnnotation(GraphQLInputParameters.class);
+				} catch (NoSuchFieldException | SecurityException e) {
+					// We may be in the XxxResponse class. ITs has no field, and all the relevant fields are in its
+					// superclass. Let's recurse once.
+					try {
+						Field field = owningClass.getSuperclass().getDeclaredField(graphqlUtils.getJavaName(fieldName));
+						inputParams = field.getAnnotation(GraphQLInputParameters.class);
+					} catch (NoSuchFieldException | SecurityException e2) {
+						// We may be in the XxxResponse class. ITs has no field, and all the relevant fields are in its
+						// superclass. Let's recurse once.
+						throw new GraphQLRequestPreparationException("Error while looking for the the field <"
+								+ fieldName + "> in the class '" + owningClass.getName() + "', not in its superclass: "
+								+ owningClass.getSuperclass().getName(), e);
+					}
+				}
+			}
+
+			if (inputParams == null)
+				throw new GraphQLRequestPreparationException("The field <" + fieldName + "> of the class '"
+						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
+						+ parameterName + "' input parameter");
+
+			boolean found = false;
+			for (int i = 0; i < inputParams.names().length; i += 1) {
+				if (inputParams.names()[i].equals(name)) {
+					// We've found the expected parameter
+					found = true;
+					localGraphQLCustomScalarType = inputParams.types()[i];
+					localMandatory = inputParams.mandatories()[i];
+					localList = inputParams.listDepths()[i];
+					localItemMandatory = inputParams.itemsMandatory()[i];
+				}
+			}
+
+			if (!found) {
+				throw new GraphQLRequestPreparationException(
+						"The parameter of name <" + parameterName + "> has not been found for the field <" + fieldName
+								+ "> of the class '" + owningClass.getName() + "'");
+			}
+		}
+
+		this.name = name;
+		this.bindParameterName = parameterName;
+		this.value = value;
+		this.type = type;
+		this.graphQLTypeName = localGraphQLCustomScalarType;
+		this.graphQLScalarType = graphqlClientUtils.getGraphQLCustomScalarTypeFromName(graphQLTypeName);
+		this.mandatory = localMandatory;
+		this.listDepth = localList;
+		this.itemMandatory = localItemMandatory;
 	}
 
 	/**
@@ -217,9 +374,6 @@ public class InputParameter {
 	 *            class.
 	 * @param fieldName
 	 *            if <I>owningClass</I>, this is the name of the field, whose input parameters are being read.
-	 * @param packageName
-	 *            The package name is necessary to load the generated classes, to read the metadata that has been
-	 *            generated
 	 * @throws GraphQLRequestPreparationException
 	 *             If the request string is invalid
 	 */
@@ -263,11 +417,13 @@ public class InputParameter {
 					// We've read the parameter value. Let's add this parameter.
 					if (token.startsWith("?")) {
 						ret.add(new InputParameter(parameterName, token.substring(1), null, InputParameterType.OPTIONAL,
-								graphqlClientUtils.getGraphQLType(directive, owningClass, fieldName, parameterName)));
+								directive, owningClass, fieldName));
 					} else if (token.startsWith("&")) {
 						ret.add(new InputParameter(parameterName, token.substring(1), null,
-								InputParameterType.MANDATORY,
-								graphqlClientUtils.getGraphQLType(directive, owningClass, fieldName, parameterName)));
+								InputParameterType.MANDATORY, directive, owningClass, fieldName));
+					} else if (token.startsWith("$")) {
+						ret.add(new InputParameter(parameterName, token.substring(1), null,
+								InputParameterType.GRAPHQL_VARIABLE, directive, owningClass, fieldName));
 					} else if (token.equals("[") || token.equals("{")) {
 						// We've found the start of a JSON list or JSON object. Let's read this object.
 						// We'll store it as a String, and write it back in the request toward the GraphQL server
@@ -275,6 +431,7 @@ public class InputParameter {
 						StringBuffer sb = new StringBuffer(token);
 						String previousToken;
 						boolean list = token.startsWith("[");
+						int listDepth = 0;
 						boolean withinAString = false;
 						int recursiveLevel = 1;// Counts the depth of [ or { we're in. When it's back to 0, we're done
 												// reading this list or object
@@ -307,6 +464,7 @@ public class InputParameter {
 								if ((list && token.equals("[") || (!list && token.equals("{")))) {
 									// We're going deeper in the list or object
 									recursiveLevel += 1;
+									listDepth += 1;
 								} else if ((list && token.equals("]") || (!list && token.equals("}")))) {
 									// We're going up once.
 									recursiveLevel -= 1;
@@ -319,8 +477,10 @@ public class InputParameter {
 						} // while (true)
 
 						// It's a GraphQL list or object. We store the read characters as is.
+						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
+						// not used in this case)
 						ret.add(new InputParameter(parameterName, null, new RawGraphQLString(sb.toString()),
-								InputParameterType.GRAPHQL_VALUE, null));
+								InputParameterType.GRAPHQL_VALUE, null, false, listDepth, false));
 					} else if (token.equals("\"")) {
 						// We've found a String value: let's read the string content
 						StringBuffer sb = new StringBuffer();
@@ -345,8 +505,10 @@ public class InputParameter {
 						} // while (true)
 
 						// It's a regular String.
+						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
+						// not used in this case)
 						ret.add(new InputParameter(parameterName, null, sb.toString(), InputParameterType.HARD_CODED,
-								null));
+								"String", true, 0, false));
 					} else if (token.startsWith("\"") || token.endsWith("\"")) {
 						// Too bad, there is a " only at the end or only at the beginning
 						throw new GraphQLRequestPreparationException(
@@ -356,14 +518,18 @@ public class InputParameter {
 										+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 					} else if (directive != null) {
 						Object parameterValue = parseDirectiveArgumentValue(directive, parameterName, token);
+						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
+						// not used in this case)
 						InputParameter arg = new InputParameter(parameterName, null, parameterValue,
-								InputParameterType.HARD_CODED, null);
+								InputParameterType.HARD_CODED, null, true, 0, false);
 						ret.add(arg);
 						directive.getArguments().add(arg);
 					} else {
 						Object parameterValue = parseInputParameterValue(owningClass, fieldName, parameterName, token);
+						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
+						// not used in this case)
 						ret.add(new InputParameter(parameterName, null, parameterValue, InputParameterType.HARD_CODED,
-								null));
+								null, true, 0, false));
 					}
 					step = InputParameterStep.NAME;
 					break;
@@ -424,7 +590,7 @@ public class InputParameter {
 			if (param.getName().equals(parameterName)) {
 				// We've found the parameterType. Let's get its value.
 				try {
-					return parseValueForInputParameter(parameterValue, param.getGraphQLScalarType().getName(),
+					return parseValueForInputParameter(parameterValue, param.getGraphQLTypeName(),
 							directive.getPackageName());
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException("Could not read the value for the parameter '"
@@ -482,12 +648,12 @@ public class InputParameter {
 	public String getValueForGraphqlQuery(Map<String, Object> bindVariables) throws GraphQLRequestExecutionException {
 		if (this.bindParameterName == null) {
 			// It's a hard coded value
-			return this.getValueForGraphqlQuery(this.value, graphQLCustomScalarType);
+			return this.getValueForGraphqlQuery(this.value, graphQLTypeName, graphQLScalarType, false);
 		}
 		// It's a Bind Variable.
 
 		// If the InputParameter is mandatory, which must have its value in the map of BindVariables.
-		if (type.equals(InputParameterType.MANDATORY)
+		if ((type.equals(InputParameterType.MANDATORY) || type.equals(InputParameterType.GRAPHQL_VARIABLE))
 				&& (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))) {
 			throw new GraphQLRequestExecutionException("The Bind Parameter for '" + this.bindParameterName
 					+ "' must be provided in the BindVariables map");
@@ -496,7 +662,8 @@ public class InputParameter {
 		if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
 			return null;
 		else
-			return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName), graphQLCustomScalarType);
+			return this.getValueForGraphqlQuery(bindVariables.get(this.bindParameterName), graphQLTypeName,
+					graphQLScalarType, type.equals(InputParameterType.GRAPHQL_VARIABLE));
 	}
 
 	/**
@@ -506,15 +673,22 @@ public class InputParameter {
 	 * @param val
 	 *            This value of the parameter. It can be the {@link #value} if it is not null, or the binding from the
 	 *            bind parameters. It's up to the caller to map the bind parameter into this method argument.
+	 * @param graphQLTypeName
+	 * @param graphQLVariable
+	 *            true if the current input type should be deserialize as a GraphQL variable. In this case, it's
+	 *            deserialized as a map. So the field names must be within double quotes
+	 * @param graphQLScalarType
+	 *            The {@link GraphQLScalarType} for this value. It may be the same as the parameter one (for scalar), or
+	 *            the one of the current field (fot input types).
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	String getValueForGraphqlQuery(Object val, GraphQLScalarType graphQLScalarType)
-			throws GraphQLRequestExecutionException {
+	String getValueForGraphqlQuery(Object val, String graphQLTypeName, GraphQLScalarType graphQLScalarType,
+			boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		if (val == null) {
 			return null;
 		} else if (val instanceof java.util.List) {
-			return getListValue((List<?>) val, graphQLScalarType);
+			return getListValue((List<?>) val, graphQLTypeName, graphQLScalarType, graphQLVariable);
 		} else if (graphQLScalarType != null) {
 			Object ret = graphQLScalarType.getCoercing().serialize(val);
 			if (ret instanceof String)
@@ -530,7 +704,7 @@ public class InputParameter {
 		} else if (val instanceof UUID) {
 			return getStringValue(((UUID) val).toString());
 		} else if (val.getClass().getAnnotation(GraphQLInputType.class) != null) {
-			return getInputTypeStringValue(val);
+			return getInputTypeStringValue(val, graphQLVariable);
 		} else {
 			return val.toString();
 		}
@@ -554,17 +728,23 @@ public class InputParameter {
 	 *
 	 * @param list
 	 *            a non null List
+	 * @param graphQLVariable
+	 *            true if the current input type should be deserialize as a GraphQL variable. In this case, it's
+	 *            deserialized as a map. So the field names must be within double quotes
+	 * @param graphQLScalarType
+	 *            The {@link GraphQLScalarType} for this value. It may be the same as the parameter one (for scalar), or
+	 *            the one of the current field (fot input types).
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 * @throws NullPointerException
-	 *             If lst is null
+	 *             If list is null
 	 */
-	private String getListValue(List<?> list, GraphQLScalarType graphQLScalarType)
-			throws GraphQLRequestExecutionException {
+	private String getListValue(List<?> list, String graphQLTypeName, GraphQLScalarType graphQLScalarType,
+			boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("[");
 		for (int index = 0; index < list.size(); index++) {
 			Object obj = list.get(index);
-			result.append(this.getValueForGraphqlQuery(obj, graphQLScalarType));
+			result.append(this.getValueForGraphqlQuery(obj, graphQLTypeName, graphQLScalarType, graphQLVariable));
 			if (index < list.size() - 1) {
 				result.append(",");
 			}
@@ -578,10 +758,14 @@ public class InputParameter {
 	 *
 	 * @param object
 	 *            An object which class is an InputType as defined in the GraphQL schema
+	 * @param graphQLVariable
+	 *            true if the current input type should be deserialize as a GraphQL variable. In this case, it's
+	 *            deserialized as a map. So the field names must be within double quotes
 	 * @return The String that represents this object, according to GraphQL standard representation, as expected in the
 	 *         query to be sent to the server
 	 */
-	private String getInputTypeStringValue(Object object) throws GraphQLRequestExecutionException {
+	private String getInputTypeStringValue(Object object, boolean graphQLVariable)
+			throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("{");
 		String separator = "";
 
@@ -593,9 +777,16 @@ public class InputParameter {
 				if (val != null) {
 					result.append(separator);
 
+					if (graphQLVariable) {
+						result.append("\\\"");
+					}
 					result.append(field.getName());
+					if (graphQLVariable) {
+						result.append("\\\"");
+					}
 					result.append(":");
-					result.append(getValueForGraphqlQuery(val, graphqlClientUtils.getGraphQLCustomScalarType(field)));
+					result.append(getValueForGraphqlQuery(val, graphQLTypeName,
+							graphqlClientUtils.getGraphQLCustomScalarType(field), graphQLVariable));
 
 					separator = ",";
 				}
@@ -613,8 +804,24 @@ public class InputParameter {
 		return type;
 	}
 
+	public String getGraphQLTypeName() {
+		return graphQLTypeName;
+	}
+
 	public GraphQLScalarType getGraphQLScalarType() {
-		return graphQLCustomScalarType;
+		return graphQLScalarType;
+	}
+
+	public boolean isItemMandatory() {
+		return itemMandatory;
+	}
+
+	public int getListDepth() {
+		return listDepth;
+	}
+
+	public boolean isMandatory() {
+		return mandatory;
 	}
 
 	public static void appendInputParametersToGraphQLRequests(StringBuilder sb, List<InputParameter> inputParameters,

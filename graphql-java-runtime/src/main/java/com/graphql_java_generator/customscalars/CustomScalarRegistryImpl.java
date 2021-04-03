@@ -40,7 +40,7 @@ public class CustomScalarRegistryImpl implements CustomScalarRegistry {
 	}
 
 	@Override
-	public GraphQLScalarType getGraphQLScalarType(String graphQLTypeName) {
+	public GraphQLScalarType getGraphQLCustomScalarType(String graphQLTypeName) {
 		CustomScalar scalar = customScalarTypes.get(graphQLTypeName);
 		return (scalar == null) ? null : scalar.getGraphQLScalarType();
 	}

@@ -28,7 +28,7 @@ type MyQueryType {
     # withList return a list of Characters, matching the given list of CharacterInput.
     # The name of the first Character returned is replaced by the given firstName.
     # All ids are generated  
-    withList(firstName: String!, characters: [CharacterInput]!): [Character]
+    withList(firstName: String!, characters: [CharacterInput!]!): [Character]
 
     ################################################################################
    	# Complementary tests with the AllFieldCases Object

@@ -740,7 +740,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// withList(name: String!, friends: [Character]!): [Characters]
 		checkField(type, j, "withList", true, false, false, "Character", "Character");
 		checkInputParameter(type, j, 0, "firstName", false, true, null, "String", String.class.getSimpleName(), null);
-		checkInputParameter(type, j, 1, "characters", true, true, false, "CharacterInput", "CharacterInput", null);
+		checkInputParameter(type, j, 1, "characters", true, true, true, "CharacterInput", "CharacterInput", null);
 
 	}
 

@@ -56,6 +56,7 @@ import graphql.language.ObjectTypeExtensionDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
 import graphql.language.SchemaDefinition;
+import graphql.language.StringValue;
 import graphql.language.TypeName;
 import graphql.language.UnionTypeDefinition;
 import graphql.parser.Parser;
@@ -238,8 +239,10 @@ public abstract class DocumentParser {
 		// @deprecated
 		DirectiveImpl deprecated = new DirectiveImpl();
 		deprecated.setName("deprecated");
-		// deprecated.getArguments().add(FieldImpl.builder().name("reason").graphQLTypeSimpleName("String")
-		// .defaultValue("No longer supported").build());
+		deprecated.getArguments()
+				.add(FieldImpl.builder().name("reason")
+						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").build())
+						.defaultValue(new StringValue("No longer supported")).build());
 		deprecated.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		deprecated.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
 		deprecated.setStandard(true);
@@ -798,6 +801,11 @@ public abstract class DocumentParser {
 		field.setName((String) graphqlUtils.invokeMethod("getName", fieldDef));
 		field.setAppliedDirectives(readAppliedDirectives(
 				(List<graphql.language.Directive>) graphqlUtils.invokeMethod("getDirectives", fieldDef)));
+
+		if (field.getName().equals("characters")) {
+			// Breakpoint
+			int i = 0;
+		}
 		field.setFieldTypeAST(readFieldTypeAST(graphqlUtils.invokeMethod("getType", fieldDef)));
 
 		// For InputValueDefinition, we may have a default value
@@ -815,12 +823,13 @@ public abstract class DocumentParser {
 			return new FieldTypeAST(typeName.getName());
 		} else if (fieldDef instanceof ListType) {
 			// This node contains a list. Let's recurse one.
-			ListType subNode = (ListType) fieldDef;
-			FieldTypeAST listItemTypeAST = readFieldTypeAST(subNode.getType());
+			ListType node = (ListType) fieldDef;
+			FieldTypeAST listItemTypeAST = readFieldTypeAST(node.getType());
 			// We return a list of the read subnode.
 			FieldTypeAST fieldTypeAST = new FieldTypeAST();
 			fieldTypeAST.setList(true);
 			fieldTypeAST.setListItemFieldTypeAST(listItemTypeAST);
+			fieldTypeAST.setItemMandatory(node.getChildren().get(0) instanceof NonNullType);
 			return fieldTypeAST;
 		} else if (fieldDef instanceof NonNullType) {
 			// Let's recurse in the AST for this mandatory type

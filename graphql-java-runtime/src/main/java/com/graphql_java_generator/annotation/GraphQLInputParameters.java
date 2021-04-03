@@ -38,4 +38,35 @@ public @interface GraphQLInputParameters {
 	 */
 	public String[] types();
 
+	/**
+	 * Contains for each input parameters named in {@link #names()}, true if this parameter is mandatory, and false
+	 * otherwise. It must contain at least one item (as this annotation indicates that this field has input
+	 * parameter(s), and must have the same number of items as {@link #names()}. The n<I>th</I> type this list, must be
+	 * linked to the n<I>th</I> name in the {@link #names()} list.
+	 * 
+	 * @return
+	 */
+	public boolean[] mandatories() default {};
+
+	/**
+	 * Contains for each input parameters named in {@link #names()}, 0 if this parameter is not a list, and a positive
+	 * number if this input parameter is a list (2, for instance for [[Int]]). It must contain at least one item (as
+	 * this annotation indicates that this field has input parameter(s), and must have the same number of items as
+	 * {@link #names()}. The n<I>th</I> type this list, must be linked to the n<I>th</I> name in the {@link #names()}
+	 * list.
+	 * 
+	 * @return
+	 */
+	public int[] listDepths() default {};
+
+	/**
+	 * Contains for each input parameters named in {@link #names()}, true if this parameter is a list and its items are
+	 * mandatory (according to GraphQL list's specification), and false otherwise. It must contain at least one item (as
+	 * this annotation indicates that this field has input parameter(s), and must have the same number of items as
+	 * {@link #names()}. The n<I>th</I> type this list, must be linked to the n<I>th</I> name in the {@link #names()}
+	 * list.
+	 * 
+	 * @return
+	 */
+	public boolean[] itemsMandatory() default {};
 }

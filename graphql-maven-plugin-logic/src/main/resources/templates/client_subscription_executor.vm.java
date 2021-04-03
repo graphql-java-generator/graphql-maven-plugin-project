@@ -491,7 +491,7 @@ public class ${object.classSimpleName}Executor {
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "${field.name}", RequestType.${object.requestType}
 #foreach ($inputParameter in $field.inputParameters)
-			, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, #customScalar())
+			, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, #customScalar(), ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.list}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
 			);
 	}
@@ -515,7 +515,7 @@ public class ${object.classSimpleName}Executor {
 	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
 #foreach ($inputParameter in $field.inputParameters)
-		, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, #customScalar())
+		, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, #customScalar(), ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.list}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
 		);
 		ret.setInstanceConfiguration(configuration);

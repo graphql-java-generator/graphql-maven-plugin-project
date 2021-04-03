@@ -46,6 +46,7 @@ public class DirectiveRegistryInitializer {
 ## It must be a custom scalar
 					CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType("${argument.graphQLTypeSimpleName}")
 #end
+					, ${argument.fieldTypeAST.mandatory}, ${argument.fieldTypeAST.list}, ${argument.fieldTypeAST.itemMandatory}
 				);
 		directive.getArguments().add(param);
 #end

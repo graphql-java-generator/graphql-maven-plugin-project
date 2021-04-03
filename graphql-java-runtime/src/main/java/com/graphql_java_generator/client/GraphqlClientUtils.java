@@ -16,16 +16,11 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLEnumType;
-import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInterfaceType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.GraphQLUnionType;
-import com.graphql_java_generator.client.directive.Directive;
-import com.graphql_java_generator.client.directive.DirectiveRegistry;
-import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
-import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -42,9 +37,6 @@ public class GraphqlClientUtils {
 
 	/** A singleton without Spring */
 	public static GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
-
-	/** The registry for all known GraphQL directives */
-	DirectiveRegistry directiveRegistry = DirectiveRegistryImpl.directiveRegistry;
 
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 
@@ -376,106 +368,21 @@ public class GraphqlClientUtils {
 			graphQLTypeName = null;
 		}
 		if (graphQLTypeName != null) {
-			return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(graphQLTypeName);
+			return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLCustomScalarType(graphQLTypeName);
 		} else {
 			return null;
 		}
 	}
 
 	/**
-	 * Retrieves the {@link GraphQLScalarType} from this input parameter, if this parameter is a Custom Scalar
-	 * 
-	 * @param directive
-	 *            If not null, then we're looking for an argument of a GraphQL directive. Oherwise, it's a field
-	 *            argument, and the owningClass and fieldName parameters will be used.
-	 * @param owningClass
-	 *            The class that contains this field
-	 * @param fieldName
-	 *            The field name
-	 * @param parameterName
-	 *            The parameter name, which must be the name for an input parameter for this field in the GraphQL schema
-	 * @return The {@link GraphQLScalarType} if this type is a scalar (out of enums). And null otherwise.
-	 * @throws GraphQLRequestPreparationException
-	 */
-	public GraphQLScalarType getGraphQLType(Directive directive, Class<?> owningClass, String fieldName,
-			String parameterName) throws GraphQLRequestPreparationException {
-
-		if (directive != null) {
-			// Let's find the definition for this directive
-			Directive dirDef = directiveRegistry.getDirective(directive.getName());
-			if (dirDef == null) {
-				throw new GraphQLRequestPreparationException(
-						"Could not find directive definition for the directive '" + directive.getName() + "'");
-			}
-
-			// Let's find the GraphQL type of this argument
-			for (InputParameter param : dirDef.getArguments()) {
-				if (param.getName().equals(parameterName)) {
-					return param.getGraphQLScalarType();
-				}
-			} // for
-
-			throw new GraphQLRequestPreparationException("The parameter of name '" + parameterName
-					+ "' has not been found for the directive '" + directive.getName() + "'");
-		} else {
-			GraphQLInputParameters inputParams;
-
-			if (owningClass.isInterface()) {
-				Method method;
-				try {
-					method = owningClass
-							.getMethod("get" + graphqlUtils.getPascalCase(graphqlUtils.getJavaName(fieldName)));
-					inputParams = method.getAnnotation(GraphQLInputParameters.class);
-				} catch (NoSuchMethodException | SecurityException e) {
-					throw new GraphQLRequestPreparationException("Error while looking for the the getter for <"
-							+ fieldName + "> in the interface '" + owningClass.getName() + "'", e);
-				}
-			} else {
-				try {
-					Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
-					inputParams = field.getAnnotation(GraphQLInputParameters.class);
-				} catch (NoSuchFieldException | SecurityException e) {
-					// We may be in the XxxResponse class. ITs has no field, and all the relevant fields are in its
-					// superclass. Let's recurse once.
-					try {
-						Field field = owningClass.getSuperclass().getDeclaredField(graphqlUtils.getJavaName(fieldName));
-						inputParams = field.getAnnotation(GraphQLInputParameters.class);
-					} catch (NoSuchFieldException | SecurityException e2) {
-						// We may be in the XxxResponse class. ITs has no field, and all the relevant fields are in its
-						// superclass. Let's recurse once.
-						throw new GraphQLRequestPreparationException("Error while looking for the the field <"
-								+ fieldName + "> in the class '" + owningClass.getName() + "', not in its superclass: "
-								+ owningClass.getSuperclass().getName(), e);
-					}
-				}
-			}
-
-			if (inputParams == null)
-				throw new GraphQLRequestPreparationException("The field <" + fieldName + "> of the class '"
-						+ owningClass.getName() + "' has no input parameters. Error while looking for its '"
-						+ parameterName + "' input parameter");
-
-			for (int i = 0; i < inputParams.names().length; i += 1) {
-				if (inputParams.names()[i].equals(parameterName)) {
-					// We've found the expected parameter
-					return getGraphQLTypeFromName(inputParams.types()[i]);
-				}
-			}
-
-			throw new GraphQLRequestPreparationException(
-					"The parameter of name <" + parameterName + "> has not been found for the field <" + fieldName
-							+ "> of the class '" + owningClass.getName() + "'");
-		}
-	}
-
-	/**
-	 * Returns the GraphQL type for this object
+	 * Returns the GraphQL scalar type for the given Standard or Custom Scalar name, as defined in the GraphQL schema.
+	 * The {@link GraphQLScalarType} contains the method that allows to parse a String value, parse an AST value, or
+	 * serialize the value (for instance to write it into a JSON string)
 	 * 
 	 * @param typeName
 	 * @return The GraphQL type. Or null if not found (enum, object, input type, interface, union)
-	 * @throws GraphQLRequestPreparationException
 	 */
-	public GraphQLScalarType getGraphQLTypeFromName(String typeName) throws GraphQLRequestPreparationException {
+	public GraphQLScalarType getGraphQLCustomScalarTypeFromName(String typeName) {
 
 		// Is it a known type ?
 		if (typeName.equals("String")) {
@@ -490,7 +397,7 @@ public class GraphqlClientUtils {
 			return graphql.Scalars.GraphQLID;
 		}
 
-		return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLScalarType(typeName);
+		return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLCustomScalarType(typeName);
 	}
 
 }

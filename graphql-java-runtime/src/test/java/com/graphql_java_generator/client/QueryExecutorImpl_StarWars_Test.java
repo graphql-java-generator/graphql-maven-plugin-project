@@ -29,7 +29,6 @@ import com.graphql_java_generator.client.domain.starwars.Droid;
 import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.client.domain.starwars.QueryType;
-import com.graphql_java_generator.client.domain.starwars.QueryTypeHero;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -246,7 +245,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// Preparation
 		Exception exception;
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, null, false, false, false));
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef(" { id name appearsIn friends { name } } ")
@@ -263,22 +262,22 @@ class QueryExecutorImpl_StarWars_Test {
 
 		exception = assertThrows(GraphQLResponseParseException.class, () -> parseResponseForStarWarsSchema(
 				"{\"wrongTag\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				objectResponse, QueryTypeHero.class));
+				objectResponse, QueryType.class));
 		assertTrue(exception.getMessage().contains("'data'"));
 
 		exception = assertThrows(UnrecognizedPropertyException.class, () -> parseResponseForStarWarsSchema(
 				"{\"data\":{\"wrongAlias\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null}}}",
-				objectResponse, QueryTypeHero.class));
+				objectResponse, QueryType.class));
 		assertTrue(exception.getMessage().contains("wrongAlias"));
 
 		exception = assertThrows(UnrecognizedPropertyException.class, () -> parseResponseForStarWarsSchema(
 				"{\"data\":{\"hero\":{\"wrongTag\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null,\"__typename\":\"Droid\"}}}",
-				objectResponse, QueryTypeHero.class));
+				objectResponse, QueryType.class));
 		assertTrue(exception.getMessage().contains("wrongTag"));
 
 		exception = assertThrows(InvalidFormatException.class, () -> parseResponseForStarWarsSchema(
 				"{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"WRONG_EPISODE\",\"JEDI\"],\"friends\":null,\"__typename\":\"Droid\"}}}",
-				objectResponse, QueryTypeHero.class));
+				objectResponse, QueryType.class));
 		assertTrue(exception.getMessage().contains("WRONG_EPISODE"));
 	}
 
@@ -287,7 +286,7 @@ class QueryExecutorImpl_StarWars_Test {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, null, false, false, false));
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
@@ -300,11 +299,11 @@ class QueryExecutorImpl_StarWars_Test {
 		String rawResponse = "{\"data\":{\"hero\":{\"id\":\"An id\",\"name\":\"A hero's name\",\"appearsIn\":[\"NEWHOPE\",\"JEDI\"],\"friends\":null, \"__typename\": \"Human\"}}}";
 
 		// Go, go, go
-		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryTypeHero.class);
+		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryType.class);
 
 		// Verification
-		assertTrue(response instanceof QueryTypeHero, "response instanceof QueryTypeHero");
-		Character character = ((QueryTypeHero) response).getHero();
+		assertTrue(response instanceof QueryType, "response instanceof QueryTypeHero");
+		Character character = ((QueryType) response).getHero();
 		assertTrue(character instanceof Human, "character instanceof QueryTypeHero");
 		assertEquals(Human.class.getName(), character.getClass().getName());
 		assertEquals("An id", character.getId(), "id");
@@ -321,7 +320,7 @@ class QueryExecutorImpl_StarWars_Test {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, null, false, false, false));
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
@@ -334,11 +333,11 @@ class QueryExecutorImpl_StarWars_Test {
 		String rawResponse = "{\"data\":{\"hero\":{\"friends\":[], \"__typename\": \"Droid\"}}}";
 
 		// Go, go, go
-		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryTypeHero.class);
+		Object response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryType.class);
 
 		// Verification
-		assertTrue(response instanceof QueryTypeHero, "response instanceof QueryTypeHero");
-		Character character = ((QueryTypeHero) response).getHero();
+		assertTrue(response instanceof QueryType, "response instanceof QueryType");
+		Character character = ((QueryType) response).getHero();
 		assertTrue(character instanceof Droid, "character instanceof Droid");
 		assertEquals(Droid.class.getName(), character.getClass().getName());
 		assertNotNull(character.getFriends(), "He has perhaps has friends...");
@@ -361,7 +360,7 @@ class QueryExecutorImpl_StarWars_Test {
 		String rawResponse = "{\"data\":{\"hero\":{\"__typename\": \"Droid\", \"friends\":[{\"name\":\"name350518\", \"__typename\": \"Human\"},{\"name\":\"name381495\", \"__typename\": \"Droid\"}]}}}";
 
 		// Go, go, go
-		QueryTypeHero response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryTypeHero.class);
+		QueryType response = parseResponseForStarWarsSchema(rawResponse, objectResponse, QueryType.class);
 
 		// Verification
 		Character hero = response.getHero();

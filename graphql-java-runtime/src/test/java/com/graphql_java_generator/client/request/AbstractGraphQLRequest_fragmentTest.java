@@ -194,7 +194,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(1, fragmentDroid.content.inlineFragments.get(0).content.fields.get(0).inputParameters.size());
 		InputParameter name = fragmentDroid.content.inlineFragments.get(0).content.fields.get(0).inputParameters.get(0);
 		assertEquals("uppercase", name.name);
-		assertEquals("Boolean", name.graphQLCustomScalarType.getName());
+		assertEquals("Boolean", name.graphQLTypeName);
 		assertEquals(null, name.value);
 		assertEquals("uppercaseFalse", name.bindParameterName);
 		//
@@ -217,8 +217,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals("name", inlineInlineHuman.content.fields.get(0).name);
 		assertEquals(1, inlineInlineHuman.content.fields.get(0).inputParameters.size());
 		assertEquals("uppercase", inlineInlineHuman.content.fields.get(0).inputParameters.get(0).name);
-		assertEquals("Boolean",
-				inlineInlineHuman.content.fields.get(0).inputParameters.get(0).graphQLCustomScalarType.getName());
+		assertEquals("Boolean", inlineInlineHuman.content.fields.get(0).inputParameters.get(0).graphQLTypeName);
 		assertEquals(null, inlineInlineHuman.content.fields.get(0).inputParameters.get(0).value);
 		assertEquals("notDefinedBindVariable",
 				inlineInlineHuman.content.fields.get(0).inputParameters.get(0).bindParameterName);

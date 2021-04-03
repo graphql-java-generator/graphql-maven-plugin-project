@@ -24,48 +24,48 @@ import java.util.List;
 public interface Character  {
 
 	@JsonProperty("id")
-	@GraphQLScalar( fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
 	public void setId(String id);
 
 	@JsonProperty("id")
-	@GraphQLScalar( fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
 	public String getId();
 
-	@GraphQLInputParameters(names = {"uppercase"}, types = {"Boolean"})
 	@JsonProperty("name")
-	@GraphQLScalar( fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLInputParameters(names = {"uppercase"}, types = {"Boolean"}, mandatories = {false}, listDepths = {0}, itemsMandatory = {false})
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public void setName(String name);
 
-	@GraphQLInputParameters(names = {"uppercase"}, types = {"Boolean"})
 	@JsonProperty("name")
-	@GraphQLScalar( fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLInputParameters(names = {"uppercase"}, types = {"Boolean"}, mandatories = {false}, listDepths = {0}, itemsMandatory = {false})
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public String getName();
 
-	@JsonDeserialize(contentAs = Character.class)
 	@JsonProperty("friends")
-	@GraphQLNonScalar( fieldName = "friends", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@JsonDeserialize(using = CustomJacksonDeserializers.ListCharacter.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public void setFriends(List<Character> friends);
 
-	@JsonDeserialize(contentAs = Character.class)
 	@JsonProperty("friends")
-	@GraphQLNonScalar( fieldName = "friends", graphQLTypeSimpleName = "Character", javaClass = Character.class)
+	@JsonDeserialize(using = CustomJacksonDeserializers.ListCharacter.class)
+	@GraphQLNonScalar(fieldName = "friends", graphQLTypeSimpleName = "Character", javaClass = Character.class)
 	public List<Character> getFriends();
 
-	@JsonDeserialize(contentAs = Episode.class)
 	@JsonProperty("appearsIn")
-	@GraphQLScalar( fieldName = "appearsIn", graphQLTypeSimpleName = "Episode", javaClass = Episode.class)
+	@JsonDeserialize(using = CustomJacksonDeserializers.ListEpisode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeSimpleName = "Episode", javaClass = Episode.class)
 	public void setAppearsIn(List<Episode> appearsIn);
 
-	@JsonDeserialize(contentAs = Episode.class)
 	@JsonProperty("appearsIn")
-	@GraphQLScalar( fieldName = "appearsIn", graphQLTypeSimpleName = "Episode", javaClass = Episode.class)
+	@JsonDeserialize(using = CustomJacksonDeserializers.ListEpisode.class)
+	@GraphQLScalar(fieldName = "appearsIn", graphQLTypeSimpleName = "Episode", javaClass = Episode.class)
 	public List<Episode> getAppearsIn();
 
 	@JsonProperty("__typename")
-	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public void set__typename(String __typename);
 
 	@JsonProperty("__typename")
-	@GraphQLScalar( fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
 	public String get__typename();
 }

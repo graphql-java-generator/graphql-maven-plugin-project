@@ -29,7 +29,7 @@ public interface CustomScalarRegistry {
 	 * @param graphQLTypeName
 	 * @return the {@link GraphQLScalarType}, or null if no converter has been registered for the given name
 	 */
-	public GraphQLScalarType getGraphQLScalarType(String graphQLTypeName);
+	public GraphQLScalarType getGraphQLCustomScalarType(String graphQLTypeName);
 
 	/**
 	 * Retrieves the registered {@link GraphQLScalarType} for this GraphQL CustomScalar.

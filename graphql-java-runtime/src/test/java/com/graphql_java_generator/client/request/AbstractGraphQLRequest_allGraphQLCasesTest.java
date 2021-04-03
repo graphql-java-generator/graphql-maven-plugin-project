@@ -198,4 +198,5 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertTrue(e.getMessage().contains("Found the end of the GraphQL request before the end of the list"),
 				"check of this error message: " + e.getMessage());
 	}
+
 }

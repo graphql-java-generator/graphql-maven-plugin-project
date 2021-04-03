@@ -121,7 +121,7 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(topic.getFields().get(i++), "posts", ""//
 				+ "@JsonProperty(\"posts\")\n"//
 				+ "\t@JsonDeserialize(using = CustomJacksonDeserializers.ListPost.class)\n"//
-				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"})\n"
+				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"}, mandatories = {false, false, true}, lists = {false, false, false}, itemsMandatory = {false, false, false})\n"
 				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = Post.class)");
 	}
 
@@ -140,7 +140,7 @@ class DocumentParser_Forum_Client_Test {
 		int i = 0;
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
-				+ "	@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
+				+ "	@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, lists = {false, false}, itemsMandatory = {false, false})\n"
 				+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 
@@ -158,7 +158,7 @@ class DocumentParser_Forum_Client_Test {
 		int i = 0;
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
-				+ "\t@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"})\n"
+				+ "\t@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, lists = {false, false}, itemsMandatory = {false, false})\n"
 				+ "\t@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 

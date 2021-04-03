@@ -27,7 +27,7 @@ public class QueryTokenizer {
 	 * @see #nextToken(boolean)
 	 */
 	public static final String EMPTY_DELIMITERS = " \n\r\t";
-	public static final String MEANINGFUL_DELIMITERS = "{}[],:()@\"";
+	public static final String MEANINGFUL_DELIMITERS = "{}[]!,:()@\"";
 
 	/**
 	 * The list of tokens are stored into this lists, which allows to get information from the coming tokens, without
@@ -84,9 +84,8 @@ public class QueryTokenizer {
 	}
 
 	/**
-	 * Returns the next token, which may or may not be an empty one, depending on returnEmptyDelimiters. The characters
-	 * that exist in the {@link #MEANINGFUL_DELIMITERS} are sent one character by one character. The characters that
-	 * exist in the {@link #EMPTY_DELIMITERS} are not sent.
+	 * Returns the next token. The characters that exist in the {@link #MEANINGFUL_DELIMITERS} are sent one character by
+	 * one character. The characters that exist in the {@link #EMPTY_DELIMITERS} are not sent.
 	 * 
 	 * @return
 	 */

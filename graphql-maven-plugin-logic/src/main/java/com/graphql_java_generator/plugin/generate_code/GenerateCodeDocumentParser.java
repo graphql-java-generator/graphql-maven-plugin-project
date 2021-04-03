@@ -473,13 +473,21 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			field.getOwningType().addImport(configuration.getPackageName(), GraphQLInputParameters.class.getName());
 			StringBuilder names = new StringBuilder();
 			StringBuilder types = new StringBuilder();
+			StringBuilder mandatories = new StringBuilder();
+			StringBuilder lists = new StringBuilder();
+			StringBuilder itemsMandatory = new StringBuilder();
 			String separator = "";
 			for (Field param : field.getInputParameters()) {
 				names.append(separator).append('"').append(param.getName()).append('"');
 				types.append(separator).append('"').append(param.getGraphQLTypeSimpleName()).append('"');
+				mandatories.append(separator).append(param.getFieldTypeAST().isMandatory());
+				lists.append(separator).append(param.getFieldTypeAST().isList());
+				itemsMandatory.append(separator).append(param.getFieldTypeAST().isItemMandatory());
 				separator = ", ";
 			}
-			field.addAnnotation("@GraphQLInputParameters(names = {" + names + "}, types = {" + types + "})");
+			field.addAnnotation(
+					"@GraphQLInputParameters(names = {" + names + "}, types = {" + types + "}, mandatories = {"
+							+ mandatories + "}, lists = {" + lists + "}, itemsMandatory = {" + itemsMandatory + "})");
 		}
 
 		addFieldAnnotationForBothClientAndServerMode(field);
