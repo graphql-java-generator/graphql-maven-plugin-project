@@ -121,7 +121,7 @@ class DocumentParser_Forum_Client_Test {
 		checkFieldAnnotation(topic.getFields().get(i++), "posts", ""//
 				+ "@JsonProperty(\"posts\")\n"//
 				+ "\t@JsonDeserialize(using = CustomJacksonDeserializers.ListPost.class)\n"//
-				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"}, mandatories = {false, false, true}, lists = {false, false, false}, itemsMandatory = {false, false, false})\n"
+				+ "\t@GraphQLInputParameters(names = {\"memberId\", \"memberName\", \"since\"}, types = {\"ID\", \"String\", \"Date\"}, mandatories = {false, false, true}, listDepths = {0, 0, 0}, itemsMandatory = {false, false, false})\n"
 				+ "\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = Post.class)");
 	}
 
@@ -140,7 +140,7 @@ class DocumentParser_Forum_Client_Test {
 		int i = 0;
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
-				+ "	@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, lists = {false, false}, itemsMandatory = {false, false})\n"
+				+ "	@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, listDepths = {0, 0}, itemsMandatory = {false, false})\n"
 				+ "	@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 
@@ -158,7 +158,7 @@ class DocumentParser_Forum_Client_Test {
 		int i = 0;
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
-				+ "\t@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, lists = {false, false}, itemsMandatory = {false, false})\n"
+				+ "\t@GraphQLInputParameters(names = {\"name\", \"publiclyAvailable\"}, types = {\"String\", \"Boolean\"}, mandatories = {true, false}, listDepths = {0, 0}, itemsMandatory = {false, false})\n"
 				+ "\t@GraphQLNonScalar(fieldName = \"createBoard\", graphQLTypeSimpleName = \"Board\", javaClass = Board.class)");
 	}
 
@@ -181,35 +181,35 @@ class DocumentParser_Forum_Client_Test {
 
 		int j = 0; // The first query is 0, see ++j below
 		// boards: [Board]
-		checkField(query, j, "boards", true, false, false, "Board", "Board");
+		checkField(query, j, "boards", 1, false, false, "Board", "Board");
 		assertEquals(0, query.getFields().get(j).getInputParameters().size());
 		j += 1;
 		// nbBoards: Int
-		checkField(query, j, "nbBoards", false, false, false, "Int", Integer.class.getSimpleName());
+		checkField(query, j, "nbBoards", 0, false, false, "Int", Integer.class.getSimpleName());
 		assertEquals(0, query.getFields().get(j).getInputParameters().size());
 		j += 1;
 		// topics(boardName: String!): [Topic]!
-		checkField(query, j, "topics", true, true, false, "Topic", "Topic");
+		checkField(query, j, "topics", 1, true, false, "Topic", "Topic");
 		assertEquals(1, query.getFields().get(j).getInputParameters().size());
-		checkInputParameter(query, j, 0, "boardName", false, true, null, "String", String.class.getSimpleName(), null);
+		checkInputParameter(query, j, 0, "boardName", 0, true, null, "String", String.class.getSimpleName(), null);
 		j += 1;
 		// findTopics(boardName: String!, keyword: [String!]): [Topic]
-		checkField(query, j, "findTopics", true, false, false, "Topic", "Topic");
+		checkField(query, j, "findTopics", 1, false, false, "Topic", "Topic");
 		assertEquals(2, query.getFields().get(j).getInputParameters().size());
-		checkInputParameter(query, j, 0, "boardName", false, true, null, "String", String.class.getSimpleName(), null);
-		checkInputParameter(query, j, 1, "keyword", true, false, true, "String", String.class.getSimpleName(), null);
+		checkInputParameter(query, j, 0, "boardName", 0, true, null, "String", String.class.getSimpleName(), null);
+		checkInputParameter(query, j, 1, "keyword", 1, false, true, "String", String.class.getSimpleName(), null);
 		j += 1;
 		// __schema: __Schema!
-		checkField(query, j, "__schema", false, true, false, "__Schema", "__Schema");
+		checkField(query, j, "__schema", 0, true, false, "__Schema", "__Schema");
 		assertEquals(0, query.getFields().get(j).getInputParameters().size());
 		j += 1;
 		// __type(name: String!): __Type
-		checkField(query, j, "__type", false, true, false, "__Type", "__Type");
+		checkField(query, j, "__type", 0, true, false, "__Type", "__Type");
 		assertEquals(1, query.getFields().get(j).getInputParameters().size());
-		checkInputParameter(query, j, 0, "name", false, true, null, "String", String.class.getSimpleName(), null);
+		checkInputParameter(query, j, 0, "name", 0, true, null, "String", String.class.getSimpleName(), null);
 		j += 1;
 		// __typename: String!
-		checkField(query, j, "__typename", false, false, false, "String", "String");
+		checkField(query, j, "__typename", 0, false, false, "String", "String");
 		assertEquals(0, query.getFields().get(j).getInputParameters().size());
 	}
 
@@ -272,17 +272,17 @@ class DocumentParser_Forum_Client_Test {
 		assertTrue(springMetaFileFActoriesFile.isFile(), "spring.factories should be a file");
 	}
 
-	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
+	private void checkField(ObjectType type, int j, String name, int list, boolean mandatory, Boolean itemMandatory,
 			String typeName, String classSimpleName) {
 		Field field = type.getFields().get(j);
 		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
 
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(list, field.getFieldTypeAST().isList(),
+		assertEquals(list, field.getFieldTypeAST().getListDepth(),
 				"field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(mandatory, field.getFieldTypeAST().isMandatory(),
 				"field mandatory is " + mandatory + " (for " + fieldDescForJUnitMessage + ")");
-		if (list && itemMandatory != null) {
+		if (list > 0 && itemMandatory != null) {
 			assertEquals(itemMandatory, field.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
 					"field itemMandatory is " + itemMandatory + " (for " + fieldDescForJUnitMessage + ")");
 		}
@@ -294,7 +294,7 @@ class DocumentParser_Forum_Client_Test {
 				"Class for field type is " + classSimpleName + " (for " + fieldDescForJUnitMessage + ")");
 	}
 
-	private void checkInputParameter(ObjectType type, int j, int numParam, String name, boolean list, boolean mandatory,
+	private void checkInputParameter(ObjectType type, int j, int numParam, String name, int list, boolean mandatory,
 			Boolean itemMandatory, String typeName, String classSimpleName, String defaultValue) {
 		Field inputValue = type.getFields().get(j).getInputParameters().get(numParam);
 
@@ -302,7 +302,7 @@ class DocumentParser_Forum_Client_Test {
 
 		assertEquals(name, inputValue.getName(),
 				type.getName() + " - name is " + name + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(list, inputValue.getFieldTypeAST().isList(),
+		assertEquals(list, inputValue.getFieldTypeAST().getListDepth(),
 				type.getName() + " - list is " + list + " (for " + intputParamDescForJUnitMessage + ")");
 		assertEquals(mandatory, inputValue.getFieldTypeAST().isMandatory(),
 				type.getName() + " - mandatory is " + mandatory + " (for " + intputParamDescForJUnitMessage + ")");

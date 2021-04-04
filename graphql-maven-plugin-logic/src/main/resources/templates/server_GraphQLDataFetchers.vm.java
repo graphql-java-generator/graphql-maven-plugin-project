@@ -53,7 +53,7 @@ public class GraphQLDataFetchers {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)          
 ## $argument is an instance of Field
-#if(${argument.fieldTypeAST.list})
+#if(${argument.fieldTypeAST.listDepth})
 			@SuppressWarnings("unchecked")
 #end
 			${argument.javaType} ${argument.javaName} = (${argument.javaType}) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("${argument.name}"), "${argument.type.graphQLTypeSimpleName}", "${configuration.javaTypeForIDType}", ${argument.type.classSimpleName}.class);
@@ -73,7 +73,7 @@ public class GraphQLDataFetchers {
 				return CompletableFuture.supplyAsync(
 						() -> ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end));
 			}
-#elseif (${dataFetcher.field.fieldTypeAST.list})
+#elseif (${dataFetcher.field.fieldTypeAST.listDepth}>0)
 			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end${dataFetcher.field.javaType}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 #if (${dataFetcher.dataFetcherDelegate.type.requestType}!="subscription")
 			logger.debug("${dataFetcher.name}: {} found rows", (ret==null) ? 0 : ret.size());

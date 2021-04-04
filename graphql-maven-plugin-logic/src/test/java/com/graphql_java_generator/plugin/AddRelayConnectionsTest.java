@@ -1,7 +1,6 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -289,7 +288,7 @@ class AddRelayConnectionsTest {
 		//
 		FieldImpl f = (FieldImpl) getField("AllFieldCasesInterfaceType", "id");
 		// We need to pass the "is a list" test
-		FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(f.getFieldTypeAST()).build();
+		FieldTypeAST list = FieldTypeAST.builder().listDepth(1).listItemFieldTypeAST(f.getFieldTypeAST()).build();
 		f.setFieldTypeAST(list);
 		//
 		AppliedDirectiveImpl d = new AppliedDirectiveImpl();
@@ -675,7 +674,7 @@ class AddRelayConnectionsTest {
 				assertEquals(true, d.getFields().get(0).isId(), "field is an ID");
 				// assertEquals(false, d.getFields().get(0).getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
 				// "field is not a list");
-				assertEquals(false, d.getFields().get(0).getFieldTypeAST().isList(), "field is not a list");
+				assertEquals(0, d.getFields().get(0).getFieldTypeAST().getListDepth(), "field is not a list");
 				assertEquals(true, d.getFields().get(0).getFieldTypeAST().isMandatory(), "field is mandatory");
 				assertEquals(documentParser, ((FieldImpl) d.getFields().get(0)).getDocumentParser());
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
@@ -705,8 +704,8 @@ class AddRelayConnectionsTest {
 
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
 				int j = 0;
-				checkField(d, 0, "cursor", false, true, false, "String", "String", 0);
-				checkField(d, 1, "node", false, false, false, "Node",
+				checkField(d, j++, "cursor", 0, true, false, "String", "String", 0);
+				checkField(d, j++, "node", 0, false, false, "Node",
 						((GenerateCodeCommonConfiguration) configuration).getPackageName() + ".Node", 0);
 
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
@@ -736,9 +735,9 @@ class AddRelayConnectionsTest {
 
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
 				int j = 0;
-				checkField(d, j++, "edges", true, false, false, "Edge",
+				checkField(d, j++, "edges", 1, false, false, "Edge",
 						((GenerateCodeCommonConfiguration) configuration).getPackageName() + ".Edge", 0);
-				checkField(d, j++, "pageInfo", false, true, false, "PageInfo",
+				checkField(d, j++, "pageInfo", 0, true, false, "PageInfo",
 						((GenerateCodeCommonConfiguration) configuration).getPackageName() + ".PageInfo", 0);
 
 				assertEquals(null, d.getRequestType(), "not a query/mutation/subscription");
@@ -766,10 +765,10 @@ class AddRelayConnectionsTest {
 				assertEquals(0, o.getMemberOfUnions().size(), "No unions");
 				int j = 0;
 				// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-				checkField(o, j++, "hasNextPage", false, true, null, "Boolean", "Boolean", 0);
-				checkField(o, j++, "hasPreviousPage", false, true, null, "Boolean", "Boolean", 0);
-				checkField(o, j++, "startCursor", false, true, null, "String", "String", 0);
-				checkField(o, j++, "endCursor", false, true, null, "String", "String", 0);
+				checkField(o, j++, "hasNextPage", 0, true, null, "Boolean", "Boolean", 0);
+				checkField(o, j++, "hasPreviousPage", 0, true, null, "Boolean", "Boolean", 0);
+				checkField(o, j++, "startCursor", 0, true, null, "String", "String", 0);
+				checkField(o, j++, "endCursor", 0, true, null, "String", "String", 0);
 				//
 				assertEquals(null, o.getRequestType(), "not a query/mutation/subscription");
 				assertEquals(false, o.isInputType(), "Not an input type");
@@ -802,16 +801,16 @@ class AddRelayConnectionsTest {
 	private void checkRelayConnectionDirectiveHasBeenApplied() {
 		assertEquals("CharacterConnection",
 				getField("MyQueryType", "connectionWithoutParameters").getGraphQLTypeSimpleName());
-		assertFalse(getField("MyQueryType", "connectionWithoutParameters").getFieldTypeAST().isList());
+		assertEquals(0, getField("MyQueryType", "connectionWithoutParameters").getFieldTypeAST().getListDepth());
 
 		assertEquals("HumanConnection", getField("MyQueryType", "connectionOnHuman").getGraphQLTypeSimpleName());
-		assertFalse(getField("MyQueryType", "connectionOnHuman").getFieldTypeAST().isList());
+		assertEquals(0, getField("MyQueryType", "connectionOnHuman").getFieldTypeAST().getListDepth());
 
 		assertEquals("HumanConnection", getField("AllFieldCasesInterface", "friends").getGraphQLTypeSimpleName());
-		assertFalse(getField("AllFieldCasesInterface", "friends").getFieldTypeAST().isList());
+		assertEquals(0, getField("AllFieldCasesInterface", "friends").getFieldTypeAST().getListDepth());
 
 		assertEquals("HumanConnection", getField("AllFieldCasesInterfaceType", "friends").getGraphQLTypeSimpleName());
-		assertFalse(getField("AllFieldCasesInterfaceType", "friends").getFieldTypeAST().isList());
+		assertEquals(0, getField("AllFieldCasesInterfaceType", "friends").getFieldTypeAST().getListDepth());
 	}
 
 	/** This method checks for one base type, that it implements the Node interface */
@@ -849,8 +848,8 @@ class AddRelayConnectionsTest {
 		assertEquals(2, edge.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-		checkField(edge, j++, "node", false, false, null, typeName, typeName, 0);
-		checkField(edge, j++, "cursor", false, true, null, "String", "String", 0);
+		checkField(edge, j++, "node", 0, false, null, typeName, typeName, 0);
+		checkField(edge, j++, "cursor", 0, true, null, "String", "String", 0);
 		//
 		assertEquals(null, edge.getIdentifier());
 		assertEquals(0, edge.getImplementz().size(), "0 until generic types are managed");
@@ -880,8 +879,8 @@ class AddRelayConnectionsTest {
 		assertEquals(2, connection.getFields().size());
 		int j = 0;
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname, nbParameters)
-		checkField(connection, j++, "edges", true, false, false, typeName + "Edge", typeName + "Edge", 0);
-		checkField(connection, j++, "pageInfo", false, true, false, "PageInfo", "PageInfo", 0);
+		checkField(connection, j++, "edges", 1, false, false, typeName + "Edge", typeName + "Edge", 0);
+		checkField(connection, j++, "pageInfo", 0, true, false, "PageInfo", "PageInfo", 0);
 		//
 		assertEquals(null, connection.getIdentifier());
 		assertEquals(0, connection.getImplementz().size(), "O until generic types are managed");
@@ -891,7 +890,7 @@ class AddRelayConnectionsTest {
 		assertEquals(null, connection.getRequestType());
 	}
 
-	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
+	private void checkField(ObjectType type, int j, String name, int list, boolean mandatory, Boolean itemMandatory,
 			String typeName, String classSimpleName, int nbParameters) {
 		Field field = type.getFields().get(j);
 		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
@@ -899,11 +898,11 @@ class AddRelayConnectionsTest {
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(documentParser, ((FieldImpl) field).getDocumentParser());
 		assertNotNull(field.getOwningType());
-		assertEquals(list, field.getFieldTypeAST().isList(),
+		assertEquals(list, field.getFieldTypeAST().getListDepth(),
 				"field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(mandatory, field.getFieldTypeAST().isMandatory(),
 				"field mandatory is " + mandatory + " (for " + fieldDescForJUnitMessage + ")");
-		if (list && itemMandatory != null) {
+		if (list > 0 && itemMandatory != null) {
 			assertEquals(itemMandatory, field.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
 					"field itemMandatory is " + itemMandatory + " (for " + fieldDescForJUnitMessage + ")");
 		}

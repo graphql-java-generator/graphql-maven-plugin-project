@@ -76,14 +76,14 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 		Field age = jsonSchemaPersonalization.findFieldFromName(member, "age");
 		assertEquals("int", age.getGraphQLTypeSimpleName(), "age type");
 		assertTrue(age.isId(), "age id");
-		assertFalse(age.getFieldTypeAST().isList(), "age list");
+		assertEquals(0, age.getFieldTypeAST().getListDepth(), "age list");
 		assertFalse(age.getFieldTypeAST().isMandatory(), "age mandatory");
 		assertEquals("@Annotation1", age.getAnnotation(), "age annotation");
 		//
 		Field age2 = jsonSchemaPersonalization.findFieldFromName(member, "age2");
 		assertEquals("int", age2.getGraphQLTypeSimpleName(), "age2 type");
 		assertFalse(age2.isId(), "age2 id");
-		assertTrue(age2.getFieldTypeAST().isList(), "age2 list");
+		assertEquals(1, age2.getFieldTypeAST().getListDepth(), "age2 list");
 		assertTrue(age2.getFieldTypeAST().isMandatory(), "age2 mandatory");
 		assertEquals("@Annotation1", age2.getAnnotation(), "age2 annotation");
 

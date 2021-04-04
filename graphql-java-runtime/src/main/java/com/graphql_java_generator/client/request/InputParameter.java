@@ -225,7 +225,8 @@ public class InputParameter {
 		this.value = value;
 		this.type = type;
 		this.graphQLTypeName = graphQLTypeName;
-		this.graphQLScalarType = graphqlClientUtils.getGraphQLCustomScalarTypeFromName(graphQLTypeName);
+		this.graphQLScalarType = (graphQLTypeName == null) ? null
+				: graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName);
 		this.mandatory = mandatory;
 		this.listDepth = listDepth;
 		this.itemMandatory = itemMandatory;
@@ -353,7 +354,7 @@ public class InputParameter {
 		this.value = value;
 		this.type = type;
 		this.graphQLTypeName = localGraphQLCustomScalarType;
-		this.graphQLScalarType = graphqlClientUtils.getGraphQLCustomScalarTypeFromName(graphQLTypeName);
+		this.graphQLScalarType = graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName);
 		this.mandatory = localMandatory;
 		this.listDepth = localList;
 		this.itemMandatory = localItemMandatory;

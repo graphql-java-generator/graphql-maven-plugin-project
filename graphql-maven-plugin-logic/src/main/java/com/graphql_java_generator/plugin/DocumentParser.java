@@ -802,11 +802,7 @@ public abstract class DocumentParser {
 		field.setAppliedDirectives(readAppliedDirectives(
 				(List<graphql.language.Directive>) graphqlUtils.invokeMethod("getDirectives", fieldDef)));
 
-		if (field.getName().equals("characters")) {
-			// Breakpoint
-			int i = 0;
-		}
-		field.setFieldTypeAST(readFieldTypeAST(graphqlUtils.invokeMethod("getType", fieldDef)));
+		field.setFieldTypeAST(readFieldTypeAST(graphqlUtils.invokeMethod("getType", fieldDef), 0));
 
 		// For InputValueDefinition, we may have a default value
 		if (fieldDef instanceof InputValueDefinition) {
@@ -817,24 +813,26 @@ public abstract class DocumentParser {
 
 	}
 
-	FieldTypeAST readFieldTypeAST(Object fieldDef) {
+	FieldTypeAST readFieldTypeAST(Object fieldDef, int listDepth) {
 		if (fieldDef instanceof TypeName) {
 			TypeName typeName = (TypeName) fieldDef;
-			return new FieldTypeAST(typeName.getName());
+			FieldTypeAST ret = new FieldTypeAST(typeName.getName());
+			ret.setListDepth(0);
+			return ret;
 		} else if (fieldDef instanceof ListType) {
 			// This node contains a list. Let's recurse one.
 			ListType node = (ListType) fieldDef;
-			FieldTypeAST listItemTypeAST = readFieldTypeAST(node.getType());
+			FieldTypeAST listItemTypeAST = readFieldTypeAST(node.getType(), listDepth + 1);
 			// We return a list of the read subnode.
 			FieldTypeAST fieldTypeAST = new FieldTypeAST();
-			fieldTypeAST.setList(true);
+			fieldTypeAST.setListDepth(listDepth + 1);
 			fieldTypeAST.setListItemFieldTypeAST(listItemTypeAST);
 			fieldTypeAST.setItemMandatory(node.getChildren().get(0) instanceof NonNullType);
 			return fieldTypeAST;
 		} else if (fieldDef instanceof NonNullType) {
 			// Let's recurse in the AST for this mandatory type
 			NonNullType subNode = (NonNullType) fieldDef;
-			FieldTypeAST fieldTypeAST = readFieldTypeAST(subNode.getType());
+			FieldTypeAST fieldTypeAST = readFieldTypeAST(subNode.getType(), listDepth);
 			// The type is mandatory
 			fieldTypeAST.setMandatory(true);
 			return fieldTypeAST;

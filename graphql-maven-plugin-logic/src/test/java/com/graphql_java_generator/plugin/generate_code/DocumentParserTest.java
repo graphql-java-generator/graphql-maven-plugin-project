@@ -120,9 +120,9 @@ class DocumentParserTest {
 			FieldTypeAST fieldTypeAST;
 			if ((i % 2) == 0) {
 				FieldTypeAST realType = new FieldTypeAST(documentParser.getType(fields[i]).getName());
-				fieldTypeAST = FieldTypeAST.builder().list(true).listItemFieldTypeAST(realType).build();
+				fieldTypeAST = FieldTypeAST.builder().listDepth(1).listItemFieldTypeAST(realType).build();
 			} else {
-				fieldTypeAST = FieldTypeAST.builder().list(false)
+				fieldTypeAST = FieldTypeAST.builder().listDepth(0)
 						.graphQLTypeSimpleName(documentParser.getType(fields[i]).getName()).build();
 			}
 			FieldImpl f = FieldImpl.builder().documentParser(documentParser).name("field" + i).owningType(type)
@@ -136,9 +136,9 @@ class DocumentParserTest {
 				FieldTypeAST argTypeAST;
 				if ((j % 2) == 0) {
 					FieldTypeAST realType = new FieldTypeAST(documentParser.getType(fields[i]).getName());
-					argTypeAST = FieldTypeAST.builder().list(true).listItemFieldTypeAST(realType).build();
+					argTypeAST = FieldTypeAST.builder().listDepth(1).listItemFieldTypeAST(realType).build();
 				} else {
-					argTypeAST = FieldTypeAST.builder().list(false)
+					argTypeAST = FieldTypeAST.builder().listDepth(0)
 							.graphQLTypeSimpleName(documentParser.getType(fields[i]).getName()).build();
 				}
 				FieldImpl arg = FieldImpl.builder().documentParser(documentParser).name("arg" + j)
@@ -170,15 +170,15 @@ class DocumentParserTest {
 		assertEquals(5, documentParser.dataFetchers.size(), "size");
 		//
 		// For query types, there must be a Data Fetcher for each field.
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field0", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field0", 1, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field1", false, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field1", 0, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field2", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field2", 1, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field3", false, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field3", 0, type, null,
 				type.getFields().get(i++).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", true, type, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i), "field4", 1, type, null,
 				type.getFields().get(i++).getInputParameters());
 		//
 		// There should be one DataFetchersDelegate, as we have only one type.
@@ -214,11 +214,11 @@ class DocumentParserTest {
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
 		// For non query types, there must be a Data Fetcher only for non GraphQLScalar and non Enum field.
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "field0", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field0", 1, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "field2", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field2", 1, type, type.getName(),
 				type.getFields().get(2).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", 1, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
 		// There should be one DataFetchersDelegate, as we have only one type.
@@ -251,11 +251,11 @@ class DocumentParserTest {
 		assertEquals(3, documentParser.dataFetchers.size(), "size");
 		//
 		// For non query types, there must be a Data Fetcher only for non GraphQLScalar and non Enum field.
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "field0", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field0", 1, type, type.getName(),
 				type.getFields().get(0).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "field2", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field2", 1, type, type.getName(),
 				type.getFields().get(2).getInputParameters());
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", true, type, type.getName(),
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "field4", 1, type, type.getName(),
 				type.getFields().get(4).getInputParameters());
 		//
 		// There should be one DataFetchersDelegate, as we have only one type.
@@ -264,10 +264,10 @@ class DocumentParserTest {
 				"nb DataFetchers in the DataFetchersDelegate");
 	}
 
-	private void checkDataFetcher(DataFetcher dataFetcher, String name, boolean list, Type type,
-			String graphQLOriginType, List<Field> inputParameters) {
+	private void checkDataFetcher(DataFetcher dataFetcher, String name, int list, Type type, String graphQLOriginType,
+			List<Field> inputParameters) {
 		assertEquals(name, dataFetcher.getName(), "name");
-		assertEquals(list, dataFetcher.getField().getFieldTypeAST().isList(), "list");
+		assertEquals(list, dataFetcher.getField().getFieldTypeAST().getListDepth(), "list");
 		assertEquals(type, dataFetcher.getField().getOwningType(), "type");
 		assertEquals(inputParameters, dataFetcher.getField().getInputParameters(), "arguments");
 		assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType(), "graphQLOriginType");

@@ -119,7 +119,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is an identifier)");
 				}
-				if (i.getFields().get(0).getFieldTypeAST().isList()) {
+				if (i.getFields().get(0).getFieldTypeAST().getListDepth() > 0) {
 					throw new RuntimeException("The " + NODE
 							+ " interface already exists, but is not compliant with the Relay specification (it should contain only the 'id' field, that is not a list)");
 				}
@@ -214,7 +214,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field may not be an identifier)");
 				}
-				if (i.getFields().get(j).getFieldTypeAST().isList()) {
+				if (i.getFields().get(j).getFieldTypeAST().getListDepth() > 0) {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'pageInfo' field may not be a list)");
 				}
@@ -236,7 +236,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field may not be an identifier)");
 				}
-				if (!i.getFields().get(j).getFieldTypeAST().isList()) {
+				if (!(i.getFields().get(j).getFieldTypeAST().getListDepth() > 0)) {
 					throw new RuntimeException("The " + CONNECTION
 							+ " interface already exists, but is not compliant with the Relay specification (the 'edges' field must be a list)");
 				}
@@ -259,7 +259,7 @@ public class AddRelayConnections {
 			InterfaceType i = new InterfaceType(CONNECTION, configuration);
 			// Adding the id field toe the Node interface
 			FieldTypeAST item = FieldTypeAST.builder().graphQLTypeSimpleName("Edge").build();
-			FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(item).build();
+			FieldTypeAST list = FieldTypeAST.builder().listDepth(1).listItemFieldTypeAST(item).build();
 			FieldImpl edges = FieldImpl.builder().name("edges").owningType(i).documentParser(documentParser)
 					.fieldTypeAST(list).build();
 			FieldImpl pageInfo = FieldImpl.builder().name("pageInfo").owningType(i).documentParser(documentParser)
@@ -324,7 +324,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should not be an identifier)");
 				}
-				if (i.getFields().get(j).getFieldTypeAST().isList()) {
+				if (i.getFields().get(j).getFieldTypeAST().getListDepth() > 0) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'cursor' field should not be a list)");
 				}
@@ -347,7 +347,7 @@ public class AddRelayConnections {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be an identifier)");
 				}
-				if (i.getFields().get(j).getFieldTypeAST().isList()) {
+				if (i.getFields().get(j).getFieldTypeAST().getListDepth() > 0) {
 					throw new RuntimeException("The " + EDGE
 							+ " interface already exists, but is not compliant with the Relay specification (the 'node' field should not be a list)");
 				}
@@ -503,7 +503,7 @@ public class AddRelayConnections {
 								// This Field has the @RelayConnection directive applied
 								//
 								// It must be a list
-								if (!f.getFieldTypeAST().isList()) {
+								if (!(f.getFieldTypeAST().getListDepth() > 0)) {
 									throw new RuntimeException("The " + f.getOwningType().getName() + "." + f.getName()
 											+ " field has the @RelayConnection directive applied, but is not a list. The @RelayConnection directive may only be applied on lists.");
 								}
@@ -671,14 +671,14 @@ public class AddRelayConnections {
 				switch (f.getName()) {
 				case "edges":
 					if (f.getType().getName().equals(type.getName() + "Edge") && !f.getFieldTypeAST().isMandatory()
-							&& f.getFieldTypeAST().isList()) {
+							&& f.getFieldTypeAST().getListDepth() > 0) {
 						// This field is compliant to the Relay specification
 						edgesFound = true;
 					}
 					break;
 				case "pageInfo":
 					if (f.getType().getName().equals("PageInfo") && f.getFieldTypeAST().isMandatory()
-							&& !f.getFieldTypeAST().isList()) {
+							&& !(f.getFieldTypeAST().getListDepth() > 0)) {
 						// This field is compliant to the Relay specification
 						pageInfoFound = true;
 					}
@@ -705,7 +705,7 @@ public class AddRelayConnections {
 			documentParser.getTypes().put(connectionTypeName, xxxConnectionObject);
 
 			FieldTypeAST item = FieldTypeAST.builder().graphQLTypeSimpleName(type.getName() + "Edge").build();
-			FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(item).build();
+			FieldTypeAST list = FieldTypeAST.builder().listDepth(1).listItemFieldTypeAST(item).build();
 			FieldImpl edges = FieldImpl.builder().name("edges").documentParser(documentParser)
 					.owningType(xxxConnectionObject).fieldTypeAST(list).build();
 			xxxConnectionObject.getFields().add(edges);
@@ -752,14 +752,14 @@ public class AddRelayConnections {
 				switch (f.getName()) {
 				case "node":
 					if (f.getType().getName().equals(type.getName()) && !f.getFieldTypeAST().isMandatory()
-							&& !f.getFieldTypeAST().isList()) {
+							&& !(f.getFieldTypeAST().getListDepth() > 0)) {
 						// This field is compliant to the Relay specification
 						nodeFound = true;
 					}
 					break;
 				case "cursor":
 					if (f.getType().getName().equals("String") && f.getFieldTypeAST().isMandatory()
-							&& !f.getFieldTypeAST().isList()) {
+							&& !(f.getFieldTypeAST().getListDepth() > 0)) {
 						// This field is compliant to the Relay specification
 						cursorFound = true;
 					}
@@ -897,10 +897,10 @@ public class AddRelayConnections {
 					throw new RuntimeException("The value for the isId() property of the field '" + fieldName
 							+ "' of the type '" + type.getName() + "' is expected to be " + id + " but is " + f.isId());
 				}
-				if (list != f.getFieldTypeAST().isList()) {
-					throw new RuntimeException("The value for the isList() property of the field '" + fieldName
-							+ "' of the type '" + type.getName() + "' is expected to be " + list + " but is "
-							+ f.getFieldTypeAST().isList());
+				if (list != f.getFieldTypeAST().getListDepth() > 0) {
+					throw new RuntimeException("The value for the getListDepth() > 0 property of the field '"
+							+ fieldName + "' of the type '" + type.getName() + "' is expected to be " + list
+							+ " but is " + (f.getFieldTypeAST().getListDepth() > 0));
 				}
 				if (mandatory != f.getFieldTypeAST().isMandatory()) {
 					throw new RuntimeException(
@@ -908,7 +908,7 @@ public class AddRelayConnections {
 									+ "' of the type '" + type.getName() + "' is expected to be " + mandatory
 									+ " but is " + f.getFieldTypeAST().isMandatory());
 				}
-				if (f.getFieldTypeAST().isList() && itemMandatory != null
+				if (f.getFieldTypeAST().getListDepth() > 0 && itemMandatory != null
 						&& (itemMandatory != f.getFieldTypeAST().getListItemFieldTypeAST().isMandatory())) {
 					throw new RuntimeException("The value for the isItemMandatory() property of the field '" + fieldName
 							+ "' of the type '" + type.getName() + "' is expected to be " + itemMandatory + " but is "

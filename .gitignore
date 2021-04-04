@@ -1,6 +1,7 @@
 .settings/
 target/
 logs/
+*.log
 
 **/bin/
 .classpath

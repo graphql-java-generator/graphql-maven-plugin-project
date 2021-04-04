@@ -539,8 +539,8 @@ public class MutationTypeExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getCreateHumanResponseBuilder() throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createHuman", RequestType.mutation
-			, InputParameter.newBindParameter("name","mutationTypeCreateHumanName", InputParameterType.MANDATORY,  null, true, false, false)
-			, InputParameter.newBindParameter("homePlanet","mutationTypeCreateHumanHomePlanet", InputParameterType.OPTIONAL,  null, false, false, false)
+			, InputParameter.newBindParameter("name","mutationTypeCreateHumanName", InputParameterType.MANDATORY, "String", true, 0, false)
+			, InputParameter.newBindParameter("homePlanet","mutationTypeCreateHumanHomePlanet", InputParameterType.OPTIONAL, "String", false, 0, false)
 			);
 	}
 
@@ -556,8 +556,8 @@ public class MutationTypeExecutor {
 	 */
 	public GraphQLRequest getCreateHumanGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.mutation, "createHuman"
-  		, InputParameter.newBindParameter("name","mutationTypeCreateHumanName", InputParameterType.MANDATORY,  null, true, false, false)
-  		, InputParameter.newBindParameter("homePlanet","mutationTypeCreateHumanHomePlanet", InputParameterType.OPTIONAL,  null, false, false, false)
+  		, InputParameter.newBindParameter("name","mutationTypeCreateHumanName", InputParameterType.MANDATORY, "String", true, 0, false)
+  		, InputParameter.newBindParameter("homePlanet","mutationTypeCreateHumanHomePlanet", InputParameterType.OPTIONAL, "String", false, 0, false)
 		);
 	}
 	
@@ -773,8 +773,8 @@ public class MutationTypeExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getAddFriendResponseBuilder() throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "addFriend", RequestType.mutation
-			, InputParameter.newBindParameter("idCharacter","mutationTypeAddFriendIdCharacter", InputParameterType.MANDATORY,  null, true, false, false)
-			, InputParameter.newBindParameter("idNewFriend","mutationTypeAddFriendIdNewFriend", InputParameterType.MANDATORY,  null, true, false, false)
+			, InputParameter.newBindParameter("idCharacter","mutationTypeAddFriendIdCharacter", InputParameterType.MANDATORY, "String", true, 0, false)
+			, InputParameter.newBindParameter("idNewFriend","mutationTypeAddFriendIdNewFriend", InputParameterType.MANDATORY, "String", true, 0, false)
 			);
 	}
 
@@ -790,8 +790,8 @@ public class MutationTypeExecutor {
 	 */
 	public GraphQLRequest getAddFriendGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.mutation, "addFriend"
-  		, InputParameter.newBindParameter("idCharacter","mutationTypeAddFriendIdCharacter", InputParameterType.MANDATORY,  null, true, false, false)
-  		, InputParameter.newBindParameter("idNewFriend","mutationTypeAddFriendIdNewFriend", InputParameterType.MANDATORY,  null, true, false, false)
+  		, InputParameter.newBindParameter("idCharacter","mutationTypeAddFriendIdCharacter", InputParameterType.MANDATORY, "String", true, 0, false)
+  		, InputParameter.newBindParameter("idNewFriend","mutationTypeAddFriendIdNewFriend", InputParameterType.MANDATORY, "String", true, 0, false)
 		);
 	}
 	

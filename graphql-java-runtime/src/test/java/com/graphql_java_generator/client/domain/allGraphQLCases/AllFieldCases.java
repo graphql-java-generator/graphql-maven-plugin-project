@@ -44,7 +44,7 @@ public class AllFieldCases
 
 
 	@JsonProperty("forname")
-	@GraphQLInputParameters(names = {"uppercase", "textToAppendToTheForname"}, types = {"Boolean", "String"}, mandatories = {false, false}, listDepths = {0, false}, itemsMandatory = {false, false})
+	@GraphQLInputParameters(names = {"uppercase", "textToAppendToTheForname"}, types = {"Boolean", "String"}, mandatories = {false, false}, listDepths = {0, 0}, itemsMandatory = {false, false})
 	@GraphQLScalar(fieldName = "forname", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String forname;
 
@@ -111,7 +111,7 @@ public class AllFieldCases
 	@JsonProperty("matrix")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListListFloat.class)
 	@GraphQLScalar(fieldName = "matrix", graphQLTypeSimpleName = "Float", javaClass = Double.class)
-	List<List<Double>> matrix;
+	List<List<List<Double>>> matrix;
 
 
 	@JsonProperty("oneWithIdSubType")
@@ -122,7 +122,7 @@ public class AllFieldCases
 
 	@JsonProperty("listWithIdSubTypes")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListAllFieldCasesWithIdSubtype.class)
-	@GraphQLInputParameters(names = {"nbItems", "date", "dates", "uppercaseName", "textToAppendToTheForname"}, types = {"Long", "Date", "Date", "Boolean", "String"}, mandatories = {true, false, true, false, false}, listDepths = {0, false, true, false, false}, itemsMandatory = {false, false, false, false, false})
+	@GraphQLInputParameters(names = {"nbItems", "date", "dates", "uppercaseName", "textToAppendToTheForname"}, types = {"Long", "Date", "Date", "Boolean", "String"}, mandatories = {true, false, true, false, false}, listDepths = {0, 0, 1, 0, 0}, itemsMandatory = {false, false, false, false, false})
 	@GraphQLNonScalar(fieldName = "listWithIdSubTypes", graphQLTypeSimpleName = "AllFieldCasesWithIdSubtype", javaClass = AllFieldCasesWithIdSubtype.class)
 	List<AllFieldCasesWithIdSubtype> listWithIdSubTypes;
 
@@ -135,20 +135,20 @@ public class AllFieldCases
 
 	@JsonProperty("listWithoutIdSubTypes")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListAllFieldCasesWithoutIdSubtype.class)
-	@GraphQLInputParameters(names = {"nbItems", "input", "textToAppendToTheForname"}, types = {"Long", "FieldParameterInput", "String"}, mandatories = {true, false, false}, listDepths = {0, false, false}, itemsMandatory = {false, false, false})
+	@GraphQLInputParameters(names = {"nbItems", "input", "textToAppendToTheForname"}, types = {"Long", "FieldParameterInput", "String"}, mandatories = {true, false, false}, listDepths = {0, 0, 0}, itemsMandatory = {false, false, false})
 	@GraphQLNonScalar(fieldName = "listWithoutIdSubTypes", graphQLTypeSimpleName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)
 	List<AllFieldCasesWithoutIdSubtype> listWithoutIdSubTypes;
 
 
 	@JsonProperty("issue65")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListAllFieldCasesWithoutIdSubtype.class)
-	@GraphQLInputParameters(names = {"inputs"}, types = {"FieldParameterInput"}, mandatories = {false}, listDepths = {true}, itemsMandatory = {true})
+	@GraphQLInputParameters(names = {"inputs"}, types = {"FieldParameterInput"}, mandatories = {false}, listDepths = {1}, itemsMandatory = {true})
 	@GraphQLNonScalar(fieldName = "issue65", graphQLTypeSimpleName = "AllFieldCasesWithoutIdSubtype", javaClass = AllFieldCasesWithoutIdSubtype.class)
 	List<AllFieldCasesWithoutIdSubtype> issue65;
 
 
 	@JsonProperty("issue66")
-	@GraphQLInputParameters(names = {"input"}, types = {"AllFieldCasesInput"}, mandatories = {false}, listDepths = {true}, itemsMandatory = {false})
+	@GraphQLInputParameters(names = {"input"}, types = {"AllFieldCasesInput"}, mandatories = {false}, listDepths = {1}, itemsMandatory = {false})
 	@GraphQLNonScalar(fieldName = "issue66", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	AllFieldCases issue66;
 
@@ -263,11 +263,11 @@ public class AllFieldCases
 		return friends;
 	}
 
-	public void setMatrix(List<List<Double>> matrix) {
+	public void setMatrix(List<List<List<Double>>> matrix) {
 		this.matrix = matrix;
 	}
 
-	public List<List<Double>> getMatrix() {
+	public List<List<List<Double>>> getMatrix() {
 		return matrix;
 	}
 
@@ -438,7 +438,7 @@ public class AllFieldCases
 		private List<String> aliases;
 		private List<String> planets;
 		private List<Human> friends;
-		private List<List<Double>> matrix;
+		private List<List<List<Double>>> matrix;
 		private AllFieldCasesWithIdSubtype oneWithIdSubType;
 		private List<AllFieldCasesWithIdSubtype> listWithIdSubTypes;
 		private AllFieldCasesWithoutIdSubtype oneWithoutIdSubType;
@@ -499,7 +499,7 @@ public class AllFieldCases
 			this.friends = friends;
 			return this;
 		}
-		public Builder withMatrix(List<List<Double>> matrix) {
+		public Builder withMatrix(List<List<List<Double>>> matrix) {
 			this.matrix = matrix;
 			return this;
 		}

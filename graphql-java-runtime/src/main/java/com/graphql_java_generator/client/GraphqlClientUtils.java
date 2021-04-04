@@ -382,7 +382,7 @@ public class GraphqlClientUtils {
 	 * @param typeName
 	 * @return The GraphQL type. Or null if not found (enum, object, input type, interface, union)
 	 */
-	public GraphQLScalarType getGraphQLCustomScalarTypeFromName(String typeName) {
+	public GraphQLScalarType getGraphQLScalarTypeFromName(String typeName) {
 
 		// Is it a known type ?
 		if (typeName.equals("String")) {

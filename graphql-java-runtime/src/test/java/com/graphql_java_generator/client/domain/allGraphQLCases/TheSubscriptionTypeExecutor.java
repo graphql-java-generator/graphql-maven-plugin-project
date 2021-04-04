@@ -412,7 +412,7 @@ public class TheSubscriptionTypeExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getSubscribeNewHumanForEpisodeResponseBuilder() throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "subscribeNewHumanForEpisode", RequestType.subscription
-			, InputParameter.newBindParameter("episode","theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY,  null, true, false, false)
+			, InputParameter.newBindParameter("episode","theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY, "Episode", true, 0, false)
 			);
 	}
 
@@ -430,7 +430,7 @@ public class TheSubscriptionTypeExecutor {
 	 */
 	public GraphQLRequest getSubscribeNewHumanForEpisodeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeNewHumanForEpisode"
-		, InputParameter.newBindParameter("episode","theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY,  null, true, false, false)
+		, InputParameter.newBindParameter("episode","theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY, "Episode", true, 0, false)
 		);
 		ret.setInstanceConfiguration(configuration);
 		return ret;
@@ -627,7 +627,6 @@ public class TheSubscriptionTypeExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 		return configuration.getQueryExecutor().execute(objectResponse, parameters, (SubscriptionCallback<List>) (Object) subscriptionCallback, "subscribeToAList", TheSubscriptionType.class, List.class);
 	}
 
@@ -711,7 +710,6 @@ public class TheSubscriptionTypeExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		
-		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 		return configuration.getQueryExecutor().execute(objectResponse, parameters,  (SubscriptionCallback<List>) (Object) subscriptionCallback, "subscribeToAList", TheSubscriptionType.class, List.class);
 	}
 
@@ -1040,7 +1038,7 @@ public class TheSubscriptionTypeExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getIssue53ResponseBuilder() throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "issue53", RequestType.subscription
-			, InputParameter.newBindParameter("date","theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY, com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date, true, false, false)
+			, InputParameter.newBindParameter("date","theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY, "Date", true, 0, false)
 			);
 	}
 
@@ -1058,7 +1056,7 @@ public class TheSubscriptionTypeExecutor {
 	 */
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "issue53"
-		, InputParameter.newBindParameter("date","theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY, com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date, true, false, false)
+		, InputParameter.newBindParameter("date","theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY, "Date", true, 0, false)
 		);
 		ret.setInstanceConfiguration(configuration);
 		return ret;

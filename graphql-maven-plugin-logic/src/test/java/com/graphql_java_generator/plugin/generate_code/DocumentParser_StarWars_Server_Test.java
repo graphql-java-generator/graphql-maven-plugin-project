@@ -54,44 +54,42 @@ class DocumentParser_StarWars_Server_Test {
 
 		int i = 0;
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, sourceName
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "hero", "QueryType", "hero", "Character", false, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "characters", "QueryType", "characters", "Character",
-				true, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "human", "QueryType", "human", "Human", false, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "droid", "QueryType", "droid", "Droid", false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "hero", "QueryType", "hero", "Character", 0, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "characters", "QueryType", "characters", "Character", 1,
+				null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "human", "QueryType", "human", "Human", 0, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "droid", "QueryType", "droid", "Droid", 0, null);
 
 		// Mutation
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createHuman", "MutationType", "createHuman", "Human",
-				false, null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "addFriend", "MutationType", "addFriend", "Character",
-				false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createHuman", "MutationType", "createHuman", "Human", 0,
+				null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "addFriend", "MutationType", "addFriend", "Character", 0,
+				null);
 
 		// Subscription
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "newCharacter", "SubscriptionType", "newCharacter",
-				"Character", false, null);
+				"Character", 0, null);
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Human", "friends", "Character", true,
-				"Human");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Human", "appearsIn", "Episode", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Human", "friends", "Character", 1, "Human");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Human", "appearsIn", "Episode", 1,
 				"Human");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Droid", "friends", "Character", true,
-				"Droid");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Droid", "appearsIn", "Episode", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Droid", "friends", "Character", 1, "Droid");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Droid", "appearsIn", "Episode", 1,
 				"Droid");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Character", "friends", "Character", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "friends", "Character", "friends", "Character", 1,
 				"Character");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Character", "appearsIn", "Episode", true,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "appearsIn", "Character", "appearsIn", "Episode", 1,
 				"Character");
 	}
 
 	private void checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType, String fieldName,
-			String returnedTypeName, boolean list, String graphQLOriginType) {
+			String returnedTypeName, int list, String graphQLOriginType) {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
-		assertEquals(list, dataFetcher.getField().getFieldTypeAST().isList(), "list");
+		assertEquals(list, dataFetcher.getField().getFieldTypeAST().getListDepth(), "list");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 		assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType(), "graphQLOriginType");
 	}

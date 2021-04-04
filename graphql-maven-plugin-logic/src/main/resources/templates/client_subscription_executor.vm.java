@@ -18,18 +18,6 @@ package ${packageUtilName};
 ##
 ## The inputParams macro lists the input values for the parameters for a field
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
-##
-## The customScalar macro returns null if the given input parameter's type is not a custom scalar, 
-## or the GraphQLScalarType if it is a custom scalar. 
-#macro(customScalar)
-#if($inputParameter.type.customScalar)
-#if($inputParameter.type.customScalarDefinition.graphQLScalarTypeClass)new ${inputParameter.type.customScalarDefinition.graphQLScalarTypeClass}()##
-#elseif($inputParameter.type.customScalarDefinition.graphQLScalarTypeStaticField)${inputParameter.type.customScalarDefinition.graphQLScalarTypeStaticField}##
-#elseif($inputParameter.type.customScalarDefinition.graphQLScalarTypeGetter)${inputParameter.type.customScalarDefinition.graphQLScalarTypeGetter}##
-#end
-#else null##
-#end
-#end
 
 import java.util.HashMap;
 import java.util.List;
@@ -377,7 +365,7 @@ public class ${object.classSimpleName}Executor {
 #if($field.fieldTypeAST.list)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters,#if($field.fieldTypeAST.list) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.list)List#else${field.type.classSimpleName}#end.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);
 	}
 
 	/**
@@ -473,7 +461,7 @@ public class ${object.classSimpleName}Executor {
 #if($field.fieldTypeAST.list)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, #if($field.fieldTypeAST.list) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.list)List#else${field.type.classSimpleName}#end.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);
 	}
 
 	/**
@@ -491,7 +479,7 @@ public class ${object.classSimpleName}Executor {
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "${field.name}", RequestType.${object.requestType}
 #foreach ($inputParameter in $field.inputParameters)
-			, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, #customScalar(), ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.list}, ${inputParameter.fieldTypeAST.itemMandatory})
+			, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
 			);
 	}
@@ -515,7 +503,7 @@ public class ${object.classSimpleName}Executor {
 	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
 #foreach ($inputParameter in $field.inputParameters)
-		, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, #customScalar(), ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.list}, ${inputParameter.fieldTypeAST.itemMandatory})
+		, InputParameter.newBindParameter("${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
 		);
 		ret.setInstanceConfiguration(configuration);

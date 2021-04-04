@@ -245,7 +245,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// Preparation
 		Exception exception;
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, null, false, false, false));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, "Episode", false, 0, false));
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef(" { id name appearsIn friends { name } } ")
@@ -286,7 +286,7 @@ class QueryExecutorImpl_StarWars_Test {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, null, false, false, false));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, "Episode", false, 0, false));
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
@@ -320,7 +320,7 @@ class QueryExecutorImpl_StarWars_Test {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, null, false, false, false));
+		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, "Episode", false, 0, false));
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()

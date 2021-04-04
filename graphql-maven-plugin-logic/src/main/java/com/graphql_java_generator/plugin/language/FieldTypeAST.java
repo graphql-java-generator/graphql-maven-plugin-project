@@ -32,11 +32,11 @@ public class FieldTypeAST {
 	private String graphQLTypeSimpleName;
 
 	/**
-	 * Is this field a list? This can be recursive: a list may be a list of list.<BR/>
-	 * By default, it's not a list
+	 * The depth of the list for this input parameter: 0 if this field is not a list. And 2, for instance, if the
+	 * field's type is "[[Int]]"
 	 */
 	@Builder.Default // Allows the default value to be used with the Lombok @Builder annotation on the class
-	boolean list = false;
+	int listDepth = 0;
 
 	/**
 	 * Is this field mandatory? If this field is a list, then mandatory indicates whether the list itself is mandatory,
@@ -85,9 +85,13 @@ public class FieldTypeAST {
 	 * The aim of this recursive method is to manage list of list of list of list...
 	 */
 	public String getJavaType(String classSimpleName) {
-		if (list) {
-			return "List<" + listItemFieldTypeAST.getJavaType(classSimpleName) + ">";
-		} else
+		if (listDepth > 0)
+			return new StringBuilder()//
+					.append(listDepth > 0 ? "List<" : "")//
+					.append(listItemFieldTypeAST.getJavaType(classSimpleName))//
+					.append(listDepth > 0 ? ">" : "")//
+					.toString();
+		else
 			return classSimpleName;
 	}
 
@@ -96,21 +100,26 @@ public class FieldTypeAST {
 	 * everything is mandatory would be <I>[[String!]!]!</I>
 	 */
 	public String getGraphQLType() {
-		if (list) {
-			return "[" + listItemFieldTypeAST.getGraphQLType() + "]" + (mandatory ? "!" : "");
-		} else
+		if (listDepth > 0)
+			return new StringBuilder()//
+					.append(listDepth > 0 ? "[" : "")//
+					.append(listItemFieldTypeAST.getGraphQLType())//
+					.append(listDepth > 0 ? "]" : "")//
+					.append(mandatory ? "!" : "")//
+					.toString();
+		else
 			return graphQLTypeSimpleName + (mandatory ? "!" : "");
 	}
 
 	public String getGraphQLTypeSimpleName() {
-		if (list)
+		if (listDepth > 0)
 			return listItemFieldTypeAST.getGraphQLTypeSimpleName();
 		else
 			return graphQLTypeSimpleName;
 	}
 
 	public void setGraphQLTypeName(String graphQLTypeName) {
-		if (list)
+		if (listDepth > 0)
 			listItemFieldTypeAST.setGraphQLTypeName(graphQLTypeName);
 		else
 			this.graphQLTypeSimpleName = graphQLTypeName;

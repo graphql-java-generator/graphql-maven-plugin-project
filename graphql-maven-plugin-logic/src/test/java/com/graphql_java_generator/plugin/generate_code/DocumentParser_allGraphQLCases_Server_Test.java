@@ -112,98 +112,98 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// defaultValue)
 		//
 		// id: ID!
-		checkField(objectType, j, "id", false, true, null, "ID", "UUID");
+		checkField(objectType, j, "id", 0, true, null, "ID", "UUID");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// name: String!
-		checkField(objectType, j, "name", false, true, null, "String", "String");
+		checkField(objectType, j, "name", 0, true, null, "String", "String");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// forname(uppercase: Boolean, textToAppendToTheForname: String): String
-		checkField(objectType, j, "forname", false, false, null, "String", "String");
+		checkField(objectType, j, "forname", 0, false, null, "String", "String");
 		checkNbInputParameter(objectType, j, 2);
-		checkInputParameter(objectType, j, 0, "uppercase", false, false, null, "Boolean", "Boolean", null);
-		checkInputParameter(objectType, j, 1, "textToAppendToTheForname", false, false, null, "String", "String", null);
+		checkInputParameter(objectType, j, 0, "uppercase", 0, false, null, "Boolean", "Boolean", null);
+		checkInputParameter(objectType, j, 1, "textToAppendToTheForname", 0, false, null, "String", "String", null);
 		j += 1;
 		// age: Long!
-		checkField(objectType, j, "age", false, true, null, "Long", "Long");
+		checkField(objectType, j, "age", 0, true, null, "Long", "Long");
 		checkNbInputParameter(objectType, j, 1);
-		checkInputParameter(objectType, j, 0, "unit", false, false, null, "Unit", "Unit",
+		checkInputParameter(objectType, j, 0, "unit", 0, false, null, "Unit", "Unit",
 				new graphql.language.EnumValue("YEAR"));
 		j += 1;
 		// aFloat: Float
-		checkField(objectType, j, "aFloat", false, false, null, "Float", "Double");
+		checkField(objectType, j, "aFloat", 0, false, null, "Float", "Double");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// date: Date
-		checkField(objectType, j, "date", false, false, null, "Date", "Date");
+		checkField(objectType, j, "date", 0, false, null, "Date", "Date");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// dates: [Date]!
-		checkField(objectType, j, "dates", true, true, false, "Date", "Date");
+		checkField(objectType, j, "dates", 1, true, false, "Date", "Date");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// nbComments: Int
-		checkField(objectType, j, "nbComments", false, false, null, "Int", "Integer");
+		checkField(objectType, j, "nbComments", 0, false, null, "Int", "Integer");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// comments: [String]
-		checkField(objectType, j, "comments", true, false, false, "String", "String");
+		checkField(objectType, j, "comments", 1, false, false, "String", "String");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// booleans: [Boolean!]
-		checkField(objectType, j, "booleans", true, false, true, "Boolean", "Boolean");
+		checkField(objectType, j, "booleans", 1, false, true, "Boolean", "Boolean");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// aliases: [String]!
-		checkField(objectType, j, "aliases", true, true, false, "String", "String");
+		checkField(objectType, j, "aliases", 1, true, false, "String", "String");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// planets: [String!]!
-		checkField(objectType, j, "planets", true, true, true, "String", "String");
+		checkField(objectType, j, "planets", 1, true, true, "String", "String");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// friends: [Human!]
-		checkField(objectType, j, "friends", true, false, true, "Human", "Human");
+		checkField(objectType, j, "friends", 1, false, true, "Human", "Human");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// matrix: [[Float]]!
-		checkField(objectType, j, "matrix", true, true, false, "Float", "Double");
+		checkField(objectType, j, "matrix", 1, true, false, "Float", "Double");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
-		checkField(objectType, j, "oneWithIdSubType", false, false, null, "AllFieldCasesWithIdSubtype",
+		checkField(objectType, j, "oneWithIdSubType", 0, false, null, "AllFieldCasesWithIdSubtype",
 				"AllFieldCasesWithIdSubtype");
 		checkNbInputParameter(objectType, j, 1);
-		checkInputParameter(objectType, j, 0, "uppercase", false, false, null, "Boolean", "Boolean", null);
+		checkInputParameter(objectType, j, 0, "uppercase", 0, false, null, "Boolean", "Boolean", null);
 		j += 1;
 		// listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean,
 		// textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
-		checkField(objectType, j, "listWithIdSubTypes", true, false, false, "AllFieldCasesWithIdSubtype",
+		checkField(objectType, j, "listWithIdSubTypes", 1, false, false, "AllFieldCasesWithIdSubtype",
 				"AllFieldCasesWithIdSubtype");
 		checkNbInputParameter(objectType, j, 5);
-		checkInputParameter(objectType, j, 0, "nbItems", false, true, null, "Long", "Long", null);
-		checkInputParameter(objectType, j, 1, "date", false, false, null, "Date", "Date", null);
-		checkInputParameter(objectType, j, 2, "dates", true, true, false, "Date", "Date", null);
-		checkInputParameter(objectType, j, 3, "uppercaseName", false, false, null, "Boolean", "Boolean", null);
-		checkInputParameter(objectType, j, 4, "textToAppendToTheForname", false, false, null, "String", "String", null);
+		checkInputParameter(objectType, j, 0, "nbItems", 0, true, null, "Long", "Long", null);
+		checkInputParameter(objectType, j, 1, "date", 0, false, null, "Date", "Date", null);
+		checkInputParameter(objectType, j, 2, "dates", 1, true, false, "Date", "Date", null);
+		checkInputParameter(objectType, j, 3, "uppercaseName", 0, false, null, "Boolean", "Boolean", null);
+		checkInputParameter(objectType, j, 4, "textToAppendToTheForname", 0, false, null, "String", "String", null);
 		j += 1;
 		// oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
-		checkField(objectType, j, "oneWithoutIdSubType", false, false, false, "AllFieldCasesWithoutIdSubtype",
+		checkField(objectType, j, "oneWithoutIdSubType", 0, false, false, "AllFieldCasesWithoutIdSubtype",
 				"AllFieldCasesWithoutIdSubtype");
 		checkNbInputParameter(objectType, j, 1);
-		checkInputParameter(objectType, j, 0, "input", false, false, null, "FieldParameterInput", "FieldParameterInput",
+		checkInputParameter(objectType, j, 0, "input", 0, false, null, "FieldParameterInput", "FieldParameterInput",
 				null);
 		j += 1;
 		// listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String):
 		// [AllFieldCasesWithoutIdSubtype]
-		checkField(objectType, j, "listWithoutIdSubTypes", true, false, false, "AllFieldCasesWithoutIdSubtype",
+		checkField(objectType, j, "listWithoutIdSubTypes", 1, false, false, "AllFieldCasesWithoutIdSubtype",
 				"AllFieldCasesWithoutIdSubtype");
 		checkNbInputParameter(objectType, j, 3);
-		checkInputParameter(objectType, j, 0, "nbItems", false, true, null, "Long", "Long", null);
-		checkInputParameter(objectType, j, 1, "input", false, false, null, "FieldParameterInput", "FieldParameterInput",
+		checkInputParameter(objectType, j, 0, "nbItems", 0, true, null, "Long", "Long", null);
+		checkInputParameter(objectType, j, 1, "input", 0, false, null, "FieldParameterInput", "FieldParameterInput",
 				null);
-		checkInputParameter(objectType, j, 2, "textToAppendToTheForname", false, false, null, "String", "String", null);
+		checkInputParameter(objectType, j, 2, "textToAppendToTheForname", 0, false, null, "String", "String", null);
 		j += 1;
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -544,38 +544,38 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// id: ID!
-		checkField(type, j++, "id", false, true, null, "UUID", UUID.class.getSimpleName());
+		checkField(type, j++, "id", 0, true, null, "UUID", UUID.class.getSimpleName());
 		// name: String!
-		checkField(type, j++, "name", false, true, null, "String", String.class.getSimpleName());
+		checkField(type, j++, "name", 0, true, null, "String", String.class.getSimpleName());
 		// forname: String
-		checkField(type, j++, "forname", false, false, null, "String", String.class.getSimpleName());
+		checkField(type, j++, "forname", 0, false, null, "String", String.class.getSimpleName());
 		// age: int!
-		checkField(type, j++, "age", false, true, null, "Int", Integer.class.getSimpleName());
+		checkField(type, j++, "age", 0, true, null, "Int", Integer.class.getSimpleName());
 		// nbComments: int
-		checkField(type, j++, "nbComments", false, false, null, "Int", Integer.class.getSimpleName());
+		checkField(type, j++, "nbComments", 0, false, null, "Int", Integer.class.getSimpleName());
 		// comments: [String]
-		checkField(type, j++, "comments", true, false, false, "String", String.class.getSimpleName());
+		checkField(type, j++, "comments", 1, false, false, "String", String.class.getSimpleName());
 		// booleans: [boolean!]
-		checkField(type, j++, "booleans", true, false, true, "Boolean", Boolean.class.getSimpleName());
+		checkField(type, j++, "booleans", 1, false, true, "Boolean", Boolean.class.getSimpleName());
 		// aliases: [String]!
-		checkField(type, j++, "aliases", true, true, false, "String", String.class.getSimpleName());
+		checkField(type, j++, "aliases", 1, true, false, "String", String.class.getSimpleName());
 		// planets: [String!]!
-		checkField(type, j++, "planets", true, true, true, "String", String.class.getSimpleName());
+		checkField(type, j++, "planets", 1, true, true, "String", String.class.getSimpleName());
 		// friends: [Human!]
-		checkField(type, j++, "friends", true, false, true, "Human", "Human");
+		checkField(type, j++, "friends", 1, false, true, "Human", "Human");
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
-		checkField(type, j++, "oneWithIdSubType", false, false, null, "AllFieldCasesWithIdSubtype",
+		checkField(type, j++, "oneWithIdSubType", 0, false, null, "AllFieldCasesWithIdSubtype",
 				"AllFieldCasesWithIdSubtype");
 		// listWithIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String):
 		// [AllFieldCasesWithIdSubtype]
-		checkField(type, j++, "listWithIdSubTypes", true, false, false, "AllFieldCasesWithIdSubtype",
+		checkField(type, j++, "listWithIdSubTypes", 1, false, false, "AllFieldCasesWithIdSubtype",
 				"AllFieldCasesWithIdSubtype");
 		// oneWithoutIdSubType: AllFieldCasesWithoutIdSubtype
-		checkField(type, j++, "oneWithoutIdSubType", false, false, null, "AllFieldCasesWithoutIdSubtype",
+		checkField(type, j++, "oneWithoutIdSubType", 0, false, null, "AllFieldCasesWithoutIdSubtype",
 				"AllFieldCasesWithoutIdSubtype");
 		// listWithoutIdSubTypes(uppercaseName: Boolean = True, textToAppendToTheForname: String):
 		// [AllFieldCasesWithoutIdSubtype]
-		checkField(type, j++, "listWithoutIdSubTypes", true, false, false, "AllFieldCasesWithoutIdSubtype",
+		checkField(type, j++, "listWithoutIdSubTypes", 1, false, false, "AllFieldCasesWithoutIdSubtype",
 				"AllFieldCasesWithoutIdSubtype");
 
 	}
@@ -617,21 +617,21 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		// id: ID!
-		checkField(type, j++, "id", false, true, null, "ID", UUID.class.getSimpleName());
+		checkField(type, j++, "id", 0, true, null, "ID", UUID.class.getSimpleName());
 		// name: String!
-		checkField(type, j++, "name", false, true, null, "String", String.class.getSimpleName());
+		checkField(type, j++, "name", 0, true, null, "String", String.class.getSimpleName());
 		// bestFriend: Character
-		checkField(type, j++, "bestFriend", false, false, null, "Character", "Character");
+		checkField(type, j++, "bestFriend", 0, false, null, "Character", "Character");
 		// friends: [Character]
-		checkField(type, j++, "friends", true, false, false, "Character", "Character");
+		checkField(type, j++, "friends", 1, false, false, "Character", "Character");
 		// nbComments: int
-		checkField(type, j++, "nbComments", false, false, null, "Int", Integer.class.getSimpleName());
+		checkField(type, j++, "nbComments", 0, false, null, "Int", Integer.class.getSimpleName());
 		// comments: [String]
-		checkField(type, j++, "comments", true, false, false, "String", String.class.getSimpleName());
+		checkField(type, j++, "comments", 1, false, false, "String", String.class.getSimpleName());
 		// appearsIn: [Episode]!
-		checkField(type, j++, "appearsIn", true, true, false, "Episode", "Episode");
+		checkField(type, j++, "appearsIn", 1, true, false, "Episode", "Episode");
 		// homePlanet: String
-		checkField(type, j++, "homePlanet", false, false, null, "String", String.class.getSimpleName());
+		checkField(type, j++, "homePlanet", 0, false, null, "String", String.class.getSimpleName());
 	}
 
 	@Test
@@ -706,41 +706,40 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		//
 		// withoutParameters: [Character]!
-		checkField(type, j, "withoutParameters", true, true, false, "Character", "Character");
+		checkField(type, j, "withoutParameters", 1, true, false, "Character", "Character");
 		j += 1;
 		// withOneOptionalParam(character: Character): Character
-		checkField(type, j, "withOneOptionalParam", false, false, null, "Character", "Character");
-		checkInputParameter(type, j, 0, "character", false, false, null, "CharacterInput", "CharacterInput", null);
+		checkField(type, j, "withOneOptionalParam", 0, false, null, "Character", "Character");
+		checkInputParameter(type, j, 0, "character", 0, false, null, "CharacterInput", "CharacterInput", null);
 		j += 1;
 		// withOneMandatoryParam(character: Character!): Character
-		checkField(type, j, "withOneMandatoryParam", false, false, false, "Character", "Character");
-		checkInputParameter(type, j, 0, "character", false, true, null, "CharacterInput", "CharacterInput", null);
+		checkField(type, j, "withOneMandatoryParam", 0, false, false, "Character", "Character");
+		checkInputParameter(type, j, 0, "character", 0, true, null, "CharacterInput", "CharacterInput", null);
 		j += 1;
 		// withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
-		checkField(type, j, "withOneMandatoryParamDefaultValue", false, true, false, "Character", "Character");
-		checkInputParameter(type, j, 0, "nbResultat", false, true, null, "Int", "Integer",
+		checkField(type, j, "withOneMandatoryParamDefaultValue", 0, true, false, "Character", "Character");
+		checkInputParameter(type, j, 0, "nbResultat", 0, true, null, "Int", "Integer",
 				new IntValue(BigInteger.valueOf(13)));
 		j += 1;
 		// withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num:
 		// Int = 45): Droid!
-		checkField(type, j, "withTwoMandatoryParamDefaultVal", false, true, null, "Droid", "Droid");
-		checkInputParameter(type, j, 0, "theHero", false, true, null, "DroidInput", "DroidInput", objectValue);
-		checkInputParameter(type, j, 1, "num", false, false, null, "Int", "Integer",
-				new IntValue(BigInteger.valueOf(45)));
+		checkField(type, j, "withTwoMandatoryParamDefaultVal", 0, true, null, "Droid", "Droid");
+		checkInputParameter(type, j, 0, "theHero", 0, true, null, "DroidInput", "DroidInput", objectValue);
+		checkInputParameter(type, j, 1, "num", 0, false, null, "Int", "Integer", new IntValue(BigInteger.valueOf(45)));
 		j += 1;
 		// withEnum(episode: Episode! = NEWHOPE): Character
-		checkField(type, j, "withEnum", false, false, null, "Character", "Character");
-		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", "Episode",
+		checkField(type, j, "withEnum", 0, false, null, "Character", "Character");
+		checkInputParameter(type, j, 0, "episode", 0, true, null, "Episode", "Episode",
 				new graphql.language.EnumValue("NEWHOPE"));
 		j += 1;
 		// withListOfList(matrix: [[Float]]!): AllFieldCases
-		checkField(type, j, "withListOfList", false, false, null, "AllFieldCases", "AllFieldCases");
-		checkInputParameter(type, j, 0, "matrix", true, true, false, "Float", "Double", null);
+		checkField(type, j, "withListOfList", 0, false, null, "AllFieldCases", "AllFieldCases");
+		checkInputParameter(type, j, 0, "matrix", 1, true, false, "Float", "Double", null);
 		j += 1;
 		// withList(name: String!, friends: [Character]!): [Characters]
-		checkField(type, j, "withList", true, false, false, "Character", "Character");
-		checkInputParameter(type, j, 0, "firstName", false, true, null, "String", String.class.getSimpleName(), null);
-		checkInputParameter(type, j, 1, "characters", true, true, true, "CharacterInput", "CharacterInput", null);
+		checkField(type, j, "withList", 1, false, false, "Character", "Character");
+		checkInputParameter(type, j, 0, "firstName", 0, true, null, "String", String.class.getSimpleName(), null);
+		checkInputParameter(type, j, 1, "characters", 1, true, true, "CharacterInput", "CharacterInput", null);
 
 	}
 
@@ -810,21 +809,21 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// defaultValue)
 		//
 		// createHuman(human: Human!): Human!
-		checkField(type, j, "createHuman", false, true, null, "Human", "Human");
+		checkField(type, j, "createHuman", 0, true, null, "Human", "Human");
 		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "human", false, true, null, "HumanInput", "HumanInput", null);
+		checkInputParameter(type, j, 0, "human", 0, true, null, "HumanInput", "HumanInput", null);
 		//
 		j += 1;
 		// createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
-		checkField(type, j, "createAllFieldCases", false, true, null, "AllFieldCases", "AllFieldCases");
+		checkField(type, j, "createAllFieldCases", 0, true, null, "AllFieldCases", "AllFieldCases");
 		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "input", false, true, null, "AllFieldCasesInput", "AllFieldCasesInput", null);
+		checkInputParameter(type, j, 0, "input", 0, true, null, "AllFieldCasesInput", "AllFieldCasesInput", null);
 		//
 		j += 1;
 		// deleteSnacks(id: [ID]) : Boolean
-		checkField(type, j, "deleteSnacks", false, false, null, "Boolean", "Boolean");
+		checkField(type, j, "deleteSnacks", 0, false, null, "Boolean", "Boolean");
 		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "id", true, false, false, "ID", "UUID", null);
+		checkInputParameter(type, j, 0, "id", 1, false, false, "ID", "UUID", null);
 	}
 
 	@Test
@@ -858,12 +857,12 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// defaultValue)
 		//
 		// subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
-		checkField(type, j, "subscribeNewHumanForEpisode", false, true, null, "Human", "Human");
+		checkField(type, j, "subscribeNewHumanForEpisode", 0, true, null, "Human", "Human");
 		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "episode", false, true, null, "Episode", "Episode", null);
+		checkInputParameter(type, j, 0, "episode", 0, true, null, "Episode", "Episode", null);
 		j += 1;
 		// subscribeToAList: [Int]!
-		checkField(type, j, "subscribeToAList", true, true, false, "Int", "Integer");
+		checkField(type, j, "subscribeToAList", 1, true, false, "Int", "Integer");
 		checkNbInputParameter(type, j, 0);
 		j += 1;
 	}
@@ -901,17 +900,17 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		return null;
 	}
 
-	private void checkField(ObjectType type, int j, String name, boolean list, boolean mandatory, Boolean itemMandatory,
+	private void checkField(ObjectType type, int j, String name, int list, boolean mandatory, Boolean itemMandatory,
 			String typeName, String classSimpleName) {
 		Field field = type.getFields().get(j);
 		String fieldDescForJUnitMessage = "Field n°" + j + " (" + name + ")";
 
 		assertEquals(name, field.getName(), "field name is " + name + " (for " + fieldDescForJUnitMessage + ")");
-		assertEquals(list, field.getFieldTypeAST().isList(),
+		assertEquals(list, field.getFieldTypeAST().getListDepth(),
 				"field list is " + list + " (for " + fieldDescForJUnitMessage + ")");
 		assertEquals(mandatory, field.getFieldTypeAST().isMandatory(),
 				"field mandatory is " + mandatory + " (for " + fieldDescForJUnitMessage + ")");
-		if (list && itemMandatory != null) {
+		if (list > 0 && itemMandatory != null) {
 			assertEquals(itemMandatory, field.getFieldTypeAST().getListItemFieldTypeAST().isMandatory(),
 					"field itemMandatory is " + itemMandatory + " (for " + fieldDescForJUnitMessage + ")");
 		}
@@ -928,7 +927,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 				"field " + type.getFields().get(j).getName() + " should have " + nbInputParameters + " parameter");
 	}
 
-	private void checkInputParameter(ObjectType type, int j, int numParam, String name, boolean list, boolean mandatory,
+	private void checkInputParameter(ObjectType type, int j, int numParam, String name, int list, boolean mandatory,
 			Boolean itemMandatory, String typeName, String classSimpleName, Value<?> defaultValue) {
 		Field inputValue = type.getFields().get(j).getInputParameters().get(numParam);
 
@@ -936,7 +935,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		assertEquals(name, inputValue.getName(),
 				type.getName() + " - name is " + name + " (for " + intputParamDescForJUnitMessage + ")");
-		assertEquals(list, inputValue.getFieldTypeAST().isList(),
+		assertEquals(list, inputValue.getFieldTypeAST().getListDepth(),
 				type.getName() + " - list is " + list + " (for " + intputParamDescForJUnitMessage + ")");
 		assertEquals(mandatory, inputValue.getFieldTypeAST().isMandatory(),
 				type.getName() + " - mandatory is " + mandatory + " (for " + intputParamDescForJUnitMessage + ")");

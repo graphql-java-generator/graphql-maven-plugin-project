@@ -1,7 +1,6 @@
 package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -157,40 +156,38 @@ class DocumentParser_Forum_Server_Test {
 		//
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, completableFuture, sourceName,
 		// list of input parameters
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", true, false,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", 1, false,
 				null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "QueryType", "nbBoards", "Int", false, false,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "QueryType", "nbBoards", "Int", 0, false,
 				null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", true, false,
-				null, "boardName");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", 1, false, null,
+				"boardName");
 		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "QueryType",
-				"findTopics", "Topic", true, false, null, "boardName", "keyword");
+				"findTopics", "Topic", 1, false, null, "boardName", "keyword");
 		// Let's check the input parameters for this dataFetcher
-		assertFalse(dataFetcher.getField().getInputParameters().get(0).getFieldTypeAST().isList());
-		assertTrue(dataFetcher.getField().getInputParameters().get(1).getFieldTypeAST().isList());
+		assertEquals(0, dataFetcher.getField().getInputParameters().get(0).getFieldTypeAST().getListDepth());
+		assertEquals(1, dataFetcher.getField().getInputParameters().get(1).getFieldTypeAST().getListDepth());
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board",
-				false, false, null, "name", "publiclyAvailable");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic",
-				false, false, null, "topic");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post",
-				false, false, null, "post");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post",
-				true, false, null, "spam");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board", 0,
+				false, null, "name", "publiclyAvailable");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic", 0,
+				false, null, "topic");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post", 0,
+				false, null, "post");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post", 1,
+				false, null, "spam");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "createMember", "MutationType", "createMember", "Member",
-				false, false, null, "input");
+				0, false, null, "input");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "subscribeToNewPost", "SubscriptionType",
-				"subscribeToNewPost", "Post", false, false, null, "boardName");
+				"subscribeToNewPost", "Post", 0, false, null, "boardName");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", true, false,
-				"Board", "since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", false, true,
-				"Topic");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", true, false, "Topic",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", 1, false, "Board",
+				"since");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", 0, true, "Topic");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", 1, false, "Topic",
 				"memberId", "memberName", "since");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", false, true,
-				"Post");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", 0, true, "Post");
 
 		//
 		// Verification of the data fetchers delegates : QueryType, MutationType and 4 objects
@@ -271,12 +268,12 @@ class DocumentParser_Forum_Server_Test {
 	 * @return
 	 */
 	private DataFetcher checkDataFetcher(DataFetcher dataFetcher, String dataFetcherName, String owningType,
-			String fieldName, String returnedTypeName, boolean list, boolean completableFuture, String sourceName,
+			String fieldName, String returnedTypeName, int list, boolean completableFuture, String sourceName,
 			String... inputParameters) {
 		assertEquals(dataFetcherName, dataFetcher.getName(), "dataFetcherName");
 		assertEquals(owningType, dataFetcher.getField().getOwningType().getName(), "owningType");
 		assertEquals(returnedTypeName, dataFetcher.getField().getType().getName(), "returnedTypeName");
-		assertEquals(list, dataFetcher.getField().getFieldTypeAST().isList(), "list");
+		assertEquals(list, dataFetcher.getField().getFieldTypeAST().getListDepth(), "list");
 		assertEquals(completableFuture, dataFetcher.isCompletableFuture(), "completableFuture");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
 		assertEquals(sourceName, dataFetcher.getGraphQLOriginType(), "sourceName");

@@ -79,7 +79,7 @@ public class AllFieldCasesInput
 
 	@JsonProperty("matrix")
 	@GraphQLScalar(fieldName = "matrix", graphQLTypeSimpleName = "Float", javaClass = Double.class)
-	List<List<Double>> matrix;
+	List<List<List<Double>>> matrix;
 
 
 	@JsonProperty("withIdSubtype")
@@ -165,11 +165,11 @@ public class AllFieldCasesInput
 		return planets;
 	}
 
-	public void setMatrix(List<List<Double>> matrix) {
+	public void setMatrix(List<List<List<Double>>> matrix) {
 		this.matrix = matrix;
 	}
 
-	public List<List<Double>> getMatrix() {
+	public List<List<List<Double>>> getMatrix() {
 		return matrix;
 	}
 
@@ -269,7 +269,7 @@ public class AllFieldCasesInput
 		private List<Boolean> booleans;
 		private List<String> aliases;
 		private List<String> planets;
-		private List<List<Double>> matrix;
+		private List<List<List<Double>>> matrix;
 		private List<AllFieldCasesWithIdSubtypeInput> withIdSubtype;
 		private List<AllFieldCasesWithoutIdSubtypeInput> withoutIdSubtype;
 
@@ -310,7 +310,7 @@ public class AllFieldCasesInput
 			this.planets = planets;
 			return this;
 		}
-		public Builder withMatrix(List<List<Double>> matrix) {
+		public Builder withMatrix(List<List<List<Double>>> matrix) {
 			this.matrix = matrix;
 			return this;
 		}

@@ -213,16 +213,7 @@ public class FieldImpl implements Field {
 	}
 
 	private void appendType(StringBuilder sb, FieldTypeAST fieldTypeAST) {
-		if (fieldTypeAST.isList()) {
-			sb.append("[");
-			appendType(sb, fieldTypeAST.getListItemFieldTypeAST());
-			sb.append("]");
-		} else {
-			sb.append(fieldTypeAST.getGraphQLTypeSimpleName());
-		}
-
-		if (fieldTypeAST.isMandatory())
-			sb.append("!");
+		sb.append(fieldTypeAST.getGraphQLType());
 	}
 
 }

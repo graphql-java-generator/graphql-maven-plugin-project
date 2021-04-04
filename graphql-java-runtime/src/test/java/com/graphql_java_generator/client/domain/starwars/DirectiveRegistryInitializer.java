@@ -6,9 +6,11 @@ import com.graphql_java_generator.client.directive.DirectiveLocation;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.client.request.InputParameter;
+import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
+import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 
 public class DirectiveRegistryInitializer {
-
+	
 	/**
 	 * Initialization of the {@link DirectiveRegistry} with all known custom scalars, that is with all custom scalars
 	 * defined in the project pom
@@ -16,7 +18,6 @@ public class DirectiveRegistryInitializer {
 	public static DirectiveRegistry initDirectiveRegistry() {
 		DirectiveRegistry directiveRegistry = new DirectiveRegistryImpl();
 		Directive directive;
-		InputParameter param;
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Creating Directive skip
@@ -24,8 +25,9 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("skip");
 		directive.setPackageName("com.graphql_java_generator.client.domain.starwars");
-		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean, true, false, false);
-		directive.getArguments().add(param);
+		directive.getArguments().add(
+			InputParameter.newHardCodedParameter(
+					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		directive.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
@@ -37,8 +39,9 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("include");
 		directive.setPackageName("com.graphql_java_generator.client.domain.starwars");
-		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean, true, false, false);
-		directive.getArguments().add(param);
+		directive.getArguments().add(
+			InputParameter.newHardCodedParameter(
+					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		directive.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
@@ -50,8 +53,9 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("defer");
 		directive.setPackageName("com.graphql_java_generator.client.domain.starwars");
-		param = InputParameter.newHardCodedParameter("if", null, graphql.Scalars.GraphQLBoolean, true, false, false);
-		directive.getArguments().add(param);
+		directive.getArguments().add(
+			InputParameter.newHardCodedParameter(
+					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directiveRegistry.registerDirective(directive);
 
@@ -61,12 +65,13 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("deprecated");
 		directive.setPackageName("com.graphql_java_generator.client.domain.starwars");
-		param = InputParameter.newHardCodedParameter("reason", null, graphql.Scalars.GraphQLString, false, false,
-				false);
-		directive.getArguments().add(param);
+		directive.getArguments().add(
+			InputParameter.newHardCodedParameter(
+					"reason", null, "String", false, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		directive.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
 		directiveRegistry.registerDirective(directive);
+
 
 		DirectiveRegistryImpl.directiveRegistry = directiveRegistry;
 		return directiveRegistry;

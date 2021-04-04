@@ -23,6 +23,7 @@ import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -99,7 +100,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 								// The new field is a list
 								FieldTypeAST listItem = FieldTypeAST.builder().graphQLTypeSimpleName(field.getType())
 										.build();
-								FieldTypeAST list = FieldTypeAST.builder().list(true).listItemFieldTypeAST(listItem)
+								FieldTypeAST list = FieldTypeAST.builder().listDepth(1).listItemFieldTypeAST(listItem)
 										.mandatory(field.getMandatory()).build();
 								newField = FieldImpl.builder().documentParser(documentParser).name(field.getName())
 										.owningType(objectType).fieldTypeAST(list).build();
@@ -130,11 +131,11 @@ public class GenerateCodeJsonSchemaPersonalization {
 
 							existingField.setName(field.getName());
 							if (field.getList() != null
-									&& (field.getList() != existingField.getFieldTypeAST().isList())) {
+									&& (field.getList() != (existingField.getFieldTypeAST().getListDepth() > 0))) {
 								// The list attribute changed
 								if (field.getList()) {
 									// It's now a list (and it wasn't before)
-									FieldTypeAST list = FieldTypeAST.builder().list(true)
+									FieldTypeAST list = FieldTypeAST.builder().listDepth(1)
 											.listItemFieldTypeAST(existingField.getFieldTypeAST()).build();
 									existingField.setFieldTypeAST(list);
 								} else {
