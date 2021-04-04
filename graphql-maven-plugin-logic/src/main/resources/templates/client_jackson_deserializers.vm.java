@@ -33,7 +33,7 @@ public class CustomJacksonDeserializers {
 #else
 				null,
 #end
-				#if($customDeserializer.listLevel>0)true#else false#end,
+				#if($customDeserializer.listDepth>0)true#else false#end,
 				${customDeserializer.itemJavaClassFullName}.class,
 #if (${customDeserializer.customScalarDefinition})  ## if(customScalarDefinition not null)
 #if (${customDeserializer.customScalarDefinition.graphQLScalarTypeClass})

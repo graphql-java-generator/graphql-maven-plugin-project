@@ -2,7 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Remove the FieldTypeAST.getListLevel() method
 * Remove the default value in GraphQLInputParameters
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Add an option to add the Serializable interface for generated POJOs

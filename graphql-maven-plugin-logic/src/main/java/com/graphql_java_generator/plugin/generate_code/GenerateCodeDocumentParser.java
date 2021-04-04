@@ -455,7 +455,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			if (field.getFieldTypeAST().getListDepth() > 0 || field.getType().isCustomScalar()) {
 				String classSimpleName = "CustomJacksonDeserializers."//
 						+ CustomDeserializer.getCustomDeserializerClassSimpleName(
-								field.getFieldTypeAST().getListLevel(),
+								field.getFieldTypeAST().getListDepth(),
 								graphqlUtils.getJavaName(field.getType().getName()));
 				field.getOwningType().addImport(configuration.getPackageName(),
 						getUtilPackageName() + ".CustomJacksonDeserializers");
@@ -856,7 +856,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				.forEach((f) -> {
 					// listLevel: 0 for non array GraphQL types, 1 for arrays like [Int], 2 for nested arrays like
 					// [[Int]]...
-					int listLevel = f.getFieldTypeAST().getListLevel();
+					int listLevel = f.getFieldTypeAST().getListDepth();
 
 					Integer alreadyDefinedListLevel = maxListLevelPerType.get(f.getType());
 					if (alreadyDefinedListLevel == null || alreadyDefinedListLevel < listLevel) {

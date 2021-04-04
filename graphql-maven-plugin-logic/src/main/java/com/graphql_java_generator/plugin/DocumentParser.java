@@ -802,7 +802,7 @@ public abstract class DocumentParser {
 		field.setAppliedDirectives(readAppliedDirectives(
 				(List<graphql.language.Directive>) graphqlUtils.invokeMethod("getDirectives", fieldDef)));
 
-		field.setFieldTypeAST(readFieldTypeAST(graphqlUtils.invokeMethod("getType", fieldDef), 0));
+		field.setFieldTypeAST(readFieldTypeAST(graphqlUtils.invokeMethod("getType", fieldDef)));
 
 		// For InputValueDefinition, we may have a default value
 		if (fieldDef instanceof InputValueDefinition) {
@@ -813,7 +813,7 @@ public abstract class DocumentParser {
 
 	}
 
-	FieldTypeAST readFieldTypeAST(Object fieldDef, int listDepth) {
+	FieldTypeAST readFieldTypeAST(Object fieldDef) {
 		if (fieldDef instanceof TypeName) {
 			TypeName typeName = (TypeName) fieldDef;
 			FieldTypeAST ret = new FieldTypeAST(typeName.getName());
@@ -822,17 +822,17 @@ public abstract class DocumentParser {
 		} else if (fieldDef instanceof ListType) {
 			// This node contains a list. Let's recurse one.
 			ListType node = (ListType) fieldDef;
-			FieldTypeAST listItemTypeAST = readFieldTypeAST(node.getType(), listDepth + 1);
+			FieldTypeAST listItemTypeAST = readFieldTypeAST(node.getType());
 			// We return a list of the read subnode.
 			FieldTypeAST fieldTypeAST = new FieldTypeAST();
-			fieldTypeAST.setListDepth(listDepth + 1);
+			fieldTypeAST.setListDepth(listItemTypeAST.getListDepth() + 1);
 			fieldTypeAST.setListItemFieldTypeAST(listItemTypeAST);
 			fieldTypeAST.setItemMandatory(node.getChildren().get(0) instanceof NonNullType);
 			return fieldTypeAST;
 		} else if (fieldDef instanceof NonNullType) {
 			// Let's recurse in the AST for this mandatory type
 			NonNullType subNode = (NonNullType) fieldDef;
-			FieldTypeAST fieldTypeAST = readFieldTypeAST(subNode.getType(), listDepth);
+			FieldTypeAST fieldTypeAST = readFieldTypeAST(subNode.getType());
 			// The type is mandatory
 			fieldTypeAST.setMandatory(true);
 			return fieldTypeAST;

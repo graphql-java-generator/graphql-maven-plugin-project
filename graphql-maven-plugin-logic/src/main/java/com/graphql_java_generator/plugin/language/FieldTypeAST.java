@@ -71,13 +71,6 @@ public class FieldTypeAST {
 		this.graphQLTypeSimpleName = graphQLTypeName;
 	}
 
-	public int getListLevel() {
-		if (listItemFieldTypeAST == null)
-			return 0;
-		else
-			return 1 + listItemFieldTypeAST.getListLevel();
-	}
-
 	/**
 	 * Returns the java type as it an be used to declare a variable or an attribute. For instance, a field of GraphQL
 	 * type <I>[ID]</I>, in client mode (where an ID is a java String), the result would be: <I>List&lt;String&gt;</I>.

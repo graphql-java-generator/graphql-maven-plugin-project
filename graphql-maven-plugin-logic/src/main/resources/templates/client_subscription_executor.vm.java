@@ -362,7 +362,7 @@ public class ${object.classSimpleName}Executor {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 
-#if($field.fieldTypeAST.list)
+#if($field.fieldTypeAST.listDepth>0)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
 		return configuration.getQueryExecutor().execute(objectResponse, parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);
@@ -458,7 +458,7 @@ public class ${object.classSimpleName}Executor {
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 		
-#if($field.fieldTypeAST.list)
+#if($field.fieldTypeAST.listDepth>0)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
 		return configuration.getQueryExecutor().execute(objectResponse, parameters, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);

@@ -168,7 +168,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// matrix: [[Float]]!
-		checkField(objectType, j, "matrix", 1, true, false, "Float", "Double");
+		checkField(objectType, j, "matrix", 2, true, false, "Float", "Double");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
@@ -734,7 +734,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		j += 1;
 		// withListOfList(matrix: [[Float]]!): AllFieldCases
 		checkField(type, j, "withListOfList", 0, false, null, "AllFieldCases", "AllFieldCases");
-		checkInputParameter(type, j, 0, "matrix", 1, true, false, "Float", "Double", null);
+		checkInputParameter(type, j, 0, "matrix", 2, true, false, "Float", "Double", null);
 		j += 1;
 		// withList(name: String!, friends: [Character]!): [Characters]
 		checkField(type, j, "withList", 1, false, false, "Character", "Character");

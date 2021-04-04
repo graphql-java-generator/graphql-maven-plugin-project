@@ -47,7 +47,7 @@ public class CustomDeserializer {
 	 * Indicates at which level of nested array this custom deserializer is. To deserialize a value (for custom scalar),
 	 * the <I>listLevel</I> is 0. To deserialize a <I>[[Character]]</I>, the <I>listLevel</I> is 2.
 	 */
-	private int listLevel;
+	private int listDepth;
 
 	/**
 	 * The {@link CustomDeserializer} to which the JSON parsing should be delegated, for each item of the JSON
@@ -67,7 +67,7 @@ public class CustomDeserializer {
 	 *         </UL>
 	 */
 	public String getClassSimpleName() {
-		return getCustomDeserializerClassSimpleName(listLevel, GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName));
+		return getCustomDeserializerClassSimpleName(listDepth, GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName));
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class CustomDeserializer {
 	 */
 	public String getJavaClassFullName() {
 		String ret = itemJavaClassFullName;
-		for (int i = 1; i <= listLevel; i += 1) {
+		for (int i = 1; i <= listDepth; i += 1) {
 			ret = "List<" + ret + ">";
 		}
 		return ret;
