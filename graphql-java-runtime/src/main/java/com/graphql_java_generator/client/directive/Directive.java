@@ -74,7 +74,7 @@ public class Directive {
 	public void appendToGraphQLRequests(StringBuilder sb, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		sb.append(" ").append("@").append(name);
-		InputParameter.appendInputParametersToGraphQLRequests(sb, arguments, parameters);
+		InputParameter.appendInputParametersToGraphQLRequests(false, sb, arguments, parameters);
 	}
 
 	/**

@@ -291,10 +291,6 @@ public abstract class AbstractGraphQLRequest {
 		// We're reading the request parameters. It should be something like "($param1: Type1, $param2: Type2!)"
 		Step step = Step.NAME;
 		String name = null;
-		String graphQLTypeName = null;
-		boolean mandatory = false;
-		int listDepth = 0;
-		boolean itemMandatory = false;
 
 		while (true) {
 			token = qt.nextToken();
@@ -338,6 +334,10 @@ public abstract class AbstractGraphQLRequest {
 			case TYPE:
 				// The current token is the GraphQL variable type, for instance "[[Human!]]!". Let's parse it.
 				int currentDepth = 0;
+				String graphQLTypeName = null;
+				boolean mandatory = false;
+				int listDepth = 0;
+				boolean itemMandatory = false;
 				while (true) {
 					switch (token) {
 					case "[":
@@ -616,10 +616,10 @@ public abstract class AbstractGraphQLRequest {
 				//////////////////////////////////////////////////////////////////////
 				// And the variable value list (for the json variables field)
 				sbGraphQLValues.append(separator)//
-						.append("\\\"")//
+						.append("\"")//
 						.append(param.getBindParameterName())//
-						.append("\\\":")//
-						.append(param.getValueForGraphqlQuery(params));
+						.append("\":")//
+						.append(param.getValueForGraphqlQuery(true, params));
 
 				separator = ",";
 			}

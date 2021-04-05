@@ -266,7 +266,7 @@ public class QueryField {
 				sb.append(alias).append(":").append(name);
 			}
 
-			InputParameter.appendInputParametersToGraphQLRequests(sb, inputParameters, parameters);
+			InputParameter.appendInputParametersToGraphQLRequests(false, sb, inputParameters, parameters);
 		}
 		//////////////////////////////////////////////////////////
 		// Then the directives

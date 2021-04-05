@@ -51,7 +51,15 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 
 	@Override
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
-		return generator.generateInstanceList(Episode.class, 2);
+		//////////////////////////////////////////////////////////////////////////////////////////
+		// If a GraphQL variable of name "appearsIn" exists, we use it.
+		@SuppressWarnings("unchecked")
+		List<Episode> appearsIn = (List<Episode>) dataFetchingEnvironment.getVariables().get("appearsIn");
+
+		if (appearsIn != null)
+			return appearsIn;
+		else
+			return generator.generateInstanceList(Episode.class, 2);
 	}
 
 	@Override

@@ -3,8 +3,6 @@ package com.graphql_java_generator.client.request;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +14,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.forum.Board;
-import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.client.domain.forum.GraphQLRequest;
-import com.graphql_java_generator.client.domain.forum.PostInput;
 import com.graphql_java_generator.client.domain.forum.QueryType;
-import com.graphql_java_generator.client.domain.forum.TopicPostInput;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -134,14 +129,14 @@ class AbstractGraphQLRequest_ForumTest {
 		// First parameter is hard coded
 		assertEquals("memberName", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\\\"a member Name\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(params));
+		assertEquals("\\\"a member Name\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
 		assertEquals("memberName", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.OPTIONAL, postsInputParameters.get(i).type);
 		i = 1;
 		// The second parameter is a bind variable
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\\\"1900-10-24\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(params));
+		assertEquals("\\\"1900-10-24\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
 		assertEquals("sinceParam", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.MANDATORY, postsInputParameters.get(i).type);
 
@@ -195,63 +190,4 @@ class AbstractGraphQLRequest_ForumTest {
 				graphQLRequest.buildRequest(params));
 	}
 
-	@Test
-	void testBuild_withGraphQLVariables() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		// Go, go, go
-		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
-		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
-				"query  ($post: PostInput!, $anIntParam: Int){boards{topics{id}}}");
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
-				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
-				.withTitle("a title").withContent("some content").build();
-		PostInput inputPost = PostInput.builder().withTopicId("22").withInput(topicPostInput).build();
-		//
-		Map<String, Object> params = new HashMap<>();
-		params.put("post", inputPost);
-		params.put("anIntParam", 666);// This
-
-		// Verification
-		assertEquals(
-				"{\"query\":\"query($post:PostInput!,$anIntParam:Int){boards{topics{id __typename} __typename}}\",\"variables\":"//
-						+ "{\\\"post\\\":{\\\"topicId\\\":\\\"22\\\",\\\"input\\\":{\\\"authorId\\\":\\\"12\\\",\\\"date\\\":\\\"2021-03-13\\\",\\\"publiclyAvailable\\\":true,\\\"title\\\":\\\"a title\\\",\\\"content\\\":\\\"some content\\\"}},"
-						+ "\\\"anIntParam\\\":666}"//
-						+ ",\"operationName\":null}",
-				graphQLRequest.buildRequest(params));
-	}
-
-	@Test
-	void testBuild_withNameAndGraphQLVariables()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		// Go, go, go
-		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
-		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
-				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] ! ){boards{topics{id}}}");
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
-				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
-				.withTitle("a title").withContent("some content").build();
-		PostInput inputPost = PostInput.builder().withTopicId("22").withInput(topicPostInput).build();
-		//
-		List<List<Date>> dates = Arrays.asList(
-				Arrays.asList(new GregorianCalendar(2021, 4 - 1, 1).getTime(),
-						new GregorianCalendar(2021, 4 - 1, 2).getTime()),
-				Arrays.asList(new GregorianCalendar(2021, 4 - 1, 3).getTime(),
-						new GregorianCalendar(2021, 4 - 1, 4).getTime()));
-		//
-		Map<String, Object> params = new HashMap<>();
-		params.put("post", inputPost);
-		params.put("anIntParam", 666);
-		params.put("aCustomScalar", dates);
-
-		// Verification
-		assertEquals(
-				"{\"query\":\"query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!){boards{topics{id __typename} __typename}}\",\"variables\":"//
-						+ "{\\\"post\\\":{\\\"topicId\\\":\\\"22\\\",\\\"input\\\":{\\\"authorId\\\":\\\"12\\\",\\\"date\\\":\\\"2021-03-13\\\",\\\"publiclyAvailable\\\":true,\\\"title\\\":\\\"a title\\\",\\\"content\\\":\\\"some content\\\"}},"
-						+ "\\\"anIntParam\\\":666,\\\"aCustomScalar\\\":[[\\\"2021-04-01\\\",\\\"2021-04-02\\\"],[\\\"2021-04-03\\\",\\\"2021-04-04\\\"]]}"//
-						+ ",\"operationName\":null}",
-				graphQLRequest.buildRequest(params));
-	}
 }

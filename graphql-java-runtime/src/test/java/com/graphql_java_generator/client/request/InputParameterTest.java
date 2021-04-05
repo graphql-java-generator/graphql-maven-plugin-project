@@ -64,9 +64,10 @@ class InputParameterTest {
 		assertEquals(value, param.getValue(), "value");
 		assertEquals(
 				"\\\"This is a string with two \\\\\\\"\\\\\\\", a \\\\uD83C\\\\uDF89 and some \\\\r \\\\t \\\\\\\\ to be escaped\\\"",
-				param.getValueForGraphqlQuery(null), "escaped value");
+				param.getValueForGraphqlQuery(false, null), "escaped value");
 		assertEquals('"' + value + '"',
-				StringEscapeUtils.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(null))),
+				StringEscapeUtils
+						.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(false, null))),
 				"roundtripped value");
 	}
 
@@ -79,7 +80,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals("EMPIRE", param.getValueForGraphqlQuery(new HashMap<>()));
+		assertEquals("EMPIRE", param.getValueForGraphqlQuery(false, new HashMap<>()));
 	}
 
 	@Test
@@ -91,7 +92,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()));
+		assertEquals(value.toString(), param.getValueForGraphqlQuery(false, new HashMap<>()));
 	}
 
 	@Test
@@ -103,7 +104,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals(value.toString(), param.getValueForGraphqlQuery(new HashMap<>()));
+		assertEquals(value.toString(), param.getValueForGraphqlQuery(false, new HashMap<>()));
 	}
 
 	@Test
@@ -115,8 +116,8 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(id, param.getValue(), "value");
-		assertEquals("\\\"00000000-0000-0000-0000-000000000012\\\"", param.getValueForGraphqlQuery(new HashMap<>()),
-				"escaped value");
+		assertEquals("\\\"00000000-0000-0000-0000-000000000012\\\"",
+				param.getValueForGraphqlQuery(false, new HashMap<>()), "escaped value");
 	}
 
 	@Test
@@ -140,7 +141,7 @@ class InputParameterTest {
 		// Verification
 		assertEquals(
 				"{topicId:\\\"00000000-0000-0000-0000-000000000022\\\",input:{authorId:\\\"00000000-0000-0000-0000-000000000012\\\",date:\\\"2009-11-21\\\",publiclyAvailable:false,title:\\\"The good title for a post\\\",content:\\\"Some other content\\\"}}",
-				param.getValueForGraphqlQuery(postInput, "PostInput", null, false));
+				param.getValueForGraphqlQuery(false, postInput, "PostInput", null, false));
 	}
 
 	@Test
@@ -152,7 +153,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
-		assertEquals("[]", param.getValueForGraphqlQuery(new HashMap<>()));
+		assertEquals("[]", param.getValueForGraphqlQuery(false, new HashMap<>()));
 	}
 
 	@Test
@@ -171,7 +172,7 @@ class InputParameterTest {
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
 		assertEquals("[\\\"" + value1 + "\\\",\\\"" + value2 + "\\\",\\\"" + value3 + "\\\"]",
-				param.getValueForGraphqlQuery(new HashMap<>()));
+				param.getValueForGraphqlQuery(false, new HashMap<>()));
 	}
 
 	@Test
@@ -189,7 +190,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
-		assertEquals("[EMPIRE,JEDI,NEWHOPE]", param.getValueForGraphqlQuery(new HashMap<>()));
+		assertEquals("[EMPIRE,JEDI,NEWHOPE]", param.getValueForGraphqlQuery(false, new HashMap<>()));
 	}
 
 	@Test
@@ -203,15 +204,15 @@ class InputParameterTest {
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
 		assertEquals(bindParameterName, mandatoryBindParam.bindParameterName, "bindParameterName");
-		assertThrows(GraphQLRequestExecutionException.class, () -> mandatoryBindParam.getValueForGraphqlQuery(null),
-				"escaped value (null map)");
 		assertThrows(GraphQLRequestExecutionException.class,
-				() -> mandatoryBindParam.getValueForGraphqlQuery(new HashMap<>()), "escaped value (empty map)");
+				() -> mandatoryBindParam.getValueForGraphqlQuery(false, null), "escaped value (null map)");
+		assertThrows(GraphQLRequestExecutionException.class,
+				() -> mandatoryBindParam.getValueForGraphqlQuery(false, new HashMap<>()), "escaped value (empty map)");
 
 		Map<String, Object> bindVariablesValues = new HashMap<>();
 		bindVariablesValues.put("anotherBind", "A value");
 		bindVariablesValues.put(bindParameterName, 666);
-		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(bindVariablesValues),
+		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(false, bindVariablesValues),
 				"escaped value (correct map)");
 	}
 
@@ -226,13 +227,13 @@ class InputParameterTest {
 		assertEquals(name, mandatoryBindParam.getName(), "name");
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
 		assertEquals(bindParameterName, mandatoryBindParam.bindParameterName, "bindParameterName");
-		assertNull(mandatoryBindParam.getValueForGraphqlQuery(null), "with no given map");
-		assertNull(mandatoryBindParam.getValueForGraphqlQuery(new HashMap<>()), "escaped value (empty map)");
+		assertNull(mandatoryBindParam.getValueForGraphqlQuery(false, null), "with no given map");
+		assertNull(mandatoryBindParam.getValueForGraphqlQuery(false, new HashMap<>()), "escaped value (empty map)");
 
 		Map<String, Object> bindVariablesValues = new HashMap<>();
 		bindVariablesValues.put("anotherBind", "A value");
 		bindVariablesValues.put(bindParameterName, 666);
-		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(bindVariablesValues),
+		assertEquals("666", mandatoryBindParam.getValueForGraphqlQuery(false, bindVariablesValues),
 				"escaped value (correct map)");
 	}
 
@@ -248,7 +249,7 @@ class InputParameterTest {
 		Map<String, Object> badValues = new HashMap<>();
 		badValues.put("variableName", "A bad date");
 		CoercingSerializeException e = assertThrows(CoercingSerializeException.class,
-				() -> customScalarInputParameter.getValueForGraphqlQuery(badValues));
+				() -> customScalarInputParameter.getValueForGraphqlQuery(false, badValues));
 		assertTrue(e.getMessage().contains("A bad date"));
 
 		@SuppressWarnings("deprecation")
@@ -256,7 +257,7 @@ class InputParameterTest {
 		Map<String, Object> goodValues = new HashMap<>();
 		goodValues.put("variableName", date);
 
-		assertEquals("\\\"2020-01-19\\\"", customScalarInputParameter.getValueForGraphqlQuery(goodValues));
+		assertEquals("\\\"2020-01-19\\\"", customScalarInputParameter.getValueForGraphqlQuery(false, goodValues));
 	}
 
 	@Test
@@ -275,7 +276,7 @@ class InputParameterTest {
 		Map<String, Object> badValues = new HashMap<>();
 		badValues.put("variableName", "A bad long");
 		CoercingSerializeException e = assertThrows(CoercingSerializeException.class,
-				() -> customScalarInputParameter.getValueForGraphqlQuery(badValues));
+				() -> customScalarInputParameter.getValueForGraphqlQuery(false, badValues));
 		assertTrue(e.getMessage().contains("Long"));
 
 		Long l = Long.MAX_VALUE;
@@ -283,7 +284,7 @@ class InputParameterTest {
 		Map<String, Object> goodValues = new HashMap<>();
 		goodValues.put("variableName", l);
 
-		assertEquals(ls, customScalarInputParameter.getValueForGraphqlQuery(goodValues));
+		assertEquals(ls, customScalarInputParameter.getValueForGraphqlQuery(false, goodValues));
 	}
 
 	@Test
@@ -308,7 +309,7 @@ class InputParameterTest {
 
 		// When
 		assertEquals("{from:\\\"2020-01-01\\\",in:[\\\"2020-02-01\\\",\\\"2020-03-01\\\"]}",
-				inputTypeInputParameter.getValueForGraphqlQuery(parameters));
+				inputTypeInputParameter.getValueForGraphqlQuery(false, parameters));
 	}
 
 	@Test
@@ -327,10 +328,10 @@ class InputParameterTest {
 		params.put("bindParameterName", inputPost);
 
 		// Go, go, go
-		String result = inputTypeInputParameter.getValueForGraphqlQuery(params);
+		String result = inputTypeInputParameter.getValueForGraphqlQuery(false, params);
 
 		// Verification
-		String expected = "{\\\"topicId\\\":\\\"22\\\",\\\"input\\\":{\\\"authorId\\\":\\\"12\\\",\\\"date\\\":\\\"2021-03-13\\\",\\\"publiclyAvailable\\\":true,\\\"title\\\":\\\"a title\\\",\\\"content\\\":\\\"some content\\\"}}";
+		String expected = "{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}}";
 		assertEquals(expected, result);
 	}
 

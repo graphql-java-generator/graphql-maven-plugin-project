@@ -33,6 +33,7 @@ import graphql.language.Directive;
 import graphql.language.EnumValue;
 import graphql.language.Field;
 import graphql.language.StringValue;
+import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -180,7 +181,16 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 
 		if (testDirective != null) {
 			for (Argument arg : testDirective.getArguments()) {
-				String val = ((StringValue) arg.getValue()).getValue();
+				String val;
+				if (arg.getValue() instanceof StringValue) {
+					val = ((StringValue) arg.getValue()).getValue();
+				} else if (arg.getValue() instanceof VariableReference) {
+					String varName = ((VariableReference) arg.getValue()).getName();
+					val = (String) dataFetchingEnvironment.getVariables().get(varName);
+				} else {
+					throw new RuntimeException("Non manager value type: " + arg.getValue().getClass().getName());
+				}
+
 				if (uppercase) {
 					val = val.toUpperCase();
 				}

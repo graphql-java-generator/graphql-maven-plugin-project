@@ -19,7 +19,10 @@ import org.springframework.stereotype.Component;
 
 import graphql.language.Argument;
 import graphql.language.Directive;
+import graphql.language.Field;
 import graphql.language.StringValue;
+import graphql.language.Value;
+import graphql.language.VariableReference;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -41,6 +44,26 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 		Human ret = generator.generateInstance(Human.class);
 		ret.setName(human.getName());
 		ret.setAppearsIn(human.getAppearsIn());
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		// The code below works only if the uppercase value is given in a GraphQL variable
+		// Let's check if we should return the name in uppercase
+		Field f = (Field) dataFetchingEnvironment.getMergedField().getFields().get(0).getSelectionSet().getSelections()
+				.get(1);
+		if (!f.getName().equals("name")) {
+			throw new RuntimeException(
+					"Internal Error while trying to retrieve the name field. The field retrieved is: '" + f.getName()
+							+ "'");
+		}
+		Value<?> argVal = f.getArguments().get(0).getValue();
+		if (argVal instanceof VariableReference) {
+			String varName = ((VariableReference) argVal).getName();
+			Boolean uppercase = (Boolean) dataFetchingEnvironment.getVariables().get(varName);
+			if (uppercase) {
+				ret.setName(human.getName().toUpperCase());
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////////////////
 
 		// Let's look for the testDirective
 		Directive testDirective = getTestDirective(
