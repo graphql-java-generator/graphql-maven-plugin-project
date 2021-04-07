@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Remove the subscriptions "__typenameWithBindValues"
 * Check the allGraphQLCases URL
 * Remove the default value in GraphQLInputParameters
 * Document in the Client FAQ how to retrieve the extensions response's values

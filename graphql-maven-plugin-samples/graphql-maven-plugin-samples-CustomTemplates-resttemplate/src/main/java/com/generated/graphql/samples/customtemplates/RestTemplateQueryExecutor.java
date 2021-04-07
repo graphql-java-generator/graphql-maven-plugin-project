@@ -116,8 +116,8 @@ public class RestTemplateQueryExecutor implements QueryExecutor {
 
 	@Override
 	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
-			Class<T> messageType) throws GraphQLRequestExecutionException {
+			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
+			throws GraphQLRequestExecutionException {
 		// No subscription in this sample, so we don't really care of this implementation.
 		return null;
 	}

@@ -46,8 +46,8 @@ public interface QueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			Class<R> dataResponseType) throws GraphQLRequestExecutionException;
+	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest,
+			Map<String, Object> parameters, Class<R> dataResponseType) throws GraphQLRequestExecutionException;
 
 	/**
 	 * Executes the given <B>subscription</B> GraphQL request, and returns the relevant {@link WebSocketClient}. The
@@ -72,9 +72,6 @@ public interface QueryExecutor {
 	 * @param subscriptionCallback
 	 *            The object that will be called each time a message is received, or an error on the subscription
 	 *            occurs. This object is provided by the application.
-	 * @param subscriptionName
-	 *            The name of the subscription that should be subscribed by this method call. It will be used to check
-	 *            that the correct GraphQLRequest has been provided by the caller.
 	 * @param subscriptionType
 	 *            The R class
 	 * @param messageType
@@ -88,7 +85,7 @@ public interface QueryExecutor {
 	 * @throws IOException
 	 */
 	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
-			Class<T> messageType) throws GraphQLRequestExecutionException;
+			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
+			throws GraphQLRequestExecutionException;
 
 }

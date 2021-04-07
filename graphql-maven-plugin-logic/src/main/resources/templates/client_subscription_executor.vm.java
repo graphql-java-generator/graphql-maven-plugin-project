@@ -145,8 +145,25 @@ public class ${object.classSimpleName}Executor {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
-	
+
+	/**
+	 * Get the {@link GraphQLRequest} for <B>full request</B>. For instance:
+	 * <PRE>
+	 * GraphQLRequest request = new GraphQLRequest(fullRequest);
+	 * </PRE>
+	 * 
+	 * @param fullRequest The full GraphQLRequest, as specified in the GraphQL specification
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
+		GraphQLRequest ret = new GraphQLRequest(fullRequest);
+		ret.setInstanceConfiguration(configuration);
+		return ret;
+	}
+
 #foreach ($field in $object.fields)
+#if ($field.name != "__typename")
 	/**
 #foreach ($comment in $field.comments)
 	 * ${field.content}
@@ -365,7 +382,7 @@ public class ${object.classSimpleName}Executor {
 #if($field.fieldTypeAST.listDepth>0)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);
 	}
 
 	/**
@@ -461,7 +478,7 @@ public class ${object.classSimpleName}Executor {
 #if($field.fieldTypeAST.listDepth>0)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, "${field.name}", ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);
+		return configuration.getQueryExecutor().execute(objectResponse, parameters, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classSimpleName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.type.classSimpleName}#end.class);
 	}
 
 	/**
@@ -510,5 +527,6 @@ public class ${object.classSimpleName}Executor {
 		return ret;
 	}
 	
+#end
 #end
 }

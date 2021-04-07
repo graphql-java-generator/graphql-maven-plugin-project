@@ -107,8 +107,8 @@ public abstract class AbstractGraphQLRequest {
 	 * @param requestType
 	 *            The information whether this queryName is actually a query, a mutation or a subscription
 	 * @param fieldName
-	 *            The name of the query, mutation or subscription, for instance "titi", in the GraphQL request "query
-	 *            titi {...}".
+	 *            The name of the query, mutation or subscription, for instance "createHuman", in the GraphQL request
+	 *            "mutation {createHuman (...) { ...}}".
 	 * @param inputParams
 	 *            The list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
@@ -262,7 +262,7 @@ public abstract class AbstractGraphQLRequest {
 			}
 		}
 
-		if (query == null && mutation == null) {
+		if (query == null && mutation == null && subscription == null) {
 			throw new GraphQLRequestPreparationException("No response definition found");
 		}
 
@@ -455,14 +455,13 @@ public abstract class AbstractGraphQLRequest {
 	 * @throws IOException
 	 */
 	public <R, T> SubscriptionClient exec(Map<String, Object> params, SubscriptionCallback<T> subscriptionCallback,
-			String subscriptionName, Class<R> subscriptionType, Class<T> messageType)
-			throws GraphQLRequestExecutionException {
+			Class<R> subscriptionType, Class<T> messageType) throws GraphQLRequestExecutionException {
 		if (instanceConfiguration != null) {
 			return instanceConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback,
-					subscriptionName, subscriptionType, messageType);
-		} else if (staticConfiguration != null) {
-			return staticConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, subscriptionName,
 					subscriptionType, messageType);
+		} else if (staticConfiguration != null) {
+			return staticConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, subscriptionType,
+					messageType);
 		} else {
 			throw new GraphQLRequestExecutionException(
 					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "

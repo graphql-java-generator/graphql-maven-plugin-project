@@ -13,6 +13,19 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 Both mode:
 * Upgrade of _com.google.guava_, to remove a vulnerability
 
+Client mode:
+* Request with GraphQL variable are now accepted. Of course, this works only with full requests. You can find more information on GraphQL Variables in the [GraphQL spec](http://spec.graphql.org/June2018/index.html#sec-Language.Variables). 
+* Subscription can now be executed as full request. They were previously limited to partial requests.
+
+Custom templates:
+* The following templates have been updated : client_DirectiveRegistryInitializer.vm.java, client_GraphQLRequest.vm.java, client_jackson_deserializers.vm.java, client_query_mutation_executor.vm.java, client_subscription_executor.vm.java, client_subscription_type.vm.java, server_GraphQLDataFetchers.vm.java
+* These updates are due to:
+    * The `GraphQLInputParameters` has been updated, to now embed all the GraphQL information (prerequisite for GraphQL variable)
+    * The list level is now better managed (not just a boolean, but the real depth when there are lists of lists)
+    * The input parameters now typed with an enum, not just a boolean for mandatory/optional.
+* The _client_query_target_type.vm.java_ was not used and has been removed.
+
+
 # 1.13
 
 Both mode:

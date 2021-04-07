@@ -84,11 +84,10 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 
 #end
 #parse ("templates/object_content.vm.java")
+#end
 
 	/** The field below is the only change from the original template. It is here only to check that this template is actually used */ 
 	public boolean thisIsADummyFieldToCheckThatThisTemplateIsUsed = true;
-
-#end
 
 	/** {@inheritDoc} */
 	public ${object.classSimpleName}(String graphqlEndpoint) {

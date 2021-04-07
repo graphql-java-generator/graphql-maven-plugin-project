@@ -154,7 +154,8 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	}
 #end
 
-	#foreach ($field in $object.fields)
+#foreach ($field in $object.fields)
+#if ($field.name != "__typename")
 	/**
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
@@ -226,5 +227,6 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 		return super.get${field.pascalCaseName}GraphQLRequest(partialRequest);
 	}
 	
+#end
 #end
 }

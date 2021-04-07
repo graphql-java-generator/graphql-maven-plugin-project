@@ -328,7 +328,7 @@ class InputParameterTest {
 		params.put("bindParameterName", inputPost);
 
 		// Go, go, go
-		String result = inputTypeInputParameter.getValueForGraphqlQuery(false, params);
+		String result = inputTypeInputParameter.getValueForGraphqlQuery(true, params);
 
 		// Verification
 		String expected = "{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}}";

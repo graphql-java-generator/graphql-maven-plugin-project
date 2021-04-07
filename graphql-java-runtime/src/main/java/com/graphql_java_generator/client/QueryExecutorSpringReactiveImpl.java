@@ -169,8 +169,8 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	@Override
 	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			SubscriptionCallback<T> subscriptionCallback, String subscriptionName, Class<R> subscriptionType,
-			Class<T> messageType) throws GraphQLRequestExecutionException {
+			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
+			throws GraphQLRequestExecutionException {
 
 		// This method accepts only subscription at a time (no query and no mutation)
 		if (!graphQLRequest.getRequestType().equals(RequestType.subscription))
@@ -184,12 +184,7 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 							+ " subscriptions in this GraphQLRequest");
 		}
 
-		// The subscription name must be the good one
-		if (!graphQLRequest.getSubscription().getFields().get(0).getName().equals(subscriptionName)) {
-			throw new GraphQLRequestExecutionException("The subscription provided in the GraphQLRequest is "
-					+ graphQLRequest.getSubscription().getFields().get(0).getName() + " but it should be "
-					+ subscriptionName);
-		}
+		String subscriptionName = graphQLRequest.getSubscription().getFields().get(0).getName();
 
 		// Is there an OAuth authentication to handle?
 		HttpHeaders headers = new HttpHeaders();

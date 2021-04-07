@@ -3,9 +3,10 @@ package org.allGraphQLCases;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,10 +101,9 @@ class GraphQLVariablesIT {
 	@Test
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		GraphQLRequest directiveOnQuery = mutationType
-				.getGraphQLRequest("query namedQuery($uppercase :\n" //
-						+ "Boolean, \n\r"//
-						+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
+		GraphQLRequest directiveOnQuery = mutationType.getGraphQLRequest("query namedQuery($uppercase :\n" //
+				+ "Boolean, \n\r"//
+				+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
 		Map<String, Object> params = new HashMap<>();
 		params.put("uppercase", true);
 		params.put("anotherValue", "another value");
@@ -184,75 +184,37 @@ class GraphQLVariablesIT {
 		assertEquals("A NEW NAME", human.getName());
 	}
 
-	public static class SubscribeToADate implements Runnable {
-		final TheSubscriptionTypeExecutor subscriptionExecutor;
-		final SubscriptionCallbackToADate callback;
-		final String clientName;
-
-		SubscribeToADate(TheSubscriptionTypeExecutor executor, String clientName) {
-			this.subscriptionExecutor = executor;
-			this.clientName = clientName;
-			this.callback = new SubscriptionCallbackToADate(clientName);
-		}
-
-		@Override
-		public void run() {
-			try {
-				// GraphQLRequest mutation = subscriptionExecutor.getGraphQLRequest(
-				// "subscription sub($aCustomScalarParam: Date!) {issue53($aCustomScalarParam}{}}");
-				SubscriptionClient sub = subscriptionExecutor.issue53("", callback, null);
-				fail("No subscription with full requests");
-
-				try {
-					Thread.sleep(500); // Wait 0.5 second, so that other thread is ready
-				} catch (InterruptedException ex) {
-					Thread.currentThread().interrupt();
-				}
-
-				// Let's wait a max of 1 second, until we receive some notifications
-				try {
-					for (int i = 1; i < 10; i += 1) {
-						if (callback.lastReceivedMessage != null)
-							break;
-						Thread.sleep(100); // Wait 0.1 second
-					} // for
-				} catch (InterruptedException ex) {
-					Thread.currentThread().interrupt();
-				}
-
-				// Let's disconnect from the subscription
-				sub.unsubscribe();
-			} catch (GraphQLRequestExecutionException |
-
-					GraphQLRequestPreparationException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
-		}
-	}
-
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	public void test_GraphQLVariables_subscribeToAList()
+	public void test_GraphQLVariables_subscribeToADate()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		// Preparation
 		TheSubscriptionTypeExecutor subscriptionExecutor = ctx.getBean(TheSubscriptionTypeExecutor.class);
+		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate(
+				"test_GraphQLVariables_subscribeToAList");
+		Date date = new GregorianCalendar(2021, 4 - 1, 15).getTime();
 
-		// To test the issue 72, we create two clients for the subscription, and check that each of them properly
-		// receives the notifications
-		SubscribeToADate client1 = new SubscribeToADate(subscriptionExecutor, "client1");
-		SubscribeToADate client2 = new SubscribeToADate(subscriptionExecutor, "client2");
+		// Go, go, go
+		GraphQLRequest mutation = subscriptionExecutor.getGraphQLRequest(
+				"subscription sub($aCustomScalarParam: Date!) {issue53(date: $aCustomScalarParam){}}");
+		SubscriptionClient sub = mutation.execSubscription(callback, Date.class, "aCustomScalarParam", date);
 
-		Thread thread1 = new Thread(client1);
-		Thread thread2 = new Thread(client2);
+		// Let's wait a max of 10 second, until we receive some notifications (my PC is really slow, especially when the
+		// antivirus consumes 98% of my CPU!
+		try {
+			for (int i = 1; i < 100; i += 1) {
+				if (callback.lastReceivedMessage != null)
+					break;
+				Thread.sleep(100); // Wait 0.1 second
+			} // for
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
 
-		thread1.start();
-		thread2.start();
+		// Let's disconnect from the subscription
+		sub.unsubscribe();
 
-		// Let's wait for the end of our two subscription client threads
-		thread1.join();
-		thread2.join();
-
-		assertNotNull(client1.callback.lastReceivedMessage, "The client 1 should have received a message");
-		assertNotNull(client2.callback.lastReceivedMessage, "The client 2 should have received a message");
+		// Verification
+		assertNotNull(callback.lastReceivedMessage, "The subscription should have received a message");
 	}
 }

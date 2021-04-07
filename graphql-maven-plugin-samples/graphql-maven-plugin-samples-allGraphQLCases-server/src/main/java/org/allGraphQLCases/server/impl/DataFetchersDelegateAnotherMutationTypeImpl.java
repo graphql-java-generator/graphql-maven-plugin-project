@@ -55,12 +55,14 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 					"Internal Error while trying to retrieve the name field. The field retrieved is: '" + f.getName()
 							+ "'");
 		}
-		Value<?> argVal = f.getArguments().get(0).getValue();
-		if (argVal instanceof VariableReference) {
-			String varName = ((VariableReference) argVal).getName();
-			Boolean uppercase = (Boolean) dataFetchingEnvironment.getVariables().get(varName);
-			if (uppercase) {
-				ret.setName(human.getName().toUpperCase());
+		if (f.getArguments().size() > 0) {
+			Value<?> argVal = f.getArguments().get(0).getValue();
+			if (argVal instanceof VariableReference) {
+				String varName = ((VariableReference) argVal).getName();
+				Boolean uppercase = (Boolean) dataFetchingEnvironment.getVariables().get(varName);
+				if (uppercase) {
+					ret.setName(human.getName().toUpperCase());
+				}
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////////////////

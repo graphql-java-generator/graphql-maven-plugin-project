@@ -260,9 +260,6 @@ public class GraphQLRequest extends ObjectResponse {
 	 * @param subscriptionCallback
 	 *            The object that will be called each time a message is received, or an error on the subscription
 	 *            occurs. This object is provided by the application.
-	 * @param subscriptionName
-	 *            The name of the subscription that should be subscribed by this method call. It will be used to check
-	 *            that the correct GraphQLRequest has been provided by the caller.
 	 * @param messageType
 	 *            The T class
 	 * @param parameters
@@ -275,10 +272,10 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, String subscriptionName,
+	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, 
 			Class<T> messageType, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
-		return exec(parameters, subscriptionCallback, subscriptionName, ${subscription.classSimpleName}.class, messageType);
+		return exec(parameters, subscriptionCallback, ${subscription.classSimpleName}.class, messageType);
 	}
 
 	/**
@@ -316,9 +313,6 @@ public class GraphQLRequest extends ObjectResponse {
 	 * @param subscriptionCallback
 	 *            The object that will be called each time a message is received, or an error on the subscription
 	 *            occurs. This object is provided by the application.
-	 * @param subscriptionName
-	 *            The name of the subscription that should be subscribed by this method call. It will be used to check
-	 *            that the correct GraphQLRequest has been provided by the caller.
 	 * @param messageType
 	 *            The T class
 	 * @param paramsAndValues
@@ -334,10 +328,10 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback, String subscriptionName,
+	public <T> SubscriptionClient execSubscription(SubscriptionCallback<T> subscriptionCallback,
 			Class<T> messageType, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return exec(graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues), 
-				subscriptionCallback, subscriptionName, ${subscription.classSimpleName}.class, messageType);
+				subscriptionCallback, ${subscription.classSimpleName}.class, messageType);
 	}
 
 #end
