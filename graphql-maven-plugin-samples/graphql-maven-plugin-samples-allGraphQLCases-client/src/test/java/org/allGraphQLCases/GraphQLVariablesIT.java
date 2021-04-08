@@ -195,9 +195,9 @@ class GraphQLVariablesIT {
 		Date date = new GregorianCalendar(2021, 4 - 1, 15).getTime();
 
 		// Go, go, go
-		GraphQLRequest mutation = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequest subscription = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($aCustomScalarParam: Date!) {issue53(date: $aCustomScalarParam){}}");
-		SubscriptionClient sub = mutation.execSubscription(callback, Date.class, "aCustomScalarParam", date);
+		SubscriptionClient sub = subscription.execSubscription(callback, Date.class, "aCustomScalarParam", date);
 
 		// Let's wait a max of 10 second, until we receive some notifications (my PC is really slow, especially when the
 		// antivirus consumes 98% of my CPU!
