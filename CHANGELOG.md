@@ -9,6 +9,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# Not released yet
+
+Both mode:
+* Upgrade of _com.google.guava_, to version 30.1.1-jre, to remove a vulnerability
+
+
 # 1.14
 
 Both mode:
