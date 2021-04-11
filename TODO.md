@@ -2,9 +2,18 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Remove the subscriptions "__typenameWithBindValues"
-* Check the allGraphQLCases URL
-* Remove the default value in GraphQLInputParameters
+* Document use of GraphQL variables
+* Investigate when the dependency below generates an error:
+```xml
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-runtime</artifactId>
+			<version>${graphql-maven-plugin.version}</version>
+		</dependency>
+```
+* Check all the wiki samples : remove the jetty client, and only keep Spring samples
+* Change the client tutorials from jetty to Spring
+* Change the Subscription implementation from Reactive Subject to Spring reactive
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Add an option to add the Serializable interface for generated POJOs
 * Issue when two client subscribed to the same subscription
