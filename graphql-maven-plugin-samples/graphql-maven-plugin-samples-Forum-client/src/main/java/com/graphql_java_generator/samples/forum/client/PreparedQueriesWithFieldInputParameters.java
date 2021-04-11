@@ -7,6 +7,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 
 /**
@@ -21,7 +22,7 @@ public class PreparedQueriesWithFieldInputParameters {
 
 	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
 
-	final QueryType queryType;
+	final QueryTypeExecutor queryType;
 	final GraphQLRequest topicAuthorPostAuthorResponse;
 
 	public PreparedQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {

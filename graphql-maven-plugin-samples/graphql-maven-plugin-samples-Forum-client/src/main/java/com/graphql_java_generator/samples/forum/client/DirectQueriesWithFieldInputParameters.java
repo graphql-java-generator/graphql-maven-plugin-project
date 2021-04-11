@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 
 /**
@@ -20,7 +21,7 @@ public class DirectQueriesWithFieldInputParameters {
 
 	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
 
-	QueryType queryType;
+	QueryTypeExecutor queryType;
 
 	final String DATE_FORMAT = "yyyy-MM-dd";
 	final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
