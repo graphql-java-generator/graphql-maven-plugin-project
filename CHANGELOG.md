@@ -13,13 +13,16 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 Both mode:
 * Upgrade of _com.google.guava_, to version 30.1.1-jre, to remove a vulnerability
+* Upgrade of Spring boot from 2.4.0 to 2.4.4
+* Upgrade of Spring framework from 5.3.0 to 5.3.5
+* Upgrade of Spring security from 5.4.1 to 5.4.5
 * Upgrade of graphql-java-extended-scalars version from 1.0.1 to 16.0.1
 * Upgrade of commons-io from 2.6 to 2.8.0
 * Upgrade of dozer-core from 6.5.0 to 6.5.2
 * Upgrade of h2 from 1.4.199 to 1.4.200
 
 Client mode:
-* Dependency order changed in the graphql-java-client-dependencies module, to avoid the wrong dependency to be used (this could prevent a Spring app to start)
+* Dependency order changed in the graphql-java-client-dependencies module, to make sure the right spring's dependencies are used (this could prevent a Spring app to start)
 
 # 1.14
 
