@@ -8,9 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
@@ -81,7 +79,7 @@ class FullQueriesIT {
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	void test_noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
 		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
@@ -96,7 +94,7 @@ class FullQueriesIT {
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void extensionsResponseField()
+	void test_extensionsResponseField()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
 
 		// Go, go, go
@@ -117,7 +115,7 @@ class FullQueriesIT {
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	void test_withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
 
@@ -136,7 +134,7 @@ class FullQueriesIT {
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	void test_withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
 		MyQueryType resp = withDirectiveTwoParametersRequest.execQuery( //
@@ -154,7 +152,7 @@ class FullQueriesIT {
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	void test_mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
 		HumanInput input = new HumanInput();
 		input.setName("a new name");
@@ -205,7 +203,7 @@ class FullQueriesIT {
 	 */
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void multipleQueriesResponse() throws GraphQLRequestExecutionException {
+	void test_multipleQueriesResponse() throws GraphQLRequestExecutionException {
 		/*
 		 * { directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)
 		 * 
@@ -278,18 +276,11 @@ class FullQueriesIT {
 	void test_Issue65_withGraphQLValuedParameter()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		Map<String, Object> params = new HashMap<>();
-		params = new HashMap<>();
-		// params.put("value", "the directive value");
-		// params.put("anotherValue", "the other directive value");
-
-		GraphQLRequest graphQLRequest = new GraphQLRequest(//
-				"mutation {createHuman (human:  {name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]} )"
-						+ "@testDirective(value:?value, anotherValue:?anotherValue, "
-						+ "anArray  : [  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ] , \r\n"
-						+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})   "//
-						+ "{id name appearsIn friends {id name}}}"//
-		);
+		String request = "mutation mut1 {"//
+				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
+				+ "@testDirective(value:?value, anotherValue:?anotherValue, anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"
+				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})   {id name appearsIn friends {id name}}}";
+		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
 
 		// Go, go, go
 		Human human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
@@ -297,4 +288,5 @@ class FullQueriesIT {
 		// Verifications
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
 	}
+
 }

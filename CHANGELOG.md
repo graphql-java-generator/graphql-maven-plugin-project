@@ -22,6 +22,7 @@ Both mode:
 * Upgrade of h2 from 1.4.199 to 1.4.200
 
 Client mode:
+* Issue 65: When using requests with the parameters in the request (no GraphQL Variables and no Bind Parameter), the request is properly encoded when these parameters are or contain strings
 * Dependency order changed in the graphql-java-client-dependencies module, to make sure the right spring's dependencies are used (this could prevent a Spring app to start)
 
 # 1.14

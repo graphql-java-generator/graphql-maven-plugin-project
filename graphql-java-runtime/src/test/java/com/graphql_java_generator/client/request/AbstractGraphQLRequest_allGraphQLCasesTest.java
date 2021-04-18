@@ -49,6 +49,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	void testBuild_scalarInputParameters() throws GraphQLRequestPreparationException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getABreakResponseBuilder()
 				.withQueryResponseDef("{case(test: DOUBLE)}").build();
 
@@ -76,6 +77,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		params.put("anotherValue", "the other mutation value");
 
 		// Go, go, go
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder()
 				.withQueryResponseDef("{id name appearsIn friends {id name}}}").build();
 
@@ -95,6 +97,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 
 		// Go, go, go
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = mutationType.getResponseBuilder().withQueryResponseDef(//
 				"mutation { createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
@@ -137,16 +140,14 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		params.put("anotherValue", "the other directive value");
 
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(//
-				"mutation {createHuman (human:  {name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]} )"
-						+ "@testDirective(value:?value, anotherValue:?anotherValue, "
-						+ "anArray  : [  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ] , \r\n"
-						+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})   "//
-						+ "{id name appearsIn friends {id name}}}"//
-		);
+		String request = "mutation mut1 {"//
+				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
+				+ "@testDirective(value:?value, anotherValue:?anotherValue, anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"
+				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})   {id name appearsIn friends {id name}}}";
+		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
 
 		// Verification
-		assertEquals("{\"query\":\"mutation" //
+		assertEquals("{\"query\":\"mutation mut1" //
 				+ "{createHuman(human:{name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]})"
 				+ " @testDirective(value:\\\"the directive value\\\",anotherValue:\\\"the other directive value\\\","
 				+ "anArray:[  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ],"

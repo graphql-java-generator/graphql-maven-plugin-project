@@ -447,17 +447,21 @@ public class InputParameter {
 							if (token.contentEquals("\"")) {
 								// We've found a double quote. So we probably are starting or leaving a string.
 
-								// We're within a String, and it's escaped. So, then we're still in the string (it's
-								// not the end of the string).
+								// But perhaps we're within a String, and we've just read an escaped double quote. So,
+								// then we're still in the string (it's not the end of the string).
 								// As the query parameter is a string, the string delimiters are thesemlves escaped. So
 								// an escaped double-quote within a string of a paremeter needs two \ to be escaped
 								// within a string parameter in the query string of the json.
-								boolean doubleQuoteEscapedWithinAString = withinAString
-										&& previousToken.endsWith("\\\\");
-								if (!doubleQuoteEscapedWithinAString) {
+								boolean doubleQuoteEscapedWithinAString = withinAString && previousToken.endsWith("\\");
+								if (doubleQuoteEscapedWithinAString) {
+									// We must escape the previous '\', then escape the '"'
+									sb.append("\\\\");
+								} else {
 									// We've found the start or the end of the string value. This important, as []{}
 									// characters should be ignored, when in a string
 									withinAString = !withinAString;
+									// We must escape this '"', as in the JSON query, this string is itself in a String
+									sb.append("\\");
 								}
 							}
 							sb.append(token);

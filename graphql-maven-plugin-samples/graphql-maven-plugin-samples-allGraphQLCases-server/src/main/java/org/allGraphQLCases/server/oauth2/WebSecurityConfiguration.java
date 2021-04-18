@@ -36,11 +36,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			// entering in production
 				.cors().and().csrf().disable()//
 				.authorizeRequests(authz -> authz//
+						// The line below should be commented. IT's here, for temporary tests with graphiql
+						// (which can't connect to an OAuth2 protected server). If uncommented, the integration test
+						// that checks that OAuth is activated on the server will fail. This insures that these lines
+						// are commented for releases.
+						// .anyRequest().permitAll()//
+						//
+						// The two lines below checks that the use is authenticated, insuring that the OAuth2 token has
+						// been properly read.
 						.antMatchers(HttpMethod.GET, "/my/updated/graphql/path").authenticated()// .access("hasRole('ROLE_CLIENT')")//
 						.antMatchers(HttpMethod.POST, "/my/updated/graphql/path").authenticated()// .access("hasRole('ROLE_CLIENT')")//
-						.antMatchers(HttpMethod.GET, "/graphiql").permitAll()//
 						// All other URL accesses are prohibited
-						.anyRequest().denyAll())//
+						.anyRequest().denyAll()//
+				//
+				)//
 				.oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(
 						// When all lines below are commented, then a custom OpaqueTokenIntrospector is used. See
 						// CustomAuthoritiesOpaqueTokenIntrospector
