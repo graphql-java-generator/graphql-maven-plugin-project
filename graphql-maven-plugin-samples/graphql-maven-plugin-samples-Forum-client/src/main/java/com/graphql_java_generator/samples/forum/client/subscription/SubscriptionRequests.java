@@ -67,8 +67,8 @@ public class SubscriptionRequests {
 				postSubscriptionCallback, "Board name 1");
 
 		// For this test, we need to be sure that the subscription is active, before creating the post (that we will
-		// receive a notification about)
-		final int TIMEOUT1 = 1000;
+		// receive a notification about). 3s: that's long, but my PC is so slow from time to time... :(
+		final int TIMEOUT1 = 3000;
 		for (int i = 0; i < TIMEOUT1 / 10; i += 1) {
 			try {
 				Thread.sleep(10);

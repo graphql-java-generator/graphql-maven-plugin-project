@@ -17,9 +17,6 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
-import reactor.core.publisher.Sinks.EmitResult;
-import reactor.core.publisher.Sinks.One;
 
 /**
  * This class implements the Web Socket, as needed by the Spring Web Socket implementation.
@@ -50,8 +47,6 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 
 	/** The callback that will receive the events sent by the web socket */
 	final SubscriptionCallback<T> subscriptionCallback;
-
-	One<Void> subscriptionMono = Sinks.one();
 
 	/** The jackson instance that will handle deserialization of the incoming messages */
 	ObjectMapper objectMapper = new ObjectMapper();
@@ -140,24 +135,12 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 		logger.trace("Error received for WebSocketSession {}: {}", session, t.getMessage());
 		// Let's forward the information to the application callback
 		subscriptionCallback.onError(t);
-		// This stops the Flux, so we also raise the error into the Mono that monitor the end of this session.
-		subscriptionMono.tryEmitError(t);
 	}
 
 	public void onComplete() {
 		logger.trace("onComplete received for WebSocketSession {}: {}", session);
 		// Let's forward the information to the application callback
 		subscriptionCallback.onClose(0, "onComplete");
-		// Let's close the Mono that monitor the end of this session.
-		EmitResult result = subscriptionMono.tryEmitEmpty();
-
-		try {
-			result.orThrow();
-		} catch (Exception e) {
-			// The result is an Exception. We send it to the application callback
-			RuntimeException e2 = new RuntimeException("Error while emitting to the subscription Mono", e);
-			subscriptionCallback.onError(e2);
-		}
 	}
 
 	public void onSubscribe(Subscription s) {
