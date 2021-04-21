@@ -9,7 +9,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
-# Not released yet
+# 1.14.1
 
 Both mode:
 * Upgrade of _com.google.guava_, to version 30.1.1-jre, to remove a vulnerability
@@ -22,9 +22,9 @@ Both mode:
 * Upgrade of h2 from 1.4.199 to 1.4.200
 
 Client mode:
-* Issue 65: When using requests with the parameters in the request (no GraphQL Variables and no Bind Parameter), the request is properly encoded when these parameters are or contain strings
+* Issue #65: When using requests with the parameters in the request (no GraphQL Variables and no Bind Parameter), the request is properly encoded when these parameters are or contain strings
 * Dependency order changed in the graphql-java-client-dependencies module, to make sure the right spring's dependencies are used (this could prevent a Spring app to start)
-* Removed the use of the `reactor.core.publisher.Sinks` class, to maintain compatibility for those who uses an older version of Spring Boot
+* Removed the use of the `reactor.core.publisher.Sinks` class, to restore compatibility for those who uses an older version of Spring Boot
 
 # 1.14
 
