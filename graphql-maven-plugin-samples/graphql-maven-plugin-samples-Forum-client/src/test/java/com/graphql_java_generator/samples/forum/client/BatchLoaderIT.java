@@ -50,7 +50,7 @@ public class BatchLoaderIT {
 	}
 
 	@Test
-	public void test_authorLoadedByBathLoader()
+	public void test_authorLoadedByBatchLoader()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 
 		// Go, go, go

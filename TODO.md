@@ -2,7 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Document use of GraphQL variables
 * Investigate when the dependency below generates an error:
 ```xml
 		<dependency>

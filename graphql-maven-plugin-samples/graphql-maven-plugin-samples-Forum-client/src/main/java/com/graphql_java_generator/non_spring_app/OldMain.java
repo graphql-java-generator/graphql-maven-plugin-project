@@ -2,7 +2,7 @@ package com.graphql_java_generator.non_spring_app;
 
 import java.util.Date;
 
-public class NonSpringApp {
+public class OldMain {
 
 	public static void main(String[] args) throws Exception {
 		// A basic demo of input parameters
@@ -14,9 +14,11 @@ public class NonSpringApp {
 		System.out.println(
 				"Executing query: '{id name publiclyAvailable topics(since: &param){id}}', with input parameter param of value '"
 						+ date + "'");
-		System.out.println(NonSpringWithSpringGraphQLConfApp.getQueryTypeExecutor()
+
+		// In the below line, NonSpringWithSpringGraphQLConfApp static getter is used to retrieve the QueryExecutor
+		System.out.println(NonSpringWithSpringGraphQLConfMain.getQueryTypeExecutor()
 				.boards("{id name publiclyAvailable topics(since: &param){id}}", "param", date));
+
 		System.out.println("Normal end of the application");
 	}
-
 }

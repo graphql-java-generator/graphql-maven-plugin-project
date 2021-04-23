@@ -25,12 +25,12 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Subs
  */
 @SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphQLConfiguration.class,
 		QueryTypeExecutor.class })
-public class NonSpringWithSpringGraphQLConfApp implements CommandLineRunner {
+public class NonSpringWithSpringGraphQLConfMain implements CommandLineRunner {
 
 	/**
 	 * This singleton allows the static getters to retrieve the Spring components that have been autowired from Spring
 	 */
-	private static NonSpringWithSpringGraphQLConfApp nonSpringWithSpringGraphQLConfApp;
+	private static NonSpringWithSpringGraphQLConfMain nonSpringWithSpringGraphQLConfApp;
 
 	/**
 	 * The executor, that allows to execute GraphQL queries. The class name is the one defined in the GraphQL schema.
@@ -64,7 +64,7 @@ public class NonSpringWithSpringGraphQLConfApp implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		nonSpringWithSpringGraphQLConfApp = this;
 		// The Spring context is now created, including the GraphQL stuff. Let's start the non Spring app
-		NonSpringApp.main(args);
+		OldMain.main(args);
 	}
 
 	/**
