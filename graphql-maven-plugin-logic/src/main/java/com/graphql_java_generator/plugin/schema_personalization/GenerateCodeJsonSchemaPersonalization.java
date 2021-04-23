@@ -3,10 +3,15 @@
  */
 package com.graphql_java_generator.plugin.schema_personalization;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.util.stream.Collectors;
 
 import javax.json.JsonReader;
 import javax.ws.rs.ProcessingException;
@@ -204,7 +209,17 @@ public class GenerateCodeJsonSchemaPersonalization {
 
 			JsonValidationService service = JsonValidationService.newInstance();
 			// Reads the JSON schema
-			JsonSchema schema = service.readSchema(getClass().getResourceAsStream("/" + JSON_SCHEMA_FILENAME));
+			//
+			// There is an issue in reading the json schema, when the project is built with Gradle 7
+			// It seems to be linked to https://issues.apache.org/jira/browse/JOHNZON-147 (solved in Johnzon 1.1.6, in
+			// february 2018)
+			// A workaround is to first read the schema in a string, then call the readSchema
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					getClass().getResourceAsStream("/" + JSON_SCHEMA_FILENAME), Charset.forName("UTF-8")));
+			String text = br.lines().collect(Collectors.joining("\n"));
+			// readSchema should directly read the InputStream
+			JsonSchema schema = service.readSchema(new StringReader(text));
+
 			// Problem handler which will print problems found
 			ProblemHandler handler = service.createProblemPrinter(this::logParsingError);
 			// Reads the JSON instance by javax.json.JsonReader
