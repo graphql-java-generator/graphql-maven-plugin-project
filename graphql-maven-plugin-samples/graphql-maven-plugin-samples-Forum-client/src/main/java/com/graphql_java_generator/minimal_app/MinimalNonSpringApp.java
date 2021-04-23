@@ -15,6 +15,7 @@ public class MinimalNonSpringApp {
 		QueryTypeExecutor queryExecutor = new QueryTypeExecutor("http://localhost:8180/graphql");
 
 		// A basic demo of input parameters
+		@SuppressWarnings("deprecation")
 		Date date = new Date(2019 - 1900, 12 - 1, 20);
 
 		// For this simple sample, we execute a direct query. But prepared queries are recommended.
