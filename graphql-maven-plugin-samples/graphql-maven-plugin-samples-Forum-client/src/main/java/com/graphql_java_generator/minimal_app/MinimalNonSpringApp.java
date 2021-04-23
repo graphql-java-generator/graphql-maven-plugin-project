@@ -24,5 +24,6 @@ public class MinimalNonSpringApp {
 						+ date + "'");
 		System.out
 				.println(queryExecutor.boards("{id name publiclyAvailable topics(since: &param){id}}", "param", date));
+		System.out.println("Normal end of the application");
 	}
 }
