@@ -135,6 +135,18 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		this.webSocketClient = webSocketClient;
 		this.serverOAuth2AuthorizedClientExchangeFilterFunction = serverOAuth2AuthorizedClientExchangeFilterFunction;
 		this.oAuthTokenExtractor = oAuthTokenExtractor;
+
+		// The reactive framework needs to be started, before the first request is executed. We start it now, to reduce
+		// the latency of the first GraphQL request to come.
+		// We do this in a separate thread, to let the initialization process go on
+		new Thread() {
+			@Override
+			public void run() {
+				// Let's create a dummy Mono to start the reactive framework as soon as we know that the reactive
+				// framework is needed
+				Mono.just(true).subscribe();
+			}
+		}.start();
 	}
 
 	@Override
