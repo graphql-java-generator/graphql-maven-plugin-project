@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
+import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_ClientPojo_SpringConfiguration;
 
-class AllGraphQLCasesClientTest extends AbstractIntegrationTest {
+class AllGraphQLCasesClientPojoTest extends AbstractIntegrationTest {
 
-	public AllGraphQLCasesClientTest() {
-		super(AllGraphQLCases_Client_SpringConfiguration.class);
+	public AllGraphQLCasesClientPojoTest() {
+		super(AllGraphQLCases_ClientPojo_SpringConfiguration.class);
 	}
 
 	@BeforeEach
@@ -19,6 +19,6 @@ class AllGraphQLCasesClientTest extends AbstractIntegrationTest {
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(52, nbGeneratedClasses);
+		assertEquals(37, nbGeneratedClasses);
 	}
 }

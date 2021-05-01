@@ -20,8 +20,8 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
-	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "/generated-resources/graphql-maven-plugin";
-	public final String DEFAULT_TARGET_SOURCE_FOLDER = "/generated-sources/graphql-maven-plugin";
+	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "./target/generated-resources/graphql-maven-plugin";
+	public final String DEFAULT_TARGET_SOURCE_FOLDER = "./target/generated-sources/graphql-maven-plugin";
 
 	/**
 	 * <P>
@@ -113,6 +113,17 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public boolean isCopyRuntimeSources();
 
 	/**
+	 * Indicates whether the utility classes should be generated. If false, only the POJO are generated, that is: only
+	 * the Java classes and interfaces that match the GraphQL provided schema. There is no runtime sources for this
+	 * goal.
+	 * 
+	 * @return true if all classes should be generated, false if only the POJO classes should be generated
+	 */
+	default public boolean isGenerateUtilityClasses() {
+		return true;
+	}
+
+	/**
 	 * <P>
 	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
 	 * generated in the same package than the classes that matches the GraphQL schema.
@@ -142,12 +153,14 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 		getPluginLogger().debug("  Common parameters for code generation:");
 		getPluginLogger().debug("    copyRuntimeSources: " + isCopyRuntimeSources());
 		getPluginLogger().debug("    customScalars: " + getCustomScalars());
+		getPluginLogger().debug("    generateUtilityClasses: " + isGenerateUtilityClasses());
 		getPluginLogger().debug("    mode: " + getMode());
 		getPluginLogger().debug("    packageName: " + getPackageName());
 		getPluginLogger().debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
 		getPluginLogger().debug("    sourceEncoding: " + getSourceEncoding());
-		getPluginLogger().debug("    targetClassFolder: " + getTargetClassFolder());
-		getPluginLogger().debug("    targetSourceFolder: " + getTargetSourceFolder());
+		getPluginLogger().debug("    targetClassFolder: " + getTargetClassFolder().getAbsolutePath());
+		getPluginLogger().debug("    targetResourceFolder: " + getTargetResourceFolder().getAbsolutePath());
+		getPluginLogger().debug("    targetSourceFolder: " + getTargetSourceFolder().getAbsolutePath());
 		logCommonConfiguration();
 	}
 

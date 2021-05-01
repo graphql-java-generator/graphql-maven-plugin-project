@@ -10,6 +10,10 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
+New goal/task added:
+* generatePojo: This goal allows to only generate the Java classes and interfaces that match the provided GraphQL schema.
+
+
 Server mode:
 * Workaround to build a project with Gradle 7 without the gradle wrapper
 

@@ -20,14 +20,16 @@ import com.graphql_java_generator.util.GraphqlUtils;
 import graphql.ThreadSafe;
 
 /**
- * The <I>generateServerCode</I> Maven goal (and Gradle task) generates the java code from one or more GraphQL schemas.
- * It allows to work in Java with graphQL, in a schema first approach.<BR/>
- * It generates the whole heart of the GraphQL server. The developer has only to develop request to the data. These
- * items are generated:
+ * <P>
+ * The <I>generateServerCode</I> Maven goal (and Gradle task) generates the java code for an almost ready to start
+ * GraphQL server. The developer has only to develop request to the data.
+ * </P>
+ * The java code is generated from one or more GraphQL schemas. It allows to work in Java with graphQL, in a schema
+ * first approach. These items are generated:
  * <UL>
- * <LI>the main method (in a jar project) or the main servler (in a war project)</LI>
+ * <LI>the main method (in a jar project) or the main servlet (in a war project)</LI>
  * <LI>All the GraphQL wiring, based on graphql-java-spring, itself being build on top of graphql-java</LI>
- * <LI>All the POJOs, that contain the incoming request contents. The request reponse is written by the user code into
+ * <LI>All the POJOs, that contain the incoming request contents. The request response is written by the user code into
  * these POJO, and the plugin take care of mapping them into the server response.</LI>
  * <LI>An option allows to annotate the POJOs with the standard JPA annotations, to make it easy to link with a
  * database. Please note that a</LI>

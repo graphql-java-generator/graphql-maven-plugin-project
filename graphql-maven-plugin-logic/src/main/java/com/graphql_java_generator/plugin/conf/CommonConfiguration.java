@@ -149,15 +149,22 @@ public interface CommonConfiguration {
 
 	/** Logs all the common configuration parameters (only when in the debug level) */
 	public default void logCommonConfiguration() {
-		getPluginLogger().debug("  Common parameters:");
-		getPluginLogger().debug("    schemaFileFolder: " + getSchemaFileFolder());
-		getPluginLogger().debug("    schemaFilePattern: " + getSchemaFilePattern());
-		getPluginLogger().debug("    Templates: "
-				+ (Objects.nonNull(getTemplates())
-						? getTemplates().entrySet().stream()
-								.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
-								.collect(Collectors.joining(", "))
-						: StringUtils.EMPTY));
+		if (getPluginLogger().isDebugEnabled()) {
+			getPluginLogger().debug("  Common parameters:");
+			getPluginLogger().debug("    addRelayConnections: " + isAddRelayConnections());
+			getPluginLogger().debug("    defaultTargetSchemaFileName: " + getDefaultTargetSchemaFileName());
+			getPluginLogger().debug("    projectDir: " + getProjectDir().getAbsolutePath());
+			getPluginLogger().debug("    schemaFileFolder: " + getSchemaFileFolder());
+			getPluginLogger().debug("    schemaFilePattern: " + getSchemaFilePattern());
+			getPluginLogger()
+					.debug("    skipGenerationIfSchemaHasNotChanged: " + isSkipGenerationIfSchemaHasNotChanged());
+			getPluginLogger().debug("    Templates: "
+					+ (Objects.nonNull(getTemplates())
+							? getTemplates().entrySet().stream()
+									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+									.collect(Collectors.joining(", "))
+							: StringUtils.EMPTY));
+		}
 	}
 
 }

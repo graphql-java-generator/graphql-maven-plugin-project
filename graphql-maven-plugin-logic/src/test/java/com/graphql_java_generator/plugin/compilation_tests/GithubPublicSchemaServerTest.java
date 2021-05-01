@@ -1,5 +1,7 @@
 package com.graphql_java_generator.plugin.compilation_tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
@@ -20,6 +22,11 @@ class GithubPublicSchemaServerTest extends AbstractIntegrationTest {
 	public void setUp() {
 		((GraphQLConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
 		graphqlTestHelper.checkSchemaStringProvider("github.schema.public.graphqls");
+	}
+
+	@Override
+	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
+		assertEquals(42, nbGeneratedClasses);
 	}
 
 }

@@ -125,11 +125,11 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 
 	/** The folder where resources will be generated */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetResourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_RESOURCE_FOLDER)
-	String targetResourceFolder;
+	File targetResourceFolder;
 
 	/** The folder where source code for the generated classes will be generated */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
-	String targetSourceFolder;
+	File targetSourceFolder;
 
 	@Override
 	public List<CustomScalarDefinition> getCustomScalars() {
@@ -157,12 +157,12 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 
 	@Override
 	public File getTargetResourceFolder() {
-		return new File(getTargetFolder(), targetResourceFolder);
+		return targetResourceFolder;
 	}
 
 	@Override
 	public File getTargetSourceFolder() {
-		return new File(getTargetFolder(), targetSourceFolder);
+		return targetSourceFolder;
 	}
 
 	@Override
@@ -187,12 +187,12 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Override
 	protected void executeSpecificJob() throws IOException {
 		File targetDir = new File(project.getBasedir(), "target");
-		String generatedSourceFolder = new File(targetDir, targetSourceFolder).getPath();
+		String generatedSourceFolder = targetSourceFolder.getPath();
 		project.addCompileSourceRoot(generatedSourceFolder);
 		getLog().debug("Added the generated source folder: " + generatedSourceFolder);
 
 		Resource generatedResources = new Resource();
-		String generatedResourceFolder = new File(targetDir, targetResourceFolder).getPath();
+		String generatedResourceFolder = targetResourceFolder.getPath();
 		generatedResources.setDirectory(generatedResourceFolder);
 		generatedResources.setIncludes(Arrays.asList("**/*"));
 		generatedResources.setExcludes(null);

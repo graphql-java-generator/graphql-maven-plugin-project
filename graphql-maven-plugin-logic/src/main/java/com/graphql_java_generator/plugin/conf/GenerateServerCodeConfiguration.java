@@ -192,7 +192,9 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 */
 	public default void logGenerateServerCodeConfiguration() {
 		getPluginLogger().debug("  Parameters specific to the generateServerCode task/goal:");
+		getPluginLogger().debug("    generateBatchLoaderEnvironment: " + isGenerateBatchLoaderEnvironment());
 		getPluginLogger().debug("    generateJPAAnnotation: " + isGenerateJPAAnnotation());
+		getPluginLogger().debug("    javaTypeForIDType: " + getJavaTypeForIDType());
 		getPluginLogger().debug("    packaging: " + getPackaging());
 		getPluginLogger().debug("    scanBasePackages: " + getScanBasePackages());
 		getPluginLogger().debug("    schemaPersonalizationFile: " + getSchemaPersonalizationFile());

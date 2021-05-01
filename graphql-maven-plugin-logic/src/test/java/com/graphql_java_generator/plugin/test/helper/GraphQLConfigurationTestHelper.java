@@ -34,6 +34,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public boolean generateBatchLoaderEnvironment = false;
 	public boolean generateDeprecatedRequestResponse = true;
 	public boolean generateJPAAnnotation = true;
+	public boolean generateUtilityClasses = true;
 	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";

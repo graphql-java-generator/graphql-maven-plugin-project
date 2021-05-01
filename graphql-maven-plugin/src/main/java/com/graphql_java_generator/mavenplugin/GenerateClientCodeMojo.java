@@ -18,8 +18,10 @@ import com.graphql_java_generator.util.GraphqlUtils;
 import graphql.ThreadSafe;
 
 /**
+ * <P>
  * The <I>generateClientCode</I> Maven goal (and Gradle task) generates the java code from one or more GraphQL schemas.
- * It allows to work in Java with graphQL, in a schema first approach.<BR/>
+ * It allows to work in Java with graphQL, in a schema first approach.
+ * </P>
  * It generates a class for each query, mutation and subscription type. These classes contain the methods to call the
  * queries, mutations and subscriptions. That is: to execute a query against the GraphQL server, you just have to call
  * one of these methods. It also generates the POJOs from the GraphQL schema. The <B>GraphQL response is stored in these

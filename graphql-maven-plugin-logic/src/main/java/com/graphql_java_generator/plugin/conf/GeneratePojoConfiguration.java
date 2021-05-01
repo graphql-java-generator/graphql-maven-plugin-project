@@ -5,12 +5,12 @@ package com.graphql_java_generator.plugin.conf;
  * 
  * @author etienne-sf
  */
-public interface GeneratePOJOConfiguration extends GenerateCodeCommonConfiguration {
+public interface GeneratePojoConfiguration extends GraphQLConfiguration {
 
 	/**
 	 * The mode is of no interest, here.
 	 * 
-	 * @return The {@link GeneratePOJOConfiguration} implementation of this method always returns
+	 * @return The {@link GeneratePojoConfiguration} implementation of this method always returns
 	 *         {@link PluginMode#client}
 	 */
 	@Override
@@ -19,23 +19,23 @@ public interface GeneratePOJOConfiguration extends GenerateCodeCommonConfigurati
 	}
 
 	/**
-	 * There is no runtime sources for this goal.
+	 * The utility classes are not generated for this goal/task
 	 * 
-	 * @return The {@link GeneratePOJOConfiguration} implementation of this method always returns false
+	 * @return The {@link GeneratePojoConfiguration} implementation of this method always returns false
 	 */
 	@Override
-	default public boolean isCopyRuntimeSources() {
+	default public boolean isGenerateUtilityClasses() {
 		return false;
 	}
 
 	/**
 	 * There is no utility classes for this goal.
 	 * 
-	 * @return The {@link GeneratePOJOConfiguration} implementation of this method always returns false
+	 * @return The {@link GeneratePojoConfiguration} implementation of this method always returns false
 	 */
 	@Override
 	default public boolean isSeparateUtilityClasses() {
-		return false;
+		return true;
 	}
 
 }

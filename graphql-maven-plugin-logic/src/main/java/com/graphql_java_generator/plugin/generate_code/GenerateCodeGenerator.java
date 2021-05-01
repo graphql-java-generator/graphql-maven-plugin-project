@@ -132,11 +132,35 @@ public class GenerateCodeGenerator implements Generator {
 
 		switch (configuration.getMode()) {
 		case server:
-			configuration.getPluginLogger().debug("Starting server specific code generation");
 			i += generateServerFiles();
 			break;
 		case client:
-			configuration.getPluginLogger().debug("Starting client specific code generation");
+			i += generateClientFiles();
+			break;
+		}// switch (configuration.getMode())
+
+		if (configuration.isCopyRuntimeSources()) {
+			copyRuntimeSources();
+		}
+		configuration.getPluginLogger().info(i + " java classes have been generated from the schema(s) '"
+				+ configuration.getSchemaFilePattern() + "' in the package '" + configuration.getPackageName() + "'");
+		return i;
+	}
+
+	private int generateClientFiles() {
+		int i = 0;
+		configuration.getPluginLogger().debug("Starting client specific code generation");
+
+		// Custom Deserializers and array deserialization (always generated)
+		VelocityContext context = getVelocityContext();
+		List<String> imports = new ArrayList<>();
+		imports.add("java.util.List");
+		context.put("imports", imports);
+		context.put("customDeserializers", generateCodeDocumentParser.getCustomDeserializers());
+		i += generateOneFile(getJavaFile("CustomJacksonDeserializers", true), "Generating custom deserializers",
+				context, resolveTemplate(CodeTemplate.JACKSON_DESERIALIZERS));
+
+		if (configuration.isGenerateUtilityClasses()) {
 
 			// Generation of the query/mutation/subscription classes
 			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
@@ -197,30 +221,12 @@ public class GenerateCodeGenerator implements Generator {
 					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
 
-			// Custom Deserializers
-			VelocityContext context = getVelocityContext();
-			List<String> imports = new ArrayList<>();
-			imports.add("java.util.List");
-			context.put("imports", imports);
-			context.put("customDeserializers", generateCodeDocumentParser.getCustomDeserializers());
-			i += generateOneFile(getJavaFile("CustomJacksonDeserializers", true), "Generating custom deserializers",
-					context, resolveTemplate(CodeTemplate.JACKSON_DESERIALIZERS));
-
 			// Files for Directives
 			configuration.getPluginLogger().debug("Generating DirectiveRegistryInitializer");
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer", true),
 					"Generating DirectiveRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
-
-			break;
-		}// switch (configuration.getMode())
-
-		if (configuration.isCopyRuntimeSources()) {
-			copyRuntimeSources();
 		}
-
-		configuration.getPluginLogger().info(i + " java classes have been generated from the schema(s) '"
-				+ configuration.getSchemaFilePattern() + "' in the package '" + configuration.getPackageName() + "'");
 		return i;
 	}
 
@@ -348,119 +354,124 @@ public class GenerateCodeGenerator implements Generator {
 	 * @throws IOException
 	 */
 	int generateServerFiles() throws IOException {
-
-		VelocityContext context = getVelocityServerContext();
-
-		// List of found schemas
-		List<String> schemaFiles = new ArrayList<>();
-		for (org.springframework.core.io.Resource res : resourceSchemaStringProvider.schemas()) {
-			schemaFiles.add(res.getFilename());
-		}
-		context.put("schemaFiles", schemaFiles);
-
 		int ret = 0;
 
-		configuration.getPluginLogger().debug("Generating GraphQLServerMain");
-		ret += generateOneFile(getJavaFile("GraphQLServerMain", true), "generating GraphQLServerMain", context,
-				resolveTemplate(CodeTemplate.SERVER));
+		if (configuration.isGenerateUtilityClasses()) {
 
-		configuration.getPluginLogger().debug("Generating GraphQLWiring");
-		ret += generateOneFile(getJavaFile("GraphQLWiring", true), "generating GraphQLWiring", context,
-				resolveTemplate(CodeTemplate.WIRING));
+			configuration.getPluginLogger().debug("Starting server specific code generation");
 
-		configuration.getPluginLogger().debug("Generating GraphQLDataFetchers");
-		ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
-				resolveTemplate(CodeTemplate.DATA_FETCHER));
+			VelocityContext context = getVelocityServerContext();
 
-		for (DataFetchersDelegate dataFetcherDelegate : generateCodeDocumentParser.dataFetchersDelegates) {
-			context.put("dataFetcherDelegate", dataFetcherDelegate);
-			configuration.getPluginLogger().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
-			ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
-					"generating " + dataFetcherDelegate.getPascalCaseName(), context,
-					resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
-		}
+			// List of found schemas
+			List<String> schemaFiles = new ArrayList<>();
+			for (org.springframework.core.io.Resource res : resourceSchemaStringProvider.schemas()) {
+				schemaFiles.add(res.getFilename());
+			}
+			context.put("schemaFiles", schemaFiles);
 
-		for (BatchLoader batchLoader : generateCodeDocumentParser.batchLoaders) {
-			String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
-			context.put("batchLoader", batchLoader);
-			configuration.getPluginLogger().debug("Generating " + name);
-			ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
-					resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE_IMPL));
-		}
+			configuration.getPluginLogger().debug("Generating GraphQLServerMain");
+			ret += generateOneFile(getJavaFile("GraphQLServerMain", true), "generating GraphQLServerMain", context,
+					resolveTemplate(CodeTemplate.SERVER));
 
-		configuration.getPluginLogger().debug("Generating WebSocketConfig");
-		ret += generateOneFile(getJavaFile("WebSocketConfig", true), "generating WebSocketConfig", context,
-				resolveTemplate(CodeTemplate.WEB_SOCKET_CONFIG));
+			configuration.getPluginLogger().debug("Generating GraphQLWiring");
+			ret += generateOneFile(getJavaFile("GraphQLWiring", true), "generating GraphQLWiring", context,
+					resolveTemplate(CodeTemplate.WIRING));
 
-		configuration.getPluginLogger().debug("Generating WebSocketHandler");
-		ret += generateOneFile(getJavaFile("WebSocketHandler", true), "generating WebSocketHandler", context,
-				resolveTemplate(CodeTemplate.WEB_SOCKET_HANDLER));
+			configuration.getPluginLogger().debug("Generating GraphQLDataFetchers");
+			ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
+					resolveTemplate(CodeTemplate.DATA_FETCHER));
 
-		// When the addRelayConnections parameter is true, and we're in server mode, we must generate the resulting
-		// GraphQL schema, so that the graphql-java can access it at runtime.
-		if (configuration.isAddRelayConnections() && configuration.getMode().equals(PluginMode.server)) {
-			GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
+			for (DataFetchersDelegate dataFetcherDelegate : generateCodeDocumentParser.dataFetchersDelegates) {
+				context.put("dataFetcherDelegate", dataFetcherDelegate);
+				configuration.getPluginLogger().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
+				ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
+						"generating " + dataFetcherDelegate.getPascalCaseName(), context,
+						resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
+			}
 
-				@Override
-				public Logger getPluginLogger() {
-					return configuration.getPluginLogger();
-				}
+			for (BatchLoader batchLoader : generateCodeDocumentParser.batchLoaders) {
+				String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
+				context.put("batchLoader", batchLoader);
+				configuration.getPluginLogger().debug("Generating " + name);
+				ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
+						resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE_IMPL));
+			}
 
-				@Override
-				public File getProjectDir() {
-					return configuration.getProjectDir();
-				}
+			configuration.getPluginLogger().debug("Generating WebSocketConfig");
+			ret += generateOneFile(getJavaFile("WebSocketConfig", true), "generating WebSocketConfig", context,
+					resolveTemplate(CodeTemplate.WEB_SOCKET_CONFIG));
 
-				@Override
-				public File getSchemaFileFolder() {
-					return configuration.getSchemaFileFolder();
-				}
+			configuration.getPluginLogger().debug("Generating WebSocketHandler");
+			ret += generateOneFile(getJavaFile("WebSocketHandler", true), "generating WebSocketHandler", context,
+					resolveTemplate(CodeTemplate.WEB_SOCKET_HANDLER));
 
-				@Override
-				public String getSchemaFilePattern() {
-					return configuration.getSchemaFilePattern();
-				}
+			// When the addRelayConnections parameter is true, and we're in server mode, we must generate the resulting
+			// GraphQL schema, so that the graphql-java can access it at runtime.
+			if (configuration.isAddRelayConnections() && configuration.getMode().equals(PluginMode.server)) {
+				GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
 
-				@Override
-				public Map<String, String> getTemplates() {
-					return configuration.getTemplates();
-				}
+					@Override
+					public Logger getPluginLogger() {
+						return configuration.getPluginLogger();
+					}
 
-				@Override
-				public boolean isAddRelayConnections() {
-					return configuration.isAddRelayConnections();
-				}
+					@Override
+					public File getProjectDir() {
+						return configuration.getProjectDir();
+					}
 
-				@Override
-				public String getResourceEncoding() {
-					return "UTF-8";
-				}
+					@Override
+					public File getSchemaFileFolder() {
+						return configuration.getSchemaFileFolder();
+					}
 
-				@Override
-				public File getTargetFolder() {
-					return configuration.getTargetClassFolder();
-				}
+					@Override
+					public String getSchemaFilePattern() {
+						return configuration.getSchemaFilePattern();
+					}
 
-				@Override
-				public String getTargetSchemaFileName() {
-					return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
-				}
+					@Override
+					public Map<String, String> getTemplates() {
+						return configuration.getTemplates();
+					}
 
-				@Override
-				public String getDefaultTargetSchemaFileName() {
-					return DEFAULT_TARGET_SCHEMA_FILE_NAME;
-				}
+					@Override
+					public boolean isAddRelayConnections() {
+						return configuration.isAddRelayConnections();
+					}
 
-				@Override
-				public boolean isSkipGenerationIfSchemaHasNotChanged() {
-					// If we're here, it means the the code generation is done. So the addRelayConnection schema must be
-					// always created. We won't skip it.
-					return false;
-				}
-			};
-			GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
-					graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
-			generateGraphQLSchema.generateGraphQLSchema();
+					@Override
+					public String getResourceEncoding() {
+						return "UTF-8";
+					}
+
+					@Override
+					public File getTargetFolder() {
+						return configuration.getTargetClassFolder();
+					}
+
+					@Override
+					public String getTargetSchemaFileName() {
+						return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+					}
+
+					@Override
+					public String getDefaultTargetSchemaFileName() {
+						return DEFAULT_TARGET_SCHEMA_FILE_NAME;
+					}
+
+					@Override
+					public boolean isSkipGenerationIfSchemaHasNotChanged() {
+						// If we're here, it means the the code generation is done. So the addRelayConnection schema
+						// must be
+						// always created. We won't skip it.
+						return false;
+					}
+				};
+				GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
+						graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
+				generateGraphQLSchema.generateGraphQLSchema();
+			}
 		}
 
 		return ret;

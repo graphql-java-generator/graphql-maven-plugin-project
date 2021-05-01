@@ -18,10 +18,12 @@ import com.graphql_java_generator.util.GraphqlUtils;
 import graphql.ThreadSafe;
 
 /**
- * The <I>graphql</I> goal generates the java code from one or more GraphQL schemas. It allows to work in Java with
- * graphQL, in a schema first approach.<BR/>
- * <B>This goal is <U>deprecated</U></B>. It will be maintained in the future 2.x versions. The
- * <I>generateClientCode</I> and <I>generateServerCode</I> should be used instead.<BR/>
+ * <P>
+ * <B>This goal is <U>deprecated</U></B>. The <I>graphql</I> goal generates the java code from one or more GraphQL
+ * schemas. It allows to work in Java with graphQL, in a schema first approach.
+ * </P>
+ * It will be maintained in the future 2.x versions. The <I>generateClientCode</I> and <I>generateServerCode</I> should
+ * be used instead.<BR/>
  * The <I>graphql</I> goal has two main modes:
  * <UL>
  * <LI><B>client mode:</B> it does the same jobs as the <I>generateClientCode</I> goal. It generates a class for each

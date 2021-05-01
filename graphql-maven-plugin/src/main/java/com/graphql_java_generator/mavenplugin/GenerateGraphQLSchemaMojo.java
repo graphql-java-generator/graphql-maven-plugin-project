@@ -16,7 +16,10 @@ import com.graphql_java_generator.util.GraphqlUtils;
 import graphql.ThreadSafe;
 
 /**
- * The <I>generateGraphQLSchema</I> goal generates GraphQL schema, based on the source GraphQL schemas.<BR/>
+ * <P>
+ * The <I>generateGraphQLSchema</I> goal generates GraphQL schema, based on the source GraphQL schemas, and possibly
+ * containing additional stuff, like the Relay connection objects.
+ * </P>
  * It can be used to:
  * <UL>
  * <LI>Generate several GraphQL schema files into one file, for instance with additional schema files that would use the

@@ -6,7 +6,7 @@ package com.graphql_java_generator.plugin;
 import java.io.IOException;
 
 /**
- * This class is reponsible for the generation of the sources and/or resources, depending on the Goal/Task.
+ * This class is responsible for the generation of the sources and/or resources, depending on the Goal/Task.
  * 
  * @author etienne-sf
  */

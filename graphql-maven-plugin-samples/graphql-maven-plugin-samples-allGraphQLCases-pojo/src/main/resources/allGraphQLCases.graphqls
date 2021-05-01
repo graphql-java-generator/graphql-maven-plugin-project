@@ -1,0 +1,417 @@
+scalar Date 
+	#@testDirective(value:"on Scalar") @anotherTestDirective 
+	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+	# (see issue 2055)
+
+scalar Long
+
+directive @RelayConnection
+on FIELD_DEFINITION
+
+schema @testDirective(value:"on Schema") {
+	#A comment on the query
+    query: MyQueryType
+    mutation: AnotherMutationType
+    subscription: TheSubscriptionType
+}
+
+type MyQueryType {
+	withoutParameters: [Character]!
+    withOneOptionalParam(character: CharacterInput): Character
+    withOneMandatoryParam(character: CharacterInput!): Character
+    withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
+    withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num: Int = 45): Droid!
+    withEnum(episode: Episode! = NEWHOPE): Character
+    withListOfList(matrix: [[Float]]!): AllFieldCases
+    
+    ################################################################################
+    # withList return a list of Characters, matching the given list of CharacterInput.
+    # The name of the first Character returned is replaced by the given firstName.
+    # All ids are generated  
+    withList(firstName: String!, characters: [CharacterInput!]!): [Character]
+
+    ################################################################################
+   	# Complementary tests with the AllFieldCases Object
+	allFieldCases(input: AllFieldCasesInput): AllFieldCases  
+	  
+    ################################################################################
+   	# Test for unions
+	unionTest(human1: HumanInput, human2: HumanInput, droid1: DroidInput, droid2: DroidInput): [AnyCharacter!]!    
+        
+    ################################################################################
+    # error always returns an error!  (used to check the error management)
+    error(errorLabel: String!): Character!
+    
+    # Check for GraphQL identifier that are java keywords
+    aBreak: break
+    
+    ################################################################################
+    # queries to check directive behavior
+    
+    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
+    # List is null if the directive is not present.
+    directiveOnQuery(uppercase: Boolean): [String]!
+
+    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
+    # List is null if the directive is not present.
+    directiveOnField: Character!
+
+    
+    ################################################################################
+    # queries to check the addRelayConnections capability
+    connectionWithoutParameters: [Character] @RelayConnection
+    connectionOnHuman(planet: String, episode: Episode): [Human] @RelayConnection
+    
+    ################################################################################
+    # queries created to test some issues
+    
+    #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+    issue53(date: Date!): Date!
+}
+
+type AnotherMutationType {
+	createHuman(human: HumanInput!): Human!
+	createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
+	
+	# Tests for issue 51
+	deleteSnacks(id: [ID]) : Boolean
+}
+
+type TheSubscriptionType {
+	
+	# Will be notified for each Human added to this Episode
+	subscribeNewHumanForEpisode(episode: Episode!): Human!
+	
+	#Issue 54
+	subscribeToAList: [Int]!
+	
+    #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+    issue53(date: Date!): Date!
+}
+
+interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
+   id: ID!
+}
+
+interface Commented {
+	nbComments: Int
+    comments: [String]
+}
+
+interface UnusedInterface {
+	aNonUSedField: String
+}
+
+##############################################################################################################
+################  ALL GRAPHQL CASES TEST CASES################################################################
+##############################################################################################################
+
+
+input AllFieldCasesInput @testDirective(value:"on Input Type") {
+    id: ID! @testDirective(value:"on Input Field")
+    name: String!
+    forname: String
+    age: Long!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    matrix: [[Float]]!
+    withIdSubtype: [AllFieldCasesWithIdSubtypeInput!]
+    withoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]
+}
+
+input AllFieldCasesWithIdSubtypeInput {
+    id: ID!
+    name: String!
+}
+
+input FieldParameterInput {
+	uppercase: Boolean
+	date: Date
+}
+
+input AllFieldCasesWithoutIdSubtypeInput {
+    name: String!
+}
+
+enum Unit {
+    YEAR
+    MONTH
+    MINUTE
+}
+
+
+# This type is a clone of the InterfaceAllFieldCases interface. 
+# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherTestDirective {
+    id: ID! @testDirective(value:"on Field")
+    name: String!
+    forname(uppercase: Boolean @testDirective(value:"on Argument"), textToAppendToTheForname: String): String
+    age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
+    aFloat: Float
+    date: Date
+    dates: [Date]!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    friends: [Human!]
+    matrix: [[Float]]!
+    oneWithIdSubType(uppercase: Boolean): AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+    issue65(inputs: [FieldParameterInput!]): [AllFieldCasesWithoutIdSubtype]
+    issue66(input: [AllFieldCasesInput] = 
+    	[
+    		{
+    			id: "11111111-1111-1111-1111-111111111111",
+    			name: "A name",
+    			age: 1234567890,
+    			nbComments: 123,
+    			comments: ["s1", "s2"],
+    			booleans: [true, false],
+    			aliases: [],
+    			planets: ["s5"],
+    			matrix: [[1.1, 1.2], [1.3, 1.4], []],
+    			withIdSubtype: [{id: "33333333-3333-3333-3333-333333333333", name: "name3"}, {id: "44444444-4444-4444-4444-444444444444", name: "name4"}],
+    			withoutIdSubtype: [{name: "name5"}]
+    		},
+    		{    
+    			id: "22222222-2222-2222-2222-222222222222",
+    			name: "name2",
+    			age: 1
+    			planets: [],
+    			matrix: [[]],
+    			withIdSubtype: [{id: "66666666-6666-6666-6666-666666666666", name: "name6"}, {id: "77777777-7777-7777-7777-777777777777", name: "name7"}],
+    			withoutIdSubtype: [{name: "name8"}]
+    		}
+    	]): AllFieldCases!
+}
+
+# This interface is a clone of the AllFieldCases type. 
+# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+interface AllFieldCasesInterface  {
+    id: ID!
+    name: String!
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    age: Long!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    friends: [Human!] @RelayConnection
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+# A concrete class that just implements the above interface
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface, WithID {
+    id: ID!
+    name: String!
+    forname(uppercase: Boolean, textToAppendToTheForname: String): String
+    age: Long!
+    nbComments: Int
+    comments: [String]
+    booleans: [Boolean!]
+    aliases: [String]!
+    planets: [String!]!
+    # @RelayConnection should be but is not applied on the friends field (this allows the unit test that checks that a warning is correctly generated)
+    friends: [Human!] 
+    oneWithIdSubType: AllFieldCasesWithIdSubtype
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
+    listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+}
+
+type AllFieldCasesWithIdSubtype {
+    id: ID!
+    name: String!
+}
+
+type AllFieldCasesWithoutIdSubtype {
+    name: String!
+}
+
+##############################################################################################################
+################  STAR WARS SCHEMA  ##########################################################################
+##############################################################################################################
+
+enum Episode
+ 	# The directive can't be applied as it is used in a Directive definition. This doesn't work with graphql-java 15.0 (see issue 2055) 
+	#@testDirective(
+	#	value: "on Enum", 
+	#	anotherValue: "69", 
+	#	anInt: 666, 
+	#	aFloat: 666.666, 
+	#	aBoolean: true, 
+	#	anID: "00000000-0000-0000-0000-000000000002", 
+	#	anEnum: NEWHOPE, 
+	#	aCustomScalarDate: "2001-02-28"
+	#) 
+	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+	# (see issue 2055)
+{
+    NEWHOPE
+    EMPIRE 
+    	#@anotherTestDirective 
+    	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+		# (see issue 2055)    
+    JEDI
+    DOES_NOT_EXIST  
+    	#@testDirective(value:"on Enum", anotherValue: "-1") @anotherTestDirective
+    	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
+		# (see issue 2055)    
+}
+
+interface Character @testDirective(value:"on Character interface") @anotherTestDirective {
+    id: ID!
+    name(uppercase: Boolean): String! @testDirective(value:"on interface field") @anotherTestDirective
+    friends: [Character]
+    appearsIn: [Episode]! @anotherTestDirective
+}
+
+union AnyCharacter @testDirective(value:"on Union")
+= Human | Droid
+
+
+
+type Human implements Character & Commented &  WithID {
+    id: ID!
+    name(uppercase: Boolean): String!
+    bestFriend: Character
+    friends: [Character]
+	nbComments: Int
+    comments: [String]
+    appearsIn: [Episode]!
+    homePlanet: String
+}
+
+type Droid implements Character & WithID {
+    id: ID!
+    name(uppercase: Boolean): String!
+    friends: [Character]
+    appearsIn: [Episode]!
+    primaryFunction: String
+}
+
+input DroidInput {
+    name: String!
+    friends: [CharacterInput]
+    appearsIn: [Episode]!
+    primaryFunction: String
+}
+
+##############################################################################################################
+#############  SOME DIRECTIVES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
+##############################################################################################################
+
+
+# A test directive, that can be added anywhere
+directive @testDirective(
+  value: String! = "A value to test default values"
+  anotherValue: String = null
+  anArray: [String!] = ["str1", "str2"]
+  anObject: CharacterInput = {name: "default name", appearsIn: [JEDI, NEWHOPE], type: "Human"}  
+  anInt: Int
+  aFloat: Float
+  aBoolean: Boolean
+  anID: ID
+  #anEnum: Episode = JEDI # not supported by graphql-java v14.0 on server side. It works Ok on client side
+  aCustomScalarDate: Date = "2000-12-31"
+) on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+# Another test directive, to check that two directives can be added
+directive @anotherTestDirective
+on
+# ExecutableDirectiveLocation
+# SUBSCRIPTION value is not currently managed by graphql-java (as of v14.0)
+	QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+
+##############################################################################################################
+############  SOME INPUT TYPES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
+##############################################################################################################
+
+input CharacterInput {
+    name: String!
+    friends: [CharacterInput]
+    appearsIn: [Episode]!
+    # type should be one of Human or Droid
+    type: String!
+} 
+input HumanInput {
+    name: String!
+    bestFriend: CharacterInput
+    friends: [CharacterInput]
+	nbComments: Int
+    comments: [String]
+    appearsIn: [Episode]!
+    homePlanet: String
+}
+
+##############################################################################################################
+##################  TEST ON COLLISION WITH JAVA KEYWORDS  ####################################################
+##############################################################################################################
+
+scalar else
+
+enum extends {
+	INT
+	DOUBLE
+	FLOAT
+	LONG
+}
+
+input class {
+	default: String
+}
+
+type break {
+	case(test: extends!, if: else): extends
+}
+
+##############################################################################################################
+###############   TEST CASE FOR ISSUES #######################################################################
+##############################################################################################################
+
+#############################
+# test for issue #35
+#
+# But removed from this GraphQL schema as enum values in Directives are not supported by graphql-java v14.0 on server side
+# It works Ok on client side
+#
+#directive @relation(
+#    name: String
+#    direction: direction
+#) on FIELD_DEFINITION
+#
+#enum direction {
+#    IN
+#    OUT
+#}
+#############################
+
+#############################
+# test for issue #36
+
+type TestExtScalar {
+bad: NonNegativeInt
+}
+
+scalar NonNegativeInt
+
+#############################

@@ -1,5 +1,7 @@
 package com.graphql_java_generator.plugin.compilation_tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 
@@ -18,6 +20,11 @@ class ShopifyClientTest extends AbstractIntegrationTest {
 	public void setUp() {
 		((GraphQLConfigurationTestHelper) pluginConfiguration).separateUtilityClasses = true;
 		graphqlTestHelper.checkSchemaStringProvider("shopify.graphqls");
+	}
+
+	@Override
+	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
+		assertEquals(834, nbGeneratedClasses);
 	}
 
 }

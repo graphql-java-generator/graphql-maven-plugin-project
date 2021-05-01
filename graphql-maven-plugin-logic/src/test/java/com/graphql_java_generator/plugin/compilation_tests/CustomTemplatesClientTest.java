@@ -1,5 +1,7 @@
 package com.graphql_java_generator.plugin.compilation_tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -45,4 +47,8 @@ class CustomTemplatesClientTest extends AbstractCustomTemplateIntegrationTest {
 
 	}
 
+	@Override
+	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
+		assertEquals(52, nbGeneratedClasses);
+	}
 }
