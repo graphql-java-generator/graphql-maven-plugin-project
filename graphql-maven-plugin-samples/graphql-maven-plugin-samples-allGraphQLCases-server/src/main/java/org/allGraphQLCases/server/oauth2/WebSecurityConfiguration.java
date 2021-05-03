@@ -46,6 +46,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 						// been properly read.
 						.antMatchers(HttpMethod.GET, "/my/updated/graphql/path").authenticated()// .access("hasRole('ROLE_CLIENT')")//
 						.antMatchers(HttpMethod.POST, "/my/updated/graphql/path").authenticated()// .access("hasRole('ROLE_CLIENT')")//
+
+						// The Hello World page, to check that the server is started
+						.antMatchers(HttpMethod.GET, "/helloworld.html").permitAll()//
 						// All other URL accesses are prohibited
 						.anyRequest().denyAll()//
 				//

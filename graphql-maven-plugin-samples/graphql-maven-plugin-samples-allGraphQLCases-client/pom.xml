@@ -144,7 +144,7 @@
 							<!-- processLogFile>${basedir}/target/allGraphQLCases_graphql_server.log</processLogFile -->
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8180/graphiql</healthcheckUrl>
+							<healthcheckUrl>http://localhost:8180/helloworld.html</healthcheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
