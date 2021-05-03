@@ -8,7 +8,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
-# Not released yet
+# 1.14.2
 
 New goal/task added:
 * generatePojo: This goal allows to only generate the Java classes and interfaces that match the provided GraphQL schema.
