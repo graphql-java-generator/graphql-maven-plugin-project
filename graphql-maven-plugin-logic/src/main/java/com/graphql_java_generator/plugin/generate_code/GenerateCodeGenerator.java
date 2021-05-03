@@ -30,6 +30,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -40,7 +42,6 @@ import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.BatchLoader;
@@ -59,6 +60,8 @@ import com.graphql_java_generator.util.GraphqlUtils;
  */
 @Component
 public class GenerateCodeGenerator implements Generator {
+
+	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeGenerator.class);
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
@@ -114,19 +117,19 @@ public class GenerateCodeGenerator implements Generator {
 	@Override
 	public int generateCode() throws IOException {
 
-		configuration.getPluginLogger().debug("Starting code generation");
+		logger.debug("Starting code generation");
 
 		int i = 0;
-		configuration.getPluginLogger().debug("Generating objects");
+		logger.debug("Generating objects");
 		i += generateTargetFiles(generateCodeDocumentParser.getObjectTypes(), "object",
 				resolveTemplate(CodeTemplate.OBJECT), false);
-		configuration.getPluginLogger().debug("Generating interfaces");
+		logger.debug("Generating interfaces");
 		i += generateTargetFiles(generateCodeDocumentParser.getInterfaceTypes(), "interface",
 				resolveTemplate(CodeTemplate.INTERFACE), false);
-		configuration.getPluginLogger().debug("Generating unions");
+		logger.debug("Generating unions");
 		i += generateTargetFiles(generateCodeDocumentParser.getUnionTypes(), "union",
 				resolveTemplate(CodeTemplate.UNION), false);
-		configuration.getPluginLogger().debug("Generating enums");
+		logger.debug("Generating enums");
 		i += generateTargetFiles(generateCodeDocumentParser.getEnumTypes(), "enum", resolveTemplate(CodeTemplate.ENUM),
 				false);
 
@@ -142,14 +145,14 @@ public class GenerateCodeGenerator implements Generator {
 		if (configuration.isCopyRuntimeSources()) {
 			copyRuntimeSources();
 		}
-		configuration.getPluginLogger().info(i + " java classes have been generated from the schema(s) '"
-				+ configuration.getSchemaFilePattern() + "' in the package '" + configuration.getPackageName() + "'");
+		logger.info(i + " java classes have been generated from the schema(s) '" + configuration.getSchemaFilePattern()
+				+ "' in the package '" + configuration.getPackageName() + "'");
 		return i;
 	}
 
 	private int generateClientFiles() {
 		int i = 0;
-		configuration.getPluginLogger().debug("Starting client specific code generation");
+		logger.debug("Starting client specific code generation");
 
 		// Custom Deserializers and array deserialization (always generated)
 		VelocityContext context = getVelocityContext();
@@ -165,64 +168,64 @@ public class GenerateCodeGenerator implements Generator {
 			// Generation of the query/mutation/subscription classes
 			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
 				// We generate these utility classes only when asked for
-				configuration.getPluginLogger().debug("Generating query");
+				logger.debug("Generating query");
 				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "query",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
-				configuration.getPluginLogger().debug("Generating mutation");
+				logger.debug("Generating mutation");
 				i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "mutation",
 						resolveTemplate(CodeTemplate.QUERY_MUTATION), true);
-				configuration.getPluginLogger().debug("Generating subscription");
+				logger.debug("Generating subscription");
 				i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "subscription",
 						resolveTemplate(CodeTemplate.SUBSCRIPTION), true);
 			}
 
 			// Generation of the query/mutation/subscription executor classes
-			configuration.getPluginLogger().debug("Generating query executors");
+			logger.debug("Generating query executors");
 			i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
-			configuration.getPluginLogger().debug("Generating mutation executors");
+			logger.debug("Generating mutation executors");
 			i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "executor",
 					resolveTemplate(CodeTemplate.QUERY_MUTATION_EXECUTOR), true);
-			configuration.getPluginLogger().debug("Generating subscription executors");
+			logger.debug("Generating subscription executors");
 			i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "executor",
 					resolveTemplate(CodeTemplate.SUBSCRIPTION_EXECUTOR), true);
 
 			// Generation of the query/mutation/subscription response classes
 			if (((GenerateClientCodeConfiguration) configuration).isGenerateDeprecatedRequestResponse()) {
-				configuration.getPluginLogger().debug("Generating query response");
+				logger.debug("Generating query response");
 				i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
-				configuration.getPluginLogger().debug("Generating mutation response");
+				logger.debug("Generating mutation response");
 				i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
-				configuration.getPluginLogger().debug("Generating subscription response");
+				logger.debug("Generating subscription response");
 				i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "response",
 						resolveTemplate(CodeTemplate.QUERY_RESPONSE), true);
 			}
 
 			// Generation of the query/mutation/subscription root responses classes
-			configuration.getPluginLogger().debug("Generating query root response");
+			logger.debug("Generating query root response");
 			i += generateTargetFile(generateCodeDocumentParser.getQueryType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
-			configuration.getPluginLogger().debug("Generating mutation root response");
+			logger.debug("Generating mutation root response");
 			i += generateTargetFile(generateCodeDocumentParser.getMutationType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
-			configuration.getPluginLogger().debug("Generating subscription root response");
+			logger.debug("Generating subscription root response");
 			i += generateTargetFile(generateCodeDocumentParser.getSubscriptionType(), "root response",
 					resolveTemplate(CodeTemplate.ROOT_RESPONSE), true);
 
 			// Generation of the GraphQLRequest class
-			configuration.getPluginLogger().debug("Generating GraphQL Request class");
+			logger.debug("Generating GraphQL Request class");
 			i += generateGraphQLRequest();
 
 			// Files for Custom Scalars
-			configuration.getPluginLogger().debug("Generating CustomScalarRegistryInitializer");
+			logger.debug("Generating CustomScalarRegistryInitializer");
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer", true),
 					"Generating CustomScalarRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.CUSTOM_SCALAR_REGISTRY_INITIALIZER));
 
 			// Files for Directives
-			configuration.getPluginLogger().debug("Generating DirectiveRegistryInitializer");
+			logger.debug("Generating DirectiveRegistryInitializer");
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer", true),
 					"Generating DirectiveRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
@@ -358,7 +361,7 @@ public class GenerateCodeGenerator implements Generator {
 
 		if (configuration.isGenerateUtilityClasses()) {
 
-			configuration.getPluginLogger().debug("Starting server specific code generation");
+			logger.debug("Starting server specific code generation");
 
 			VelocityContext context = getVelocityServerContext();
 
@@ -369,21 +372,21 @@ public class GenerateCodeGenerator implements Generator {
 			}
 			context.put("schemaFiles", schemaFiles);
 
-			configuration.getPluginLogger().debug("Generating GraphQLServerMain");
+			logger.debug("Generating GraphQLServerMain");
 			ret += generateOneFile(getJavaFile("GraphQLServerMain", true), "generating GraphQLServerMain", context,
 					resolveTemplate(CodeTemplate.SERVER));
 
-			configuration.getPluginLogger().debug("Generating GraphQLWiring");
+			logger.debug("Generating GraphQLWiring");
 			ret += generateOneFile(getJavaFile("GraphQLWiring", true), "generating GraphQLWiring", context,
 					resolveTemplate(CodeTemplate.WIRING));
 
-			configuration.getPluginLogger().debug("Generating GraphQLDataFetchers");
+			logger.debug("Generating GraphQLDataFetchers");
 			ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
 					resolveTemplate(CodeTemplate.DATA_FETCHER));
 
 			for (DataFetchersDelegate dataFetcherDelegate : generateCodeDocumentParser.dataFetchersDelegates) {
 				context.put("dataFetcherDelegate", dataFetcherDelegate);
-				configuration.getPluginLogger().debug("Generating " + dataFetcherDelegate.getPascalCaseName());
+				logger.debug("Generating " + dataFetcherDelegate.getPascalCaseName());
 				ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
 						"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 						resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
@@ -392,16 +395,16 @@ public class GenerateCodeGenerator implements Generator {
 			for (BatchLoader batchLoader : generateCodeDocumentParser.batchLoaders) {
 				String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
 				context.put("batchLoader", batchLoader);
-				configuration.getPluginLogger().debug("Generating " + name);
+				logger.debug("Generating " + name);
 				ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
 						resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE_IMPL));
 			}
 
-			configuration.getPluginLogger().debug("Generating WebSocketConfig");
+			logger.debug("Generating WebSocketConfig");
 			ret += generateOneFile(getJavaFile("WebSocketConfig", true), "generating WebSocketConfig", context,
 					resolveTemplate(CodeTemplate.WEB_SOCKET_CONFIG));
 
-			configuration.getPluginLogger().debug("Generating WebSocketHandler");
+			logger.debug("Generating WebSocketHandler");
 			ret += generateOneFile(getJavaFile("WebSocketHandler", true), "generating WebSocketHandler", context,
 					resolveTemplate(CodeTemplate.WEB_SOCKET_HANDLER));
 
@@ -409,11 +412,6 @@ public class GenerateCodeGenerator implements Generator {
 			// GraphQL schema, so that the graphql-java can access it at runtime.
 			if (configuration.isAddRelayConnections() && configuration.getMode().equals(PluginMode.server)) {
 				GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
-
-					@Override
-					public Logger getPluginLogger() {
-						return configuration.getPluginLogger();
-					}
 
 					@Override
 					public File getProjectDir() {
@@ -498,7 +496,7 @@ public class GenerateCodeGenerator implements Generator {
 			Template template = null;
 
 			File localFile = new File(configuration.getProjectDir(), templateFilename);
-			configuration.getPluginLogger().debug(msg);
+			logger.debug(msg);
 
 			if (localFile.exists()) {
 				template = velocityEngineFromFile.getTemplate(templateFilename, "UTF-8");

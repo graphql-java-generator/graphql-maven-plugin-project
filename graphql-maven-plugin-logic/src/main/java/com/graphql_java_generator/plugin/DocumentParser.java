@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
@@ -76,6 +78,8 @@ import lombok.Setter;
  */
 @Getter
 public abstract class DocumentParser {
+
+	private static final Logger logger = LoggerFactory.getLogger(DocumentParser.class);
 
 	protected final String DEFAULT_QUERY_NAME = "Query";
 	protected final String DEFAULT_MUTATION_NAME = "Mutation";
@@ -190,7 +194,7 @@ public abstract class DocumentParser {
 	@PostConstruct
 	public void postConstruct() {
 
-		configuration.getPluginLogger().debug("Starting DocumentParser's PostConstrut intialization");
+		logger.debug("Starting DocumentParser's PostConstrut intialization");
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL scalars: standard and customs depending on the use case
@@ -248,7 +252,7 @@ public abstract class DocumentParser {
 		deprecated.setStandard(true);
 		directives.add(deprecated);
 
-		configuration.getPluginLogger().debug("Finished DocumentParser's PostConstrut intialization");
+		logger.debug("Finished DocumentParser's PostConstrut intialization");
 
 	}
 
@@ -284,20 +288,20 @@ public abstract class DocumentParser {
 	 *             When an error occurs, during the parsing of the GraphQL schemas
 	 */
 	public int parseDocuments() throws IOException {
-		configuration.getPluginLogger().debug("Starting documents parsing");
+		logger.debug("Starting documents parsing");
 
 		documents.getDocuments().stream().forEach(this::parseOneDocument);
 
-		configuration.getPluginLogger().debug("Documents have been parsed. Executing internal finalizations");
+		logger.debug("Documents have been parsed. Executing internal finalizations");
 
 		// Let's finalize some "details":
 
 		// Init the list of the object implementing each interface. This is done last, when all objects has been read by
 		// the plugin.
-		configuration.getPluginLogger().debug("Init list of interface implementations");
+		logger.debug("Init list of interface implementations");
 		initListOfInterfaceImplementations();
 		// The types Map allows to retrieve easily a Type from its name
-		configuration.getPluginLogger().debug("Fill type map");
+		logger.debug("Fill type map");
 		fillTypesMap();
 		// Manage ObjectTypeExtensionDefinition: add the extension to the object they belong to
 		manageObjectTypeExtensionDefinition();
@@ -308,8 +312,7 @@ public abstract class DocumentParser {
 
 		// We're done
 		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
-		configuration.getPluginLogger()
-				.debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
+		logger.debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
 
@@ -336,7 +339,7 @@ public abstract class DocumentParser {
 
 		// Looks for a schema definitions, to list the defined queries, mutations and subscriptions (should be only one
 		// of each), but we're ready for more. (for instance if several schema files have been merged)
-		configuration.getPluginLogger().debug("Looking for schema definition");
+		logger.debug("Looking for schema definition");
 		for (Definition<?> node : document.getDefinitions()) {
 			if (node instanceof SchemaDefinition) {
 				readSchemaDefinition((SchemaDefinition) node, queryObjectNames, mutationObjectNames,
@@ -344,7 +347,7 @@ public abstract class DocumentParser {
 			} // if
 		} // for
 
-		configuration.getPluginLogger().debug("Reading node definitions");
+		logger.debug("Reading node definitions");
 		for (Definition<?> node : document.getDefinitions()) {
 			// directive
 			if (node instanceof DirectiveDefinition) {
@@ -429,12 +432,12 @@ public abstract class DocumentParser {
 			if (node instanceof UnionTypeDefinition) {
 				// Unions are read latter, once all GraphQL types have been parsed
 			} else {
-				configuration.getPluginLogger().warn("Non managed node type: " + node.getClass().getName());
+				logger.warn("Non managed node type: " + node.getClass().getName());
 			}
 		} // for
 
 		// Once all Types have been properly read, we can read the union types
-		configuration.getPluginLogger().debug("Reading union definitions");
+		logger.debug("Reading union definitions");
 		document.getDefinitions().stream().filter(n -> (n instanceof UnionTypeDefinition))
 				.forEach(n -> unionTypes.add(readUnionType((UnionTypeDefinition) n)));
 	}

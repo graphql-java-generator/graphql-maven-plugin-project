@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
@@ -25,7 +27,7 @@ import lombok.Setter;
 public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
-	public Logger pluginLogger;
+	public Logger logger;
 
 	public boolean addRelayConnections = false;
 	public boolean copyRuntimeSources = false; // This will speed build time up (less classes to compile, and allow
@@ -58,7 +60,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
 	public GraphQLConfigurationTestHelper(Object caller) {
-		pluginLogger = new Slf4jLogger(caller);
+		logger = LoggerFactory.getLogger(caller.getClass());
 	}
 
 }

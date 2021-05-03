@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -32,6 +34,8 @@ import com.graphql_java_generator.plugin.conf.PluginMode;
 @Component
 public class ResourceSchemaStringProvider {
 
+	private static final Logger logger = LoggerFactory.getLogger(ResourceSchemaStringProvider.class);
+
 	final String INTROSPECTION_SCHEMA = "classpath:/introspection.graphqls";
 
 	@Autowired
@@ -51,9 +55,8 @@ public class ResourceSchemaStringProvider {
 			// We take the file pattern as is
 			fullPathPattern = configuration.getSchemaFilePattern();
 		} else {
-			if (configuration.getPluginLogger().isDebugEnabled()) {
-				configuration.getPluginLogger()
-						.debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
+			if (logger.isDebugEnabled()) {
+				logger.debug("Before getCanonicalPath(" + configuration.getSchemaFileFolder() + ")");
 				configuration.getSchemaFileFolder().getCanonicalPath();
 			}
 			fullPathPattern = "file:///" + configuration.getSchemaFileFolder().getCanonicalPath()
@@ -67,10 +70,10 @@ public class ResourceSchemaStringProvider {
 				Arrays.asList(applicationContext.getResources(fullPathPattern)));
 
 		// A little debug may be useful
-		if (configuration.getPluginLogger().isDebugEnabled() && ret.size() > 0) {
-			configuration.getPluginLogger().debug("The GraphQL schema file found are: ");
+		if (logger.isDebugEnabled() && ret.size() > 0) {
+			logger.debug("The GraphQL schema file found are: ");
 			for (Resource schema : ret) {
-				configuration.getPluginLogger().debug("   * " + schema.getURI().toString());
+				logger.debug("   * " + schema.getURI().toString());
 			}
 		}
 

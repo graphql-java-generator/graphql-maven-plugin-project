@@ -3,6 +3,8 @@
  */
 package com.graphql_java_generator.plugin.conf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,15 +29,15 @@ public interface GraphQLConfiguration extends GenerateClientCodeConfiguration, G
 	 */
 	@Override
 	public default void logConfiguration() {
-		if (getPluginLogger().isDebugEnabled()) {
-			getPluginLogger().debug("-- start configuration --");
-			getPluginLogger().debug(
-					"The graphql-java-generator Plugin Configuration for the generateClientCode goal/task is -->");
-			getPluginLogger().debug("    generateDeprecatedRequestResponse: " + isGenerateDeprecatedRequestResponse());
-			getPluginLogger().debug(
+		Logger logger = LoggerFactory.getLogger(getClass());
+		if (logger.isDebugEnabled()) {
+			logger.debug("-- start configuration --");
+			logger.debug("The graphql-java-generator Plugin Configuration for the generateClientCode goal/task is -->");
+			logger.debug("    generateDeprecatedRequestResponse: " + isGenerateDeprecatedRequestResponse());
+			logger.debug(
 					"The graphql-java-generator Plugin Configuration for the graphql goal or the generateServerCode task is -->");
 			logGenerateServerCodeConfiguration(); // There is no parameter specific to the client mode
-			getPluginLogger().debug("-- end configuration --");
+			logger.debug("-- end configuration --");
 		}
 	}
 }

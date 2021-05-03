@@ -11,13 +11,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * This class is the super class of all Mojos. It contains all parameters that are common to all goals, and the
@@ -49,11 +49,6 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.addRelayConnections", defaultValue = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS)
 	boolean addRelayConnections;
-
-	/**
-	 * This is the Plugin Logger, that hides the plugin technology: Maven or Gradle (or other, perhaps, in the future)
-	 */
-	private MavenLogger log = null;
 
 	/**
 	 * Not available to the user: the {@link MavenProject} in which the plugin executes
@@ -146,14 +141,6 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	protected PluginExecutor executor;
 
 	@Override
-	public Logger getPluginLogger() {
-		if (log == null) {
-			log = new MavenLogger(this);
-		}
-		return log;
-	}
-
-	@Override
 	public File getProjectDir() {
 		return project.getBasedir();
 	}
@@ -186,7 +173,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			getPluginLogger().debug("Starting generation of java classes from graphqls files");
+			LoggerFactory.getLogger(getClass()).debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
 			ctx = new AnnotationConfigApplicationContext();

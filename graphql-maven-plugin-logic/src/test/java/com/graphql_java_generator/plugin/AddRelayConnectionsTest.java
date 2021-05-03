@@ -23,13 +23,13 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
 import org.opentest4j.AssertionFailedError;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
@@ -296,7 +296,7 @@ class AddRelayConnectionsTest {
 		f.setAppliedDirectives(new ArrayList<>());
 		f.getAppliedDirectives().add(d);
 		Logger mockLogger = mock(Logger.class);
-		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).pluginLogger = mockLogger;
+		AddRelayConnections.logger = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 
 		// Go, go, go
@@ -328,7 +328,7 @@ class AddRelayConnectionsTest {
 		loadSpringContext(AllGraphQLCases_Client_SpringConfiguration.class,
 				"test_addEdgeConnectionAndApplyNodeInterface_step3", false);
 		Logger mockLogger = mock(Logger.class);
-		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).pluginLogger = mockLogger;
+		AddRelayConnections.logger = mockLogger;
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 
 		// Go, go, go
@@ -687,6 +687,7 @@ class AddRelayConnectionsTest {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void checkEdgeInterface() {
 		final String EDGE = "Edge";
 		boolean found = false;
@@ -718,6 +719,7 @@ class AddRelayConnectionsTest {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void checkConnectionInterface() {
 		final String CONNECTION = "Connection";
 		boolean found = false;

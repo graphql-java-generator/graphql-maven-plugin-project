@@ -19,6 +19,8 @@ import javax.ws.rs.ProcessingException;
 import org.leadpony.justify.api.JsonSchema;
 import org.leadpony.justify.api.JsonValidationService;
 import org.leadpony.justify.api.ProblemHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,7 @@ import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
+import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaExecutor;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -48,6 +51,8 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
  */
 @Component
 public class GenerateCodeJsonSchemaPersonalization {
+
+	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaExecutor.class);
 
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 
@@ -71,7 +76,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 		try {
 			if (!(configuration instanceof GenerateCodeCommonConfiguration)
 					|| !((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.server)) {
-				configuration.getPluginLogger().debug(
+				logger.debug(
 						"The plugin configuration is not in server mode: no schema personalization is to be applied");
 			} else {
 				// First step: we load the schema personalization
@@ -238,7 +243,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 			}
 
 			// Let's read the flow definition
-			configuration.getPluginLogger().info("Loading file " + ((GenerateServerCodeConfiguration) configuration)
+			logger.info("Loading file " + ((GenerateServerCodeConfiguration) configuration)
 					.getSchemaPersonalizationFile().getAbsolutePath());
 			ObjectMapper objectMapper = new ObjectMapper();
 			SchemaPersonalization ret;
@@ -251,7 +256,7 @@ public class GenerateCodeJsonSchemaPersonalization {
 	}// loadFlow
 
 	public void logParsingError(String error) {
-		configuration.getPluginLogger().error(error);
+		logger.error(error);
 		nbErrors += 1;
 	}
 

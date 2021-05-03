@@ -18,6 +18,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,8 @@ import com.graphql_java_generator.util.GraphqlUtils;
  */
 @Component
 public class GenerateGraphQLSchema {
+
+	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchema.class);
 
 	DocumentParser documentParser;
 
@@ -103,7 +107,7 @@ public class GenerateGraphQLSchema {
 
 			File targetFile = new File(configuration.getTargetFolder(), configuration.getTargetSchemaFileName());
 			msg = "Generating relay schema in this file: " + targetFile.getAbsolutePath();
-			configuration.getPluginLogger().debug(msg);
+			logger.debug(msg);
 
 			VelocityContext context = new VelocityContext();
 			context.put("newline", "\n");
@@ -129,8 +133,7 @@ public class GenerateGraphQLSchema {
 			writer.flush();
 			writer.close();
 
-			configuration.getPluginLogger()
-					.info("The GraphQL schema has been generated in '" + targetFile.getAbsolutePath() + "'");
+			logger.info("The GraphQL schema has been generated in '" + targetFile.getAbsolutePath() + "'");
 
 		} catch (ResourceNotFoundException | ParseErrorException | TemplateInitException | MethodInvocationException
 				| IOException e) {

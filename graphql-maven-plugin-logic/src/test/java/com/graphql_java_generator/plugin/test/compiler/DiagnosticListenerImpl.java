@@ -7,7 +7,7 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaFileObject;
 
-import com.graphql_java_generator.plugin.conf.Logger;
+import org.slf4j.Logger;
 
 /**
  * 

@@ -3,6 +3,9 @@
  */
 package com.graphql_java_generator.plugin.conf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class contains all parameters for the <I>generateClientCode</I> goal/task.
  * 
@@ -33,13 +36,13 @@ public interface GenerateClientCodeConfiguration extends GenerateCodeCommonConfi
 	/** Logs all the configuration parameters (only when in the debug level) */
 	@Override
 	public default void logConfiguration() {
-		if (getPluginLogger().isDebugEnabled()) {
-			getPluginLogger().debug("-- start configuration --");
-			getPluginLogger().debug(
-					"The graphql-java-generator Plugin Configuration for the generateClientCode goal/task is -->");
-			getPluginLogger().debug("    generateDeprecatedRequestResponse: " + isGenerateDeprecatedRequestResponse());
+		Logger logger = LoggerFactory.getLogger(getClass());
+		if (logger.isDebugEnabled()) {
+			logger.debug("-- start configuration --");
+			logger.debug("The graphql-java-generator Plugin Configuration for the generateClientCode goal/task is -->");
+			logger.debug("    generateDeprecatedRequestResponse: " + isGenerateDeprecatedRequestResponse());
 			logGenerateCodeCommonConfiguration();
-			getPluginLogger().debug("-- end configuration --");
+			logger.debug("-- end configuration --");
 		}
 	}
 

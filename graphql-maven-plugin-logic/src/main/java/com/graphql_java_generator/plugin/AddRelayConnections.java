@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +56,8 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
  */
 @Component
 public class AddRelayConnections {
+
+	static Logger logger = LoggerFactory.getLogger(AddRelayConnections.class);
 
 	/**
 	 * The {@link DocumentParser} contains the GraphQL schema data, as it has been read from the given GraphQL schema
@@ -535,13 +539,12 @@ public class AddRelayConnections {
 			for (Field fieldInheritedFrom : getFieldInheritedFrom(f)) {
 				// This field must be marked by the @RelayConnection directive. So/and it must exist in the fields list
 				if (!fields.contains(fieldInheritedFrom)) {
-					configuration.getPluginLogger()
-							.error("The field " + f.getName() + " of the "
-									+ (f.getOwningType() instanceof InterfaceType ? "interface" : "type") + " "
-									+ f.getOwningType().getName()
-									+ " has the directive @RelayConnection applied. But it inherits from the interface "
-									+ fieldInheritedFrom.getOwningType().getName()
-									+ ", in which this field doesn't have the directive @RelayConnection applied");
+					logger.error("The field " + f.getName() + " of the "
+							+ (f.getOwningType() instanceof InterfaceType ? "interface" : "type") + " "
+							+ f.getOwningType().getName()
+							+ " has the directive @RelayConnection applied. But it inherits from the interface "
+							+ fieldInheritedFrom.getOwningType().getName()
+							+ ", in which this field doesn't have the directive @RelayConnection applied");
 					nbErrors += 1;
 				}
 			} // for(getFieldInheritedFrom())
@@ -575,11 +578,10 @@ public class AddRelayConnections {
 						// @RelayConnection directive. But this object's field is not marked with this directive. It's
 						// strange, but is generally Ok. So we display a warning. And we add this field to the list of
 						// field that must implement the relay connection.
-						configuration.getPluginLogger()
-								.warn("The field " + inheritedField.getOwningType().getName() + "."
-										+ inheritedField.getName() + " implements (directly or indirectly) the "
-										+ field.getOwningType().getName() + "." + field.getName()
-										+ " field, but does not have the @RelayConnection directive");
+						logger.warn("The field " + inheritedField.getOwningType().getName() + "."
+								+ inheritedField.getName() + " implements (directly or indirectly) the "
+								+ field.getOwningType().getName() + "." + field.getName()
+								+ " field, but does not have the @RelayConnection directive");
 						// As we may not update a list, while we're looping in it, we create another list, that we'll be
 						// added afterward.
 						fieldsToAdd.add(inheritedField);

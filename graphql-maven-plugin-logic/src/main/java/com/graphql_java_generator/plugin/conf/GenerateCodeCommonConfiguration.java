@@ -6,6 +6,9 @@ package com.graphql_java_generator.plugin.conf;
 import java.io.File;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import graphql.schema.GraphQLScalarType;
 
 /**
@@ -150,17 +153,18 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public void logConfiguration();
 
 	public default void logGenerateCodeCommonConfiguration() {
-		getPluginLogger().debug("  Common parameters for code generation:");
-		getPluginLogger().debug("    copyRuntimeSources: " + isCopyRuntimeSources());
-		getPluginLogger().debug("    customScalars: " + getCustomScalars());
-		getPluginLogger().debug("    generateUtilityClasses: " + isGenerateUtilityClasses());
-		getPluginLogger().debug("    mode: " + getMode());
-		getPluginLogger().debug("    packageName: " + getPackageName());
-		getPluginLogger().debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
-		getPluginLogger().debug("    sourceEncoding: " + getSourceEncoding());
-		getPluginLogger().debug("    targetClassFolder: " + getTargetClassFolder().getAbsolutePath());
-		getPluginLogger().debug("    targetResourceFolder: " + getTargetResourceFolder().getAbsolutePath());
-		getPluginLogger().debug("    targetSourceFolder: " + getTargetSourceFolder().getAbsolutePath());
+		Logger logger = LoggerFactory.getLogger(getClass());
+		logger.debug("  Common parameters for code generation:");
+		logger.debug("    copyRuntimeSources: " + isCopyRuntimeSources());
+		logger.debug("    customScalars: " + getCustomScalars());
+		logger.debug("    generateUtilityClasses: " + isGenerateUtilityClasses());
+		logger.debug("    mode: " + getMode());
+		logger.debug("    packageName: " + getPackageName());
+		logger.debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
+		logger.debug("    sourceEncoding: " + getSourceEncoding());
+		logger.debug("    targetClassFolder: " + getTargetClassFolder().getAbsolutePath());
+		logger.debug("    targetResourceFolder: " + getTargetResourceFolder().getAbsolutePath());
+		logger.debug("    targetSourceFolder: " + getTargetSourceFolder().getAbsolutePath());
 		logCommonConfiguration();
 	}
 

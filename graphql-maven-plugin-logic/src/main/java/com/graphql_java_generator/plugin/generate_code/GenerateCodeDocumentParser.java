@@ -16,6 +16,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -81,6 +83,8 @@ import lombok.Getter;
 @Component
 @Getter
 public class GenerateCodeDocumentParser extends DocumentParser {
+
+	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeDocumentParser.class);
 
 	/**
 	 * The name of the package for utility classes, when the <I>separateUtilClasses</I> plugin parameter is set to true.
@@ -161,7 +165,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL custom scalar implementations must be provided by the plugin configuration
-		configuration.getPluginLogger().debug("Storing custom scalar's implementations [START]");
+		logger.debug("Storing custom scalar's implementations [START]");
 		if (configuration.getCustomScalars() != null) {
 			for (CustomScalarDefinition customScalarDef : configuration.getCustomScalars()) {
 				CustomScalarType type = new CustomScalarType(customScalarDef, configuration);
@@ -169,7 +173,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				getTypes().put(type.getName(), type);
 			}
 		}
-		configuration.getPluginLogger().debug("Storing custom scalar's implementations [END]");
+		logger.debug("Storing custom scalar's implementations [END]");
 	}
 
 	/**
@@ -206,33 +210,32 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		// Add introspection capabilities (the introspection schema has already been read, as it is added by
 		// ResourceSchemaStringProvider in the documents list
-		configuration.getPluginLogger().debug("Adding introspection capabilities");
+		logger.debug("Adding introspection capabilities");
 		addIntrospectionCapabilities();
 		// Let's identify every relation between objects, interface or union in the model
-		configuration.getPluginLogger().debug("Init relations");
+		logger.debug("Init relations");
 		initRelations();
 		// Some annotations are needed for Jackson or JPA
-		configuration.getPluginLogger().debug("Add annotations");
+		logger.debug("Add annotations");
 		addAnnotations();
 		// List of all Custom Deserializers
 		initCustomDeserializers();
 		// List all data fetchers
-		configuration.getPluginLogger().debug("Init data fetchers");
+		logger.debug("Init data fetchers");
 		initDataFetchers();
 		// List all Batch Loaders
-		configuration.getPluginLogger().debug("Init batch loaders");
+		logger.debug("Init batch loaders");
 		initBatchLoaders();
 		// Fill in the import list
 		addImports();
 
 		// Apply the user's schema personalization
-		configuration.getPluginLogger().debug("Apply schema personalization");
+		logger.debug("Apply schema personalization");
 		jsonSchemaPersonalization.applySchemaPersonalization();
 
 		// We're done
 		int nbClasses = getObjectTypes().size() + getEnumTypes().size() + getInterfaceTypes().size();
-		configuration.getPluginLogger()
-				.debug(getDocuments().getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
+		logger.debug(getDocuments().getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
 		return nbClasses;
 	}
 
@@ -626,12 +629,12 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// interfaces, along with Enums...
 
 			// We fetch only the objects, here. The interfaces are managed just after
-			configuration.getPluginLogger().debug("Init batch loader for objects");
+			logger.debug("Init batch loader for objects");
 			getObjectTypes().stream().filter(o -> (o.getGraphQlType() == GraphQlType.OBJECT && !o.isInputType()))
 					.forEach(o -> initOneBatchLoader(o));
 
 			// Let's go through all interfaces.
-			configuration.getPluginLogger().debug("Init batch loader for objects");
+			logger.debug("Init batch loader for objects");
 			interfaceTypes.stream().forEach(i -> initOneBatchLoader(i));
 		}
 	}
@@ -647,7 +650,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// There is no Batch Loader for query/mutation/subscription
 		if (type.getRequestType() == null) {
 
-			configuration.getPluginLogger().debug("Init batch loader for " + type.getName());
+			logger.debug("Init batch loader for " + type.getName());
 
 			Field id = type.getIdentifier();
 			if (id != null) {
@@ -695,14 +698,13 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// No action in server mode: everything is handled by graphql-java
 		if (configuration.getMode().equals(PluginMode.client)) {
 
-			configuration.getPluginLogger().debug("Adding introspection capability");
+			logger.debug("Adding introspection capability");
 
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// First step : add the introspection queries into the existing query. If no query exists, one is created.s
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (queryType == null) {
-				configuration.getPluginLogger()
-						.debug("The source schema contains no query: creating an empty query type");
+				logger.debug("The source schema contains no query: creating an empty query type");
 
 				// There was no query. We need to create one. It will contain only the Introspection Query
 				queryType = new ObjectType(DEFAULT_QUERY_NAME, configuration);
@@ -723,7 +725,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// Second step: add the __datatype field into every GraphQL type (out of input types)
 			// That is : in all regular object types and interfaces.
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			configuration.getPluginLogger().debug("Adding __typename to each object");
+			logger.debug("Adding __typename to each object");
 			for (ObjectType type : getObjectTypes()) {
 				if (!type.isInputType()) {
 					type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
@@ -732,7 +734,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 							.owningType(type).build());
 				}
 			}
-			configuration.getPluginLogger().debug("Adding __typename to each interface");
+			logger.debug("Adding __typename to each interface");
 			for (InterfaceType type : interfaceTypes) {
 				type.getFields().add(FieldImpl.builder().documentParser(this).name("__typename")
 						.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("String").mandatory(false).build())

@@ -13,9 +13,11 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 New goal/task added:
 * generatePojo: This goal allows to only generate the Java classes and interfaces that match the provided GraphQL schema.
 
-
 Server mode:
-* Workaround to build a project with Gradle 7 without the gradle wrapper
+* Workaround to build a project with Gradle 7 without the gradle wrapper (this commit prevents a strange error during the build)
+
+Internal:
+* The plugin now uses slf4j as the logging frontend framework, as do Gradle and Maven (since maven 3.1). This means that, when using Maven, the minimum release version is the 3.1 version.
 
 # 1.14.1
 

@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +21,7 @@ import lombok.Setter;
 public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGraphQLSchemaConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
-	public Logger pluginLogger;
+	public Logger logger;
 
 	public boolean addRelayConnections = false;
 	public String packageName = "my.test.package";
@@ -38,7 +40,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	 *            Used to retrieve the appropriate Log4j logger
 	 */
 	public GenerateGraphQLSchemaConfigurationTestHelper(Object caller) {
-		pluginLogger = new Slf4jLogger(caller);
+		logger = LoggerFactory.getLogger(caller.getClass());
 	}
 
 }

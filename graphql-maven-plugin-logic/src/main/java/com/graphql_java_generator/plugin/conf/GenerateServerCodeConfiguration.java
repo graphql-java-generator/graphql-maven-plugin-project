@@ -7,6 +7,8 @@ import java.io.File;
 import java.util.Map;
 
 import org.dataloader.BatchLoaderEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -178,12 +180,12 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	/** Logs all the configuration parameters (only when in the debug level) */
 	@Override
 	public default void logConfiguration() {
-		if (getPluginLogger().isDebugEnabled()) {
-			getPluginLogger().debug("-- start configuration --");
-			getPluginLogger().debug(
-					"The graphql-java-generator Plugin Configuration for the generateServerCode goal/task is -->");
+		Logger logger = LoggerFactory.getLogger(getClass());
+		if (logger.isDebugEnabled()) {
+			logger.debug("-- start configuration --");
+			logger.debug("The graphql-java-generator Plugin Configuration for the generateServerCode goal/task is -->");
 			logGenerateServerCodeConfiguration();
-			getPluginLogger().debug("-- end configuration --");
+			logger.debug("-- end configuration --");
 		}
 	}
 
@@ -191,13 +193,14 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * Logs all the configuration parameters for the <I>generateServerCode</I> task/goal (only when in the debug level)
 	 */
 	public default void logGenerateServerCodeConfiguration() {
-		getPluginLogger().debug("  Parameters specific to the generateServerCode task/goal:");
-		getPluginLogger().debug("    generateBatchLoaderEnvironment: " + isGenerateBatchLoaderEnvironment());
-		getPluginLogger().debug("    generateJPAAnnotation: " + isGenerateJPAAnnotation());
-		getPluginLogger().debug("    javaTypeForIDType: " + getJavaTypeForIDType());
-		getPluginLogger().debug("    packaging: " + getPackaging());
-		getPluginLogger().debug("    scanBasePackages: " + getScanBasePackages());
-		getPluginLogger().debug("    schemaPersonalizationFile: " + getSchemaPersonalizationFile());
+		Logger logger = LoggerFactory.getLogger(getClass());
+		logger.debug("  Parameters specific to the generateServerCode task/goal:");
+		logger.debug("    generateBatchLoaderEnvironment: " + isGenerateBatchLoaderEnvironment());
+		logger.debug("    generateJPAAnnotation: " + isGenerateJPAAnnotation());
+		logger.debug("    javaTypeForIDType: " + getJavaTypeForIDType());
+		logger.debug("    packaging: " + getPackaging());
+		logger.debug("    scanBasePackages: " + getScanBasePackages());
+		logger.debug("    schemaPersonalizationFile: " + getSchemaPersonalizationFile());
 		logGenerateCodeCommonConfiguration();
 	}
 }

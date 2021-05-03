@@ -4,12 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
 @Component
 public class CompilationTestHelper {
+
+	private static final Logger logger = LoggerFactory.getLogger(CompilationTestHelper.class);
 
 	@Resource
 	GraphQLConfiguration pluginConfiguration;
@@ -20,10 +24,10 @@ public class CompilationTestHelper {
 	 * @throws MojoExecutionException
 	 */
 	public void checkCompleteCompilationStatus(String classpath) {
-		pluginConfiguration.getPluginLogger().info("Check full project compilation status with classpath: " + classpath);
+		logger.info("Check full project compilation status with classpath: " + classpath);
 		GeneratedSourceCompiler compilerPortFacadeImpl = GeneratedSourceCompilerFactory.getGeneratedSourceCompiler(
-				pluginConfiguration.getPluginLogger(), null, pluginConfiguration.getTargetSourceFolder(),
-				pluginConfiguration.getTargetClassFolder(), classpath, pluginConfiguration.getSourceEncoding());
+				logger, null, pluginConfiguration.getTargetSourceFolder(), pluginConfiguration.getTargetClassFolder(),
+				classpath, pluginConfiguration.getSourceEncoding());
 		assertTrue(compilerPortFacadeImpl.compileAllSources(), "Full project compilation status");
 	}
 

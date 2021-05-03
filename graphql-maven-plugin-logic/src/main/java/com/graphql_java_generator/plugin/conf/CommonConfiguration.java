@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,12 +32,6 @@ public interface CommonConfiguration {
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
 	public final String DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED = "false";
-
-	/**
-	 * The logging system to use. It's implemented against the JDK one, to avoid useless dependencies. For instance you
-	 * can use log4j2, by adding the 'Log4j JDK Logging Adapter' (JUL)
-	 */
-	public Logger getPluginLogger();
 
 	/**
 	 * Get the {@link File} for the current project's directory. This allows to compute the full path of file that are
@@ -149,16 +145,16 @@ public interface CommonConfiguration {
 
 	/** Logs all the common configuration parameters (only when in the debug level) */
 	public default void logCommonConfiguration() {
-		if (getPluginLogger().isDebugEnabled()) {
-			getPluginLogger().debug("  Common parameters:");
-			getPluginLogger().debug("    addRelayConnections: " + isAddRelayConnections());
-			getPluginLogger().debug("    defaultTargetSchemaFileName: " + getDefaultTargetSchemaFileName());
-			getPluginLogger().debug("    projectDir: " + getProjectDir().getAbsolutePath());
-			getPluginLogger().debug("    schemaFileFolder: " + getSchemaFileFolder());
-			getPluginLogger().debug("    schemaFilePattern: " + getSchemaFilePattern());
-			getPluginLogger()
-					.debug("    skipGenerationIfSchemaHasNotChanged: " + isSkipGenerationIfSchemaHasNotChanged());
-			getPluginLogger().debug("    Templates: "
+		Logger logger = LoggerFactory.getLogger(getClass());
+		if (logger.isDebugEnabled()) {
+			logger.debug("  Common parameters:");
+			logger.debug("    addRelayConnections: " + isAddRelayConnections());
+			logger.debug("    defaultTargetSchemaFileName: " + getDefaultTargetSchemaFileName());
+			logger.debug("    projectDir: " + getProjectDir().getAbsolutePath());
+			logger.debug("    schemaFileFolder: " + getSchemaFileFolder());
+			logger.debug("    schemaFilePattern: " + getSchemaFilePattern());
+			logger.debug("    skipGenerationIfSchemaHasNotChanged: " + isSkipGenerationIfSchemaHasNotChanged());
+			logger.debug("    Templates: "
 					+ (Objects.nonNull(getTemplates())
 							? getTemplates().entrySet().stream()
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))

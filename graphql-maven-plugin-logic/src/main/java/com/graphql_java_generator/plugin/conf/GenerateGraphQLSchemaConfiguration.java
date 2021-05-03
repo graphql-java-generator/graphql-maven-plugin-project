@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This interface contains the getters for all the plugin parameters for the <I>generate-relay-schema</I> goal (Maven)
@@ -37,21 +39,22 @@ public interface GenerateGraphQLSchemaConfiguration extends CommonConfiguration 
 	/** Logs all the configuration parameters, in the debug level */
 	@Override
 	public default void logConfiguration() {
-		if (getPluginLogger().isDebugEnabled()) {
-			getPluginLogger().debug("The graphql-java-generator Plugin Configuration for the 'merge' goal is -->");
-			getPluginLogger().debug("  resourceEncoding: " + getResourceEncoding());
-			getPluginLogger().debug("  targetFolder: " + getTargetFolder());
-			getPluginLogger().debug("  targetSchemaFileName: " + getTargetSchemaFileName());
-			getPluginLogger().debug("  COMMON PARAMETERS:");
-			getPluginLogger().debug("    schemaFileFolder: " + getSchemaFileFolder());
-			getPluginLogger().debug("    schemaFilePattern: " + getSchemaFilePattern());
-			getPluginLogger().debug("    Templates: "
+		Logger logger = LoggerFactory.getLogger(getClass());
+		if (logger.isDebugEnabled()) {
+			logger.debug("The graphql-java-generator Plugin Configuration for the 'merge' goal is -->");
+			logger.debug("  resourceEncoding: " + getResourceEncoding());
+			logger.debug("  targetFolder: " + getTargetFolder());
+			logger.debug("  targetSchemaFileName: " + getTargetSchemaFileName());
+			logger.debug("  COMMON PARAMETERS:");
+			logger.debug("    schemaFileFolder: " + getSchemaFileFolder());
+			logger.debug("    schemaFilePattern: " + getSchemaFilePattern());
+			logger.debug("    Templates: "
 					+ (Objects.nonNull(getTemplates())
 							? getTemplates().entrySet().stream()
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
 							: StringUtils.EMPTY));
-			getPluginLogger().debug("-- end configuration --");
+			logger.debug("-- end configuration --");
 		}
 	}
 }

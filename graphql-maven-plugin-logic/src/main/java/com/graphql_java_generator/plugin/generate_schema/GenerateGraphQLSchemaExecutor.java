@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.OptionalLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ import com.ibm.icu.text.SimpleDateFormat;
 
 @Component
 public class GenerateGraphQLSchemaExecutor implements PluginExecutor {
+
+	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaExecutor.class);
 
 	@Autowired
 	GenerateGraphQLSchemaDocumentParser documentParser;
@@ -35,7 +39,7 @@ public class GenerateGraphQLSchemaExecutor implements PluginExecutor {
 	@Override
 	public void execute() throws Exception {
 		if (isSkipCodeGeneration()) {
-			configuration.getPluginLogger().info(
+			logger.info(
 					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		} else {
 			// Let's do the job
@@ -48,7 +52,7 @@ public class GenerateGraphQLSchemaExecutor implements PluginExecutor {
 		// Shall we skip the code generation?
 		boolean skipCodeGeneration = false;
 		if (configuration.isSkipGenerationIfSchemaHasNotChanged()) {
-			configuration.getPluginLogger().debug(
+			logger.debug(
 					"skipGenerationIfSchemaHasNotChanged is on. Checking the last modification dates of the generated sources");
 			skipCodeGeneration = skipGenerationIfSchemaHasNotChanged();
 		}
@@ -68,7 +72,7 @@ public class GenerateGraphQLSchemaExecutor implements PluginExecutor {
 				})//
 				.max();
 		if (!optSchemaLastModification.isPresent()) {
-			configuration.getPluginLogger().warn(
+			logger.warn(
 					"No schema found when checking their lasModified date! (let's got to the generate source process)");
 			return false;
 		}
@@ -78,18 +82,18 @@ public class GenerateGraphQLSchemaExecutor implements PluginExecutor {
 		// regenerated as needed, even if a file has been manually updated.
 		Long targetResourcesLastModified = graphqlUtils.getLastModified(configuration.getTargetFolder(), false);
 		if (targetResourcesLastModified == null) {
-			configuration.getPluginLogger().debug("No source folder: we need to generate the target schema");
+			logger.debug("No source folder: we need to generate the target schema");
 			return false;
 		}
 
-		if (configuration.getPluginLogger().isDebugEnabled()) {
+		if (logger.isDebugEnabled()) {
 			Date schemaDate = new Date(schemaLastModified);
 			Date targetSourceDate = new Date(targetResourcesLastModified);
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss");
-			configuration.getPluginLogger().debug("The lastModified date for the provided schema is: "
-					+ formatter.format(schemaDate) + " (more recent date of all provided schemas)");
-			configuration.getPluginLogger().debug("The lastModified date for the generated resources is: "
-					+ formatter.format(targetSourceDate) + " (older file in all generated resources)");
+			logger.debug("The lastModified date for the provided schema is: " + formatter.format(schemaDate)
+					+ " (more recent date of all provided schemas)");
+			logger.debug("The lastModified date for the generated resources is: " + formatter.format(targetSourceDate)
+					+ " (older file in all generated resources)");
 		}
 
 		// We have the last modification date for both the schema files, and generated the schemas. We skip the code
