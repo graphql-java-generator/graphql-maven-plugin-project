@@ -1,4 +1,3 @@
-__Table of Content__
 
 <!--ts-->
 <!--te-->
@@ -42,7 +41,7 @@ __The interesting part is that graphql-java-generator is an accelerator: you don
 At any time, you can take the generated code as a full sample for your graphql-java usage. You can then update the generated code, where it's not compliant for you. The other way is to use the personalization capability, and stay with the generated code as a basis.
 
 
-## The plugin goals
+## The plugin goals/tasks
 
 All maven goals and gradle tasks are described on [this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/plugin-info.html)
 
