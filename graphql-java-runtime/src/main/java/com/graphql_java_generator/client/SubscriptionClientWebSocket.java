@@ -71,15 +71,17 @@ public class SubscriptionClientWebSocket<R, T> {
 	 * @param messageType
 	 *            The T class: the type that must be returned by the query or mutation: it's the class that maps to the
 	 *            GraphQL type returned by this subscription.
+	 * @param objectMapper
+	 *            the Jackson {@link ObjectMapper} to use
 	 * @see AbstractGraphQLRequest#AbstractGraphQLRequest(String, com.graphql_java_generator.annotation.RequestType,
 	 *      String, com.graphql_java_generator.client.request.InputParameter...)
 	 */
 	SubscriptionClientWebSocket(String request, String subscriptionName, SubscriptionCallback<T> subscriptionCallback,
-			Class<R> subscriptionType, Class<T> messsageType) {
+			Class<R> subscriptionType, Class<T> messsageType, ObjectMapper objectMapper) {
 		this.request = request;
 		this.subscriptionName = subscriptionName;
 		this.subscriptionCallback = subscriptionCallback;
-		this.objectMapper = new ObjectMapper();
+		this.objectMapper = objectMapper;
 		this.subscriptionType = subscriptionType;
 		this.messageType = messsageType;
 	}

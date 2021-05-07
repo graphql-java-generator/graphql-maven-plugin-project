@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
@@ -24,6 +25,7 @@ import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -37,7 +39,7 @@ import reactor.core.scheduler.Schedulers;
  * @since 1.12
  * @author etienne-sf
  */
-// This is not a Spring Bean. It is created by the GraphQLAutoConfiguration
+@Component
 public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */
@@ -52,11 +54,14 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	/**
 	 * If the subscription is on a different endpoint than the main GraphQL endpoint, thant you can define a
 	 * <I>graphqlSubscriptionEndpoint</I> Spring bean, of type String, with this specific URL, for instance
-	 * <I>https://my.serveur.com/graphql/subscription</I>. For instance, Java servers suffer from a limitation which
-	 * prevent to server both GET/POST HTTP verbs and WebSockets on the same URL.<BR/>
+	 * <I>https://my.serveur.com/graphql/subscription</I>. <BR/>
+	 * For instance, Java servers suffer from a limitation which prevent to server both GET/POST HTTP verbs and
+	 * WebSockets on the same URL. This limitation is now under control, for instance in the server version of this
+	 * plugin.<BR/>
 	 * If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I> URL is also
 	 * used for subscriptions (which is the standard case).
 	 */
+	@Deprecated
 	String graphqlSubscriptionEndpoint;
 
 	/**
@@ -87,7 +92,7 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * The {@link ObjectMapper} that will read the json response, and map it to the correct java class, generated from
 	 * the GraphQL type defined in the source GraphQL schema
 	 */
-	ObjectMapper objectMapper = new ObjectMapper();
+	ObjectMapper objectMapper;
 
 	/**
 	 * This constructor may be called by Spring, once it has build a {@link WebClient} bean, or directly, in non Spring
@@ -128,13 +133,17 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 			WebClient webClient, //
 			@Autowired(required = false) WebSocketClient webSocketClient,
 			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction,
-			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractor) {
+			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractor,
+			@Autowired ObjectMapper objectMapper) {
 		this.graphqlEndpoint = graphqlEndpoint;
 		this.graphqlSubscriptionEndpoint = graphqlSubscriptionEndpoint;
 		this.webClient = webClient;
 		this.webSocketClient = webSocketClient;
 		this.serverOAuth2AuthorizedClientExchangeFilterFunction = serverOAuth2AuthorizedClientExchangeFilterFunction;
 		this.oAuthTokenExtractor = oAuthTokenExtractor;
+		this.objectMapper = objectMapper;
+
+		GraphqlUtils.objectMapper = objectMapper;
 
 		// The reactive framework needs to be started, before the first request is executed. We start it now, to reduce
 		// the latency of the first GraphQL request to come.
@@ -214,7 +223,7 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 		// Let's create and start the Web Socket
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
-				subscriptionName, subscriptionCallback, subscriptionType, messageType);
+				subscriptionName, subscriptionCallback, subscriptionType, messageType, objectMapper);
 		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 		Disposable disposable = webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler)

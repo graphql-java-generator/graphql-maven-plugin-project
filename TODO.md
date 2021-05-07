@@ -2,6 +2,9 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Alias: remove the class parameter. The typename should be enough to guess the java target class.
+* Remove objectMapper from GraphqlUtils
+* Check a way to have a Jackson ObjectMapper that is specific to the plugin, without overriding the Spring Boot default one. This would prevent any interference with a Spring Boot that would personalize this ObjectMapper.
 * Specifying an unknown template in the pom should raise an error
 * Pass the test on the allGraphQLCases to being executed in parallel
 * Add a test in the graphql-maven-plugin-samples-allGraphQLCases-pojo project

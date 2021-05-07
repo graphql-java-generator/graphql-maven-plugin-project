@@ -74,7 +74,7 @@ public class GraphqlClientUtils {
 		}
 		Matcher m = graphqlNamePattern.matcher(graphqlIdentifier);
 		if (!m.matches()) {
-			throw new GraphQLRequestPreparationException("<" + graphqlIdentifier + "> is not a valid GraphQL name");
+			throw new GraphQLRequestPreparationException("'" + graphqlIdentifier + "' is not a valid GraphQL name");
 		}
 	}
 

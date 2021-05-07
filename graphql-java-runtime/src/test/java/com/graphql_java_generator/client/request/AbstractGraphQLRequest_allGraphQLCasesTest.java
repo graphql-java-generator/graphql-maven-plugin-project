@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -57,10 +58,12 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals(1, graphQLRequest.query.fields.size());
 		QueryField aBreak = graphQLRequest.query.fields.get(0);
 		assertEquals("aBreak", aBreak.name);
+		assertNull(aBreak.alias);
 		assertEquals(2, aBreak.fields.size(), " (with the added __typename field)");
 
 		QueryField field = aBreak.fields.get(0);
 		assertEquals("case", field.name);
+		assertNull(field.alias);
 		assertEquals(1, field.inputParameters.size());
 		assertEquals("test", field.inputParameters.get(0).getName());
 		assertEquals(_extends.DOUBLE, field.inputParameters.get(0).getValue());

@@ -28,6 +28,7 @@ import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
  * This class is deprecated since version v1.12. It is based on the Jersey {@link Client}, but this client has a hard to
@@ -67,7 +68,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public QueryExecutorImpl(String graphqlEndpoint) {
-		this(graphqlEndpoint, ClientBuilder.newClient(), new ObjectMapper());
+		this(graphqlEndpoint, ClientBuilder.newClient(), new GraphQLAutoConfiguration().objectMapper());
 		this.graphqlEndpoint = graphqlEndpoint;
 	}
 
@@ -94,8 +95,9 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 		this.client = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(hostnameVerifier).build();
 		this.graphqlEndpoint = graphqlEndpoint;
-		this.objectMapper = new ObjectMapper();
+		this.objectMapper = new GraphQLAutoConfiguration().objectMapper();
 		this.webTarget = client.target(graphqlEndpoint);
+		this.objectMapper = new GraphQLAutoConfiguration().objectMapper();
 	}
 
 	/**
@@ -182,7 +184,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 		HttpClient httpClient = new HttpClient(sslContextFactory);
 		WebSocketClient client = new WebSocketClient(httpClient);
 		SubscriptionClientWebSocket<R, T> subscriptionClientWebSocket = new SubscriptionClientWebSocket<R, T>(request,
-				subscriptionName, subscriptionCallback, subscriptionType, messageType);
+				subscriptionName, subscriptionCallback, subscriptionType, messageType, objectMapper);
 		URI uri = getWebSocketURI();
 		try {
 			client.start();

@@ -227,9 +227,9 @@ public class QueryField {
 
 					// Does a field of this name already exist ?
 					// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
-					if (getField(currentField.name) != null) {
-						throw new GraphQLRequestPreparationException("The field <" + currentField.name
-								+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
+					if (getField(currentField.alias, currentField.name) != null) {
+						throw new GraphQLRequestPreparationException("The field '" + currentField.name
+								+ "' exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
 					}
 
 					fields.add(currentField);
@@ -420,15 +420,20 @@ public class QueryField {
 	}
 
 	/**
-	 * Returns the subfield for this {@link QueryField} of the given name
+	 * Returns the subfield for this {@link QueryField} of the given alias or name
 	 * 
+	 * @param alias
+	 *            The field's alias to search (optional)
 	 * @param name
-	 *            The field's name to search
-	 * @return The subfield of the given name, or null of this {@link QueryField} contains no field of this name
+	 *            The field's name to search (used only if the provided alias is null)
+	 * @return The subfield of the given alias (or name if the provided alias is null), or null of this
+	 *         {@link QueryField} contains no field of this alias (or name)
 	 */
-	QueryField getField(String name) {
+	QueryField getField(String alias, String name) {
+		String searchedString = (alias != null) ? alias : name;
 		for (QueryField f : fields) {
-			if (f.name.equals(name)) {
+			if ((f.alias != null && f.alias.equals(searchedString))
+					|| (f.alias == null && f.name.equals(searchedString))) {
 				// We found it
 				return f;
 			}

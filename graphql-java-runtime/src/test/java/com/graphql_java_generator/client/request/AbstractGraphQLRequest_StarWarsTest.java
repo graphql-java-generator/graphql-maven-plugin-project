@@ -111,11 +111,11 @@ class AbstractGraphQLRequest_StarWarsTest {
 		// Go, go go
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRequest("{human(id:\"00000000-0000-0000-0000-000000000031\") {id name name}}"));
-		assertTrue(e.getMessage().contains("<name>"));
+		assertTrue(e.getMessage().contains("'name'"));
 
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
-				"{human(id:\"00000000-0000-0000-0000-000000000031\") {id name validAlias:name}}"));
-		assertTrue(e.getMessage().contains("<name>"));
+		e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRequest("{human(id:\"00000000-0000-0000-0000-000000000031\") {id name name:name}}"));
+		assertTrue(e.getMessage().contains("'name'"));
 	}
 
 	@Test
@@ -240,7 +240,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRequest(
 						"{human(id:\"00000000-0000-0000-0000-000000000031\"){friends{name} friends{id}}"));
-		assertTrue(e.getMessage().contains("<friends>"));
+		assertTrue(e.getMessage().contains("'friends'"));
 	}
 
 	@Test
@@ -400,7 +400,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 		// Field present two times
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> queryType.getHumanResponseBuilder()
 				.withQueryResponseDef("{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name id } "));
-		assertTrue(e.getMessage().contains("<id>"), e.getMessage());
+		assertTrue(e.getMessage().contains("'id'"), e.getMessage());
 
 		// Wrong field name
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -412,7 +412,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> queryType.getHumanResponseBuilder().withQueryResponseDef(
 						"{id friends{ id name*Alias:name amis : friends{id notAFieldName} appearsIn} name } "));
-		assertTrue(e.getMessage().contains("<name*Alias>"), e.getMessage());
+		assertTrue(e.getMessage().contains("'name*Alias'"), e.getMessage());
 
 		// We're not ready yet for field parameters
 		e = assertThrows(GraphQLRequestPreparationException.class,

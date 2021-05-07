@@ -3,16 +3,22 @@
  */
 package com.graphql_java_generator.spring.client;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,9 +26,14 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import com.graphql_java_generator.client.OAuthTokenExtractor;
-import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.QueryExecutorSpringReactiveImpl;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import reactor.netty.http.client.HttpClient;
 
@@ -37,6 +48,8 @@ import reactor.netty.http.client.HttpClient;
  */
 @Configuration
 public class GraphQLAutoConfiguration {
+
+	private static Logger logger = LoggerFactory.getLogger(GraphQLAutoConfiguration.class);
 
 	@Value(value = "${graphql.endpoint.url}")
 	private String graphqlEndpointUrl;
@@ -74,54 +87,6 @@ public class GraphQLAutoConfiguration {
 	}
 
 	/**
-	 * This bean provides a default implementation of the {@link QueryExecutor}. It will be used to execute
-	 * query/mutation/subscription against the GraphQL server.<BR/>
-	 * Applications can provides there own Spring bean of this type. In which case, this default implementation is not
-	 * used. applications.
-	 * 
-	 * @param graphqlEndpoint
-	 *            A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL
-	 *            endpoint, for instance <I>https://my.serveur.com/graphql</I>
-	 * @param graphqlSubscriptionEndpoint
-	 *            If the subscription is on a different endpoint than the main GraphQL endpoint, thant you can define a
-	 *            <I>graphqlSubscriptionEndpoint</I> Spring bean, of type String, with this specific URL, for instance
-	 *            <I>https://my.serveur.com/graphql/subscription</I>. For instance, Java servers suffer from a
-	 *            limitation which prevent to server both GET/POST HTTP verbs and WebSockets on the same URL.<BR/>
-	 *            If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I>
-	 *            URL is also used for subscriptions (which is the standard case).
-	 * @param webClient
-	 *            The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and
-	 *            mutations.
-	 * @param webSocketClient
-	 *            The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to
-	 *            build the web sockets, for GraphQL subscriptions.<BR/>
-	 *            This is mandatory if the application latter calls subscription. It may be null otherwise.
-	 * @param serverOAuth2AuthorizedClientExchangeFilterFunction
-	 *            The {@link ServerOAuth2AuthorizedClientExchangeFilterFunction} is responsible for getting OAuth token
-	 *            from the OAuth authorization server. It is optional, and may be provided by the App's spring config.
-	 *            If it is not provided, then there is no OAuth authentication on client side. If provided, then the
-	 *            client uses it to provide the OAuth2 authorization token, when accessing the GraphQL resource server
-	 *            for queries/mutations/subscriptions.
-	 * @param oAuthTokenRetriever
-	 *            This class is responsible for extracting the OAuth token, once the
-	 *            {@link ServerOAuth2AuthorizedClientExchangeFilterFunction} has done its job, and added the OAuth2
-	 *            token into the request, in the Authorization header. See the {@link OAuthTokenExtractor} doc for more
-	 *            information.
-	 */
-	@Bean
-	@ConditionalOnMissingBean
-	QueryExecutor queryExecutor(//
-			String graphqlEndpoint, //
-			@Autowired(required = false) String graphqlSubscriptionEndpoint, //
-			WebClient webClient, //
-			@Autowired(required = false) WebSocketClient webSocketClient,
-			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction,
-			@Autowired(required = false) OAuthTokenExtractor oAuthTokenRetriever) {
-		return new QueryExecutorSpringReactiveImpl(graphqlEndpoint, graphqlSubscriptionEndpoint, webClient,
-				webSocketClient, serverOAuth2AuthorizedClientExchangeFilterFunction, oAuthTokenRetriever);
-	}
-
-	/**
 	 * The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and mutations.
 	 */
 	@Bean
@@ -156,5 +121,50 @@ public class GraphQLAutoConfiguration {
 		} else {
 			return new ReactorNettyWebSocketClient(httpClient);
 		}
+	}
+
+	private static class DeserializationProblemHandlerModule extends SimpleModule {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void setupModule(SetupContext context) {
+			// Required, as documented in the Javadoc of SimpleModule
+			super.setupModule(context);
+			context.addDeserializationProblemHandler(new DeserializationProblemHandler() {
+				private Logger logger = LoggerFactory.getLogger(this.getClass());
+				GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
+
+				@Override
+				public boolean handleUnknownProperty(DeserializationContext ctxt, JsonParser p,
+						JsonDeserializer<?> deserializer, Object beanOrClass, String propertyName) throws IOException {
+					if (logger.isTraceEnabled()) {
+						logger.trace("Reading alias '" + propertyName + "' for " + beanOrClass.getClass());
+					}
+					Method setAliasValue = graphqlUtils.getMethod("setAliasValue", beanOrClass.getClass(), String.class,
+							TreeNode.class);
+					graphqlUtils.invokeMethod(setAliasValue, beanOrClass, propertyName, p.readValueAsTree());
+					return true;
+				}
+			});
+		}
+	}
+
+	/**
+	 * This method customizes the {@link ObjectMapper} provided by Spring Boot, for the need of proper deseiralization
+	 * of the GraphQL response. The point here is to add the proper deserialization handler to manage unknown properties
+	 * as GraphQL aliases.
+	 * 
+	 * @return
+	 */
+	@Bean
+	public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilder() {
+		logger.debug(
+				"Registering the Jackson DeserializationProblemHandler handler to manage GraphQL aliased in GraphQL response");
+		return new Jackson2ObjectMapperBuilderCustomizer() {
+			@Override
+			public void customize(Jackson2ObjectMapperBuilder builder) {
+				builder.modules(new DeserializationProblemHandlerModule());
+			}
+		};
 	}
 }

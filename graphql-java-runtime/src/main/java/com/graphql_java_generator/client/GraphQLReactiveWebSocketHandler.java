@@ -49,7 +49,7 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 	final SubscriptionCallback<T> subscriptionCallback;
 
 	/** The jackson instance that will handle deserialization of the incoming messages */
-	ObjectMapper objectMapper = new ObjectMapper();
+	final ObjectMapper objectMapper;
 
 	/** The java generated from the GraphQL subscription type, as defined in the GraphQL schema */
 	final Class<R> subscriptionType;
@@ -64,12 +64,14 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 	WebSocketSession session = null;
 
 	public GraphQLReactiveWebSocketHandler(String request, String subscriptionName,
-			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType) {
+			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType,
+			ObjectMapper objectMapper) {
 		this.request = request;
 		this.subscriptionName = subscriptionName;
 		this.subscriptionCallback = subscriptionCallback;
 		this.subscriptionType = subscriptionType;
 		this.messageType = messsageType;
+		this.objectMapper = objectMapper;
 	}
 
 	@Override
