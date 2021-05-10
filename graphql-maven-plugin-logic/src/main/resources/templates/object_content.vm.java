@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
-
 ##
 ## When in client mode, we add the capability to receive unknown JSON attributes, which includes returned values for GraphQL aliases
 ##

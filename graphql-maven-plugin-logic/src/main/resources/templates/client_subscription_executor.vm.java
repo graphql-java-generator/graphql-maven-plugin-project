@@ -30,11 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -138,9 +138,9 @@ public class ${object.classSimpleName}Executor {
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 * @param objectMapper
-	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
+	 *            The GraphQL ObjectMapper that manages the mapping of the GraphQL JSON response
 	 */
-	public ${object.classSimpleName}Executor(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public ${object.classSimpleName}Executor(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();

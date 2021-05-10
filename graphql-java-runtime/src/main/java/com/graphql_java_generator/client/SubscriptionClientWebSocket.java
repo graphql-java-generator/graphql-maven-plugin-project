@@ -49,7 +49,7 @@ public class SubscriptionClientWebSocket<R, T> {
 	final SubscriptionCallback<T> subscriptionCallback;
 
 	/** The jackson instance that will handle deserialization of the incoming messages */
-	ObjectMapper objectMapper;
+	GraphQLObjectMapper objectMapper;
 
 	/** The class that maps to the GraphQL subscription type, as defined in the GraphQL schema */
 	Class<R> subscriptionType;
@@ -72,12 +72,12 @@ public class SubscriptionClientWebSocket<R, T> {
 	 *            The T class: the type that must be returned by the query or mutation: it's the class that maps to the
 	 *            GraphQL type returned by this subscription.
 	 * @param objectMapper
-	 *            the Jackson {@link ObjectMapper} to use
+	 *            the GraphQL {@link ObjectMapper} to use
 	 * @see AbstractGraphQLRequest#AbstractGraphQLRequest(String, com.graphql_java_generator.annotation.RequestType,
 	 *      String, com.graphql_java_generator.client.request.InputParameter...)
 	 */
 	SubscriptionClientWebSocket(String request, String subscriptionName, SubscriptionCallback<T> subscriptionCallback,
-			Class<R> subscriptionType, Class<T> messsageType, ObjectMapper objectMapper) {
+			Class<R> subscriptionType, Class<T> messsageType, GraphQLObjectMapper objectMapper) {
 		this.request = request;
 		this.subscriptionName = subscriptionName;
 		this.subscriptionCallback = subscriptionCallback;

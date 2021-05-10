@@ -28,7 +28,6 @@ import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
  * This class is deprecated since version v1.12. It is based on the Jersey {@link Client}, but this client has a hard to
@@ -55,8 +54,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 	Client client;
 	/** The endpoint, given in the constructor */
 	String graphqlEndpoint;
-	/** Jackson {@link ObjectMapper}, used for serialisation / de-serialisation */
-	ObjectMapper objectMapper;
+	/** GraphQL {@link ObjectMapper}, used for serialisation and de-serialisation */
+	GraphQLObjectMapper objectMapper;
 	/** The Jersey {@link WebTarget}, used to execute the request toward the GraphQL server */
 	WebTarget webTarget;
 
@@ -68,7 +67,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public QueryExecutorImpl(String graphqlEndpoint) {
-		this(graphqlEndpoint, ClientBuilder.newClient(), new GraphQLAutoConfiguration().objectMapper());
+		this(graphqlEndpoint, ClientBuilder.newClient(), new GraphQLObjectMapper());
 		this.graphqlEndpoint = graphqlEndpoint;
 	}
 
@@ -95,9 +94,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 		this.client = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(hostnameVerifier).build();
 		this.graphqlEndpoint = graphqlEndpoint;
-		this.objectMapper = new GraphQLAutoConfiguration().objectMapper();
+		this.objectMapper = new GraphQLObjectMapper();
 		this.webTarget = client.target(graphqlEndpoint);
-		this.objectMapper = new GraphQLAutoConfiguration().objectMapper();
 	}
 
 	/**
@@ -113,10 +111,10 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 * @param objectMapper
-	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
+	 *            The GraphQL {@link ObjectMapper} to support the GraphQL configured mapping
 	 */
 	@Deprecated
-	public QueryExecutorImpl(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public QueryExecutorImpl(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
 		this.client = client;
 		this.graphqlEndpoint = graphqlEndpoint;
 		this.objectMapper = objectMapper;

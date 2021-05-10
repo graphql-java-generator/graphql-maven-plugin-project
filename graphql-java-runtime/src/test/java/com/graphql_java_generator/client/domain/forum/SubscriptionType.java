@@ -19,6 +19,7 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -139,7 +140,7 @@ public class SubscriptionType extends SubscriptionTypeExecutor
 	}
 
 	/** {@inheritDoc} */
-	public SubscriptionType(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public SubscriptionType(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
 		super(graphqlEndpoint, client, objectMapper);
 	}
 

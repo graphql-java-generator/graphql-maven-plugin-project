@@ -47,7 +47,7 @@ public class GraphQLConfiguration {
 		GraphQLAutoConfiguration conf = new GraphQLAutoConfiguration();
 		this.executor = new QueryExecutorSpringReactiveImpl(graphqlEndpoint, null,
 				conf.webClient(graphqlEndpoint, null, null), conf.webSocketClient(null), null, null,
-				conf.objectMapper());
+				new GraphQLObjectMapper());
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class GraphQLConfiguration {
 	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
 	@Deprecated
-	public GraphQLConfiguration(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public GraphQLConfiguration(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
 		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
 	}
 

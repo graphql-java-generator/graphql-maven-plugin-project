@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -112,7 +113,7 @@ public class TheSubscriptionTypeExecutor {
 	 * @param objectMapper
 	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
-	public TheSubscriptionTypeExecutor(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public TheSubscriptionTypeExecutor(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();

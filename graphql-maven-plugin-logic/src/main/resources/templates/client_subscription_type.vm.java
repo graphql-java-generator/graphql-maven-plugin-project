@@ -32,11 +32,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -86,7 +86,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
 #if(${object.requestType})
-	private ObjectMapper mapper = null;
+	private GraphQLObjectMapper mapper = null;
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
 #end
@@ -105,7 +105,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	}
 
 	/** {@inheritDoc} */
-	public ${object.classSimpleName}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
+	public ${object.classSimpleName}(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
 		super(graphqlEndpoint, client, objectMapper);
 	}
 	
@@ -113,9 +113,9 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
 #if(!${configuration.separateUtilityClasses} && ${object.requestType})
-	private ObjectMapper getMapper() {
+	private GraphQLObjectMapper getMapper() {
 		if (mapper == null) {
-			mapper = new ObjectMapper();
+			mapper = new GraphQLObjectMapper();
 		}
 		return mapper;
 	}
@@ -135,8 +135,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
 		if (extensionsAsMap == null) {
-			ObjectMapper mapper = new ObjectMapper();
-			extensionsAsMap = mapper.convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+			extensionsAsMap = getMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
 			});
 		}
 		return extensionsAsMap;

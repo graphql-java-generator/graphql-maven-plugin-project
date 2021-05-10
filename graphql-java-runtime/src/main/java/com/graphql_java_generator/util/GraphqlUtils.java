@@ -16,14 +16,15 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.customscalars.CustomScalar;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -49,7 +50,8 @@ public class GraphqlUtils {
 	/** This singleton is usable in default method, within interfaces */
 	public static GraphqlUtils graphqlUtils = new GraphqlUtils();
 
-	public static ObjectMapper objectMapper;
+	@Autowired(required = false) // Required only for the client generated code
+	public GraphQLObjectMapper objectMapper;
 
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 

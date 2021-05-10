@@ -19,13 +19,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
-import com.graphql_java_generator.util.GraphqlUtils;
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -89,10 +87,10 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	WebSocketClient webSocketClient;
 
 	/**
-	 * The {@link ObjectMapper} that will read the json response, and map it to the correct java class, generated from
-	 * the GraphQL type defined in the source GraphQL schema
+	 * The {@link GraphQLObjectMapper} that will read the json response, and map it to the correct java class, generated
+	 * from the GraphQL type defined in the source GraphQL schema
 	 */
-	ObjectMapper objectMapper;
+	GraphQLObjectMapper objectMapper;
 
 	/**
 	 * This constructor may be called by Spring, once it has build a {@link WebClient} bean, or directly, in non Spring
@@ -134,7 +132,7 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 			@Autowired(required = false) WebSocketClient webSocketClient,
 			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction,
 			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractor,
-			@Autowired ObjectMapper objectMapper) {
+			@Autowired GraphQLObjectMapper objectMapper) {
 		this.graphqlEndpoint = graphqlEndpoint;
 		this.graphqlSubscriptionEndpoint = graphqlSubscriptionEndpoint;
 		this.webClient = webClient;
@@ -142,8 +140,6 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 		this.serverOAuth2AuthorizedClientExchangeFilterFunction = serverOAuth2AuthorizedClientExchangeFilterFunction;
 		this.oAuthTokenExtractor = oAuthTokenExtractor;
 		this.objectMapper = objectMapper;
-
-		GraphqlUtils.objectMapper = objectMapper;
 
 		// The reactive framework needs to be started, before the first request is executed. We start it now, to reduce
 		// the latency of the first GraphQL request to come.
@@ -262,23 +258,23 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * @param <T>
 	 * @param response
 	 *            The json response, read from the GraphQL response
-	 * @param valueType
+	 * @param dataResponseType
 	 *            The expected T class
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws GraphQLRequestExecutionException
 	 */
-	static <T extends GraphQLRequestObject> T parseDataFromGraphQLServerResponse(ObjectMapper objectMapper,
+	static <T extends GraphQLRequestObject> T parseDataFromGraphQLServerResponse(GraphQLObjectMapper objectMapper2,
 			JsonResponseWrapper response, Class<T> valueType)
 			throws GraphQLRequestExecutionException, JsonProcessingException {
 		if (logger.isTraceEnabled()) {
-			logger.trace("Response data: {}", objectMapper.writeValueAsString(response.data));
-			logger.trace("Response errors: {}", objectMapper.writeValueAsString(response.errors));
+			logger.trace("Response data: {}", objectMapper2.writeValueAsString(response.data));
+			logger.trace("Response errors: {}", objectMapper2.writeValueAsString(response.errors));
 		}
 
 		if (response.errors == null || response.errors.size() == 0) {
 			// No errors. Let's parse the data
-			T ret = objectMapper.treeToValue(response.data, valueType);
+			T ret = objectMapper2.treeToValue(response.data, valueType);
 			ret.setExtensions(response.extensions);
 			return ret;
 		} else {
