@@ -94,6 +94,29 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_Partial_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		params = new HashMap<>();
+		params.put("anotherMutationTypeCreateHumanHuman", input);
+		params.put("value", "the mutation value");
+		params.put("anotherValue", "the other mutation value");
+
+		// Go, go, go
+		@SuppressWarnings("deprecation")
+		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder()
+				.withQueryResponseDef("{id name appearsIn friends {id name}}}").build();
+
+		// Verification
+		assertEquals("{\"query\":\"mutation" //
+				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}" //
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_withBuilder()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation

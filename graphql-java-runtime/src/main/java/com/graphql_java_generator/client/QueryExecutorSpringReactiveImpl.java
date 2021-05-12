@@ -87,12 +87,6 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	WebSocketClient webSocketClient;
 
 	/**
-	 * The {@link GraphQLObjectMapper} that will read the json response, and map it to the correct java class, generated
-	 * from the GraphQL type defined in the source GraphQL schema
-	 */
-	GraphQLObjectMapper objectMapper;
-
-	/**
 	 * This constructor may be called by Spring, once it has build a {@link WebClient} bean, or directly, in non Spring
 	 * applications.
 	 * 
@@ -131,15 +125,13 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 			WebClient webClient, //
 			@Autowired(required = false) WebSocketClient webSocketClient,
 			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction,
-			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractor,
-			@Autowired GraphQLObjectMapper objectMapper) {
+			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractor) {
 		this.graphqlEndpoint = graphqlEndpoint;
 		this.graphqlSubscriptionEndpoint = graphqlSubscriptionEndpoint;
 		this.webClient = webClient;
 		this.webSocketClient = webSocketClient;
 		this.serverOAuth2AuthorizedClientExchangeFilterFunction = serverOAuth2AuthorizedClientExchangeFilterFunction;
 		this.oAuthTokenExtractor = oAuthTokenExtractor;
-		this.objectMapper = objectMapper;
 
 		// The reactive framework needs to be started, before the first request is executed. We start it now, to reduce
 		// the latency of the first GraphQL request to come.
@@ -176,7 +168,8 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 					.bodyToMono(JsonResponseWrapper.class)//
 					.block();
 
-			return parseDataFromGraphQLServerResponse(objectMapper, responseJson, dataResponseType);
+			return parseDataFromGraphQLServerResponse(graphQLRequest.getGraphQLObjectMapper(), responseJson,
+					dataResponseType);
 
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(
@@ -219,7 +212,8 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 		// Let's create and start the Web Socket
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
-				subscriptionName, subscriptionCallback, subscriptionType, messageType, objectMapper);
+				subscriptionName, subscriptionCallback, subscriptionType, messageType,
+				graphQLRequest.getGraphQLObjectMapper());
 		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 		Disposable disposable = webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler)

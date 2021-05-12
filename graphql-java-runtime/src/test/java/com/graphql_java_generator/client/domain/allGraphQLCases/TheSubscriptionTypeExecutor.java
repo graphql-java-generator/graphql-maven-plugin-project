@@ -15,10 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -110,11 +108,9 @@ public class TheSubscriptionTypeExecutor {
 	 *            the http URI for the GraphQL endpoint
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 * @param objectMapper
-	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
-	public TheSubscriptionTypeExecutor(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
+	public TheSubscriptionTypeExecutor(String graphqlEndpoint, Client client) {
+		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}

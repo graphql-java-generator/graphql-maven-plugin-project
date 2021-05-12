@@ -23,7 +23,6 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
@@ -54,8 +53,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 	Client client;
 	/** The endpoint, given in the constructor */
 	String graphqlEndpoint;
-	/** GraphQL {@link ObjectMapper}, used for serialisation and de-serialisation */
-	GraphQLObjectMapper objectMapper;
 	/** The Jersey {@link WebTarget}, used to execute the request toward the GraphQL server */
 	WebTarget webTarget;
 
@@ -67,7 +64,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public QueryExecutorImpl(String graphqlEndpoint) {
-		this(graphqlEndpoint, ClientBuilder.newClient(), new GraphQLObjectMapper());
+		this(graphqlEndpoint, ClientBuilder.newClient());
 		this.graphqlEndpoint = graphqlEndpoint;
 	}
 
@@ -94,7 +91,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 
 		this.client = ClientBuilder.newBuilder().sslContext(sslContext).hostnameVerifier(hostnameVerifier).build();
 		this.graphqlEndpoint = graphqlEndpoint;
-		this.objectMapper = new GraphQLObjectMapper();
 		this.webTarget = client.target(graphqlEndpoint);
 	}
 
@@ -110,14 +106,11 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            the http URI for the GraphQL endpoint
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 * @param objectMapper
-	 *            The GraphQL {@link ObjectMapper} to support the GraphQL configured mapping
 	 */
 	@Deprecated
-	public QueryExecutorImpl(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
+	public QueryExecutorImpl(String graphqlEndpoint, Client client) {
 		this.client = client;
 		this.graphqlEndpoint = graphqlEndpoint;
-		this.objectMapper = objectMapper;
 		this.webTarget = client.target(graphqlEndpoint);
 	}
 
@@ -141,8 +134,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 			JsonResponseWrapper response = invocationBuilder
 					.post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON), JsonResponseWrapper.class);
 
-			return QueryExecutorSpringReactiveImpl.parseDataFromGraphQLServerResponse(objectMapper, response,
-					dataResponseType);
+			return QueryExecutorSpringReactiveImpl.parseDataFromGraphQLServerResponse(
+					graphQLRequest.getGraphQLObjectMapper(), response, dataResponseType);
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + jsonRequest + ">: " + e.getMessage(), e);
@@ -182,7 +175,8 @@ public class QueryExecutorImpl implements QueryExecutor {
 		HttpClient httpClient = new HttpClient(sslContextFactory);
 		WebSocketClient client = new WebSocketClient(httpClient);
 		SubscriptionClientWebSocket<R, T> subscriptionClientWebSocket = new SubscriptionClientWebSocket<R, T>(request,
-				subscriptionName, subscriptionCallback, subscriptionType, messageType, objectMapper);
+				subscriptionName, subscriptionCallback, subscriptionType, messageType,
+				graphQLRequest.getGraphQLObjectMapper());
 		URI uri = getWebSocketURI();
 		try {
 			client.start();

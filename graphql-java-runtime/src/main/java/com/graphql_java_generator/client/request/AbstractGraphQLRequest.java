@@ -13,9 +13,11 @@ import java.util.Map;
 
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -639,6 +641,16 @@ public abstract class AbstractGraphQLRequest {
 				.append(",\"operationName\":null}");
 
 		return sb.toString();
+	}
+
+	/**
+	 * This method creates and configures a Jackson {@link ObjectMapper} that is ready to parse the response for this
+	 * GraphQL. The main configuration is the management for the GraphQL aliases.
+	 * 
+	 * @return
+	 */
+	public GraphQLObjectMapper getGraphQLObjectMapper() {
+		return new GraphQLObjectMapper(getGraphQLClassesPackageName());
 	}
 
 	/**

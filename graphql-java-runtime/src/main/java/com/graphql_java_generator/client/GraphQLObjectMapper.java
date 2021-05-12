@@ -4,19 +4,17 @@
 package com.graphql_java_generator.client;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BigIntegerNode;
@@ -46,18 +45,24 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * This class is a wrapper around an {@link ObjectMapper}. It allows the GraphQL plugin generated code to use its own
  * {@link ObjectMapper}, without interfering with the containing app. This insures that the containing app can configure
  * and use "its" {@link ObjectMapper} as it wants, and that the GraphQL plugin can use its own {@link ObjectMapper} with
- * its own configuration.
+ * its own configuration.<BR/>
+ * This class is not Spring bean, as it is configured for each request, with the list of alias for this GraphQL request.
  * 
  * @author etienne-sf
  */
-@Component
 public class GraphQLObjectMapper {
 
 	@Autowired
 	ApplicationContext ctx;
 
 	/** The Jackson {@link ObjectMapper} that is specific to the GraphQL response deserialization */
-	private ObjectMapper objectMapper;
+	final private ObjectMapper objectMapper;
+
+	/**
+	 * This maps contains the {@link Field}, that matches each alias, of each GraphQL type. This allows a proper
+	 * deserialization of each alias value returned in the json response
+	 */
+	final private Map<Class<?>, Map<String, Field>> aliasFields;
 
 	/** The package where the GraphQL objects have been generated */
 	String graphQLObjectsPackage;
@@ -74,47 +79,67 @@ public class GraphQLObjectMapper {
 		@Override
 		public boolean handleUnknownProperty(DeserializationContext ctxt, JsonParser p,
 				JsonDeserializer<?> deserializer, Object beanOrClass, String propertyName) throws IOException {
+			Map<String, Field> aliases = null;
+			Field targetField = null;
+			JsonDeserialize jsonDeserialize = null;
+			Object value = null;
+
 			if (logger.isTraceEnabled()) {
 				logger.trace("Reading alias '" + propertyName + "' for " + beanOrClass.getClass().getName());
 			}
-			TreeNode tree = p.readValueAsTree();
-			invokerSetter("setAliasParsedValue", beanOrClass, propertyName, getAliasValue(p, tree), Object.class);
-			invokerSetter("setAliasTreeNodeValue", beanOrClass, propertyName, tree, TreeNode.class);
-			return true;
-		}
 
-		private void invokerSetter(String methodName, Object bean, String propertyName, Object value, Class<?> clazz) {
+			// Let's check of there is a CustomDeserializer for the field that this alias maps to
+			if (aliasFields != null) {
+				aliases = aliasFields.get(beanOrClass.getClass());
+			}
+			if (aliases != null) {
+				targetField = aliases.get(propertyName);
+			}
+			if (targetField != null) {
+				jsonDeserialize = targetField.getAnnotation(JsonDeserialize.class);
+			}
+
+			// If the plugin defined a CustomDeserializer, let's use it
+			if (jsonDeserialize != null) {
+				try {
+					JsonDeserializer<?> graphQLDeserializer = jsonDeserialize.using().getDeclaredConstructor()
+							.newInstance();
+					value = graphQLDeserializer.deserialize(p, ctxt);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+			} else {
+				value = getAliasValue(p, targetField, p.readValueAsTree());
+			}
+
+			// Let's call the setAliasValue of the target object, to set the alias's value we've just read
+			String methodName = "setAliasValue";
 			try {
-				Method setAliasParsedValue = bean.getClass().getDeclaredMethod(methodName, String.class, clazz);
-				setAliasParsedValue.invoke(bean, propertyName, value);
-
+				Method setAliasValue = beanOrClass.getClass().getDeclaredMethod(methodName, String.class, Object.class);
+				setAliasValue.invoke(beanOrClass, propertyName, value);
 			} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				throw new RuntimeException("Could not find or invoke the method '" + methodName + "' in the "
-						+ bean.getClass().getName() + " class", e);
+						+ beanOrClass.getClass().getName() + " class", e);
 			}
+
+			return true;
 		}
 	}
 
-	@PostConstruct
-	public void init() {
-		// This method code is split in two calls, as the graphQLPackage (only) is overridden in unit test
-		initObjectMapper();
-		initGraphQLPackage();
-	}
-
 	/**
-	 * create and configure the Jackson {@link ObjectMapper} that is specific to the GraphQL response deserialization
+	 * Standard creator for the GraphQL {@link ObjectMapper}
+	 * 
+	 * @param graphQLObjectsPackage
+	 *            The package where the GraphQL objects have been generated
 	 */
-	void initObjectMapper() {
+	public GraphQLObjectMapper(String graphQLObjectsPackage, Map<Class<?>, Map<String, Field>> aliasFields) {
 		objectMapper = new ObjectMapper();
 		objectMapper.addHandler(new GraphQLDeserializationProblemHandler());
-	}
 
-	/** Determine the package, where the GraphQL objects have been generated */
-	void initGraphQLPackage() {
-		Map<String, GraphQLRequestObject> requestObjects = ctx.getBeansOfType(GraphQLRequestObject.class);
-		graphQLObjectsPackage = requestObjects.values().iterator().next().getClass().getPackage().getName();
+		this.graphQLObjectsPackage = graphQLObjectsPackage;
+		this.aliasFields = aliasFields;
 	}
 
 	/**
@@ -122,18 +147,23 @@ public class GraphQLObjectMapper {
 	 * 
 	 * @param parser
 	 *            The current json parser
+	 * @param targetField
+	 *            The field on which an alias has been set. This allows to retrieve the annotation on this field, to
+	 *            know everything about it's properties, as defined in the GraphQL schema.<BR/>
+	 *            It may be null, in which case enumeration values won't be properly deserialized.
 	 * @param value
 	 *            The value to parse
 	 * @return The parsed value. That is, according to the above sample: a String, a List<String> or a
 	 *         List<List<String>>
 	 * @throws IOException
 	 */
-	public Object getAliasValue(JsonParser parser, TreeNode value) throws IOException {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Object getAliasValue(JsonParser parser, Field targetField, TreeNode value) throws IOException {
 		if (value instanceof ArrayNode) {
 			// value is a list. Let's do a recursive call for each of its item.
 			List<Object> list = new ArrayList<>(((ArrayNode) value).size());
 			for (TreeNode o : (ArrayNode) value) {
-				list.add(getAliasValue(parser, o));
+				list.add(getAliasValue(parser, targetField, o));
 			}
 			return list;
 		} else if (value instanceof ObjectNode) {
@@ -152,6 +182,15 @@ public class GraphQLObjectMapper {
 		// Null
 		else if (value instanceof NullNode) {
 			return null;
+		}
+		// Enumerations
+		else if (targetField != null && targetField.getType().isEnum()) {
+			if (!(value instanceof TextNode)) {
+				return new GraphQLRequestExecutionException(
+						"The '" + targetField + "' is an enum, so the encoded json should be a TextNode. But it's a '"
+								+ value.getClass().getName() + "'");
+			}
+			return Enum.valueOf((Class<? extends Enum>) targetField.getType(), ((TextNode) value).textValue());
 		}
 		// Booleans
 		else if (value instanceof BooleanNode) {

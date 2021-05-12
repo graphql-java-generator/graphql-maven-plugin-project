@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
 
 /**
  * 
@@ -47,7 +46,7 @@ public class Error {
 
 	private Map<String, JsonNode> extensionsAsMap = null;
 
-	private GraphQLObjectMapper localObjectMapper = null;
+	private ObjectMapper localObjectMapper = null;
 
 	/**
 	 * Logs this error to the given {@link Logger}
@@ -139,9 +138,9 @@ public class Error {
 	 * 
 	 * @return
 	 */
-	private GraphQLObjectMapper getMapper() {
+	private ObjectMapper getMapper() {
 		if (localObjectMapper == null) {
-			localObjectMapper = new GraphQLObjectMapper();
+			localObjectMapper = new ObjectMapper();
 		}
 		return localObjectMapper;
 	}

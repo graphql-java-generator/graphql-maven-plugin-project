@@ -21,7 +21,6 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -254,8 +253,8 @@ public class QueryType extends QueryTypeExecutor implements com.graphql_java_gen
 	}
 
 	/** {@inheritDoc} */
-	public QueryType(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
-		super(graphqlEndpoint, client, objectMapper);
+	public QueryType(String graphqlEndpoint, Client client) {
+		super(graphqlEndpoint, client);
 	}
 
 	private ObjectMapper getMapper() {

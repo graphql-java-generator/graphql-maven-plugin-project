@@ -20,7 +20,6 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -192,8 +191,8 @@ public class AnotherMutationType extends AnotherMutationTypeExecutor
 	}
 
 	/** {@inheritDoc} */
-	public AnotherMutationType(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
-		super(graphqlEndpoint, client, objectMapper);
+	public AnotherMutationType(String graphqlEndpoint, Client client) {
+		super(graphqlEndpoint, client);
 	}
 
 	private ObjectMapper getMapper() {

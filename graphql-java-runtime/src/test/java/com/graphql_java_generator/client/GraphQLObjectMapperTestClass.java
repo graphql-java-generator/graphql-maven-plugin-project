@@ -3,13 +3,14 @@
  */
 package com.graphql_java_generator.client;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.TreeNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.client.domain.allGraphQLCases.CustomJacksonDeserializers;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-
-import graphql.schema.GraphQLScalarType;
 
 /**
  * This class is used for json deserialization test of GraphQL alias values by {@link GraphQLObjectMapperTest}
@@ -18,39 +19,31 @@ import graphql.schema.GraphQLScalarType;
  */
 public class GraphQLObjectMapperTestClass {
 
-	Map<String, Object> aliasParsedValues = new HashMap<>();
-	Map<String, TreeNode> aliasTreeNodeValues = new HashMap<>();
+	Map<String, Object> aliasValues = new HashMap<>();
 
 	public enum TestEnum {
 		VALUE1, VALUE2, VALUE3
 	}
 
+	@JsonDeserialize(using = CustomJacksonDeserializers.Date.class)
+	@GraphQLScalar(fieldName = "date", graphQLTypeSimpleName = "Date", javaClass = Date.class)
+	public Date date;
+
+	@GraphQLScalar(fieldName = "doubleField", graphQLTypeSimpleName = "Float", javaClass = Double.class)
+	public Double doubleField;
+
+	@GraphQLScalar(fieldName = "enumField", graphQLTypeSimpleName = "TestEnum", javaClass = TestEnum.class)
+	public TestEnum enumField;
+
+	@GraphQLScalar(fieldName = "intField", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	public Integer intField;
+
 	public String theProperty;
 
 	public String __typename;
 
-	public void setAliasParsedValue(String key, Object value) {
-		aliasParsedValues.put(key, value);
-	}
-
-	public void setAliasTreeNodeValue(String key, TreeNode value) {
-		aliasTreeNodeValues.put(key, value);
-	}
-
-	public String get__typename() {
-		return __typename;
-	}
-
-	public void set__typename(String __typename) {
-		this.__typename = __typename;
-	}
-
-	public String getTheProperty() {
-		return theProperty;
-	}
-
-	public void setTheProperty(String theProperty) {
-		this.theProperty = theProperty;
+	public void setAliasValue(String key, Object value) {
+		aliasValues.put(key, value);
 	}
 
 	/**
@@ -64,38 +57,11 @@ public class GraphQLObjectMapperTestClass {
 	 * @throws GraphQLRequestExecutionException
 	 *             If the value can not be parsed
 	 */
-	public Object getValue(String alias) throws GraphQLRequestExecutionException {
-		Object value = aliasParsedValues.get(alias);
+	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
+		Object value = aliasValues.get(alias);
 		if (value instanceof GraphQLRequestExecutionException)
 			throw (GraphQLRequestExecutionException) value;
 		else
 			return value;
 	}
-
-	/**
-	 * Retrieves the custom scalar value for the given alias, based on the provided custom scalar class.
-	 * 
-	 * @param property
-	 * @param customScalar
-	 * @return This method returns an instance of customScalar for a <I>CustomScalar</I> GraphQL type, a
-	 *         List<customScalar> for a <I>[CustomScalar]</I> GraphQL type, a List<List<customScalar>> for a
-	 *         <I>[[CustomScalar]]</I> GraphQL type...
-	 */
-	public Object getCustomScalarValue(String property, GraphQLScalarType customScalar) {
-		return customScalar.getCoercing().parseValue(aliasParsedValues.get(property));
-	}
-
-	/**
-	 * Retrieves the enum value for the given alias, based on the provided enum class.
-	 * 
-	 * @param <T>
-	 * @param property
-	 * @param enumClass
-	 * @return This method returns an instance of enumClass for a <I>Enum</I> GraphQL type, a List<enumClass> for a
-	 *         <I>[Enum]</I> GraphQL type, a List<List<enumClass>> for a <I>[[Enum]]</I> GraphQL type...
-	 */
-	public <T extends Enum<T>> Object getEnumValue(String property, Class<T> enumClass) {
-		return Enum.valueOf(enumClass, (String) aliasParsedValues.get(property));
-	}
-
 }

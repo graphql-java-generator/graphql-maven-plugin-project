@@ -4,254 +4,312 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.graphql_java_generator.client.GraphQLObjectMapperTestClass.TestEnum;
-import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
+import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases;
+import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCasesWithIdSubtype;
+import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
+import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 class GraphQLObjectMapperTest {
 
-	GraphQLObjectMapper objectMapper;
-
-	@BeforeEach
-	void beforeEach() {
-		objectMapper = new GraphQLObjectMapper();
-		objectMapper.initObjectMapper();
-		objectMapper.graphQLObjectsPackage = this.getClass().getPackage().getName();
-	}
-
 	@Test
 	void testBoolean() throws JsonMappingException, JsonProcessingException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(), null);
+
 		// Go, go, go
 		GraphQLObjectMapperTestClass test = objectMapper.readValue(
 				"{\"boolTrue\":true, \"boolFalse\":false, \"__typename\":\"GraphQLObjectMapperTestClass\"}",
 				GraphQLObjectMapperTestClass.class);
 
 		// Verification
-		assertEquals(2, test.aliasParsedValues.keySet().size());
-		assertTrue((Boolean) test.aliasParsedValues.get("boolTrue"));
-		assertFalse((Boolean) test.aliasParsedValues.get("boolFalse"));
+		assertEquals(2, test.aliasValues.keySet().size());
+		assertTrue((Boolean) test.aliasValues.get("boolTrue"));
+		assertFalse((Boolean) test.aliasValues.get("boolFalse"));
 	}
 
 	@Test
-	void testCustomScalar() throws JsonMappingException, JsonProcessingException {
+	void testCustomScalar()
+			throws JsonMappingException, JsonProcessingException, NoSuchFieldException, SecurityException {
 		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
+				getAliasFields(GraphQLObjectMapperTestClass.class, "dateAlias", "date"));
+		//
 		Date date = new Calendar.Builder().setDate(2021, 5 - 1, 9).build().getTime();
 
 		// Go, go, go
 		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"date\":\"2021-05-09\", \"__typename\":\"GraphQLObjectMapperTestClass\"}",
+				"{\"dateAlias\":\"2021-05-09\", \"__typename\":\"GraphQLObjectMapperTestClass\"}",
 				GraphQLObjectMapperTestClass.class);
 
 		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertEquals("2021-05-09", test.aliasParsedValues.get("date"), "The date is a regular json String");
-		assertEquals(date, test.getCustomScalarValue("date", GraphQLScalarTypeDate.Date));
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertEquals(date, test.aliasValues.get("dateAlias"), "The date is a regular json String");
 	}
 
 	@Test
-	void testEnum() throws JsonMappingException, JsonProcessingException {
-		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"enum\":\"VALUE2\", \"__typename\":\"GraphQLObjectMapperTestClass\"}",
-				GraphQLObjectMapperTestClass.class);
-
-		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertEquals(TestEnum.VALUE2, test.getEnumValue("enum", TestEnum.class));
-	}
-
-	@Test
-	void testFloat() throws JsonMappingException, JsonProcessingException {
-		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"double\":123.1, \"__typename\":\"GraphQLObjectMapperTestClass\"}",
-				GraphQLObjectMapperTestClass.class);
-
-		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertEquals(123.1, test.aliasParsedValues.get("double"));
-	}
-
-	@Test
-	void testInt() throws JsonMappingException, JsonProcessingException {
-		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"int\":666, \"__typename\":\"GraphQLObjectMapperTestClass\"}", GraphQLObjectMapperTestClass.class);
-
-		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertEquals(666, test.aliasParsedValues.get("int"));
-	}
-
-	@Test
-	void testListEmpty() throws JsonMappingException, JsonProcessingException {
-		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"list\":[], \"__typename\":\"GraphQLObjectMapperTestClass\"}", GraphQLObjectMapperTestClass.class);
-
-		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("list") instanceof List);
-		assertEquals(0, ((List<?>) test.aliasParsedValues.get("list")).size());
-	}
-
-	@Test
-	void testListOneString() throws JsonMappingException, JsonProcessingException {
-		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"list\":[\"my str\"], \"__typename\":\"GraphQLObjectMapperTestClass\"}",
-				GraphQLObjectMapperTestClass.class);
-
-		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("list") instanceof List);
-		assertEquals(1, ((List<?>) test.aliasParsedValues.get("list")).size());
-		assertTrue(((List<?>) test.aliasParsedValues.get("list")).get(0) instanceof String);
-		assertEquals("my str", ((List<?>) test.aliasParsedValues.get("list")).get(0));
-	}
-
-	@Test
-	void testListOneObject() throws JsonMappingException, JsonProcessingException {
-		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(""//
-				+ "{"//
-				+ "\"list\":[{\"theProperty\":\"the str value\", \"__typename\":\"GraphQLObjectMapperTestClass\"}], "
-				+ "\"__typename\":\"GraphQLObjectMapperTestClass\""//
-				+ "}", GraphQLObjectMapperTestClass.class);
-
-		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("list") instanceof List);
-		assertEquals(1, ((List<?>) test.aliasParsedValues.get("list")).size());
-		assertTrue(((List<?>) test.aliasParsedValues.get("list")).get(0) instanceof GraphQLObjectMapperTestClass);
-		GraphQLObjectMapperTestClass verif = (GraphQLObjectMapperTestClass) ((List<?>) test.aliasParsedValues
-				.get("list")).get(0);
-		assertEquals("the str value", verif.theProperty);
-		assertEquals("GraphQLObjectMapperTestClass", verif.__typename);
-	}
-
-	@Test
-	void testListTwoEnums() throws JsonMappingException, JsonProcessingException {
-		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(""//
-				+ "{"//
-				+ "\"list\":[\"VALUE1\", \"VALUE3\"], " + "\"__typename\":\"GraphQLObjectMapperTestClass\""//
-				+ "}", GraphQLObjectMapperTestClass.class);
-
-		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("list") instanceof List);
-		assertEquals(2, ((List<?>) test.aliasParsedValues.get("list")).size());
-		assertEquals(TestEnum.VALUE1, ((List<?>) test.getEnumValue("list", TestEnum.class)).get(0));
-		assertEquals(TestEnum.VALUE3, ((List<?>) test.aliasParsedValues.get("list")).get(1));
-	}
-
-	@Test
-	void testListTwoCustomScalars() throws JsonMappingException, JsonProcessingException {
+	void testEnum() throws JsonMappingException, JsonProcessingException, NoSuchFieldException,
+			GraphQLRequestExecutionException {
 		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
+				getAliasFields(GraphQLObjectMapperTestClass.class, "enumAlias", "enumField"));
+
+		// Go, go, go
+		GraphQLObjectMapperTestClass test = objectMapper.readValue(
+				"{\"enumAlias\":\"VALUE2\", \"__typename\":\"GraphQLObjectMapperTestClass\"}",
+				GraphQLObjectMapperTestClass.class);
+
+		// Verification
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertEquals(TestEnum.VALUE2, test.getAliasValue("enumAlias"));
+	}
+
+	@Test
+	void testFloat() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
+				getAliasFields(GraphQLObjectMapperTestClass.class, "doubleAlias", "doubleField"));
+
+		// Go, go, go
+		GraphQLObjectMapperTestClass test = objectMapper.readValue(
+				"{\"doubleAlias\":123.1, \"__typename\":\"GraphQLObjectMapperTestClass\"}",
+				GraphQLObjectMapperTestClass.class);
+
+		// Verification
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertEquals(123.1, test.aliasValues.get("doubleAlias"));
+	}
+
+	@Test
+	void testInt() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(getClass().getPackage().getName(),
+				getAliasFields(GraphQLObjectMapperTestClass.class, "intAlias", "intField"));
+
+		// Go, go, go
+		GraphQLObjectMapperTestClass test = objectMapper.readValue(
+				"{\"intAlias\":666, \"__typename\":\"GraphQLObjectMapperTestClass\"}",
+				GraphQLObjectMapperTestClass.class);
+
+		// Verification
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertEquals(666, test.aliasValues.get("intAlias"));
+	}
+
+	@Test
+	void testListEmpty() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"));
+
+		// Go, go, go
+		AllFieldCases test = objectMapper.readValue("{\"commentsAlias\":[], \"__typename\":\"AllFieldCases\"}",
+				AllFieldCases.class);
+
+		// Verification
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("commentsAlias") instanceof List);
+		assertEquals(0, ((List<?>) test.aliasValues.get("commentsAlias")).size());
+	}
+
+	@Test
+	void testListOneString() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"));
+
+		// Go, go, go
+		AllFieldCases test = objectMapper
+				.readValue("{\"commentsAlias\":[\"my str\"], \"__typename\":\"AllFieldCases\"}", AllFieldCases.class);
+
+		// Verification
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("commentsAlias") instanceof List);
+		assertEquals(1, ((List<?>) test.aliasValues.get("commentsAlias")).size());
+		assertTrue(((List<?>) test.aliasValues.get("commentsAlias")).get(0) instanceof String);
+		assertEquals("my str", ((List<?>) test.aliasValues.get("commentsAlias")).get(0));
+	}
+
+	@Test
+	void testListOneObject() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "friendsAlias", "friends"));
+
+		// Go, go, go
+		AllFieldCases test = objectMapper.readValue(""//
+				+ "{"//
+				+ "\"friendsAlias\":[{\"name\":\"the name\", \"__typename\":\"Human\"}], "
+				+ "\"__typename\":\"AllFieldCases\""//
+				+ "}", AllFieldCases.class);
+
+		// Verification
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("friendsAlias") instanceof List);
+		assertEquals(1, ((List<?>) test.aliasValues.get("friendsAlias")).size());
+		assertTrue(((List<?>) test.aliasValues.get("friendsAlias")).get(0) instanceof Human);
+		Human verif = (Human) ((List<?>) test.aliasValues.get("friendsAlias")).get(0);
+		assertEquals("the name", verif.getName());
+	}
+
+	@Test
+	void testListTwoEnums() throws JsonMappingException, JsonProcessingException, NoSuchFieldException,
+			GraphQLRequestExecutionException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(Human.class.getPackage().getName(),
+				getAliasFields(Human.class, "appearsInAlias", "appearsIn"));
+
+		// Go, go, go
+		Human test = objectMapper.readValue(""//
+				+ "{"//
+				+ "\"appearsInAlias\":[\"NEWHOPE\", \"JEDI\"], " + "\"__typename\":\"Human\""//
+				+ "}", Human.class);
+
+		// Verification
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("appearsInAlias") instanceof List);
+		assertEquals(2, ((List<?>) test.aliasValues.get("appearsInAlias")).size());
+		assertEquals(Episode.NEWHOPE, ((List<?>) test.getAliasValue("appearsInAlias")).get(0));
+		assertEquals(Episode.JEDI, ((List<?>) test.aliasValues.get("appearsInAlias")).get(1));
+	}
+
+	@Test
+	void testListTwoCustomScalars() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "datesAlias", "dates"));
 		Date date1 = new Calendar.Builder().setDate(2021, 5 - 1, 9).build().getTime();
 		Date date2 = new Calendar.Builder().setDate(2021, 5 - 1, 10).build().getTime();
 
 		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(""//
+		AllFieldCases test = objectMapper.readValue(""//
 				+ "{"//
-				+ "\"list\":[\"2021-05-09\", \"2021-05-10\"], " + "\"__typename\":\"GraphQLObjectMapperTestClass\""//
-				+ "}", GraphQLObjectMapperTestClass.class);
+				+ "\"datesAlias\":[\"2021-05-09\", \"2021-05-10\"], " + "\"__typename\":\"AllFieldCases\""//
+				+ "}", AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("list") instanceof List);
-		assertEquals(2, ((List<?>) test.aliasParsedValues.get("list")).size());
-		assertEquals(date1, ((List<?>) test.aliasParsedValues.get("list")).get(0));
-		assertEquals(date2, ((List<?>) test.aliasParsedValues.get("list")).get(1));
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("datesAlias") instanceof List);
+		assertEquals(2, ((List<?>) test.aliasValues.get("datesAlias")).size());
+		assertEquals(date1, ((List<?>) test.aliasValues.get("datesAlias")).get(0));
+		assertEquals(date2, ((List<?>) test.aliasValues.get("datesAlias")).get(1));
 	}
 
 	@Test
-	void testListTwoItems() throws JsonMappingException, JsonProcessingException {
+	void testListTwoStrings() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "commentsAlias", "comments"));
+
 		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"list\":[\"my str1\", \"my str2\"], \"__typename\":\"GraphQLObjectMapperTestClass\"}",
-				GraphQLObjectMapperTestClass.class);
+		AllFieldCases test = objectMapper.readValue(
+				"{\"commentsAlias\":[\"my str1\", \"my str2\"], \"__typename\":\"AllFieldCases\"}",
+				AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("list") instanceof List);
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("commentsAlias") instanceof List);
 		//
-		assertEquals(2, ((List<?>) test.aliasParsedValues.get("list")).size());
+		assertEquals(2, ((List<?>) test.aliasValues.get("commentsAlias")).size());
 		//
-		assertTrue(((List<?>) test.aliasParsedValues.get("list")).get(0) instanceof String);
-		assertEquals("my str1", ((List<?>) test.aliasParsedValues.get("list")).get(0));
+		assertTrue(((List<?>) test.aliasValues.get("commentsAlias")).get(0) instanceof String);
+		assertEquals("my str1", ((List<?>) test.aliasValues.get("commentsAlias")).get(0));
 		//
-		assertTrue(((List<?>) test.aliasParsedValues.get("list")).get(1) instanceof String);
-		assertEquals("my str2", ((List<?>) test.aliasParsedValues.get("list")).get(1));
+		assertTrue(((List<?>) test.aliasValues.get("commentsAlias")).get(1) instanceof String);
+		assertEquals("my str2", ((List<?>) test.aliasValues.get("commentsAlias")).get(1));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void testListList() throws JsonMappingException, JsonProcessingException {
+	void testListListList() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "matrixAlias", "matrix"));
+
 		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"list\":[[\"my str1\", \"my str2\"],[],[\"my str3\"]], \"__typename\":\"GraphQLObjectMapperTestClass\"}",
-				GraphQLObjectMapperTestClass.class);
+		AllFieldCases test = objectMapper.readValue(
+				"{\"matrixAlias\":[[11.11, 222.222],[],[3333.3333]], \"__typename\":\"AllFieldCases\"}",
+				AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("list") instanceof List);
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("matrixAlias") instanceof List);
+		List<?> mainList = (List<?>) test.aliasValues.get("matrixAlias");
 		//
-		assertEquals(3, ((List<?>) test.aliasParsedValues.get("list")).size(), "3 sublists");
+		assertEquals(3, mainList.size(), "3 subsublists");
 		//
-		List<String> list = ((List<List<String>>) test.aliasParsedValues.get("list")).get(0);
+		List<Double> list = (List<Double>) mainList.get(0);
 		assertEquals(2, list.size());
-		assertEquals("my str1", list.get(0));
-		assertEquals("my str2", list.get(1));
+		assertEquals(11.11, list.get(0));
+		assertEquals(222.222, list.get(1));
 		//
-		list = ((List<List<String>>) test.aliasParsedValues.get("list")).get(1);
+		list = (List<Double>) mainList.get(1);
 		assertEquals(0, list.size());
 		//
-		list = ((List<List<String>>) test.aliasParsedValues.get("list")).get(2);
+		list = (List<Double>) mainList.get(2);
 		assertEquals(1, list.size());
-		assertEquals("my str3", list.get(0));
+		assertEquals(3333.3333, list.get(0));
 	}
 
 	@Test
-	void testObject() throws JsonMappingException, JsonProcessingException {
+	void testObject() throws JsonMappingException, JsonProcessingException, NoSuchFieldException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "oneWithIdSubTypeAlias", "oneWithIdSubType"));
+
 		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(""//
+		AllFieldCases test = objectMapper.readValue(""//
 				+ "{"//
-				+ "  \"theProperty\":\"the root str value\", "//
-				+ "  \"anObject\": {\"theProperty\":\"the alias's str value\", \"__typename\":\"GraphQLObjectMapperTestClass\"},"
-				+ "  \"__typename\":\"GraphQLObjectMapperTestClass\" " //
-				+ "}", GraphQLObjectMapperTestClass.class);
+				+ "  \"forname\":\"the root str value\", "//
+				+ "  \"oneWithIdSubTypeAlias\": {\"name\":\"the alias's str value\", \"__typename\":\"AllFieldCasesWithIdSubtype\"},"
+				+ "  \"__typename\":\"AllFieldCases\" " //
+				+ "}", AllFieldCases.class);
 
 		// Verification
-		assertEquals("the root str value", test.theProperty);
-		assertEquals("GraphQLObjectMapperTestClass", test.__typename);
+		assertEquals("the root str value", test.getForname());
 
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertTrue(test.aliasParsedValues.get("anObject") instanceof GraphQLObjectMapperTestClass);
-		GraphQLObjectMapperTestClass verif = (GraphQLObjectMapperTestClass) test.aliasParsedValues.get("anObject");
-		assertEquals("the alias's str value", verif.theProperty);
-		assertEquals("GraphQLObjectMapperTestClass", verif.__typename);
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertTrue(test.aliasValues.get("oneWithIdSubTypeAlias") instanceof AllFieldCasesWithIdSubtype);
+		AllFieldCasesWithIdSubtype verif = (AllFieldCasesWithIdSubtype) test.aliasValues.get("oneWithIdSubTypeAlias");
+		assertEquals("the alias's str value", verif.getName());
 	}
 
 	@Test
-	void testString() throws JsonMappingException, JsonProcessingException {
+	void testString() throws JsonMappingException, JsonProcessingException, NoSuchFieldException,
+			GraphQLRequestExecutionException {
+		// Preparation
+		GraphQLObjectMapper objectMapper = new GraphQLObjectMapper(AllFieldCases.class.getPackage().getName(),
+				getAliasFields(AllFieldCases.class, "nameAlias", "name"));
+
 		// Go, go, go
-		GraphQLObjectMapperTestClass test = objectMapper.readValue(
-				"{\"str\":\"a String\", \"__typename\":\"GraphQLObjectMapperTestClass\"}",
-				GraphQLObjectMapperTestClass.class);
+		AllFieldCases test = objectMapper.readValue("{\"nameAlias\":\"a String\", \"__typename\":\"AllFieldCases\"}",
+				AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasParsedValues.keySet().size());
-		assertEquals("a String", test.aliasParsedValues.get("str"));
+		assertEquals(1, test.aliasValues.keySet().size());
+		assertEquals("a String", test.aliasValues.get("nameAlias"));
+		assertEquals("a String", test.getAliasValue("nameAlias"));
 	}
 
+	private Map<Class<?>, Map<String, Field>> getAliasFields(Class<?> clazz, String aliasName, String fieldName)
+			throws NoSuchFieldException {
+		Map<String, Field> fields = new HashMap<>();
+		fields.put(aliasName, clazz.getDeclaredField(fieldName));
+		//
+		Map<Class<?>, Map<String, Field>> aliasFields = new HashMap<>();
+		aliasFields.put(clazz, fields);
+		return aliasFields;
+	}
 }

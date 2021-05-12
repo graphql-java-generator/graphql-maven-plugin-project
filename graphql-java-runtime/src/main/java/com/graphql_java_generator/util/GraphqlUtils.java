@@ -16,18 +16,12 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.customscalars.CustomScalar;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.language.ArrayValue;
@@ -49,9 +43,6 @@ public class GraphqlUtils {
 
 	/** This singleton is usable in default method, within interfaces */
 	public static GraphqlUtils graphqlUtils = new GraphqlUtils();
-
-	@Autowired(required = false) // Required only for the client generated code
-	public GraphQLObjectMapper objectMapper;
 
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 
@@ -974,38 +965,6 @@ public class GraphqlUtils {
 			return sb.toString();
 		} else {
 			throw new RuntimeException("Value of type " + value.getClass().getName() + " is not managed");
-		}
-	}
-
-	/**
-	 * Parse a TreeNode, and return it as a value, according to the given classes
-	 * 
-	 * @param value
-	 *            The value to parse
-	 * @param clazz
-	 *            The POJO class that maps the GraphQL type, whether or not it's in an array. For instance String.class
-	 *            for String, [String], [[String]]...
-	 * @return The parsed value. That is, according to the above sample: a String, a List<String> or a
-	 *         List<List<String>>
-	 * @throws GraphQLRequestExecutionException
-	 *             When an error occurs during deserialization
-	 */
-	public Object getAliasValue(TreeNode value, Class<?> clazz) throws GraphQLRequestExecutionException {
-		if (clazz == null) {
-			throw new NullPointerException("The 'clazz' parameter may not be null");
-		} else if (value instanceof ArrayNode) {
-			// value is a list. Let's do a recursive call for each of its item.
-			List<Object> list = new ArrayList<>(((ArrayNode) value).size());
-			for (TreeNode o : (ArrayNode) value) {
-				list.add(getAliasValue(o, clazz));
-			}
-			return list;
-		} else {
-			try {
-				return objectMapper.treeToValue(value, clazz);
-			} catch (JsonProcessingException e) {
-				throw new GraphQLRequestExecutionException(e.getMessage(), e);
-			}
 		}
 	}
 
