@@ -243,19 +243,19 @@ public class GraphqlUtils {
 				else if (graphQLScalar != null)
 					return graphQLScalar.javaClass();
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-							+ "> in the class '" + owningClass.getName()
+					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+							+ "' in the class '" + owningClass.getName()
 							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
 			} catch (NoSuchFieldException e) {
 				// Hum, the field doesn't exist.
 				if (!returnIsMandatory)
 					return null;
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-							+ "> in the class '" + owningClass.getName() + "'", e);
+					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+							+ "' in the class '" + owningClass.getName() + "'", e);
 			} catch (SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-						+ "> in the class '" + owningClass.getName() + "'", e);
+				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+						+ "' in the class '" + owningClass.getName() + "'", e);
 			}
 		}
 	}

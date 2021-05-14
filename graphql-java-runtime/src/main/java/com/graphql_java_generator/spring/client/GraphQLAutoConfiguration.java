@@ -36,6 +36,7 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class GraphQLAutoConfiguration {
 
+	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(GraphQLAutoConfiguration.class);
 
 	@Value(value = "${graphql.endpoint.url}")

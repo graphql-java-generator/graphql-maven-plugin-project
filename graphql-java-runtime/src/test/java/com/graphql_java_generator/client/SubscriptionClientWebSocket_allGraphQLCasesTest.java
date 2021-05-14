@@ -59,7 +59,7 @@ class SubscriptionClientWebSocket_allGraphQLCasesTest {
 		String subscriptionRequest = null;// No request execution in this test
 		subscriptionClientWebSocket = new SubscriptionClientWebSocket<TheSubscriptionType, Human>(subscriptionRequest,
 				"subscribeNewHumanForEpisode", subscriptionCallback, TheSubscriptionType.class, Human.class,
-				new GraphQLObjectMapper(Human.class.getPackage().getName()));
+				new GraphQLObjectMapper(Human.class.getPackage().getName(), null));
 
 		// Preparation
 		assertEquals(0, subscriptionCallback.messages.size(), "we start with no message");

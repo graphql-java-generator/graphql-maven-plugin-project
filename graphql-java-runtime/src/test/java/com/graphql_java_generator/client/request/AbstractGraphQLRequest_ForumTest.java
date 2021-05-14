@@ -42,6 +42,7 @@ class AbstractGraphQLRequest_ForumTest {
 		String queryResponseDef = "{id name publiclyAvailable "
 				+ " topics{id date author{id name email type} nbPosts posts(memberName: \"Me!\", since: ?sinceParam) {date author{name email type}}}}";
 
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getBoardsResponseBuilder()
 				.withQueryResponseDef(queryResponseDef).build();
 
@@ -85,6 +86,7 @@ class AbstractGraphQLRequest_ForumTest {
 		// Go, go, go
 		String queryResponseDef = "{id name publiclyAvailable topics{id date author{id name email type} nbPosts "
 				+ "posts(memberName: ?memberName, since: &sinceParam) {date author{name email type}}}}";
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getBoardsResponseBuilder()
 				.withQueryResponseDef(queryResponseDef).build();
 
@@ -151,6 +153,7 @@ class AbstractGraphQLRequest_ForumTest {
 	void testBuild_NoFields() throws GraphQLRequestPreparationException {
 		// Go, go, go
 		String queryResponseDef = "{topics}";
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getBoardsResponseBuilder()
 				.withQueryResponseDef(queryResponseDef).build();
 

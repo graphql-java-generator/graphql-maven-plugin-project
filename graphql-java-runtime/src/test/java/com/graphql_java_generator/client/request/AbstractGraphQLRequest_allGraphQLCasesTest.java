@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +17,11 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationType;
+import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeExecutor;
+import com.graphql_java_generator.client.domain.allGraphQLCases.Droid;
 import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
 import com.graphql_java_generator.client.domain.allGraphQLCases.GraphQLRequest;
+import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
 import com.graphql_java_generator.client.domain.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.client.domain.allGraphQLCases._extends;
@@ -55,6 +59,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				.withQueryResponseDef("{case(test: DOUBLE)}").build();
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals(1, graphQLRequest.query.fields.size());
 		QueryField aBreak = graphQLRequest.query.fields.get(0);
 		assertEquals("aBreak", aBreak.name);
@@ -85,6 +90,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				.withQueryResponseDef("{id name appearsIn friends {id name}}}").build();
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
@@ -94,7 +100,25 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void testBuild_Partial_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void testBuild_Partial_createHuman_Alias_Errors()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		AnotherMutationTypeExecutor mutationType = new AnotherMutationType("http://localhost/graphql");
+		GraphQLRequestPreparationException e;
+
+		e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> mutationType.getCreateHumanGraphQLRequest("{alias:id alias:name}"));
+		assertTrue(e.getMessage().contains(" 'alias' "));
+
+		e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> mutationType.getCreateHumanGraphQLRequest("{aliasId:id friends {aliasId:name}}}"));
+		assertTrue(e.getMessage().contains(" 'aliasId' "));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_Partial_createHuman_Alias()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 		params = new HashMap<>();
@@ -104,13 +128,33 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Go, go, go
 		@SuppressWarnings("deprecation")
-		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder()
-				.withQueryResponseDef("{id name appearsIn friends {id name}}}").build();
+		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder().withQueryResponseDef(
+				"{aliasId : id aliasName : name aliasAppearsIn : appearsIn friendsAlias:friends {aliasId:id aliasName2:name}}}")
+				.build();
 
 		// Verification
+		assertEquals(2, graphQLRequest.aliasFields.size(), "Aliases are defined for Human and Character");
+		//
+		Iterator<Class<?>> it = graphQLRequest.aliasFields.keySet().iterator();
+		Class<?> droidClass = it.next();
+		Class<?> humanClass = it.next();
+		//
+		assertEquals(Human.class, humanClass);
+		assertEquals(5, graphQLRequest.aliasFields.get(humanClass).size());
+		assertEquals("id", graphQLRequest.aliasFields.get(humanClass).get("aliasId").getName());
+		assertEquals("name", graphQLRequest.aliasFields.get(humanClass).get("aliasName").getName());
+		assertEquals("name", graphQLRequest.aliasFields.get(humanClass).get("aliasName2").getName());
+		assertEquals("appearsIn", graphQLRequest.aliasFields.get(humanClass).get("aliasAppearsIn").getName());
+		assertEquals("friends", graphQLRequest.aliasFields.get(humanClass).get("friendsAlias").getName());
+		//
+		assertEquals(Droid.class, droidClass);
+		assertEquals(2, graphQLRequest.aliasFields.get(droidClass).size());
+		assertEquals("id", graphQLRequest.aliasFields.get(droidClass).get("aliasId").getName());
+		assertEquals("name", graphQLRequest.aliasFields.get(droidClass).get("aliasName2").getName());
+		//
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
-				+ "{id name appearsIn friends{id name __typename} __typename}}" //
+				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn friendsAlias:friends{aliasId:id aliasName2:name __typename} __typename}}" //
 				+ "\",\"variables\":null,\"operationName\":null}", //
 				graphQLRequest.buildRequest(params));
 	}
@@ -130,6 +174,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		).build();
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
@@ -149,6 +194,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		);
 
 		// Verification
+		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
@@ -173,6 +219,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
 
 		// Verification
+		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		assertEquals("{\"query\":\"mutation mut1" //
 				+ "{createHuman(human:{name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]})"
 				+ " @testDirective(value:\\\"the directive value\\\",anotherValue:\\\"the other directive value\\\","
