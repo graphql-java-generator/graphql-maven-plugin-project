@@ -7,7 +7,6 @@ import javax.ws.rs.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
@@ -84,12 +83,10 @@ public class GraphQLConfiguration {
 	 *            the http URI for the GraphQL endpoint
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 * @param objectMapper
-	 *            {@link ObjectMapper} com.fasterxml.jackson.databind.ObjectMapper to support configurable mapping
 	 */
 	@Deprecated
-	public GraphQLConfiguration(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
-		this.executor = new QueryExecutorImpl(graphqlEndpoint, client, objectMapper);
+	public GraphQLConfiguration(String graphqlEndpoint, Client client) {
+		this.executor = new QueryExecutorImpl(graphqlEndpoint, client);
 	}
 
 	/** Retrieves the {@link QueryExecutor} for this GraphQL configuration */

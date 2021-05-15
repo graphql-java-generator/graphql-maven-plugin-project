@@ -56,6 +56,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		params.put("anIntParam", 666);// This
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals(
 				"{\"query\":\"mutation crPst($post:PostInput!,$anIntParam:Int){createPost(post:$post){id date author{id __typename} __typename}}\",\"variables\":"//
 						+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
@@ -91,6 +92,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		params.put("anEnum", MemberType.ADMIN);
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals(
 				"{\"query\":\"query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType){boards{topics{id __typename} __typename}}\",\"variables\":"//
 						+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"

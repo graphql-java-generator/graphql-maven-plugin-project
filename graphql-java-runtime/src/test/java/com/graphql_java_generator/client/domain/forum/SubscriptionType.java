@@ -139,8 +139,8 @@ public class SubscriptionType extends SubscriptionTypeExecutor
 	}
 
 	/** {@inheritDoc} */
-	public SubscriptionType(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
-		super(graphqlEndpoint, client, objectMapper);
+	public SubscriptionType(String graphqlEndpoint, Client client) {
+		super(graphqlEndpoint, client);
 	}
 
 	private ObjectMapper getMapper() {

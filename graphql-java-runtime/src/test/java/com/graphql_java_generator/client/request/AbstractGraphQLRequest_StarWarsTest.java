@@ -28,6 +28,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	Builder humanResponseDefBuilder;
 	Map<String, Object> paramsHuman;
 
+	@SuppressWarnings("deprecation")
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
 		queryType = new QueryType("http://localhost/graphql");
@@ -43,6 +44,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 				"{human(id:\"00000000-0000-0000-0000-000000000031\") {name}}");
 
 		// Verification
+		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		assertEquals("query", graphQLRequest.getQuery().name);
 		assertEquals(1, graphQLRequest.getQuery().fields.size(), "nb queries");
 
@@ -111,11 +113,11 @@ class AbstractGraphQLRequest_StarWarsTest {
 		// Go, go go
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRequest("{human(id:\"00000000-0000-0000-0000-000000000031\") {id name name}}"));
-		assertTrue(e.getMessage().contains("<name>"));
+		assertTrue(e.getMessage().contains("'name'"));
 
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
-				"{human(id:\"00000000-0000-0000-0000-000000000031\") {id name validAlias:name}}"));
-		assertTrue(e.getMessage().contains("<name>"));
+		e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRequest("{human(id:\"00000000-0000-0000-0000-000000000031\") {id name name:name}}"));
+		assertTrue(e.getMessage().contains("'name'"));
 	}
 
 	@Test
@@ -125,11 +127,11 @@ class AbstractGraphQLRequest_StarWarsTest {
 		// Go, go go
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{human(id:\"00000000-0000-0000-0000-000000000031\") {id name itDoesntExist}}"));
-		assertTrue(e.getMessage().contains("<itDoesntExist>"));
+		assertTrue(e.getMessage().contains("'itDoesntExist'"));
 
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{human(id:\"00000000-0000-0000-0000-000000000031\") {id name validAlias:itDoesntExist}}"));
-		assertTrue(e.getMessage().contains("<itDoesntExist>"));
+		assertTrue(e.getMessage().contains("'itDoesntExist'"));
 	}
 
 	@Test
@@ -240,7 +242,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRequest(
 						"{human(id:\"00000000-0000-0000-0000-000000000031\"){friends{name} friends{id}}"));
-		assertTrue(e.getMessage().contains("<friends>"));
+		assertTrue(e.getMessage().contains("'friends'"));
 	}
 
 	@Test
@@ -309,6 +311,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	 * When requesting a non scalar field that is an interface type, without specifying subfields, than all F's scalar
 	 * fields are automatically added
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test_withQueryResponseDef_interface_emptyQuery() throws GraphQLRequestPreparationException {
 
@@ -370,6 +373,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 				graphQLRequest.buildRequest(paramsHuman));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test_withQueryResponseDef_KO() throws GraphQLRequestPreparationException {
 		GraphQLRequestPreparationException e;
@@ -400,19 +404,19 @@ class AbstractGraphQLRequest_StarWarsTest {
 		// Field present two times
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> queryType.getHumanResponseBuilder()
 				.withQueryResponseDef("{id friends{ id nameAlias:name amis : friends{id name} appearsIn} name id } "));
-		assertTrue(e.getMessage().contains("<id>"), e.getMessage());
+		assertTrue(e.getMessage().contains("'id'"), e.getMessage());
 
 		// Wrong field name
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> queryType.getHumanResponseBuilder().withQueryResponseDef(
 						"{id friends{ id nameAlias:name amis : friends{id notAFieldName} appearsIn} name } "));
-		assertTrue(e.getMessage().contains("<notAFieldName>"), e.getMessage());
+		assertTrue(e.getMessage().contains("'notAFieldName'"), e.getMessage());
 
 		// Bad alias name
 		e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> queryType.getHumanResponseBuilder().withQueryResponseDef(
 						"{id friends{ id name*Alias:name amis : friends{id notAFieldName} appearsIn} name } "));
-		assertTrue(e.getMessage().contains("<name*Alias>"), e.getMessage());
+		assertTrue(e.getMessage().contains("'name*Alias'"), e.getMessage());
 
 		// We're not ready yet for field parameters
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -425,6 +429,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	@Test
 	void testBuild_NoFields() throws GraphQLRequestPreparationException {
 		// Go, go, go
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getHumanResponseBuilder().build();
 
 		// Verification

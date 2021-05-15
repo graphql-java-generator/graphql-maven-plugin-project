@@ -112,6 +112,8 @@ input AllFieldCasesInput @testDirective(value:"on Input Type") {
     name: String!
     forname: String
     age: Long!
+    date: Date
+    dates: [Date]!
     nbComments: Int
     comments: [String]
     booleans: [Boolean!]

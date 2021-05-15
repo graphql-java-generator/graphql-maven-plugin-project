@@ -17,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
+
 import graphql.language.Argument;
 import graphql.language.Directive;
 import graphql.language.Field;
@@ -88,8 +91,8 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 	@Override
 	public AllFieldCases createAllFieldCases(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCasesInput input) {
-		// TODO Auto-generated method stub
-		return null;
+		Mapper mapper = DozerBeanMapperBuilder.buildDefault();
+		return mapper.map(input, AllFieldCases.class);
 	}
 
 	private Directive getTestDirective(List<Directive> directives) {

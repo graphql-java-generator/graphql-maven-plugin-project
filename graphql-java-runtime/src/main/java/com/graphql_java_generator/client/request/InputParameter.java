@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import com.graphql_java_generator.annotation.GraphQLIgnore;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
@@ -805,8 +806,8 @@ public class InputParameter {
 		String separator = "";
 
 		for (Field field : object.getClass().getDeclaredFields()) {
-			// Synthetic fields must be ignored
-			if (!field.isSynthetic()) {
+			// Synthetic and ignored fields must be ignored
+			if (!field.isSynthetic() && field.getAnnotation(GraphQLIgnore.class) == null) {
 				Object val = graphqlUtils.invokeGetter(object, field.getName());
 
 				if (val != null) {

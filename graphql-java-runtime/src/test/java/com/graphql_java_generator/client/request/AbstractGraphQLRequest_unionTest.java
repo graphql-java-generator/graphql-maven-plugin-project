@@ -33,6 +33,7 @@ class AbstractGraphQLRequest_unionTest {
 		MyQueryType queryType = new MyQueryType("http://localhost");
 
 		// No fragment for Human. But deserialization needs always the __typename to instanciate the proper class
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
 				+ "    ... on Droid { id primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
@@ -41,6 +42,7 @@ class AbstractGraphQLRequest_unionTest {
 		);
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\""//
 				+ "query{unionTest{" //
 				+ "... on AnyCharacter{__typename} " //

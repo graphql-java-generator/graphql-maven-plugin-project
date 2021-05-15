@@ -1,6 +1,8 @@
 package com.graphql_java_generator.client.request;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -8,6 +10,8 @@ import java.util.StringTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLInterfaceType;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -151,9 +155,13 @@ public class QueryField {
 	 *            For instance, when this method is called with the {@link StringTokenizer} where these characters are
 	 *            still to read: <I>id date author{name email alias} title content}}</I>, the {@link StringTokenizer} is
 	 *            read until and including the first '}' that follows content. Thus, there is still a '}' to read.
+	 * @param aliasFields
+	 *            This maps contains the {@link Field}, that matches each alias, of each GraphQL type. This allows a
+	 *            proper deserialization of each alias value returned in the json response
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public void readTokenizerForResponseDefinition(QueryTokenizer qt) throws GraphQLRequestPreparationException {
+	public void readTokenizerForResponseDefinition(QueryTokenizer qt, Map<Class<?>, Map<String, Field>> aliasFields)
+			throws GraphQLRequestPreparationException {
 		// The field we're reading
 		QueryField currentField = null;
 
@@ -173,8 +181,8 @@ public class QueryField {
 							currentField.owningClazz, currentField.name);
 				} else {
 					throw new GraphQLRequestPreparationException(
-							"The given query has a parentesis '(' not preceded by a field name (error while reading field <"
-									+ name + ">");
+							"The given query has a parentesis '(' not preceded by a field name (error while reading field '"
+									+ name + "'");
 				}
 				break;
 			case "{":
@@ -182,27 +190,27 @@ public class QueryField {
 				// fields
 				if (currentField == null) {
 					throw new GraphQLRequestPreparationException(
-							"The given query has two '{', one after another (error while reading field <" + name
-									+ ">)");
+							"The given query has two '{', one after another (error while reading field '" + name
+									+ "')");
 				} else if (currentField.clazz == null) {
 					throw new GraphQLRequestPreparationException(
 							"Starting reading definition of field '" + currentField.name + "' of class '"
 									+ owningClazz.getName() + "', but the owningClass is not set");
 				} else if (currentField.fields.size() > 0) {
 					throw new GraphQLRequestPreparationException(
-							"The given query contains a '{' not preceded by a fieldname, after field <"
-									+ currentField.name + "> while reading <" + this.name + ">");
+							"The given query contains a '{' not preceded by a fieldname, after field '"
+									+ currentField.name + "' while reading '" + this.name + "'");
 				} else {
 					// Ok, let's read the field for the subobject, for which we just read the name (and potentiel
 					// alias :
-					currentField.readTokenizerForResponseDefinition(qt);
+					currentField.readTokenizerForResponseDefinition(qt, aliasFields);
 					// Let's clear the lastReadField, as we already have read its content.
 					currentField = null;
 				}
 				break;
 			case "...":
 				// We're reading an inline fragment
-				inlineFragments.add(new Fragment(qt, packageName, true, clazz));
+				inlineFragments.add(new Fragment(qt, aliasFields, packageName, true, clazz));
 				break;
 			case "}":
 				// We're finished our current object : let's get out of this method
@@ -218,18 +226,20 @@ public class QueryField {
 					if (qt.checkNextToken(":")) {
 						// The next token is ":", so we've found an alias (not a name field)
 						String alias = token;
-						token = qt.nextToken(); // It's the ":". We ignore it
+						token = qt.nextToken(); // It's the ":" that we've already checked. Let's ignore it.
 						token = qt.nextToken();
 						currentField = new QueryField(clazz, token, alias);
+						//
+						addAlias(clazz, alias, token, aliasFields);
 					} else {
 						currentField = new QueryField(clazz, token);
 					}
 
 					// Does a field of this name already exist ?
 					// (if this name is an alias, we'll read the real name later, and we'll repeat the check later)
-					if (getField(currentField.name) != null) {
-						throw new GraphQLRequestPreparationException("The field <" + currentField.name
-								+ "> exists twice in the field list for the " + owningClazz.getSimpleName() + " type");
+					if (getField(currentField.alias, currentField.name) != null) {
+						throw new GraphQLRequestPreparationException("The field '" + currentField.name
+								+ "' exists twice in the field list for the " + clazz.getSimpleName() + " type");
 					}
 
 					fields.add(currentField);
@@ -238,8 +248,72 @@ public class QueryField {
 		} // while
 
 		// Oups, we should not arrive here:
-		throw new GraphQLRequestPreparationException("The field <" + name
-				+ "> has a non finished list of fields (it lacks the finishing '}') while reading <" + this.name + ">");
+		throw new GraphQLRequestPreparationException("The field '" + name
+				+ "' has a non finished list of fields (it lacks the finishing '}') while reading '" + this.name + "'");
+	}
+
+	/**
+	 * Adds an alias definition into the list of all aliases. This method also checks that there is no alias of the same
+	 * name for the same class.<BR/>
+	 * If the current class is an interface, then the alias is set into each of its implementing types and interfaces.
+	 * 
+	 * @param clazz
+	 * @param aliasName
+	 * @param fieldName
+	 * @param aliasFields
+	 * @throws GraphQLRequestPreparationException
+	 */
+	void addAlias(Class<?> clazz, String aliasName, String fieldName, Map<Class<?>, Map<String, Field>> aliasFields)
+			throws GraphQLRequestPreparationException {
+		if (aliasFields == null) {
+			throw new NullPointerException("[Internal Error] aliasFields may not be null");
+		}
+		graphqlClientUtils.checkName(aliasName);
+
+		// If the owningClass is an interface, we must iterate for each interface and class that implements it
+		if (clazz.isInterface()) {
+			// The @JsonSubTypes annotations defines all the classes that implement this interface, to allow proper json
+			// deserialization
+			JsonSubTypes jsonSubTypes = clazz.getAnnotation(JsonSubTypes.class);
+			for (Type type : jsonSubTypes.value()) {
+				addAlias(type.value(), aliasName, fieldName, aliasFields);
+			}
+		} else {
+			Field field;
+
+			// aliases is the map for all aliases defined for this class (or any of its interfaces)
+			Map<String, Field> aliases = aliasFields.get(clazz);
+			if (aliases == null) {
+				// It's the first alias for this class
+				aliases = new HashMap<>();
+				aliasFields.put(clazz, aliases);
+			}
+
+			try {
+				field = clazz.getDeclaredField(graphqlUtils.getJavaName(fieldName));
+			} catch (NoSuchFieldException | SecurityException e) {
+				throw new GraphQLRequestPreparationException(
+						e.getClass().getSimpleName() + ": " + e.getMessage() + " (while looking for the field '"
+								+ graphqlUtils.getJavaName(fieldName) + "' of '" + clazz.getName() + "')",
+						e);
+			}
+
+			// Let's check if this alias is already defined
+			if (aliases.get(aliasName) != null) {
+				// This alias is already defined. Let's check that this alias is defined for the same field.
+				if (!field.equals(aliases.get(aliasName))) {
+					throw new GraphQLRequestPreparationException(
+							"For proper Java deserialization, the same alias name may not be used two times for two different fields. But the alias '"
+									+ aliasName + "' is defined for the class '" + clazz.getName()
+									+ "' (or one of its interfaces) for the fields '" + fieldName + "' and '"
+									+ aliases.get(aliasName).getName() + "'");
+				}
+				// Ok, this alias is already defined for this field of this class
+			} else {
+				// This alias is not already defined for this class
+				aliases.put(aliasName, field);
+			}
+		}
 	}
 
 	/**
@@ -420,15 +494,20 @@ public class QueryField {
 	}
 
 	/**
-	 * Returns the subfield for this {@link QueryField} of the given name
+	 * Returns the subfield for this {@link QueryField} of the given alias or name
 	 * 
+	 * @param alias
+	 *            The field's alias to search (optional)
 	 * @param name
-	 *            The field's name to search
-	 * @return The subfield of the given name, or null of this {@link QueryField} contains no field of this name
+	 *            The field's name to search (used only if the provided alias is null)
+	 * @return The subfield of the given alias (or name if the provided alias is null), or null of this
+	 *         {@link QueryField} contains no field of this alias (or name)
 	 */
-	QueryField getField(String name) {
+	QueryField getField(String alias, String name) {
+		String searchedString = (alias != null) ? alias : name;
 		for (QueryField f : fields) {
-			if (f.name.equals(name)) {
+			if ((f.alias != null && f.alias.equals(searchedString))
+					|| (f.alias == null && f.name.equals(searchedString))) {
 				// We found it
 				return f;
 			}

@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.client.request;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,9 @@ public class Fragment {
 	 * 
 	 * @param qt
 	 *            The {@link QueryTokenizer}, that just read the "fragment" keyword, or the "..." for inline fragment
+	 * @param aliasFields
+	 *            This maps contains the {@link Field}, that matches each alias, of each GraphQL type. This allows a
+	 *            proper deserialization of each alias value returned in the json response
 	 * @param packageName
 	 *            The package name is used to load the java class that has been generated for the given fragment's
 	 *            GraphQL type
@@ -45,8 +49,8 @@ public class Fragment {
 	 *            load the proper java class (that represents the proper GraphQL type)
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public Fragment(QueryTokenizer qt, String packageName, boolean inlineFragment, Class<?> clazz)
-			throws GraphQLRequestPreparationException {
+	public Fragment(QueryTokenizer qt, Map<Class<?>, Map<String, Field>> aliasFields, String packageName,
+			boolean inlineFragment, Class<?> clazz) throws GraphQLRequestPreparationException {
 
 		// We expect a string like this: " fragmentName on fragmentTargetType"
 		// Let's read these three tokens
@@ -102,7 +106,7 @@ public class Fragment {
 		}
 
 		content = new QueryField(clazz);
-		content.readTokenizerForResponseDefinition(qt);
+		content.readTokenizerForResponseDefinition(qt, aliasFields);
 	}
 
 	public String getName() {

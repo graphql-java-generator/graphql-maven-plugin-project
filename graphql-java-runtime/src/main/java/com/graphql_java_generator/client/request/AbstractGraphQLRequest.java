@@ -8,14 +8,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -59,6 +62,12 @@ public abstract class AbstractGraphQLRequest {
 
 	/** The mutation, if any */
 	QueryField subscription = null;
+
+	/**
+	 * This maps contains the {@link Field}, that matches each alias, of each GraphQL type. This allows a proper
+	 * deserialization of each alias value returned in the json response
+	 */
+	Map<Class<?>, Map<String, Field>> aliasFields = new HashMap<>();
 
 	/** All the fragments defined for this query */
 	List<Fragment> fragments = new ArrayList<>();
@@ -167,7 +176,7 @@ public abstract class AbstractGraphQLRequest {
 				throw new GraphQLRequestPreparationException(
 						"The Partial GraphQL Request should start by a '{', but it doesn't: " + graphQLRequest);
 			}
-			field.readTokenizerForResponseDefinition(qt);
+			field.readTokenizerForResponseDefinition(qt, aliasFields);
 		}
 
 		// Let's finish the job
@@ -213,7 +222,7 @@ public abstract class AbstractGraphQLRequest {
 
 			switch (token) {
 			case "fragment":
-				fragments.add(new Fragment(qt, packageName, false, null));
+				fragments.add(new Fragment(qt, aliasFields, packageName, false, null));
 				break;
 			case "query":
 			case "mutation":
@@ -235,17 +244,17 @@ public abstract class AbstractGraphQLRequest {
 				case query:
 					query = getQueryContext();// Get the query field from the concrete class
 					query.inputParameters = inputParameters;
-					query.readTokenizerForResponseDefinition(qt);
+					query.readTokenizerForResponseDefinition(qt, aliasFields);
 					break;
 				case mutation:
 					mutation = getMutationContext();// Get the mutation field from the concrete class
 					mutation.inputParameters = inputParameters;
-					mutation.readTokenizerForResponseDefinition(qt);
+					mutation.readTokenizerForResponseDefinition(qt, aliasFields);
 					break;
 				case subscription:
 					subscription = getSubscriptionContext();// Get the subscription field from the concrete class
 					subscription.inputParameters = inputParameters;
-					subscription.readTokenizerForResponseDefinition(qt);
+					subscription.readTokenizerForResponseDefinition(qt, aliasFields);
 					break;
 				default:
 					throw new GraphQLRequestPreparationException("Non managed request type '" + requestType
@@ -639,6 +648,16 @@ public abstract class AbstractGraphQLRequest {
 				.append(",\"operationName\":null}");
 
 		return sb.toString();
+	}
+
+	/**
+	 * This method creates and configures a Jackson {@link ObjectMapper} that is ready to parse the response for this
+	 * GraphQL. The main configuration is the management for the GraphQL aliases.
+	 * 
+	 * @return
+	 */
+	public GraphQLObjectMapper getGraphQLObjectMapper() {
+		return new GraphQLObjectMapper(getGraphQLClassesPackageName(), aliasFields);
 	}
 
 	/**

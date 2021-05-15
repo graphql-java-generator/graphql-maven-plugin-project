@@ -18,6 +18,7 @@ import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
 import com.graphql_java_generator.client.domain.allGraphQLCases.GraphQLRequest;
 import com.graphql_java_generator.client.domain.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
+import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -51,6 +52,7 @@ class AbstractGraphQLRequest_fragmentTest {
 	void testBuild_ThreeGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(""//
 				+ "query{withoutParameters{appearsIn ...fragment1}} " //
 				+ "fragment fragment1 on Character {id appearsIn friends{id ...fragment3 ...fragment2 }}"//
@@ -59,6 +61,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		);
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals(1, graphQLRequest.query.fields.size());
 		QueryField withoutParameters = graphQLRequest.query.fields.get(0);
 		assertEquals("withoutParameters", withoutParameters.name);
@@ -133,6 +136,7 @@ class AbstractGraphQLRequest_fragmentTest {
 
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(""//
 				+ "query{" //
 				+ "  withoutParameters{"//
@@ -147,6 +151,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		);
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals(1, graphQLRequest.query.fields.size());
 		//
 		QueryField withoutParameters = graphQLRequest.query.fields.get(0);
@@ -247,12 +252,48 @@ class AbstractGraphQLRequest_fragmentTest {
 	}
 
 	@Test
+	void testBuild_TwoInlineFragments_AndAliases()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		int i = 0;
+
+		// Go, go, go
+		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor("http://localhost");
+		AbstractGraphQLRequest graphQLRequest = queryType.getGraphQLRequest(""//
+				+ "query{" //
+				+ "  withoutParameters{"//
+				+ "    appearsInAlias  :  appearsIn " //
+				+ "    ...id " //
+				+ "    ... on Character { ...id friendsAlias : friends { ...id }} " //
+				+ "    ... on Droid { primaryFunctionAlias :  primaryFunction ... on Character {nameAlias:name(uppercase: ?uppercaseFalse) friendsAlias:friends {nameAlias:name}}  } " //
+				+ "    ... on Human {  homePlanetAlias :homePlanet ... on Human { ... on Character  { nameAlias:name(uppercase: ?notDefinedBindVariable)}} } " //
+				+ "  } "//
+				+ "} " //
+				+ "fragment id on Character {idAlias : id} "//
+		);
+
+		// Verification
+
+		assertEquals("{\"query\":\""//
+				+ "fragment id on Character{idAlias:id __typename}" //
+				+ "query{" //
+				+ "withoutParameters{appearsInAlias:appearsIn ...id" //
+				+ " ... on Character{friendsAlias:friends{...id} ...id}" //
+				+ " ... on Droid{primaryFunctionAlias:primaryFunction ... on Character{nameAlias:name(uppercase:false) friendsAlias:friends{nameAlias:name __typename} __typename}}" //
+				+ " ... on Human{homePlanetAlias:homePlanet ... on Human{... on Character{nameAlias:name __typename}}}" //
+				+ "}"//
+				+ "}"//
+				+ "\",\"variables\":null,\"operationName\":null}", //
+				graphQLRequest.buildRequest(params));
+	}
+
+	@Test
 	void testBuild_Full_createHuman_withBuilder()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 
 		// Go, go, go
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = mutationType.getResponseBuilder().withQueryResponseDef(//
 				"" //
 						+ "mutation { createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
@@ -261,6 +302,7 @@ class AbstractGraphQLRequest_fragmentTest {
 				.build();
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"" //
 				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
 				+ "mutation{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
@@ -280,6 +322,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		);
 
 		// Verification
+		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		assertEquals("{\"query\":\"" //
 				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
 				+ "mutation{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
@@ -300,11 +343,13 @@ class AbstractGraphQLRequest_fragmentTest {
 		params.put("anotherValue", "the other mutation value");
 
 		// Go, go, go
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder().withQueryResponseDef(
 				"{id name ... on Human {friends {id name} appearsIn @testDirective(value:&value,anotherValue:?anotherValue)}}}")
 				.build();
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name ... on Human{friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
@@ -329,6 +374,7 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ "mutation{createHuman (human : &humanInput ) { id name ...humanFrag @include(if: &expandedInfo)}}");
 
 		// Verification
+		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		assertEquals("{\"query\":\"" //
 				+ "fragment humanFrag on Human{friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}"
 				+ "mutation{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
@@ -350,11 +396,13 @@ class AbstractGraphQLRequest_fragmentTest {
 		params.put("expandedInfo", true);
 
 		// Go, go, go
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder().withQueryResponseDef(
 				"{id name ... on Human @include(if: &expandedInfo) {friends {id name} appearsIn @testDirective(value:&value,anotherValue:?anotherValue)}}}")
 				.build();
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name ... on Human @include(if:true){friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
@@ -375,11 +423,13 @@ class AbstractGraphQLRequest_fragmentTest {
 		params.put("expandedInfo", false);
 
 		// Go, go, go
+		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = mutationType.getCreateHumanResponseBuilder().withQueryResponseDef(
 				"{id name ...  @include(if: &expandedInfo) {friends {id name} appearsIn @testDirective(value:&value,anotherValue:?anotherValue)}}}")
 				.build();
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name ... @include(if:false){friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
@@ -409,17 +459,18 @@ class AbstractGraphQLRequest_fragmentTest {
 		params.put("textToAppendToTheFornameWithoutId", "append3");
 
 		// Go, go, go
-		AbstractGraphQLRequest allFieldCasesRequest = queryType
-				.getAllFieldCasesGraphQLRequest("{ ... on WithID { id } name " //
-						+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
-						+ " age nbComments  comments booleans aliases planets friends {id}" //
-						+ " oneWithIdSubType {id name} "//
-						+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
-						+ " oneWithoutIdSubType(input: ?input) {name}"//
-						+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
-						+ "}");
+		@SuppressWarnings("deprecation")
+		AbstractGraphQLRequest graphQLRequest = queryType.getAllFieldCasesGraphQLRequest("{ ... on WithID { id } name " //
+				+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
+				+ " age nbComments  comments booleans aliases planets friends {id}" //
+				+ " oneWithIdSubType {id name} "//
+				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+				+ " oneWithoutIdSubType(input: ?input) {name}"//
+				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+				+ "}");
 
 		// Verification
+		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"query{allFieldCases" //
 				+ "{name" //
 				+ " forname(uppercase:true,textToAppendToTheForname:\\\"append\\\")"
@@ -432,7 +483,7 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ " ... on WithID{id __typename}" //
 				+ "}}" //
 				+ "\",\"variables\":null,\"operationName\":null}", //
-				allFieldCasesRequest.buildRequest(params));
+				graphQLRequest.buildRequest(params));
 	}
 
 }

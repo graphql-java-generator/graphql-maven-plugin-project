@@ -243,19 +243,19 @@ public class GraphqlUtils {
 				else if (graphQLScalar != null)
 					return graphQLScalar.javaClass();
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-							+ "> in the class '" + owningClass.getName()
+					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+							+ "' in the class '" + owningClass.getName()
 							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
 			} catch (NoSuchFieldException e) {
 				// Hum, the field doesn't exist.
 				if (!returnIsMandatory)
 					return null;
 				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-							+ "> in the class '" + owningClass.getName() + "'", e);
+					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+							+ "' in the class '" + owningClass.getName() + "'", e);
 			} catch (SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field <" + fieldName
-						+ "> in the class '" + owningClass.getName() + "'", e);
+				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
+						+ "' in the class '" + owningClass.getName() + "'", e);
 			}
 		}
 	}
@@ -705,10 +705,10 @@ public class GraphqlUtils {
 	 *            The given node, on which the 'methodName' method is to be called
 	 * @return
 	 */
-	public Object invokeMethod(String methodName, Object object) {
+	public Object invokeMethod(String methodName, Object object, Object... args) {
 		try {
 			Method getType = object.getClass().getDeclaredMethod(methodName);
-			return getType.invoke(object);
+			return getType.invoke(object, args);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
 			throw new RuntimeException("Error when trying to execute '" + methodName + "' on '"

@@ -46,7 +46,7 @@ public class Error {
 
 	private Map<String, JsonNode> extensionsAsMap = null;
 
-	private ObjectMapper mapper = null;
+	private ObjectMapper localObjectMapper = null;
 
 	/**
 	 * Logs this error to the given {@link Logger}
@@ -95,8 +95,7 @@ public class Error {
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
 		if (extensionsAsMap == null) {
-			ObjectMapper mapper = new ObjectMapper();
-			extensionsAsMap = mapper.convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+			extensionsAsMap = getMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
 			});
 		}
 		return extensionsAsMap;
@@ -140,9 +139,9 @@ public class Error {
 	 * @return
 	 */
 	private ObjectMapper getMapper() {
-		if (mapper == null) {
-			mapper = new ObjectMapper();
+		if (localObjectMapper == null) {
+			localObjectMapper = new ObjectMapper();
 		}
-		return mapper;
+		return localObjectMapper;
 	}
 }

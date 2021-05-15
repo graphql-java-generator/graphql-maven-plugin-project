@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
@@ -37,7 +37,7 @@ import reactor.core.scheduler.Schedulers;
  * @since 1.12
  * @author etienne-sf
  */
-// This is not a Spring Bean. It is created by the GraphQLAutoConfiguration
+@Component
 public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */
@@ -52,11 +52,14 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	/**
 	 * If the subscription is on a different endpoint than the main GraphQL endpoint, thant you can define a
 	 * <I>graphqlSubscriptionEndpoint</I> Spring bean, of type String, with this specific URL, for instance
-	 * <I>https://my.serveur.com/graphql/subscription</I>. For instance, Java servers suffer from a limitation which
-	 * prevent to server both GET/POST HTTP verbs and WebSockets on the same URL.<BR/>
+	 * <I>https://my.serveur.com/graphql/subscription</I>. <BR/>
+	 * For instance, Java servers suffer from a limitation which prevent to server both GET/POST HTTP verbs and
+	 * WebSockets on the same URL. This limitation is now under control, for instance in the server version of this
+	 * plugin.<BR/>
 	 * If no bean <I>graphqlSubscriptionEndpoint</I> Spring bean is defined, then the <I>graphqlEndpoint</I> URL is also
 	 * used for subscriptions (which is the standard case).
 	 */
+	@Deprecated
 	String graphqlSubscriptionEndpoint;
 
 	/**
@@ -82,12 +85,6 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
 	 */
 	WebSocketClient webSocketClient;
-
-	/**
-	 * The {@link ObjectMapper} that will read the json response, and map it to the correct java class, generated from
-	 * the GraphQL type defined in the source GraphQL schema
-	 */
-	ObjectMapper objectMapper = new ObjectMapper();
 
 	/**
 	 * This constructor may be called by Spring, once it has build a {@link WebClient} bean, or directly, in non Spring
@@ -171,7 +168,8 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 					.bodyToMono(JsonResponseWrapper.class)//
 					.block();
 
-			return parseDataFromGraphQLServerResponse(objectMapper, responseJson, dataResponseType);
+			return parseDataFromGraphQLServerResponse(graphQLRequest.getGraphQLObjectMapper(), responseJson,
+					dataResponseType);
 
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(
@@ -214,7 +212,8 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 		// Let's create and start the Web Socket
 		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
-				subscriptionName, subscriptionCallback, subscriptionType, messageType);
+				subscriptionName, subscriptionCallback, subscriptionType, messageType,
+				graphQLRequest.getGraphQLObjectMapper());
 		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
 				request);
 		Disposable disposable = webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler)
@@ -253,23 +252,23 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 * @param <T>
 	 * @param response
 	 *            The json response, read from the GraphQL response
-	 * @param valueType
+	 * @param dataResponseType
 	 *            The expected T class
 	 * @return
 	 * @throws JsonProcessingException
 	 * @throws GraphQLRequestExecutionException
 	 */
-	static <T extends GraphQLRequestObject> T parseDataFromGraphQLServerResponse(ObjectMapper objectMapper,
+	static <T extends GraphQLRequestObject> T parseDataFromGraphQLServerResponse(GraphQLObjectMapper objectMapper2,
 			JsonResponseWrapper response, Class<T> valueType)
 			throws GraphQLRequestExecutionException, JsonProcessingException {
 		if (logger.isTraceEnabled()) {
-			logger.trace("Response data: {}", objectMapper.writeValueAsString(response.data));
-			logger.trace("Response errors: {}", objectMapper.writeValueAsString(response.errors));
+			logger.trace("Response data: {}", objectMapper2.writeValueAsString(response.data));
+			logger.trace("Response errors: {}", objectMapper2.writeValueAsString(response.errors));
 		}
 
 		if (response.errors == null || response.errors.size() == 0) {
 			// No errors. Let's parse the data
-			T ret = objectMapper.treeToValue(response.data, valueType);
+			T ret = objectMapper2.treeToValue(response.data, valueType);
 			ret.setExtensions(response.extensions);
 			return ret;
 		} else {
