@@ -36,12 +36,20 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	@Override
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
-		return generator.generateInstanceList(String.class, 10);
+		// If this attribute was set, let's keep its value
+		if (source.getComments() != null)
+			return source.getComments();
+		else
+			return generator.generateInstanceList(String.class, 10);
 	}
 
 	@Override
 	public List<Boolean> booleans(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
-		return generator.generateInstanceList(Boolean.class, 10);
+		// If this attribute was set, let's keep its value
+		if (source.getBooleans() != null)
+			return source.getBooleans();
+		else
+			return generator.generateInstanceList(Boolean.class, 10);
 	}
 
 	@Override
@@ -144,7 +152,11 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	@Override
 	public List<Date> dates(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
-		return generator.generateInstanceList(Date.class, 5);
+		// If this attribute was set, let's keep its value
+		if (source.getDates() != null)
+			return source.getDates();
+		else
+			return generator.generateInstanceList(Date.class, 5);
 	}
 
 	@Override

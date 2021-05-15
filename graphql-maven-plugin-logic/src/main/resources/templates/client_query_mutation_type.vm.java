@@ -16,14 +16,11 @@ package ${packageUtilName};
 #macro(inputParams)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaType} ${inputParameter.javaName}#end#end
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
