@@ -10,10 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.AllFieldCasesWithoutIdSubtype;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
@@ -38,7 +43,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 public class AliasesIT {
 	MyQueryTypeExecutor queryType;
-	AnotherMutationTypeExecutor mutation;
+	AnotherMutationTypeExecutor mutationType;
 
 	ApplicationContext ctx;
 
@@ -49,8 +54,8 @@ public class AliasesIT {
 		// For some tests, we need to execute additional partialQueries
 		queryType = ctx.getBean(MyQueryTypeExecutor.class);
 		assertNotNull(queryType);
-		mutation = ctx.getBean(AnotherMutationTypeExecutor.class);
-		assertNotNull(mutation);
+		mutationType = ctx.getBean(AnotherMutationTypeExecutor.class);
+		assertNotNull(mutationType);
 	}
 
 	/**
@@ -258,4 +263,30 @@ public class AliasesIT {
 		assertEquals(charLevel2.getAliasValue("aliasName2"), charLevel2.getName());
 		assertNull(charLevel2.getAliasValue("aliasFriends"));
 	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		Date date1 = new Calendar.Builder().setDate(2021, 5 - 1, 15).build().getTime();
+		Date date2 = new Calendar.Builder().setDate(2021, 5 - 1, 16).build().getTime();
+		AllFieldCasesInput inputType = AllFieldCasesInput.builder().withId(UUID.randomUUID().toString())
+				.withName("the name").withAge((long) 666).withDate(date1).withDates(Arrays.asList(date1, date2))
+				.build();
+		GraphQLRequest createHuman = mutationType.getGraphQLRequest("mutation {"//
+				+ " mutationAlias : createAllFieldCases(input:$inputType) {aliasId:id id aliasName:name name aliasAge:age age "
+				+ "aliasDate:date date aliasDates:dates dates aliasNbComments:nbComments nbComments aliasComments:comments comments "
+				+ "aliasBooleans:booleans booleans aliasMatrix:matrix matrix "//
+				+ "}}");
+
+		// // Go, go, go
+		// AnotherMutationType resp = createHuman.execMutation("inputType", inputType);
+		//
+		// // Verification
+		// assertNotNull(resp.getAliasValue("mutationAlias"));
+		// assertNotNull(resp.getAliasValue("mutationAlias") instanceof AllFieldCasesInput);
+		//
+		// fail("not yet implemented");
+	}
+
 }

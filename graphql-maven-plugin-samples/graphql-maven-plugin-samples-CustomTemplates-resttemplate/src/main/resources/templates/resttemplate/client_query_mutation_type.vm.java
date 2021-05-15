@@ -16,6 +16,7 @@ package ${packageUtilName};
 #macro(inputParams)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaType} ${inputParameter.javaName}#end#end
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
@@ -27,11 +28,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.ObjectResponse;
 
@@ -78,7 +79,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
 #if(${object.requestType})
-	private ObjectMapper mapper = null;
+	private GraphQLObjectMapper extensionMapper = null;
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
 
@@ -100,19 +101,19 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	}
 
 	/** {@inheritDoc} */
-	public ${object.classSimpleName}(String graphqlEndpoint, Client client, ObjectMapper objectMapper) {
-		super(graphqlEndpoint, client, objectMapper);
+	public ${object.classSimpleName}(String graphqlEndpoint, Client client) {
+		super(graphqlEndpoint, client);
 	}
 
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
 #if(!${configuration.separateUtilityClasses} && ${object.requestType})
-	private ObjectMapper getMapper() {
-		if (mapper == null) {
-			mapper = new ObjectMapper();
+	private GraphQLObjectMapper getExtensionMapper() {
+		if (extensionMapper == null) {
+			extensionMapper = new GraphQLObjectMapper("${packageUtilName}", null);
 		}
-		return mapper;
+		return extensionMapper;
 	}
 	
 	public JsonNode getExtensions() {
@@ -130,8 +131,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
 		if (extensionsAsMap == null) {
-			ObjectMapper mapper = new ObjectMapper();
-			extensionsAsMap = mapper.convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+			extensionsAsMap = getExtensionMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
 			});
 		}
 		return extensionsAsMap;
@@ -151,7 +151,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 */
 	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
 		JsonNode node = getExtensionsAsMap().get(key);
-		return (node == null) ? null : getMapper().treeToValue(node, t);
+		return (node == null) ? null : getExtensionMapper().treeToValue(node, t);
 	}
 #end
 
