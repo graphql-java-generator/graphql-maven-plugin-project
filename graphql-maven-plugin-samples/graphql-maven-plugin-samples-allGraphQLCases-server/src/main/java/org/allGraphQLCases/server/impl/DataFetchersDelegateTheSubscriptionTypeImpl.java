@@ -33,12 +33,15 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	public Publisher<Human> subscribeNewHumanForEpisode(DataFetchingEnvironment dataFetchingEnvironment,
 			Episode episode) {
 		// The Flux class, from Spring reactive, implements the Publisher interface.
-		// Let's return one Human, every second
+		// Let's return one Human, every 0.1 second
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> {
 					Human h = dataGenerator.generateInstance(Human.class);
-					h.setId(UUID.fromString(l.toString()));
+					if (!h.getAppearsIn().contains(episode)) {
+						h.getAppearsIn().add(episode);
+					}
+					h.setId(new UUID(0, l));
 					return h;
 				});
 	}
@@ -46,7 +49,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Publisher<List<Integer>> subscribeToAList(DataFetchingEnvironment dataFetchingEnvironment) {
 		// The Flux class, from Spring reactive, implements the Publisher interface.
-		// Let's return one list of integer, every second
+		// Let's return one list of integer, every 0.1 second
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> {

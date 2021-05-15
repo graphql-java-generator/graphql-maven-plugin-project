@@ -14,7 +14,7 @@ public class SubscribeToADate implements Runnable {
 	final String clientName;
 	final Date date;
 
-	SubscribeToADate(TheSubscriptionTypeExecutor executor, String clientName, Date date) {
+	public SubscribeToADate(TheSubscriptionTypeExecutor executor, String clientName, Date date) {
 		this.subscriptionExecutor = executor;
 		this.clientName = clientName;
 		this.callback = new SubscriptionCallbackToADate(clientName);
