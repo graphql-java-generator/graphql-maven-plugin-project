@@ -15,7 +15,10 @@ import java.util.function.Predicate;
 
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesWithoutIdSubtype;
+import org.allGraphQLCases.client.Character;
+import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
+import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
@@ -92,7 +95,7 @@ public class AliasesIT {
 		assertNotNull(allFieldCases);
 		assertNull(allFieldCases.getMatrix(), "No matrix field in the response");
 		@SuppressWarnings("unchecked")
-		List<List<Double>> matrixVerif = (List<List<Double>>) allFieldCases.getAliasValue("matrix2", Double.class);
+		List<List<Double>> matrixVerif = (List<List<Double>>) allFieldCases.getAliasValue("matrix2");
 		assertNotNull(matrixVerif);
 		assertTrue(checkMatrix.test(matrixVerif), "Check of the returned matrix content");
 	}
@@ -120,14 +123,139 @@ public class AliasesIT {
 				"The second name should NOT be in uppercase");
 
 		@SuppressWarnings("unchecked")
-		List<AllFieldCasesWithoutIdSubtype> alias65 = (List<AllFieldCasesWithoutIdSubtype>) ret.getAliasValue("alias65",
-				AllFieldCasesWithoutIdSubtype.class);
+		List<AllFieldCasesWithoutIdSubtype> alias65 = (List<AllFieldCasesWithoutIdSubtype>) ret
+				.getAliasValue("alias65");
 		assertEquals(inputs.size(), alias65.size());
 		assertEquals(alias65.get(0).getName().toUpperCase(), alias65.get(0).getName(),
 				"The first name should be in uppercase");
 		assertNotEquals(alias65.get(1).getName().toUpperCase(), alias65.get(1).getName(),
 				"The second name should NOT be in uppercase");
-
 	}
 
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_FullQuery() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		GraphQLRequest multipleQueriesRequest = queryType.getGraphQLRequest("{"//
+				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
+				+ " withOneOptionalParam {aliasId:id id aliasName:name name aliasAppearsIn:appearsIn appearsIn aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name}}}"//
+				+ " queryAlias:withOneOptionalParam  {aliasId:id id aliasName:name name aliasAppearsIn2:appearsIn appearsIn aliasFriends:friends {id name} friends {aliasId:id id aliasName:name name aliasFriends:friends {id name} friends {aliasId2:id id aliasName2:name name}}}"//
+				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
+				+ "}");
+
+		// Go, go, go
+		MyQueryType resp = multipleQueriesRequest.execQuery( //
+				"value", "An expected returned string", //
+				"skipAppearsIn", true, //
+				"skipName", false);
+
+		// Verification
+		assertNotNull(resp.getWithOneOptionalParam());
+		assertNotNull(resp.getAliasValue("queryAlias"));
+		assertNotNull(resp.getWithoutParameters());
+		//
+		// withOneOptionalParam
+		Character withOneOptionalParam = resp.getWithOneOptionalParam();
+		//
+		assertNotNull(withOneOptionalParam.getAliasValue("aliasId"));
+		assertTrue(withOneOptionalParam.getAliasValue("aliasId") instanceof String);
+		//
+		assertNotNull(withOneOptionalParam.getAliasValue("aliasName"));
+		assertTrue(withOneOptionalParam.getAliasValue("aliasName") instanceof String);
+		//
+		assertNotNull(withOneOptionalParam.getName());
+		//
+		assertNotNull(withOneOptionalParam.getAliasValue("aliasAppearsIn"));
+		assertNull(withOneOptionalParam.getAliasValue("aliasAppearsIn2"));
+		assertTrue(withOneOptionalParam.getAliasValue("aliasAppearsIn") instanceof List);
+		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasAppearsIn")).size() > 0);
+		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasAppearsIn")).get(0) instanceof Episode);
+		//
+		assertNotNull(withOneOptionalParam.getAppearsIn());
+		//
+		assertNotNull(withOneOptionalParam.getAliasValue("aliasFriends"));
+		assertTrue(withOneOptionalParam.getAliasValue("aliasFriends") instanceof List);
+		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).size() > 0);
+		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).get(0) instanceof Character);
+		Character ch = (Character) ((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).get(0);
+		assertNotNull(ch.getId());
+		assertNotNull(ch.getName());
+		//
+		assertNotNull(withOneOptionalParam.getFriends());
+		assertTrue(withOneOptionalParam.getFriends().size() > 0);
+		Character charLevel1 = withOneOptionalParam.getFriends().get(0);
+		assertNotNull(charLevel1.getAliasValue("aliasId"));
+		assertNull(charLevel1.getAliasValue("aliasId2"));
+		assertNotNull(charLevel1.getId());
+		assertEquals(charLevel1.getAliasValue("aliasId"), charLevel1.getId());
+		assertNotNull(charLevel1.getAliasValue("aliasName"));
+		assertNotNull(charLevel1.getName());
+		assertEquals(charLevel1.getAliasValue("aliasName"), charLevel1.getName());
+		assertNotNull(charLevel1.getAliasValue("aliasFriends"));
+		assertNotNull(charLevel1.getFriends());
+		assertTrue(charLevel1.getFriends().size() > 0);
+		Character charLevel2 = charLevel1.getFriends().get(0);
+		assertNotNull(charLevel2.getAliasValue("aliasId"));
+		assertNull(charLevel2.getAliasValue("aliasId2"));
+		assertNotNull(charLevel2.getId());
+		assertEquals(charLevel2.getAliasValue("aliasId"), charLevel2.getId());
+		assertNotNull(charLevel2.getAliasValue("aliasName"));
+		assertNull(charLevel2.getAliasValue("aliasName2"));
+		assertNotNull(charLevel2.getName());
+		assertEquals(charLevel2.getAliasValue("aliasName"), charLevel2.getName());
+		assertNull(charLevel2.getAliasValue("aliasFriends"));
+		//
+		// Let's check the content of queryAlias (everything is the same out of the deepest level of friends)
+		Character queryAlias = (Character) resp.getAliasValue("queryAlias");
+		//
+		assertNotNull(queryAlias.getAliasValue("aliasId"));
+		assertTrue(queryAlias.getAliasValue("aliasId") instanceof String);
+		//
+		assertNotNull(queryAlias.getAliasValue("aliasName"));
+		assertTrue(queryAlias.getAliasValue("aliasName") instanceof String);
+		//
+		assertNotNull(queryAlias.getName());
+		//
+		assertNull(queryAlias.getAliasValue("aliasAppearsIn"));
+		assertNotNull(queryAlias.getAliasValue("aliasAppearsIn2"));
+		assertTrue(queryAlias.getAliasValue("aliasAppearsIn2") instanceof List);
+		assertTrue(((List<?>) queryAlias.getAliasValue("aliasAppearsIn2")).size() > 0);
+		assertTrue(((List<?>) queryAlias.getAliasValue("aliasAppearsIn2")).get(0) instanceof Episode);
+		//
+		assertNotNull(queryAlias.getAppearsIn());
+		//
+		assertNotNull(queryAlias.getAliasValue("aliasFriends"));
+		assertTrue(queryAlias.getAliasValue("aliasFriends") instanceof List);
+		assertTrue(((List<?>) queryAlias.getAliasValue("aliasFriends")).size() > 0);
+		assertTrue(((List<?>) queryAlias.getAliasValue("aliasFriends")).get(0) instanceof Character);
+		ch = (Character) ((List<?>) queryAlias.getAliasValue("aliasFriends")).get(0);
+		assertNotNull(ch.getId());
+		assertNotNull(ch.getName());
+		//
+		assertNotNull(queryAlias.getFriends());
+		assertTrue(queryAlias.getFriends().size() > 0);
+		//
+		charLevel1 = queryAlias.getFriends().get(0);
+		assertNotNull(charLevel1.getAliasValue("aliasId"));
+		assertNull(charLevel1.getAliasValue("aliasId2"));
+		assertNotNull(charLevel1.getId());
+		assertEquals(charLevel1.getAliasValue("aliasId"), charLevel1.getId());
+		assertNotNull(charLevel1.getAliasValue("aliasName"));
+		assertNotNull(charLevel1.getName());
+		assertEquals(charLevel1.getAliasValue("aliasName"), charLevel1.getName());
+		assertNotNull(charLevel1.getAliasValue("aliasFriends"));
+		assertNotNull(charLevel1.getFriends());
+		assertTrue(charLevel1.getFriends().size() > 0);
+		//
+		charLevel2 = charLevel1.getFriends().get(0);
+		assertNull(charLevel2.getAliasValue("aliasId"));
+		assertNotNull(charLevel2.getAliasValue("aliasId2"));
+		assertNotNull(charLevel2.getId());
+		assertEquals(charLevel2.getAliasValue("aliasId2"), charLevel2.getId());
+		assertNull(charLevel2.getAliasValue("aliasName"));
+		assertNotNull(charLevel2.getAliasValue("aliasName2"));
+		assertNotNull(charLevel2.getName());
+		assertEquals(charLevel2.getAliasValue("aliasName2"), charLevel2.getName());
+		assertNull(charLevel2.getAliasValue("aliasFriends"));
+	}
 }

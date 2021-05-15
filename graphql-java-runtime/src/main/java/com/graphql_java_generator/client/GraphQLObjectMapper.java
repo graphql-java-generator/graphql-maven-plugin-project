@@ -116,7 +116,7 @@ public class GraphQLObjectMapper {
 			// Let's call the setAliasValue of the target object, to set the alias's value we've just read
 			String methodName = "setAliasValue";
 			try {
-				Method setAliasValue = beanOrClass.getClass().getDeclaredMethod(methodName, String.class, Object.class);
+				Method setAliasValue = beanOrClass.getClass().getMethod(methodName, String.class, Object.class);
 				setAliasValue.invoke(beanOrClass, propertyName, value);
 			} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {

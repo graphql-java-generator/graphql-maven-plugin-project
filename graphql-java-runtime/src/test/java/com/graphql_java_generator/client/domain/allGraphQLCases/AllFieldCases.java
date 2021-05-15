@@ -13,6 +13,7 @@ import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
@@ -26,10 +27,22 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 @GraphQLObjectType("AllFieldCases")
 public class AllFieldCases implements WithID {
 
+	/**
+	 * This map contains the deserialiazed values for the alias, as parsed from the json response from the GraphQL
+	 * server. The key is the alias name, the value is the deserialiazed value (taking into account custom scalars,
+	 * lists, ...)
+	 */
 	public Map<String, Object> aliasValues = new HashMap<>();
 
-	public void setAliasValue(String key, Object value) {
-		aliasValues.put(key, value);
+	/**
+	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * alias value is read from the json.
+	 * 
+	 * @param aliasName
+	 * @param aliasDeserializedValue
+	 */
+	public void setAliasValue(String aliasName, Object aliasDeserializedValue) {
+		aliasValues.put(aliasName, aliasDeserializedValue);
 	}
 
 	/**

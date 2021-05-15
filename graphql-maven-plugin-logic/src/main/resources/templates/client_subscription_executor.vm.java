@@ -137,11 +137,9 @@ public class ${object.classSimpleName}Executor {
 	 *            the http URI for the GraphQL endpoint
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 * @param objectMapper
-	 *            The GraphQL ObjectMapper that manages the mapping of the GraphQL JSON response
 	 */
-	public ${object.classSimpleName}Executor(String graphqlEndpoint, Client client, GraphQLObjectMapper objectMapper) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client, objectMapper);
+	public ${object.classSimpleName}Executor(String graphqlEndpoint, Client client) {
+		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
