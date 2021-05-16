@@ -93,7 +93,7 @@ public class GraphQLControllerTest {
 
         this.mockMvc.perform(asyncDispatch(mvcResult))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("data", is("bar")))
                 .andReturn();
 
@@ -128,7 +128,7 @@ public class GraphQLControllerTest {
 
         this.mockMvc.perform(asyncDispatch(mvcResult))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("data", is("bar")))
                 .andReturn();
 
@@ -162,7 +162,7 @@ public class GraphQLControllerTest {
 
         this.mockMvc.perform(asyncDispatch(mvcResult))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("data", is("bar")))
                 .andReturn();
 
@@ -198,7 +198,7 @@ public class GraphQLControllerTest {
 
         this.mockMvc.perform(asyncDispatch(mvcResult))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("data", is("bar")))
                 .andReturn();
 
@@ -229,7 +229,7 @@ public class GraphQLControllerTest {
 
         this.mockMvc.perform(asyncDispatch(mvcResult))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("data", is("bar")))
                 .andReturn();
 
@@ -263,7 +263,7 @@ public class GraphQLControllerTest {
 
         this.mockMvc.perform(asyncDispatch(mvcResult))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("data", is("bar")))
                 .andReturn();
 
@@ -297,7 +297,7 @@ public class GraphQLControllerTest {
 
         this.mockMvc.perform(asyncDispatch(mvcResult))
                 .andDo(print()).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("data", is("bar")))
                 .andReturn();
 
