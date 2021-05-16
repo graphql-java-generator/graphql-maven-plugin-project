@@ -39,6 +39,8 @@
 			<arg value="site" />
 			<arg value="-Prelease" />
 			<arg value="&quot;-DlastReleasedVersion=${version}&quot;" />
+			<!-- There is an issue with creating the site on some configurations. It works in offline mode. -->
+			<arg value="-o"/>
 		</exec>
 
 		<!-- Stages the site -->
