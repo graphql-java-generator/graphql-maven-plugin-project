@@ -8,11 +8,10 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
-# Not released yet
-
+# 1.15
 
 Client mode:
-* The queries, mutations and subscriptions now accept aliases, like specified in [GraphQL spec](http://spec.graphql.org/June2018/#sec-Field-Alias)
+* The queries, mutations and subscriptions now __accept GraphQL aliases__, like specified in [GraphQL spec](http://spec.graphql.org/June2018/#sec-Field-Alias)
     * Once the request is executed, The alias value can be retrieved with the `Object getAliasValue(String: aliasname)` method that has been added to every generated objects and interfaces. This method returns the alias value, parsed into the relevant Java Object.
 * The default `QueryExecutor` provided by the plugin is now a Spring bean. If you want to override it, you should not mark your own `QueryExecutor` with the `@Primary` annotation, to ignore the default one.
 
