@@ -7,6 +7,7 @@ com.graphql_java_generator.client.response
 com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
 com.graphql_java_generator.minimal_app
+com.graphql_java_generator.non_spring_app
 com.graphql_java_generator.samples.forum
 com.graphql_java_generator.samples.forum.client
 com.graphql_java_generator.samples.forum.client.graphql
