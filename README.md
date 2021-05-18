@@ -46,19 +46,19 @@ At any time, you can take the generated code as a full sample for your graphql-j
 All maven goals and gradle tasks are described on [this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/plugin-info.html)
 
 This plugin contains these goals (Maven) / tasks (Gradle):
-* __generateClientCode__ : this goal generates the client code from the Graphql schema file(s)
+* __`generateClientCode`__ : this goal generates the client code from the Graphql schema file(s)
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateClientCode-mojo.html)
-* __generateClientCode__ : this goal generates the server code from the Graphql schema file(s)
+* __`generateServerCode`__ : this goal generates the server code from the Graphql schema file(s)
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateServerCode-mojo.html)
-* __generatePojo__ : this goal generates only the java objects that match the provided GraphQL schema. It allows to work
+* __`generatePojo`__ : this goal generates only the java objects that match the provided GraphQL schema. It allows to work
  * in Java with graphQL, in a schema first approach.
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generatePojo-mojo.html)
-* __graphql__ was the previous main goal. It's now __deprecated__. It can generate both the client and the server code, thanks to its <mode> parameter. 
+* __`graphql`__ was the previous main goal. It's now __deprecated__. It can generate both the client and the server code, thanks to its <mode> parameter. 
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/graphql-mojo.html) 
-* __merge__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
+* __`merge`__ allows to generate a GraphQL schema file, based on the source GraphQL schemas. It can be used to merge several GraphQL schema files into one file, or to reformat the schema files.
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/merge-mojo.html) 
 
-## Availibility: Maven and Gradle
+## Availability: Maven and Gradle
 
 The generator is currently available both as a Maven plugin and as a Gradle plugin:
 
