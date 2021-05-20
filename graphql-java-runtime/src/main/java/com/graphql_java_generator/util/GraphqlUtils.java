@@ -807,7 +807,7 @@ public class GraphqlUtils {
 		// First case, the simplest: standard GraphQL type
 		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName))
 			return Boolean.class;
-		else if ("Integer".equals(graphQLTypeName) || "int".equals(graphQLTypeName))
+		else if ("Integer".equals(graphQLTypeName) || "Int".equals(graphQLTypeName))
 			return Integer.class;
 		else if ("String".equals(graphQLTypeName) || "UUID".equals(graphQLTypeName))
 			return String.class;

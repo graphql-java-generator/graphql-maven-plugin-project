@@ -698,7 +698,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(18, type.getFields().size());
+		assertEquals(20, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -717,8 +717,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkInputParameter(type, j, 0, "character", 0, true, null, "CharacterInput", "CharacterInput", null);
 		j += 1;
 		// withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
-		checkField(type, j, "withOneMandatoryParamDefaultValue", 0, true, false, "Character", "Character");
-		checkInputParameter(type, j, 0, "nbResultat", 0, true, null, "Int", "Integer",
+		checkField(type, j, "withOneMandatoryParamDefaultValue", 0, true, false, "Int", "Integer");
+		checkInputParameter(type, j, 0, "intParam", 0, true, null, "Int", "Integer",
 				new IntValue(BigInteger.valueOf(13)));
 		j += 1;
 		// withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num:

@@ -8,6 +8,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+Client mode:
+* Issue #82: Using Hard coded int parameters would raise an exception (for instance in this request: `"{aRequest(intParam: 3) {...}}"`)
+
+
 # 1.15
 
 Client mode:

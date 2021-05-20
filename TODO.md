@@ -2,15 +2,14 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Alias: remove the class parameter. The typename should be enough to guess the java target class.
-* Remove objectMapper from GraphqlUtils
-* Check a way to have a Jackson ObjectMapper that is specific to the plugin, without overriding the Spring Boot default one. This would prevent any interference with a Spring Boot that would personalize this ObjectMapper.
+* Add a control at runtime, that the runtime is the good version (same version as the plugin that generated the code).
 * Specifying an unknown template in the pom should raise an error
+* Check usage of scalar extension
+* Document in the Client FAQ how to retrieve the extensions response's values
+* Use JWT in the OAuth use case, to speed up the tests
 * Pass the test on the allGraphQLCases to being executed in parallel
 * Add a test in the graphql-maven-plugin-samples-allGraphQLCases-pojo project
-* Add a control at runtime, that the runtime is the good version (same version as the plugin that generated the code).
 * Change the server Subscription implementation from Reactive Subject to Spring reactive
-* Document in the Client FAQ how to retrieve the extensions response's values
 * Add an option to add the Serializable interface for generated POJOs
 * [Done in the plugin, waiting for the graphql PR acceptance] Publish a PR to have a per request cache, in graphql-java-spring 
     * Done. Waiting for the PR to be accepted (and then a new release)
@@ -22,7 +21,6 @@ Here are the next tasks listed, as a TODO list:
 * Remove the SubscriptionClientWebSocket class
 * Check subscription against the Hasura setup (answer to issue 54) : https://hasura.io/
 * Remove the useless interface  com.graphql_java_generator.client.response.RootResponse (from the runtime)
-* ? Switch to apache 2.0 licence ?
 * Replace all the thrown RuntimeException by meaningfull exceptions
 * Allow to control the list of schema files, and their order (necessary to properly manage the extend keyword)
 * Add a description of the GraphQL mojo

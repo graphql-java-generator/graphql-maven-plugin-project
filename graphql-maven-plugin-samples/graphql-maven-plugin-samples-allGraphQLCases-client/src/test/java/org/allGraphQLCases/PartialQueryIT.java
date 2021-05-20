@@ -143,4 +143,17 @@ public class PartialQueryIT {
 		// Verification
 		assertEquals(date, ret);
 	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue82_IntParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		GraphQLRequest graphQLRequest = queryType.getWithOneMandatoryParamDefaultValueGraphQLRequest("");
+
+		// Go, go, go
+		Integer ret = queryType.withOneMandatoryParamDefaultValue(graphQLRequest, 2);
+
+		// Verification
+		assertEquals(2, ret);
+	}
 }

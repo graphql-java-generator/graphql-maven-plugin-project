@@ -278,10 +278,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Character withOneMandatoryParamDefaultValue(DataFetchingEnvironment dataFetchingEnvironment,
-			Integer nbResultat) {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer withOneMandatoryParamDefaultValue(DataFetchingEnvironment dataFetchingEnvironment, Integer result) {
+		return result;
 	}
 
 	@Override
@@ -316,6 +314,16 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public Date issue53(DataFetchingEnvironment dataFetchingEnvironment, Date date) {
 		return date;
+	}
+
+	@Override
+	public Double issue82Float(DataFetchingEnvironment dataFetchingEnvironment, Double aFloat) {
+		return aFloat;
+	}
+
+	@Override
+	public UUID issue82ID(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
+		return id;
 	}
 
 }

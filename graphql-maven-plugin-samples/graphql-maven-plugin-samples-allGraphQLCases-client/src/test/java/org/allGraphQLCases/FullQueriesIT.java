@@ -289,4 +289,54 @@ class FullQueriesIT {
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
 	}
 
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue82_IntParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		GraphQLRequest request = myQuery
+				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
+
+		// test 1 (with an int bind parameter)
+		Integer ret = request.execQuery("param", 1).getWithOneMandatoryParamDefaultValue();
+		assertEquals(1, ret);
+
+		// test 2 (with an Integer bind parameter)
+		ret = request.execQuery("param", Integer.valueOf(2)).getWithOneMandatoryParamDefaultValue();
+		assertEquals(2, ret);
+
+		// test 3 (with a hardcoded int parameter)
+		request = myQuery.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: 3)  {}}");
+		ret = request.execQuery().getWithOneMandatoryParamDefaultValue();
+		assertEquals(3, ret);
+
+		// test 4 (with a hardcoded boolean and string parameter)
+		request = myQuery.getGraphQLRequest("{directiveOnQuery(uppercase: true) @testDirective(value:\"a value\") {}}");
+		List<String> strings = request.execQuery().getDirectiveOnQuery();
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertEquals("A VALUE", strings.get(0));
+
+		// test 5 (with a hardcoded Float parameter, that has an int value)
+		request = myQuery.getGraphQLRequest("{issue82Float(aFloat: 5) {}}");
+		assertEquals(5, request.execQuery().getIssue82Float());
+
+		// test 6 (with a hardcoded Float parameter, that has a float value)
+		request = myQuery.getGraphQLRequest("{issue82Float(aFloat: 6.6) {}}");
+		assertEquals(6.6, request.execQuery().getIssue82Float());
+
+		// test 7 (with an ID parameter)
+		request = myQuery.getGraphQLRequest("{issue82ID(aID: \"123e4567-e89b-12d3-a456-426655440000\") {}}");
+		assertTrue(request.execQuery().getIssue82ID().equalsIgnoreCase("123e4567-e89b-12d3-a456-426655440000"),
+				"Should be '123e4567-e89b-12d3-a456-426655440000' but is '" + request.execQuery().getIssue82ID() + "'");
+
+		// test 8 (with an enumeration)
+		request = myQuery.getGraphQLRequest("{withEnum(episode: JEDI) {name}}");
+		assertEquals("JEDI", request.execQuery().getWithEnum().getName());
+
+		// test 9 (with a custom scalar)
+		request = myQuery.getGraphQLRequest("{issue53(date: \"2021-05-20\") {}}");
+		Date verif = new Calendar.Builder().setDate(2021, 5 - 1, 20).build().getTime();
+		assertEquals(verif, request.execQuery().getIssue53());
+	}
+
 }

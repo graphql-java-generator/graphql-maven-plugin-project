@@ -19,7 +19,7 @@ type MyQueryType {
 	withoutParameters: [Character]!
     withOneOptionalParam(character: CharacterInput): Character
     withOneMandatoryParam(character: CharacterInput!): Character
-    withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
+    withOneMandatoryParamDefaultValue(intParam: Int! = 13): Int!
     withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num: Int = 45): Droid!
     withEnum(episode: Episode! = NEWHOPE): Character
     withListOfList(matrix: [[Float]]!): AllFieldCases
@@ -48,7 +48,7 @@ type MyQueryType {
     ################################################################################
     # queries to check directive behavior
     
-    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
+    # Returns the value, and potentially the anotherValue of the @testDirective directive set on the directiveOnQuery query. 
     # List is null if the directive is not present.
     directiveOnQuery(uppercase: Boolean): [String]!
 
@@ -67,6 +67,10 @@ type MyQueryType {
     
     #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
     issue53(date: Date!): Date!
+    
+    #issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no method with a simple float parameter
+    issue82Float(aFloat: Float!): Float!
+    issue82ID(aID: ID!): ID!
 }
 
 type AnotherMutationType {
