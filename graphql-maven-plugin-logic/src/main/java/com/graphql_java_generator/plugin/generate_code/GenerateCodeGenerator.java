@@ -63,6 +63,8 @@ public class GenerateCodeGenerator implements Generator {
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeGenerator.class);
 
+	private final static String RUNTIME_SOURCE_FILENAME = "/graphql-java-runtime-sources.jar";
+
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
 
@@ -235,33 +237,49 @@ public class GenerateCodeGenerator implements Generator {
 
 	void copyRuntimeSources() throws IOException {
 		final int NB_BYTES = 1000;
-		ClassPathResource res = new ClassPathResource("/graphql-java-runtime-sources.jar");
+		ClassPathResource res = new ClassPathResource(RUNTIME_SOURCE_FILENAME);
 		JarEntry entry;
+		String targetFilename;
 		int nbBytesRead;
 		byte[] bytes = new byte[NB_BYTES];
 
 		try (JarInputStream jar = new JarInputStream(res.getInputStream())) {
 			java.io.File file;
 			while ((entry = jar.getNextJarEntry()) != null) {
-				boolean metaInf = entry.getName().startsWith("META-INF");
-				boolean serverFile = !metaInf //
-						&& !entry.getName().contains("com/graphql_java_generator/client")
-						&& !entry.getName().contains("com/graphql_java_generator/spring/client");
 
-				boolean clientFile = !entry.getName().contains("com/graphql_java_generator/server")
-						// When in client mode, from META-INF, we need to exclude all files but spring.factories and its
-						// parent folder:
-						&& (!metaInf || entry.getName().equals("META-INF/")
-								|| entry.getName().equals("META-INF/spring.factories"));
+				// We skip the /META-INF/ folder that just contains the MANIFEST file
+				if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
+						|| entry.getName().equals("resources/")) {
+					continue;
+				}
+				if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) {
+					throw new RuntimeException("The entries in the '" + RUNTIME_SOURCE_FILENAME
+							+ "' file should start either by 'java' or by 'resources', but this entry doesn't: "
+							+ entry.getName());
+				}
+
+				boolean resources = entry.getName().startsWith("resources");
+				boolean metaInf = entry.getName().startsWith("resources/META-INF");
+				if (resources) {
+					targetFilename = entry.getName().substring("resources".length() + 1);
+				} else {
+					targetFilename = entry.getName().substring("java".length() + 1);
+				}
+
+				boolean serverFile = !metaInf //
+						&& !targetFilename.startsWith("com/graphql_java_generator/client")
+						&& !targetFilename.startsWith("com/graphql_java_generator/spring/client");
+
+				boolean clientFile = !targetFilename.startsWith("com/graphql_java_generator/server");
 
 				// if (!metaInfAndNotSpringFactories && !serverAndIsClientFile & !clientAndIsServerFile
 
 				if ((configuration.getMode().equals(PluginMode.client) && clientFile)
 						|| (configuration.getMode().equals(PluginMode.server) && serverFile)) {
-					if (metaInf)
-						file = new java.io.File(configuration.getTargetResourceFolder(), entry.getName());
+					if (resources)
+						file = new java.io.File(configuration.getTargetResourceFolder(), targetFilename);
 					else
-						file = new java.io.File(configuration.getTargetSourceFolder(), entry.getName());
+						file = new java.io.File(configuration.getTargetSourceFolder(), targetFilename);
 
 					if (entry.isDirectory()) {
 						// if its a directory, create it

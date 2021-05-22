@@ -10,6 +10,9 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
+Both mode:
+* Added a control, that the version of the runtime matches the version of the plugin. Doing such a control can prevent some weird errors.
+
 Client mode:
 * Issue #82: Using Hard coded int parameters would raise an exception (for instance in this request: `"{aRequest(intParam: 3) {...}}"`)
 

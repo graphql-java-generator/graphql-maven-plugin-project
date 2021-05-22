@@ -45,6 +45,7 @@ import $import;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 
@@ -82,6 +83,7 @@ public class ${object.classSimpleName}Executor {
 	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor.class);
 
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
+	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Autowired
 	GraphQLConfiguration configuration = null;
@@ -91,6 +93,12 @@ public class ${object.classSimpleName}Executor {
 	 */
 	@Autowired
 	public ${object.classSimpleName}Executor() {
+## The @..@ is the placeholder for the maven resource filtering
+		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
+			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
+					+ graphqlUtils.getRuntimeVersion() 
+					+ "' whereas the GraphQL plugin version is '@project.version@'");
+		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -104,6 +112,12 @@ public class ${object.classSimpleName}Executor {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public ${object.classSimpleName}Executor(String graphqlEndpoint) {
+## The @..@ is the placeholder for the maven resource filtering
+		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
+			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
+					+ graphqlUtils.getRuntimeVersion() 
+					+ "' whereas the GraphQL plugin version is '@project.version@'");
+		}
 		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();

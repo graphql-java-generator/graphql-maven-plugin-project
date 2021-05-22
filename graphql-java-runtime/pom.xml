@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -11,16 +12,28 @@
 	<artifactId>graphql-java-runtime</artifactId>
 
 	<build>
+		<resources>
+			<resource>
+				<!-- Due to Spring Boot, the filtering placeholder is @..@ (instead of ${..}) -->
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>src/assembly/sources.xml</descriptor>
+					</descriptors>
+				</configuration>
 				<executions>
 					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
+						<id>assemble-sources</id>
+						<phase>package</phase>
 						<goals>
-							<goal>jar-no-fork</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -58,9 +71,9 @@
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java-extended-scalars</artifactId> 
+			<artifactId>graphql-java-extended-scalars</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>

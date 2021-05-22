@@ -13,6 +13,13 @@
 
 
 	<build>
+		<resources>
+			<resource>
+				<!-- Due to Spring Boot, the filtering placeholder is @..@ (instead of ${..}) -->
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>

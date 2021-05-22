@@ -4,6 +4,7 @@
 package com.graphql_java_generator.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
@@ -41,16 +45,13 @@ import graphql.schema.GraphQLScalarType;
 @Component
 public class GraphqlUtils {
 
+	/** Logger for this class */
+	private static Logger logger = LoggerFactory.getLogger(GraphqlUtils.class);
+
 	/** This singleton is usable in default method, within interfaces */
 	public static GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
-
-	/**
-	 * maps for all scalers, when they are mandatory. The key is the type name. The value is the class to use in the
-	 * java code
-	 */
-	List<Class<?>> scalars = new ArrayList<>();
 
 	/**
 	 * The list of Java keywords. This keyword may not be used as java identifier, within java code (for instance for
@@ -60,18 +61,17 @@ public class GraphqlUtils {
 	 */
 	private List<String> javaKeywords = new ArrayList<>();
 
+	/**
+	 * The runtime properties, as they are in the graphql-java-runtime.properties file. This includes the version of the
+	 * runtime, that is used to check that the runtime's version is the same as the Maven or Gradle plugin's version
+	 */
+	private Properties properties;
+	final static String PROPERTIES_FILE = "graphql-java-runtime.properties";
+	final static String PROP_RUNTIME_VERSION = "graphql-java-runtime.version";
+
 	public static Character JAVA_KEYWORD_PREFIX = '_';
 
 	public GraphqlUtils() {
-		// Add of all predefined scalars
-		scalars.add(String.class);
-		scalars.add(int.class);
-		scalars.add(Integer.class);
-		scalars.add(float.class);
-		scalars.add(Float.class);
-		scalars.add(boolean.class);
-		scalars.add(Boolean.class);
-
 		// List all java reserved keywords.
 		javaKeywords.add("abstract");
 		javaKeywords.add("assert");
@@ -123,6 +123,29 @@ public class GraphqlUtils {
 		javaKeywords.add("void");
 		javaKeywords.add("volatile");
 		javaKeywords.add("while");
+	}
+
+	/**
+	 * Returns the version of the runtime, that is used to check that the runtime's version is the same as the Maven or
+	 * Gradle plugin's version.
+	 */
+	public String getRuntimeVersion() {
+		return getProperties().getProperty(PROP_RUNTIME_VERSION);
+	}
+
+	/** Loads the runtime properties file, from the graphql-java-runtime.properties file. */
+	private Properties getProperties() {
+		if (properties == null) {
+			properties = new Properties();
+			try {
+				properties.load(getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE));
+			} catch (IOException e) {
+				String msg = "Error while reading the '" + PROPERTIES_FILE + "' properties file: " + e.getMessage();
+				logger.error(msg);
+				throw new RuntimeException(msg, e);
+			}
+		}
+		return properties;
 	}
 
 	/**
