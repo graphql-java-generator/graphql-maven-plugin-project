@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin.test.helper;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
 	public Packaging packaging = null;
-	public File projectDir = new File("./graphql-maven-plugin-logic");
+	public File projectDir;// Initialized in the constructor
 	public String scanBasePackages = "null";
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;
@@ -61,6 +62,13 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	 */
 	public GraphQLConfigurationTestHelper(Object caller) {
 		logger = LoggerFactory.getLogger(caller.getClass());
+
+		try {
+			projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //
+					new File(".") : new File("./graphql-maven-plugin-logic");
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 
 }

@@ -76,7 +76,7 @@ import lombok.Getter;
  * The graphQL-java library maps both FieldDefinition and InputValueDefinition in very similar structures, which are
  * actually trees. These structures are too hard too read in a Velocity template, and we need to parse down to a
  * properly structures way for that.<BR/>
- * This class should not be used directly. Please use the {@link GenerateCodeExecutor} instead.
+ * This class should not be used directly. Please use the {@link GenerateCodePluginExecutor} instead.
  * 
  * @author etienne-sf
  */

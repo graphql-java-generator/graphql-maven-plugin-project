@@ -2,8 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Add a control at runtime, that the runtime is the good version (same version as the plugin that generated the code).
-* Specifying an unknown template in the pom should raise an error
 * Check usage of scalar extension
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Use JWT in the OAuth use case, to speed up the tests

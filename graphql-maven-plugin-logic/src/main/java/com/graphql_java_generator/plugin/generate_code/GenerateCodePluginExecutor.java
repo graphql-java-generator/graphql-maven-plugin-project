@@ -1,5 +1,6 @@
 package com.graphql_java_generator.plugin.generate_code;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.OptionalLong;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -28,7 +30,7 @@ import com.ibm.icu.text.SimpleDateFormat;
  * @author etienne-sf
  */
 @Component
-public class GenerateCodeExecutor implements PluginExecutor {
+public class GenerateCodePluginExecutor implements PluginExecutor {
 
 	private static final Logger logger = LoggerFactory.getLogger(PluginExecutor.class);
 
@@ -62,6 +64,7 @@ public class GenerateCodeExecutor implements PluginExecutor {
 	 */
 	@Override
 	public void execute() throws IOException {
+		checkConfiguration();
 		if (isSkipCodeGeneration()) {
 			logger.info(
 					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
@@ -69,6 +72,36 @@ public class GenerateCodeExecutor implements PluginExecutor {
 			// Let's do the job
 			documentParser.parseDocuments();
 			generator.generateCode();
+		}
+	}
+
+	/**
+	 * Do various checks on the given configuration, before starting the work
+	 * 
+	 * @throws IOException
+	 */
+	void checkConfiguration() throws IOException {
+		if (configuration.getTemplates() != null) {
+			for (String key : configuration.getTemplates().keySet()) {
+				// Check 1: the key must be a valid template name
+				try {
+					CodeTemplate.valueOf(key);
+				} catch (Exception e) {
+					throw new RuntimeException("'" + key + "' is not a valid template name", e);
+				}
+				// Check 2: the given value must be a valid file
+				File file = new File(configuration.getProjectDir(), configuration.getTemplates().get(key));
+				if (!file.exists()) {
+					// This template is not a local file. So it must be in the classpath.
+					if (null == getClass().getClassLoader().getResource(configuration.getTemplates().get(key))) {
+						throw new RuntimeException("The file provided for the '" + key
+								+ "' template could not be found. The provided filename is: '"
+								+ configuration.getTemplates().get(key) + "' (ithe full path is '"
+								+ file.getCanonicalPath() + "')");
+					}
+
+				}
+			}
 		}
 	}
 

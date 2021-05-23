@@ -54,7 +54,7 @@ import com.graphql_java_generator.util.GraphqlUtils;
  * This class generates the code for the graphql goal/task of the plugin, from the classes coming from the
  * com.graphql_java_generator.plugin.language package. This classes have been created by {link
  * {@link GenerateCodeDocumentParser}.<BR/>
- * This class should not be used directly. Please use the {@link GenerateCodeExecutor} instead.
+ * This class should not be used directly. Please use the {@link GenerateCodePluginExecutor} instead.
  * 
  * @author etienne-sf
  */
