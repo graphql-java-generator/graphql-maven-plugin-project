@@ -72,6 +72,19 @@ $argName: ${graphqlUtils.getValueAsText($appliedDir.argumentValues[$argName])}#i
 #end
 ##
 ###############################################################################################################
+################  Scalar Extensions ###########################################################################
+###############################################################################################################
+#foreach ($scalar in $scalars)
+#if (${scalar.class.name} == "com.graphql_java_generator.plugin.language.impl.ScalarExtensionType")
+#foreach ($comment in $scalar.comments)
+	#$comment
+#end
+extend scalar ${scalar.name}#implementedDirective($scalar.appliedDirectives)$space
+
+#end
+#end
+
+###############################################################################################################
 ################  Custom Scalars  #############################################################################
 ###############################################################################################################
 #foreach ($customScalar in $customScalars)

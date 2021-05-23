@@ -115,6 +115,7 @@ public class GenerateGraphQLSchema {
 			context.put("documentParser", documentParser);
 			context.put("graphqlUtils", graphqlUtils);
 			//
+			context.put("scalars", documentParser.getScalarTypes());
 			context.put("customScalars", documentParser.getCustomScalars());
 			context.put("directives", documentParser.getDirectives());
 			context.put("enumTypes", documentParser.getEnumTypes());

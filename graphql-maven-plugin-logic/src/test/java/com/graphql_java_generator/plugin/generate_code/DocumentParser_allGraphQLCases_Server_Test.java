@@ -76,7 +76,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(27, i, "Nb java files are generated");
-		assertEquals(7, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
+		assertEquals(8, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
 		assertEquals(19, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(4, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(5, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
@@ -231,6 +231,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("include", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("defer", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("deprecated", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("IDScalarDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("RelayConnection", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("testDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("anotherTestDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());

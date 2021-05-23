@@ -917,7 +917,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				return customScalarType;
 			}
 		}
-
+		// No custom scalar definition have been found from the provided plugin configuration
 		throw new RuntimeException(
 				"The plugin configuration must provide an implementation for the Custom Scalar '" + name + "'.");
 	}

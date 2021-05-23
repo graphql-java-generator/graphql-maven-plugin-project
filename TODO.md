@@ -2,7 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Check usage of scalar extension
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Use JWT in the OAuth use case, to speed up the tests
 * Pass the test on the allGraphQLCases to being executed in parallel

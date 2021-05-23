@@ -5,6 +5,12 @@ scalar Date
 
 scalar Long
 
+directive @IDScalarDirective
+on SCALAR
+
+# A comment, to check that comments are properly managed when writing the generated schema
+extend scalar ID @IDScalarDirective
+
 directive @RelayConnection
 on FIELD_DEFINITION
 

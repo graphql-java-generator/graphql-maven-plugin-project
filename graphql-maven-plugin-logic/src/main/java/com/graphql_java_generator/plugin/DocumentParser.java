@@ -36,6 +36,7 @@ import com.graphql_java_generator.plugin.language.impl.EnumValueImpl;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
 import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
+import com.graphql_java_generator.plugin.language.impl.ScalarExtensionType;
 import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.plugin.language.impl.UnionType;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -57,6 +58,7 @@ import graphql.language.ObjectTypeDefinition;
 import graphql.language.ObjectTypeExtensionDefinition;
 import graphql.language.OperationTypeDefinition;
 import graphql.language.ScalarTypeDefinition;
+import graphql.language.ScalarTypeExtensionDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.TypeName;
@@ -263,19 +265,13 @@ public abstract class DocumentParser {
 	 * 
 	 */
 	protected void initScalarTypes(Class<?> IDclass) {
-		// By default, we use the UUID type for the ID GraphQL type
-		scalarTypes.add(new ScalarType("ID", IDclass.getPackage().getName(), IDclass.getSimpleName(), configuration));
-		scalarTypes.add(new ScalarType("String", "java.lang", "String", configuration));
-
-		// It seems that both boolean&Boolean, int&Int, float&Float are accepted.
-		scalarTypes.add(new ScalarType("boolean", "java.lang", "Boolean", configuration));
 		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", configuration));
-		scalarTypes.add(new ScalarType("int", "java.lang", "Integer", configuration));
-		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", configuration));
-
 		// GraphQL Float is a double precision number
 		scalarTypes.add(new ScalarType("Float", "java.lang", "Double", configuration));
-		scalarTypes.add(new ScalarType("float", "java.lang", "Double", configuration));
+		// By default, we use the UUID type for the ID GraphQL type
+		scalarTypes.add(new ScalarType("ID", IDclass.getPackage().getName(), IDclass.getSimpleName(), configuration));
+		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", configuration));
+		scalarTypes.add(new ScalarType("String", "java.lang", "String", configuration));
 	}
 
 	/**
@@ -418,6 +414,10 @@ public abstract class DocumentParser {
 				} else {
 					objectTypes.add(readObjectTypeDefinition((ObjectTypeDefinition) node));
 				}
+			} else
+			// scalar extension
+			if (node instanceof ScalarTypeExtensionDefinition) {
+				readScalarExtensionType((ScalarTypeExtensionDefinition) node);
 			} else
 			// scalar
 			if (node instanceof ScalarTypeDefinition) {
@@ -710,6 +710,44 @@ public abstract class DocumentParser {
 		}
 
 		return unionType;
+	}
+
+	/**
+	 * Reads a GraphQL Custom Scalar, from its definition. This method checks that the CustomScalar has already been
+	 * defined, in the plugin configuration.
+	 * 
+	 * @param node
+	 *            The {@link CustomScalarType} that represents this Custom Scalar
+	 * @return
+	 */
+	ScalarExtensionType readScalarExtensionType(ScalarTypeExtensionDefinition node) {
+		String name = node.getName();
+
+		// The current node is an extension of a GraphQL scalar. We must find the entry in the scalar list, to replace
+		// it by the scalar extension definition
+		boolean found = false;
+		ScalarType scalarType = null;
+		for (ScalarType t : scalarTypes) {
+			if (t.getName().equals(name)) {
+				found = true;
+				scalarType = t;
+			}
+		} // for
+		if (!found) {
+			throw new RuntimeException(
+					"[Internal error] The '" + name + "' scalar definition was not properly initialized");
+		}
+
+		ScalarExtensionType scalarExtensionType = new ScalarExtensionType(name, scalarType.getPackageName(),
+				scalarType.getClassSimpleName(), configuration);
+		scalarExtensionType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
+		scalarExtensionType.setComments(node.getComments());
+
+		// We replace the definition for the original GraphQL scalar by this one
+		scalarTypes.remove(scalarType);
+		scalarTypes.add(scalarExtensionType);
+
+		return scalarExtensionType;
 	}
 
 	/**

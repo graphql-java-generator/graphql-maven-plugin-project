@@ -11,6 +11,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 # Not released yet
 
 Both mode:
+* The plugin now properly manages GraphQL scalar extensions
 * Added a control, that the version of the runtime matches the version of the plugin. Doing such a control can prevent some weird errors.
 * Added a check, that the provided custom templates have valid names and match to existing files (or resources in the classpath)
 

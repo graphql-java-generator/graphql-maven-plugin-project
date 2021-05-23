@@ -5,6 +5,11 @@ scalar Date
 
 scalar Long
 
+directive @IDScalarDirective
+on SCALAR
+
+extend scalar ID @IDScalarDirective
+
 directive @RelayConnection
 on FIELD_DEFINITION
 
