@@ -70,10 +70,15 @@ public class ResourceSchemaStringProvider {
 				Arrays.asList(applicationContext.getResources(fullPathPattern)));
 
 		// A little debug may be useful
-		if (logger.isDebugEnabled() && ret.size() > 0) {
-			logger.debug("The GraphQL schema file found are: ");
-			for (Resource schema : ret) {
-				logger.debug("   * " + schema.getURI().toString());
+		if (logger.isDebugEnabled()) {
+			if (ret.size() == 0) {
+				logger.debug("No GraphQL schema file found (with this fullPathPattern: '" + fullPathPattern + "'");
+			} else {
+				logger.debug(
+						"The GraphQL schema files found (with this fullPathPattern: '" + fullPathPattern + "') are: ");
+				for (Resource schema : ret) {
+					logger.debug("   * " + schema.getURI().toString());
+				}
 			}
 		}
 

@@ -31,7 +31,7 @@ import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
-import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaExecutor;
+import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaPluginExecutor;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -52,7 +52,7 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
 @Component
 public class GenerateCodeJsonSchemaPersonalization {
 
-	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaExecutor.class);
+	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaPluginExecutor.class);
 
 	static final String JSON_SCHEMA_FILENAME = "schema_personalization.schema.json";
 

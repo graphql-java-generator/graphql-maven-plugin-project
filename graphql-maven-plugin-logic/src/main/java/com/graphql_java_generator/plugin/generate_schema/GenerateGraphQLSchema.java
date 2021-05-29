@@ -5,10 +5,10 @@ package com.graphql_java_generator.plugin.generate_schema;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
@@ -46,17 +47,26 @@ public class GenerateGraphQLSchema {
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchema.class);
 
-	DocumentParser documentParser;
+	final DocumentParser documentParser;
 
-	GraphqlUtils graphqlUtils;
+	final GraphqlUtils graphqlUtils;
 
 	/** The component that reads the GraphQL schema from the file system */
-	ResourceSchemaStringProvider resourceSchemaStringProvider;
+	final ResourceSchemaStringProvider resourceSchemaStringProvider;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
 	 */
-	GenerateGraphQLSchemaConfiguration configuration;
+	final GenerateGraphQLSchemaConfiguration configuration;
+
+	/**
+	 * The build context is a wrapper for the sonatype BuildContext interface, that allows to properly integrate Maven
+	 * build into the IDE. It's up to the Maven or the Gradle plugin to implement this interface. <BR/>
+	 * The Maven plugin will link it to the sonatype BuildContext interface, that is an intermediate between the Maven
+	 * build (including the IDE environment) and the file system, with the source and generated projects.<BR/>
+	 * The Gradle plugin will link it directly to the file system.
+	 */
+	final PluginBuildContext buildContext;
 
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
@@ -74,12 +84,13 @@ public class GenerateGraphQLSchema {
 	 */
 	@Autowired
 	public GenerateGraphQLSchema(GenerateGraphQLSchemaDocumentParser documentParser, GraphqlUtils graphqlUtils,
-			GenerateGraphQLSchemaConfiguration configuration,
-			ResourceSchemaStringProvider resourceSchemaStringProvider) {
+			GenerateGraphQLSchemaConfiguration configuration, ResourceSchemaStringProvider resourceSchemaStringProvider,
+			PluginBuildContext buildContext) {
 		this.documentParser = documentParser;
 		this.graphqlUtils = graphqlUtils;
 		this.configuration = configuration;
 		this.resourceSchemaStringProvider = resourceSchemaStringProvider;
+		this.buildContext = buildContext;
 	}
 
 	/**
@@ -92,12 +103,13 @@ public class GenerateGraphQLSchema {
 	 * @param configuration
 	 */
 	public GenerateGraphQLSchema(DocumentParser documentParser, GraphqlUtils graphqlUtils,
-			GenerateGraphQLSchemaConfiguration configuration,
-			ResourceSchemaStringProvider resourceSchemaStringProvider) {
+			GenerateGraphQLSchemaConfiguration configuration, ResourceSchemaStringProvider resourceSchemaStringProvider,
+			PluginBuildContext buildContext) {
 		this.documentParser = documentParser;
 		this.graphqlUtils = graphqlUtils;
 		this.configuration = configuration;
 		this.resourceSchemaStringProvider = resourceSchemaStringProvider;
+		this.buildContext = buildContext;
 	}
 
 	/** This method is the entry point, for the generation of the schema that merges the GraphQL source schema files */
@@ -128,7 +140,7 @@ public class GenerateGraphQLSchema {
 			Template template = getVelocityEngine().getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");
 
 			targetFile.getParentFile().mkdirs();
-			Writer writer = new FileWriterWithEncoding(targetFile,
+			Writer writer = new OutputStreamWriter(buildContext.newFileOutputStream(targetFile),
 					Charset.forName(configuration.getResourceEncoding()));
 			template.merge(context, writer);
 			writer.flush();

@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Mark the skipGenerationIfSchemaHasNotChanged parameter as deprecated (no more used)
 * Allow the definition of all GraphQL requests in a file, so that the plugin creates the interface and implementation class that allows to use these GraphQL requests
     * The interface and implementation class would be generated at compile time
     * If the file has been updated since the class has been created, the generated interface and implementation class should be updated when the application starts (or by the IDE)

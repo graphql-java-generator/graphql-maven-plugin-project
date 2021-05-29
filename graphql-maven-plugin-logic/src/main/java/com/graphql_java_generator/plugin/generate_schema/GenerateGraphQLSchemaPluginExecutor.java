@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
@@ -16,9 +17,9 @@ import com.graphql_java_generator.util.GraphqlUtils;
 import com.ibm.icu.text.SimpleDateFormat;
 
 @Component
-public class GenerateGraphQLSchemaExecutor implements PluginExecutor {
+public class GenerateGraphQLSchemaPluginExecutor implements PluginExecutor {
 
-	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaExecutor.class);
+	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaPluginExecutor.class);
 
 	@Autowired
 	GenerateGraphQLSchemaDocumentParser documentParser;
@@ -36,27 +37,24 @@ public class GenerateGraphQLSchemaExecutor implements PluginExecutor {
 	@Autowired
 	GraphqlUtils graphqlUtils;
 
+	/**
+	 * The {@link PluginBuildContext} allows to check if the source files have changed, and thus if the code generation
+	 * must be executed or not.
+	 */
+	@Autowired
+	PluginBuildContext PluginBuildContext;
+
 	@Override
 	public void execute() throws Exception {
-		if (isSkipCodeGeneration()) {
-			logger.info(
-					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
-		} else {
+		if (PluginBuildContext.hasDelta(resourceSchemaStringProvider.schemas())
+				&& !skipGenerationIfSchemaHasNotChanged()) {
 			// Let's do the job
 			documentParser.parseDocuments();
 			generateGraphQLSchema.generateGraphQLSchema();
+		} else {
+			logger.info(
+					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		}
-	}
-
-	private boolean isSkipCodeGeneration() throws IOException {
-		// Shall we skip the code generation?
-		boolean skipCodeGeneration = false;
-		if (configuration.isSkipGenerationIfSchemaHasNotChanged()) {
-			logger.debug(
-					"skipGenerationIfSchemaHasNotChanged is on. Checking the last modification dates of the generated sources");
-			skipCodeGeneration = skipGenerationIfSchemaHasNotChanged();
-		}
-		return skipCodeGeneration;
 	}
 
 	private boolean skipGenerationIfSchemaHasNotChanged() throws IOException {

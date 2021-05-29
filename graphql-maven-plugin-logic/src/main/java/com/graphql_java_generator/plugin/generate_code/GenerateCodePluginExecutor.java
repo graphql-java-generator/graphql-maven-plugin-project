@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
+import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -48,12 +49,19 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	@Autowired
 	GenerateCodeCommonConfiguration configuration;
 
+	@Autowired
+	GraphqlUtils graphqlUtils;
+
+	/**
+	 * The {@link PluginBuildContext} allows to check if the source files have changed, and thus if the code generation
+	 * must be executed or not.
+	 */
+	@Autowired
+	PluginBuildContext PluginBuildContext;
+
 	/** The component that reads the GraphQL schema from the file system */
 	@Autowired
 	ResourceSchemaStringProvider resourceSchemaStringProvider;
-
-	@Autowired
-	GraphqlUtils graphqlUtils;
 
 	/**
 	 * Actual execution of the goal/task. <BR/>
@@ -65,13 +73,16 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	@Override
 	public void execute() throws IOException {
 		checkConfiguration();
-		if (isSkipCodeGeneration()) {
+		if (PluginBuildContext.hasDelta(resourceSchemaStringProvider.schemas())
+				&& !skipGenerationIfSchemaHasNotChanged()) {
 			logger.info(
-					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
-		} else {
+					"The GraphQL schema file(s) is(are) more recent than the generated code. The code generation is executed.");
 			// Let's do the job
 			documentParser.parseDocuments();
 			generator.generateCode();
+		} else {
+			logger.info(
+					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		}
 	}
 
@@ -105,17 +116,6 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 		}
 	}
 
-	private boolean isSkipCodeGeneration() throws IOException {
-		// Shall we skip the code generation?
-		boolean skipCodeGeneration = false;
-		if (configuration.isSkipGenerationIfSchemaHasNotChanged()) {
-			logger.debug(
-					"skipGenerationIfSchemaHasNotChanged is on. Checking the last modification dates of the generated sources");
-			skipCodeGeneration = skipGenerationIfSchemaHasNotChanged();
-		}
-		return skipCodeGeneration;
-	}
-
 	private boolean skipGenerationIfSchemaHasNotChanged() throws IOException {
 
 		// First, we look for the last modification date of all the given schema.
@@ -139,17 +139,17 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 		// regenerated as needed, even if a file has been manually updated.
 		Long targetSourcesLastModified = graphqlUtils.getLastModified(configuration.getTargetSourceFolder(), false);
 		if (targetSourcesLastModified == null) {
-			logger.debug("No source folder: we need to generate the sources");
+			logger.info("No source folder: we need to generate the sources");
 			return false;
 		}
 
-		if (logger.isDebugEnabled()) {
+		if (logger.isInfoEnabled()) {
 			Date schemaDate = new Date(schemaLastModified);
 			Date targetSourceDate = new Date(targetSourcesLastModified);
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss");
-			logger.debug("The lastModified date for the provided schema is: " + formatter.format(schemaDate)
+			logger.info("The lastModified date for the provided schema is: " + formatter.format(schemaDate)
 					+ " (more recent date of all provided schemas)");
-			logger.debug("The lastModified date for the generated sources is: " + formatter.format(targetSourceDate)
+			logger.info("The lastModified date for the generated sources is: " + formatter.format(targetSourceDate)
 					+ " (older file in all generated sources)");
 		}
 

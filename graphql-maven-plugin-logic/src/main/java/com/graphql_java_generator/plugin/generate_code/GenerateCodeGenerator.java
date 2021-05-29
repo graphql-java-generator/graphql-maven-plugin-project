@@ -4,8 +4,8 @@
 package com.graphql_java_generator.plugin.generate_code;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,7 +20,6 @@ import java.util.jar.JarInputStream;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -38,6 +37,7 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.Generator;
+import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -67,6 +67,16 @@ public class GenerateCodeGenerator implements Generator {
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
+
+	/**
+	 * The build context is a wrapper for the sonatype BuildContext interface, that allows to properly integrate Maven
+	 * build into the IDE. It's up to the Maven or the Gradle plugin to implement this interface. <BR/>
+	 * The Maven plugin will link it to the sonatype BuildContext interface, that is an intermediate between the Maven
+	 * build (including the IDE environment) and the file system, with the source and generated projects.<BR/>
+	 * The Gradle plugin will link it directly to the file system.
+	 */
+	@Autowired
+	PluginBuildContext buildContext;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
@@ -485,7 +495,7 @@ public class GenerateCodeGenerator implements Generator {
 					}
 				};
 				GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
-						graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
+						graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider, buildContext);
 				generateGraphQLSchema.generateGraphQLSchema();
 			}
 		}
@@ -524,9 +534,10 @@ public class GenerateCodeGenerator implements Generator {
 
 			targetFile.getParentFile().mkdirs();
 			if (configuration.getSourceEncoding() != null) {
-				writer = new FileWriterWithEncoding(targetFile, Charset.forName(configuration.getSourceEncoding()));
+				writer = new OutputStreamWriter(buildContext.newFileOutputStream(targetFile),
+						Charset.forName(configuration.getSourceEncoding()));
 			} else {
-				writer = new FileWriter(targetFile);
+				writer = new OutputStreamWriter(buildContext.newFileOutputStream(targetFile));
 			}
 			template.merge(context, writer);
 			writer.flush();

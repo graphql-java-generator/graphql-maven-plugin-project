@@ -9,12 +9,13 @@ import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.slf4j.LoggerFactory;
+import org.sonatype.plexus.build.incremental.BuildContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -28,6 +29,10 @@ import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
  * @author etienne-sf
  */
 public abstract class AbstractCommonMojo extends AbstractMojo implements CommonConfiguration {
+
+	/** The Maven {@link BuildContext} that allows to link the build with the IDE */
+	@Component
+	BuildContext buildContext;
 
 	/**
 	 * <P>
@@ -137,9 +142,6 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	/** The Spring context used for the plugin execution. It contains all the beans that runs for its execution */
 	protected AnnotationConfigApplicationContext ctx;
 
-	/** The {@link DocumentParser} that contains all the data for the parsed GraphQL schema(s) */
-	protected PluginExecutor executor;
-
 	@Override
 	public File getProjectDir() {
 		return project.getBasedir();
@@ -171,7 +173,8 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 
 	/** {@inheritDoc} */
 	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
+	final public void execute() throws MojoExecutionException, MojoFailureException {
+
 		try {
 			LoggerFactory.getLogger(getClass()).debug("Starting generation of java classes from graphqls files");
 
@@ -185,10 +188,13 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 			// debug mode)
 			ctx.getBean(CommonConfiguration.class).logConfiguration();
 
-			executor = ctx.getBean(PluginExecutor.class);
-			executor.execute();
+			// Let's configure the BuildContext, for a proper IDE integration
+			PluginBuildContextImpl pluginBuildContext = ctx.getBean(PluginBuildContextImpl.class);
+			pluginBuildContext.setBuildContext(buildContext);
 
-			executeSpecificJob();
+			// Let's execute the job
+			PluginExecutor executor = ctx.getBean(PluginExecutor.class);
+			executor.execute();
 
 			ctx.close();
 
@@ -196,13 +202,5 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
 	}
-
-	/**
-	 * This class must be overriden by the concrete subclasses. It contains the specific work to execute for this Mojo's
-	 * goal
-	 * 
-	 * @throws Exception
-	 */
-	protected abstract void executeSpecificJob() throws Exception;
 
 }

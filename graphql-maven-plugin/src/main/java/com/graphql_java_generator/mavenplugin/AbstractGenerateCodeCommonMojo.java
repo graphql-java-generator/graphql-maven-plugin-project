@@ -184,8 +184,8 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 		super(springConfigurationClass);
 	}
 
-	@Override
-	protected void executeSpecificJob() throws IOException {
+	private void executeSpecificJob_noMoreUsed() throws IOException {
+
 		File targetDir = new File(project.getBasedir(), "target");
 		String generatedSourceFolder = targetSourceFolder.getPath();
 		project.addCompileSourceRoot(generatedSourceFolder);

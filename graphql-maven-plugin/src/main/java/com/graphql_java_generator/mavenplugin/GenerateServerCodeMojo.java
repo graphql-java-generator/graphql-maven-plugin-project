@@ -65,10 +65,10 @@ public class GenerateServerCodeMojo extends AbstractGenerateServerCodeMojo {
 
 	@Configuration
 	@Import({ JacksonAutoConfiguration.class })
-	@ComponentScan(basePackageClasses = { DocumentParser.class, GraphqlUtils.class }, excludeFilters = {
-			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
-			@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
-			@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*") })
+	@ComponentScan(basePackageClasses = { PluginBuildContextImpl.class, DocumentParser.class, GraphqlUtils.class }, //
+			excludeFilters = { @Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
+					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
+					@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*") })
 	public class SpringConfiguration {
 
 	}

@@ -19,6 +19,7 @@ import com.graphql_java_generator.plugin.Documents;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
+import com.graphql_java_generator.plugin.test.helper.PluginBuildContextTestHelper;
 
 import graphql.language.Document;
 import lombok.Getter;
@@ -76,6 +77,11 @@ public abstract class AbstractSpringConfiguration {
 		addSpecificConfigurationParameterValue(configuration);
 
 		return configuration;
+	}
+
+	@Bean
+	PluginBuildContextTestHelper pluginBuildContextTestHelper() {
+		return new PluginBuildContextTestHelper();
 	}
 
 	protected abstract void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration);
