@@ -184,15 +184,16 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 		super(springConfigurationClass);
 	}
 
-	private void executeSpecificJob_noMoreUsed() throws IOException {
-
-		File targetDir = new File(project.getBasedir(), "target");
-		String generatedSourceFolder = targetSourceFolder.getPath();
+	@Override
+	protected void executePostExecutionTask() throws IOException {
+		String generatedSourceFolder = getTargetSourceFolder().getAbsolutePath();
 		project.addCompileSourceRoot(generatedSourceFolder);
+		buildContext.refresh(getTargetSourceFolder());
 		getLog().debug("Added the generated source folder: " + generatedSourceFolder);
+		getLog().info("compileSourceRoots: " + String.join(", ", project.getCompileSourceRoots()));
 
 		Resource generatedResources = new Resource();
-		String generatedResourceFolder = targetResourceFolder.getPath();
+		String generatedResourceFolder = getTargetResourceFolder().getPath();
 		generatedResources.setDirectory(generatedResourceFolder);
 		generatedResources.setIncludes(Arrays.asList("**/*"));
 		generatedResources.setExcludes(null);
@@ -200,6 +201,9 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 		project.getBuild().addResource(generatedResources);
 		project.addResource(generatedResources);
 		getLog().debug("Added the generated resources folder: " + generatedResourceFolder);
+		//
+		// Method 2 (should work better):
+		projectHelper.addResource(project, generatedResourceFolder, Arrays.asList("**/*"), null);
 	}
 
 }

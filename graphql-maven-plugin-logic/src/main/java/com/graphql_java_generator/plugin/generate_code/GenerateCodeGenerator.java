@@ -4,7 +4,9 @@
 package com.graphql_java_generator.plugin.generate_code;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
@@ -37,7 +39,6 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.Generator;
-import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -67,16 +68,6 @@ public class GenerateCodeGenerator implements Generator {
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
-
-	/**
-	 * The build context is a wrapper for the sonatype BuildContext interface, that allows to properly integrate Maven
-	 * build into the IDE. It's up to the Maven or the Gradle plugin to implement this interface. <BR/>
-	 * The Maven plugin will link it to the sonatype BuildContext interface, that is an intermediate between the Maven
-	 * build (including the IDE environment) and the file system, with the source and generated projects.<BR/>
-	 * The Gradle plugin will link it directly to the file system.
-	 */
-	@Autowired
-	PluginBuildContext buildContext;
 
 	/**
 	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
@@ -296,7 +287,7 @@ public class GenerateCodeGenerator implements Generator {
 						file.mkdir();
 					} else {
 						file.getParentFile().mkdirs();
-						try (java.io.FileOutputStream fos = new java.io.FileOutputStream(file)) {
+						try (OutputStream fos = new FileOutputStream(file)) {
 							while ((nbBytesRead = jar.read(bytes, 0, bytes.length)) > 0) {
 								fos.write(bytes, 0, nbBytesRead);
 							}
@@ -495,7 +486,7 @@ public class GenerateCodeGenerator implements Generator {
 					}
 				};
 				GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
-						graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider, buildContext);
+						graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
 				generateGraphQLSchema.generateGraphQLSchema();
 			}
 		}
@@ -534,10 +525,10 @@ public class GenerateCodeGenerator implements Generator {
 
 			targetFile.getParentFile().mkdirs();
 			if (configuration.getSourceEncoding() != null) {
-				writer = new OutputStreamWriter(buildContext.newFileOutputStream(targetFile),
+				writer = new OutputStreamWriter(new FileOutputStream(targetFile),
 						Charset.forName(configuration.getSourceEncoding()));
 			} else {
-				writer = new OutputStreamWriter(buildContext.newFileOutputStream(targetFile));
+				writer = new OutputStreamWriter(new FileOutputStream(targetFile));
 			}
 			template.merge(context, writer);
 			writer.flush();

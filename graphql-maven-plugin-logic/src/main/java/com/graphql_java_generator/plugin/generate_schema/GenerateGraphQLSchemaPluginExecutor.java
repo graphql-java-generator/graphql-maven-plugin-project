@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
@@ -37,23 +36,15 @@ public class GenerateGraphQLSchemaPluginExecutor implements PluginExecutor {
 	@Autowired
 	GraphqlUtils graphqlUtils;
 
-	/**
-	 * The {@link PluginBuildContext} allows to check if the source files have changed, and thus if the code generation
-	 * must be executed or not.
-	 */
-	@Autowired
-	PluginBuildContext PluginBuildContext;
-
 	@Override
 	public void execute() throws Exception {
-		if (PluginBuildContext.hasDelta(resourceSchemaStringProvider.schemas())
-				&& !skipGenerationIfSchemaHasNotChanged()) {
+		if (skipGenerationIfSchemaHasNotChanged()) {
+			logger.debug(
+					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
+		} else {
 			// Let's do the job
 			documentParser.parseDocuments();
 			generateGraphQLSchema.generateGraphQLSchema();
-		} else {
-			logger.info(
-					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		}
 	}
 

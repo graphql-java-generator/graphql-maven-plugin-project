@@ -53,7 +53,7 @@ public class GraphQLMojo extends AbstractGraphQLMojo {
 
 	@Configuration
 	@Import({ JacksonAutoConfiguration.class })
-	@ComponentScan(basePackageClasses = { PluginBuildContextImpl.class, DocumentParser.class, GraphqlUtils.class }, //
+	@ComponentScan(basePackageClasses = { DocumentParser.class, GraphqlUtils.class }, //
 			excludeFilters = { @Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateServerCode.*") })

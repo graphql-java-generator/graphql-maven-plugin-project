@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import com.graphql_java_generator.plugin.Documents;
 import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
-import com.graphql_java_generator.plugin.test.helper.PluginBuildContextTestHelper;
 
 import graphql.language.Document;
 
@@ -61,11 +60,6 @@ public abstract class AbstractSpringConfiguration {
 		addSpecificConfigurationParameterValue(configuration);
 
 		return configuration;
-	}
-
-	@Bean
-	PluginBuildContextTestHelper pluginBuildContextTestHelper() {
-		return new PluginBuildContextTestHelper();
 	}
 
 	/**

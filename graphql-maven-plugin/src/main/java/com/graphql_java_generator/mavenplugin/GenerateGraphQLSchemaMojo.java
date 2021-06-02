@@ -34,7 +34,7 @@ import graphql.ThreadSafe;
  * 
  * @author etienne-sf
  */
-@Mojo(name = "generateGraphQLSchema", defaultPhase = LifecyclePhase.INITIALIZE)
+@Mojo(name = "generateGraphQLSchema", defaultPhase = LifecyclePhase.INITIALIZE, requiresProject = true)
 @ThreadSafe
 // No need to add the @Component spring annotation: AbstractCommonMojo added this instance into the spring context, to
 // use the instance which attributs has been set with the pom content
@@ -45,7 +45,7 @@ public class GenerateGraphQLSchemaMojo extends AbstractGenerateGraphQLSchemaMojo
 	// See the explanation in the AbstractCommonMojo for more details.
 
 	@Configuration
-	@ComponentScan(basePackageClasses = { PluginBuildContextImpl.class, DocumentParser.class, GraphqlUtils.class }, //
+	@ComponentScan(basePackageClasses = { DocumentParser.class, GraphqlUtils.class }, //
 			excludeFilters = { @Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*"),
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
 					@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateCode.*"),

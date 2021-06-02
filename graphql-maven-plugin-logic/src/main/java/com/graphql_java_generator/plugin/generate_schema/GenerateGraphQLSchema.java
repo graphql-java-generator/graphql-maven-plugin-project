@@ -4,6 +4,7 @@
 package com.graphql_java_generator.plugin.generate_schema;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
 import com.graphql_java_generator.plugin.DocumentParser;
-import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
@@ -59,15 +59,6 @@ public class GenerateGraphQLSchema {
 	 */
 	final GenerateGraphQLSchemaConfiguration configuration;
 
-	/**
-	 * The build context is a wrapper for the sonatype BuildContext interface, that allows to properly integrate Maven
-	 * build into the IDE. It's up to the Maven or the Gradle plugin to implement this interface. <BR/>
-	 * The Maven plugin will link it to the sonatype BuildContext interface, that is an intermediate between the Maven
-	 * build (including the IDE environment) and the file system, with the source and generated projects.<BR/>
-	 * The Gradle plugin will link it directly to the file system.
-	 */
-	final PluginBuildContext buildContext;
-
 	/** The Velocity engine used to generate the target file */
 	VelocityEngine velocityEngine = null;
 
@@ -84,13 +75,12 @@ public class GenerateGraphQLSchema {
 	 */
 	@Autowired
 	public GenerateGraphQLSchema(GenerateGraphQLSchemaDocumentParser documentParser, GraphqlUtils graphqlUtils,
-			GenerateGraphQLSchemaConfiguration configuration, ResourceSchemaStringProvider resourceSchemaStringProvider,
-			PluginBuildContext buildContext) {
+			GenerateGraphQLSchemaConfiguration configuration,
+			ResourceSchemaStringProvider resourceSchemaStringProvider) {
 		this.documentParser = documentParser;
 		this.graphqlUtils = graphqlUtils;
 		this.configuration = configuration;
 		this.resourceSchemaStringProvider = resourceSchemaStringProvider;
-		this.buildContext = buildContext;
 	}
 
 	/**
@@ -103,13 +93,12 @@ public class GenerateGraphQLSchema {
 	 * @param configuration
 	 */
 	public GenerateGraphQLSchema(DocumentParser documentParser, GraphqlUtils graphqlUtils,
-			GenerateGraphQLSchemaConfiguration configuration, ResourceSchemaStringProvider resourceSchemaStringProvider,
-			PluginBuildContext buildContext) {
+			GenerateGraphQLSchemaConfiguration configuration,
+			ResourceSchemaStringProvider resourceSchemaStringProvider) {
 		this.documentParser = documentParser;
 		this.graphqlUtils = graphqlUtils;
 		this.configuration = configuration;
 		this.resourceSchemaStringProvider = resourceSchemaStringProvider;
-		this.buildContext = buildContext;
 	}
 
 	/** This method is the entry point, for the generation of the schema that merges the GraphQL source schema files */
@@ -140,7 +129,7 @@ public class GenerateGraphQLSchema {
 			Template template = getVelocityEngine().getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");
 
 			targetFile.getParentFile().mkdirs();
-			Writer writer = new OutputStreamWriter(buildContext.newFileOutputStream(targetFile),
+			Writer writer = new OutputStreamWriter(new FileOutputStream(targetFile),
 					Charset.forName(configuration.getResourceEncoding()));
 			template.merge(context, writer);
 			writer.flush();

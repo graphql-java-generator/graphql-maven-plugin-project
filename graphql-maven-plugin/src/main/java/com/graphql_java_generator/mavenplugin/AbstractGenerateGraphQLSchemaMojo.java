@@ -4,9 +4,14 @@
 package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProjectHelper;
 
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
@@ -30,6 +35,9 @@ public abstract class AbstractGenerateGraphQLSchemaMojo extends AbstractCommonMo
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSchemaFileName", defaultValue = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME)
 	String targetSchemaFileName;
+
+	@Component
+	protected MavenProjectHelper projectHelper;
 
 	AbstractGenerateGraphQLSchemaMojo(Class<?> springConfigurationClass) {
 		super(springConfigurationClass);
@@ -68,5 +76,21 @@ public abstract class AbstractGenerateGraphQLSchemaMojo extends AbstractCommonMo
 	@Override
 	public boolean isAddRelayConnections() {
 		return this.addRelayConnections;
+	}
+
+	@Override
+	protected void executePostExecutionTask() throws IOException {
+		Resource generatedResources = new Resource();
+		String generatedResourceFolder = getTargetFolder().getPath();
+		generatedResources.setDirectory(generatedResourceFolder);
+		generatedResources.setIncludes(Arrays.asList("**/*"));
+		generatedResources.setExcludes(null);
+		// One of the two below is probably useless
+		project.addResource(generatedResources);
+		project.addResource(generatedResources);
+		getLog().debug("Added the generated resources folder: " + generatedResourceFolder);
+		//
+		// Method 2 (should work better):
+		projectHelper.addResource(project, generatedResourceFolder, Arrays.asList("**/*"), null);
 	}
 }

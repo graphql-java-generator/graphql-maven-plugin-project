@@ -4,6 +4,7 @@
 package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -12,6 +13,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.build.incremental.BuildContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -32,7 +34,10 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 
 	/** The Maven {@link BuildContext} that allows to link the build with the IDE */
 	@Component
-	BuildContext buildContext;
+	protected BuildContext buildContext;
+
+	@Component
+	protected MavenProjectHelper projectHelper;
 
 	/**
 	 * <P>
@@ -134,7 +139,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	Map<String, String> templates;
 
 	/**
-	 * This class contains the Sprign configuration for the actual instance of this Mojo. It's set by subclasses,
+	 * This class contains the Spring configuration for the actual instance of this Mojo. It's set by subclasses,
 	 * through the constructor
 	 */
 	protected final Class<?> springConfigurationClass;
@@ -188,19 +193,21 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 			// debug mode)
 			ctx.getBean(CommonConfiguration.class).logConfiguration();
 
-			// Let's configure the BuildContext, for a proper IDE integration
-			PluginBuildContextImpl pluginBuildContext = ctx.getBean(PluginBuildContextImpl.class);
-			pluginBuildContext.setBuildContext(buildContext);
-
 			// Let's execute the job
 			PluginExecutor executor = ctx.getBean(PluginExecutor.class);
 			executor.execute();
+
+			executePostExecutionTask();
 
 			ctx.close();
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
+	}
+
+	protected void executePostExecutionTask() throws IOException {
+		// Default: no action
 	}
 
 }

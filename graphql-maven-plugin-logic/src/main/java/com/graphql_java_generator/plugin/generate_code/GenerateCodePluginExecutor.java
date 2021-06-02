@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
-import com.graphql_java_generator.plugin.PluginBuildContext;
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -52,13 +51,6 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	@Autowired
 	GraphqlUtils graphqlUtils;
 
-	/**
-	 * The {@link PluginBuildContext} allows to check if the source files have changed, and thus if the code generation
-	 * must be executed or not.
-	 */
-	@Autowired
-	PluginBuildContext PluginBuildContext;
-
 	/** The component that reads the GraphQL schema from the file system */
 	@Autowired
 	ResourceSchemaStringProvider resourceSchemaStringProvider;
@@ -73,16 +65,15 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	@Override
 	public void execute() throws IOException {
 		checkConfiguration();
-		if (PluginBuildContext.hasDelta(resourceSchemaStringProvider.schemas())
-				&& !skipGenerationIfSchemaHasNotChanged()) {
-			logger.info(
+		if (skipGenerationIfSchemaHasNotChanged()) {
+			logger.debug(
+					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
+		} else {
+			logger.debug(
 					"The GraphQL schema file(s) is(are) more recent than the generated code. The code generation is executed.");
 			// Let's do the job
 			documentParser.parseDocuments();
 			generator.generateCode();
-		} else {
-			logger.info(
-					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		}
 	}
 
