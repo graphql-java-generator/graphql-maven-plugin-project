@@ -8,9 +8,16 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+
+# Not released yet
+
+Both modes:
+* The maven plugin is now better integrated in the IDE. No more need of the maven-helper-plugin, to add the folder for the generated sources and generated resources.
+
+
 # 1.16
 
-Both mode:
+Both modes:
 * The plugin now properly manages GraphQL scalar extensions
 * Added a control, that the version of the runtime matches the version of the plugin. Doing such a control can prevent some weird errors.
 * Added a check, that the provided custom templates have valid names and match to existing files (or resources in the classpath)

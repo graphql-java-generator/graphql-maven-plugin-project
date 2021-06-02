@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProjectHelper;
@@ -80,17 +79,10 @@ public abstract class AbstractGenerateGraphQLSchemaMojo extends AbstractCommonMo
 
 	@Override
 	protected void executePostExecutionTask() throws IOException {
-		Resource generatedResources = new Resource();
 		String generatedResourceFolder = getTargetFolder().getPath();
-		generatedResources.setDirectory(generatedResourceFolder);
-		generatedResources.setIncludes(Arrays.asList("**/*"));
-		generatedResources.setExcludes(null);
-		// One of the two below is probably useless
-		project.addResource(generatedResources);
-		project.addResource(generatedResources);
-		getLog().debug("Added the generated resources folder: " + generatedResourceFolder);
-		//
+		getLog().debug("Adding the generated resources folder: " + generatedResourceFolder);
 		// Method 2 (should work better):
 		projectHelper.addResource(project, generatedResourceFolder, Arrays.asList("**/*"), null);
+		buildContext.refresh(getTargetFolder());
 	}
 }

@@ -6,8 +6,6 @@ Here are the next tasks listed, as a TODO list:
 * Allow the definition of all GraphQL requests in a file, so that the plugin creates the interface and implementation class that allows to use these GraphQL requests
     * The interface and implementation class would be generated at compile time
     * If the file has been updated since the class has been created, the generated interface and implementation class should be updated when the application starts (or by the IDE)
-* Add the m2e eclipse integration for the plugin goals/tasks
-    * Implements what's [documented here](https://www.eclipse.org/m2e/documentation/m2e-making-maven-plugins-compat.html)
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Use JWT in the OAuth use case, to speed up the tests
 * Pass the test on the allGraphQLCases to being executed in parallel

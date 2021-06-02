@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
@@ -187,23 +186,13 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Override
 	protected void executePostExecutionTask() throws IOException {
 		String generatedSourceFolder = getTargetSourceFolder().getAbsolutePath();
+		getLog().debug("Adding the generated source folder: " + generatedSourceFolder);
 		project.addCompileSourceRoot(generatedSourceFolder);
 		buildContext.refresh(getTargetSourceFolder());
-		getLog().debug("Added the generated source folder: " + generatedSourceFolder);
-		getLog().info("compileSourceRoots: " + String.join(", ", project.getCompileSourceRoots()));
+		getLog().debug("compileSourceRoots: " + String.join(", ", project.getCompileSourceRoots()));
 
-		Resource generatedResources = new Resource();
-		String generatedResourceFolder = getTargetResourceFolder().getPath();
-		generatedResources.setDirectory(generatedResourceFolder);
-		generatedResources.setIncludes(Arrays.asList("**/*"));
-		generatedResources.setExcludes(null);
-		// One of the two below is probably useless
-		project.getBuild().addResource(generatedResources);
-		project.addResource(generatedResources);
-		getLog().debug("Added the generated resources folder: " + generatedResourceFolder);
-		//
-		// Method 2 (should work better):
-		projectHelper.addResource(project, generatedResourceFolder, Arrays.asList("**/*"), null);
+		projectHelper.addResource(project, getTargetResourceFolder().getAbsolutePath(), Arrays.asList("**/*"), null);
+		buildContext.refresh(getTargetResourceFolder());
 	}
 
 }
