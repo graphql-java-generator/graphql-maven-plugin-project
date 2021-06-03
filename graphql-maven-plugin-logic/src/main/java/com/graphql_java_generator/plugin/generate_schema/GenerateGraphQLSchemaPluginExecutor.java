@@ -39,7 +39,7 @@ public class GenerateGraphQLSchemaPluginExecutor implements PluginExecutor {
 	@Override
 	public void execute() throws Exception {
 		if (skipGenerationIfSchemaHasNotChanged()) {
-			logger.debug(
+			logger.info(
 					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		} else {
 			// Let's do the job

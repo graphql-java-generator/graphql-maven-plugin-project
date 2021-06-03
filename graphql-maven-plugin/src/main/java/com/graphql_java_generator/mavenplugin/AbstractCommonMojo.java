@@ -87,27 +87,10 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 
 	/**
 	 * <P>
-	 * (this parameter is in beta version) If true, and the generated sources or resources are older than the GraphQL
-	 * schema file(s), then there is no source or resource generation.
-	 * </P>
-	 * <P>
-	 * For instance, the <I>generateGraphQLSchema</I> goal won't (re)generate the target schema, and the
-	 * <I>generateClientCode</I> won't generate the sources.
-	 * </P>
-	 * <P>
-	 * Please note that if your pom adds the generated source folder with the <I>build-helper-maven-plugin</I>, it seems
-	 * that the compiler will always compile the sources, even if they didn't change. If you still want to use this
-	 * <I>build-helper-maven-plugin</I>, you'll have to put it into a dedicated profile, so that you can activte it or
-	 * not as you want. You can have a look at the
-	 * <A HREF="https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/69">Issue 69</I> for a
-	 * hint on this.
-	 * <P>
-	 * Of course, after a <I>clean</I> goal/taks execution, the target folder won't exist, and the sources or resources
-	 * will be created again during the next build.
-	 * </P>
-	 * <P>
-	 * As of 1.x version of the plugin, the default value is <I>false</I>, so that only people aware of it try it.
-	 * Starting from 2.x version, its default value will be <I>true</I>.
+	 * This parameter is now <B><I>deprecated</I></B>: it's value used in the plugin is always true, that is: if the
+	 * generated sources or resources are older than the GraphQL schema file(s), then there is no source or resource
+	 * generation. In clear, the source and resource generation is always executed only if the provided input (GraphQL
+	 * schema...) has been updated since the last plugin execution.
 	 * </P>
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.skipGenerationIfSchemaHasNotChanged", defaultValue = GraphQLConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED)

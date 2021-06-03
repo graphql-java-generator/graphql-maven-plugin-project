@@ -66,11 +66,9 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 	public void execute() throws IOException {
 		checkConfiguration();
 		if (skipGenerationIfSchemaHasNotChanged()) {
-			logger.debug(
+			logger.info(
 					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		} else {
-			logger.debug(
-					"The GraphQL schema file(s) is(are) more recent than the generated code. The code generation is executed.");
 			// Let's do the job
 			documentParser.parseDocuments();
 			generator.generateCode();
@@ -130,7 +128,7 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 		// regenerated as needed, even if a file has been manually updated.
 		Long targetSourcesLastModified = graphqlUtils.getLastModified(configuration.getTargetSourceFolder(), false);
 		if (targetSourcesLastModified == null) {
-			logger.info("No source folder: we need to generate the sources");
+			logger.debug("No source folder: we need to generate the sources");
 			return false;
 		}
 
@@ -138,9 +136,9 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 			Date schemaDate = new Date(schemaLastModified);
 			Date targetSourceDate = new Date(targetSourcesLastModified);
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss");
-			logger.info("The lastModified date for the provided schema is: " + formatter.format(schemaDate)
+			logger.debug("The lastModified date for the provided schema is: " + formatter.format(schemaDate)
 					+ " (more recent date of all provided schemas)");
-			logger.info("The lastModified date for the generated sources is: " + formatter.format(targetSourceDate)
+			logger.debug("The lastModified date for the generated sources is: " + formatter.format(targetSourceDate)
 					+ " (older file in all generated sources)");
 		}
 
