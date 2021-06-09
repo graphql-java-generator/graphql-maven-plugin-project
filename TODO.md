@@ -2,10 +2,43 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Rename the RequestType constant from query/mutation/subscription to QUERY/MUTATION/SUBSCRIPTION (or do it for the 2.0 version?)
+* Remove RequestParametersFormat, that seems useless
+* Implement a Spring BeanDefinitionRegistryPostProcessor to load the GraphQL repositories
+* Add three annotations, to mark the query, the mutation and the subscription type
 * Mark the skipGenerationIfSchemaHasNotChanged parameter as deprecated (no more used)
 * Allow the definition of all GraphQL requests in a file, so that the plugin creates the interface and implementation class that allows to use these GraphQL requests
     * The interface and implementation class would be generated at compile time
     * If the file has been updated since the class has been created, the generated interface and implementation class should be updated when the application starts (or by the IDE)
+    * This file would:
+        * Contain the target class name
+        * Contain a list of :
+            * Name of the requests (must be a valid java name)
+            * The kind of request (query, mutation, subscription)
+            * The request, which can be partial and request, thanks to the tag name: partialRequest or fullRequest
+    * This generated class would be:
+        * Can be used both as a Spring Bean (@Component) and as a standard java class, thanks to a unique @Autowired constructor that has all necessary input parameters.
+        * This constructor would prepare all the requests.
+            * It's argument is one, two or three of query executor, mutation executor and subscription executor (depending on the different kinds of requests that have been provided)
+        * A method is created for each request.
+        * The parameters for this method depends on whether:
+            * it's a partial request (known list of requests parameters, then Map<String,Object> or Object[])
+            * It's a full request (no specific parameter, only Map<String,Object> or Object[])
+    * Do the same with annotations, like Spring repositories:
+        * Create an interface
+        * Mark it with a @GraphQLRepository annotation
+        * Create methods
+        * Mark them with one of these annotations:
+            * @PartialRequest(requestType=Query|Mutation|Subscription, requestName="RequestName", requestParametersFormat=MAP|(default)OBJECT_ARRAY|NONE)
+                * The parameters must map the parameters as defined for this request
+                * This method must return the response type that maps the requestType#requestName in the GraphQL schema
+            * @FullRequest(requestType=Query|Mutation|Subscription, requestParametersFormat=MAP|(default)OBJECT_ARRAY|NONE)
+                * This method must return the response type that maps the requestType
+            * These annotations allow to define method parameters that map specific bind parameters in the request:
+                * The @BindParameter(value="bindParameterName") can be added to the method parameters.
+    * To be defined
+        * Should the code for the GraphQL Repositories be generated at compile time or at runtime? 
+        * In which package?  If runtime, in the same as the source interface. If compile time, in the same as util classes?
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Use JWT in the OAuth use case, to speed up the tests
 * Pass the test on the allGraphQLCases to being executed in parallel
@@ -37,6 +70,7 @@ Here are the next tasks listed, as a TODO list:
 * Stop generating SubscriptionTypeResponse and SubscriptionTypeRootResponse ?
 
 ## TODO List for 2.0 version:
+* Rename the QueryExecutor (and its implementations) into RequestExecutor
 * Remove the query/mutation/subscription Response type (currently deprecated)
 * copyRuntimeSources: false should be the default value (change to be done in the tutorial and the client-dependency)
 * separateUtilityClasses: true should be the default value

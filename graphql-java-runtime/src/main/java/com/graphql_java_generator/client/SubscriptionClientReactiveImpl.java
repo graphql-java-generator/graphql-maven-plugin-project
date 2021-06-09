@@ -16,7 +16,7 @@ import reactor.core.publisher.Flux;
  * 
  * @author etienne-sf
  */
-class SubscriptionClientReactiveImpl implements SubscriptionClient {
+public class SubscriptionClientReactiveImpl implements SubscriptionClient {
 
 	/**
 	 * The {@link Disposable} That allows to close the underlying {@link Flux}, that receive the subscription
@@ -35,7 +35,7 @@ class SubscriptionClientReactiveImpl implements SubscriptionClient {
 	 * @param session
 	 *            The connected {@link WebSocketSession}
 	 */
-	SubscriptionClientReactiveImpl(Disposable disposable, WebSocketSession session) {
+	public SubscriptionClientReactiveImpl(Disposable disposable, WebSocketSession session) {
 		this.disposable = disposable;
 		this.session = session;
 	}

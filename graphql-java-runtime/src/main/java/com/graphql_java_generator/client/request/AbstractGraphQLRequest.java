@@ -661,6 +661,15 @@ public abstract class AbstractGraphQLRequest {
 	}
 
 	/**
+	 * Retrieve the request String that has been provided to create this instance
+	 * 
+	 * @return
+	 */
+	public String getGraphQLRequest() {
+		return graphQLRequest;
+	}
+
+	/**
 	 * This method returns the package name, where the GraphQL generated classes are. It's used to load the class
 	 * definition, and get the GraphQL metadata coming from the GraphQL schema.
 	 * 
