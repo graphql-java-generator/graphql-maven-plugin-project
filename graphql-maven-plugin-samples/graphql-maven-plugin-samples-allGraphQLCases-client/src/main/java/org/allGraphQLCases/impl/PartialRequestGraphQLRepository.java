@@ -17,8 +17,8 @@ import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
 
-import com.graphql_java_generator.annotation.GraphQLRepository;
-import com.graphql_java_generator.annotation.PartialRequest;
+import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;
+import com.graphql_java_generator.client.graphqlrepository.PartialRequest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.annotation;
+package com.graphql_java_generator.client.graphqlrepository;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -21,5 +21,8 @@ import java.lang.annotation.Target;
  * @author etienne-sf
  */
 public @interface GraphQLRepository {
+
+	/** The name of the Spring bean to build. Default is to use the interface name as the bean name */
+	String value() default "";
 
 }

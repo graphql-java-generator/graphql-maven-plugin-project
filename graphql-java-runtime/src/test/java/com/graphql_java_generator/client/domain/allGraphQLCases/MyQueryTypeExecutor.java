@@ -19,6 +19,7 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphQLQueryExecutor;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
@@ -46,8 +47,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * @see <a href=
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
-@Component
-public class MyQueryTypeExecutor {
+@Component("queryExecutor")
+public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(MyQueryTypeExecutor.class);

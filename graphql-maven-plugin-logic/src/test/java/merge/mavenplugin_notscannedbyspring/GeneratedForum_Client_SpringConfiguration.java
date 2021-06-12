@@ -21,7 +21,8 @@ import com.graphql_java_generator.plugin.test.helper.GenerateGraphQLSchemaConfig
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
 		@Filter(type = FilterType.REGEX, pattern = "com.graphql_java_generator.plugin.generate_code.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper") })
+		@Filter(type = FilterType.REGEX, pattern = ".*CompilationTestHelper"),
+		@Filter(type = FilterType.REGEX, pattern = "com.graphql_java_generator.client.graphqlrepository.*") })
 public class GeneratedForum_Client_SpringConfiguration extends AbstractSpringConfiguration {
 
 	@Override

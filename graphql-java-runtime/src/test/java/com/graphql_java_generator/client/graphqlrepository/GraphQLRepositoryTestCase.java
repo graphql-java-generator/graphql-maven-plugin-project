@@ -1,10 +1,7 @@
-package com.graphql_java_generator.client.request;
+package com.graphql_java_generator.client.graphqlrepository;
 
 import java.util.Map;
 
-import com.graphql_java_generator.annotation.FullRequest;
-import com.graphql_java_generator.annotation.GraphQLRepository;
-import com.graphql_java_generator.annotation.PartialRequest;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -63,4 +60,8 @@ public interface GraphQLRepositoryTestCase {
 	/** Full request, with requestType: query */
 	@FullRequest(request = "{directiveOnQuery (uppercase: true) @testDirective(value:&value)}", requestType = RequestType.query)
 	public MyQueryType fullQuery2(String value, Object... paramsAndValues) throws GraphQLRequestExecutionException;
+
+	/** Full request, with requestType: query */
+	@FullRequest(request = "{directiveOnQuery (uppercase: true) @testDirective(value:&value)}", requestType = RequestType.query)
+	public MyQueryType fullQuery3(String value) throws GraphQLRequestExecutionException;
 }

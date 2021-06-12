@@ -1,4 +1,4 @@
-package com.graphql_java_generator.client.request;
+package com.graphql_java_generator.client.graphqlrepository;
 
 // import static org.mockito.Mockito.*;
 
@@ -26,7 +26,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.graphql_java_generator.annotation.GraphQLRepository;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.SubscriptionClientReactiveImpl;
@@ -40,7 +39,8 @@ import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeExecutor;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeResponse;
 import com.graphql_java_generator.client.domain.allGraphQLCases.TheSubscriptionTypeExecutor;
-import com.graphql_java_generator.client.request.GraphQLRepositoryInvocationHandler.RegisteredMethod;
+import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvocationHandler.RegisteredMethod;
+import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -314,28 +314,55 @@ class GraphQLRepositoryInvocationHandlerTest {
 	}
 
 	@Test
-	void testInvoke_fullRequest_query_withParameter()
+	void testInvoke_fullRequest_query_withParameter_withoutObjectArray()
 			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
-		// // Preparation
-		// MyQueryTypeResponse queryType = new MyQueryTypeResponse();
-		// doReturn(queryType).when(spyQueryExecutor).exec(any(ObjectResponse.class), any(Object[].class));
-		//
-		// // Go, go, go
-		// MyQueryType verif = graphQLRepository.fullQuery2("a param value");
-		//
-		// // Verification
-		// assertEquals(queryType, verif);
-		//
-		// ArgumentCaptor<Object[]> bindParamsCaptor = ArgumentCaptor.forClass(Object[].class);
-		// verify(spyQueryExecutor).exec(any(ObjectResponse.class), bindParamsCaptor.capture());
-		// assertEquals(2, objects.length);
-		// //Mockito changes the List<Object[]> objects to a List<String> at runtime:
-		// assertEquals("value", objects[0]);
-		// assertEquals("a param value", objects[1]);
-		//
-		// assertEquals("{directiveOnQuery (uppercase: true) @testDirective(value:&value)}",
-		// getRegisteredGraphQLRequest("fullQuery2", String.class));
+		// Preparation
+		MyQueryTypeResponse queryType = new MyQueryTypeResponse();
+		doReturn(queryType).when(spyQueryExecutor).exec(any(ObjectResponse.class), any(Object[].class));
+
+		// Go, go, go
+		MyQueryType verif = graphQLRepository.fullQuery2("a param value");
+
+		// Verification
+		assertEquals(queryType, verif);
+
+		ArgumentCaptor<Object[]> bindParamsCaptor = ArgumentCaptor.forClass(Object[].class);
+		verify(spyQueryExecutor).exec(any(ObjectResponse.class), bindParamsCaptor.capture());
+		List<Object[]> objects = bindParamsCaptor.getAllValues();
+		assertEquals(2, objects.size());
+		// Mockito changes the List<Object[]> objects to a List<String> at runtime:
+		assertEquals("value", objects.get(0));
+		assertEquals("a param value", objects.get(1));
+
+		assertEquals("{directiveOnQuery (uppercase: true) @testDirective(value:&value)}",
+				getRegisteredGraphQLRequest("fullQuery2", String.class));
 		fail("not yet implemented");
+	}
+
+	@Test
+	void testInvoke_fullRequest_query_withParameter_withObjectArray()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
+		// Preparation
+		MyQueryTypeResponse queryType = new MyQueryTypeResponse();
+		doReturn(queryType).when(spyQueryExecutor).exec(any(ObjectResponse.class), any(Object[].class));
+
+		// Go, go, go
+		MyQueryType verif = graphQLRepository.fullQuery3("a param value");
+
+		// Verification
+		assertEquals(queryType, verif);
+
+		ArgumentCaptor<Object[]> bindParamsCaptor = ArgumentCaptor.forClass(Object[].class);
+		verify(spyQueryExecutor).exec(any(ObjectResponse.class), bindParamsCaptor.capture());
+		List<Object[]> objects = bindParamsCaptor.getAllValues();
+		assertEquals(2, objects.size());
+		// Mockito changes the List<Object[]> objects to a List<String> at runtime:
+		assertEquals("value", objects.get(0));
+		assertEquals("a param value", objects.get(1));
+
+		assertEquals("{directiveOnQuery (uppercase: true) @testDirective(value:&value)}",
+				getRegisteredGraphQLRequest("fullQuery3", String.class));
+
 	}
 
 	@Test

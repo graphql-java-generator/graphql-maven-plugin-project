@@ -1,8 +1,7 @@
-package com.graphql_java_generator.client.request;
+package com.graphql_java_generator.client.graphqlrepository;
 
 import java.util.List;
 
-import com.graphql_java_generator.annotation.PartialRequest;
 import com.graphql_java_generator.client.domain.allGraphQLCases.Character;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 

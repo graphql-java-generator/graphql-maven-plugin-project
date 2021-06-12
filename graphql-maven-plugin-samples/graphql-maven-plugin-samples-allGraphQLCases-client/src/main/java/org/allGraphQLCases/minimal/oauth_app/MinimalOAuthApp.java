@@ -1,8 +1,11 @@
 /**
  * 
  */
-package org.allGraphQLCases_minApp;
+package org.allGraphQLCases.minimal.oauth_app;
 
+import java.util.List;
+
+import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +25,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
  * 
  * @author etienne-sf
  */
+@SuppressWarnings("deprecation")
 @SpringBootApplication(scanBasePackageClasses = { MinimalOAuthApp.class, GraphQLConfiguration.class,
 		MyQueryTypeExecutor.class })
 public class MinimalOAuthApp implements CommandLineRunner {
@@ -42,18 +46,25 @@ public class MinimalOAuthApp implements CommandLineRunner {
 	 */
 	@Override
 	public void run(String... args) throws Exception {
+		List<Character> response;
 		String query = "{appearsIn name }";
 
 		logger.info("Executing this query: '" + query
 				+ "' (the first GraphQL request execution is longer, as the Reactive code must be started)");
-		logger.info(queryType.withoutParameters(query).toString());
+		response = queryType.withoutParameters(query);
+		logger.info(response.toString());
 
 		logger.info("Re-executing this query: '" + query + "'");
-		logger.info(queryType.withoutParameters(query).toString());
+		response = queryType.withoutParameters(query);
+		logger.info(response.toString());
 
 		logger.info("Normal end of execution");
 	}
 
+	/**
+	 * This beans is all that is needed to wire OAuth into the application, thanks to Spring Boot and some configuration
+	 * lines in the resources/application.properties file
+	 */
 	@Bean
 	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction(
 			ReactiveClientRegistrationRepository clientRegistrations) {

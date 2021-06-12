@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.request;
+package com.graphql_java_generator.client.graphqlrepository;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -14,12 +14,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.annotation.FullRequest;
-import com.graphql_java_generator.annotation.GraphQLRepository;
-import com.graphql_java_generator.annotation.PartialRequest;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLMutationExecutor;
+import com.graphql_java_generator.client.GraphQLQueryExecutor;
+import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
+import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
+import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -29,7 +30,6 @@ import com.graphql_java_generator.util.GraphqlUtils;
  * 
  * @author etienne-sf
  */
-@Component
 public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler {
 
 	/** Logger for this class */
@@ -39,6 +39,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 	/** This class contains the data for each method of the T interface */
 	class RegisteredMethod {
+		/** The method that is registered into this object */
+		Method method;
+
 		/** True if this request is a Full Request, and False if it's a Partial Request */
 		boolean fullRequest;
 
@@ -80,9 +83,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 	final Class<T> repositoryInterface;
 	final T proxyInstance;
-	final Object queryExecutor;
-	final Object mutationExecutor;
-	final Object subscriptionExecutor;
+	final GraphQLQueryExecutor queryExecutor;
+	final GraphQLMutationExecutor mutationExecutor;
+	final GraphQLSubscriptionExecutor subscriptionExecutor;
 
 	Map<Method, RegisteredMethod> registeredMethods = new HashMap<>();
 
@@ -104,14 +107,15 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * @throws GraphQLRequestPreparationException
 	 */
 	@Autowired
-	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, Object queryExecutor,
-			Object mutationExecutor, Object subscriptionExecutor) throws GraphQLRequestPreparationException {
+	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, GraphQLQueryExecutor queryExecutor,
+			GraphQLMutationExecutor mutationExecutor, GraphQLSubscriptionExecutor subscriptionExecutor)
+			throws GraphQLRequestPreparationException {
 		if (repositoryInterface == null) {
 			throw new NullPointerException("'repositoryInterface' may not be null");
 		}
 		if (!repositoryInterface.isInterface()) {
 			throw new NullPointerException("The 'repositoryInterface' (" + repositoryInterface.getName()
-					+ ") must be an interface, but is not");
+					+ ") must be an interface, but it is not");
 		}
 		if (repositoryInterface.getAnnotation(GraphQLRepository.class) == null) {
 			throw new GraphQLRequestPreparationException(
@@ -162,9 +166,10 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 		// Some checks, to begin with:
 		if (!Arrays.asList(method.getExceptionTypes()).contains(GraphQLRequestExecutionException.class)) {
-			throw new GraphQLRequestPreparationException(
-					"Every method of GraphQL repositories must throw the 'com.graphql_java_generator.exception.GraphQLRequestExecutionException' exception, but the '"
-							+ method.getName() + "' doesn't");
+			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
+					+ method.getDeclaringClass().getName() + "." + method.getName()
+					+ "(..). Every method of GraphQL repositories must throw the 'com.graphql_java_generator.exception.GraphQLRequestExecutionException' exception, but the '"
+					+ method.getName() + "' doesn't");
 		}
 
 		PartialRequest partialRequest = method.getAnnotation(PartialRequest.class);
@@ -176,9 +181,10 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		} else if (fullRequest != null) {
 			registerRequest(registeredMethod, method, true, null, fullRequest.requestType(), fullRequest.request());
 		} else {
-			throw new GraphQLRequestPreparationException(
-					"Every method of GraphQL repositories must be annotated by either @PartialRequest or @FullRequest. But the '"
-							+ method.getDeclaringClass().getName() + "." + method.getName() + "()' isn't.");
+			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
+					+ method.getDeclaringClass().getName() + "." + method.getName()
+					+ "(..). Every method of GraphQL repositories must be annotated by either @PartialRequest or @FullRequest. But the '"
+					+ method.getName() + "()' isn't.");
 		}
 		return registeredMethod;
 	}
@@ -194,6 +200,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 */
 	private void registerRequest(RegisteredMethod registeredMethod, Method method, boolean fullRequest,
 			String requestName, RequestType requestType, String request) throws GraphQLRequestPreparationException {
+		registeredMethod.method = method;
 		registeredMethod.fullRequest = fullRequest;
 		registeredMethod.requestName = requestName;
 		registeredMethod.requestType = requestType;
@@ -220,11 +227,11 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			registeredMethod.executorMethod = registeredMethod.executor.getClass()
 					.getMethod(registeredMethod.executorMethodName, registeredMethod.executorParameterTypes);
 		} catch (NoSuchMethodException | SecurityException e) {
-			throw new GraphQLRequestPreparationException(
-					"can't get executor method '" + registeredMethod.executorMethodName + "' for executor class '"
-							+ registeredMethod.executor.getClass().getName() + "' with these parameters: "
-							+ registeredMethod.executorParameterTypes,
-					e);
+			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
+					+ method.getDeclaringClass().getName() + "." + method.getName()
+					+ "(..). Couldn't find the matching executor method '" + registeredMethod.executorMethodName
+					+ "' for executor class '" + registeredMethod.executor.getClass().getName()
+					+ "' with these parameters: " + registeredMethod.executorParameterTypes, e);
 		}
 		if (registeredMethod.executorMethod.getReturnType() != method.getReturnType()) {
 			// Hum, that sounds bad.
@@ -250,8 +257,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 			if (thisIsBad) {
 				throw new GraphQLRequestPreparationException(
-						"The " + registeredMethod.executorMethod.getDeclaringClass().getName() + "."
-								+ registeredMethod.executorMethod.getName() + " method should return "
+						"Error while preparing the GraphQL Repository, on the method '"
+								+ method.getDeclaringClass().getName() + "." + method.getName()
+								+ "(..). This method should return "
 								+ registeredMethod.executorMethod.getReturnType().getName() + " but returns "
 								+ method.getReturnType().getName());
 			}
@@ -274,16 +282,19 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			getGraphQlMethod = registeredMethod.executor.getClass()
 					.getDeclaredMethod(registeredMethod.executorGetGraphQLRequestMethodName, String.class);
 		} catch (NoSuchMethodException | SecurityException e) {
-			throw new GraphQLRequestPreparationException(
-					"Could not find the '" + registeredMethod.executorGetGraphQLRequestMethodName + " method of the '"
-							+ registeredMethod.executor.getClass().getName() + "' class.");
+			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
+					+ registeredMethod.method.getDeclaringClass().getName() + "." + registeredMethod.method.getName()
+					+ "(..). Could not find the '" + registeredMethod.executorGetGraphQLRequestMethodName
+					+ " method of the '" + registeredMethod.executor.getClass().getName() + "' class.");
 		}
 
 		try {
 			return (AbstractGraphQLRequest) getGraphQlMethod.invoke(registeredMethod.executor,
 					registeredMethod.request);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new GraphQLRequestPreparationException(e.getClass().getSimpleName() + " when trying to invoke the '"
+			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
+					+ registeredMethod.method.getDeclaringClass().getName() + "." + registeredMethod.method.getName()
+					+ "(..): " + e.getClass().getSimpleName() + " when trying to invoke the '"
 					+ registeredMethod.executorGetGraphQLRequestMethodName + "' method of the '"
 					+ registeredMethod.executor.getClass().getName() + "' class", e);
 		}
@@ -307,10 +318,11 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		// Let's build the argument array: we have the GraphQLRequest, then the provided arguments
 		// If the given args doesn't contain enough parameters for the executor method, it means that we have to add the
 		// trailing Object[] parameter
-		boolean addNullArg = registeredMethod.executorParameterTypes.length > args.length + 1;
-		Object[] params = new Object[args.length + 1 + (addNullArg ? 1 : 0)];
+		int nbArgs = (args == null ? 0 : args.length);
+		boolean addNullArg = registeredMethod.executorParameterTypes.length > nbArgs + 1;
+		Object[] params = new Object[nbArgs + 1 + (addNullArg ? 1 : 0)];
 		params[0] = registeredMethod.graphQLRequest;
-		for (int i = 0; i < args.length; i += 1) {
+		for (int i = 0; i < nbArgs; i += 1) {
 			params[i + 1] = args[i];
 		}
 		if (addNullArg) {
@@ -344,7 +356,8 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		if (!bMapBindParameters && !bObjectsBindParameters) {
 			expectedParams[expectedParams.length - 1] = Object[].class;
 		}
-		logger.debug("The expected parameter types for the '{}' method are: {}", method.getName(), expectedParams);
+		logger.debug("The expected parameter types for the '{}.{}' method are: {}",
+				method.getDeclaringClass().getName(), method.getName(), expectedParams);
 		return expectedParams;
 	}
 

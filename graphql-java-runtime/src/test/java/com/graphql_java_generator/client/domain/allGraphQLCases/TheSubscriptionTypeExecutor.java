@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -43,8 +44,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * @see <a href=
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
-@Component
-public class TheSubscriptionTypeExecutor {
+@Component("subscriptionExecutor")
+public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(TheSubscriptionTypeExecutor.class);

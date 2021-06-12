@@ -23,7 +23,8 @@ import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHel
 @Configuration
 @ComponentScan(basePackages = "com.graphql_java_generator", excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*") })
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
+		@Filter(type = FilterType.REGEX, pattern = "com.graphql_java_generator.client.graphqlrepository.*") })
 public class AllGraphQLCases_Client_SpringConfiguration_addRelayConnections extends AbstractSpringConfiguration {
 
 	static List<CustomScalarDefinition> customScalars;
