@@ -5,9 +5,14 @@ package org.allGraphQLCases.minimal.spring_app;
 
 import java.util.List;
 
+import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
+import org.allGraphQLCases.client.HumanInput;
 
+import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.graphqlrepository.BindParameter;
+import com.graphql_java_generator.client.graphqlrepository.FullRequest;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;
 import com.graphql_java_generator.client.graphqlrepository.PartialRequest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -28,4 +33,8 @@ public interface GraphQLRequests {
 
 	@PartialRequest(request = "{id appearsIn name}")
 	public Character withOneOptionalParam(CharacterInput character) throws GraphQLRequestExecutionException;
+
+	@FullRequest(request = "mutation {createHuman (human: &input) {id name} }", requestType = RequestType.mutation)
+	public AnotherMutationType createHuman(@BindParameter(name = "input") HumanInput input)
+			throws GraphQLRequestExecutionException;
 }

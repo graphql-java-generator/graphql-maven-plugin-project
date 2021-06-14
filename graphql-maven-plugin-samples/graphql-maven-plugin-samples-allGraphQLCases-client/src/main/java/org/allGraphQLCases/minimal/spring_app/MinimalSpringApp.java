@@ -9,6 +9,8 @@ import java.util.List;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
+import org.allGraphQLCases.client.Human;
+import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +51,11 @@ public class MinimalSpringApp implements CommandLineRunner {
 	 */
 	@Override
 	public void run(String... args) throws Exception {
+		CharacterInput characterInput = CharacterInput.builder().withName("the name")
+				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).withType("Human").build();
+		HumanInput humanInput = HumanInput.builder().withName("the name")
+				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).build();
+
 		logger.info("");
 		logger.info("Executing this query: 'graphQLRequests.withoutParameters()' ");
 		logger.info(
@@ -61,13 +68,19 @@ public class MinimalSpringApp implements CommandLineRunner {
 
 		logger.info("");
 		logger.info("Executing this query: 'graphQLRequests.withOneOptionalParam(input)'");
-		CharacterInput input = CharacterInput.builder().withName("the name")
-				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).withType("Human").build();
 		//
 		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
-		Character response2 = graphQLRequests.withOneOptionalParam(input);
+		Character response2 = graphQLRequests.withOneOptionalParam(characterInput);
 		//
 		logger.info("The query result is: " + response2.toString());
+
+		logger.info("");
+		logger.info("Executing this mutation: 'graphQLRequests.createHuman(input)'");
+		//
+		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
+		Human human = graphQLRequests.createHuman(humanInput).getCreateHuman();
+		//
+		logger.info("The mutation result is: " + human.toString());
 
 		logger.info("Normal end of execution");
 	}

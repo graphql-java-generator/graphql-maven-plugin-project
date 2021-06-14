@@ -278,37 +278,16 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 					+ "' for executor class '" + registeredMethod.executor.getClass().getName()
 					+ "' with these parameters: [" + parameters + "]", e);
 		}
-		if (registeredMethod.executorMethod.getReturnType() != method.getReturnType()) {
-			// Hum, that sounds bad.
-			// But it is tolerated when this is a full request: the QueryType and QueryTypeResponse are the same type
-			// QueryTypeResponse is an empty class that just inherits from QueryType. It should not exist: it's a
-			// misconception in the early ages of the plugin.
-			// It's the same story for MutationType.
-			//
-			// The issue here is that the removing the QueryTypeResponse would make the code cleaner, but this would
-			// break the existing code for some of the plugin users.
-			// So we deal with it, until the v2.0, where the XxxxResponse classes won't be generated anymore.
-			boolean thisIsBad = true;
 
-			if (registeredMethod.fullRequest //
-					&& (registeredMethod.requestType == RequestType.query
-							|| registeredMethod.requestType == RequestType.mutation)
-					&& (method.getReturnType().getName() + "Response")
-							.equals(registeredMethod.executorMethod.getReturnType().getName())) {
-				// XxxResponse and Xxx are the same class content, when Xxx is either a Mutation or a Subscription and
-				// it's a Full Query
-				thisIsBad = false;
-			}
-
-			if (thisIsBad) {
-				throw new GraphQLRequestPreparationException(
-						"Error while preparing the GraphQL Repository, on the method '"
-								+ method.getDeclaringClass().getName() + "." + method.getName()
-								+ "(..). This method should return "
-								+ registeredMethod.executorMethod.getReturnType().getName() + " but returns "
-								+ method.getReturnType().getName());
-			}
+		// The returned value by the executor method must be assignable to the returned value for the GraphQL Repository
+		// method
+		if (!method.getReturnType().isAssignableFrom(registeredMethod.executorMethod.getReturnType())) {
+			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
+					+ method.getDeclaringClass().getName() + "." + method.getName() + "(..). This method should return "
+					+ registeredMethod.executorMethod.getReturnType().getName() + " but returns "
+					+ method.getReturnType().getName() + " (and the later can not be assigned to the former)");
 		}
+
 		registeredMethod.request = request;
 		registeredMethod.graphQLRequest = getGraphQLRequest(registeredMethod);
 	}
