@@ -2,7 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Rename the RequestType constant from query/mutation/subscription to QUERY/MUTATION/SUBSCRIPTION (or do it for the 2.0 version?)
+* Check the exec and execWithBindValues of the subscription type
 * Remove RequestParametersFormat, that seems useless
 * Implement a Spring BeanDefinitionRegistryPostProcessor to load the GraphQL repositories
 * Add three annotations, to mark the query, the mutation and the subscription type

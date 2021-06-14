@@ -9,10 +9,10 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * @author etienne-sf
  */
 @GraphQLRepository
-public interface GraphQLRepositoryTestCaseBadReturnType {
+public interface GraphQLRepositoryTestCaseParameterWithVararg {
 
 	/** The return type of this method is not the good one */
 	@PartialRequest(request = "{appearsIn name}")
-	public Integer withOneOptionalParam(CharacterInput character) throws GraphQLRequestExecutionException;
+	public Integer withOneOptionalParam(CharacterInput character, Object... o) throws GraphQLRequestExecutionException;
 
 }

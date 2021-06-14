@@ -6,9 +6,12 @@ package com.graphql_java_generator.client.graphqlrepository;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -79,6 +82,29 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 		/** The list of parameters of the executor method */
 		public Class<?>[] executorParameterTypes;
+
+		/**
+		 * The list of registered parameters from the repository method. This list allows to manage the BindParameter
+		 * and BindVariable annotated parameters
+		 */
+		List<RegisteredParameter> registeredParameters = new ArrayList<>();
+	}
+
+	class RegisteredParameter {
+		/**
+		 * The name of the parameter, as it appears in the definition of the method, in the {@link GraphQLRepository}
+		 * interface
+		 */
+		String name;
+
+		/** The Java type of this parameter, as defined in the {@link GraphQLRepository} interface */
+		public Class<?> type;
+
+		/**
+		 * The name of the bind parameter or GraphQL variable, as it appears in the GraphQL request, either as $name,
+		 * ?name or $name
+		 */
+		String bindParameterName;
 	}
 
 	final Class<T> repositoryInterface;
@@ -176,10 +202,10 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		FullRequest fullRequest = method.getAnnotation(FullRequest.class);
 
 		if (partialRequest != null) {
-			registerRequest(registeredMethod, method, false, partialRequest.requestName(), partialRequest.requestType(),
+			registerMethod(registeredMethod, method, false, partialRequest.requestName(), partialRequest.requestType(),
 					partialRequest.request());
 		} else if (fullRequest != null) {
-			registerRequest(registeredMethod, method, true, null, fullRequest.requestType(), fullRequest.request());
+			registerMethod(registeredMethod, method, true, null, fullRequest.requestType(), fullRequest.request());
 		} else {
 			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
 					+ method.getDeclaringClass().getName() + "." + method.getName()
@@ -196,42 +222,61 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 *            The class where all the registering info should be stored
 	 * @param method
 	 *            The method that is being registered
+	 * @param fullRequest
+	 *            True if this method is marked with the {@link FullRequest} annotation, false otherwise, that is: the
+	 *            method is marked with the {@link PartialRequest} annotation
+	 * @param requestName
+	 *            The name of the request, as read in the {@link PartialRequest} annotation, null for full requests
+	 * @param requestType
+	 *            The type of request. Query is the default.
+	 * @param request
+	 *            The string of the request. For {@link FullRequest}, it must be a valid GraphQL request. For more
+	 *            information, have a look at the <A HREF=
+	 *            "https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_exec_graphql_requests">Client
+	 *            wiki</A>
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private void registerRequest(RegisteredMethod registeredMethod, Method method, boolean fullRequest,
+	private void registerMethod(RegisteredMethod registeredMethod, Method method, boolean fullRequest,
 			String requestName, RequestType requestType, String request) throws GraphQLRequestPreparationException {
 		registeredMethod.method = method;
 		registeredMethod.fullRequest = fullRequest;
 		registeredMethod.requestName = requestName;
 		registeredMethod.requestType = requestType;
 		registeredMethod.executor = getExecutor(method, requestType);
-		registeredMethod.executorParameterTypes = getParameterTypes(method);
+		registerParameters(registeredMethod, method);
 
 		if (fullRequest) {
-			registeredMethod.executorMethodName = "exec";
+			// It's a full request
+			registeredMethod.executorMethodName = "execWithBindValues";
 			registeredMethod.executorGetGraphQLRequestMethodName = "getGraphQLRequest";
+		} else if (registeredMethod.requestName == null || registeredMethod.requestName.equals("")) {
+			// It's a partial request, with no given requestName
+			registeredMethod.executorMethodName = method.getName() + "WithBindValues";
+			registeredMethod.executorGetGraphQLRequestMethodName = "get" + graphqlUtils.getPascalCase(method.getName())
+					+ "GraphQLRequest";
 		} else {
-			registeredMethod.executorMethodName = (registeredMethod.requestName == null
-					|| registeredMethod.requestName.equals("")) ? method.getName() : registeredMethod.requestName;
+			// It's a partial request, with a given requestName
+			registeredMethod.executorMethodName = registeredMethod.requestName + "WithBindValues";
 			registeredMethod.executorGetGraphQLRequestMethodName = "get"
-					+ graphqlUtils.getPascalCase(registeredMethod.executorMethodName) + "GraphQLRequest";
-		}
-		if (registeredMethod.executorParameterTypes[registeredMethod.executorParameterTypes.length - 1] == Map.class) {
-			// The executor method name should finish by WithBindValues
-			if (!registeredMethod.executorMethodName.endsWith("WithBindValues")) {
-				registeredMethod.executorMethodName += "WithBindValues";
-			}
+					+ graphqlUtils.getPascalCase(registeredMethod.requestName) + "GraphQLRequest";
 		}
 
 		try {
 			registeredMethod.executorMethod = registeredMethod.executor.getClass()
 					.getMethod(registeredMethod.executorMethodName, registeredMethod.executorParameterTypes);
 		} catch (NoSuchMethodException | SecurityException e) {
+			StringBuffer parameters = new StringBuffer();
+			String separator = "";
+			for (Class<?> clazz : registeredMethod.executorParameterTypes) {
+				parameters.append(separator);
+				parameters.append(clazz.getName());
+				separator = ",";
+			}
 			throw new GraphQLRequestPreparationException("Error while preparing the GraphQL Repository, on the method '"
 					+ method.getDeclaringClass().getName() + "." + method.getName()
 					+ "(..). Couldn't find the matching executor method '" + registeredMethod.executorMethodName
 					+ "' for executor class '" + registeredMethod.executor.getClass().getName()
-					+ "' with these parameters: " + registeredMethod.executorParameterTypes, e);
+					+ "' with these parameters: [" + parameters + "]", e);
 		}
 		if (registeredMethod.executorMethod.getReturnType() != method.getReturnType()) {
 			// Hum, that sounds bad.
@@ -269,6 +314,92 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	}
 
 	/**
+	 * This method scans the method parameters, and register its parameters in the
+	 * {@link RegisteredMethod#registeredParameters} attribute. It also fills the
+	 * {@link RegisteredMethod#executorParameterTypes} attribute.
+	 *
+	 * @param registeredMethod
+	 *            The record for the method that is being registered
+	 * @param method
+	 *            The method of the {@link GraphQLRepository}
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	private void registerParameters(RegisteredMethod registeredMethod, Method method)
+			throws GraphQLRequestPreparationException {
+		List<Class<?>> executorParameterTypes = new ArrayList<>();
+		// The first parameter of the executor is the GraphQL Request, given as an ObjectResponse
+		executorParameterTypes.add(ObjectResponse.class);
+
+		// Let's go through all the parameters of the method that we're registering
+		boolean foundBindParameterAnnotation = false;
+		for (Parameter param : method.getParameters()) {
+			RegisteredParameter regParam = new RegisteredParameter();
+			regParam.name = param.getName();
+			regParam.type = param.getType();
+
+			// No Map parameter, nor vararg (object[])
+			if (Map.class.isAssignableFrom(regParam.type) || Object[].class.isAssignableFrom(regParam.type)) {
+				throw new GraphQLRequestPreparationException(
+						"Error while preparing the GraphQL Repository, on the method '"
+								+ registeredMethod.method.getDeclaringClass().getName() + "."
+								+ registeredMethod.method.getName()
+								+ "(..). Map and vararg (Object[]) are not allowed. But the '" + param.getName()
+								+ "' is an instance of '" + param.getType().getName() + "'");
+			}
+
+			BindParameter bindParameter = param.getAnnotation(BindParameter.class);
+			if (bindParameter == null) {
+				if (registeredMethod.fullRequest = false) {
+					throw new GraphQLRequestPreparationException(
+							"Error while preparing the GraphQL Repository, on the method '"
+									+ registeredMethod.method.getDeclaringClass().getName() + "."
+									+ registeredMethod.method.getName()
+									+ "(..). This request is a full request: all its parameters must be marked with the '"
+									+ BindParameter.class.getSimpleName() + "' annotation. But the '" + param.getName()
+									+ "' isn't marked with this annotation.");
+				} else if (foundBindParameterAnnotation) {
+					throw new GraphQLRequestPreparationException(
+							"Error while preparing the GraphQL Repository, on the method '"
+									+ registeredMethod.method.getDeclaringClass().getName() + "."
+									+ registeredMethod.method.getName()
+									+ "(..). It is not allowed to have parameters without the '"
+									+ BindParameter.class.getSimpleName()
+									+ "' annotation, after parameters that have this annotation. The '"
+									+ param.getName() + "' parameter lacks the '" + BindParameter.class.getSimpleName()
+									+ "' annotation.");
+				} else {
+					// It's a partial request, and we didn't find any parameter with the BindParameter yet.
+					// So we've found a parameter that should be a parameter of the executor method.
+					executorParameterTypes.add(param.getType());
+				}
+			} else {
+				// This parameter is annotated with the BindParameter. Let's store the bind parameter name that is is
+				// associated to.
+				foundBindParameterAnnotation = true;
+				regParam.bindParameterName = bindParameter.name();
+			}
+
+			registeredMethod.registeredParameters.add(regParam);
+		} // for
+
+		// The last parameter of executorParameterTypes is the Map for the Bind Parameter, which may not be a parameter
+		// of the GraphQL repository method
+		executorParameterTypes.add(Map.class);
+
+		// The next lien generates a runtime error ! :(
+		// registeredMethod.executorParameterTypes = (Class<?>[]) (executorParameterTypes.toArray());
+		// So, let's loop manually
+		registeredMethod.executorParameterTypes = new Class<?>[executorParameterTypes.size()];
+		for (int i = 0; i < registeredMethod.executorParameterTypes.length; i += 1) {
+			registeredMethod.executorParameterTypes[i] = executorParameterTypes.get(i);
+		}
+
+		logger.debug("The expected parameter types for the '{}.{}' method are: {}",
+				method.getDeclaringClass().getName(), method.getName(), registeredMethod.executorParameterTypes);
+	}
+
+	/**
 	 * Retrieves the GraphQlRequest object from the data of the given {@link RegisteredMethod}.
 	 * 
 	 * @param registeredMethod
@@ -301,67 +432,6 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	}
 
 	/**
-	 * Invocation of the {@link InvocationHandler}. This method is called when a method of the T interface is called.
-	 * This call is delegated to the relevant Query/Mutation/Subscription executor. <BR/>
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		RegisteredMethod registeredMethod = registeredMethods.get(method);
-
-		if (registeredMethod == null) {
-			throw new GraphQLRequestExecutionException("The method '" + method.getDeclaringClass().getName() + "."
-					+ method.getName()
-					+ "' has not been stored in initialization phase of this InvocationHandler. Is this method coming from the right interface? (that is, the same as the one this InvocationHandler has been created with?)");
-		}
-
-		// Let's build the argument array: we have the GraphQLRequest, then the provided arguments
-		// If the given args doesn't contain enough parameters for the executor method, it means that we have to add the
-		// trailing Object[] parameter
-		int nbArgs = (args == null ? 0 : args.length);
-		boolean addNullArg = registeredMethod.executorParameterTypes.length > nbArgs + 1;
-		Object[] params = new Object[nbArgs + 1 + (addNullArg ? 1 : 0)];
-		params[0] = registeredMethod.graphQLRequest;
-		for (int i = 0; i < nbArgs; i += 1) {
-			params[i + 1] = args[i];
-		}
-		if (addNullArg) {
-			params[params.length - 1] = new Object[0];
-		}
-
-		logger.debug("The argument list to call the '{}' method is: {}", method.getName(), params);
-
-		return registeredMethod.executorMethod.invoke(registeredMethod.executor, params);
-	}
-
-	/**
-	 * Returns the array of expected parameters for the method name in the executor, from the parameters of the given
-	 * method
-	 * 
-	 * @param method
-	 *            The method of the {@link GraphQLRepository}
-	 * @return
-	 */
-	private Class<?>[] getParameterTypes(Method method) {
-		Class<?>[] params = method.getParameterTypes();
-		boolean bMapBindParameters = params.length > 0 && params[params.length - 1].equals(Map.class);
-		boolean bObjectsBindParameters = params.length > 0 && params[params.length - 1].isArray();
-		// The expected params are: ObjectResponse, the parameters of the given method, and possibly an object array (if
-		// the given method has no parameter to receive the bind parameters)
-		int nbExpectedParams = 1 + params.length + ((!bMapBindParameters && !bObjectsBindParameters) ? 1 : 0);
-
-		Class<?>[] expectedParams = new Class<?>[nbExpectedParams];
-		expectedParams[0] = ObjectResponse.class;
-		System.arraycopy(params, 0, expectedParams, 1, params.length);
-		if (!bMapBindParameters && !bObjectsBindParameters) {
-			expectedParams[expectedParams.length - 1] = Object[].class;
-		}
-		logger.debug("The expected parameter types for the '{}.{}' method are: {}",
-				method.getDeclaringClass().getName(), method.getName(), expectedParams);
-		return expectedParams;
-	}
-
-	/**
 	 * Retrieves the executor that matches the given {@link RequestType}
 	 * 
 	 * @param method
@@ -385,4 +455,47 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 				+ "', but there is no such executor found. Check if the GraphQL has such a request type defined.");
 	}
 
+	/**
+	 * Invocation of the {@link InvocationHandler}. This method is called when a method of the T interface is called.
+	 * This call is delegated to the relevant Query/Mutation/Subscription executor. <BR/>
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		RegisteredMethod registeredMethod = registeredMethods.get(method);
+
+		if (registeredMethod == null) {
+			throw new GraphQLRequestExecutionException("The method '" + method.getDeclaringClass().getName() + "."
+					+ method.getName()
+					+ "' has not been stored in initialization phase of this InvocationHandler. Is this method coming from the right interface? (that is, the same as the one this InvocationHandler has been created with?)");
+		}
+
+		List<Object> params = new ArrayList<>();
+		Map<String, Object> bindParameters = new HashMap<>();
+		// The first parameter is the GraphQL request
+		params.add(registeredMethod.graphQLRequest);
+		// The we loop the given args match the registeredParameters.
+
+		// A first check, to begin with
+		if ((args == null ? 0 : args.length) != registeredMethod.registeredParameters.size()) {
+			throw new GraphQLRequestExecutionException("Error while invoking the '" + method.getDeclaringClass() + "."
+					+ method.getName() + "': the proxy invocation handler receives " + (args == null ? 0 : args.length)
+					+ ", but it has registered " + registeredMethod.registeredParameters.size() + " parameters");
+		}
+		if (args != null) {
+			for (int i = 0; i < args.length; i += 1) {
+				RegisteredParameter regParam = registeredMethod.registeredParameters.get(i);
+
+				if (regParam.bindParameterName == null) {
+					// This is regular parameter, that we must just add to the argument list
+					params.add(args[i]);
+				} else {
+					bindParameters.put(regParam.bindParameterName, args[i]);
+				}
+			} // for
+		}
+		params.add(bindParameters);
+
+		return registeredMethod.executorMethod.invoke(registeredMethod.executor, params.toArray());
+	}
 }

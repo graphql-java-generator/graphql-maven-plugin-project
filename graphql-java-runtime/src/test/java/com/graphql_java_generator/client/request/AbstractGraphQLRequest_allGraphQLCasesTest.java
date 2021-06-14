@@ -119,6 +119,9 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Partial_createHuman_Alias()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		Class<?> droidClass;
+		Class<?> humanClass;
+
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 		params = new HashMap<>();
@@ -136,8 +139,15 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals(2, graphQLRequest.aliasFields.size(), "Aliases are defined for Human and Character");
 		//
 		Iterator<Class<?>> it = graphQLRequest.aliasFields.keySet().iterator();
-		Class<?> droidClass = it.next();
-		Class<?> humanClass = it.next();
+		// The items in the keyset may be in any order. And we expet a Droid and a Human class:
+		Class<?> class1 = it.next();
+		if (class1 == Human.class) {
+			humanClass = class1;
+			droidClass = it.next();
+		} else {
+			droidClass = class1;
+			humanClass = it.next();
+		}
 		//
 		assertEquals(Human.class, humanClass);
 		assertEquals(5, graphQLRequest.aliasFields.get(humanClass).size());

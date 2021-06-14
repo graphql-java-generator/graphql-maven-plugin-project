@@ -12,27 +12,32 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.SubscriptionClientReactiveImpl;
+import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases;
+import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCasesInput;
+import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeExecutor;
+import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeResponse;
 import com.graphql_java_generator.client.domain.allGraphQLCases.Character;
 import com.graphql_java_generator.client.domain.allGraphQLCases.CharacterInput;
 import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
+import com.graphql_java_generator.client.domain.allGraphQLCases.FieldParameterInput;
 import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
 import com.graphql_java_generator.client.domain.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
@@ -109,7 +114,7 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 	/** A method that doesn't return the same type as the executor matching method */
 	@Test
-	void testError_missingBadReturnType() {
+	void testError_badReturnType() {
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseBadReturnType>(
@@ -142,32 +147,69 @@ class GraphQLRepositoryInvocationHandlerTest {
 				e.getMessage());
 	}
 
-	/** no requestName: the method name is the field name of the query type in the GraphQL schema */
+	/**
+	 * A method that contains a Map parameter is not allowed
+	 * 
+	 * @throws GraphQLRequestExecutionException
+	 */
 	@Test
-	void testInvoke_noRequestName_withObjectArray() throws GraphQLRequestExecutionException,
+	void testError_withMapParameter() throws GraphQLRequestExecutionException {
+		// Go, go, go
+		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithMap>(
+						GraphQLRepositoryTestCaseParameterWithMap.class, spyQueryExecutor, spyMutationExecutor,
+						spySubscriptionExecutor));
+
+		// Verification
+		assertTrue(e.getMessage().contains("Map and vararg (Object[]) are not allowed."), e.getMessage());
+	}
+
+	/**
+	 * A method that contains an Object... parameter is not allowed
+	 * 
+	 * @throws GraphQLRequestExecutionException
+	 */
+	@Test
+	void testError_withVarArgParameter() throws GraphQLRequestExecutionException {
+		// Go, go, go
+		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithVararg>(
+						GraphQLRepositoryTestCaseParameterWithVararg.class, spyQueryExecutor, spyMutationExecutor,
+						spySubscriptionExecutor));
+
+		// Verification
+		assertTrue(e.getMessage().contains("Map and vararg (Object[]) are not allowed."), e.getMessage());
+	}
+
+	/** no requestName: the method name is the field name of the query type in the GraphQL schema */
+	@SuppressWarnings("unchecked")
+	@Test
+	void testInvoke_partialRequest_noRequestName_withObjectArray() throws GraphQLRequestExecutionException,
 			GraphQLRequestPreparationException, NoSuchMethodException, SecurityException {
 		// Preparation
 		CharacterInput input = new CharacterInput();
 		Human h = Human.builder().withId("1").withHomePlanet("home planet").withName(" a name ").build();
-		doReturn(h).when(spyQueryExecutor).withOneOptionalParam(any(ObjectResponse.class), any(CharacterInput.class));
+		doReturn(h).when(spyQueryExecutor).withOneOptionalParamWithBindValues(any(ObjectResponse.class),
+				any(CharacterInput.class), any(Map.class));
 
 		// Go, go, go
 		Character verif = graphQLRepository.withOneOptionalParam(input);
 
 		// Verification
 		assertEquals(h, verif);
-		assertEquals("{appearsIn name}",
-				getRegisteredGraphQLRequest("withOneOptionalParam", CharacterInput.class, Object[].class));
+		assertEquals("{appearsIn name}", getRegisteredGraphQLRequest("withOneOptionalParam", CharacterInput.class));
 	}
 
 	/** with requestName: the method name is the field name of the query type in the GraphQL schema */
+	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_withRequestName_withObjectArray() throws GraphQLRequestExecutionException,
+	void testInvoke_partialRequest_withRequestName_withObjectArray() throws GraphQLRequestExecutionException,
 			GraphQLRequestPreparationException, NoSuchMethodException, SecurityException {
 		// Preparation
 		CharacterInput input = new CharacterInput();
 		Human h = Human.builder().withId("1").withHomePlanet("home planet").withName(" a name ").build();
-		doReturn(h).when(spyQueryExecutor).withOneOptionalParam(any(ObjectResponse.class), any(CharacterInput.class));
+		doReturn(h).when(spyQueryExecutor).withOneOptionalParamWithBindValues(any(ObjectResponse.class),
+				any(CharacterInput.class), any(Map.class));
 
 		// Go, go, go
 		Character verif = graphQLRepository.thisIsNotARequestName1(input);
@@ -175,23 +217,57 @@ class GraphQLRepositoryInvocationHandlerTest {
 		// Verification
 		assertEquals(h, verif);
 		assertEquals("{appearsIn name id}",
-				getRegisteredGraphQLRequest("thisIsNotARequestName1", CharacterInput.class, Object[].class));
+				getRegisteredGraphQLRequest("thisIsNotARequestName1", CharacterInput.class));
 	}
 
 	/** with requestName: the method name is the field name of the query type in the GraphQL schema */
+	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_withRequestName_withObjectArray_withBindParameterValues() throws GraphQLRequestExecutionException,
+	void testInvoke_partialRequest_withRequestName_withBindParameterValues() throws GraphQLRequestExecutionException,
 			GraphQLRequestPreparationException, NoSuchMethodException, SecurityException {
-		fail("not yet implemented");
+		// Preparation
+		AllFieldCasesInput input = new AllFieldCasesInput();
+		FieldParameterInput fieldParameterInput = FieldParameterInput.builder().withUppercase(true).build();
+		AllFieldCases allFieldCases = AllFieldCases.builder().withAFloat(123.3).build();
+		doReturn(allFieldCases).when(spyQueryExecutor).allFieldCasesWithBindValues(any(ObjectResponse.class),
+				any(AllFieldCasesInput.class), any(Map.class));
+
+		// Go, go, go
+		AllFieldCases verif = graphQLRepository.thisIsNotARequestName3(input, 666, fieldParameterInput);
+
+		ArgumentCaptor<AllFieldCasesInput> inputCaptor = ArgumentCaptor.forClass(AllFieldCasesInput.class);
+		ArgumentCaptor<Map<String, Object>> bindParamsCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(spyQueryExecutor).allFieldCasesWithBindValues(any(ObjectResponse.class), inputCaptor.capture(),
+				bindParamsCaptor.capture());
+		//
+		assertEquals(input, inputCaptor.getValue());
+		//
+		List<Map<String, Object>> params = bindParamsCaptor.getAllValues();
+		assertEquals(1, params.size(), "one invocation");
+		assertEquals(2, params.get(0).keySet().size(), "two bind parameters");
+		//
+		assertTrue(params.get(0).keySet().contains("nbItemsParam"));
+		assertTrue(params.get(0).keySet().contains("fieldParameterInput"));
+		//
+		assertEquals((long) 666, params.get(0).get("nbItemsParam"));
+		assertEquals(fieldParameterInput, params.get(0).get("fieldParameterInput"));
+
+		// Verification
+		assertEquals(allFieldCases, verif);
+		assertEquals("{listWithoutIdSubTypes(nbItems: &nbItemsParam, input:?fieldParameterInput)}",
+				getRegisteredGraphQLRequest("thisIsNotARequestName3", AllFieldCasesInput.class, long.class,
+						FieldParameterInput.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_withRequestName_withoutObjectArray()
+	void testInvoke_partialRequest_withRequestName_withoutObjectArray()
 			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
 		// Preparation
 		CharacterInput input = new CharacterInput();
 		Human h = Human.builder().withId("1").withHomePlanet("home planet").withName(" a name ").build();
-		doReturn(h).when(spyQueryExecutor).withOneOptionalParam(any(ObjectResponse.class), any(CharacterInput.class));
+		doReturn(h).when(spyQueryExecutor).withOneOptionalParamWithBindValues(any(ObjectResponse.class),
+				any(CharacterInput.class), any(Map.class));
 
 		// Go, go, go
 		Character verif = graphQLRepository.thisIsNotARequestName2(input);
@@ -204,30 +280,13 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_withRequestName_withMap_withRequestType()
-			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
-		// Preparation
-		CharacterInput input = new CharacterInput();
-		Human h = Human.builder().withId("1").withHomePlanet("home planet").withName(" a name ").build();
-		doReturn(h).when(spyQueryExecutor).withOneOptionalParamWithBindValues(any(ObjectResponse.class),
-				any(CharacterInput.class), any(Map.class));
-
-		// Go, go, go
-		Character verif = graphQLRepository.thisIsNotARequestName3(input, new HashMap<String, Object>());
-
-		// Verification
-		assertEquals(h, verif);
-		assertEquals("{appearsIn id name}",
-				getRegisteredGraphQLRequest("thisIsNotARequestName3", CharacterInput.class, Map.class));
-	}
-
-	@Test
-	void testInvoke_mutation_withoutRequestName()
+	void testInvoke_partialRequest_mutation_withoutRequestName()
 			throws NoSuchMethodException, SecurityException, GraphQLRequestExecutionException {
 		// Preparation
 		HumanInput input = new HumanInput();
 		Human h = Human.builder().withId("1").withHomePlanet("home planet").withName(" a name ").build();
-		doReturn(h).when(spyMutationExecutor).createHuman(any(ObjectResponse.class), any(HumanInput.class));
+		doReturn(h).when(spyMutationExecutor).createHumanWithBindValues(any(ObjectResponse.class),
+				any(HumanInput.class), any(Map.class));
 
 		// Go, go, go
 		Character verif = graphQLRepository.createHuman(input);
@@ -237,13 +296,15 @@ class GraphQLRepositoryInvocationHandlerTest {
 		assertEquals("{id}", getRegisteredGraphQLRequest("createHuman", HumanInput.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_mutation_withRequestName()
+	void testInvoke_partialRequest_mutation_withRequestName()
 			throws NoSuchMethodException, SecurityException, GraphQLRequestExecutionException {
 		// Preparation
 		HumanInput input = new HumanInput();
 		Human h = Human.builder().withId("1").withHomePlanet("home planet").withName(" a name ").build();
-		doReturn(h).when(spyMutationExecutor).createHuman(any(ObjectResponse.class), any(HumanInput.class));
+		doReturn(h).when(spyMutationExecutor).createHumanWithBindValues(any(ObjectResponse.class),
+				any(HumanInput.class), any(Map.class));
 
 		// Go, go, go
 		Character verif = graphQLRepository.thisIsAMutation(input);
@@ -255,7 +316,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_subscription() throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
+	void testInvoke_partialRequest_subscription()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
 		// Preparation
 		SubscriptionCallback<Human> callback = new SubscriptionCallback<Human>() {
 			@Override
@@ -276,8 +338,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 		};
 		Episode episode = Episode.JEDI;
 		SubscriptionClient subscriptionClient = new SubscriptionClientReactiveImpl(null, null);
-		doReturn(subscriptionClient).when(spySubscriptionExecutor).subscribeNewHumanForEpisode(
-				any(ObjectResponse.class), any(SubscriptionCallback.class), any(Episode.class));
+		doReturn(subscriptionClient).when(spySubscriptionExecutor).subscribeNewHumanForEpisodeWithBindValues(
+				any(ObjectResponse.class), any(SubscriptionCallback.class), any(Episode.class), any(Map.class));
 
 		// Go, go, go
 		SubscriptionClient verif = graphQLRepository.subscribeNewHumanForEpisode(callback, episode);
@@ -288,112 +350,99 @@ class GraphQLRepositoryInvocationHandlerTest {
 				getRegisteredGraphQLRequest("subscribeNewHumanForEpisode", SubscriptionCallback.class, Episode.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_fullRequest_query_withObjectArrayParameter()
+	void testInvoke_fullRequest_query()
 			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
 		// Preparation
 		MyQueryTypeResponse queryType = new MyQueryTypeResponse();
-		doReturn(queryType).when(spyQueryExecutor).exec(any(ObjectResponse.class), ArgumentMatchers.<Object[]>any());
+		doReturn(queryType).when(spyQueryExecutor).execWithBindValues(any(ObjectResponse.class), any(Map.class));
 
 		// Go, go, go
-		MyQueryType verif = graphQLRepository.fullQuery1("aBindParameterName", "aBindParameterValue");
+		MyQueryType verif = graphQLRepository.fullRequest1(true, "aBindParameterValue");
 
 		// Verification
 		assertEquals(queryType, verif);
 
-		ArgumentCaptor<Object[]> bindParamsCaptor = ArgumentCaptor.forClass(Object[].class);
-		verify(spyQueryExecutor).exec(any(ObjectResponse.class), bindParamsCaptor.capture());
-		List<Object[]> objects = bindParamsCaptor.getAllValues();
-		assertEquals(2, objects.size());
+		ArgumentCaptor<Map<String, Object>> bindParamsCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(spyQueryExecutor).execWithBindValues(any(ObjectResponse.class), bindParamsCaptor.capture());
+		List<Map<String, Object>> params = bindParamsCaptor.getAllValues();
+		assertEquals(1, params.size(), "one invocation");
+		assertEquals(2, params.get(0).keySet().size());
+		//
+		assertTrue(params.get(0).keySet().contains("uppercase"));
+		assertTrue(params.get(0).keySet().contains("valueParam"));
 		// Mockito changes the List<Object[]> objects to a List<String> at runtime:
-		assertEquals("aBindParameterName", objects.get(0));
-		assertEquals("aBindParameterValue", objects.get(1));
+		assertEquals(true, params.get(0).get("uppercase"));
+		assertEquals("aBindParameterValue", params.get(0).get("valueParam"));
 
-		assertEquals("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}",
-				getRegisteredGraphQLRequest("fullQuery1", Object[].class));
+		assertEquals("{directiveOnQuery  (uppercase: ?uppercase) @testDirective(value:&valueParam)}",
+				getRegisteredGraphQLRequest("fullRequest1", boolean.class, String.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_fullRequest_query_withParameter_withoutObjectArray()
+	void testInvoke_fullRequest_query_withRequestType()
 			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
 		// Preparation
 		MyQueryTypeResponse queryType = new MyQueryTypeResponse();
-		doReturn(queryType).when(spyQueryExecutor).exec(any(ObjectResponse.class), any(Object[].class));
+		doReturn(queryType).when(spyQueryExecutor).execWithBindValues(any(ObjectResponse.class), any(Map.class));
 
 		// Go, go, go
-		MyQueryType verif = graphQLRepository.fullQuery2("a param value");
+		MyQueryType verif = graphQLRepository.fullRequest2("aBindParameterValue", true);
 
 		// Verification
 		assertEquals(queryType, verif);
 
-		ArgumentCaptor<Object[]> bindParamsCaptor = ArgumentCaptor.forClass(Object[].class);
-		verify(spyQueryExecutor).exec(any(ObjectResponse.class), bindParamsCaptor.capture());
-		List<Object[]> objects = bindParamsCaptor.getAllValues();
-		assertEquals(2, objects.size());
+		ArgumentCaptor<Map<String, Object>> bindParamsCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(spyQueryExecutor).execWithBindValues(any(ObjectResponse.class), bindParamsCaptor.capture());
+		List<Map<String, Object>> params = bindParamsCaptor.getAllValues();
+		assertEquals(1, params.size(), "one invocation");
+		assertEquals(2, params.get(0).keySet().size());
+		//
+		assertTrue(params.get(0).keySet().contains("uppercase"));
+		assertTrue(params.get(0).keySet().contains("valueParam"));
 		// Mockito changes the List<Object[]> objects to a List<String> at runtime:
-		assertEquals("value", objects.get(0));
-		assertEquals("a param value", objects.get(1));
+		assertEquals(true, params.get(0).get("uppercase"));
+		assertEquals("aBindParameterValue", params.get(0).get("valueParam"));
 
-		assertEquals("{directiveOnQuery (uppercase: true) @testDirective(value:&value)}",
-				getRegisteredGraphQLRequest("fullQuery2", String.class));
-		fail("not yet implemented");
+		assertEquals("{directiveOnQuery  (uppercase: ?uppercase) @testDirective(value:&valueParam)}",
+				getRegisteredGraphQLRequest("fullRequest2", String.class, boolean.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
-	void testInvoke_fullRequest_query_withParameter_withObjectArray()
+	void testInvoke_fullRequest_mutation()
 			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
 		// Preparation
-		MyQueryTypeResponse queryType = new MyQueryTypeResponse();
-		doReturn(queryType).when(spyQueryExecutor).exec(any(ObjectResponse.class), any(Object[].class));
+		AnotherMutationTypeResponse mutation = new AnotherMutationTypeResponse();
+		HumanInput input = HumanInput.builder().withName("the name")
+				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).build();
+		doReturn(mutation).when(spyMutationExecutor).execWithBindValues(any(ObjectResponse.class), any(Map.class));
 
 		// Go, go, go
-		MyQueryType verif = graphQLRepository.fullQuery3("a param value");
+		AnotherMutationType verif = graphQLRepository.fullRequestMutation(input);
 
 		// Verification
-		assertEquals(queryType, verif);
+		assertEquals(mutation, verif);
 
-		ArgumentCaptor<Object[]> bindParamsCaptor = ArgumentCaptor.forClass(Object[].class);
-		verify(spyQueryExecutor).exec(any(ObjectResponse.class), bindParamsCaptor.capture());
-		List<Object[]> objects = bindParamsCaptor.getAllValues();
-		assertEquals(2, objects.size());
+		ArgumentCaptor<Map<String, Object>> bindParamsCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(spyMutationExecutor).execWithBindValues(any(ObjectResponse.class), bindParamsCaptor.capture());
+		List<Map<String, Object>> params = bindParamsCaptor.getAllValues();
+		assertEquals(1, params.size(), "one invocation");
+		assertEquals(1, params.get(0).keySet().size(), "one parameter");
+		//
+		assertTrue(params.get(0).keySet().contains("input"));
 		// Mockito changes the List<Object[]> objects to a List<String> at runtime:
-		assertEquals("value", objects.get(0));
-		assertEquals("a param value", objects.get(1));
+		assertEquals(input, params.get(0).get("input"));
 
-		assertEquals("{directiveOnQuery (uppercase: true) @testDirective(value:&value)}",
-				getRegisteredGraphQLRequest("fullQuery3", String.class));
-
+		assertEquals("mutation($input: HumanInput!) {createHuman(human: $input) {id name }}",
+				getRegisteredGraphQLRequest("fullRequestMutation", HumanInput.class));
 	}
 
 	@Test
-	void testInvoke_fullRequest_query_withParameterAsMap() {
-		fail("not yet implemented");
-	}
-
-	@Test
-	void testInvoke_fullRequest_mutation() {
-		// Preparation
-
-		// Go, go, go
-
-		// Verification
-
-		fail("Not yet implemented");
-	}
-
-	@Test
+	@Disabled
 	void testInvoke_fullRequest_subscription() {
-		// Preparation
-
-		// Go, go, go
-
-		// Verification
-
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testInvoke_fullRequest_withBindParameterValues() {
 		// Preparation
 
 		// Go, go, go

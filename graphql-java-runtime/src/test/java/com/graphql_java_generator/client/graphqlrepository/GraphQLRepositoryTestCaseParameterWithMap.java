@@ -1,5 +1,7 @@
 package com.graphql_java_generator.client.graphqlrepository;
 
+import java.util.Map;
+
 import com.graphql_java_generator.client.domain.allGraphQLCases.CharacterInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
@@ -9,10 +11,11 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * @author etienne-sf
  */
 @GraphQLRepository
-public interface GraphQLRepositoryTestCaseBadReturnType {
+public interface GraphQLRepositoryTestCaseParameterWithMap {
 
 	/** The return type of this method is not the good one */
 	@PartialRequest(request = "{appearsIn name}")
-	public Integer withOneOptionalParam(CharacterInput character) throws GraphQLRequestExecutionException;
+	public Integer withOneOptionalParam(CharacterInput character, Map<String, Object> bindParameters)
+			throws GraphQLRequestExecutionException;
 
 }
