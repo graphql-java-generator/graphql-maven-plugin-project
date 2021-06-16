@@ -1,6 +1,7 @@
 package org.allGraphQLCases.impl;
 
-import org.allGraphQLCases.PartialQueries;
+import org.allGraphQLCases.demo.PartialQueries;
+import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 

@@ -1,6 +1,7 @@
 package org.allGraphQLCases;
 
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.demo.Main;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

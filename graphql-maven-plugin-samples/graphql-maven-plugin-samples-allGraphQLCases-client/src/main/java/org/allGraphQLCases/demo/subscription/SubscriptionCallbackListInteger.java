@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.allGraphQLCases.subscription;
+package org.allGraphQLCases.demo.subscription;
 
 import java.util.List;
 

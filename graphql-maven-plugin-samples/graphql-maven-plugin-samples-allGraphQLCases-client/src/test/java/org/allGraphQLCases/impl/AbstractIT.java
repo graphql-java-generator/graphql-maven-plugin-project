@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
@@ -22,6 +21,7 @@ import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.demo.PartialQueries;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;

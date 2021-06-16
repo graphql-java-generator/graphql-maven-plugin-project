@@ -41,7 +41,8 @@ import java.lang.annotation.Target;
  * <LI>Then the method may add the Bind Parameter or GraphQL Variable values. These values must be marked with the
  * {@link BindParameter} annotation</LI> *
  * <LI>All the Bind Parameters and GraphQL Variables must have a matching parameter, in the GraphQL repository
- * method.</LI> </DIR></LI>
+ * method.</LI>
+ * <LI>Every method of this interface must throw the {@link GraphQLRequestExecutionException}</LI> </DIR></LI>
  * 
  * <LI>For Full Requests:<DIR>
  * <LI>Each parameter (if any) must be Bind Parameter or GraphQL Variable values. They must be marked with the
@@ -49,7 +50,8 @@ import java.lang.annotation.Target;
  * <LI>All the Bind Parameters and GraphQL Variables must have a matching parameter, in the GraphQL repository
  * method.</LI>
  * <LI>A Full Request may have no parameter. This occurs only if the given GraphQL query contains no Bind Parameter, nor
- * GraphQL variable.</LI> </DIR></LI>
+ * GraphQL variable.</LI>
+ * <LI>Every method of this interface must throw the {@link GraphQLRequestExecutionException}</LI></DIR></LI>
  * 
  * </DIR></LI> </DIR>
  * 

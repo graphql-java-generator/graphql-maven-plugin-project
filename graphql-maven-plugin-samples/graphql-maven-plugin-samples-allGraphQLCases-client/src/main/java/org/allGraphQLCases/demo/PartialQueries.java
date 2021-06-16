@@ -1,4 +1,4 @@
-package org.allGraphQLCases;
+package org.allGraphQLCases.demo;
 
 import java.util.Date;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
-import org.allGraphQLCases.impl.PartialDirectQueries;
-import org.allGraphQLCases.impl.PartialPreparedQueries;
+import org.allGraphQLCases.demo.impl.PartialDirectQueries;
+import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;

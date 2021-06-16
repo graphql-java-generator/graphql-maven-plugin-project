@@ -56,7 +56,7 @@
 								<customScalar>
 									<graphQLTypeName>else</graphQLTypeName>
 									<javaType>java.lang.String</javaType>
-									<graphQLScalarTypeGetter>org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
+									<graphQLScalarTypeGetter>org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>Long</graphQLTypeName>

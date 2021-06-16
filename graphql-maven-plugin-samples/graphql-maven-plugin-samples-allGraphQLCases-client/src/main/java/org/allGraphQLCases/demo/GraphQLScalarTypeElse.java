@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.allGraphQLCases;
+package org.allGraphQLCases.demo;
 
 import graphql.language.StringValue;
 import graphql.schema.Coercing;

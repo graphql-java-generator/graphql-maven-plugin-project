@@ -1,9 +1,8 @@
-package org.allGraphQLCases.impl;
+package org.allGraphQLCases.demo.impl;
 
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -16,6 +15,7 @@ import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.demo.PartialQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

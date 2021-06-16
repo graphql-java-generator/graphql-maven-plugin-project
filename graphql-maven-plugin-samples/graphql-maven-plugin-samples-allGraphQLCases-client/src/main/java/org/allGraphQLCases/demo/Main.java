@@ -1,4 +1,4 @@
-package org.allGraphQLCases;
+package org.allGraphQLCases.demo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.List;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.allGraphQLCases.impl.PartialDirectQueries;
-import org.allGraphQLCases.impl.PartialPreparedQueries;
-import org.allGraphQLCases.subscription.ExecSubscription;
+import org.allGraphQLCases.demo.impl.PartialDirectQueries;
+import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
+import org.allGraphQLCases.demo.subscription.ExecSubscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

@@ -160,6 +160,249 @@ public class ${object.classSimpleName}Executor  implements GraphQLSubscriptionEx
 	}
 
 	/**
+	 * This method takes a <B>full request</B> definition, and executes the it against the GraphQL server. That is,
+	 * the request contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * For instance:
+	 * 
+	 * <PRE>
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("heroParam", heroParamValue);
+	 * params.put("skip", Boolean.FALSE);
+	 * 
+	 * MyQueryType response = myQueryType.execWithBindValues(
+	 * 		"subscription {subscribeToNewHeros {id name}}",
+	 * 		params);
+	 * Character c = response.getHero();
+	 * </PRE>
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the ${object.requestType}, in the native GraphQL format (see here above). It must ommit the
+	 *            query/mutation/subscription keyword, and start by the first { that follows.It may contain directives,
+	 *            as explained in the GraphQL specs.
+	 * @param parameters
+	 *            The map of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}. The key is the parameter name, as
+	 *            defined in the query (in the above sample: heroParam is an optional parameter and skip is a mandatory
+	 *            one). The value is the parameter vale in its Java type (for instance a {@link Date} for the
+	 *            {@link GraphQLScalarTypeDate}). The parameters which value is missing in this map will no be
+	 *            transmitted toward the GraphQL server.
+	 * @return
+	 *            The {@link SubscriptionClient} that allows the caller to act on the subscribed subscription.
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public SubscriptionClient execWithBindValues(String queryResponseDef, 
+			SubscriptionCallback<?> subscriptionCallback,
+			Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
+		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return exec(objectResponse, subscriptionCallback, parameters);
+	}
+
+	/**
+	 * This method takes a <B>full request</B> definition, and executes it against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * For instance:
+	 * 
+	 * <PRE>
+	 * MyQueryType response = myQueryType.execWithBindValues(
+	 * 		"{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}",
+	 * 		"heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * Character c = response.getHero();
+	 * </PRE>
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above). It must ommit the
+	 *            query/mutation/subscription keyword, and start by the first { that follows.It may contain directives,
+	 *            as explained in the GraphQL specs.
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @return
+	 *            The {@link SubscriptionClient} that allows the caller to act on the subscribed subscription.
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public SubscriptionClient exec(String queryResponseDef, 
+			SubscriptionCallback<?> subscriptionCallback,
+			Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
+		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
+		return execWithBindValues(objectResponse, subscriptionCallback, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * This method takes a <B>full request</B> definition, and executes it against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * For instance:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * 
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	objectResponse = myQueryType.getResponseBuilder()
+	 * 			.withQueryResponseDef("{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("heroParam", heroParamValue);
+	 * params.put("skip", Boolean.FALSE);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * MyQueryType response = queryType.execWithBindValues(objectResponse, params);
+	 * Character c = response.getHero();
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @return
+	 *            The {@link SubscriptionClient} that allows the caller to act on the subscribed subscription.
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public SubscriptionClient execWithBindValues(ObjectResponse objectResponse, 
+			SubscriptionCallback<?> subscriptionCallback,
+			Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
+		if (logger.isTraceEnabled()) {
+			if (parameters == null) {
+				logger.trace("Executing ${object.requestType} without parameters");
+			} else {
+				StringBuffer sb = new StringBuffer("Executing root ${object.requestType} with parameters: ");
+				boolean addComma = false;
+				for (String key : parameters.keySet()) {
+					sb.append(key).append(":").append(parameters.get(key));
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
+				logger.trace(sb.toString());
+			}
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing ${object.requestType} '${object.name}'");
+		}
+
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+
+		// The subscription may only subscribe to one subscription at a time, even for a full request.
+		// Let's check that, and find the type returned by this subscription (that is: the type of the notifications
+		// that will be received)
+		//
+		// The subscription must query only one subscription
+		if (objectResponse.getQuery() != null || objectResponse.getMutation() != null) {
+			throw new GraphQLRequestExecutionException(
+					"This method may only be called for subscription, but the given GraphQL request is a "
+							+ (objectResponse.getQuery() != null ? "query" : "mutation"));
+		}
+		if (objectResponse.getSubscription() == null) {
+			throw new GraphQLRequestExecutionException(
+					"This method may only be called for subscription, but the given GraphQL request has no mutation field");
+		}
+		if (objectResponse.getSubscription().getFields().size() != 1) {
+			throw new GraphQLRequestExecutionException(
+					"Full Request for subscription may only be called for one subscription, but the given GraphQL request has "
+							+ objectResponse.getSubscription().getFields().size() + " subscription fields");
+		}
+		
+		// It's probably possible to do much better than this switch!  
+		// If someone has a better idea to call this parameterized method, please come in.
+		switch (objectResponse.getSubscription().getFields().get(0).getName()) {
+#foreach ($field in $object.fields)
+#if ($field.name != "__typename")
+		case "${field.name}":
+			return configuration.getQueryExecutor().execute(objectResponse, parameters,
+					(SubscriptionCallback<${field.type.classSimpleName}>) subscriptionCallback, 
+					${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end.class, 
+					${field.type.classSimpleName}.class);
+#end
+#end
+		default:
+			throw new GraphQLRequestExecutionException("Unexpected field name: " + objectResponse.getSubscription().getFields().get(0).getName());
+		}
+	}
+
+	/**
+	 * This method takes a <B>full request</B> definition, and executes it against the GraphQL server. That is,
+	 * the query contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * For instance:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * 
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	 objectResponse = myQueryType.getResponseBuilder()
+	 * 			.withQueryResponseDef("{hero(param:?heroParam) @include(if:true) {id name @skip(if: ?skip) appearsIn friends {id name}}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * MyQueryType response = queryType.exec(objectResponse, "heroParam", heroParamValue, "skip", Boolean.FALSE);
+	 * Character c = response.getHero();
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @return
+	 *            The {@link SubscriptionClient} that allows the caller to act on the subscribed subscription.
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	public SubscriptionClient exec(ObjectResponse objectResponse, 
+			SubscriptionCallback<?> subscriptionCallback,
+			Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
+		return execWithBindValues(objectResponse, subscriptionCallback, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * Get the {@link com.graphql_java_generator.client.request.Builder} for a <B>full request</B>, as expected by the exec 
+	 * and execWithBindValues methods.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
+		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class);
+	}
+
+	/**
 	 * Get the {@link GraphQLRequest} for <B>full request</B>. For instance:
 	 * <PRE>
 	 * GraphQLRequest request = new GraphQLRequest(fullRequest);

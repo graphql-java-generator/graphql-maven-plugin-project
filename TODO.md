@@ -3,6 +3,13 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * Check the exec and execWithBindValues of the subscription type
+    * Does it work ? What value should be given to the subscriptionCallback parameter ?
+    * Check the comments (add the subscriptionCallback parameter doc)
+    * Add the Callback parameter
+    * Check the method content
+    * Add a check that only one field is given (done at execution time, should be also done at preparation time)
+* Check comment of the executor method. The line below is wrong:
+    * the request contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
 * Remove RequestParametersFormat, that seems useless
 * Implement a Spring BeanDefinitionRegistryPostProcessor to load the GraphQL repositories
 * Add three annotations, to mark the query, the mutation and the subscription type

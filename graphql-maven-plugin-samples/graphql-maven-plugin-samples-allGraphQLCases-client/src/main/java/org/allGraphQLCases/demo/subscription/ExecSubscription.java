@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.allGraphQLCases.subscription;
+package org.allGraphQLCases.demo.subscription;
 
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.allGraphQLCases.impl;
+package org.allGraphQLCases.demo.impl;
 
 import java.util.Date;
 import java.util.List;
