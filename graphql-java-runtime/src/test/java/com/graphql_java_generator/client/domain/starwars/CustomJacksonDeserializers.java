@@ -21,97 +21,97 @@ import java.util.List;
  */
 public class CustomJacksonDeserializers {
 	
-	public static class List__Field extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.__Field>> {
-		private static final long serialVersionUID = 1L;
-		public List__Field() {
-			super(
-				null,
-				true,
-				com.graphql_java_generator.client.domain.starwars.__Field.class,
-				null
-			);
-		}
-	}
-
-	public static class List__Directive extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.__Directive>> {
-		private static final long serialVersionUID = 1L;
-		public List__Directive() {
-			super(
-				null,
-				true,
-				com.graphql_java_generator.client.domain.starwars.__Directive.class,
-				null
-			);
-		}
-	}
-
-	public static class List__DirectiveLocation extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.__DirectiveLocation>> {
-		private static final long serialVersionUID = 1L;
-		public List__DirectiveLocation() {
-			super(
-				null,
-				true,
-				com.graphql_java_generator.client.domain.starwars.__DirectiveLocation.class,
-				null
-			);
-		}
-	}
-
-	public static class List__InputValue extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.__InputValue>> {
+	public static class List__InputValue extends AbstractCustomJacksonDeserializer<List<__InputValue>> {
 		private static final long serialVersionUID = 1L;
 		public List__InputValue() {
 			super(
 				null,
 				true,
-				com.graphql_java_generator.client.domain.starwars.__InputValue.class,
+				__InputValue.class,
 				null
 			);
 		}
 	}
 
-	public static class ListEpisode extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.Episode>> {
-		private static final long serialVersionUID = 1L;
-		public ListEpisode() {
-			super(
-				null,
-				true,
-				com.graphql_java_generator.client.domain.starwars.Episode.class,
-				null
-			);
-		}
-	}
-
-	public static class ListCharacter extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.Character>> {
-		private static final long serialVersionUID = 1L;
-		public ListCharacter() {
-			super(
-				null,
-				true,
-				com.graphql_java_generator.client.domain.starwars.Character.class,
-				null
-			);
-		}
-	}
-
-	public static class List__Type extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.__Type>> {
+	public static class List__Type extends AbstractCustomJacksonDeserializer<List<__Type>> {
 		private static final long serialVersionUID = 1L;
 		public List__Type() {
 			super(
 				null,
 				true,
-				com.graphql_java_generator.client.domain.starwars.__Type.class,
+				__Type.class,
 				null
 			);
 		}
 	}
 
-	public static class List__EnumValue extends AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.starwars.__EnumValue>> {
+	public static class List__Directive extends AbstractCustomJacksonDeserializer<List<__Directive>> {
+		private static final long serialVersionUID = 1L;
+		public List__Directive() {
+			super(
+				null,
+				true,
+				__Directive.class,
+				null
+			);
+		}
+	}
+
+	public static class List__Field extends AbstractCustomJacksonDeserializer<List<__Field>> {
+		private static final long serialVersionUID = 1L;
+		public List__Field() {
+			super(
+				null,
+				true,
+				__Field.class,
+				null
+			);
+		}
+	}
+
+	public static class ListEpisode extends AbstractCustomJacksonDeserializer<List<Episode>> {
+		private static final long serialVersionUID = 1L;
+		public ListEpisode() {
+			super(
+				null,
+				true,
+				Episode.class,
+				null
+			);
+		}
+	}
+
+	public static class List__EnumValue extends AbstractCustomJacksonDeserializer<List<__EnumValue>> {
 		private static final long serialVersionUID = 1L;
 		public List__EnumValue() {
 			super(
 				null,
 				true,
-				com.graphql_java_generator.client.domain.starwars.__EnumValue.class,
+				__EnumValue.class,
+				null
+			);
+		}
+	}
+
+	public static class ListCharacter extends AbstractCustomJacksonDeserializer<List<Character>> {
+		private static final long serialVersionUID = 1L;
+		public ListCharacter() {
+			super(
+				null,
+				true,
+				Character.class,
+				null
+			);
+		}
+	}
+
+	public static class List__DirectiveLocation extends AbstractCustomJacksonDeserializer<List<__DirectiveLocation>> {
+		private static final long serialVersionUID = 1L;
+		public List__DirectiveLocation() {
+			super(
+				null,
+				true,
+				__DirectiveLocation.class,
 				null
 			);
 		}

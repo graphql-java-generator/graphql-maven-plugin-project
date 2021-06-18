@@ -32,37 +32,8 @@ public class AllFieldCases implements WithID {
 	 * server. The key is the alias name, the value is the deserialiazed value (taking into account custom scalars,
 	 * lists, ...)
 	 */
+	@com.graphql_java_generator.annotation.GraphQLIgnore
 	public Map<String, Object> aliasValues = new HashMap<>();
-
-	/**
-	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
-	 * alias value is read from the json.
-	 * 
-	 * @param aliasName
-	 * @param aliasDeserializedValue
-	 */
-	public void setAliasValue(String aliasName, Object aliasDeserializedValue) {
-		aliasValues.put(aliasName, aliasDeserializedValue);
-	}
-
-	/**
-	 * Retrieves the value for the given alias, as it has been received for this object in the GraphQL response. <BR/>
-	 * This method <B>should not be used for Custom Scalars</B>, as the parser doesn't know if this alias is a custom
-	 * scalar, and which custom scalar to use at deserialization time. In most case, a value will then be provided by
-	 * this method with a basis json deserialization, but this value won't be the proper custom scalar value.
-	 * 
-	 * @param alias
-	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 *             If the value can not be parsed
-	 */
-	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
-		Object value = aliasValues.get(alias);
-		if (value instanceof GraphQLRequestExecutionException)
-			throw (GraphQLRequestExecutionException) value;
-		else
-			return value;
-	}
 
 	public AllFieldCases() {
 		// No action
@@ -353,6 +324,38 @@ public class AllFieldCases implements WithID {
 	@Override
 	public String get__typename() {
 		return __typename;
+	}
+
+	/**
+	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * alias value is read from the json.
+	 * 
+	 * @param aliasName
+	 * @param aliasDeserializedValue
+	 */
+	@Override
+	public void setAliasValue(String aliasName, Object aliasDeserializedValue) {
+		aliasValues.put(aliasName, aliasDeserializedValue);
+	}
+
+	/**
+	 * Retrieves the value for the given alias, as it has been received for this object in the GraphQL response. <BR/>
+	 * This method <B>should not be used for Custom Scalars</B>, as the parser doesn't know if this alias is a custom
+	 * scalar, and which custom scalar to use at deserialization time. In most case, a value will then be provided by
+	 * this method with a basis json deserialization, but this value won't be the proper custom scalar value.
+	 * 
+	 * @param alias
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 *             If the value can not be parsed
+	 */
+	@Override
+	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
+		Object value = aliasValues.get(alias);
+		if (value instanceof GraphQLRequestExecutionException)
+			throw (GraphQLRequestExecutionException) value;
+		else
+			return value;
 	}
 
 	@Override

@@ -73,6 +73,13 @@
 			<artifactId>graphql-java-extended-scalars</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<!-- This dependency is necessary for tests only. But, in order to check in eclipse that the generated code compiles, 
+				we need to add it to the compilation classpath -->
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>

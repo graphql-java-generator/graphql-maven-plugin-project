@@ -24,7 +24,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("skip");
-		directive.setPackageName("com.graphql_java_generator.client.domain.allGraphQLCases");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"if", null, "Boolean", true, 0, false));
@@ -38,7 +38,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("include");
-		directive.setPackageName("com.graphql_java_generator.client.domain.allGraphQLCases");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"if", null, "Boolean", true, 0, false));
@@ -52,7 +52,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("defer");
-		directive.setPackageName("com.graphql_java_generator.client.domain.allGraphQLCases");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"if", null, "Boolean", true, 0, false));
@@ -64,7 +64,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("deprecated");
-		directive.setPackageName("com.graphql_java_generator.client.domain.allGraphQLCases");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"reason", null, "String", false, 0, false));
@@ -73,11 +73,20 @@ public class DirectiveRegistryInitializer {
 		directiveRegistry.registerDirective(directive);
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Creating Directive IDScalarDirective
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
+		directive = new Directive();
+		directive.setName("IDScalarDirective");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
+		directive.getDirectiveLocations().add(DirectiveLocation.SCALAR);
+		directiveRegistry.registerDirective(directive);
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Creating Directive RelayConnection
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("RelayConnection");
-		directive.setPackageName("com.graphql_java_generator.client.domain.allGraphQLCases");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		directiveRegistry.registerDirective(directive);
 
@@ -86,7 +95,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("testDirective");
-		directive.setPackageName("com.graphql_java_generator.client.domain.allGraphQLCases");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"value", null, "String", true, 0, false));
@@ -138,7 +147,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("anotherTestDirective");
-		directive.setPackageName("com.graphql_java_generator.client.domain.allGraphQLCases");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration");
 		directive.getDirectiveLocations().add(DirectiveLocation.QUERY);
 		directive.getDirectiveLocations().add(DirectiveLocation.MUTATION);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);

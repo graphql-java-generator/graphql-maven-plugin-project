@@ -2,6 +2,7 @@
 package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -22,6 +22,7 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -41,9 +42,17 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @GraphQLObjectType("MyQueryType")
 public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java_generator.client.GraphQLRequestObject {
 
-	private ObjectMapper mapper = null;
+	private GraphQLObjectMapper extensionMapper = null;
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
+
+	/**
+	 * This map contains the deserialiazed values for the alias, as parsed from the json response from the GraphQL
+	 * server. The key is the alias name, the value is the deserialiazed value (taking into account custom scalars,
+	 * lists, ...)
+	 */
+	@com.graphql_java_generator.annotation.GraphQLIgnore
+	Map<String, Object> aliasValues = new HashMap<>();
 
 	public MyQueryType() {
 		// No action
@@ -67,10 +76,10 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	Character withOneMandatoryParam;
 
 	@JsonProperty("withOneMandatoryParamDefaultValue")
-	@GraphQLInputParameters(names = { "nbResultat" }, types = { "Int" }, mandatories = { true }, listDepths = {
+	@GraphQLInputParameters(names = { "intParam" }, types = { "Int" }, mandatories = { true }, listDepths = {
 			0 }, itemsMandatory = { false })
-	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	Character withOneMandatoryParamDefaultValue;
+	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	Integer withOneMandatoryParamDefaultValue;
 
 	@JsonProperty("withTwoMandatoryParamDefaultVal")
 	@GraphQLInputParameters(names = { "theHero", "num" }, types = { "DroidInput", "Int" }, mandatories = { true,
@@ -86,7 +95,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 
 	@JsonProperty("withListOfList")
 	@GraphQLInputParameters(names = { "matrix" }, types = { "Float" }, mandatories = { true }, listDepths = {
-			1 }, itemsMandatory = { false })
+			2 }, itemsMandatory = { false })
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
 	AllFieldCases withListOfList;
 
@@ -142,8 +151,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 
 	/**
 	 * ############################################################################### queries to check directive
-	 * behavior Returns the value, and potentially the anotherValue of the @testDirective directive set on
-	 * the @directiveOnQuery. List is null if the directive is not present.
+	 * behavior Returns the value, and potentially the anotherValue of the @testDirective directive set on the
+	 * directiveOnQuery query. List is null if the directive is not present.
 	 */
 	@JsonProperty("directiveOnQuery")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListString.class)
@@ -187,6 +196,22 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 			0 }, itemsMandatory = { false })
 	@GraphQLScalar(fieldName = "issue53", graphQLTypeSimpleName = "Date", javaClass = Date.class)
 	Date issue53;
+
+	/**
+	 * issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no
+	 * method with a simple float parameter
+	 */
+	@JsonProperty("issue82Float")
+	@GraphQLInputParameters(names = { "aFloat" }, types = { "Float" }, mandatories = { true }, listDepths = {
+			0 }, itemsMandatory = { false })
+	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = Double.class)
+	Double issue82Float;
+
+	@JsonProperty("issue82ID")
+	@GraphQLInputParameters(names = { "aID" }, types = { "ID" }, mandatories = { true }, listDepths = {
+			0 }, itemsMandatory = { false })
+	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = String.class)
+	String issue82ID;
 
 	/**
 	 * ############################################################################### A particular test, based on the
@@ -235,11 +260,11 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 		return withOneMandatoryParam;
 	}
 
-	public void setWithOneMandatoryParamDefaultValue(Character withOneMandatoryParamDefaultValue) {
+	public void setWithOneMandatoryParamDefaultValue(Integer withOneMandatoryParamDefaultValue) {
 		this.withOneMandatoryParamDefaultValue = withOneMandatoryParamDefaultValue;
 	}
 
-	public Character getWithOneMandatoryParamDefaultValue() {
+	public Integer getWithOneMandatoryParamDefaultValue() {
 		return withOneMandatoryParamDefaultValue;
 	}
 
@@ -347,8 +372,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 
 	/**
 	 * ############################################################################### queries to check directive
-	 * behavior Returns the value, and potentially the anotherValue of the @testDirective directive set on
-	 * the @directiveOnQuery. List is null if the directive is not present.
+	 * behavior Returns the value, and potentially the anotherValue of the @testDirective directive set on the
+	 * directiveOnQuery query. List is null if the directive is not present.
 	 */
 	public void setDirectiveOnQuery(List<String> directiveOnQuery) {
 		this.directiveOnQuery = directiveOnQuery;
@@ -356,8 +381,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 
 	/**
 	 * ############################################################################### queries to check directive
-	 * behavior Returns the value, and potentially the anotherValue of the @testDirective directive set on
-	 * the @directiveOnQuery. List is null if the directive is not present.
+	 * behavior Returns the value, and potentially the anotherValue of the @testDirective directive set on the
+	 * directiveOnQuery query. List is null if the directive is not present.
 	 */
 	public List<String> getDirectiveOnQuery() {
 		return directiveOnQuery;
@@ -422,6 +447,30 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	}
 
 	/**
+	 * issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no
+	 * method with a simple float parameter
+	 */
+	public void setIssue82Float(Double issue82Float) {
+		this.issue82Float = issue82Float;
+	}
+
+	/**
+	 * issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no
+	 * method with a simple float parameter
+	 */
+	public Double getIssue82Float() {
+		return issue82Float;
+	}
+
+	public void setIssue82ID(String issue82ID) {
+		this.issue82ID = issue82ID;
+	}
+
+	public String getIssue82ID() {
+		return issue82ID;
+	}
+
+	/**
 	 * ############################################################################### A particular test, based on the
 	 * github schema: a query that returns the query object. It introduces complexity in the code generation, that must
 	 * be tested
@@ -463,6 +512,36 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 		return __typename;
 	}
 
+	/**
+	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * alias value is read from the json.
+	 * 
+	 * @param aliasName
+	 * @param aliasDeserializedValue
+	 */
+	public void setAliasValue(String aliasName, Object aliasDeserializedValue) {
+		aliasValues.put(aliasName, aliasDeserializedValue);
+	}
+
+	/**
+	 * Retrieves the value for the given alias, as it has been received for this object in the GraphQL response. <BR/>
+	 * This method <B>should not be used for Custom Scalars</B>, as the parser doesn't know if this alias is a custom
+	 * scalar, and which custom scalar to use at deserialization time. In most case, a value will then be provided by
+	 * this method with a basis json deserialization, but this value won't be the proper custom scalar value.
+	 * 
+	 * @param alias
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 *             If the value can not be parsed
+	 */
+	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
+		Object value = aliasValues.get(alias);
+		if (value instanceof GraphQLRequestExecutionException)
+			throw (GraphQLRequestExecutionException) value;
+		else
+			return value;
+	}
+
 	@Override
 	public String toString() {
 		return "MyQueryType {" + "withoutParameters: " + withoutParameters + ", " + "withOneOptionalParam: "
@@ -473,9 +552,9 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 				+ allFieldCases + ", " + "unionTest: " + unionTest + ", " + "error: " + error + ", " + "aBreak: "
 				+ aBreak + ", " + "directiveOnQuery: " + directiveOnQuery + ", " + "directiveOnField: "
 				+ directiveOnField + ", " + "connectionWithoutParameters: " + connectionWithoutParameters + ", "
-				+ "connectionOnHuman: " + connectionOnHuman + ", " + "issue53: " + issue53 + ", " + "relay: " + relay
-				+ ", " + "__schema: " + __schema + ", " + "__type: " + __type + ", " + "__typename: " + __typename
-				+ "}";
+				+ "connectionOnHuman: " + connectionOnHuman + ", " + "issue53: " + issue53 + ", " + "issue82Float: "
+				+ issue82Float + ", " + "issue82ID: " + issue82ID + ", " + "relay: " + relay + ", " + "__schema: "
+				+ __schema + ", " + "__type: " + __type + ", " + "__typename: " + __typename + "}";
 	}
 
 	/**
@@ -493,11 +572,13 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 																		"directiveOnField"), ConnectionWithoutParameters(
 																				"connectionWithoutParameters"), ConnectionOnHuman(
 																						"connectionOnHuman"), Issue53(
-																								"issue53"), Relay(
-																										"relay"), __schema(
-																												"__schema"), __type(
-																														"__type"), __typename(
-																																"__typename");
+																								"issue53"), Issue82Float(
+																										"issue82Float"), Issue82ID(
+																												"issue82ID"), Relay(
+																														"relay"), __schema(
+																																"__schema"), __type(
+																																		"__type"), __typename(
+																																				"__typename");
 
 		private String fieldName;
 
@@ -528,7 +609,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 		private List<Character> withoutParameters;
 		private Character withOneOptionalParam;
 		private Character withOneMandatoryParam;
-		private Character withOneMandatoryParamDefaultValue;
+		private Integer withOneMandatoryParamDefaultValue;
 		private Droid withTwoMandatoryParamDefaultVal;
 		private Character withEnum;
 		private AllFieldCases withListOfList;
@@ -542,6 +623,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 		private List<Character> connectionWithoutParameters;
 		private List<Human> connectionOnHuman;
 		private Date issue53;
+		private Double issue82Float;
+		private String issue82ID;
 		private MyQueryType relay;
 		private __Schema __schema;
 		private __Type __type;
@@ -561,7 +644,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 			return this;
 		}
 
-		public Builder withWithOneMandatoryParamDefaultValue(Character withOneMandatoryParamDefaultValue) {
+		public Builder withWithOneMandatoryParamDefaultValue(Integer withOneMandatoryParamDefaultValue) {
 			this.withOneMandatoryParamDefaultValue = withOneMandatoryParamDefaultValue;
 			return this;
 		}
@@ -631,6 +714,16 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 			return this;
 		}
 
+		public Builder withIssue82Float(Double issue82Float) {
+			this.issue82Float = issue82Float;
+			return this;
+		}
+
+		public Builder withIssue82ID(String issue82ID) {
+			this.issue82ID = issue82ID;
+			return this;
+		}
+
 		public Builder withRelay(MyQueryType relay) {
 			this.relay = relay;
 			return this;
@@ -665,6 +758,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 			_object.setConnectionWithoutParameters(connectionWithoutParameters);
 			_object.setConnectionOnHuman(connectionOnHuman);
 			_object.setIssue53(issue53);
+			_object.setIssue82Float(issue82Float);
+			_object.setIssue82ID(issue82ID);
 			_object.setRelay(relay);
 			_object.set__schema(__schema);
 			_object.set__type(__type);
@@ -688,11 +783,12 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 		super(graphqlEndpoint, client);
 	}
 
-	private ObjectMapper getMapper() {
-		if (mapper == null) {
-			mapper = new ObjectMapper();
+	private GraphQLObjectMapper getExtensionMapper() {
+		if (extensionMapper == null) {
+			extensionMapper = new GraphQLObjectMapper(
+					"org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration", null);
 		}
-		return mapper;
+		return extensionMapper;
 	}
 
 	public JsonNode getExtensions() {
@@ -711,8 +807,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
 		if (extensionsAsMap == null) {
-			ObjectMapper mapper = new ObjectMapper();
-			extensionsAsMap = mapper.convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+			extensionsAsMap = getExtensionMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
 			});
 		}
 		return extensionsAsMap;
@@ -732,7 +827,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
 		JsonNode node = getExtensionsAsMap().get(key);
-		return (node == null) ? null : getMapper().treeToValue(node, t);
+		return (node == null) ? null : getExtensionMapper().treeToValue(node, t);
 	}
 
 	/**
@@ -814,8 +909,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParametersWithBindValues(
-			String queryResponseDef, Map<String, Object> parameters)
+	public List<Character> withoutParametersWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withoutParametersWithBindValues(queryResponseDef, parameters);
 	}
@@ -828,8 +922,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParameters(
-			String queryResponseDef, Object... paramsAndValues)
+	public List<Character> withoutParameters(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withoutParameters(queryResponseDef, paramsAndValues);
 	}
@@ -842,8 +935,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParametersWithBindValues(
-			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public List<Character> withoutParametersWithBindValues(ObjectResponse objectResponse,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.withoutParametersWithBindValues(objectResponse, parameters);
 	}
 
@@ -855,8 +948,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withoutParameters(
-			ObjectResponse objectResponse, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public List<Character> withoutParameters(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.withoutParameters(objectResponse, paramsAndValues);
 	}
 
@@ -892,8 +985,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParamWithBindValues(
-			String queryResponseDef, CharacterInput character, Map<String, Object> parameters)
+	public Character withOneOptionalParamWithBindValues(String queryResponseDef, CharacterInput character,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withOneOptionalParamWithBindValues(queryResponseDef, character, parameters);
 	}
@@ -906,8 +999,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParam(
-			String queryResponseDef, CharacterInput character, Object... paramsAndValues)
+	public Character withOneOptionalParam(String queryResponseDef, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withOneOptionalParam(queryResponseDef, character, paramsAndValues);
 	}
@@ -920,9 +1012,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParamWithBindValues(
-			ObjectResponse objectResponse, CharacterInput character, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public Character withOneOptionalParamWithBindValues(ObjectResponse objectResponse, CharacterInput character,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.withOneOptionalParamWithBindValues(objectResponse, character, parameters);
 	}
 
@@ -934,9 +1025,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneOptionalParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneOptionalParam(
-			ObjectResponse objectResponse, CharacterInput character, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public Character withOneOptionalParam(ObjectResponse objectResponse, CharacterInput character,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.withOneOptionalParam(objectResponse, character, paramsAndValues);
 	}
 
@@ -972,8 +1062,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamWithBindValues(
-			String queryResponseDef, CharacterInput character, Map<String, Object> parameters)
+	public Character withOneMandatoryParamWithBindValues(String queryResponseDef, CharacterInput character,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withOneMandatoryParamWithBindValues(queryResponseDef, character, parameters);
 	}
@@ -986,8 +1076,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParam(
-			String queryResponseDef, CharacterInput character, Object... paramsAndValues)
+	public Character withOneMandatoryParam(String queryResponseDef, CharacterInput character, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withOneMandatoryParam(queryResponseDef, character, paramsAndValues);
 	}
@@ -1000,9 +1089,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamWithBindValues(
-			ObjectResponse objectResponse, CharacterInput character, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public Character withOneMandatoryParamWithBindValues(ObjectResponse objectResponse, CharacterInput character,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.withOneMandatoryParamWithBindValues(objectResponse, character, parameters);
 	}
 
@@ -1014,9 +1102,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withOneMandatoryParam", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParam(
-			ObjectResponse objectResponse, CharacterInput character, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public Character withOneMandatoryParam(ObjectResponse objectResponse, CharacterInput character,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.withOneMandatoryParam(objectResponse, character, paramsAndValues);
 	}
 
@@ -1051,11 +1138,11 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	@Override
 	@Deprecated
-	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValueWithBindValues(
-			String queryResponseDef, Integer nbResultat, Map<String, Object> parameters)
+	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	public java.lang.Integer withOneMandatoryParamDefaultValueWithBindValues(String queryResponseDef, Integer intParam,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.withOneMandatoryParamDefaultValueWithBindValues(queryResponseDef, nbResultat, parameters);
+		return super.withOneMandatoryParamDefaultValueWithBindValues(queryResponseDef, intParam, parameters);
 	}
 
 	/**
@@ -1065,11 +1152,10 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	@Override
 	@Deprecated
-	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValue(
-			String queryResponseDef, Integer nbResultat, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.withOneMandatoryParamDefaultValue(queryResponseDef, nbResultat, paramsAndValues);
+	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	public java.lang.Integer withOneMandatoryParamDefaultValue(String queryResponseDef, Integer intParam,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return super.withOneMandatoryParamDefaultValue(queryResponseDef, intParam, paramsAndValues);
 	}
 
 	/**
@@ -1079,11 +1165,10 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	@Override
 	@Deprecated
-	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValueWithBindValues(
-			ObjectResponse objectResponse, Integer nbResultat, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
-		return super.withOneMandatoryParamDefaultValueWithBindValues(objectResponse, nbResultat, parameters);
+	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	public java.lang.Integer withOneMandatoryParamDefaultValueWithBindValues(ObjectResponse objectResponse,
+			Integer intParam, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+		return super.withOneMandatoryParamDefaultValueWithBindValues(objectResponse, intParam, parameters);
 	}
 
 	/**
@@ -1093,11 +1178,10 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	@Override
 	@Deprecated
-	@GraphQLNonScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withOneMandatoryParamDefaultValue(
-			ObjectResponse objectResponse, Integer nbResultat, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
-		return super.withOneMandatoryParamDefaultValue(objectResponse, nbResultat, paramsAndValues);
+	@GraphQLScalar(fieldName = "withOneMandatoryParamDefaultValue", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
+	public java.lang.Integer withOneMandatoryParamDefaultValue(ObjectResponse objectResponse, Integer intParam,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+		return super.withOneMandatoryParamDefaultValue(objectResponse, intParam, paramsAndValues);
 	}
 
 	/**
@@ -1132,8 +1216,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultValWithBindValues(
-			String queryResponseDef, DroidInput theHero, Integer num, Map<String, Object> parameters)
+	public Droid withTwoMandatoryParamDefaultValWithBindValues(String queryResponseDef, DroidInput theHero, Integer num,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withTwoMandatoryParamDefaultValWithBindValues(queryResponseDef, theHero, num, parameters);
 	}
@@ -1146,9 +1230,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultVal(
-			String queryResponseDef, DroidInput theHero, Integer num, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public Droid withTwoMandatoryParamDefaultVal(String queryResponseDef, DroidInput theHero, Integer num,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withTwoMandatoryParamDefaultVal(queryResponseDef, theHero, num, paramsAndValues);
 	}
 
@@ -1160,9 +1243,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultValWithBindValues(
-			ObjectResponse objectResponse, DroidInput theHero, Integer num, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public Droid withTwoMandatoryParamDefaultValWithBindValues(ObjectResponse objectResponse, DroidInput theHero,
+			Integer num, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.withTwoMandatoryParamDefaultValWithBindValues(objectResponse, theHero, num, parameters);
 	}
 
@@ -1174,9 +1256,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withTwoMandatoryParamDefaultVal", graphQLTypeSimpleName = "Droid", javaClass = Droid.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Droid withTwoMandatoryParamDefaultVal(
-			ObjectResponse objectResponse, DroidInput theHero, Integer num, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public Droid withTwoMandatoryParamDefaultVal(ObjectResponse objectResponse, DroidInput theHero, Integer num,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.withTwoMandatoryParamDefaultVal(objectResponse, theHero, num, paramsAndValues);
 	}
 
@@ -1212,8 +1293,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnumWithBindValues(
-			String queryResponseDef, Episode episode, Map<String, Object> parameters)
+	public Character withEnumWithBindValues(String queryResponseDef, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withEnumWithBindValues(queryResponseDef, episode, parameters);
 	}
@@ -1226,8 +1306,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnum(String queryResponseDef,
-			Episode episode, Object... paramsAndValues)
+	public Character withEnum(String queryResponseDef, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withEnum(queryResponseDef, episode, paramsAndValues);
 	}
@@ -1240,9 +1319,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnumWithBindValues(
-			ObjectResponse objectResponse, Episode episode, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public Character withEnumWithBindValues(ObjectResponse objectResponse, Episode episode,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.withEnumWithBindValues(objectResponse, episode, parameters);
 	}
 
@@ -1254,8 +1332,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withEnum", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character withEnum(ObjectResponse objectResponse,
-			Episode episode, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public Character withEnum(ObjectResponse objectResponse, Episode episode, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.withEnum(objectResponse, episode, paramsAndValues);
 	}
 
@@ -1290,8 +1368,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases withListOfListWithBindValues(
-			String queryResponseDef, List<List<List<Double>>> matrix, Map<String, Object> parameters)
+	public AllFieldCases withListOfListWithBindValues(String queryResponseDef, List<List<Double>> matrix,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withListOfListWithBindValues(queryResponseDef, matrix, parameters);
 	}
@@ -1304,8 +1382,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases withListOfList(
-			String queryResponseDef, List<List<List<Double>>> matrix, Object... paramsAndValues)
+	public AllFieldCases withListOfList(String queryResponseDef, List<List<Double>> matrix, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withListOfList(queryResponseDef, matrix, paramsAndValues);
 	}
@@ -1318,9 +1395,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases withListOfListWithBindValues(
-			ObjectResponse objectResponse, List<List<List<Double>>> matrix, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public AllFieldCases withListOfListWithBindValues(ObjectResponse objectResponse, List<List<Double>> matrix,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.withListOfListWithBindValues(objectResponse, matrix, parameters);
 	}
 
@@ -1332,9 +1408,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withListOfList", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases withListOfList(
-			ObjectResponse objectResponse, List<List<List<Double>>> matrix, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public AllFieldCases withListOfList(ObjectResponse objectResponse, List<List<Double>> matrix,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.withListOfList(objectResponse, matrix, paramsAndValues);
 	}
 
@@ -1370,8 +1445,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withListWithBindValues(
-			String queryResponseDef, String firstName, List<CharacterInput> characters, Map<String, Object> parameters)
+	public List<Character> withListWithBindValues(String queryResponseDef, String firstName,
+			List<CharacterInput> characters, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withListWithBindValues(queryResponseDef, firstName, characters, parameters);
 	}
@@ -1384,9 +1459,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withList(String queryResponseDef,
-			String firstName, List<CharacterInput> characters, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public List<Character> withList(String queryResponseDef, String firstName, List<CharacterInput> characters,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.withList(queryResponseDef, firstName, characters, paramsAndValues);
 	}
 
@@ -1398,9 +1472,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withListWithBindValues(
-			ObjectResponse objectResponse, String firstName, List<CharacterInput> characters,
-			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public List<Character> withListWithBindValues(ObjectResponse objectResponse, String firstName,
+			List<CharacterInput> characters, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.withListWithBindValues(objectResponse, firstName, characters, parameters);
 	}
 
@@ -1412,9 +1485,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "withList", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> withList(
-			ObjectResponse objectResponse, String firstName, List<CharacterInput> characters, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public List<Character> withList(ObjectResponse objectResponse, String firstName, List<CharacterInput> characters,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.withList(objectResponse, firstName, characters, paramsAndValues);
 	}
 
@@ -1449,8 +1521,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCasesWithBindValues(
-			String queryResponseDef, AllFieldCasesInput input, Map<String, Object> parameters)
+	public AllFieldCases allFieldCasesWithBindValues(String queryResponseDef, AllFieldCasesInput input,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.allFieldCasesWithBindValues(queryResponseDef, input, parameters);
 	}
@@ -1463,8 +1535,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCases(String queryResponseDef,
-			AllFieldCasesInput input, Object... paramsAndValues)
+	public AllFieldCases allFieldCases(String queryResponseDef, AllFieldCasesInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.allFieldCases(queryResponseDef, input, paramsAndValues);
 	}
@@ -1477,9 +1548,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCasesWithBindValues(
-			ObjectResponse objectResponse, AllFieldCasesInput input, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public AllFieldCases allFieldCasesWithBindValues(ObjectResponse objectResponse, AllFieldCasesInput input,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.allFieldCasesWithBindValues(objectResponse, input, parameters);
 	}
 
@@ -1491,9 +1561,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "allFieldCases", graphQLTypeSimpleName = "AllFieldCases", javaClass = AllFieldCases.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases allFieldCases(
-			ObjectResponse objectResponse, AllFieldCasesInput input, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public AllFieldCases allFieldCases(ObjectResponse objectResponse, AllFieldCasesInput input,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.allFieldCases(objectResponse, input, paramsAndValues);
 	}
 
@@ -1529,9 +1598,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTestWithBindValues(
-			String queryResponseDef, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
-			Map<String, Object> parameters)
+	public List<AnyCharacter> unionTestWithBindValues(String queryResponseDef, HumanInput human1, HumanInput human2,
+			DroidInput droid1, DroidInput droid2, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.unionTestWithBindValues(queryResponseDef, human1, human2, droid1, droid2, parameters);
 	}
@@ -1544,9 +1612,9 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTest(
-			String queryResponseDef, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public List<AnyCharacter> unionTest(String queryResponseDef, HumanInput human1, HumanInput human2,
+			DroidInput droid1, DroidInput droid2, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.unionTest(queryResponseDef, human1, human2, droid1, droid2, paramsAndValues);
 	}
 
@@ -1558,9 +1626,9 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTestWithBindValues(
-			ObjectResponse objectResponse, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
-			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public List<AnyCharacter> unionTestWithBindValues(ObjectResponse objectResponse, HumanInput human1,
+			HumanInput human2, DroidInput droid1, DroidInput droid2, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		return super.unionTestWithBindValues(objectResponse, human1, human2, droid1, droid2, parameters);
 	}
 
@@ -1572,9 +1640,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "unionTest", graphQLTypeSimpleName = "AnyCharacter", javaClass = AnyCharacter.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.AnyCharacter> unionTest(
-			ObjectResponse objectResponse, HumanInput human1, HumanInput human2, DroidInput droid1, DroidInput droid2,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public List<AnyCharacter> unionTest(ObjectResponse objectResponse, HumanInput human1, HumanInput human2,
+			DroidInput droid1, DroidInput droid2, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.unionTest(objectResponse, human1, human2, droid1, droid2, paramsAndValues);
 	}
 
@@ -1609,8 +1676,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character errorWithBindValues(
-			String queryResponseDef, String errorLabel, Map<String, Object> parameters)
+	public Character errorWithBindValues(String queryResponseDef, String errorLabel, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.errorWithBindValues(queryResponseDef, errorLabel, parameters);
 	}
@@ -1623,8 +1689,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character error(String queryResponseDef,
-			String errorLabel, Object... paramsAndValues)
+	public Character error(String queryResponseDef, String errorLabel, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.error(queryResponseDef, errorLabel, paramsAndValues);
 	}
@@ -1637,9 +1702,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character errorWithBindValues(
-			ObjectResponse objectResponse, String errorLabel, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public Character errorWithBindValues(ObjectResponse objectResponse, String errorLabel,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.errorWithBindValues(objectResponse, errorLabel, parameters);
 	}
 
@@ -1651,8 +1715,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "error", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character error(ObjectResponse objectResponse,
-			String errorLabel, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public Character error(ObjectResponse objectResponse, String errorLabel, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.error(objectResponse, errorLabel, paramsAndValues);
 	}
 
@@ -1687,8 +1751,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreakWithBindValues(String queryResponseDef,
-			Map<String, Object> parameters)
+	public _break aBreakWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.aBreakWithBindValues(queryResponseDef, parameters);
 	}
@@ -1701,8 +1764,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreak(String queryResponseDef,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public _break aBreak(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.aBreak(queryResponseDef, paramsAndValues);
 	}
 
@@ -1714,8 +1777,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreakWithBindValues(
-			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public _break aBreakWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		return super.aBreakWithBindValues(objectResponse, parameters);
 	}
 
@@ -1727,8 +1790,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "aBreak", graphQLTypeSimpleName = "break", javaClass = _break.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases._break aBreak(ObjectResponse objectResponse,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public _break aBreak(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.aBreak(objectResponse, paramsAndValues);
 	}
 
@@ -1840,8 +1903,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnFieldWithBindValues(
-			String queryResponseDef, Map<String, Object> parameters)
+	public Character directiveOnFieldWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.directiveOnFieldWithBindValues(queryResponseDef, parameters);
 	}
@@ -1854,8 +1916,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnField(String queryResponseDef,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public Character directiveOnField(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.directiveOnField(queryResponseDef, paramsAndValues);
 	}
 
@@ -1867,8 +1929,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnFieldWithBindValues(
-			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public Character directiveOnFieldWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		return super.directiveOnFieldWithBindValues(objectResponse, parameters);
 	}
 
@@ -1880,8 +1942,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "directiveOnField", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.Character directiveOnField(
-			ObjectResponse objectResponse, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public Character directiveOnField(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.directiveOnField(objectResponse, paramsAndValues);
 	}
 
@@ -1917,8 +1979,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> connectionWithoutParametersWithBindValues(
-			String queryResponseDef, Map<String, Object> parameters)
+	public List<Character> connectionWithoutParametersWithBindValues(String queryResponseDef,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.connectionWithoutParametersWithBindValues(queryResponseDef, parameters);
 	}
@@ -1931,8 +1993,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> connectionWithoutParameters(
-			String queryResponseDef, Object... paramsAndValues)
+	public List<Character> connectionWithoutParameters(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.connectionWithoutParameters(queryResponseDef, paramsAndValues);
 	}
@@ -1945,8 +2006,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> connectionWithoutParametersWithBindValues(
-			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public List<Character> connectionWithoutParametersWithBindValues(ObjectResponse objectResponse,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.connectionWithoutParametersWithBindValues(objectResponse, parameters);
 	}
 
@@ -1958,8 +2019,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionWithoutParameters", graphQLTypeSimpleName = "Character", javaClass = Character.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Character> connectionWithoutParameters(
-			ObjectResponse objectResponse, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public List<Character> connectionWithoutParameters(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.connectionWithoutParameters(objectResponse, paramsAndValues);
 	}
 
@@ -1995,8 +2056,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Human> connectionOnHumanWithBindValues(
-			String queryResponseDef, String planet, Episode episode, Map<String, Object> parameters)
+	public List<Human> connectionOnHumanWithBindValues(String queryResponseDef, String planet, Episode episode,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.connectionOnHumanWithBindValues(queryResponseDef, planet, episode, parameters);
 	}
@@ -2009,9 +2070,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Human> connectionOnHuman(
-			String queryResponseDef, String planet, Episode episode, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public List<Human> connectionOnHuman(String queryResponseDef, String planet, Episode episode,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.connectionOnHuman(queryResponseDef, planet, episode, paramsAndValues);
 	}
 
@@ -2023,9 +2083,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Human> connectionOnHumanWithBindValues(
-			ObjectResponse objectResponse, String planet, Episode episode, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
+	public List<Human> connectionOnHumanWithBindValues(ObjectResponse objectResponse, String planet, Episode episode,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		return super.connectionOnHumanWithBindValues(objectResponse, planet, episode, parameters);
 	}
 
@@ -2037,9 +2096,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "connectionOnHuman", graphQLTypeSimpleName = "Human", javaClass = Human.class)
-	public List<com.graphql_java_generator.client.domain.allGraphQLCases.Human> connectionOnHuman(
-			ObjectResponse objectResponse, String planet, Episode episode, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public List<Human> connectionOnHuman(ObjectResponse objectResponse, String planet, Episode episode,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return super.connectionOnHuman(objectResponse, planet, episode, paramsAndValues);
 	}
 
@@ -2149,9 +2207,160 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	@Override
 	@Deprecated
+	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = Double.class)
+	public java.lang.Double issue82FloatWithBindValues(String queryResponseDef, Double aFloat,
+			Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return super.issue82FloatWithBindValues(queryResponseDef, aFloat, parameters);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = Double.class)
+	public java.lang.Double issue82Float(String queryResponseDef, Double aFloat, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return super.issue82Float(queryResponseDef, aFloat, paramsAndValues);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = Double.class)
+	public java.lang.Double issue82FloatWithBindValues(ObjectResponse objectResponse, Double aFloat,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+		return super.issue82FloatWithBindValues(objectResponse, aFloat, parameters);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	@GraphQLScalar(fieldName = "issue82Float", graphQLTypeSimpleName = "Float", javaClass = Double.class)
+	public java.lang.Double issue82Float(ObjectResponse objectResponse, Double aFloat, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
+		return super.issue82Float(objectResponse, aFloat, paramsAndValues);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	public com.graphql_java_generator.client.request.Builder getIssue82FloatResponseBuilder()
+			throws GraphQLRequestPreparationException {
+		return super.getIssue82FloatResponseBuilder();
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	public GraphQLRequest getIssue82FloatGraphQLRequest(String partialRequest)
+			throws GraphQLRequestPreparationException {
+		return super.getIssue82FloatGraphQLRequest(partialRequest);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = String.class)
+	public java.lang.String issue82IDWithBindValues(String queryResponseDef, String aID, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return super.issue82IDWithBindValues(queryResponseDef, aID, parameters);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = String.class)
+	public java.lang.String issue82ID(String queryResponseDef, String aID, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		return super.issue82ID(queryResponseDef, aID, paramsAndValues);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = String.class)
+	public java.lang.String issue82IDWithBindValues(ObjectResponse objectResponse, String aID,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+		return super.issue82IDWithBindValues(objectResponse, aID, parameters);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	@GraphQLScalar(fieldName = "issue82ID", graphQLTypeSimpleName = "ID", javaClass = String.class)
+	public java.lang.String issue82ID(ObjectResponse objectResponse, String aID, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
+		return super.issue82ID(objectResponse, aID, paramsAndValues);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	public com.graphql_java_generator.client.request.Builder getIssue82IDResponseBuilder()
+			throws GraphQLRequestPreparationException {
+		return super.getIssue82IDResponseBuilder();
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
+	public GraphQLRequest getIssue82IDGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
+		return super.getIssue82IDGraphQLRequest(partialRequest);
+	}
+
+	/**
+	 * This method is deprecated: please use {@link MyQueryTypeExecutor} class instead of this class, to execute this
+	 * method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
+	 * version.
+	 */
+	@Override
+	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relayWithBindValues(
-			String queryResponseDef, Map<String, Object> parameters)
+	public MyQueryType relayWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.relayWithBindValues(queryResponseDef, parameters);
 	}
@@ -2164,8 +2373,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relay(String queryResponseDef,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public MyQueryType relay(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.relay(queryResponseDef, paramsAndValues);
 	}
 
@@ -2177,8 +2386,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relayWithBindValues(
-			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public MyQueryType relayWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		return super.relayWithBindValues(objectResponse, parameters);
 	}
 
@@ -2190,8 +2399,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "relay", graphQLTypeSimpleName = "MyQueryType", javaClass = MyQueryType.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType relay(ObjectResponse objectResponse,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public MyQueryType relay(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.relay(objectResponse, paramsAndValues);
 	}
 
@@ -2226,8 +2435,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schemaWithBindValues(
-			String queryResponseDef, Map<String, Object> parameters)
+	public __Schema __schemaWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.__schemaWithBindValues(queryResponseDef, parameters);
 	}
@@ -2240,8 +2448,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schema(String queryResponseDef,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public __Schema __schema(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.__schema(queryResponseDef, paramsAndValues);
 	}
 
@@ -2253,8 +2461,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schemaWithBindValues(
-			ObjectResponse objectResponse, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public __Schema __schemaWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		return super.__schemaWithBindValues(objectResponse, parameters);
 	}
 
@@ -2266,8 +2474,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = __Schema.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Schema __schema(ObjectResponse objectResponse,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public __Schema __schema(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.__schema(objectResponse, paramsAndValues);
 	}
 
@@ -2302,8 +2510,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __typeWithBindValues(String queryResponseDef,
-			String name, Map<String, Object> parameters)
+	public __Type __typeWithBindValues(String queryResponseDef, String name, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.__typeWithBindValues(queryResponseDef, name, parameters);
 	}
@@ -2316,8 +2523,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __type(String queryResponseDef, String name,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public __Type __type(String queryResponseDef, String name, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.__type(queryResponseDef, name, paramsAndValues);
 	}
 
@@ -2329,8 +2536,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __typeWithBindValues(
-			ObjectResponse objectResponse, String name, Map<String, Object> parameters)
+	public __Type __typeWithBindValues(ObjectResponse objectResponse, String name, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		return super.__typeWithBindValues(objectResponse, name, parameters);
 	}
@@ -2343,8 +2549,8 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	@Override
 	@Deprecated
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = __Type.class)
-	public com.graphql_java_generator.client.domain.allGraphQLCases.__Type __type(ObjectResponse objectResponse,
-			String name, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public __Type __type(ObjectResponse objectResponse, String name, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.__type(objectResponse, name, paramsAndValues);
 	}
 

@@ -24,7 +24,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("skip");
-		directive.setPackageName("com.graphql_java_generator.client.domain.forum");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.forum_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"if", null, "Boolean", true, 0, false));
@@ -38,7 +38,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("include");
-		directive.setPackageName("com.graphql_java_generator.client.domain.forum");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.forum_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"if", null, "Boolean", true, 0, false));
@@ -52,7 +52,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("defer");
-		directive.setPackageName("com.graphql_java_generator.client.domain.forum");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.forum_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"if", null, "Boolean", true, 0, false));
@@ -64,7 +64,7 @@ public class DirectiveRegistryInitializer {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		directive = new Directive();
 		directive.setName("deprecated");
-		directive.setPackageName("com.graphql_java_generator.client.domain.forum");
+		directive.setPackageName("org.graphql.mavenplugin.junittest.forum_client_springconfiguration");
 		directive.getArguments().add(
 			InputParameter.newHardCodedParameter(
 					"reason", null, "String", false, 0, false));

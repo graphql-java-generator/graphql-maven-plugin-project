@@ -4,9 +4,9 @@ package com.graphql_java_generator.server.domain.forum;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
@@ -23,24 +23,6 @@ public interface DataFetchersDelegatePost {
 	/**
 	 * This method loads the data for Post.author. 
 	 * <BR/>
-	 * <BR/>
-	 * 
-	 * @param dataFetchingEnvironment 
-	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
-	 * @param origin 
-	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the author attribute
-	 *    of the <I>origin</I>, which is an instance of {Post}. It depends on your data modle, but it typically contains 
-	 *    the id to use in the query.
-	 * @throws NoSuchElementException 
-	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
-	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
-	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
-	 */
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin);
-
-	/**
-	 * This method loads the data for Post.author. 
-	 * <BR/>
 	 * For optimization, this method returns a CompletableFuture. This allows to use 
 	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
 	 * number of requests to the server.<BR/>
@@ -49,9 +31,9 @@ public interface DataFetchersDelegatePost {
 	 * You can implements this method like this:
 	 * <PRE>
 	 * @Override
-	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, DataLoader<UUID, Member> dataLoader, Human origin) {
-	 *     List<UUID> friendIds = origin.getFriendIds();
-	 *     DataLoader<UUID, CharacterImpl> dataLoader = environment.getDataLoader("Character");
+	 * public CompletableFuture<List<Character>> friends(DataFetchingEnvironment environment, DataLoader<String, Member> dataLoader, Human origin) {
+	 *     List<java.lang.String> friendIds = origin.getFriendIds();
+	 *     DataLoader<java.lang.String, CharacterImpl> dataLoader = environment.getDataLoader("Character");
 	 *     return dataLoader.loadMany(friendIds);
 	 * }
 	 * </PRE>
@@ -73,7 +55,25 @@ public interface DataFetchersDelegatePost {
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
-	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, Member> dataLoader, Post origin);
+	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<String, Member> dataLoader, Post origin);
+ 
+	/**
+	 * This method loads the data for Post.author. 
+	 * <BR/>
+	 * 
+	 * @param dataFetchingEnvironment 
+	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
+		 * @param origin 
+	 *    The object from which the field is fetch. In other word: the aim of this data fetcher is to fetch the author attribute
+	 *    of the <I>origin</I>, which is an instance of {Post}. It depends on your data modle, but it typically contains 
+	 *    the id to use in the query.
+			 * @throws NoSuchElementException 
+	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
+	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
+	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
+	 */
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin);
+
 
 	/**
 	 * This method loads a list of ${dataFetcher.field.name}, based on the list of id to be fetched. This method is used by
@@ -86,6 +86,6 @@ public interface DataFetchersDelegatePost {
 	 *            A list of ID's id
 	 * @return A list of IDs
 	 */
-	public List<Post> batchLoader(List<UUID> keys);
+	public List<Post> batchLoader(List<String> keys);
 
 }

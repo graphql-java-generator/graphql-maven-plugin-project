@@ -2,7 +2,6 @@
 package com.graphql_java_generator.server.domain.allGraphQLCases;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -13,10 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.server.util.BatchLoaderDelegate;	
 
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.String;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * This is the default implementation for BathLoaderDelegate. It is implemented for each object of the GraphQL model
@@ -24,11 +21,11 @@ import java.util.Date;
  * It can be used in a DataFetcherDelegate implementation in this way : 
  * <PRE>
  * &#64;Override
- * public CompletableFuture<List<WithID>> friends(DataFetchingEnvironment environment, DataLoader<UUID, WithID> dataLoader,
+ * public CompletableFuture<List<WithID>> friends(DataFetchingEnvironment environment, DataLoader<java.util.UUID, WithID> dataLoader,
  * 		WithID source) {
  * 	logger.debug("Executing characterImpl.friends, with this character: {}", source.getId().toString());
- * 	List<UUID> friendIds = graphQLUtil
- * 			.convertListByteArrayToListUUID(characterRepository.findFriendsId(source.getId()));
+ * 	List<java.util.UUID> friendIds = graphQLUtil
+ * 			.convertListByteArrayToList(characterRepository.findFriendsId(source.getId()));
  * 	return dataLoader.loadMany(friendIds);
  * }
  *

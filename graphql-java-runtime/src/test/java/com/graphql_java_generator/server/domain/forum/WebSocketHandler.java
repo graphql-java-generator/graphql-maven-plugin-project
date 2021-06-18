@@ -4,6 +4,7 @@ package com.graphql_java_generator.server.domain.forum;
 import static java.util.Collections.singletonList;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.reactivestreams.Publisher;
@@ -25,37 +26,45 @@ import graphql.GraphQL;
 import graphql.execution.instrumentation.ChainedInstrumentation;
 import graphql.execution.instrumentation.Instrumentation;
 import graphql.execution.instrumentation.tracing.TracingInstrumentation;
+import graphql.schema.GraphQLSchema;
 
 public class WebSocketHandler extends TextWebSocketHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketHandler.class);
 
-	GraphQLProvider graphQLProvider;
-	private final AtomicReference<Subscription> subscriptionRef;
+	GraphQLSchema graphQLSchema;
+	GraphQLWiring graphQLWiring;
 
-	public WebSocketHandler(GraphQLProvider graphQLProvider) {
-		this.graphQLProvider = graphQLProvider;
-		subscriptionRef = new AtomicReference<>();
+	// Key (String) is SessionId
+	private final HashMap<String, Subscription> subscriptionRef = new HashMap<>();
+
+	public WebSocketHandler(GraphQLWiring graphQLWiring, GraphQLSchema graphQLSchema) {
+		this.graphQLWiring = graphQLWiring;
+		this.graphQLSchema = graphQLSchema;
 	}
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		log.info("Websocket connection established");
+		log.debug("Websocket connection established: {}", session.getId());
 	}
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		log.info("Closing subscription ");
-		Subscription subscription = subscriptionRef.get();
-		if (subscription != null) {
-			subscription.cancel();
+		synchronized (subscriptionRef) {
+			Subscription subscription = subscriptionRef.remove(session.getId());
+			if (subscription != null) {
+				subscription.cancel();
+			} else {
+				log.warn("Failed to find subscription");
+			}
 		}
+		log.debug("Websocket connection closed: {} / Memorized session: {}", session.getId(), subscriptionRef.size());
 	}
 
 	@Override
 	protected void handleTextMessage(WebSocketSession webSocketSession, TextMessage message) throws Exception {
 		String graphqlQuery = message.getPayload();
-		log.info("Websocket said {}", graphqlQuery);
+		log.trace("Websocket said {}", graphqlQuery);
 
 		QueryParameters parameters = QueryParameters.from(graphqlQuery);
 
@@ -68,8 +77,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		// In order to have subscriptions in graphql-java you MUST use the
 		// SubscriptionExecutionStrategy strategy.
 		//
-		GraphQL graphQL = GraphQL.newGraphQL(graphQLProvider.getGraphQLSchema()).instrumentation(instrumentation)
-				.build();
+		GraphQL graphQL = GraphQL.newGraphQL(graphQLSchema).instrumentation(instrumentation).build();
 
 		ExecutionResult executionResult = graphQL.execute(executionInput);
 
@@ -77,24 +85,30 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 		publisher.subscribe(new Subscriber<ExecutionResult>() {
 
+			private final String sessionId = webSocketSession.getId();
+			private Subscription subscription;
+
 			@Override
 			public void onSubscribe(Subscription s) {
 				log.debug("Executing subscription");
-				subscriptionRef.set(s);
-				request(1);
+				synchronized (subscriptionRef) {
+					subscriptionRef.put(sessionId, s);
+				}
+				subscription = s;
+				subscription.request(1);
 			}
 
 			@Override
 			public void onNext(ExecutionResult er) {
-				log.debug("Sending new notification");
 				try {
 					Object data = er.getData();
 					String json = JsonKit.toJsonString(data);
+					log.trace("Sending new notification: {}", json);
 					webSocketSession.sendMessage(new TextMessage(json));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				request(1);
+				subscription.request(1);
 			}
 
 			@Override
@@ -109,7 +123,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 			@Override
 			public void onComplete() {
-				log.info("Subscription complete");
+				log.debug("Subscription complete");
 				try {
 					webSocketSession.close();
 				} catch (IOException e) {
@@ -117,13 +131,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				}
 			}
 		});
-	}
-
-	private void request(int n) {
-		Subscription subscription = subscriptionRef.get();
-		if (subscription != null) {
-			subscription.request(n);
-		}
 	}
 
 }

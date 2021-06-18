@@ -4,9 +4,9 @@ package com.graphql_java_generator.server.domain.forum;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
@@ -31,6 +31,6 @@ public interface DataFetchersDelegateMember {
 	 *            A list of ID's id
 	 * @return A list of IDs
 	 */
-	public List<Member> batchLoader(List<UUID> keys);
+	public List<Member> batchLoader(List<String> keys);
 
 }

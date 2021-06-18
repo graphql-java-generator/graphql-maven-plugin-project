@@ -4,9 +4,9 @@ package com.graphql_java_generator.server.domain.forum;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
@@ -20,20 +20,21 @@ import java.util.Date;
  */
 public interface DataFetchersDelegateSubscriptionType {
 	
+ 
 	/**
 	 * This method loads the data for SubscriptionType.subscribeToNewPost. 
-	 * <BR/>
 	 * <BR/>
 	 * 
 	 * @param dataFetchingEnvironment 
 	 *     The GraphQL {@link DataFetchingEnvironment}. It gives you access to the full GraphQL context for this DataFetcher
-	 * @param boardName 
+			 * @param boardName 
 	 *     The input parameter sent in the query by the GraphQL consumer, as defined in the GraphQL schema.
-	 * @throws NoSuchElementException 
+		 * @throws NoSuchElementException 
 	 *     This method may return a {@link NoSuchElementException} exception. In this case, the exception is trapped 
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
-	public Publisher<Post> subscribeToNewPost(DataFetchingEnvironment dataFetchingEnvironment, String  boardName);
+	public Publisher<Post> subscribeToNewPost(DataFetchingEnvironment dataFetchingEnvironment, String boardName);
+
 
 }

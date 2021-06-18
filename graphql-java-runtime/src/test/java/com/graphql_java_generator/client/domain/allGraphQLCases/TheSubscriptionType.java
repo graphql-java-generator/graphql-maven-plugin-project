@@ -2,6 +2,7 @@
 package com.graphql_java_generator.client.domain.allGraphQLCases;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -22,6 +22,7 @@ import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -44,9 +45,17 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 		implements com.graphql_java_generator.client.GraphQLRequestObject {
 
-	private ObjectMapper mapper = null;
+	private GraphQLObjectMapper extensionMapper = null;
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
+
+	/**
+	 * This map contains the deserialiazed values for the alias, as parsed from the json response from the GraphQL
+	 * server. The key is the alias name, the value is the deserialiazed value (taking into account custom scalars,
+	 * lists, ...)
+	 */
+	@com.graphql_java_generator.annotation.GraphQLIgnore
+	Map<String, Object> aliasValues = new HashMap<>();
 
 	public TheSubscriptionType() {
 		// No action
@@ -136,6 +145,36 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 		return __typename;
 	}
 
+	/**
+	 * This method is called during the json deserialization process, by the {@link GraphQLObjectMapper}, each time an
+	 * alias value is read from the json.
+	 * 
+	 * @param aliasName
+	 * @param aliasDeserializedValue
+	 */
+	public void setAliasValue(String aliasName, Object aliasDeserializedValue) {
+		aliasValues.put(aliasName, aliasDeserializedValue);
+	}
+
+	/**
+	 * Retrieves the value for the given alias, as it has been received for this object in the GraphQL response. <BR/>
+	 * This method <B>should not be used for Custom Scalars</B>, as the parser doesn't know if this alias is a custom
+	 * scalar, and which custom scalar to use at deserialization time. In most case, a value will then be provided by
+	 * this method with a basis json deserialization, but this value won't be the proper custom scalar value.
+	 * 
+	 * @param alias
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 *             If the value can not be parsed
+	 */
+	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
+		Object value = aliasValues.get(alias);
+		if (value instanceof GraphQLRequestExecutionException)
+			throw (GraphQLRequestExecutionException) value;
+		else
+			return value;
+	}
+
 	@Override
 	public String toString() {
 		return "TheSubscriptionType {" + "subscribeNewHumanForEpisode: " + subscribeNewHumanForEpisode + ", "
@@ -220,11 +259,12 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 		super(graphqlEndpoint, client);
 	}
 
-	private ObjectMapper getMapper() {
-		if (mapper == null) {
-			mapper = new ObjectMapper();
+	private GraphQLObjectMapper getExtensionMapper() {
+		if (extensionMapper == null) {
+			extensionMapper = new GraphQLObjectMapper(
+					"org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration", null);
 		}
-		return mapper;
+		return extensionMapper;
 	}
 
 	public JsonNode getExtensions() {
@@ -243,8 +283,7 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	 */
 	public Map<String, JsonNode> getExtensionsAsMap() {
 		if (extensionsAsMap == null) {
-			ObjectMapper mapper = new ObjectMapper();
-			extensionsAsMap = mapper.convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
+			extensionsAsMap = getExtensionMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
 			});
 		}
 		return extensionsAsMap;
@@ -264,7 +303,7 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	 */
 	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
 		JsonNode node = getExtensionsAsMap().get(key);
-		return (node == null) ? null : getMapper().treeToValue(node, t);
+		return (node == null) ? null : getExtensionMapper().treeToValue(node, t);
 	}
 
 	/**
@@ -275,8 +314,7 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	@Override
 	@Deprecated
 	public SubscriptionClient subscribeNewHumanForEpisodeWithBindValues(String queryResponseDef,
-			SubscriptionCallback<com.graphql_java_generator.client.domain.allGraphQLCases.Human> subscriptionCallback,
-			Episode episode, Map<String, Object> parameters)
+			SubscriptionCallback<Human> subscriptionCallback, Episode episode, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.subscribeNewHumanForEpisodeWithBindValues(queryResponseDef, subscriptionCallback, episode,
 				parameters);
@@ -290,8 +328,7 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	@Override
 	@Deprecated
 	public SubscriptionClient subscribeNewHumanForEpisode(String queryResponseDef,
-			SubscriptionCallback<com.graphql_java_generator.client.domain.allGraphQLCases.Human> subscriptionCallback,
-			Episode episode, Object... paramsAndValues)
+			SubscriptionCallback<Human> subscriptionCallback, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.subscribeNewHumanForEpisode(queryResponseDef, subscriptionCallback, episode, paramsAndValues);
 	}
@@ -304,8 +341,8 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	@Override
 	@Deprecated
 	public SubscriptionClient subscribeNewHumanForEpisodeWithBindValues(ObjectResponse objectResponse,
-			SubscriptionCallback<com.graphql_java_generator.client.domain.allGraphQLCases.Human> subscriptionCallback,
-			Episode episode, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+			SubscriptionCallback<Human> subscriptionCallback, Episode episode, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		return super.subscribeNewHumanForEpisodeWithBindValues(objectResponse, subscriptionCallback, episode,
 				parameters);
 	}
@@ -318,8 +355,8 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	@Override
 	@Deprecated
 	public SubscriptionClient subscribeNewHumanForEpisode(ObjectResponse objectResponse,
-			SubscriptionCallback<com.graphql_java_generator.client.domain.allGraphQLCases.Human> subscriptionCallback,
-			Episode episode, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+			SubscriptionCallback<Human> subscriptionCallback, Episode episode, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return super.subscribeNewHumanForEpisode(objectResponse, subscriptionCallback, episode, paramsAndValues);
 	}
 
@@ -496,81 +533,6 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	@Deprecated
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.getIssue53GraphQLRequest(partialRequest);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link TheSubscriptionTypeExecutor} class instead of this class, to execute
-	 * this method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
-	 * version.
-	 */
-	@Override
-	@Deprecated
-	public SubscriptionClient __typenameWithBindValues(String queryResponseDef,
-			SubscriptionCallback<java.lang.String> subscriptionCallback, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.__typenameWithBindValues(queryResponseDef, subscriptionCallback, parameters);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link TheSubscriptionTypeExecutor} class instead of this class, to execute
-	 * this method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
-	 * version.
-	 */
-	@Override
-	@Deprecated
-	public SubscriptionClient __typename(String queryResponseDef,
-			SubscriptionCallback<java.lang.String> subscriptionCallback, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.__typename(queryResponseDef, subscriptionCallback, paramsAndValues);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link TheSubscriptionTypeExecutor} class instead of this class, to execute
-	 * this method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
-	 * version.
-	 */
-	@Override
-	@Deprecated
-	public SubscriptionClient __typenameWithBindValues(ObjectResponse objectResponse,
-			SubscriptionCallback<java.lang.String> subscriptionCallback, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
-		return super.__typenameWithBindValues(objectResponse, subscriptionCallback, parameters);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link TheSubscriptionTypeExecutor} class instead of this class, to execute
-	 * this method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
-	 * version.
-	 */
-	@Override
-	@Deprecated
-	public SubscriptionClient __typename(ObjectResponse objectResponse,
-			SubscriptionCallback<java.lang.String> subscriptionCallback, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
-		return super.__typename(objectResponse, subscriptionCallback, paramsAndValues);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link TheSubscriptionTypeExecutor} class instead of this class, to execute
-	 * this method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
-	 * version.
-	 */
-	@Override
-	@Deprecated
-	public com.graphql_java_generator.client.request.Builder get__typenameResponseBuilder()
-			throws GraphQLRequestPreparationException {
-		return super.get__typenameResponseBuilder();
-	}
-
-	/**
-	 * This method is deprecated: please use {@link TheSubscriptionTypeExecutor} class instead of this class, to execute
-	 * this method. It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0
-	 * version.
-	 */
-	@Override
-	@Deprecated
-	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return super.get__typenameGraphQLRequest(partialRequest);
 	}
 
 }
