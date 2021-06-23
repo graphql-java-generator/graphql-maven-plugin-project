@@ -17,9 +17,9 @@ import org.springframework.core.annotation.AliasFor;
 /**
  * This annotation can be applied to some Configuration annotated class with packages to scan interfaces, as below.
  * <code>
-&#64;EnableWebServices({
-    "a.b.c.webservices",
-    "x.y.z.webservices"
+&#64;EnableGraphQLRepositories({
+    "a.b.c.graphqlrepositories",
+    "x.y.z.graphqlrepositories"
 }) * </code>
  * 
  * @see https://stackoverflow.com/questions/39507736/dynamic-proxy-bean-with-autowiring-capability

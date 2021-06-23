@@ -1,5 +1,7 @@
 package com.graphql_java_generator.client.graphqlrepository;
 
+import java.util.Date;
+
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -69,5 +71,10 @@ public interface GraphQLRepositoryTestCase {
 	@FullRequest(request = "mutation($input: HumanInput!) {createHuman(human: $input) {id name }}", requestType = RequestType.mutation)
 	public AnotherMutationType fullRequestMutation(@BindParameter(name = "input") HumanInput humanInput)
 			throws GraphQLRequestExecutionException;
+
+	/** Full request: subscription */
+	@FullRequest(request = "subscription {issue53(date: &date) {}}", requestType = RequestType.subscription)
+	public SubscriptionClient fullSubscription(SubscriptionCallback<Date> callback,
+			@BindParameter(name = "date") Date date) throws GraphQLRequestExecutionException;
 
 }

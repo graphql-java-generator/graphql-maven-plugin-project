@@ -16,46 +16,60 @@ import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
+import org.allGraphQLCases.demo.PartialQueries;
 
+import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.graphqlrepository.BindParameter;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;
 import com.graphql_java_generator.client.graphqlrepository.PartialRequest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
- * This interface demonstrate the use of GraphqlRepository
+ * This interface demonstrate the use of GraphqlRepository: it just redefines the method of the {@link PartialQueries}
+ * interface. These methods:
+ * <UL>
+ * <LI>Are marked with the {@link Override} annotation, to make sure it comes from the super interface (useless in
+ * normal use case, as the {@link GraphQLRepository} interface would not inherit from another interface)</LI>
+ * <LI>Are marked with the {@link PartialRequest} annotation, to define the associated GraphQL request</LI>
+ * </UL>
+ * Please note that the class is itself marked with the {@link GraphQLRepository} annotation.<BR/>
+ * And <B>that's it</B>: no implementation class is needed. Everything is done at runtime by the plugin runtime code.
  * 
  * @author etienne-sf
  */
 @GraphQLRepository
-public interface PartialRequestGraphQLRepository {
+public interface PartialRequestGraphQLRepository extends PartialQueries {
 
 	////////////////////////////////////////////////////////////////////////////
 	// First part: partialQueries (based on the Star Wars use case)
+	@Override
 	@PartialRequest(request = "{appearsIn name}")
-	List<Character> withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	List<Character> withoutParameters() throws GraphQLRequestExecutionException;
 
+	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character withOneOptionalParam(CharacterInput character)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	Character withOneOptionalParam(CharacterInput character) throws GraphQLRequestExecutionException;
 
+	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character withOneMandatoryParam(CharacterInput character)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	Character withOneMandatoryParam(CharacterInput character) throws GraphQLRequestExecutionException;
 
+	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character withEnum(Episode episode) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	Character withEnum(Episode episode) throws GraphQLRequestExecutionException;
 
+	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	List<Character> withList(String name, List<CharacterInput> friends)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	List<Character> withList(String name, List<CharacterInput> friends) throws GraphQLRequestExecutionException;
 
+	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character error(String errorLabel) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	Character error(String errorLabel) throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Second part: partialQueries (based on the allGraphQLCases use case)
 
+	@Override
 	@PartialRequest(request = "{ ... on WithID { id } name " //
 			+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 			+ " age nbComments " + " comments booleans aliases planets friends {id}" //
@@ -64,21 +78,33 @@ public interface PartialRequestGraphQLRepository {
 			+ " oneWithoutIdSubType(input: ?input) {name}"//
 			+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
 			+ "}")
-	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
-			String textToAppendToTheForname, long nbItemsWithId, Date date, List<Date> dates, Boolean uppercaseNameList,
-			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
-			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput,
+			@BindParameter(name = "uppercase") Boolean uppercase,
+			@BindParameter(name = "textToAppendToTheForname") String textToAppendToTheForname,
+			@BindParameter(name = "nbItemsWithId") long nbItemsWithId, //
+			@BindParameter(name = "date") Date date, //
+			@BindParameter(name = "dates") List<Date> dates,
+			@BindParameter(name = "uppercaseNameList") Boolean uppercaseNameList,
+			@BindParameter(name = "textToAppendToTheFornameWithId") String textToAppendToTheFornameWithId,
+			@BindParameter(name = "input") FieldParameterInput input,
+			@BindParameter(name = "nbItemsWithoutId") int nbItemsWithoutId,
+			@BindParameter(name = "inputList") FieldParameterInput inputList,
+			@BindParameter(name = "textToAppendToTheFornameWithoutId") String textToAppendToTheFornameWithoutId)
+			throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Third part: check of GraphQL types that are java keywords
 
-	public _break aBreak(_extends test, String $if)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	@Override
+	@PartialRequest(request = "{case(test: &test, if: ?if)}")
+	public _break aBreak(@BindParameter(name = "test") _extends test, @BindParameter(name = "if") String _if)
+			throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Fourth part: a mutation
 
-	Human createHuman(HumanInput human) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
+	@Override
+	@PartialRequest(request = "{id name}", requestType = RequestType.mutation)
+	Human createHuman(HumanInput human) throws GraphQLRequestExecutionException;
 
 }

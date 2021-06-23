@@ -8,6 +8,7 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
+import org.allGraphQLCases.demo.impl.PartialRequestGraphQLRepository;
 import org.allGraphQLCases.demo.subscription.ExecSubscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -56,6 +57,8 @@ public class Main implements CommandLineRunner {
 	@Autowired
 	PartialPreparedQueries partialPreparedQueries;
 	@Autowired
+	PartialRequestGraphQLRepository partialRequestGraphQLRepository;
+	@Autowired
 	ExecSubscription execSubscription;
 
 	public static void main(String[] args) {
@@ -69,10 +72,15 @@ public class Main implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// Execution of two ways of calling the GraphQL server
+		// Execution of three different ways of calling the GraphQL server
 
 		System.out.println("============================================================================");
-		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
+		System.out.println("======= SIMPLEST WAY: GRAPHQL REPOSITOTRY  =================================");
+		System.out.println("============================================================================");
+		execOne(partialRequestGraphQLRepository);
+
+		System.out.println("============================================================================");
+		System.out.println("======= A SIMPLE WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
 		execOne(partialDirectQueries);
 
@@ -81,6 +89,7 @@ public class Main implements CommandLineRunner {
 		System.out.println("============================================================================");
 		execOne(partialPreparedQueries);
 
+		// Then a subscription
 		System.out.println("============================================================================");
 		System.out.println("======= EXECUTING A SUBSCRIPTION ===========================================");
 		System.out.println("============================================================================");

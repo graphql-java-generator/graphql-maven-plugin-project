@@ -348,7 +348,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 * @return
 	 */
 	protected String getGraphQLClassesPackageName() {
-		return "org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration";
+		return "com.graphql_java_generator.client.domain.allGraphQLCases";
 	}
 
 	@Override

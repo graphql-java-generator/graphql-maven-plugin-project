@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.allGraphQLCases.demo.PartialQueries;
+import org.allGraphQLCases.demo.impl.PartialRequestGraphQLRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -103,10 +106,24 @@ abstract class AbstractIT {
 	@Test
 	void test_withOneMandatoryParam_nullParameter()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// With null parameter
-		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> partialQueries.withOneMandatoryParam(null));
-		assertTrue(e.getMessage().contains("character"));
+		// If the partialQueries is an instance of, then the exception is embedded (a cause of) a
+		if (partialQueries instanceof PartialRequestGraphQLRepository) {
+			UndeclaredThrowableException e = assertThrows(UndeclaredThrowableException.class,
+					() -> partialQueries.withOneMandatoryParam(null));
+			Throwable e2 = e.getCause();
+			assertTrue(e2 instanceof InvocationTargetException,
+					"e2 must be an instance of InvocationTargetException, but is actually a "
+							+ e2.getClass().getName());
+			Throwable e3 = e2.getCause();
+			assertTrue(e3 instanceof GraphQLRequestExecutionException,
+					"e3 must be an instance of GraphQLRequestExecutionException, but is actually a "
+							+ e3.getClass().getName());
+			assertTrue(e3.getMessage().contains("character"), "'" + e3.getMessage() + "' should contain 'character'");
+		} else {
+			GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+					() -> partialQueries.withOneMandatoryParam(null));
+			assertTrue(e.getMessage().contains("character"));
+		}
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -229,10 +246,26 @@ abstract class AbstractIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_error() {
-		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> partialQueries.error("This is an expected error"));
-		assertTrue(e.getMessage().contains("This is an expected error"),
-				"'" + e.getMessage() + "' should contain 'This is an expected error'");
+		// If the partialQueries is an instance of, then the exception is embedded (a cause of) a
+		if (partialQueries instanceof PartialRequestGraphQLRepository) {
+			UndeclaredThrowableException e = assertThrows(UndeclaredThrowableException.class,
+					() -> partialQueries.error("This is an expected error"));
+			Throwable e2 = e.getCause();
+			assertTrue(e2 instanceof InvocationTargetException,
+					"e2 must be an instance of InvocationTargetException, but is actually a "
+							+ e2.getClass().getName());
+			Throwable e3 = e2.getCause();
+			assertTrue(e3 instanceof GraphQLRequestExecutionException,
+					"e3 must be an instance of GraphQLRequestExecutionException, but is actually a "
+							+ e3.getClass().getName());
+			assertTrue(e3.getMessage().contains("This is an expected error"),
+					"'" + e3.getMessage() + "' should contain 'This is an expected error'");
+		} else {
+			GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+					() -> partialQueries.error("This is an expected error"));
+			assertTrue(e.getMessage().contains("This is an expected error"),
+					"'" + e.getMessage() + "' should contain 'This is an expected error'");
+		}
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)

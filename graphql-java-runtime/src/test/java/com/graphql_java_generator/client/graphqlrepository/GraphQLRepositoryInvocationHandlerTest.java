@@ -6,13 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -440,16 +441,37 @@ class GraphQLRepositoryInvocationHandlerTest {
 				getRegisteredGraphQLRequest("fullRequestMutation", HumanInput.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	@Disabled
-	void testInvoke_fullRequest_subscription() {
+	void testInvoke_fullRequest_subscription()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
 		// Preparation
+		Date date = new Calendar.Builder().setDate(2021, 6 - 1, 18).build().getTime();
+		SubscriptionCallback<Date> callback = null;// This would be invalid in real use. Null is just for this test
+		SubscriptionClient client = new SubscriptionClientReactiveImpl(null, null);
+		doReturn(client).when(spySubscriptionExecutor).execWithBindValues(any(ObjectResponse.class),
+				any(SubscriptionCallback.class), any(Map.class));
 
 		// Go, go, go
+		SubscriptionClient verif = graphQLRepository.fullSubscription(callback, date);
 
 		// Verification
+		assertNotNull(client);
 
-		fail("Not yet implemented");
+		ArgumentCaptor<Map<String, Object>> bindParamsCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(spySubscriptionExecutor).execWithBindValues(any(ObjectResponse.class), any(SubscriptionCallback.class),
+				bindParamsCaptor.capture());
+		List<Map<String, Object>> params = bindParamsCaptor.getAllValues();
+		assertEquals(1, params.size(), "one invocation");
+		assertEquals(1, params.get(0).keySet().size(), "one parameter");
+		//
+		assertTrue(params.get(0).keySet().contains("date"));
+		// Mockito changes the List<Object[]> objects to a List<String> at runtime:
+		assertEquals(date, params.get(0).get("date"));
+
+		assertEquals("subscription {issue53(date: &date) {}}",
+				getRegisteredGraphQLRequest("fullSubscription", SubscriptionCallback.class, Date.class));
 	}
 
 	private Object getRegisteredGraphQLRequest(String methodName, Class<?>... argumentTypes)

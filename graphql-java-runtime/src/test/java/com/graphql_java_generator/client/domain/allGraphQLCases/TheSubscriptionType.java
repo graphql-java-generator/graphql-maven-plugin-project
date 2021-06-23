@@ -262,7 +262,7 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
 			extensionMapper = new GraphQLObjectMapper(
-					"org.graphql.mavenplugin.junittest.allgraphqlcases_client_springconfiguration", null);
+					"com.graphql_java_generator.client.domain.allGraphQLCases", null);
 		}
 		return extensionMapper;
 	}

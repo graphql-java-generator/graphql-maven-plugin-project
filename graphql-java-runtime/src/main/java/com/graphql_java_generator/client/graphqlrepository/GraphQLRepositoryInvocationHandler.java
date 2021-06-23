@@ -276,7 +276,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 					+ method.getDeclaringClass().getName() + "." + method.getName()
 					+ "(..). Couldn't find the matching executor method '" + registeredMethod.executorMethodName
 					+ "' for executor class '" + registeredMethod.executor.getClass().getName()
-					+ "' with these parameters: [" + parameters + "]", e);
+					+ "' with these parameters: [" + parameters
+					+ "]. Consider marking bind parameters and GraphQL variables with the @BindParameter annotation.",
+					e);
 		}
 
 		// The returned value by the executor method must be assignable to the returned value for the GraphQL Repository
