@@ -14,7 +14,7 @@ import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLReposito
 @PropertySource("classpath:/application.properties")
 @Import(Main.class)
 @ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class })
-@EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl" })
+@EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository" })
 public class SpringTestConfig {
 
 }
