@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client.graphqlrepository;
 
 import java.util.Date;
+import java.util.List;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;
@@ -43,6 +44,25 @@ public interface GraphQLRepositoryTestCase {
 			@BindParameter(name = "nbItemsParam") long nbItems, //
 			@BindParameter(name = "fieldParameterInput") FieldParameterInput fieldParameterInput)
 			throws GraphQLRequestExecutionException;
+
+	/** A query with an Integer parameter */
+	@PartialRequest(requestName = "withOneMandatoryParamDefaultValue", request = "")
+	Integer withIntParamAndReturnType(int intParam) throws GraphQLRequestExecutionException;
+
+	/**
+	 * A query with a float parameter (GraphQL Float actually maps to Java Double, but Java Float and float should be
+	 * accepted here)
+	 */
+	@PartialRequest(requestName = "issue82Float", request = "")
+	Double withDoubleParamAndReturnType(double f) throws GraphQLRequestExecutionException;
+
+	/** A query with a boolean parameter */
+	@PartialRequest(requestName = "directiveOnQuery", request = "")
+	List<String> withBooleanParam(boolean bool) throws GraphQLRequestExecutionException;
+
+	/** A query with a {@link List} parameter */
+	@PartialRequest(requestName = "withListOfList", request = "")
+	AllFieldCases withListParam(List<List<Float>> matrix) throws GraphQLRequestExecutionException;
 
 	/** Mutation: without requestName */
 	@PartialRequest(request = "{id}", requestType = RequestType.mutation)

@@ -317,9 +317,32 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		for (Parameter param : method.getParameters()) {
 			RegisteredParameter regParam = new RegisteredParameter();
 			regParam.name = param.getName();
-			regParam.type = param.getType();
 
-			// No Map parameter, nor vararg (object[])
+			// Some particular "changes" with the GraphQL schema are tolerated:
+			switch (param.getType().getName()) {
+			case "boolean":
+				regParam.type = Boolean.class;
+				break;
+			case "double":
+				// The GraphQL Float type maps actually into a java Double class
+				regParam.type = Double.class;
+				break;
+			case "float":
+			case "java.lang.Float":
+				// Float is not a valid type for a GraphQL parameter.
+				throw new GraphQLRequestPreparationException(
+						"Error while preparing the GraphQL Repository, on the method '"
+								+ registeredMethod.method.getDeclaringClass().getName() + "."
+								+ registeredMethod.method.getName()
+								+ "(..). Float and float parameter types are not allowed. Please note that the GraphQL Float type maps to the Double java type.");
+			case "int":
+				regParam.type = Integer.class;
+				break;
+			default:
+				regParam.type = param.getType();
+			}
+
+			// Map parameter and vararg (object[]) are not accepted
 			if (Map.class.isAssignableFrom(regParam.type) || Object[].class.isAssignableFrom(regParam.type)) {
 				throw new GraphQLRequestPreparationException(
 						"Error while preparing the GraphQL Repository, on the method '"
@@ -352,7 +375,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 				} else {
 					// It's a partial request, and we didn't find any parameter with the BindParameter yet.
 					// So we've found a parameter that should be a parameter of the executor method.
-					executorParameterTypes.add(param.getType());
+					executorParameterTypes.add(regParam.type);
 				}
 			} else {
 				// This parameter is annotated with the BindParameter. Let's store the bind parameter name that is is

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -182,6 +183,21 @@ class GraphQLRepositoryInvocationHandlerTest {
 		assertTrue(e.getMessage().contains("Map and vararg (Object[]) are not allowed."), e.getMessage());
 	}
 
+	@Test
+	void testInvoke_floatInsteadDoubleParameterType()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
+		// Go, go, go
+		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
+				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithFloatParam>(
+						GraphQLRepositoryTestCaseParameterWithFloatParam.class, spyQueryExecutor, spyMutationExecutor,
+						spySubscriptionExecutor));
+
+		// Verification
+		assertTrue(e.getMessage().contains(
+				"Float and float parameter types are not allowed. Please note that the GraphQL Float type maps to the Double java type."),
+				e.getMessage());
+	}
+
 	/** no requestName: the method name is the field name of the query type in the GraphQL schema */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -277,6 +293,62 @@ class GraphQLRepositoryInvocationHandlerTest {
 		assertEquals(h, verif);
 		assertEquals("{id name appearsIn}",
 				getRegisteredGraphQLRequest("thisIsNotARequestName2", CharacterInput.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void testInvoke_partialRequest_withIntParamAndReturnType()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
+		// Preparation
+		doReturn(666).when(spyQueryExecutor).withOneMandatoryParamDefaultValueWithBindValues(any(ObjectResponse.class),
+				eq(123), any(Map.class));
+
+		// Go, go, go
+		int verif = graphQLRepository.withIntParamAndReturnType(123);
+
+		// Verification
+		assertEquals(666, verif);
+		assertEquals("", getRegisteredGraphQLRequest("withIntParamAndReturnType", int.class));
+	}
+
+	@Test
+	void testInvoke_partialRequest_withBooleanParam()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void testInvoke_partialRequest_withFloatParamAndReturnType()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
+		// Preparation
+		doReturn(Double.valueOf(1.2)).when(spyQueryExecutor).issue82FloatWithBindValues(any(ObjectResponse.class),
+				eq(1.1), any(Map.class));
+
+		// Go, go, go
+		Double verif = graphQLRepository.withDoubleParamAndReturnType(1.1);
+
+		// Verification
+		assertEquals(1.2, verif);
+		assertEquals("", getRegisteredGraphQLRequest("withDoubleParamAndReturnType", double.class));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void testInvoke_partialRequest_withListParam()
+			throws GraphQLRequestExecutionException, NoSuchMethodException, SecurityException {
+
+		// Preparation
+		AllFieldCases expected = new AllFieldCases();
+		doReturn(expected).when(spyQueryExecutor).withListOfListWithBindValues(any(ObjectResponse.class),
+				any(List.class), any(Map.class));
+
+		// Go, go, go
+		AllFieldCases verif = graphQLRepository.withListParam(Arrays.asList(Arrays.asList((float) 1.1)));
+
+		// Verification
+		assertEquals(expected, verif);
+		assertEquals("", getRegisteredGraphQLRequest("withListParam", List.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -454,7 +526,7 @@ class GraphQLRepositoryInvocationHandlerTest {
 				any(SubscriptionCallback.class), any(Map.class));
 
 		// Go, go, go
-		SubscriptionClient verif = graphQLRepository.fullSubscription(callback, date);
+		graphQLRepository.fullSubscription(callback, date);
 
 		// Verification
 		assertNotNull(client);
