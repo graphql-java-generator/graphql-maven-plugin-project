@@ -477,6 +477,12 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		}
 		params.add(bindParameters);
 
-		return registeredMethod.executorMethod.invoke(registeredMethod.executor, params.toArray());
+		// We must hide any InvocationTargetException exception, so that only GraphQLRequestExecutionException are
+		// received by the caller
+		try {
+			return registeredMethod.executorMethod.invoke(registeredMethod.executor, params.toArray());
+		} catch (InvocationTargetException e) {
+			throw e.getTargetException();
+		}
 	}
 }
