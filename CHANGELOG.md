@@ -14,6 +14,9 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 Both modes:
 * The maven plugin is now better integrated in the IDE. No more need of the maven-helper-plugin, to add the folder for the generated sources and generated resources.
 
+Client mode:
+* Added the ability to create GraphQL Repositories: like Spring Data Repositories, GraphQL Repositories allow to declare GraphQL requests (query, mutation, subscription) by __just declaring an interface__. The runtime code create dynamic proxies at runtime, that will execute these GraphQL requests.
+
 
 # 1.16
 

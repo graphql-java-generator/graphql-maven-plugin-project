@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.client.web.reactive.function.client.S
 import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -50,6 +51,7 @@ curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorizatio
  */
 @SuppressWarnings("deprecation")
 @SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
+@EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository" })
 public class Main implements CommandLineRunner {
 
 	@Autowired

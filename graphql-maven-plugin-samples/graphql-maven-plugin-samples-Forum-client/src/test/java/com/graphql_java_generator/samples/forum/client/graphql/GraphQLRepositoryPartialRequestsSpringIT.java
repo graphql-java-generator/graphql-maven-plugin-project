@@ -12,8 +12,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.graphql_java_generator.samples.forum.SpringTestConfig;
 
 /**
- * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL Forum server, see
- * the pom.xml file for details.
+ * Integration tests for GraphQL Repository, in Spring mode<BR/>
+ * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL Forum server, see the
+ * pom.xml file for details.
  * 
  * @author etienne-sf
  */
@@ -21,14 +22,14 @@ import com.graphql_java_generator.samples.forum.SpringTestConfig;
 @ContextConfiguration(classes = { SpringTestConfig.class })
 @TestPropertySource("classpath:application.properties")
 @Execution(ExecutionMode.CONCURRENT)
-class PartialDirectRequestsIT extends AbstractIT {
+class GraphQLRepositoryPartialRequestsSpringIT extends AbstractIT {
 
 	@Autowired
-	PartialDirectRequests partialDirectRequests;
+	GraphQLRepositoryPartialRequests graphQLRepositoryPartialRequests;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		queries = partialDirectRequests;
+		queries = graphQLRepositoryPartialRequests;
 	}
 
 }

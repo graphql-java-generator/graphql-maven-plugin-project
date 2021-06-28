@@ -31,7 +31,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
 
 /**
- * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
+ * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL Forum server, see
  * the pom.xml file for details.
  * 
  * @author etienne-sf
