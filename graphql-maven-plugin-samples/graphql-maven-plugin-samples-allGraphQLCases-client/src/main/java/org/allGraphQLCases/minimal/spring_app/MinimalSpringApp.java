@@ -40,6 +40,8 @@ public class MinimalSpringApp implements CommandLineRunner {
 
 	@Autowired
 	GraphQLRequests graphQLRequests;
+	@Autowired
+	String graphqlEndpoint2;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MinimalSpringApp.class, args);

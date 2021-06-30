@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -28,7 +29,7 @@
 								the XxxEdge and XxxConnection interfaces or objects), for fields marked with the @RelatConnection directive. See the documentation 
 								for more information -->
 							<addRelayConnections>true</addRelayConnections>
-							<schemaFileFolder>${basedir}/src/graphqls/</schemaFileFolder>
+							<schemaFileFolder>${basedir}/src/graphqls/allGraphQLCases/</schemaFileFolder>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<targetFolder>${basedir}/target/generated-resources/graphql-merge</targetFolder>
 							<targetSchemaFileName>merged_schemas.graphqls</targetSchemaFileName>
@@ -67,6 +68,28 @@
 									<graphQLTypeName>NonNegativeInt</graphQLTypeName>
 									<javaType>java.lang.Integer</javaType>
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
+								</customScalar>
+							</customScalars>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-forum-client-code</id>
+						<goals>
+							<goal>graphql</goal>
+						</goals>
+						<configuration>
+							<mode>client</mode>
+							<copyRuntimeSources>false</copyRuntimeSources>
+							<packageName>org.forum.client</packageName>
+							<schemaFileFolder>${basedir}/src/graphqls/forum/</schemaFileFolder>
+							<separateUtilityClasses>true</separateUtilityClasses>
+							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+							<targetSourceFolder>${basedir}/target/generated-sources/graphql-maven-plugin2</targetSourceFolder>
+							<customScalars>
+								<customScalar>
+									<graphQLTypeName>Date</graphQLTypeName>
+									<javaType>java.util.Date</javaType>
+									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
 						</configuration>
@@ -117,7 +140,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>start_GraphQL_server</id>
+						<id>start_allGraphQLCases_server</id>
 						<phase>pre-integration-test</phase>
 						<goals>
 							<goal>start</goal>
@@ -134,6 +157,25 @@
 								<argument>java</argument>
 								<argument>-jar</argument>
 								<argument>${basedir}/../graphql-maven-plugin-samples-allGraphQLCases-server/target/graphql-maven-plugin-samples-allGraphQLCases-server-${project.version}.jar</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>start-forum-server</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+							<name>Forum GraphQL server</name>
+							<workingDir>forum_graphql_server</workingDir>
+							<waitForInterrupt>false</waitForInterrupt>
+							<healthcheckUrl>http://localhost:8180/graphiql</healthcheckUrl>
+							<arguments>
+								<argument>java</argument>
+								<argument>-jar</argument>
+								<argument>${basedir}/../graphql-maven-plugin-samples-Forum-server/target/graphql-maven-plugin-samples-Forum-server-${project.version}.jar</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -181,6 +223,18 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-maven-plugin-samples-allGraphQLCases-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
+		</dependency-->
 
 
 		<!-- Dependencies for the generated code -->
