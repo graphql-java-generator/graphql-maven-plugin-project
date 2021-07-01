@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+<<<<<<< Upstream, based on two_graphql_servers
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -191,6 +192,92 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		assertEquals("Alias of Name 12", author12bis.getAlias());
 		assertEquals("name.12@graphql-java.com", author12bis.getEmail());
 		assertEquals(null, author12bis.getType());
+=======
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.List;
+
+import org.allGraphQLCases.client.Character;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+/**
+ * Generates IT tests with requests against the two started GraphQL servers: the allGraphQLCases and the Forum ones
+ * 
+ * @author etienne-sf
+ */
+@Execution(ExecutionMode.CONCURRENT)
+public class RequestsAgainstTwoGraphQLServersIT {
+
+	@Autowired
+	static MyQueryTypeExecutor queryType;
+
+	// @Autowired(required = false)
+	// static QueryTypeExecutor queryType2;
+
+	@BeforeAll
+	static void setup() {
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(TwoGraphQLServersSpringConfig.class);
+
+		queryType = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(queryType);
+
+		// queryType2 = ctx.getBean(QueryTypeExecutor.class);
+		// assertNotNull(queryType2);
+	}
+
+	@Test
+	void test_allGraphQLCasesServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		List<Character> list = queryType.withoutParameters("{appearsIn name }");
+
+		assertNotNull(list);
+		assertEquals(10, list.size());
+		for (Character c : list) {
+			checkCharacter(c, "withoutParameters", true, "Random String (", 0, 0);
+		}
+	}
+
+	@Test
+	void test_forumServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// // return queryType.boards("{id name publiclyAvailable}");
+		// List<Board> boards = queryType2.boards("");
+		//
+		// // Verification
+		// assertTrue(boards.size() >= 10, "10 boards at startup, then new ones are created by the tests");
+		//
+		// Board board2 = boards.get(1); // Board names start by 1, not 0 as a lists
+		// assertEquals("2", board2.getId());
+		// assertEquals("Board name 2", board2.getName());
+		// assertEquals(false, board2.getPubliclyAvailable());
+		// assertEquals(null, board2.getTopics());
+		//
+		// Board board10 = boards.get(9); // Board names start by 1, not 0 as a lists
+		// assertEquals("10", board10.getId());
+		// assertEquals("Board name 10", board10.getName());
+		// assertEquals(true, board10.getPubliclyAvailable());
+		// assertEquals(null, board10.getTopics());
+
+		fail("not yet implemented");
+	}
+
+	@Test
+	void test_GraphQLRepository_allGraphQLCases() {
+		fail("not yet implemented");
+	}
+
+	@Test
+	void test_GraphQLRepository_forum() {
+		fail("not yet implemented");
+>>>>>>> 6f5f8bc GraphQL schemas moved + RequestsAgainstTwoGraphQLServersIT added
 	}
 
 	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
