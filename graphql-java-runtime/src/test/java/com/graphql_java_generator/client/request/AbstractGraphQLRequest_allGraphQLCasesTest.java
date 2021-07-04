@@ -16,15 +16,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationType;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeExecutor;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Droid;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
-import com.graphql_java_generator.client.domain.allGraphQLCases.GraphQLRequest;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
-import com.graphql_java_generator.client.domain.allGraphQLCases.HumanInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.client.domain.allGraphQLCases._extends;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
+import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

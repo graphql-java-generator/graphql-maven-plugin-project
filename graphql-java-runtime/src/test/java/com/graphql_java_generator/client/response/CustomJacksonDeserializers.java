@@ -68,30 +68,30 @@ public class CustomJacksonDeserializers {
 	}
 
 	public static class ListListCharacter extends
-			AbstractCustomJacksonDeserializer<List<List<com.graphql_java_generator.client.domain.allGraphQLCases.Character>>> {
+			AbstractCustomJacksonDeserializer<List<List<com.graphql_java_generator.domain.client.allGraphQLCases.Character>>> {
 		private static final long serialVersionUID = 1L;
 
 		public ListListCharacter() {
-			super(new ListCharacter(), true, com.graphql_java_generator.client.domain.allGraphQLCases.Character.class,
+			super(new ListCharacter(), true, com.graphql_java_generator.domain.client.allGraphQLCases.Character.class,
 					null);
 		}
 	}
 
 	public static class ListHuman extends
-			AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.allGraphQLCases.Human>> {
+			AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.domain.client.allGraphQLCases.Human>> {
 		private static final long serialVersionUID = 1L;
 
 		public ListHuman() {
-			super(null, true, com.graphql_java_generator.client.domain.allGraphQLCases.Human.class, null);
+			super(null, true, com.graphql_java_generator.domain.client.allGraphQLCases.Human.class, null);
 		}
 	}
 
 	public static class ListCharacter extends
-			AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.client.domain.allGraphQLCases.Character>> {
+			AbstractCustomJacksonDeserializer<List<com.graphql_java_generator.domain.client.allGraphQLCases.Character>> {
 		private static final long serialVersionUID = 1L;
 
 		public ListCharacter() {
-			super(null, true, com.graphql_java_generator.client.domain.allGraphQLCases.Character.class, null);
+			super(null, true, com.graphql_java_generator.domain.client.allGraphQLCases.Character.class, null);
 		}
 	}
 

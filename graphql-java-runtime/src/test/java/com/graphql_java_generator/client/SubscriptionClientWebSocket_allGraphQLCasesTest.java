@@ -9,9 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.graphql_java_generator.client.domain.allGraphQLCases.Droid;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
-import com.graphql_java_generator.client.domain.allGraphQLCases.TheSubscriptionType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 class SubscriptionClientWebSocket_allGraphQLCasesTest {

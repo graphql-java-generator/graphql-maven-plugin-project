@@ -2,7 +2,7 @@ package com.graphql_java_generator.client.graphqlrepository;
 
 import java.util.Map;
 
-import com.graphql_java_generator.client.domain.allGraphQLCases.CharacterInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**

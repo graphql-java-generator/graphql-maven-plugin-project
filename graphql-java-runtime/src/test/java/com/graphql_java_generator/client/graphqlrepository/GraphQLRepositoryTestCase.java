@@ -6,16 +6,16 @@ import java.util.List;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCasesInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationType;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Character;
-import com.graphql_java_generator.client.domain.allGraphQLCases.CharacterInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
-import com.graphql_java_generator.client.domain.allGraphQLCases.FieldParameterInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
-import com.graphql_java_generator.client.domain.allGraphQLCases.HumanInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCases;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCasesInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
+import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.FieldParameterInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**

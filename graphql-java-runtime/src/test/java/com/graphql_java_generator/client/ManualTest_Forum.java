@@ -3,11 +3,11 @@ package com.graphql_java_generator.client;
 import java.io.IOException;
 import java.util.List;
 
-import com.graphql_java_generator.client.domain.forum.Board;
-import com.graphql_java_generator.client.domain.forum.MutationType;
-import com.graphql_java_generator.client.domain.forum.QueryType;
-import com.graphql_java_generator.client.domain.forum.Topic;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.domain.client.forum.Board;
+import com.graphql_java_generator.domain.client.forum.MutationType;
+import com.graphql_java_generator.domain.client.forum.QueryType;
+import com.graphql_java_generator.domain.client.forum.Topic;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

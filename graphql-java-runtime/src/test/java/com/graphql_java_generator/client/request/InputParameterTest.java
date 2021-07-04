@@ -23,13 +23,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
-import com.graphql_java_generator.client.domain.forum.PostInput;
-import com.graphql_java_generator.client.domain.forum.TopicPostInput;
-import com.graphql_java_generator.client.domain.starwars.Episode;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
+import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
+import com.graphql_java_generator.domain.client.forum.PostInput;
+import com.graphql_java_generator.domain.client.forum.TopicPostInput;
+import com.graphql_java_generator.domain.client.starwars.Episode;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 import graphql.Scalars;

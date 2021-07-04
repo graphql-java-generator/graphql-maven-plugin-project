@@ -15,10 +15,10 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.client.domain.allGraphQLCases.DirectiveRegistryInitializer;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.DirectiveRegistryInitializer;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.exception.GraphQLResponseParseException;

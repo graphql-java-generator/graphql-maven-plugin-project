@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.graphql_java_generator.client.domain.starwars.Character;
-import com.graphql_java_generator.client.domain.starwars.GraphQLRequest;
-import com.graphql_java_generator.client.domain.starwars.Human;
-import com.graphql_java_generator.client.domain.starwars.QueryType;
+import com.graphql_java_generator.domain.client.starwars.Character;
+import com.graphql_java_generator.domain.client.starwars.GraphQLRequest;
+import com.graphql_java_generator.domain.client.starwars.Human;
+import com.graphql_java_generator.domain.client.starwars.QueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

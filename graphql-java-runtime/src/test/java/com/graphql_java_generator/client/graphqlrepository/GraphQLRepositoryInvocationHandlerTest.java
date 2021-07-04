@@ -11,7 +11,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,23 +30,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.SubscriptionClientReactiveImpl;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCasesInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationType;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeExecutor;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeResponse;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Character;
-import com.graphql_java_generator.client.domain.allGraphQLCases.CharacterInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
-import com.graphql_java_generator.client.domain.allGraphQLCases.FieldParameterInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
-import com.graphql_java_generator.client.domain.allGraphQLCases.HumanInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeExecutor;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeResponse;
-import com.graphql_java_generator.client.domain.allGraphQLCases.TheSubscriptionTypeExecutor;
-import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvocationHandler.RegisteredMethod;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCases;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCasesInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
+import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.FieldParameterInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -126,7 +124,7 @@ class GraphQLRepositoryInvocationHandlerTest {
 		// Verification
 		assertTrue(
 				e.getMessage()
-						.contains("should return com.graphql_java_generator.client.domain.allGraphQLCases.Character"),
+						.contains("should return com.graphql_java_generator.domain.client.allGraphQLCases.Character"),
 				e.getMessage());
 		assertTrue(e.getMessage().contains("but returns java.lang.Integer"), e.getMessage());
 	}
@@ -214,7 +212,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(h, verif);
-		assertEquals("{appearsIn name}", getRegisteredGraphQLRequest("withOneOptionalParam", CharacterInput.class));
+		assertEquals("{appearsIn name}", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "withOneOptionalParam", CharacterInput.class));
 	}
 
 	/** with requestName: the method name is the field name of the query type in the GraphQL schema */
@@ -233,8 +232,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(h, verif);
-		assertEquals("{appearsIn name id}",
-				getRegisteredGraphQLRequest("thisIsNotARequestName1", CharacterInput.class));
+		assertEquals("{appearsIn name id}", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "thisIsNotARequestName1", CharacterInput.class));
 	}
 
 	/** with requestName: the method name is the field name of the query type in the GraphQL schema */
@@ -272,7 +271,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 		// Verification
 		assertEquals(allFieldCases, verif);
 		assertEquals("{listWithoutIdSubTypes(nbItems: &nbItemsParam, input:?fieldParameterInput)}",
-				getRegisteredGraphQLRequest("thisIsNotARequestName3", AllFieldCasesInput.class, long.class,
+				GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+						GraphQLRepositoryTestCase.class, "thisIsNotARequestName3", AllFieldCasesInput.class, long.class,
 						FieldParameterInput.class));
 	}
 
@@ -291,8 +291,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(h, verif);
-		assertEquals("{id name appearsIn}",
-				getRegisteredGraphQLRequest("thisIsNotARequestName2", CharacterInput.class));
+		assertEquals("{id name appearsIn}", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "thisIsNotARequestName2", CharacterInput.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -308,7 +308,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(666, verif);
-		assertEquals("", getRegisteredGraphQLRequest("withIntParamAndReturnType", int.class));
+		assertEquals("", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "withIntParamAndReturnType", int.class));
 	}
 
 	@Test
@@ -330,7 +331,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(1.2, verif);
-		assertEquals("", getRegisteredGraphQLRequest("withDoubleParamAndReturnType", double.class));
+		assertEquals("", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "withDoubleParamAndReturnType", double.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -348,7 +350,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(expected, verif);
-		assertEquals("", getRegisteredGraphQLRequest("withListParam", List.class));
+		assertEquals("", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "withListParam", List.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -366,7 +369,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(h, verif);
-		assertEquals("{id}", getRegisteredGraphQLRequest("createHuman", HumanInput.class));
+		assertEquals("{id}", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "createHuman", HumanInput.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -384,7 +388,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 
 		// Verification
 		assertEquals(h, verif);
-		assertEquals("{id name}", getRegisteredGraphQLRequest("thisIsAMutation", HumanInput.class));
+		assertEquals("{id name}", GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+				GraphQLRepositoryTestCase.class, "thisIsAMutation", HumanInput.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -420,7 +425,9 @@ class GraphQLRepositoryInvocationHandlerTest {
 		// Verification
 		assertEquals(subscriptionClient, verif);
 		assertEquals("{ id   appearsIn }",
-				getRegisteredGraphQLRequest("subscribeNewHumanForEpisode", SubscriptionCallback.class, Episode.class));
+				GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+						GraphQLRepositoryTestCase.class, "subscribeNewHumanForEpisode", SubscriptionCallback.class,
+						Episode.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -450,7 +457,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 		assertEquals("aBindParameterValue", params.get(0).get("valueParam"));
 
 		assertEquals("{directiveOnQuery  (uppercase: ?uppercase) @testDirective(value:&valueParam)}",
-				getRegisteredGraphQLRequest("fullRequest1", boolean.class, String.class));
+				GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+						GraphQLRepositoryTestCase.class, "fullRequest1", boolean.class, String.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -480,7 +488,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 		assertEquals("aBindParameterValue", params.get(0).get("valueParam"));
 
 		assertEquals("{directiveOnQuery  (uppercase: ?uppercase) @testDirective(value:&valueParam)}",
-				getRegisteredGraphQLRequest("fullRequest2", String.class, boolean.class));
+				GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+						GraphQLRepositoryTestCase.class, "fullRequest2", String.class, boolean.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -510,7 +519,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 		assertEquals(input, params.get(0).get("input"));
 
 		assertEquals("mutation($input: HumanInput!) {createHuman(human: $input) {id name }}",
-				getRegisteredGraphQLRequest("fullRequestMutation", HumanInput.class));
+				GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+						GraphQLRepositoryTestCase.class, "fullRequestMutation", HumanInput.class));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -543,18 +553,8 @@ class GraphQLRepositoryInvocationHandlerTest {
 		assertEquals(date, params.get(0).get("date"));
 
 		assertEquals("subscription {issue53(date: &date) {}}",
-				getRegisteredGraphQLRequest("fullSubscription", SubscriptionCallback.class, Date.class));
+				GraphQLRepositoryTestHelper.getRegisteredGraphQLRequest(invocationHandler,
+						GraphQLRepositoryTestCase.class, "fullSubscription", SubscriptionCallback.class, Date.class));
 	}
 
-	private Object getRegisteredGraphQLRequest(String methodName, Class<?>... argumentTypes)
-			throws NoSuchMethodException, SecurityException {
-		Method method = GraphQLRepositoryTestCase.class.getMethod(methodName, argumentTypes);
-		assertNotNull(method, "Looking for method '" + methodName + "'");
-
-		@SuppressWarnings("rawtypes")
-		RegisteredMethod registeredMethod = invocationHandler.registeredMethods.get(method);
-		assertNotNull(registeredMethod, "Looking for registered method '" + methodName + "'");
-
-		return registeredMethod.graphQLRequest.getGraphQLRequest();
-	}
 }

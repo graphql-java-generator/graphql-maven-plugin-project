@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.client.domain.allGraphQLCases.CustomJacksonDeserializers;
+import com.graphql_java_generator.domain.client.allGraphQLCases.CustomJacksonDeserializers;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**

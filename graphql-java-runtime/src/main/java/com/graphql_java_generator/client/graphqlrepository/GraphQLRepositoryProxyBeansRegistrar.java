@@ -1,5 +1,7 @@
 package com.graphql_java_generator.client.graphqlrepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
@@ -22,6 +24,9 @@ import com.nimbusds.oauth2.sdk.util.MapUtils;
  */
 @Configuration
 public class GraphQLRepositoryProxyBeansRegistrar implements ImportBeanDefinitionRegistrar, BeanClassLoaderAware {
+
+	/** Logger for this class */
+	private static Logger logger = LoggerFactory.getLogger(GraphQLRepositoryProxyBeansRegistrar.class);
 
 	private ClassPathScanner classpathScanner;
 	private ClassLoader classLoader;
@@ -86,8 +91,9 @@ public class GraphQLRepositoryProxyBeansRegistrar implements ImportBeanDefinitio
 				registry.registerBeanDefinition(beanName, proxyBeanDefinition);
 			}
 		} catch (Exception e) {
-			System.out.println("Exception while createing proxy");
-			e.printStackTrace();
+			logger.error(
+					"Exception while creating proxy: " + e.getClass().getSimpleName() + " (" + e.getMessage() + ")");
+			throw new RuntimeException(e.getMessage(), e);
 		}
 
 	}

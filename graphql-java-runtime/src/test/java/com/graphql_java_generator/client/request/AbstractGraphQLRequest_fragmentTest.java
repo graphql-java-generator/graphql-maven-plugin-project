@@ -13,12 +13,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationType;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
-import com.graphql_java_generator.client.domain.allGraphQLCases.GraphQLRequest;
-import com.graphql_java_generator.client.domain.allGraphQLCases.HumanInput;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
+import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

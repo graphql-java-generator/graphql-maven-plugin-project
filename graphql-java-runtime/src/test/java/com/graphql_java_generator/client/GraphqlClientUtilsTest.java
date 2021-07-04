@@ -13,17 +13,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.graphql_java_generator.client.domain.allGraphQLCases._break;
-import com.graphql_java_generator.client.domain.allGraphQLCases._extends;
-import com.graphql_java_generator.client.domain.forum.CustomScalarRegistryInitializer;
-import com.graphql_java_generator.client.domain.forum.Post;
-import com.graphql_java_generator.client.domain.forum.PostInput;
-import com.graphql_java_generator.client.domain.starwars.Character;
-import com.graphql_java_generator.client.domain.starwars.Droid;
-import com.graphql_java_generator.client.domain.starwars.Episode;
-import com.graphql_java_generator.client.domain.starwars.Human;
-import com.graphql_java_generator.client.domain.starwars.QueryType;
-import com.graphql_java_generator.client.domain.starwars.scalar.ScalarTest;
+import com.graphql_java_generator.domain.client.allGraphQLCases._break;
+import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
+import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
+import com.graphql_java_generator.domain.client.forum.Post;
+import com.graphql_java_generator.domain.client.forum.PostInput;
+import com.graphql_java_generator.domain.client.starwars.Character;
+import com.graphql_java_generator.domain.client.starwars.Droid;
+import com.graphql_java_generator.domain.client.starwars.Episode;
+import com.graphql_java_generator.domain.client.starwars.Human;
+import com.graphql_java_generator.domain.client.starwars.QueryType;
+import com.graphql_java_generator.domain.client.starwars.scalar.ScalarTest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -238,9 +238,9 @@ class GraphqlClientUtilsTest {
 
 		// With a query that returns a scalar
 		assertEquals(Integer.class, graphqlClientUtils.checkFieldOfGraphQLType("nbBoards", null,
-				com.graphql_java_generator.client.domain.forum.QueryType.class), "nbBoards : scalar OK");
+				com.graphql_java_generator.domain.client.forum.QueryType.class), "nbBoards : scalar OK");
 		assertEquals(Integer.class, graphqlClientUtils.checkFieldOfGraphQLType("nbBoards", true,
-				com.graphql_java_generator.client.domain.forum.QueryType.class), "nbBoards : scalar OK");
+				com.graphql_java_generator.domain.client.forum.QueryType.class), "nbBoards : scalar OK");
 
 	}
 

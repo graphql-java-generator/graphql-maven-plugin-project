@@ -16,10 +16,10 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.graphql_java_generator.client.GraphQLObjectMapperTestClass.TestEnum;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCasesWithIdSubtype;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCases;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCasesWithIdSubtype;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 class GraphQLObjectMapperTest {

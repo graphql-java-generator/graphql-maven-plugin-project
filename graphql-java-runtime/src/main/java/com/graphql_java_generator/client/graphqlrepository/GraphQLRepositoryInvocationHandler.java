@@ -469,6 +469,15 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		RegisteredMethod registeredMethod = registeredMethods.get(method);
 
 		if (registeredMethod == null) {
+			// Spring calls some Object methods. If it's the case, let's execute it.
+			if (method.getName().equals("hashCode")) {
+				return 1;
+			}
+			if (method.getDeclaringClass().equals(Object.class)) {
+				return method.invoke(proxy, args);
+			}
+
+			// Otherwise, there is something incorrect that is going on
 			throw new GraphQLRequestExecutionException("The method '" + method.getDeclaringClass().getName() + "."
 					+ method.getName()
 					+ "' has not been stored in initialization phase of this InvocationHandler. Is this method coming from the right interface? (that is, the same as the one this InvocationHandler has been created with?)");
@@ -508,4 +517,5 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			throw e.getTargetException();
 		}
 	}
+
 }

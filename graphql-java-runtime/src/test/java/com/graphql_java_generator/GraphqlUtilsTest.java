@@ -22,14 +22,14 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.graphql_java_generator.client.domain.forum.TopicInput;
-import com.graphql_java_generator.client.domain.forum.TopicPostInput;
-import com.graphql_java_generator.client.domain.starwars.Episode;
-import com.graphql_java_generator.client.domain.starwars.Human;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDServer;
+import com.graphql_java_generator.domain.client.forum.TopicInput;
+import com.graphql_java_generator.domain.client.forum.TopicPostInput;
+import com.graphql_java_generator.domain.client.starwars.Episode;
+import com.graphql_java_generator.domain.client.starwars.Human;
 import com.graphql_java_generator.testcases.Isssue49AccountInput;
 import com.graphql_java_generator.testcases.Issue49Title;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -157,9 +157,9 @@ class GraphqlUtilsTest {
 		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		// Go, go, go
-		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = (com.graphql_java_generator.server.domain.forum.TopicInput) graphqlUtils
+		com.graphql_java_generator.domain.server.forum.TopicInput topicInput = (com.graphql_java_generator.domain.server.forum.TopicInput) graphqlUtils
 				.getArgument(map, "TopicInput", String.class.getName(),
-						com.graphql_java_generator.server.domain.forum.TopicInput.class);
+						com.graphql_java_generator.domain.server.forum.TopicInput.class);
 
 		// Verification
 		assertEquals("00000000-0000-0000-0000-000000000004", topicInput.getBoardId());
@@ -207,9 +207,9 @@ class GraphqlUtilsTest {
 				Long.class);
 
 		// Go, go, go
-		com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput topicInput = (com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput) graphqlUtils
+		com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput topicInput = (com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput) graphqlUtils
 				.getArgument(map, "AllFieldCasesInput", UUID.class.getName(),
-						com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput.class);
+						com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput.class);
 
 		// Verification
 		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getId().toString());
@@ -262,9 +262,9 @@ class GraphqlUtilsTest {
 				Long.class);
 
 		// Go, go, go
-		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = (com.graphql_java_generator.server.domain.forum.TopicInput) graphqlUtils
+		com.graphql_java_generator.domain.server.forum.TopicInput topicInput = (com.graphql_java_generator.domain.server.forum.TopicInput) graphqlUtils
 				.getArgument(map, "AllFieldCasesInput", String.class.getName(),
-						com.graphql_java_generator.server.domain.forum.TopicInput.class);
+						com.graphql_java_generator.domain.server.forum.TopicInput.class);
 
 		// Verification
 		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getBoardId());
@@ -281,9 +281,9 @@ class GraphqlUtilsTest {
 		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		// Go, go, go
-		com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput input = (com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput) graphqlUtils
+		com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput input = (com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput) graphqlUtils
 				.getArgument(map, "FieldParameterInput", UUID.class.getName(),
-						com.graphql_java_generator.server.domain.allGraphQLCases.FieldParameterInput.class);
+						com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput.class);
 
 		// Verification
 		assertTrue(input.getUppercase());
@@ -366,9 +366,9 @@ class GraphqlUtilsTest {
 				String.class);
 
 		// Go, go, go
-		com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput input = (com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput) graphqlUtils
+		com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput input = (com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput) graphqlUtils
 				.getArgument(mapAllFieldCasesWithIdSubtypeInput, "AllFieldCasesInput", UUID.class.getName(),
-						com.graphql_java_generator.server.domain.allGraphQLCases.AllFieldCasesInput.class);
+						com.graphql_java_generator.domain.server.allGraphQLCases.AllFieldCasesInput.class);
 
 		// Verification
 		assertEquals(2, input.getWithIdSubtype().size());
@@ -435,12 +435,12 @@ class GraphqlUtilsTest {
 
 		// Go, go, go
 		@SuppressWarnings("unchecked")
-		List<com.graphql_java_generator.server.domain.forum.TopicInput> result = (List<com.graphql_java_generator.server.domain.forum.TopicInput>) graphqlUtils
+		List<com.graphql_java_generator.domain.server.forum.TopicInput> result = (List<com.graphql_java_generator.domain.server.forum.TopicInput>) graphqlUtils
 				.getArgument(list, "TopicInput", String.class.getName(),
-						com.graphql_java_generator.server.domain.forum.TopicInput.class);
+						com.graphql_java_generator.domain.server.forum.TopicInput.class);
 
 		// Preparation
-		com.graphql_java_generator.server.domain.forum.TopicInput topicInput = result.get(0);
+		com.graphql_java_generator.domain.server.forum.TopicInput topicInput = result.get(0);
 		assertEquals("00000000-0000-0000-0000-000000000004", topicInput.getBoardId());
 		assertEquals("00000000-0000-0000-0000-000000000003", topicInput.getInput().getAuthorId());
 		assertEquals("Some content", topicInput.getInput().getContent());
@@ -459,10 +459,10 @@ class GraphqlUtilsTest {
 
 	@Test
 	public void test_getClass() {
-		String packageName = "com.graphql_java_generator.client.domain.allGraphQLCases";
+		String packageName = "com.graphql_java_generator.domain.client.allGraphQLCases";
 
 		assertEquals("java.lang.Integer", graphqlUtils.getClass(packageName, "Integer").getName());
-		assertEquals("com.graphql_java_generator.client.domain.allGraphQLCases.Human",
+		assertEquals("com.graphql_java_generator.domain.client.allGraphQLCases.Human",
 				graphqlUtils.getClass(packageName, "Human").getName());
 		assertEquals("java.util.Date", graphqlUtils.getClass(packageName, "Date").getName());
 	}

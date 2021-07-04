@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.graphql_java_generator.client.domain.forum.Board;
-import com.graphql_java_generator.client.domain.forum.GraphQLRequest;
-import com.graphql_java_generator.client.domain.forum.QueryType;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
+import com.graphql_java_generator.domain.client.forum.Board;
+import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
+import com.graphql_java_generator.domain.client.forum.QueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 

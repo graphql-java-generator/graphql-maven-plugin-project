@@ -14,10 +14,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Character;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Droid;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Episode;
-import com.graphql_java_generator.client.domain.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 
 class AbstractCustomJacksonDeserializerTest {
 

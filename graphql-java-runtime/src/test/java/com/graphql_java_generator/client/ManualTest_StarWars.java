@@ -12,10 +12,10 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.graphql_java_generator.client.domain.starwars.Character;
-import com.graphql_java_generator.client.domain.starwars.Episode;
-import com.graphql_java_generator.client.domain.starwars.Human;
-import com.graphql_java_generator.client.domain.starwars.QueryType;
+import com.graphql_java_generator.domain.client.starwars.Character;
+import com.graphql_java_generator.domain.client.starwars.Episode;
+import com.graphql_java_generator.domain.client.starwars.Human;
+import com.graphql_java_generator.domain.client.starwars.QueryType;
 
 /**
  * Manual test for query execution. Not a JUnit test. The automation for this test is done in the

@@ -14,16 +14,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import com.graphql_java_generator.client.domain.allGraphQLCases.AllFieldCases;
-import com.graphql_java_generator.client.domain.allGraphQLCases.AnotherMutationTypeRootResponse;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeResponse;
-import com.graphql_java_generator.client.domain.allGraphQLCases.MyQueryTypeRootResponse;
-import com.graphql_java_generator.client.domain.allGraphQLCases.TheSubscriptionTypeRootResponse;
-import com.graphql_java_generator.client.domain.allGraphQLCases.WithID;
-import com.graphql_java_generator.client.domain.allGraphQLCases._break;
-import com.graphql_java_generator.client.domain.forum.Board;
-import com.graphql_java_generator.client.domain.forum.Post;
-import com.graphql_java_generator.client.domain.starwars.MutationTypeRootResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCases;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeRootResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeRootResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeRootResponse;
+import com.graphql_java_generator.domain.client.allGraphQLCases.WithID;
+import com.graphql_java_generator.domain.client.allGraphQLCases._break;
+import com.graphql_java_generator.domain.client.forum.Board;
+import com.graphql_java_generator.domain.client.forum.Post;
+import com.graphql_java_generator.domain.client.starwars.MutationTypeRootResponse;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Execution(ExecutionMode.CONCURRENT)

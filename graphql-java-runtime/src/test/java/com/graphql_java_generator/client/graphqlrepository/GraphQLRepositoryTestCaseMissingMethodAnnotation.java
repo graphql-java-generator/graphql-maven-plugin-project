@@ -1,6 +1,6 @@
 package com.graphql_java_generator.client.graphqlrepository;
 
-import com.graphql_java_generator.client.domain.allGraphQLCases.Character;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
