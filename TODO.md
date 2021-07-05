@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* @EnableGraphQLRepositories: replace the string (that contains the package name) by a class (so that when changing a package name, the code is still valid)
 * Check comment of the executor method. The line below is wrong:
     * the request contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
 * Mark the skipGenerationIfSchemaHasNotChanged parameter as deprecated (no more used)

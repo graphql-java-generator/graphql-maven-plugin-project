@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.client.graphqlrepository.spring_graphql_one_repo;
+package com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,7 +28,6 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvocationHandler;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryTestHelper;
-import com.graphql_java_generator.client.graphqlrepository.spring_graphql_one_repo.GraphQLRepositorySpringIntegrationTest.SpringConfig;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
@@ -38,6 +37,7 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecu
 import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo.GraphQLRepositorySpringIntegrationTest.SpringConfig;
 import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
@@ -55,7 +55,7 @@ public class GraphQLRepositorySpringIntegrationTest {
 	@PropertySource("classpath:/application_one_graphql_server.properties")
 	@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class })
 	@Import(GraphQLAutoConfiguration.class)
-	@EnableGraphQLRepositories({ "com.graphql_java_generator.client.graphqlrepository.spring_graphql_one_repo" })
+	@EnableGraphQLRepositories({ "com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo" })
 	public static class SpringConfig {
 
 	}

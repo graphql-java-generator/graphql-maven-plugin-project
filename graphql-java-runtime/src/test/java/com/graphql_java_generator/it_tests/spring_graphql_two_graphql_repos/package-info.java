@@ -1,0 +1,1 @@
+package com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos;

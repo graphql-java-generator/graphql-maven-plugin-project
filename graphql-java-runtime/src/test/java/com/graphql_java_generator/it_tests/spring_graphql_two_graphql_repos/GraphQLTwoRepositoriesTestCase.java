@@ -1,4 +1,4 @@
-package com.graphql_java_generator.client.graphqlrepository.spring_graphql_one_repo;
+package com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;
@@ -13,12 +13,12 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
- * This interface contains the test cases for the {@link GraphQLRepositorySpringIntegrationTest} test class
+ * This interface contains the test cases for the {@link GraphQLTwoRepositoriesSpringIntegrationTest} test class
  * 
  * @author etienne-sf
  */
 @GraphQLRepository
-public interface GraphQLRepositoryTestCase {
+public interface GraphQLTwoRepositoriesTestCase {
 
 	/** a Query */
 	@PartialRequest(request = "{appearsIn name}")

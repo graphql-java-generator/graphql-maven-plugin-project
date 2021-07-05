@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,8 +44,8 @@ public class GraphQLAutoConfiguration {
 	@Value(value = "${graphql.endpoint.url}")
 	private String graphqlEndpointUrl;
 
-	// @Value(value = "${graphql.endpoint2.url:'undefined'}")
-	// private String graphqlEndpoint2Url;
+	@Value(value = "${graphql.endpoint2.url:'undefined'}")
+	private String graphqlEndpoint2Url;
 
 	@Value("${graphql.endpoint.subscriptionUrl:${graphql.endpoint.url}}")
 	@Deprecated
@@ -62,11 +63,11 @@ public class GraphQLAutoConfiguration {
 		return graphqlEndpointUrl;
 	}
 
-	// @Bean
-	// @ConditionalOnExpression("'${graphql.endpoint2.url:''undefined''}'!='undefined'")
-	// String graphqlEndpoint2() {
-	// return graphqlEndpoint2Url;
-	// }
+	@Bean
+	@ConditionalOnExpression("'${graphql.endpoint2.url:''undefined''}'!='undefined'")
+	String graphqlEndpoint2() {
+		return graphqlEndpoint2Url;
+	}
 
 	/**
 	 * This beans defines the GraphQL endpoint for subscriptions, as a {@link String}. If null, then the
@@ -101,14 +102,14 @@ public class GraphQLAutoConfiguration {
 	 * This bean is only created if a second GraphQL endpoint has been provided in the `graphql.endpoint2.url`
 	 * properties, and no such bean already exists
 	 */
-	// @Bean
-	// @ConditionalOnMissingBean
-	// @ConditionalOnExpression("'${graphql.endpoint2.url:''undefined''}'!='undefined'")
-	// public WebClient webClient2(String graphqlEndpoint2, //
-	// @Autowired(required = false) HttpClient httpClient2,
-	// @Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction oauthFilter2) {
-	// return getWebClient(graphqlEndpoint2, httpClient2, oauthFilter2);
-	// }
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnExpression("'${graphql.endpoint2.url:''undefined''}'!='undefined'")
+	public WebClient webClient2(String graphqlEndpoint2, //
+			@Autowired(required = false) HttpClient httpClient2,
+			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction oauthFilter2) {
+		return getWebClient(graphqlEndpoint2, httpClient2, oauthFilter2);
+	}
 
 	/**
 	 * Builds a Spring reactive {@link WebClient}, from the specified parameters.<BR/>
@@ -157,14 +158,14 @@ public class GraphQLAutoConfiguration {
 	 * The Spring reactive {@link WebSocketClient} web socket client, that will execute HTTP requests to build the web
 	 * sockets, for GraphQL subscriptions.<BR/>
 	 * This is mandatory if the application latter calls subscription against a second GraphQL server (defined by the
-	 * `graphql.endpoint2.url` configuration parameter). It may be null otherwise.
+	 * <code>graphql.endpoint2.url</code> configuration parameter). It may be null otherwise.
 	 */
-	// @Bean
-	// @ConditionalOnMissingBean
-	// @ConditionalOnExpression("'${graphql.endpoint2.url:''undefined''}'!='undefined'")
-	// public WebSocketClient webSocketClient2(@Autowired(required = false) HttpClient httpClient2) {
-	// return getWebSocketClient(httpClient2);
-	// }
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnExpression("'${graphql.endpoint2.url:''undefined''}'!='undefined'")
+	public WebSocketClient webSocketClient2(@Autowired(required = false) HttpClient httpClient2) {
+		return getWebSocketClient(httpClient2);
+	}
 
 	/**
 	 * Creates the Spring reactive {@link WebSocketClient} that will be used for subscriptions.

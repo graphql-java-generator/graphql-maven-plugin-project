@@ -17,6 +17,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
@@ -122,19 +123,13 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * @param repositoryInterface
 	 *            The {@link GraphQLRepository} interface, that this {@link InvocationHandler} has to manage. It is
 	 *            mandatory.
-	 * @param queryExecutor
-	 *            The GraphQL query executor. It is mandatory.
-	 * @param mutationExecutor
-	 *            The GraphQL mutation executor. It may be null (only if no mutation type is provided in the GraphQL
-	 *            schema).
-	 * @param subscriptionExecutor
-	 *            The GraphQL subscription executor. It may be null (only if no subscription type is provided in the
-	 *            GraphQL schema).
+	 * @param ctx
+	 *            The Spring {@link ApplicationContext} that allows to retrieve the query, mutation and subscription
+	 *            executors
 	 * @throws GraphQLRequestPreparationException
 	 */
 	@Autowired
-	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, GraphQLQueryExecutor queryExecutor,
-			GraphQLMutationExecutor mutationExecutor, GraphQLSubscriptionExecutor subscriptionExecutor)
+	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, ApplicationContext ctx)
 			throws GraphQLRequestPreparationException {
 		if (repositoryInterface == null) {
 			throw new NullPointerException("'repositoryInterface' may not be null");
@@ -149,15 +144,15 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 							+ "GraphQL repositories must be annotated with the 'com.graphql_java_generator.annotation.GraphQLRepository' annotation. "
 							+ "But the '" + repositoryInterface.getName() + "' is not.");
 		}
-		if (queryExecutor == null) {
-			throw new NullPointerException("'queryExecutor' may not be null");
-		}
 
 		// All basic tests are Ok. Let's go
 		this.repositoryInterface = repositoryInterface;
-		this.queryExecutor = queryExecutor;
-		this.mutationExecutor = mutationExecutor;
-		this.subscriptionExecutor = subscriptionExecutor;
+		this.queryExecutor = ctx.getBean(GraphQLQueryExecutor.class);
+		this.mutationExecutor = ctx.getBean(GraphQLMutationExecutor.class);
+		this.subscriptionExecutor = ctx.getBean(GraphQLSubscriptionExecutor.class);
+		if (this.queryExecutor == null) {
+			throw new NullPointerException("'queryExecutor' may not be null");
+		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// CREATION IF THE PROXY INSTANCE

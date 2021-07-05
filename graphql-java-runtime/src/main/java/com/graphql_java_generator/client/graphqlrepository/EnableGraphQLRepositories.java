@@ -13,7 +13,7 @@ import org.springframework.core.annotation.AliasFor;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import({ GraphQLRepositoryProxyConfig.class, GraphQLRepositoryProxyBeansRegistrar.class })
+@Import({ GraphQLRepositoryProxyBeansRegistrar.class })
 /**
  * This annotation can be applied to some Configuration annotated class with packages to scan interfaces, as below.
  * <code>
