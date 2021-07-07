@@ -147,11 +147,39 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 		// All basic tests are Ok. Let's go
 		this.repositoryInterface = repositoryInterface;
-		this.queryExecutor = ctx.getBean(GraphQLQueryExecutor.class);
-		this.mutationExecutor = ctx.getBean(GraphQLMutationExecutor.class);
-		this.subscriptionExecutor = ctx.getBean(GraphQLSubscriptionExecutor.class);
-		if (this.queryExecutor == null) {
-			throw new NullPointerException("'queryExecutor' may not be null");
+
+		// Does the EnableGraphQLRepositories annotation define a queryExecutor ?
+		GraphQLRepository graphQLRepoAnnotation = repositoryInterface.getAnnotation(GraphQLRepository.class);
+		if (graphQLRepoAnnotation.queryExecutor() == GraphQLQueryExecutor.class) {
+			// No value has been provided for the queryExecutor annotation field. There should be only one GraphQL
+			// schema generated code (that is: it's the standard case)
+			this.queryExecutor = ctx.getBean(GraphQLQueryExecutor.class);
+			this.mutationExecutor = ctx.getBean(GraphQLMutationExecutor.class);
+			this.subscriptionExecutor = ctx.getBean(GraphQLSubscriptionExecutor.class);
+			if (this.queryExecutor == null) {
+				throw new NullPointerException("Error while preparing the GraphQL Repository '"
+						+ repositoryInterface.getClass().getName()
+						+ "': found no Spring Bean of type QueryExecutor'. Please check the Spring component scan path.");
+			}
+		} else {
+			// A value has been provided for the queryExecutor annotation field. We must select the query, mutation and
+			// subscription executors that belong to the same GraphQL schema as the provided one.
+			// This allows to generate code from as many GraphQL schemas as wanted, that is: it allows to 'attack' any
+			// number of GraphQL servers
+			this.queryExecutor = getBeanOfTypeAndPackage(ctx, graphQLRepoAnnotation.queryExecutor().getPackage(),
+					GraphQLQueryExecutor.class);
+			this.mutationExecutor = getBeanOfTypeAndPackage(ctx, graphQLRepoAnnotation.queryExecutor().getPackage(),
+					GraphQLMutationExecutor.class);
+			this.subscriptionExecutor = getBeanOfTypeAndPackage(ctx, graphQLRepoAnnotation.queryExecutor().getPackage(),
+					GraphQLSubscriptionExecutor.class);
+
+			if (this.queryExecutor == null) {
+				throw new IllegalArgumentException("Error while preparing the GraphQL Repository '"
+						+ repositoryInterface.getClass().getName()
+						+ "': found no Spring Bean of type 'GraphQLQueryExecutor' in the same package as the provided QueryExecutor ("
+						+ graphQLRepoAnnotation.queryExecutor().getClass().getName()
+						+ "). Please check the Spring component scan path.");
+			}
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,6 +194,28 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		for (Method method : repositoryInterface.getDeclaredMethods()) {
 			registeredMethods.put(method, registerMethod(method));
 		}
+	}
+
+	/**
+	 * Retrieve a Spring bean from the given context, that is of (or extends/implements) the provided class, and is in
+	 * the provided package. This method is used to find the query, mutation and subscription executors that are in the
+	 * provided package, that is: that where generated from the good GraphQL schema.
+	 * 
+	 * @param ctx
+	 *            The Spring {@link ApplicationContext} that contains the beans
+	 * @param pack
+	 *            The package where beans are searched
+	 * @param clazz
+	 *            The class of the bean. The found bean can either be of this class, implement or extend it
+	 */
+	<C> C getBeanOfTypeAndPackage(ApplicationContext ctx, Package pack, Class<? extends C> clazz) {
+		for (C bean : ctx.getBeansOfType(clazz).values()) {
+			if (bean.getClass().getPackage() == pack) {
+				// Ok, we've found the bean of the good package.
+				return bean;
+			}
+		} // for
+		return null;
 	}
 
 	/**

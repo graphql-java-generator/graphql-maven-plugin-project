@@ -10,6 +10,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.graphql_java_generator.client.GraphQLQueryExecutor;
+
 @Documented
 @Retention(RUNTIME)
 @Target(ElementType.TYPE)
@@ -61,5 +63,9 @@ public @interface GraphQLRepository {
 
 	/** The name of the Spring bean to build. Default is to use the interface name as the bean name */
 	String value() default "";
+
+	// The only way to make an annotation field optional, is to provide a default value, which can't be null. So we
+	// provide the interface itself, whereas the real use of this annotation should provide a real class.
+	Class<? extends GraphQLQueryExecutor> queryExecutor() default GraphQLQueryExecutor.class;
 
 }
