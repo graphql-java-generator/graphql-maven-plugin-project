@@ -35,7 +35,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 @Component
 public class PartialPreparedRequestsDeprecated implements Queries {
 
-	final static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
+	final static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
 
 	QueryType queryType = new QueryType(GRAPHQL_ENDPOINT_URL);
 	MutationType mutationType = new MutationType(GRAPHQL_ENDPOINT_URL);

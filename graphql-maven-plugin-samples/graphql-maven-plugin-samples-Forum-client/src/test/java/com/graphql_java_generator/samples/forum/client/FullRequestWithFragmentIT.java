@@ -29,7 +29,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Quer
 @Execution(ExecutionMode.CONCURRENT)
 public class FullRequestWithFragmentIT {
 
-	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
+	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
 
 	static GraphQLRequest boardsRequestWithGlobalFragments;
 	static GraphQLRequest boardsRequestWithInlineFragments;

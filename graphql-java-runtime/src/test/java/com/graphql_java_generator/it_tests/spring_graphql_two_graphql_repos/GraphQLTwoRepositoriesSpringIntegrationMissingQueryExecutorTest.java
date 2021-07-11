@@ -13,7 +13,6 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
@@ -22,7 +21,6 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecu
 import com.graphql_java_generator.domain.client.forum.QueryTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
  * This class contain tests that checks that Spring is able to properly load the GraphQL repositories, and automagically
@@ -37,7 +35,6 @@ public class GraphQLTwoRepositoriesSpringIntegrationMissingQueryExecutorTest {
 	@PropertySource("classpath:/application_two_graphql_servers.properties")
 	@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class,
 			QueryTypeExecutor.class })
-	@Import(GraphQLAutoConfiguration.class)
 	@EnableGraphQLRepositories({
 			"com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ko_missing_queryExecutor" })
 	public static class SpringConfigTwoServers {
@@ -50,7 +47,7 @@ public class GraphQLTwoRepositoriesSpringIntegrationMissingQueryExecutorTest {
 			NoSuchMethodException, SecurityException {
 		BeanCreationException e = assertThrows(BeanCreationException.class,
 				() -> new AnnotationConfigApplicationContext(SpringConfigTwoServers.class));
-		assertTrue(e.getMessage()
-				.contains("expected single matching bean but found 2: myQueryTypeExecutor,queryTypeExecutor"));
+		assertTrue(
+				e.getMessage().contains("one of your GraphQLRepository annotation didn't provide the QueryExecutor"));
 	}
 }

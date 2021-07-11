@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
@@ -23,7 +22,6 @@ import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
@@ -32,12 +30,11 @@ import reactor.core.scheduler.Schedulers;
 /**
  * This is the default implementation for the {@link QueryExecutor} This implementation has been added in version
  * 1.12.<BR/>
- * It is loaded by the {@link GraphQLAutoConfiguration} Spring auto-configuration class.
+ * It is loaded by the {@link SpringConfiguration} Spring configuration class, that is generated with the client code.
  * 
  * @since 1.12
  * @author etienne-sf
  */
-@Component
 public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 
 	/** Logger for this class */
@@ -121,11 +118,11 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 */
 	@Autowired
 	public QueryExecutorSpringReactiveImpl(String graphqlEndpoint, //
-			@Autowired(required = false) String graphqlSubscriptionEndpoint, //
+			String graphqlSubscriptionEndpoint, //
 			WebClient webClient, //
-			@Autowired(required = false) WebSocketClient webSocketClient,
-			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction,
-			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractor) {
+			WebSocketClient webSocketClient,
+			ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction,
+			OAuthTokenExtractor oAuthTokenExtractor) {
 		this.graphqlEndpoint = graphqlEndpoint;
 		this.graphqlSubscriptionEndpoint = graphqlSubscriptionEndpoint;
 		this.webClient = webClient;

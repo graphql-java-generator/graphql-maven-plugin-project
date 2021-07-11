@@ -51,6 +51,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	// As the GraphQL schema won't change, and we always want to regenerate the sources, we won't skip it
 	public boolean skipGenerationIfSchemaHasNotChanged = false;
 	public String sourceEncoding = "UTF-8";
+	public String springBeanSuffix = "MySchema";
 	public File targetClassFolder = null;
 	public File targetResourceFolder = null;
 	public File targetSourceFolder = null;

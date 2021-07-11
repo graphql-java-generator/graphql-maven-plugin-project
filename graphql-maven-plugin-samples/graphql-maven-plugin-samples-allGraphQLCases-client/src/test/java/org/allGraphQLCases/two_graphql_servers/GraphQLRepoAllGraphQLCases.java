@@ -1,9 +1,10 @@
 /**
  * 
  */
-package org.allGraphQLCases.subscription.graphqlrepository;
+package org.allGraphQLCases.two_graphql_servers;
 
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.forum.client.util.QueryTypeExecutor;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;
@@ -13,14 +14,14 @@ import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
- * This interface demonstrate the use of GraphqlRepository: it implements a unique Full Requests that is a subscription.
+ * This is a GraphQL Repository that is based on the forum GraphQL schema, thanks to the {@link QueryTypeExecutor} class
+ * provided to the {@link GraphQLRepository} annotation.
  * 
  * @author etienne-sf
  */
 @GraphQLRepository(queryExecutor = MyQueryTypeExecutor.class)
-public interface FullRequestSubscriptionGraphQLRepository {
+public interface GraphQLRepoAllGraphQLCases {
 
 	@FullRequest(request = "subscription {subscribeToAList {}}", requestType = RequestType.subscription)
 	SubscriptionClient subscribeToAList(SubscriptionCallback<?> callback) throws GraphQLRequestExecutionException;
-
 }

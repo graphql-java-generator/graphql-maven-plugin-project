@@ -19,6 +19,6 @@ class AllGraphQLCasesClientTest_addRelayConnections extends AbstractIntegrationT
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(58, nbGeneratedClasses);
+		assertEquals(59, nbGeneratedClasses);
 	}
 }

@@ -122,6 +122,14 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;
 
+	/**
+	 * Retrieves the suffix that will be applied to the name of the Spring Beans that are generated for this schema.
+	 * It's mandatory if you' using a Spring app and have more than one GraphQL schemas. The default value is an empty
+	 * String.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.springBeanSuffix", defaultValue = GraphQLConfiguration.DEFAULT_SPRING_BEAN_SUFFIX)
+	String springBeanSuffix;
+
 	/** The folder where resources will be generated */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetResourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_RESOURCE_FOLDER)
 	File targetResourceFolder;
@@ -143,6 +151,11 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Override
 	public String getSourceEncoding() {
 		return sourceEncoding;
+	}
+
+	@Override
+	public String getSpringBeanSuffix() {
+		return springBeanSuffix;
 	}
 
 	public File getTargetFolder() {

@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -38,7 +37,6 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionT
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo.GraphQLRepositorySpringIntegrationTest.SpringConfig;
-import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
  * This class contain tests that checks that Spring is able to properly load the GraphQL repositories, and automagically
@@ -54,7 +52,6 @@ public class GraphQLRepositorySpringIntegrationTest {
 	@Configuration
 	@PropertySource("classpath:/application_one_graphql_server.properties")
 	@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class })
-	@Import(GraphQLAutoConfiguration.class)
 	@EnableGraphQLRepositories({ "com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo" })
 	public static class SpringConfig {
 

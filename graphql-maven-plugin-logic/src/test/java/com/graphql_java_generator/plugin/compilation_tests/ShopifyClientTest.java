@@ -24,7 +24,7 @@ class ShopifyClientTest extends AbstractIntegrationTest {
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(834, nbGeneratedClasses);
+		assertEquals(835, nbGeneratedClasses);
 	}
 
 }

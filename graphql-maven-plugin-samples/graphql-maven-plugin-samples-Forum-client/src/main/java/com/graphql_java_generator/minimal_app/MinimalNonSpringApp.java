@@ -12,7 +12,7 @@ public class MinimalNonSpringApp {
 		// The executor, that allows to execute GraphQL queries. The class name is the one defined in the GraphQL
 		// schema.
 		// You can instanciate in the same way the mutation and the subscription executors.
-		QueryTypeExecutor queryExecutor = new QueryTypeExecutor("http://localhost:8180/graphql");
+		QueryTypeExecutor queryExecutor = new QueryTypeExecutor("http://localhost:8182/graphql");
 
 		// A basic demo of input parameters
 		@SuppressWarnings("deprecation")

@@ -22,6 +22,6 @@ class AllGraphQLCasesClient_separateUtilityClasses_Test extends AbstractIntegrat
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(52, nbGeneratedClasses);
+		assertEquals(53, nbGeneratedClasses);
 	}
 }

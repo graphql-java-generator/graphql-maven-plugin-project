@@ -221,6 +221,15 @@ public class GenerateCodeGenerator implements Generator {
 			logger.debug("Generating GraphQL Request class");
 			i += generateGraphQLRequest();
 
+			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
+			logger.debug("Generating SpringConfig");
+			i += generateOneFile(
+					getJavaFile("SpringConfiguration"
+							+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix()),
+							true),
+					"generating SpringConfiguration", context,
+					resolveTemplate(CodeTemplate.SPRING_CONFIGURATION_CLASS));
+
 			// Files for Custom Scalars
 			logger.debug("Generating CustomScalarRegistryInitializer");
 			i += generateOneFile(getJavaFile("CustomScalarRegistryInitializer", true),

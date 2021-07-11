@@ -56,7 +56,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Autowired
-	GraphQLConfiguration configuration = null;
+	GraphQLConfiguration graphQLConfigurationAllGraphQLCases = null;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
@@ -88,7 +88,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 							+ graphqlUtils.getRuntimeVersion()
 							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
 		}
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -110,7 +110,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	 */
 	public TheSubscriptionTypeExecutor(String graphqlEndpoint, SSLContext sslContext,
 			HostnameVerifier hostnameVerifier) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -126,7 +126,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
 	public TheSubscriptionTypeExecutor(String graphqlEndpoint, Client client) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -297,14 +297,14 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 		// If someone has a better idea to call this parameterized method, please come in.
 		switch (objectResponse.getSubscription().getFields().get(0).getName()) {
 		case "subscribeNewHumanForEpisode":
-			return configuration.getQueryExecutor().execute(objectResponse, parameters,
+			return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 					(SubscriptionCallback<Human>) subscriptionCallback, TheSubscriptionTypeResponse.class, Human.class);
 		case "subscribeToAList":
-			return configuration.getQueryExecutor().execute(objectResponse, parameters,
+			return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 					(SubscriptionCallback<Integer>) subscriptionCallback, TheSubscriptionTypeResponse.class,
 					Integer.class);
 		case "issue53":
-			return configuration.getQueryExecutor().execute(objectResponse, parameters,
+			return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 					(SubscriptionCallback<Date>) subscriptionCallback, TheSubscriptionTypeResponse.class, Date.class);
 		default:
 			throw new GraphQLRequestExecutionException(
@@ -381,7 +381,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;
 	}
 
@@ -580,7 +580,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", episode);
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
 				TheSubscriptionType.class, Human.class);
 	}
 
@@ -665,7 +665,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", episode);
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
 				TheSubscriptionType.class, Human.class);
 	}
 
@@ -702,7 +702,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeNewHumanForEpisode",
 				InputParameter.newBindParameter("episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode",
 						InputParameterType.MANDATORY, "Episode", true, 0, false));
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;
 	}
 
@@ -893,7 +893,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise
 		// an issue
-		return configuration.getQueryExecutor().execute(objectResponse, parameters,
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				(SubscriptionCallback<List>) (Object) subscriptionCallback, TheSubscriptionType.class, List.class);
 	}
 
@@ -976,7 +976,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise
 		// an issue
-		return configuration.getQueryExecutor().execute(objectResponse, parameters,
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				(SubscriptionCallback<List>) (Object) subscriptionCallback, TheSubscriptionType.class, List.class);
 	}
 
@@ -1008,7 +1008,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	public GraphQLRequest getSubscribeToAListGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeToAList");
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;
 	}
 
@@ -1202,7 +1202,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("theSubscriptionTypeIssue53Date", date);
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
 				TheSubscriptionType.class, Date.class);
 	}
 
@@ -1285,7 +1285,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("theSubscriptionTypeIssue53Date", date);
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
 				TheSubscriptionType.class, Date.class);
 	}
 
@@ -1319,7 +1319,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "issue53",
 				InputParameter.newBindParameter("date", "theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY,
 						"Date", true, 0, false));
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;
 	}
 

@@ -40,9 +40,9 @@ public class SubscriptionRequests {
 	 * @param urlSubscription
 	 *            The url for the GraphQL subscription endpoint (may be different, when the server is under java)
 	 */
-	public SubscriptionRequests(String url, String urlSubscription) {
+	public SubscriptionRequests(String url) {
 		mutationTypeExecutor = new MutationTypeExecutor(url);
-		subscriptionTypeExecutor = new SubscriptionTypeExecutor(urlSubscription);
+		subscriptionTypeExecutor = new SubscriptionTypeExecutor(url);
 	}
 
 	public void execSubscription()

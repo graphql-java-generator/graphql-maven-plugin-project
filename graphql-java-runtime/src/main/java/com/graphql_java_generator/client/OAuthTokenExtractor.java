@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ClientHttpResponse;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractor;
 import org.springframework.web.reactive.function.client.ClientRequest;
@@ -71,7 +67,6 @@ import reactor.core.publisher.Mono;
  * @author etienne-sf
  * @see https://github.com/spring-projects/spring-security/issues/6711
  */
-@Component
 public class OAuthTokenExtractor {
 
 	/** The name of the HTTP header that contains the OAuth token */
@@ -89,8 +84,7 @@ public class OAuthTokenExtractor {
 	 * provided, then there is no OAuth authentication on client side. If provided, then the client uses it to provide
 	 * the OAuth2 authorization token, when accessing the GraphQL resource server, for queries/mutations/subscriptions.
 	 */
-	@Autowired(required = false)
-	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction;
+	final ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction;
 
 	/** The filter which retrieves the Authorization header value */
 	OAuthTokenFilter oAuthTokenFilter;
@@ -101,21 +95,35 @@ public class OAuthTokenExtractor {
 	/** The dummy request that will be executed, and that will cause the token retrieval or refresh */
 	ClientRequest dummyHttpRequest;
 
-	@PostConstruct
-	void init() {
-		if (serverOAuth2AuthorizedClientExchangeFilterFunction != null) {
-			oAuthTokenFilter = new OAuthTokenFilter();
-
-			// The filter will be applied in their reverse order.
-			getOAuthTokenExchangeFunction = ExchangeFunctions.create(new ReactorClientHttpConnector())
-					.filter(oAuthTokenFilter).filter(serverOAuth2AuthorizedClientExchangeFilterFunction);
-
-			try {
-				dummyHttpRequest = ClientRequest.create(HttpMethod.GET, new URI(DUMMY_REQUEST)).build();
-			} catch (URISyntaxException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
+	/**
+	 * 
+	 * @param serverOAuth2AuthorizedClientExchangeFilterFunction
+	 *            The {@link ServerOAuth2AuthorizedClientExchangeFilterFunction} is responsible for getting OAuth token
+	 *            from the OAuth authorization server. It is optional, and may be provided by the App's spring config.
+	 *            If it is not provided, then there is no OAuth authentication on client side. If provided, then the
+	 *            client uses it to provide the OAuth2 authorization token, when accessing the GraphQL resource server,
+	 *            for queries/mutations/subscriptions.
+	 */
+	public OAuthTokenExtractor(
+			ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction) {
+		if (serverOAuth2AuthorizedClientExchangeFilterFunction == null) {
+			throw new NullPointerException(
+					"[internal error] serverOAuth2AuthorizedClientExchangeFilterFunction may not be null");
 		}
+
+		this.serverOAuth2AuthorizedClientExchangeFilterFunction = serverOAuth2AuthorizedClientExchangeFilterFunction;
+		oAuthTokenFilter = new OAuthTokenFilter();
+
+		// The filter will be applied in their reverse order.
+		getOAuthTokenExchangeFunction = ExchangeFunctions.create(new ReactorClientHttpConnector())
+				.filter(oAuthTokenFilter).filter(serverOAuth2AuthorizedClientExchangeFilterFunction);
+
+		try {
+			dummyHttpRequest = ClientRequest.create(HttpMethod.GET, new URI(DUMMY_REQUEST)).build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+
 	}
 
 	/**

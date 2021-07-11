@@ -23,6 +23,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
+	public final String DEFAULT_SPRING_BEAN_SUFFIX = "";
 	public final String DEFAULT_TARGET_RESOURCE_FOLDER = "./target/generated-resources/graphql-maven-plugin";
 	public final String DEFAULT_TARGET_SOURCE_FOLDER = "./target/generated-sources/graphql-maven-plugin";
 
@@ -79,6 +80,13 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 
 	/** The encoding for the generated source files */
 	public String getSourceEncoding();
+
+	/**
+	 * Retrieves the suffix that will be applied to the name of the Spring Beans that are generated for this schema.
+	 * It's mandatory if you' using a Spring app and have more than one GraphQL schemas. The default value is an empty
+	 * String.
+	 */
+	public String getSpringBeanSuffix();
 
 	/**
 	 * The folder where the generated classes will be compiled, that is: where the class file are stored after
@@ -162,6 +170,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 		logger.debug("    packageName: " + getPackageName());
 		logger.debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
 		logger.debug("    sourceEncoding: " + getSourceEncoding());
+		logger.debug("    springBeanSuffix: " + getSpringBeanSuffix());
 		logger.debug("    targetClassFolder: " + getTargetClassFolder().getAbsolutePath());
 		logger.debug("    targetResourceFolder: " + getTargetResourceFolder().getAbsolutePath());
 		logger.debug("    targetSourceFolder: " + getTargetSourceFolder().getAbsolutePath());

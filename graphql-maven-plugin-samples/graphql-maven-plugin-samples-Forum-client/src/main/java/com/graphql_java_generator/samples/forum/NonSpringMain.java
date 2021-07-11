@@ -22,10 +22,9 @@ public class NonSpringMain implements CommandLineRunner {
 
 	public static void main(String[] args) throws Exception {
 		NonSpringMain main = new NonSpringMain();
-		String url = "http://localhost:8180/graphql";
-		String subscriptionUrl = "http://localhost:8180/graphql/subscription";
+		String url = "http://localhost:8182/graphql";
 		main.partialDirectRequests = new PartialDirectRequests(url);
-		main.subscriptionRequests = new SubscriptionRequests(url, subscriptionUrl);
+		main.subscriptionRequests = new SubscriptionRequests(url);
 
 		main.run(args);
 	}

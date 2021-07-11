@@ -48,6 +48,7 @@
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
 							<separateUtilityClasses>true</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+							<springBeanSuffix>AllGraphQLCases</springBeanSuffix>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>
@@ -84,6 +85,7 @@
 							<schemaFileFolder>${basedir}/src/graphqls/forum/</schemaFileFolder>
 							<separateUtilityClasses>true</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+							<springBeanSuffix>Forum</springBeanSuffix>
 							<targetSourceFolder>${basedir}/target/generated-sources/graphql-maven-plugin2</targetSourceFolder>
 							<customScalars>
 								<customScalar>
@@ -170,8 +172,9 @@
 							<skip>${skipTests}</skip>
 							<name>Forum GraphQL server</name>
 							<workingDir>forum_graphql_server</workingDir>
+							<waitAfterLaunch>60</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8180/graphiql</healthcheckUrl>
+							<healthcheckUrl>http://localhost:8182/graphiql</healthcheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
@@ -223,18 +226,21 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- dependency>
+		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-allGraphQLCases-server</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
-		</dependency-->
+			<scope>provided</scope>
+		</dependency>
 
 
 		<!-- Dependencies for the generated code -->

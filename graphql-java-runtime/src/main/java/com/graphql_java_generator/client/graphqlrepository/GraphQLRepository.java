@@ -64,8 +64,11 @@ public @interface GraphQLRepository {
 	/** The name of the Spring bean to build. Default is to use the interface name as the bean name */
 	String value() default "";
 
-	// The only way to make an annotation field optional, is to provide a default value, which can't be null. So we
-	// provide the interface itself, whereas the real use of this annotation should provide a real class.
+	/**
+	 * When more than one GraphQL schema are used, a GraphQL Repository requests may be relative to only one GraphQL
+	 * schema. In this case, the queryExecutor value is mandatory: it must provide the queryExecutor of this GraphQL
+	 * schema.
+	 */
 	Class<? extends GraphQLQueryExecutor> queryExecutor() default GraphQLQueryExecutor.class;
 
 }

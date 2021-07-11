@@ -58,7 +58,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Autowired
-	GraphQLConfiguration configuration;
+	GraphQLConfiguration graphQLConfigurationAllGraphQLCases;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
@@ -90,7 +90,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 							+ graphqlUtils.getRuntimeVersion()
 							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
 		}
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -111,7 +111,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @param hostnameVerifier
 	 */
 	public MyQueryTypeExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -127,7 +127,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
 	public MyQueryTypeExecutor(String graphqlEndpoint, Client client) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -270,7 +270,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryTypeResponse.class);
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryTypeResponse.class);
 	}
 
 	/**
@@ -340,7 +340,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;
 	}
 
@@ -474,7 +474,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithoutParameters();
 	}
@@ -536,7 +536,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithoutParameters();
 	}
@@ -707,7 +707,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneOptionalParamCharacter", character);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithOneOptionalParam();
 	}
@@ -772,7 +772,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithOneOptionalParamCharacter", character);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithOneOptionalParam();
 	}
@@ -947,7 +947,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneMandatoryParamCharacter", character);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithOneMandatoryParam();
 	}
@@ -1012,7 +1012,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithOneMandatoryParamCharacter", character);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithOneMandatoryParam();
 	}
@@ -1190,7 +1190,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneMandatoryParamDefaultValueIntParam", intParam);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithOneMandatoryParamDefaultValue();
 	}
@@ -1256,7 +1256,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithOneMandatoryParamDefaultValueIntParam", intParam);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithOneMandatoryParamDefaultValue();
 	}
@@ -1445,7 +1445,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValTheHero", theHero);
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValNum", num);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithTwoMandatoryParamDefaultVal();
 	}
@@ -1515,7 +1515,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValTheHero", theHero);
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValNum", num);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithTwoMandatoryParamDefaultVal();
 	}
@@ -1692,7 +1692,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithEnumEpisode", episode);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithEnum();
 	}
@@ -1757,7 +1757,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithEnumEpisode", episode);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithEnum();
 	}
@@ -1929,7 +1929,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithListOfListMatrix", matrix);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithListOfList();
 	}
@@ -1994,7 +1994,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithListOfListMatrix", matrix);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithListOfList();
 	}
@@ -2175,7 +2175,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithListFirstName", firstName);
 		parameters.put("myQueryTypeWithListCharacters", characters);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithList();
 	}
@@ -2244,7 +2244,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithListFirstName", firstName);
 		parameters.put("myQueryTypeWithListCharacters", characters);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getWithList();
 	}
@@ -2427,7 +2427,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeAllFieldCasesInput", input);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getAllFieldCases();
 	}
@@ -2493,7 +2493,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeAllFieldCasesInput", input);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getAllFieldCases();
 	}
@@ -2694,7 +2694,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeUnionTestDroid1", droid1);
 		parameters.put("myQueryTypeUnionTestDroid2", droid2);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getUnionTest();
 	}
@@ -2769,7 +2769,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeUnionTestDroid1", droid1);
 		parameters.put("myQueryTypeUnionTestDroid2", droid2);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getUnionTest();
 	}
@@ -2957,7 +2957,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeErrorErrorLabel", errorLabel);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getError();
 	}
@@ -3023,7 +3023,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeErrorErrorLabel", errorLabel);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getError();
 	}
@@ -3187,7 +3187,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getABreak();
 	}
@@ -3250,7 +3250,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getABreak();
 	}
@@ -3424,7 +3424,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeDirectiveOnQueryUppercase", uppercase);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getDirectiveOnQuery();
 	}
@@ -3490,7 +3490,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeDirectiveOnQueryUppercase", uppercase);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getDirectiveOnQuery();
 	}
@@ -3661,7 +3661,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getDirectiveOnField();
 	}
@@ -3724,7 +3724,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getDirectiveOnField();
 	}
@@ -3893,7 +3893,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getConnectionWithoutParameters();
 	}
@@ -3956,7 +3956,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getConnectionWithoutParameters();
 	}
@@ -4137,7 +4137,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeConnectionOnHumanPlanet", planet);
 		parameters.put("myQueryTypeConnectionOnHumanEpisode", episode);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getConnectionOnHuman();
 	}
@@ -4205,7 +4205,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeConnectionOnHumanPlanet", planet);
 		parameters.put("myQueryTypeConnectionOnHumanEpisode", episode);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getConnectionOnHuman();
 	}
@@ -4384,7 +4384,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeIssue53Date", date);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getIssue53();
 	}
@@ -4450,7 +4450,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeIssue53Date", date);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getIssue53();
 	}
@@ -4623,7 +4623,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeIssue82FloatAFloat", aFloat);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getIssue82Float();
 	}
@@ -4689,7 +4689,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeIssue82FloatAFloat", aFloat);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getIssue82Float();
 	}
@@ -4861,7 +4861,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeIssue82IDAID", aID);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getIssue82ID();
 	}
@@ -4926,7 +4926,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeIssue82IDAID", aID);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getIssue82ID();
 	}
@@ -5090,7 +5090,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getRelay();
 	}
@@ -5153,7 +5153,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.getRelay();
 	}
@@ -5314,7 +5314,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.get__schema();
 	}
@@ -5376,7 +5376,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.get__schema();
 	}
@@ -5543,7 +5543,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryType__typeName", name);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.get__type();
 	}
@@ -5608,7 +5608,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryType__typeName", name);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.get__type();
 	}
@@ -5770,7 +5770,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.get__typename();
 	}
@@ -5832,7 +5832,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
 
 		return ret.get__typename();
 	}

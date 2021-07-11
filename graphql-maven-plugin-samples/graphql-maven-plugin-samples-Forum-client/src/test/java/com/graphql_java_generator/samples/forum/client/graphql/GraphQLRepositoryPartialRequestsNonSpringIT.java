@@ -21,7 +21,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Subs
 @Execution(ExecutionMode.CONCURRENT)
 class GraphQLRepositoryPartialRequestsNonSpringIT extends AbstractIT {
 
-	static String ENDPOINT = "http://localhost:8180/graphql";
+	static String ENDPOINT = "http://localhost:8182/graphql";
 
 	@BeforeEach
 	void setUp() throws Exception {

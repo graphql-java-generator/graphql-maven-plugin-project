@@ -274,8 +274,8 @@ public class GraphqlClientUtils {
 		}
 
 		if (fieldClass == null) {
-			throw new GraphQLRequestPreparationException(
-					"The GraphQL type '" + owningClass.getSimpleName() + "' has no field of name '" + name + "'");
+			throw new GraphQLRequestPreparationException("The GraphQL type '" + owningClass.getSimpleName() + "' ("
+					+ owningClass.getName() + ") has no field of name '" + name + "'");
 		}
 
 		return fieldClass;

@@ -1,2 +1,2 @@
 graphql:
-  endpoint: http://localhost:8180/graphql
+  endpoint: http://localhost:8182/graphql

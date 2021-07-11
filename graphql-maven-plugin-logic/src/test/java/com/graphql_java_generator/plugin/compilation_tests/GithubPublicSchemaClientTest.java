@@ -24,7 +24,7 @@ class GithubPublicSchemaClientTest extends AbstractIntegrationTest {
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(968, nbGeneratedClasses);
+		assertEquals(969, nbGeneratedClasses);
 	}
 
 }

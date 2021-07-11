@@ -316,12 +316,9 @@ class CodeGeneratorTest {
 		assertTrue(targetRuntimeClassesSourceFolder.exists());
 		assertTrue(targetRuntimeClassesSourceFolder.isDirectory());
 		//
-		File metaInf = new File(targetResourceFolder, "META-INF");
-		assertTrue(metaInf.exists());
-		assertTrue(metaInf.isDirectory());
-		String[] metaInfChildren = metaInf.list();
-		assertEquals(1, metaInfChildren.length);
-		assertTrue(metaInfChildren[0].equals("spring.factories"));
+		File javaRuntimeFile = new File(targetResourceFolder, "graphql-java-runtime.properties");
+		assertTrue(javaRuntimeFile.exists(), "graphql-java-runtime should exist");
+		assertTrue(javaRuntimeFile.isFile(), "graphql-java-runtime should be a file");
 	}
 
 	/**

@@ -15,7 +15,11 @@ Both modes:
 * The maven plugin is now better integrated in the IDE. No more need of the maven-helper-plugin, to add the folder for the generated sources and generated resources.
 
 Client mode:
+* The generated code can now attack two (or more) GraphQL servers.
+    * More information on [this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_more_than_one_graphql_servers).
 * Added the ability to create GraphQL Repositories: like Spring Data Repositories, GraphQL Repositories allow to declare GraphQL requests (query, mutation, subscription) by __just declaring an interface__. The runtime code create dynamic proxies at runtime, that will execute these GraphQL requests.
+    * In other words: GraphQL Repositories is a powerful tool that allows to execute GraphQL request, without writing code for that: just declare these requests in the GraphQL Repository interface
+    * More information on [this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_graphql_repository).
 
 
 # 1.16

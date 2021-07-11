@@ -7,22 +7,38 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.SpringConfigurationAllGraphQLCases;
+import org.allGraphQLCases.demo.OAuthSpringConfiguration;
+import org.allGraphQLCases.subscription.SubscriptionCallbackListIntegerForTest;
+import org.allGraphQLCases.two_graphql_servers.RequestsAgainstTwoGraphQLServersIT.TwoGraphQLServersSpringConfig;
 import org.forum.client.Board;
+import org.forum.client.Member;
+import org.forum.client.MemberType;
+import org.forum.client.Post;
+import org.forum.client.Topic;
 import org.forum.client.util.QueryTypeExecutor;
-import org.junit.jupiter.api.BeforeAll;
+import org.forum.client.util.SpringConfigurationForum;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
+import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.SubscriptionClient;
+import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -32,28 +48,40 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
+@SpringBootTest(classes = { TwoGraphQLServersSpringConfig.class }, webEnvironment = WebEnvironment.NONE)
 public class RequestsAgainstTwoGraphQLServersIT {
 
+	@Configuration
+	@SpringBootApplication(scanBasePackageClasses = { GraphQLConfiguration.class })
+	@Import({ OAuthSpringConfiguration.class, SpringConfigurationForum.class,
+			SpringConfigurationAllGraphQLCases.class })
+
+	// @ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class,
+	// QueryTypeExecutor.class })
+	@EnableGraphQLRepositories({ "org.allGraphQLCases.two_graphql_servers" })
+	public static class TwoGraphQLServersSpringConfig {
+	}
+
 	@Autowired
-	static MyQueryTypeExecutor queryType;
+	MyQueryTypeExecutor queryTypeAllGraphQLCases;
+	@Autowired
+	GraphQLRepoAllGraphQLCases graphQLRepoAllGraphQLCases;
 
-	@Autowired(required = false)
-	static QueryTypeExecutor queryType2;
+	@Autowired
+	QueryTypeExecutor queryTypeForum;
+	@Autowired
+	GraphQLRepoForum graphQLRepoForum;
 
-	@BeforeAll
-	static void setup() {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(TwoGraphQLServersSpringConfig.class);
-
-		queryType = ctx.getBean(MyQueryTypeExecutor.class);
-		assertNotNull(queryType);
-
-		queryType2 = ctx.getBean(QueryTypeExecutor.class);
-		assertNotNull(queryType2);
+	@BeforeEach
+	void setup() {
+		assertNotNull(queryTypeAllGraphQLCases);
+		assertNotNull(queryTypeForum);
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_allGraphQLCasesServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		List<Character> list = queryType.withoutParameters("{appearsIn name }");
+		List<Character> list = queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
 
 		assertNotNull(list);
 		assertEquals(10, list.size());
@@ -63,9 +91,10 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	}
 
 	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_forumServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// return queryType.boards("{id name publiclyAvailable}");
-		List<Board> boards = queryType2.boards("");
+		List<Board> boards = queryTypeForum.boards("");
 
 		// Verification
 		assertTrue(boards.size() >= 10, "10 boards at startup, then new ones are created by the tests");
@@ -81,18 +110,87 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		assertEquals("Board name 10", board10.getName());
 		assertEquals(true, board10.getPubliclyAvailable());
 		assertEquals(null, board10.getTopics());
-
-		fail("not yet implemented");
 	}
 
 	@Test
-	void test_GraphQLRepository_allGraphQLCases() {
-		fail("not yet implemented");
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_GraphQLRepository_allGraphQLCases() throws GraphQLRequestExecutionException {
+		// Preparation
+		SubscriptionCallbackListIntegerForTest callback = new SubscriptionCallbackListIntegerForTest(
+				"FullRequestSubscriptionIT.test_SubscribeToAList");
+
+		// Go, go, go
+		SubscriptionClient sub = graphQLRepoAllGraphQLCases.subscribeToAList(callback);
+
+		// Verification
+		try {
+			Thread.sleep(500); // Wait 0.5 second, so that other thread is ready
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
+
+		// Let's wait a max of 10 second, until we receive some notifications
+		try {
+			for (int i = 1; i < 100; i += 1) {
+				if (callback.lastReceivedMessage != null)
+					break;
+				Thread.sleep(100); // Wait 0.1 second
+			} // for
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
+
+		// Let's disconnect from the subscription
+		sub.unsubscribe();
+
+		// We should have received a notification from the subscription
+		assertNotNull(callback.lastReceivedMessage);
 	}
 
 	@Test
-	void test_GraphQLRepository_forum() {
-		fail("not yet implemented");
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_GraphQLRepository_forum() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.set(2009, 11, 20);// Month is 0-based, so this date is 2009, December the 20th
+		List<Topic> topics = graphQLRepoForum.topicAuthorPostAuthor("Board name 2", cal.getTime());
+
+		assertTrue(topics.size() >= 5);
+
+		Topic topic12 = topics.get(1);
+		//
+		assertEquals("The content of the topic <12>", topic12.getContent());
+		assertEquals(new GregorianCalendar(2018, 12 - 1, 20).getTime(), topic12.getDate());
+		assertEquals(12, (int) topic12.getNbPosts());
+		assertEquals("The title of <12>", topic12.getTitle());
+		assertEquals("12", topic12.getId());
+		//
+		Member author12 = topic12.getAuthor();// All its fields have been loaded
+		assertNotNull(author12);
+		assertEquals("12", author12.getId());
+		assertEquals("[BL] Name 12", author12.getName());
+		assertEquals("Alias of Name 12", author12.getAlias());
+		assertEquals("name.12@graphql-java.com", author12.getEmail());
+		assertEquals(MemberType.STANDARD, author12.getType());
+
+		// Let's check for one post
+		List<Post> posts12 = topic12.getPosts();
+		assertEquals(8, posts12.size());
+		//
+		Post post232 = posts12.get(5);
+		assertEquals(new GregorianCalendar(2018, 05 - 1, 13).getTime(), post232.getDate());
+		assertEquals("232", post232.getId());
+		assertEquals("The content of the post <232>", post232.getContent());
+		assertEquals(null, post232.getPubliclyAvailable()); // Not queried
+		assertEquals("The title of <232>", post232.getTitle());
+		//
+		Member author12bis = post232.getAuthor();// This one is partially loaded: author{name email alias}
+		assertNotNull(author12bis);
+		assertEquals(null, author12bis.getId());
+		assertEquals("[BL] Name 12", author12bis.getName());
+		assertEquals("Alias of Name 12", author12bis.getAlias());
+		assertEquals("name.12@graphql-java.com", author12bis.getEmail());
+		assertEquals(null, author12bis.getType());
 	}
 
 	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,

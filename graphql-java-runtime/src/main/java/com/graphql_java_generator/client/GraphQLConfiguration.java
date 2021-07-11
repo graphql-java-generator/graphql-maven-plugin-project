@@ -1,20 +1,27 @@
 package com.graphql_java_generator.client;
 
+import java.util.Collections;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
-import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
+import reactor.netty.http.client.HttpClient;
 
 /**
  * This class contains a GraphQL configuration for the GraphQL client. The main element of this configuration contains
  * 
  * @author etienne-sf
  */
-@Component
 public class GraphQLConfiguration {
 
 	/**
@@ -24,13 +31,11 @@ public class GraphQLConfiguration {
 	 * Otherwise, the default constructor should not be used. The other constructor will then build the relevant
 	 * instance of {@link QueryExecutor}.
 	 */
-	@Autowired
-	QueryExecutor executor;
+	final QueryExecutor executor;
 
 	/** The default constructor, that is used by Spring. */
-	@Autowired
-	public GraphQLConfiguration() {
-		// No action. All configuration is done through Spring injection
+	public GraphQLConfiguration(QueryExecutor executor) {
+		this.executor = executor;
 	}
 
 	/**
@@ -42,10 +47,54 @@ public class GraphQLConfiguration {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public GraphQLConfiguration(String graphqlEndpoint) {
-		// Let's "manually" reuse the default configuration, as defined in the Spring Auto Configuration bean
-		GraphQLAutoConfiguration conf = new GraphQLAutoConfiguration();
-		this.executor = new QueryExecutorSpringReactiveImpl(graphqlEndpoint, null,
-				conf.webClient(graphqlEndpoint, null, null), conf.webSocketClient(null), null, null);
+		this.executor = new QueryExecutorSpringReactiveImpl(graphqlEndpoint, null, getWebClient(graphqlEndpoint, null),
+				getWebSocketClient(null), null, null);
+	}
+
+	/**
+	 * Builds a Spring reactive {@link WebClient}, from the specified parameters.<BR/>
+	 * Note: this utility can be used if you need to create your own {@link WebClient}, for instance to add your own
+	 * filters to the {@link WebClient}
+	 * 
+	 * @param graphqlEndpoint
+	 * @param httpClient
+	 * @param filters
+	 *            Optional list of additional filters that will be added to the returned {@link WebClient}
+	 * @return
+	 */
+	public static WebClient getWebClient(String graphqlEndpoint, HttpClient httpClient,
+			ExchangeFilterFunction... filters) {
+		Builder webClientBuilder = WebClient.builder()//
+				.baseUrl(graphqlEndpoint)//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
+
+		if (httpClient != null) {
+			webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient));
+		}
+		if (filters != null) {
+			for (ExchangeFilterFunction filter : filters) {
+				if (filter != null) {
+					webClientBuilder.filter(filter);
+				}
+			}
+		}
+
+		return webClientBuilder.build();
+	}
+
+	/**
+	 * Creates the Spring reactive {@link WebSocketClient} that will be used for subscriptions.
+	 * 
+	 * @param httpClient
+	 * @return
+	 */
+	public static WebSocketClient getWebSocketClient(HttpClient httpClient) {
+		if (httpClient == null) {
+			return new ReactorNettyWebSocketClient(HttpClient.create());
+		} else {
+			return new ReactorNettyWebSocketClient(httpClient);
+		}
 	}
 
 	/**

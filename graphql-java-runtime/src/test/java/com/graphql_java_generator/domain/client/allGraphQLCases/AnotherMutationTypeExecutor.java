@@ -57,7 +57,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Autowired
-	GraphQLConfiguration configuration;
+	GraphQLConfiguration graphQLConfigurationAllGraphQLCases;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
@@ -89,7 +89,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 							+ graphqlUtils.getRuntimeVersion()
 							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
 		}
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -111,7 +111,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 	 */
 	public AnotherMutationTypeExecutor(String graphqlEndpoint, SSLContext sslContext,
 			HostnameVerifier hostnameVerifier) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -127,7 +127,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
 	public AnotherMutationTypeExecutor(String graphqlEndpoint, Client client) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -270,7 +270,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, AnotherMutationTypeResponse.class);
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, AnotherMutationTypeResponse.class);
 	}
 
 	/**
@@ -340,7 +340,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;
 	}
 
@@ -479,7 +479,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("anotherMutationTypeCreateHumanHuman", human);
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.getCreateHuman();
@@ -545,7 +545,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("anotherMutationTypeCreateHumanHuman", human);
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.getCreateHuman();
@@ -720,7 +720,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("anotherMutationTypeCreateAllFieldCasesInput", input);
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.getCreateAllFieldCases();
@@ -786,7 +786,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("anotherMutationTypeCreateAllFieldCasesInput", input);
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.getCreateAllFieldCases();
@@ -962,7 +962,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("anotherMutationTypeDeleteSnacksId", id);
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.getDeleteSnacks();
@@ -1029,7 +1029,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("anotherMutationTypeDeleteSnacksId", id);
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.getDeleteSnacks();
@@ -1195,7 +1195,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.get__typename();
@@ -1258,7 +1258,7 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		AnotherMutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters,
+		AnotherMutationType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
 				AnotherMutationType.class);
 
 		return ret.get__typename();

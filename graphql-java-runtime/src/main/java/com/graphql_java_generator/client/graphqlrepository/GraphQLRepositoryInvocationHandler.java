@@ -10,6 +10,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,8 +118,35 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	Map<Method, RegisteredMethod> registeredMethods = new HashMap<>();
 
 	/**
-	 * This constructor provides the query, mutation and subscription that have been defined in the GraphQL schema. The
-	 * mutation and subscription are optional in the GraphQL schema, so these two executors may be null.
+	 * This constructor builds the instance from the given Spring ApplicationContext provides the query, mutation and
+	 * subscription that have been defined in the GraphQL schema. The mutation and subscription are optional in the
+	 * GraphQL schema, so these two executors may be null.
+	 * 
+	 * @param repositoryInterface
+	 *            The {@link GraphQLRepository} interface, that this {@link InvocationHandler} has to manage. It is
+	 *            mandatory.
+	 * @param ctx
+	 *            The Spring {@link ApplicationContext} that allows to retrieve the query, mutation and subscription
+	 *            executors
+	 * @throws GraphQLRequestPreparationException
+	 */
+	@Autowired
+	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, GraphQLQueryExecutor queryExecutor,
+			GraphQLMutationExecutor mutationExecutor, GraphQLSubscriptionExecutor subscriptionExecutor)
+			throws GraphQLRequestPreparationException {
+		this.repositoryInterface = repositoryInterface;
+		this.queryExecutor = queryExecutor;
+		this.mutationExecutor = mutationExecutor;
+		this.subscriptionExecutor = subscriptionExecutor;
+		this.proxyInstance = createProxyInstance();
+	}
+
+	/**
+	 * This constructor builds the instance from the given Spring {@link ApplicationContext}: it extracts the query,
+	 * mutation and subscription executors that have been generated from the GraphQL schema. The mutation and
+	 * subscription are optional in the GraphQL schema, so these two executors may be null. <BR/>
+	 * Note: when more than one GraphQL schema are used, a GraphQL Repository requests may be relative to only one
+	 * GraphQL schema. The {@link GraphQLRepository}s annotation must provide the queryExecutor of this GraphQL schema.
 	 * 
 	 * @param repositoryInterface
 	 *            The {@link GraphQLRepository} interface, that this {@link InvocationHandler} has to manage. It is
@@ -131,11 +159,53 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	@Autowired
 	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, ApplicationContext ctx)
 			throws GraphQLRequestPreparationException {
+		this.repositoryInterface = repositoryInterface;
+
+		// Does the GraphQLRepository annotation define a queryExecutor ?
+		GraphQLRepository graphQLRepoAnnotation = repositoryInterface.getAnnotation(GraphQLRepository.class);
+		Package executorPackage = (graphQLRepoAnnotation.queryExecutor() == GraphQLQueryExecutor.class) ?
+		// No value has been provided for the queryExecutor annotation field. There should be only one GraphQL
+		// schema generated code (that is: it's the standard case)
+				null :
+				// else: let's retrieve the package of the executor given in the GraphQLRepository annotation
+				graphQLRepoAnnotation.queryExecutor().getPackage();
+
+		this.queryExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLQueryExecutor.class, true);
+		this.mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationExecutor.class, false);
+		this.subscriptionExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLSubscriptionExecutor.class,
+				false);
+
+		// queryExecutor may not be null: every GraphQL schema must at least contain a Query type
+		if (this.queryExecutor == null) {
+			if (executorPackage == null) {
+				throw new RuntimeException("Error while preparing the GraphQL Repository '"
+						+ repositoryInterface.getClass().getName()
+						+ "': found no Spring Bean of type QueryExecutor'. Please check the Spring component scan path.");
+			} else {
+				throw new IllegalArgumentException("Error while preparing the GraphQL Repository '"
+						+ repositoryInterface.getClass().getName()
+						+ "': found no Spring Bean of type 'GraphQLQueryExecutor' in the same package as the provided QueryExecutor ("
+						+ graphQLRepoAnnotation.queryExecutor().getClass().getName()
+						+ "). Please check the Spring component scan path.");
+			}
+		}
+
+		this.proxyInstance = createProxyInstance();
+	}
+
+	/**
+	 * Do some checks on the instance attribute, then create the dynamic proxy
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 *             Thrown if the given parameter for the constructor where not correct.
+	 */
+	private T createProxyInstance() throws GraphQLRequestPreparationException {
 		if (repositoryInterface == null) {
 			throw new NullPointerException("'repositoryInterface' may not be null");
 		}
 		if (!repositoryInterface.isInterface()) {
-			throw new NullPointerException("The 'repositoryInterface' (" + repositoryInterface.getName()
+			throw new RuntimeException("The 'repositoryInterface' (" + repositoryInterface.getName()
 					+ ") must be an interface, but it is not");
 		}
 		if (repositoryInterface.getAnnotation(GraphQLRepository.class) == null) {
@@ -146,41 +216,6 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		}
 
 		// All basic tests are Ok. Let's go
-		this.repositoryInterface = repositoryInterface;
-
-		// Does the EnableGraphQLRepositories annotation define a queryExecutor ?
-		GraphQLRepository graphQLRepoAnnotation = repositoryInterface.getAnnotation(GraphQLRepository.class);
-		if (graphQLRepoAnnotation.queryExecutor() == GraphQLQueryExecutor.class) {
-			// No value has been provided for the queryExecutor annotation field. There should be only one GraphQL
-			// schema generated code (that is: it's the standard case)
-			this.queryExecutor = ctx.getBean(GraphQLQueryExecutor.class);
-			this.mutationExecutor = ctx.getBean(GraphQLMutationExecutor.class);
-			this.subscriptionExecutor = ctx.getBean(GraphQLSubscriptionExecutor.class);
-			if (this.queryExecutor == null) {
-				throw new NullPointerException("Error while preparing the GraphQL Repository '"
-						+ repositoryInterface.getClass().getName()
-						+ "': found no Spring Bean of type QueryExecutor'. Please check the Spring component scan path.");
-			}
-		} else {
-			// A value has been provided for the queryExecutor annotation field. We must select the query, mutation and
-			// subscription executors that belong to the same GraphQL schema as the provided one.
-			// This allows to generate code from as many GraphQL schemas as wanted, that is: it allows to 'attack' any
-			// number of GraphQL servers
-			this.queryExecutor = getBeanOfTypeAndPackage(ctx, graphQLRepoAnnotation.queryExecutor().getPackage(),
-					GraphQLQueryExecutor.class);
-			this.mutationExecutor = getBeanOfTypeAndPackage(ctx, graphQLRepoAnnotation.queryExecutor().getPackage(),
-					GraphQLMutationExecutor.class);
-			this.subscriptionExecutor = getBeanOfTypeAndPackage(ctx, graphQLRepoAnnotation.queryExecutor().getPackage(),
-					GraphQLSubscriptionExecutor.class);
-
-			if (this.queryExecutor == null) {
-				throw new IllegalArgumentException("Error while preparing the GraphQL Repository '"
-						+ repositoryInterface.getClass().getName()
-						+ "': found no Spring Bean of type 'GraphQLQueryExecutor' in the same package as the provided QueryExecutor ("
-						+ graphQLRepoAnnotation.queryExecutor().getClass().getName()
-						+ "). Please check the Spring component scan path.");
-			}
-		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// CREATION IF THE PROXY INSTANCE
@@ -188,12 +223,12 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		Class<T>[] classes = (Class<T>[]) new Class<?>[] { repositoryInterface };
 		@SuppressWarnings("unchecked")
 		T t = (T) Proxy.newProxyInstance(repositoryInterface.getClassLoader(), classes, this);
-		// Assignment is done in two step, so that the @SuppressWarnings is not on the whole method.
-		this.proxyInstance = t;
 
 		for (Method method : repositoryInterface.getDeclaredMethods()) {
 			registeredMethods.put(method, registerMethod(method));
 		}
+
+		return t;
 	}
 
 	/**
@@ -208,14 +243,35 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * @param clazz
 	 *            The class of the bean. The found bean can either be of this class, implement or extend it
 	 */
-	<C> C getBeanOfTypeAndPackage(ApplicationContext ctx, Package pack, Class<? extends C> clazz) {
-		for (C bean : ctx.getBeansOfType(clazz).values()) {
-			if (bean.getClass().getPackage() == pack) {
-				// Ok, we've found the bean of the good package.
-				return bean;
+	<C> C getBeanOfTypeAndPackage(ApplicationContext ctx, Package pack, Class<? extends C> clazz, boolean mandatory) {
+		if (pack == null) {
+			Collection<? extends C> beans = ctx.getBeansOfType(clazz).values();
+			if (beans.size() == 0) {
+				if (mandatory)
+					throw new RuntimeException("Error while preparing the GraphQL Repository, on the method '"
+							+ repositoryInterface.getName() + ": at least one Spring Bean of type '" + clazz.getName()
+							+ "' is expected, but none have been found");
+				else
+					return null;
+			} else if (beans.size() == 1) {
+				return beans.iterator().next();
+			} else {
+				throw new RuntimeException("Error while preparing the GraphQL Repository, on the method '"
+						+ repositoryInterface.getName() + ": one Spring Bean of type '" + clazz.getName()
+						+ "' is expected, but " + beans.size()
+						+ " have been found. This usely occurs when you have more than one GraphQL schemas, "
+						+ "and you are using GraphQL Repositories, "
+						+ "and at least one of your GraphQLRepository annotation didn't provide the QueryExecutor (through its queryExecutor parameter)");
 			}
-		} // for
-		return null;
+		} else {
+			for (C bean : ctx.getBeansOfType(clazz).values()) {
+				if (bean.getClass().getPackage() == pack) {
+					// Ok, we've found the bean of the good package.
+					return bean;
+				}
+			} // for
+			return null;
+		}
 	}
 
 	/**

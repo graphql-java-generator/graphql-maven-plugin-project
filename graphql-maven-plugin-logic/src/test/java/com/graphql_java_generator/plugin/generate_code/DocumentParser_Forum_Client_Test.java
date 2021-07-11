@@ -241,7 +241,7 @@ class DocumentParser_Forum_Client_Test {
 	 * @throws IOException
 	 */
 	@Test
-	void check_AutoConfiguration() throws IOException {
+	void check_GraphQLJavaRuntimeProperties() throws IOException {
 		// Preparation
 		// We need to activate the copy of the runtime sources
 		configuration.setCopyRuntimeSources(true);
@@ -258,18 +258,9 @@ class DocumentParser_Forum_Client_Test {
 		codeGenerator.copyRuntimeSources();
 
 		// Verification
-		File autoconfigurationFile = new File(targetSourceFolder,
-				"com/graphql_java_generator/spring/client/GraphQLAutoConfiguration.java");
-		assertTrue(autoconfigurationFile.exists() && autoconfigurationFile.isFile(),
-				"GraphQLAutoConfiguration should exist");
-
-		File metaInf = new File(targetResourceFolder, "META-INF");
-		assertTrue(metaInf.exists(), "spring.factories should exist");
-		assertTrue(metaInf.isDirectory(), "spring.factories should be a folder");
-
-		File springMetaFileFActoriesFile = new File(metaInf, "spring.factories");
-		assertTrue(springMetaFileFActoriesFile.exists(), "spring.factories should exist");
-		assertTrue(springMetaFileFActoriesFile.isFile(), "spring.factories should be a file");
+		File javaRuntimeFile = new File(targetResourceFolder, "graphql-java-runtime.properties");
+		assertTrue(javaRuntimeFile.exists(), "graphql-java-runtime should exist");
+		assertTrue(javaRuntimeFile.isFile(), "graphql-java-runtime should be a file");
 	}
 
 	private void checkField(ObjectType type, int j, String name, int list, boolean mandatory, Boolean itemMandatory,

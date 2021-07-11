@@ -54,7 +54,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Autowired
-	GraphQLConfiguration configuration = null;
+	GraphQLConfiguration graphQLConfigurationForum = null;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
@@ -86,7 +86,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 							+ graphqlUtils.getRuntimeVersion()
 							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
 		}
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -107,7 +107,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 	 * @param hostnameVerifier
 	 */
 	public SubscriptionTypeExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -123,7 +123,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
 	public SubscriptionTypeExecutor(String graphqlEndpoint, Client client) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -294,7 +294,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 		// If someone has a better idea to call this parameterized method, please come in.
 		switch (objectResponse.getSubscription().getFields().get(0).getName()) {
 		case "subscribeToNewPost":
-			return configuration.getQueryExecutor().execute(objectResponse, parameters,
+			return graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters,
 					(SubscriptionCallback<Post>) subscriptionCallback, SubscriptionTypeResponse.class, Post.class);
 		default:
 			throw new GraphQLRequestExecutionException(
@@ -371,7 +371,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationForum);
 		return ret;
 	}
 
@@ -564,7 +564,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("subscriptionTypeSubscribeToNewPostBoardName", boardName);
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
+		return graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
 				SubscriptionType.class, Post.class);
 	}
 
@@ -647,7 +647,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("subscriptionTypeSubscribeToNewPostBoardName", boardName);
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
+		return graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
 				SubscriptionType.class, Post.class);
 	}
 
@@ -681,7 +681,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeToNewPost",
 				InputParameter.newBindParameter("boardName", "subscriptionTypeSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationForum);
 		return ret;
 	}
 

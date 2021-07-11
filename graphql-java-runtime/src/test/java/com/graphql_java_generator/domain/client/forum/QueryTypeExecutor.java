@@ -57,7 +57,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Autowired
-	GraphQLConfiguration configuration;
+	GraphQLConfiguration graphQLConfigurationForum;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
@@ -89,7 +89,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 							+ graphqlUtils.getRuntimeVersion()
 							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
 		}
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -110,7 +110,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @param hostnameVerifier
 	 */
 	public QueryTypeExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -126,7 +126,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
 	public QueryTypeExecutor(String graphqlEndpoint, Client client) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -269,7 +269,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, QueryTypeResponse.class);
+		return graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryTypeResponse.class);
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationForum);
 		return ret;
 	}
 
@@ -470,7 +470,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getBoards();
 	}
@@ -532,7 +532,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getBoards();
 	}
@@ -689,7 +689,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getNbBoards();
 	}
@@ -751,7 +751,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getNbBoards();
 	}
@@ -918,7 +918,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("queryTypeTopicsBoardName", boardName);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getTopics();
 	}
@@ -983,7 +983,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("queryTypeTopicsBoardName", boardName);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getTopics();
 	}
@@ -1159,7 +1159,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("queryTypeFindTopicsBoardName", boardName);
 		parameters.put("queryTypeFindTopicsKeyword", keyword);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getFindTopics();
 	}
@@ -1227,7 +1227,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("queryTypeFindTopicsBoardName", boardName);
 		parameters.put("queryTypeFindTopicsKeyword", keyword);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.getFindTopics();
 	}
@@ -1395,7 +1395,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.get__schema();
 	}
@@ -1457,7 +1457,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.get__schema();
 	}
@@ -1624,7 +1624,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("queryType__typeName", name);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.get__type();
 	}
@@ -1689,7 +1689,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("queryType__typeName", name);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.get__type();
 	}
@@ -1851,7 +1851,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.get__typename();
 	}
@@ -1913,7 +1913,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		QueryType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
+		QueryType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, QueryType.class);
 
 		return ret.get__typename();
 	}

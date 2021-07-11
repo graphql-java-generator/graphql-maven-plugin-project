@@ -12,17 +12,15 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
@@ -45,7 +43,6 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.GraphQLTwoRepositoriesSpringIntegrationTest.SpringConfigTwoServers;
 import com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ok.GraphQLTwoRepositoriesAllGraphQlCasesTestCase;
 import com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ok.GraphQLTwoRepositoriesForumTestCase;
-import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
 
 /**
  * This class contain tests that checks that Spring is able to properly load the GraphQL repositories, and automagically
@@ -54,15 +51,13 @@ import com.graphql_java_generator.spring.client.GraphQLAutoConfiguration;
  * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = { SpringConfigTwoServers.class })
+@SpringBootTest(classes = { SpringConfigTwoServers.class }, webEnvironment = WebEnvironment.NONE)
 public class GraphQLTwoRepositoriesSpringIntegrationTest {
 
 	@Configuration
 	@PropertySource("classpath:/application_two_graphql_servers.properties")
 	@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class,
 			QueryTypeExecutor.class })
-	@Import(GraphQLAutoConfiguration.class)
 	@EnableGraphQLRepositories({ "com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ok" })
 	public static class SpringConfigTwoServers {
 
@@ -123,6 +118,7 @@ public class GraphQLTwoRepositoriesSpringIntegrationTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
+	@SuppressWarnings("unchecked")
 	void testInvoke_forum_mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException,
 			NoSuchMethodException, SecurityException {
 		// Preparation

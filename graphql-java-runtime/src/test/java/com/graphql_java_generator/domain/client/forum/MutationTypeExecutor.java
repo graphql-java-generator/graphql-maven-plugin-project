@@ -57,7 +57,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 
 	@Autowired
-	GraphQLConfiguration configuration;
+	GraphQLConfiguration graphQLConfigurationForum;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
@@ -89,7 +89,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 							+ graphqlUtils.getRuntimeVersion()
 							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
 		}
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -110,7 +110,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	 * @param hostnameVerifier
 	 */
 	public MutationTypeExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -126,7 +126,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
 	public MutationTypeExecutor(String graphqlEndpoint, Client client) {
-		this.configuration = new GraphQLConfiguration(graphqlEndpoint, client);
+		this.graphQLConfigurationForum = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -269,7 +269,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return configuration.getQueryExecutor().execute(objectResponse, parameters, MutationTypeResponse.class);
+		return graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationTypeResponse.class);
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(configuration);
+		ret.setInstanceConfiguration(graphQLConfigurationForum);
 		return ret;
 	}
 
@@ -486,7 +486,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters.put("mutationTypeCreateBoardName", name);
 		parameters.put("mutationTypeCreateBoardPubliclyAvailable", publiclyAvailable);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreateBoard();
 	}
@@ -554,7 +554,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters.put("mutationTypeCreateBoardName", name);
 		parameters.put("mutationTypeCreateBoardPubliclyAvailable", publiclyAvailable);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreateBoard();
 	}
@@ -730,7 +730,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationTypeCreateTopicTopic", topic);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreateTopic();
 	}
@@ -795,7 +795,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationTypeCreateTopicTopic", topic);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreateTopic();
 	}
@@ -965,7 +965,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationTypeCreatePostPost", post);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreatePost();
 	}
@@ -1030,7 +1030,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationTypeCreatePostPost", post);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreatePost();
 	}
@@ -1200,7 +1200,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationTypeCreatePostsSpam", spam);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreatePosts();
 	}
@@ -1265,7 +1265,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationTypeCreatePostsSpam", spam);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreatePosts();
 	}
@@ -1435,7 +1435,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationTypeCreateMemberInput", input);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreateMember();
 	}
@@ -1500,7 +1500,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationTypeCreateMemberInput", input);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.getCreateMember();
 	}
@@ -1663,7 +1663,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.get__typename();
 	}
@@ -1725,7 +1725,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MutationType ret = configuration.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
+		MutationType ret = graphQLConfigurationForum.getQueryExecutor().execute(objectResponse, parameters, MutationType.class);
 
 		return ret.get__typename();
 	}

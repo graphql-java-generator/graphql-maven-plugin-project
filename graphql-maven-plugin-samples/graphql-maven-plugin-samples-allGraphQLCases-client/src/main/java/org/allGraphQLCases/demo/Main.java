@@ -10,14 +10,11 @@ import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
 import org.allGraphQLCases.demo.impl.PartialRequestGraphQLRepository;
 import org.allGraphQLCases.demo.subscription.ExecSubscription;
+import org.forum.client.util.QueryTypeExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
@@ -49,8 +46,8 @@ curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorizatio
  * @author etienne-sf
  * @see https://michalgebauer.github.io/spring-graphql-security/
  */
-@SuppressWarnings("deprecation")
-@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
+@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class,
+		QueryTypeExecutor.class })
 @EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository" })
 public class Main implements CommandLineRunner {
 
@@ -136,15 +133,6 @@ public class Main implements CommandLineRunner {
 					"Please start the server from the project graphql-maven-plugin-samples-StarWars-server, before executing the client part",
 					e);
 		}
-	}
-
-	@Bean
-	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction(
-			ReactiveClientRegistrationRepository clientRegistrations) {
-		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
-				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
-		oauth.setDefaultClientRegistrationId("provider_test");
-		return oauth;
 	}
 
 }
