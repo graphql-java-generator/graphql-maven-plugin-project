@@ -11,17 +11,22 @@ import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+//Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+//"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+//More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
 public class ExecSubscriptionIT {
 
-	ApplicationContext ctx;
+	@Autowired
+	TheSubscriptionTypeExecutor subscriptionExecutor;
 
 	public static class SubscribeToAList implements Runnable {
 		final TheSubscriptionTypeExecutor subscriptionExecutor;
@@ -70,8 +75,6 @@ public class ExecSubscriptionIT {
 	@Test
 	public void test_subscribeToAList()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-		TheSubscriptionTypeExecutor subscriptionExecutor = ctx.getBean(TheSubscriptionTypeExecutor.class);
 
 		// To test the issue 72, we create two clients for the subscription, and check that each of them properly
 		// receives the notifications
@@ -96,8 +99,6 @@ public class ExecSubscriptionIT {
 	@Test
 	public void test_subscribeToADate_issue53()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-		TheSubscriptionTypeExecutor subscriptionExecutor = ctx.getBean(TheSubscriptionTypeExecutor.class);
 
 		Calendar cal = Calendar.getInstance();
 		cal.clear();

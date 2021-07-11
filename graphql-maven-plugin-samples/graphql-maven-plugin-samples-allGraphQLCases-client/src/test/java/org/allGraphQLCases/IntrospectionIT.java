@@ -4,7 +4,6 @@
 package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -16,12 +15,11 @@ import org.allGraphQLCases.client.__Field;
 import org.allGraphQLCases.client.__Schema;
 import org.allGraphQLCases.client.__Type;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -32,6 +30,10 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
+// Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+// "No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+// More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
 public class IntrospectionIT {
 
@@ -40,17 +42,8 @@ public class IntrospectionIT {
 			"oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65", "issue66" };
 	static List<String> AllFieldCases_FIELDNAMES = Arrays.asList(AllFieldCases_FIELDS);
 
+	@Autowired
 	MyQueryTypeExecutor myQuery;
-	ApplicationContext ctx;
-
-	@BeforeEach
-	void setup() {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-
-		// For some tests, we need to execute additional partialQueries
-		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
-		assertNotNull(myQuery);
-	}
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test

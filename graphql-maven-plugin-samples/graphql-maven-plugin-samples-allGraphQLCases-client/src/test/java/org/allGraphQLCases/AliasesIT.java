@@ -32,14 +32,13 @@ import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -49,27 +48,22 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 /**
  * @author etienne-sf
  */
+// Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+// "No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+// More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
 public class AliasesIT {
 
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory.getLogger(AliasesIT.class);
 
+	@Autowired
 	MyQueryTypeExecutor queryType;
+	@Autowired
 	AnotherMutationTypeExecutor mutationType;
-
-	ApplicationContext ctx;
-
-	@BeforeEach
-	void setup() {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-
-		// For some tests, we need to execute additional partialQueries
-		queryType = ctx.getBean(MyQueryTypeExecutor.class);
-		assertNotNull(queryType);
-		mutationType = ctx.getBean(AnotherMutationTypeExecutor.class);
-		assertNotNull(mutationType);
-	}
+	@Autowired
+	TheSubscriptionTypeExecutor subscriptionExecutor;
 
 	/**
 	 * Test of list that contain list, when sending request and receiving response
@@ -388,8 +382,6 @@ public class AliasesIT {
 	public void test_subscription()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		// Preparation
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-		TheSubscriptionTypeExecutor subscriptionExecutor = ctx.getBean(TheSubscriptionTypeExecutor.class);
 		HumanSubscriptionCallback callback = new HumanSubscriptionCallback();
 
 		// Go, go, go

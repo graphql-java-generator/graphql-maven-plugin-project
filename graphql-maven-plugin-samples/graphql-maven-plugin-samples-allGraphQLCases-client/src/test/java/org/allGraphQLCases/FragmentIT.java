@@ -21,17 +21,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+// Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+// "No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+// More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
 class FragmentIT {
 
-	ApplicationContext ctx;
-
+	@Autowired
 	MyQueryTypeExecutor myQuery;
 
 	CharacterInput input;
@@ -39,10 +42,6 @@ class FragmentIT {
 
 	@BeforeEach
 	void setup() {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
-		assertNotNull(myQuery);
-
 		// A useful init for some tests
 		input = new CharacterInput();
 		input.setName("a new name");

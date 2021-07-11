@@ -12,33 +12,24 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.allGraphQLCases.client.util.SpringConfigurationAllGraphQLCases;
-import org.allGraphQLCases.demo.OAuthSpringConfiguration;
 import org.allGraphQLCases.subscription.SubscriptionCallbackListIntegerForTest;
-import org.allGraphQLCases.two_graphql_servers.RequestsAgainstTwoGraphQLServersIT.TwoGraphQLServersSpringConfig;
 import org.forum.client.Board;
 import org.forum.client.Member;
 import org.forum.client.MemberType;
 import org.forum.client.Post;
 import org.forum.client.Topic;
 import org.forum.client.util.QueryTypeExecutor;
-import org.forum.client.util.SpringConfigurationForum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.SubscriptionClient;
-import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -47,20 +38,12 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
+// Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+// "No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+// More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
-@SpringBootTest(classes = { TwoGraphQLServersSpringConfig.class }, webEnvironment = WebEnvironment.NONE)
 public class RequestsAgainstTwoGraphQLServersIT {
-
-	@Configuration
-	@SpringBootApplication(scanBasePackageClasses = { GraphQLConfiguration.class })
-	@Import({ OAuthSpringConfiguration.class, SpringConfigurationForum.class,
-			SpringConfigurationAllGraphQLCases.class })
-
-	// @ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class,
-	// QueryTypeExecutor.class })
-	@EnableGraphQLRepositories({ "org.allGraphQLCases.two_graphql_servers" })
-	public static class TwoGraphQLServersSpringConfig {
-	}
 
 	@Autowired
 	MyQueryTypeExecutor queryTypeAllGraphQLCases;

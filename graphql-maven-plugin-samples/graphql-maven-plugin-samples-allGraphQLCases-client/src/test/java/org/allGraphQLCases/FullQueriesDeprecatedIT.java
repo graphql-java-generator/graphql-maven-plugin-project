@@ -20,19 +20,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
+//Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+//"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+//More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SuppressWarnings("deprecation")
 @Execution(ExecutionMode.CONCURRENT)
 class FullQueriesDeprecatedIT {
 
+	@Autowired
 	ApplicationContext ctx;
 
+	@Autowired
 	MyQueryTypeExecutor myQuery;
+	@Autowired
 	AnotherMutationTypeExecutor mutationType;
 
 	ObjectResponse mutationWithDirectiveResponse;
@@ -42,11 +51,6 @@ class FullQueriesDeprecatedIT {
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
-		assertNotNull(myQuery);
-		mutationType = ctx.getBean(AnotherMutationTypeExecutor.class);
-		assertNotNull(mutationType);
 
 		// The response preparation should be somewhere in the application initialization code.
 		mutationWithDirectiveResponse = mutationType.getResponseBuilder().withQueryResponseDef(//

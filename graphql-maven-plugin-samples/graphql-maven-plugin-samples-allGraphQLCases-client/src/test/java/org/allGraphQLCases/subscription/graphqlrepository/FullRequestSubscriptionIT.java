@@ -7,24 +7,26 @@ import org.allGraphQLCases.subscription.SubscriptionCallbackListIntegerForTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
+//Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+//"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+//More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
 public class FullRequestSubscriptionIT {
 
-	ApplicationContext ctx;
+	@Autowired
+	FullRequestSubscriptionGraphQLRepository graphQLRepo;
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_SubscribeToAList() throws GraphQLRequestExecutionException {
 		// Preparation
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-		FullRequestSubscriptionGraphQLRepository graphQLRepo = ctx
-				.getBean(FullRequestSubscriptionGraphQLRepository.class);
 		SubscriptionCallbackListIntegerForTest callback = new SubscriptionCallbackListIntegerForTest(
 				"FullRequestSubscriptionIT.test_SubscribeToAList");
 
