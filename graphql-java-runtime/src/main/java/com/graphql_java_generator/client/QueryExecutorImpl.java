@@ -129,7 +129,6 @@ public class QueryExecutorImpl implements QueryExecutor {
 			logger.trace(GRAPHQL_MARKER, "Executing GraphQL request: {}", jsonRequest);
 
 			Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
-			invocationBuilder.header("Accept", MediaType.APPLICATION_JSON);
 
 			JsonResponseWrapper response = invocationBuilder
 					.post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON), JsonResponseWrapper.class);
