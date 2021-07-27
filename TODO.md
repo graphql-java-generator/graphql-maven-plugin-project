@@ -2,6 +2,14 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Pb: le fichier 'graphql-java-runtime.properties' existe deux fois, une fois pour chaque schéma (dans generatedResources). Du coup, pb à la copie des ficheirs
+Sol1: générer dans build/resources/main
+- mais dans ce cas, un clean risque de ne pas regénérer la ressource?
+- quel impact sur le maven?
+- un clean dans eclipse supprime le fichier
+==> Il faut être dans generates/resources 
+* Test the default values from the extensions in the gradle task
+* Check if spring-boot-starter-security is really needed. It should be added when a project needs OAuth2.
 * @EnableGraphQLRepositories: replace the string (that contains the package name) by a class (so that when changing a package name, the code is still valid)
 * Check comment of the executor method. The line below is wrong:
     * the request contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
@@ -42,7 +50,7 @@ Here are the next tasks listed, as a TODO list:
 * copyRuntimeSources: false should be the default value (change to be done in the tutorial and the client-dependency)
 * separateUtilityClasses: true should be the default value
 * Add a generateDeprecatedRequestResponse plugin parameter. Default value to true (no more XxxxResponse would be generated). With a value of true, the XxxxResponse would still be generated for compatibility with old code.
-
+* Remove the `graphql-java-runtime`, and put the runtime in either the `graphql-java-server-dependencies` or `graphql-java-client-dependencies`
 
 
 Investigate DTO for database mapping (done in the Gradle and Maven tutorials):

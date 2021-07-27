@@ -12,7 +12,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
 import graphql.schema.GraphQLScalarType;
 
@@ -49,7 +48,7 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	 * to check the compatibility with all the next versions.
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyRuntimeSources", defaultValue = GraphQLConfiguration.DEFAULT_COPY_RUNTIME_SOURCES)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.copyRuntimeSources", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES)
 	boolean copyRuntimeSources;
 
 	/**
@@ -94,7 +93,7 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	List<CustomScalarDefinition> customScalars = null;
 
 	/** The package name that will contain the generated classes */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = GraphQLConfiguration.DEFAULT_PACKAGE_NAME)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.packageName", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_PACKAGE_NAME)
 	String packageName;
 
 	/**
@@ -115,11 +114,11 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
 	 * </P>
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilityClasses", defaultValue = GraphQLConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.separateUtilityClasses", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES)
 	boolean separateUtilityClasses;
 
 	/** The encoding charset for the generated source files */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.sourceEncoding", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_SOURCE_ENCODING)
 	String sourceEncoding;
 
 	/**
@@ -127,15 +126,15 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	 * It's mandatory if you' using a Spring app and have more than one GraphQL schemas. The default value is an empty
 	 * String.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.springBeanSuffix", defaultValue = GraphQLConfiguration.DEFAULT_SPRING_BEAN_SUFFIX)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.springBeanSuffix", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_SPRING_BEAN_SUFFIX)
 	String springBeanSuffix;
 
 	/** The folder where resources will be generated */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetResourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_RESOURCE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetResourceFolder", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_TARGET_RESOURCE_FOLDER)
 	File targetResourceFolder;
 
 	/** The folder where source code for the generated classes will be generated */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GraphQLConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.targetSourceFolder", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_TARGET_SOURCE_FOLDER)
 	File targetSourceFolder;
 
 	@Override

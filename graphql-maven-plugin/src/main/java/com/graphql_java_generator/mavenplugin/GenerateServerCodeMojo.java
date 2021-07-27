@@ -24,8 +24,10 @@ import graphql.ThreadSafe;
  * The <I>generateServerCode</I> Maven goal (and Gradle task) generates the java code for an almost ready to start
  * GraphQL server. The developer has only to develop request to the data.
  * </P>
+ * <P>
  * The java code is generated from one or more GraphQL schemas. It allows to work in Java with graphQL, in a schema
  * first approach. These items are generated:
+ * </P>
  * <UL>
  * <LI>the main method (in a jar project) or the main servlet (in a war project)</LI>
  * <LI>All the GraphQL wiring, based on graphql-java-spring, itself being build on top of graphql-java</LI>
@@ -36,20 +38,25 @@ import graphql.ThreadSafe;
  * <LI>All the interfaces for the {@link DataFetchersDelegate} (named providers in the graphql.org presentation) that
  * the server needs to implement</LI>
  * </UL>
+ * <P>
  * The specific code that needs to be implemented is the access to the Data: your database, other APIs or web services,
  * or any kind of storage you may have. This is done by implementing the interfaces for the {@link DataFetchersDelegate}
  * into a Spring component, that is:
+ * </P>
  * <UL>
  * <LI>Create a class for each generated {@link DataFetchersDelegate} interface</LI>
  * <LI>Make it implement the relevant {@link DataFetchersDelegate} interface</LI>
  * <LI>Mark it with the {@link Component} annotation</LI>
  * </UL>
- * And you're done! :) <BR/>
- * <BR/>
+ * <P>
+ * And you're done! :)
+ * </P>
+ * <P>
  * You'll find more info in the tutorials: take a look at the
  * <A HREF="https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-server">Maven server tutorial</A> or
  * the <A HREF="https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server">Gradle server
  * tutorial</A>
+ * </P>
  * 
  * @author etienne-sf
  */

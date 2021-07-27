@@ -1030,4 +1030,18 @@ public class GraphqlUtils {
 			return lastModifed;
 		}
 	}
+
+	public String getQuotedScanBasePackages(String scanBasePackages) {
+
+		if (scanBasePackages == null || scanBasePackages.contentEquals("") || scanBasePackages.contentEquals("null")) {
+			return "";
+		}
+
+		// Let's remove all spaces. It will be easier to insert the good double quotes, afterwards.
+		// Let's say scanBasePackages is: a, b, c,d
+		scanBasePackages = scanBasePackages.replace(" ", "");// scanBasePackages is now a,b,c,d
+		scanBasePackages = scanBasePackages.replace(",", "\",\"");// scanBasePackages is now a","b","c","d
+		scanBasePackages = ",\"" + scanBasePackages + "\"";// scanBasePackages is now ,"a","b","c","d"
+		return scanBasePackages;
+	}
 }

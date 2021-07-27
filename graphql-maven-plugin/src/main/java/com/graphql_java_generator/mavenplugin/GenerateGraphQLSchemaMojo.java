@@ -28,9 +28,10 @@ import graphql.ThreadSafe;
  * <LI>Generate the GraphQL schema with the Relay Connection stuff (Node interface, XxxEdge and XxxConnection types),
  * thanks to the <I>addRelayConnections</I> plugin parameter.
  * </UL>
- * <BR/>
+ * <P>
  * This goal is, by default, attached to the Initialize maven phase, to be sure that the GraphQL schema are generated
  * before the code generation would need it, if relevant.
+ * </P>
  * 
  * @author etienne-sf
  */

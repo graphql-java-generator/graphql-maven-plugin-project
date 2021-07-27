@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.graphql_java_generator.util.GraphqlUtils;
+
 /**
  * This class contains all parameters for the <I>generateServerCode</I> goal/task.
  * 
@@ -25,7 +27,6 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "false";
 	public final String DEFAULT_JAVA_TYPE_FOR_ID_TYPE = "java.util.UUID";
 	public final String DEFAULT_SCAN_BASE_PACKAGES = "null";
-	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "false";
 	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 
 	/**
@@ -86,19 +87,8 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 *         empty String, or a list of quoted package names starting with a comma (e.g.: ", \"my.package\",
 	 *         \"my.other.package\"")
 	 */
-	public default String getQuotedScanBasePackages() {
-		String scanBasePackages = getScanBasePackages();
-
-		if (scanBasePackages == null || scanBasePackages.contentEquals("") || scanBasePackages.contentEquals("null")) {
-			return "";
-		}
-
-		// Let's remove all spaces. It will be easier to insert the good double quotes, afterwards.
-		// Let's say scanBasePackages is: a, b, c,d
-		scanBasePackages = scanBasePackages.replace(" ", "");// scanBasePackages is now a,b,c,d
-		scanBasePackages = scanBasePackages.replace(",", "\",\"");// scanBasePackages is now a","b","c","d
-		scanBasePackages = ",\"" + scanBasePackages + "\"";// scanBasePackages is now ,"a","b","c","d"
-		return scanBasePackages;
+	default public String getQuotedScanBasePackages() {
+		return GraphqlUtils.graphqlUtils.getQuotedScanBasePackages(getScanBasePackages());
 	}
 
 	/**
