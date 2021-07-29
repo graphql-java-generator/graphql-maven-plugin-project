@@ -64,11 +64,11 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 	 */
 	@Autowired
 	public AnotherMutationTypeExecutor() {
-		if (!"local-SNAPSHOT".equals(graphqlUtils.getRuntimeVersion())) {
+		if (!"1.17".equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException(
 					"The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
 							+ graphqlUtils.getRuntimeVersion()
-							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
+							+ "' whereas the GraphQL plugin version is '1.17'");
 		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
@@ -83,11 +83,11 @@ public class AnotherMutationTypeExecutor implements GraphQLMutationExecutor {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public AnotherMutationTypeExecutor(String graphqlEndpoint) {
-		if (!"local-SNAPSHOT".equals(graphqlUtils.getRuntimeVersion())) {
+		if (!"1.17".equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException(
 					"The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
 							+ graphqlUtils.getRuntimeVersion()
-							+ "' whereas the GraphQL plugin version is 'local-SNAPSHOT'");
+							+ "' whereas the GraphQL plugin version is '1.17'");
 		}
 		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
