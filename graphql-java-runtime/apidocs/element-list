@@ -2,10 +2,10 @@ com.graphql_java_generator
 com.graphql_java_generator.annotation
 com.graphql_java_generator.client
 com.graphql_java_generator.client.directive
+com.graphql_java_generator.client.graphqlrepository
 com.graphql_java_generator.client.request
 com.graphql_java_generator.client.response
 com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
 com.graphql_java_generator.server.util
-com.graphql_java_generator.spring.client
 com.graphql_java_generator.util

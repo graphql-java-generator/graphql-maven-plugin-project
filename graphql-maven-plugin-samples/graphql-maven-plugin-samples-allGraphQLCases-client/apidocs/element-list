@@ -1,6 +1,10 @@
-org.allGraphQLCases
-org.allGraphQLCases_minApp
 org.allGraphQLCases.client
 org.allGraphQLCases.client.util
-org.allGraphQLCases.impl
-org.allGraphQLCases.subscription
+org.allGraphQLCases.demo
+org.allGraphQLCases.demo.impl
+org.allGraphQLCases.demo.subscription
+org.allGraphQLCases.graphqlrepository.non_spring
+org.allGraphQLCases.minimal.oauth_app
+org.allGraphQLCases.minimal.spring_app
+org.forum.client
+org.forum.client.util
