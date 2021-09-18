@@ -16,9 +16,9 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.MyQueryType;
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -38,9 +38,9 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 class FullQueriesIT {
 
 	@Autowired
-	MyQueryTypeExecutor myQuery;
+	MyQueryTypeExecutorAllGraphQLCases myQuery;
 	@Autowired
-	AnotherMutationTypeExecutor mutationType;
+	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
 
 	GraphQLRequest mutationWithDirectiveRequest;
 	GraphQLRequest mutationWithoutDirectiveRequest;

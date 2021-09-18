@@ -15,9 +15,9 @@ import java.util.List;
 
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.FieldParameterInput;
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -38,9 +38,9 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class PartialQueryIT {
 
 	@Autowired
-	MyQueryTypeExecutor queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 	@Autowired
-	AnotherMutationTypeExecutor mutation;
+	AnotherMutationTypeExecutorAllGraphQLCases mutation;
 
 	/**
 	 * Test of list that contain list, when sending request and receiving response

@@ -3,7 +3,7 @@
  */
 package org.allGraphQLCases.demo.subscription;
 
-import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ExecSubscription {
 
 	@Autowired
-	TheSubscriptionTypeExecutor subscriptionExecutor;
+	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 
 	SubscriptionCallbackListInteger callback = new SubscriptionCallbackListInteger();
 

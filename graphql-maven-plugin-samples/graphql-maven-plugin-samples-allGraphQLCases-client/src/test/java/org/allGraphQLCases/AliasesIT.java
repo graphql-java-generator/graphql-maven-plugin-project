@@ -28,10 +28,10 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.MyQueryType;
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -59,11 +59,11 @@ public class AliasesIT {
 	static protected Logger logger = LoggerFactory.getLogger(AliasesIT.class);
 
 	@Autowired
-	MyQueryTypeExecutor queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 	@Autowired
-	AnotherMutationTypeExecutor mutationType;
+	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
 	@Autowired
-	TheSubscriptionTypeExecutor subscriptionExecutor;
+	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 
 	/**
 	 * Test of list that contain list, when sending request and receiving response

@@ -16,7 +16,7 @@ import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 
 import com.graphql_java_generator.annotation.RequestType;
@@ -38,7 +38,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * 
  * @author etienne-sf
  */
-@GraphQLRepository(queryExecutor = MyQueryTypeExecutor.class)
+@GraphQLRepository(queryExecutor = MyQueryTypeExecutorAllGraphQLCases.class)
 public interface PartialRequestGraphQLRepository extends PartialQueries {
 
 	////////////////////////////////////////////////////////////////////////////

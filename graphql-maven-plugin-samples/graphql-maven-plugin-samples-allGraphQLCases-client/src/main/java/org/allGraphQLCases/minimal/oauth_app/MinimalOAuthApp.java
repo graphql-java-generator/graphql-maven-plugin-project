@@ -6,7 +6,7 @@ package org.allGraphQLCases.minimal.oauth_app;
 import java.util.List;
 
 import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +27,14 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
  */
 @SuppressWarnings("deprecation")
 @SpringBootApplication(scanBasePackageClasses = { MinimalOAuthApp.class, GraphQLConfiguration.class,
-		MyQueryTypeExecutor.class })
+		MyQueryTypeExecutorAllGraphQLCases.class })
 public class MinimalOAuthApp implements CommandLineRunner {
 
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory.getLogger(MinimalOAuthApp.class);
 
 	@Autowired
-	MyQueryTypeExecutor queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MinimalOAuthApp.class, args);

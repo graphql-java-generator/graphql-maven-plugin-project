@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -24,7 +24,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 class DirectiveOnFieldIT {
 
 	@Autowired
-	MyQueryTypeExecutor queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test

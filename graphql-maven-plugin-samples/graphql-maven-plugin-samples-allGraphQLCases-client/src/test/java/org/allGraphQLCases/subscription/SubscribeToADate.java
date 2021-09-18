@@ -2,19 +2,19 @@ package org.allGraphQLCases.subscription;
 
 import java.util.Date;
 
-import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 public class SubscribeToADate implements Runnable {
-	final TheSubscriptionTypeExecutor subscriptionExecutor;
+	final TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 	final SubscriptionCallbackToADate callback;
 	final String clientName;
 	final Date date;
 
-	public SubscribeToADate(TheSubscriptionTypeExecutor executor, String clientName, Date date) {
+	public SubscribeToADate(TheSubscriptionTypeExecutorAllGraphQLCases executor, String clientName, Date date) {
 		this.subscriptionExecutor = executor;
 		this.clientName = clientName;
 		this.callback = new SubscriptionCallbackToADate(clientName);

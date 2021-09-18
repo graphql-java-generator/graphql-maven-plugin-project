@@ -3,7 +3,7 @@
  */
 package org.allGraphQLCases.subscription.graphqlrepository;
 
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.SubscriptionCallback;
@@ -17,7 +17,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * 
  * @author etienne-sf
  */
-@GraphQLRepository(queryExecutor = MyQueryTypeExecutor.class)
+@GraphQLRepository(queryExecutor = MyQueryTypeExecutorAllGraphQLCases.class)
 public interface FullRequestSubscriptionGraphQLRepository {
 
 	@FullRequest(request = "subscription {subscribeToAList {}}", requestType = RequestType.subscription)

@@ -14,14 +14,14 @@ import java.util.List;
 
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.subscription.SubscriptionCallbackListIntegerForTest;
 import org.forum.client.Board;
 import org.forum.client.Member;
 import org.forum.client.MemberType;
 import org.forum.client.Post;
 import org.forum.client.Topic;
-import org.forum.client.util.QueryTypeExecutor;
+import org.forum.client.util.QueryTypeExecutorForum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -46,12 +46,12 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class RequestsAgainstTwoGraphQLServersIT {
 
 	@Autowired
-	MyQueryTypeExecutor queryTypeAllGraphQLCases;
+	MyQueryTypeExecutorAllGraphQLCases queryTypeAllGraphQLCases;
 	@Autowired
 	GraphQLRepoAllGraphQLCases graphQLRepoAllGraphQLCases;
 
 	@Autowired
-	QueryTypeExecutor queryTypeForum;
+	QueryTypeExecutorForum queryTypeForum;
 	@Autowired
 	GraphQLRepoForum graphQLRepoForum;
 

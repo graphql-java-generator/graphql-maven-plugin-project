@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -26,14 +26,14 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ExecSubscriptionIT {
 
 	@Autowired
-	TheSubscriptionTypeExecutor subscriptionExecutor;
+	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 
 	public static class SubscribeToAList implements Runnable {
-		final TheSubscriptionTypeExecutor subscriptionExecutor;
+		final TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 		final SubscriptionCallbackListIntegerForTest callback;
 		final String clientName;
 
-		SubscribeToAList(TheSubscriptionTypeExecutor executor, String clientName) {
+		SubscribeToAList(TheSubscriptionTypeExecutorAllGraphQLCases executor, String clientName) {
 			this.subscriptionExecutor = executor;
 			this.clientName = clientName;
 			this.callback = new SubscriptionCallbackListIntegerForTest(clientName);

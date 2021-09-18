@@ -85,10 +85,10 @@ import ${configuration.packageName}.${object.classSimpleName};
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @Component
-public class ${object.classSimpleName}Executor implements#if($object.requestType=="mutation") GraphQLMutationExecutor #else GraphQLQueryExecutor #end{
+public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if($object.requestType=="mutation") GraphQLMutationExecutor #else GraphQLQueryExecutor #end{
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor.class);
+	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
 
 	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
@@ -100,7 +100,7 @@ public class ${object.classSimpleName}Executor implements#if($object.requestType
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
 	 */
 	@Autowired
-	public ${object.classSimpleName}Executor() {
+	public ${object.classSimpleName}Executor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
 		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
@@ -119,7 +119,7 @@ public class ${object.classSimpleName}Executor implements#if($object.requestType
 	 * @param graphqlEndpoint
 	 *            the http URI for the GraphQL endpoint
 	 */
-	public ${object.classSimpleName}Executor(String graphqlEndpoint) {
+	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint) {
 ## The @..@ is the placeholder for the maven resource filtering
 		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
@@ -144,7 +144,7 @@ public class ${object.classSimpleName}Executor implements#if($object.requestType
 	 * @param sslContext
 	 * @param hostnameVerifier
 	 */
-	public ${object.classSimpleName}Executor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
@@ -160,7 +160,7 @@ public class ${object.classSimpleName}Executor implements#if($object.requestType
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
-	public ${object.classSimpleName}Executor(String graphqlEndpoint, Client client) {
+	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, Client client) {
 		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();

@@ -20,7 +20,7 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client._extends;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 abstract class AbstractIT {
 
 	@Autowired
-	MyQueryTypeExecutor queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 
 	@Autowired
 	protected ApplicationContext ctx;

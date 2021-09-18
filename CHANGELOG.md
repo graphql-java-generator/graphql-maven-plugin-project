@@ -8,6 +8,11 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# 1.17.1
+
+Client mode:
+* Correction of issue #95: when using two GraphQL schemas with the same type name for query, mutation or subscription, the `springBeanSuffix` is now properly applied to all spring beans.
+
 
 # 1.17
 

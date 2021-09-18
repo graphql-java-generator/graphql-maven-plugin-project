@@ -11,7 +11,7 @@ import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLReposito
  */
 @SuppressWarnings("deprecation")
 @SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphQLConfiguration.class,
-		MyQueryTypeExecutor.class })
+		MyQueryTypeExecutorAllGraphQLCases.class })
 @EnableGraphQLRepositories("org.allGraphQLCases.minimal.spring_app")
 public class MinimalSpringApp implements CommandLineRunner {
 

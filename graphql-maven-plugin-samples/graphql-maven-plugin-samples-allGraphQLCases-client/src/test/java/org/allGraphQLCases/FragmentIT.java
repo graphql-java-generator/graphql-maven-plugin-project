@@ -16,7 +16,7 @@ import org.allGraphQLCases.client.Droid;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.util.GraphQLRequest;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -35,7 +35,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 class FragmentIT {
 
 	@Autowired
-	MyQueryTypeExecutor myQuery;
+	MyQueryTypeExecutorAllGraphQLCases myQuery;
 
 	CharacterInput input;
 	Map<String, Object> params = new HashMap<>();

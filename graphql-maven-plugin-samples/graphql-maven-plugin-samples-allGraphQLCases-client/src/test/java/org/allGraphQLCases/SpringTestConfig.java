@@ -1,8 +1,9 @@
 package org.allGraphQLCases;
 
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
-import org.forum.client.util.QueryTypeExecutor;
+import org.forum.client.util.QueryTypeExecutorForum;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,8 +18,8 @@ import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLReposito
 
 @Configuration
 @SpringBootApplication
-@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class, QueryTypeExecutor.class,
-		PartialDirectQueries.class })
+@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutorAllGraphQLCases.class,
+		MyQueryTypeExecutorAllGraphQLCases2.class, QueryTypeExecutorForum.class, PartialDirectQueries.class })
 @PropertySource("classpath:/application.properties")
 @EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository",
 		"org.allGraphQLCases.two_graphql_servers" })

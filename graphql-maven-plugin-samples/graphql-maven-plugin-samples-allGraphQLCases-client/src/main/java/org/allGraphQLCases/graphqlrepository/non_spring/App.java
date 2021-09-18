@@ -12,9 +12,9 @@ import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvocationHandler;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -33,8 +33,9 @@ public class App {
 
 	public static void main(String[] args) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		GraphQLRepositoryInvocationHandler<GraphQLRequests> invocationHandler = new GraphQLRepositoryInvocationHandler<GraphQLRequests>(
-				GraphQLRequests.class, new MyQueryTypeExecutor(endpoint), new AnotherMutationTypeExecutor(endpoint),
-				new TheSubscriptionTypeExecutor(endpoint));
+				GraphQLRequests.class, new MyQueryTypeExecutorAllGraphQLCases(endpoint),
+				new AnotherMutationTypeExecutorAllGraphQLCases(endpoint),
+				new TheSubscriptionTypeExecutorAllGraphQLCases(endpoint));
 		GraphQLRequests graphQLRequests = (GraphQLRequests) Proxy.newProxyInstance(App.class.getClassLoader(),
 				new Class[] { GraphQLRequests.class }, invocationHandler);
 

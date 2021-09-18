@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
 import org.allGraphQLCases.demo.impl.PartialRequestGraphQLRepository;
 import org.allGraphQLCases.demo.subscription.ExecSubscription;
-import org.forum.client.util.QueryTypeExecutor;
+import org.forum.client.util.QueryTypeExecutorForum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -55,8 +56,9 @@ curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorizatio
  * @see https://michalgebauer.github.io/spring-graphql-security/
  */
 @SuppressWarnings("deprecation")
-@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class,
-		QueryTypeExecutor.class })
+@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class,
+		MyQueryTypeExecutorAllGraphQLCases.class, MyQueryTypeExecutorAllGraphQLCases2.class,
+		QueryTypeExecutorForum.class })
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class,
 		DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 @EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository" })

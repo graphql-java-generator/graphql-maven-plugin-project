@@ -6,9 +6,8 @@ package org.allGraphQLCases.two_graphql_servers;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.forum.client.Topic;
-import org.forum.client.util.QueryTypeExecutor;
+import org.forum.client.util.QueryTypeExecutorForum;
 
 import com.graphql_java_generator.client.graphqlrepository.BindParameter;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;
@@ -18,11 +17,11 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * This is a GraphQL Repository that is based on the allGraphQLCases GraphQL schema, thanks to the
- * {@link MyQueryTypeExecutor} class provided to the {@link GraphQLRepository} annotation.
+ * {@link QueryTypeExecutorForum} class provided to the {@link GraphQLRepository} annotation.
  * 
  * @author etienne-sf
  */
-@GraphQLRepository(queryExecutor = QueryTypeExecutor.class)
+@GraphQLRepository(queryExecutor = QueryTypeExecutorForum.class)
 public interface GraphQLRepoForum {
 
 	@PartialRequest(requestName = "topics", request = "{id date author{name email alias id type} nbPosts title content " //

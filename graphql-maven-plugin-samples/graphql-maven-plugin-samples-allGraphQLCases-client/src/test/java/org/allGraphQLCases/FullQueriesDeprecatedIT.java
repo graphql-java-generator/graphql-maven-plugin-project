@@ -12,9 +12,9 @@ import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.AnotherMutationTypeResponse;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,9 +40,9 @@ class FullQueriesDeprecatedIT {
 	ApplicationContext ctx;
 
 	@Autowired
-	MyQueryTypeExecutor myQuery;
+	MyQueryTypeExecutorAllGraphQLCases myQuery;
 	@Autowired
-	AnotherMutationTypeExecutor mutationType;
+	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
 
 	ObjectResponse mutationWithDirectiveResponse;
 	ObjectResponse mutationWithoutDirectiveResponse;

@@ -350,6 +350,9 @@ public class GenerateCodeGenerator implements Generator {
 			return 0;
 		} else {
 			String targetFileName = (String) execWithOneStringParam("getTargetFileName", object, type);
+			if (type.equals("executor") && configuration.getSpringBeanSuffix() != null) {
+				targetFileName += configuration.getSpringBeanSuffix();
+			}
 			File targetFile = getJavaFile(targetFileName, utilityClass);
 			String msg = "Generating " + type + " '" + object.getName() + "' into " + targetFile.getAbsolutePath();
 

@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -29,8 +29,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 @Execution(ExecutionMode.CONCURRENT)
 public class CheckOAuthIT {
-	MyQueryTypeExecutor queryType;
-	AnotherMutationTypeExecutor mutation;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
+	AnotherMutationTypeExecutorAllGraphQLCases mutation;
 
 	ApplicationContext ctx;
 
@@ -39,9 +39,9 @@ public class CheckOAuthIT {
 		ctx = new AnnotationConfigApplicationContext(SpringTestConfigWithoutOAuth.class);
 
 		// For some tests, we need to execute additional partialQueries
-		queryType = ctx.getBean(MyQueryTypeExecutor.class);
+		queryType = ctx.getBean(MyQueryTypeExecutorAllGraphQLCases.class);
 		assertNotNull(queryType);
-		mutation = ctx.getBean(AnotherMutationTypeExecutor.class);
+		mutation = ctx.getBean(AnotherMutationTypeExecutorAllGraphQLCases.class);
 		assertNotNull(mutation);
 	}
 

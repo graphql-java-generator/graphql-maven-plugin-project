@@ -13,8 +13,8 @@ import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client._break;
 import org.allGraphQLCases.client._extends;
-import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
-import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,9 +31,9 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class PartialDirectQueries implements PartialQueries {
 
 	@Autowired
-	MyQueryTypeExecutor queryType;
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 	@Autowired
-	AnotherMutationTypeExecutor mutationType;
+	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
 
 	@Override
 	public List<Character> withoutParameters()
