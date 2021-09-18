@@ -79,7 +79,7 @@ public class SpringConfiguration${springBeanSuffix} {
 	 */
 	@Bean
 	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}, //
-			@Autowired(required = false) HttpClient httpClient${springBeanSuffix},
+			@Autowired(required = false) @Qualifier("httpClient${springBeanSuffix}") HttpClient httpClient${springBeanSuffix},
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}) {
 		return GraphQLConfiguration.getWebClient(graphqlEndpoint${springBeanSuffix}, httpClient${springBeanSuffix}, serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix});
 	}
@@ -92,7 +92,8 @@ public class SpringConfiguration${springBeanSuffix} {
 	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
 	 */
 	@Bean
-	public WebSocketClient webSocketClient${springBeanSuffix}(@Autowired(required = false) HttpClient httpClient${springBeanSuffix}) {
+	public WebSocketClient webSocketClient${springBeanSuffix}(
+			@Autowired(required = false) @Qualifier("httpClient${springBeanSuffix}") HttpClient httpClient${springBeanSuffix}) {
 		return GraphQLConfiguration.getWebSocketClient(httpClient${springBeanSuffix});
 	}
 
@@ -121,10 +122,10 @@ public class SpringConfiguration${springBeanSuffix} {
 	@Bean
 	public QueryExecutor queryExecutor${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}, //
 			@Autowired(required = false) @Qualifier("graphqlSubscriptionEndpoint${springBeanSuffix}") String graphqlSubscriptionEndpoint${springBeanSuffix}, //
-			WebClient webClient${springBeanSuffix}, //
-			@Autowired(required = false)  @Qualifier("webSocketClient${springBeanSuffix}") WebSocketClient webSocketClient${springBeanSuffix},
-			@Autowired(required = false)  @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix},
-			@Autowired(required = false)  @Qualifier("oAuthTokenExtractor${springBeanSuffix}") OAuthTokenExtractor oAuthTokenExtractor${springBeanSuffix})
+			@Autowired(required = false) @Qualifier("webClient${springBeanSuffix}") WebClient webClient${springBeanSuffix}, //
+			@Autowired(required = false) @Qualifier("webSocketClient${springBeanSuffix}") WebSocketClient webSocketClient${springBeanSuffix},
+			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix},
+			@Autowired(required = false) @Qualifier("oAuthTokenExtractor${springBeanSuffix}") OAuthTokenExtractor oAuthTokenExtractor${springBeanSuffix})
 	{
 		return new QueryExecutorSpringReactiveImpl(graphqlEndpoint${springBeanSuffix}, graphqlSubscriptionEndpoint${springBeanSuffix},
 				webClient${springBeanSuffix}, webSocketClient${springBeanSuffix}, serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix},

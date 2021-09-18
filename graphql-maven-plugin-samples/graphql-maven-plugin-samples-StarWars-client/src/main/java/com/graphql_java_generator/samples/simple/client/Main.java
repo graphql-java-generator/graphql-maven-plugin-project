@@ -142,7 +142,7 @@ public class Main implements CommandLineRunner {
 	 * @return
 	 * @throws SSLException
 	 */
-	@Bean
+	@Bean(name = "httpClient")
 	HttpClient insecureHttpClient() throws SSLException {
 		int method = 2;
 
