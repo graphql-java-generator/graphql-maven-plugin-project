@@ -11,7 +11,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 # 1.17.1
 
 Client mode:
-* Correction of issue #95: when using two GraphQL schemas with the same type name for query, mutation or subscription, the `springBeanSuffix` is now properly applied to all spring beans.
+* Correction of issues #95 and #96: the `springBeanSuffix` is now properly applied to all spring beans. Now it is also applied to thequery, mutation and subscription executors, as well as all other beans.
 
 
 # 1.17
