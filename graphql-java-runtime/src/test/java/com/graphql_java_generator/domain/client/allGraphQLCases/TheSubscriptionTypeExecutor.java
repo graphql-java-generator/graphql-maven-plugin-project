@@ -63,7 +63,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	 */
 	@Autowired
 	public TheSubscriptionTypeExecutor() {
-		if (!"1.17".equals(graphqlUtils.getRuntimeVersion())) {
+		if (!graphqlUtils.getRuntimeVersion().equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException(
 					"The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
 							+ graphqlUtils.getRuntimeVersion()
@@ -82,7 +82,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public TheSubscriptionTypeExecutor(String graphqlEndpoint) {
-		if (!"1.17".equals(graphqlUtils.getRuntimeVersion())) {
+		if (!graphqlUtils.getRuntimeVersion().equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException(
 					"The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
 							+ graphqlUtils.getRuntimeVersion()
