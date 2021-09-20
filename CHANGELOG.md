@@ -11,7 +11,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 # 1.17.2 
 
 Client mode:
-* Correction of issues #95 and #96: the `springBeanSuffix` is now properly applied to all spring beans. Now it is also applied to thequery, mutation and subscription executors, as well as all other beans.
+* Correction of issues #95 and #96: the `springBeanSuffix` is now properly applied to all spring beans. Now it is also applied to the query, mutation and subscription executors, as well as all other Spring beans.
 
 
 # 1.17
