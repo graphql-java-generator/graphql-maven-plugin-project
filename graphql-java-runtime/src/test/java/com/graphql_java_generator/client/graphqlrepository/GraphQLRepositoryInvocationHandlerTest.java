@@ -1,19 +1,22 @@
 package com.graphql_java_generator.client.graphqlrepository;
 
-// import static org.mockito.Mockito.*;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+// import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +29,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationContext;
 
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -127,6 +131,32 @@ class GraphQLRepositoryInvocationHandlerTest {
 						.contains("should return com.graphql_java_generator.domain.client.allGraphQLCases.Character"),
 				e.getMessage());
 		assertTrue(e.getMessage().contains("but returns java.lang.Integer"), e.getMessage());
+	}
+
+	/** Tests the error message when a bad query executor is given in the GraphQLRepository annotation */
+	@Test
+	void testError_badQueryExecutor() {
+		// Preparation
+		Map<String, Object> values = new HashMap<>(); // an emtpy map is enough for this test, like if no bean where
+														// registered
+		ApplicationContext ctx = mock(ApplicationContext.class);
+		when(ctx.getBeansOfType(anyObject())).thenReturn(values);
+
+		// Go, go, go
+		IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseBadExecutor>(
+						GraphQLRepositoryTestCaseBadExecutor.class, ctx));
+
+		// Verification
+		assertTrue(e.getMessage().contains(
+				"found no Spring Bean of type 'GraphQLQueryExecutor' in the same package as the provided QueryExecutor"),
+				e.getMessage());
+		assertTrue(
+				e.getMessage().contains(
+						"com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryTestCaseBadExecutor"),
+				e.getMessage());
+		assertTrue(e.getMessage().contains("com.graphql_java_generator.domain.client.starwars.QueryTypeExecutor"),
+				e.getMessage());
 	}
 
 	/**

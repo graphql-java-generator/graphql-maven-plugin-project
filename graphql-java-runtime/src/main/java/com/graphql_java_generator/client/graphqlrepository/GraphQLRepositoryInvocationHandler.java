@@ -159,6 +159,8 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	@Autowired
 	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, ApplicationContext ctx)
 			throws GraphQLRequestPreparationException {
+		logger.trace("Creating a new GraphQLRepositoryInvocationHandler for the GraphQL Repository {}",
+				repositoryInterface.getName());
 		this.repositoryInterface = repositoryInterface;
 
 		// Does the GraphQLRepository annotation define a queryExecutor ?
@@ -174,18 +176,22 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		this.mutationExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLMutationExecutor.class, false);
 		this.subscriptionExecutor = getBeanOfTypeAndPackage(ctx, executorPackage, GraphQLSubscriptionExecutor.class,
 				false);
+		logger.trace("The executor found are: queryExecutor={}, mutationExecutor={}, subscriptionExecutor={}",
+				(queryExecutor == null) ? null : queryExecutor.getClass().getName(),
+				(mutationExecutor == null) ? null : mutationExecutor.getClass().getName(),
+				(subscriptionExecutor == null) ? null : subscriptionExecutor.getClass().getName());
 
 		// queryExecutor may not be null: every GraphQL schema must at least contain a Query type
 		if (this.queryExecutor == null) {
 			if (executorPackage == null) {
 				throw new RuntimeException("Error while preparing the GraphQL Repository '"
-						+ repositoryInterface.getClass().getName()
+						+ repositoryInterface.getName()
 						+ "': found no Spring Bean of type QueryExecutor'. Please check the Spring component scan path.");
 			} else {
 				throw new IllegalArgumentException("Error while preparing the GraphQL Repository '"
-						+ repositoryInterface.getClass().getName()
+						+ repositoryInterface.getName()
 						+ "': found no Spring Bean of type 'GraphQLQueryExecutor' in the same package as the provided QueryExecutor ("
-						+ graphQLRepoAnnotation.queryExecutor().getClass().getName()
+						+ graphQLRepoAnnotation.queryExecutor().getName()
 						+ "). Please check the Spring component scan path.");
 			}
 		}
@@ -244,8 +250,10 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 *            The class of the bean. The found bean can either be of this class, implement or extend it
 	 */
 	<C> C getBeanOfTypeAndPackage(ApplicationContext ctx, Package pack, Class<? extends C> clazz, boolean mandatory) {
+		logger.trace("[getBeanOfTypeAndPackage] Starting execution");
 		if (pack == null) {
 			Collection<? extends C> beans = ctx.getBeansOfType(clazz).values();
+			logger.trace("[getBeanOfTypeAndPackage] pack is null, and beans size is ", beans.size());
 			if (beans.size() == 0) {
 				if (mandatory)
 					throw new RuntimeException("Error while preparing the GraphQL Repository, on the method '"
@@ -264,12 +272,18 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 						+ "and at least one of your GraphQLRepository annotation didn't provide the QueryExecutor (through its queryExecutor parameter)");
 			}
 		} else {
-			for (C bean : ctx.getBeansOfType(clazz).values()) {
+			Collection<? extends C> beans = ctx.getBeansOfType(clazz).values();
+			logger.trace("[getBeanOfTypeAndPackage] pack is not null, iterating through the '{}' beans (size={})",
+					clazz.getName(), beans.size());
+			for (C bean : beans) {
+				logger.trace("[getBeanOfTypeAndPackage]    iterating on bean {}", bean.getClass());
 				if (bean.getClass().getPackage() == pack) {
 					// Ok, we've found the bean of the good package.
+					logger.trace("[getBeanOfTypeAndPackage]      found bean {}: we're done", bean.getClass());
 					return bean;
 				}
 			} // for
+			logger.trace("[getBeanOfTypeAndPackage]    No bean found");
 			return null;
 		}
 	}
@@ -455,7 +469,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 			BindParameter bindParameter = param.getAnnotation(BindParameter.class);
 			if (bindParameter == null) {
-				if (registeredMethod.fullRequest = false) {
+				if (registeredMethod.fullRequest == false) {
 					throw new GraphQLRequestPreparationException(
 							"Error while preparing the GraphQL Repository, on the method '"
 									+ registeredMethod.method.getDeclaringClass().getName() + "."
@@ -618,5 +632,4 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			throw e.getTargetException();
 		}
 	}
-
 }
