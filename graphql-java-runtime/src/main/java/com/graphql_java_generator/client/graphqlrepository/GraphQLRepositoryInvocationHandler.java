@@ -17,13 +17,13 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
 import com.graphql_java_generator.client.GraphQLQueryExecutor;
 import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
+import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -130,7 +130,6 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 *            executors
 	 * @throws GraphQLRequestPreparationException
 	 */
-	@Autowired
 	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, GraphQLQueryExecutor queryExecutor,
 			GraphQLMutationExecutor mutationExecutor, GraphQLSubscriptionExecutor subscriptionExecutor)
 			throws GraphQLRequestPreparationException {
@@ -138,6 +137,10 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		this.queryExecutor = queryExecutor;
 		this.mutationExecutor = mutationExecutor;
 		this.subscriptionExecutor = subscriptionExecutor;
+		// There is no check at this point, that the executors are the good one. It will be checked just after, in the
+		// createProxyInstance(): if the executors are not the good ones, then it will not be possible to match the
+		// repository methods to the executor methods
+
 		this.proxyInstance = createProxyInstance();
 	}
 
@@ -146,7 +149,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 * mutation and subscription executors that have been generated from the GraphQL schema. The mutation and
 	 * subscription are optional in the GraphQL schema, so these two executors may be null. <BR/>
 	 * Note: when more than one GraphQL schema are used, a GraphQL Repository requests may be relative to only one
-	 * GraphQL schema. The {@link GraphQLRepository}s annotation must provide the queryExecutor of this GraphQL schema.
+	 * GraphQL schema. The {@link GraphQLRepository}s annotation must provide the queryExecutor of this GraphQL
+	 * schema.<BR/>
+	 * This constructor can only be used on Spring applications, because of its ctx parameter.
 	 * 
 	 * @param repositoryInterface
 	 *            The {@link GraphQLRepository} interface, that this {@link InvocationHandler} has to manage. It is
@@ -156,7 +161,6 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	 *            executors
 	 * @throws GraphQLRequestPreparationException
 	 */
-	@Autowired
 	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, ApplicationContext ctx)
 			throws GraphQLRequestPreparationException {
 		logger.trace("Creating a new GraphQLRepositoryInvocationHandler for the GraphQL Repository {}",
@@ -427,8 +431,11 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		// The first parameter of the executor is the GraphQL Request, given as an ObjectResponse
 		executorParameterTypes.add(ObjectResponse.class);
 
-		// Let's go through all the parameters of the method that we're registering
+		// We need to know if some previous parameter has the BindParameter annotation: it is not allowed to have
+		// parameters without the 'BindParameter' annotation, after parameters that have this annotation
 		boolean foundBindParameterAnnotation = false;
+
+		// Let's go through all the parameters of the method that we're registering
 		for (Parameter param : method.getParameters()) {
 			RegisteredParameter regParam = new RegisteredParameter();
 			regParam.name = param.getName();
@@ -469,14 +476,22 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 			BindParameter bindParameter = param.getAnnotation(BindParameter.class);
 			if (bindParameter == null) {
-				if (registeredMethod.fullRequest == false) {
-					throw new GraphQLRequestPreparationException(
-							"Error while preparing the GraphQL Repository, on the method '"
-									+ registeredMethod.method.getDeclaringClass().getName() + "."
-									+ registeredMethod.method.getName()
-									+ "(..). This request is a full request: all its parameters must be marked with the '"
-									+ BindParameter.class.getSimpleName() + "' annotation. But the '" + param.getName()
-									+ "' isn't marked with this annotation.");
+				if (registeredMethod.fullRequest) {
+					if (param.getAnnotatedType().getType().getTypeName()
+							.startsWith(SubscriptionCallback.class.getName())) {
+						// Ok, it's the callback parameter. It may not have the BindParameter annotation (and if he has,
+						// we ignore it)
+						executorParameterTypes.add(regParam.type);
+					} else {
+						// There is no BindParameter annotation, and it's not the callback parameter
+						throw new GraphQLRequestPreparationException(
+								"Error while preparing the GraphQL Repository, on the method '"
+										+ registeredMethod.method.getDeclaringClass().getName() + "."
+										+ registeredMethod.method.getName()
+										+ "(..). This request is a full request: all its parameters must be marked with the '"
+										+ BindParameter.class.getSimpleName() + "' annotation. But the '"
+										+ param.getName() + "' isn't marked with this annotation.");
+					}
 				} else if (foundBindParameterAnnotation) {
 					throw new GraphQLRequestPreparationException(
 							"Error while preparing the GraphQL Repository, on the method '"
@@ -510,7 +525,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		// registeredMethod.executorParameterTypes = (Class<?>[]) (executorParameterTypes.toArray());
 		// So, let's loop manually
 		registeredMethod.executorParameterTypes = new Class<?>[executorParameterTypes.size()];
-		for (int i = 0; i < registeredMethod.executorParameterTypes.length; i += 1) {
+		for (
+
+				int i = 0; i < registeredMethod.executorParameterTypes.length; i += 1) {
 			registeredMethod.executorParameterTypes[i] = executorParameterTypes.get(i);
 		}
 

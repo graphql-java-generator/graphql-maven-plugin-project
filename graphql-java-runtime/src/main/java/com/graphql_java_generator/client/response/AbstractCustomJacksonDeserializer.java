@@ -127,7 +127,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 			}
 
 			// We're at the beginning of a list. Let's read it
-			List<Object> list = new ArrayList<>();
+			List<Object> returnedList = new ArrayList<>();
 			// Let's loop until we find the end of the array
 			while (!p.nextToken().equals(JsonToken.END_ARRAY)) {
 				currentToken = p.currentToken();
@@ -143,20 +143,20 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 						// Ok. Let's deserialize the sublist.
 						logger.trace("Sending deserialization for a sublist to {} with token {}",
 								itemDeserializer.getClass().getName(), p.currentToken());
-						list.add(itemDeserializer.deserialize(p, ctxt));
+						returnedList.add(itemDeserializer.deserialize(p, ctxt));
 						currentToken = p.currentToken();
 					}
 				} else if (itemDeserializer != null) {
 					// We've found a final value (not a list).
 					if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
-						list.add(null);
+						returnedList.add(null);
 					} else if (itemDeserializer.list) {
 						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
 								+ " JSON token, but the itemDeserializer expects a list. Hint: the number of embedded lists doesn't match the defined deserializer for the GraphQL field.");
 					} else {
 						logger.trace("Sending deserialization for a value to {} with token {}",
 								itemDeserializer.getClass().getName(), p.currentToken());
-						list.add(itemDeserializer.deserialize(p, ctxt));
+						returnedList.add(itemDeserializer.deserialize(p, ctxt));
 						currentToken = p.currentToken();
 					}
 				} else {
@@ -166,11 +166,11 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 							p.currentToken());
 					Object o = p.readValueAs(handledType);
 					logger.trace("  Read value was {}", o == null ? "null" : o.toString());
-					list.add(o);
+					returnedList.add(o);
 				}
 			} // while
-			logger.trace("The read list contains {} items", list.size());
-			return (T) list;
+			logger.trace("The read list contains {} items", returnedList.size());
+			return (T) returnedList;
 
 		} else if (itemDeserializer != null) {
 

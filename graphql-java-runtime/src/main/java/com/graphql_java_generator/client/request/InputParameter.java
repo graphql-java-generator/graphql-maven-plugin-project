@@ -685,8 +685,8 @@ public class InputParameter {
 	 * @param val
 	 *            This value of the parameter. It can be the {@link #value} if it is not null, or the binding from the
 	 *            bind parameters. It's up to the caller to map the bind parameter into this method argument.
-	 * @param graphQLTypeName
-	 * @param graphQLScalarType
+	 * @param graphQLTypeNameParam
+	 * @param graphQLScalarTypeParam
 	 *            The {@link GraphQLScalarType} for this value. It may be the same as the parameter one (for scalar), or
 	 *            the one of the current field (for input types).
 	 * @param graphQLVariable
@@ -695,8 +695,8 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	String getValueForGraphqlQuery(boolean writingGraphQLVariables, Object val, String graphQLTypeName,
-			GraphQLScalarType graphQLScalarType, boolean graphQLVariable) throws GraphQLRequestExecutionException {
+	String getValueForGraphqlQuery(boolean writingGraphQLVariables, Object val, String graphQLTypeNameParam,
+			GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		if (val == null) {
 			return null;
 		} else if (graphQLVariable && !writingGraphQLVariables) {
@@ -704,13 +704,13 @@ public class InputParameter {
 			// written only in the GraphQL variable field
 			return "$" + bindParameterName;
 		} else if (writingGraphQLVariables && val.getClass().isEnum()) {
-			// When writing an enum value in the variavles section, values should be between double quotes
+			// When writing an enum value in the variables section, values should be between double quotes
 			return "\"" + val.toString() + "\"";
 		} else if (val instanceof java.util.List) {
-			return getListValue(writingGraphQLVariables, (List<?>) val, graphQLTypeName, graphQLScalarType,
+			return getListValue(writingGraphQLVariables, (List<?>) val, graphQLTypeNameParam, graphQLScalarTypeParam,
 					graphQLVariable);
-		} else if (graphQLScalarType != null) {
-			Object ret = graphQLScalarType.getCoercing().serialize(val);
+		} else if (graphQLScalarTypeParam != null) {
+			Object ret = graphQLScalarTypeParam.getCoercing().serialize(val);
 			if (ret instanceof String)
 				return getStringValue((String) ret, graphQLVariable);
 			else
@@ -761,10 +761,8 @@ public class InputParameter {
 	 *            true if this call is done, while writing the value for the "variables" field of the json request.
 	 * @param list
 	 *            a non null List
-	 * @param graphQLVariable
-	 *            true if the current input type should be deserialize as a GraphQL variable. In this case, it's
-	 *            deserialized as a map. So the field names must be within double quotes
-	 * @param graphQLScalarType
+	 * @param graphQLTypeNameParam
+	 * @param graphQLScalarTypeParam
 	 *            The {@link GraphQLScalarType} for this value. It may be the same as the parameter one (for scalar), or
 	 *            the one of the current field (fot input types).
 	 * @return
@@ -772,13 +770,13 @@ public class InputParameter {
 	 * @throws NullPointerException
 	 *             If list is null
 	 */
-	private String getListValue(boolean writingGraphQLVariables, List<?> list, String graphQLTypeName,
-			GraphQLScalarType graphQLScalarType, boolean graphQLVariable) throws GraphQLRequestExecutionException {
+	private String getListValue(boolean writingGraphQLVariables, List<?> list, String graphQLTypeNameParam,
+			GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("[");
 		for (int index = 0; index < list.size(); index++) {
 			Object obj = list.get(index);
-			result.append(this.getValueForGraphqlQuery(writingGraphQLVariables, obj, graphQLTypeName, graphQLScalarType,
-					graphQLVariable));
+			result.append(this.getValueForGraphqlQuery(writingGraphQLVariables, obj, graphQLTypeNameParam,
+					graphQLScalarTypeParam, graphQLVariable));
 			if (index < list.size() - 1) {
 				result.append(",");
 			}

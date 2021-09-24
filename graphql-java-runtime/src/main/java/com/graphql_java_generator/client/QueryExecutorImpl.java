@@ -172,15 +172,15 @@ public class QueryExecutorImpl implements QueryExecutor {
 		org.eclipse.jetty.util.ssl.SslContextFactory.Client sslContextFactory = new org.eclipse.jetty.util.ssl.SslContextFactory.Client(
 				trustAll);
 		HttpClient httpClient = new HttpClient(sslContextFactory);
-		WebSocketClient client = new WebSocketClient(httpClient);
+		WebSocketClient wsClient = new WebSocketClient(httpClient);
 		SubscriptionClientWebSocket<R, T> subscriptionClientWebSocket = new SubscriptionClientWebSocket<R, T>(request,
 				subscriptionName, subscriptionCallback, subscriptionType, messageType,
 				graphQLRequest.getGraphQLObjectMapper());
 		URI uri = getWebSocketURI();
 		try {
-			client.start();
+			wsClient.start();
 			ClientUpgradeRequest clientUpgradeRequest = new ClientUpgradeRequest();
-			client.connect(subscriptionClientWebSocket, uri, clientUpgradeRequest);
+			wsClient.connect(subscriptionClientWebSocket, uri, clientUpgradeRequest);
 			logger.debug("Connecting to {}", uri);
 		} catch (Exception e) {
 			String msg = "Error while opening the Web Socket connection to " + uri;
@@ -189,7 +189,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 		}
 
 		// Let's return the Web Socket client, so that the caller can stop it, when needed.
-		return new SubscriptionClientImpl(client);
+		return new SubscriptionClientImpl(wsClient);
 	}
 
 	/**

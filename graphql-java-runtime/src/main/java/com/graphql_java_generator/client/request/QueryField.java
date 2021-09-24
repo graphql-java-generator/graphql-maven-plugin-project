@@ -225,12 +225,12 @@ public class QueryField {
 					// We've read a regular field
 					if (qt.checkNextToken(":")) {
 						// The next token is ":", so we've found an alias (not a name field)
-						String alias = token;
+						String tokenAlias = token;
 						token = qt.nextToken(); // It's the ":" that we've already checked. Let's ignore it.
 						token = qt.nextToken();
-						currentField = new QueryField(clazz, token, alias);
+						currentField = new QueryField(clazz, token, tokenAlias);
 						//
-						addAlias(clazz, alias, token, aliasFields);
+						addAlias(clazz, tokenAlias, token, aliasFields);
 					} else {
 						currentField = new QueryField(clazz, token);
 					}
@@ -257,13 +257,13 @@ public class QueryField {
 	 * name for the same class.<BR/>
 	 * If the current class is an interface, then the alias is set into each of its implementing types and interfaces.
 	 * 
-	 * @param clazz
+	 * @param clazzParam
 	 * @param aliasName
 	 * @param fieldName
 	 * @param aliasFields
 	 * @throws GraphQLRequestPreparationException
 	 */
-	void addAlias(Class<?> clazz, String aliasName, String fieldName, Map<Class<?>, Map<String, Field>> aliasFields)
+	void addAlias(Class<?> clazzParam, String aliasName, String fieldName, Map<Class<?>, Map<String, Field>> aliasFields)
 			throws GraphQLRequestPreparationException {
 		if (aliasFields == null) {
 			throw new NullPointerException("[Internal Error] aliasFields may not be null");
@@ -271,10 +271,10 @@ public class QueryField {
 		graphqlClientUtils.checkName(aliasName);
 
 		// If the owningClass is an interface, we must iterate for each interface and class that implements it
-		if (clazz.isInterface()) {
+		if (clazzParam.isInterface()) {
 			// The @JsonSubTypes annotations defines all the classes that implement this interface, to allow proper json
 			// deserialization
-			JsonSubTypes jsonSubTypes = clazz.getAnnotation(JsonSubTypes.class);
+			JsonSubTypes jsonSubTypes = clazzParam.getAnnotation(JsonSubTypes.class);
 			for (Type type : jsonSubTypes.value()) {
 				addAlias(type.value(), aliasName, fieldName, aliasFields);
 			}
@@ -282,19 +282,19 @@ public class QueryField {
 			Field field;
 
 			// aliases is the map for all aliases defined for this class (or any of its interfaces)
-			Map<String, Field> aliases = aliasFields.get(clazz);
+			Map<String, Field> aliases = aliasFields.get(clazzParam);
 			if (aliases == null) {
 				// It's the first alias for this class
 				aliases = new HashMap<>();
-				aliasFields.put(clazz, aliases);
+				aliasFields.put(clazzParam, aliases);
 			}
 
 			try {
-				field = clazz.getDeclaredField(graphqlUtils.getJavaName(fieldName));
+				field = clazzParam.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 			} catch (NoSuchFieldException | SecurityException e) {
 				throw new GraphQLRequestPreparationException(
 						e.getClass().getSimpleName() + ": " + e.getMessage() + " (while looking for the field '"
-								+ graphqlUtils.getJavaName(fieldName) + "' of '" + clazz.getName() + "')",
+								+ graphqlUtils.getJavaName(fieldName) + "' of '" + clazzParam.getName() + "')",
 						e);
 			}
 
@@ -304,7 +304,7 @@ public class QueryField {
 				if (!field.equals(aliases.get(aliasName))) {
 					throw new GraphQLRequestPreparationException(
 							"For proper Java deserialization, the same alias name may not be used two times for two different fields. But the alias '"
-									+ aliasName + "' is defined for the class '" + clazz.getName()
+									+ aliasName + "' is defined for the class '" + clazzParam.getName()
 									+ "' (or one of its interfaces) for the fields '" + fieldName + "' and '"
 									+ aliases.get(aliasName).getName() + "'");
 				}
@@ -496,15 +496,15 @@ public class QueryField {
 	/**
 	 * Returns the subfield for this {@link QueryField} of the given alias or name
 	 * 
-	 * @param alias
+	 * @param aliasParam
 	 *            The field's alias to search (optional)
-	 * @param name
+	 * @param nameParam
 	 *            The field's name to search (used only if the provided alias is null)
 	 * @return The subfield of the given alias (or name if the provided alias is null), or null of this
 	 *         {@link QueryField} contains no field of this alias (or name)
 	 */
-	QueryField getField(String alias, String name) {
-		String searchedString = (alias != null) ? alias : name;
+	QueryField getField(String aliasParam, String nameParam) {
+		String searchedString = (aliasParam != null) ? aliasParam : nameParam;
 		for (QueryField f : fields) {
 			if ((f.alias != null && f.alias.equals(searchedString))
 					|| (f.alias == null && f.name.equals(searchedString))) {

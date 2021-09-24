@@ -2,12 +2,15 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Pb: le fichier 'graphql-java-runtime.properties' existe deux fois, une fois pour chaque schéma (dans generatedResources). Du coup, pb à la copie des ficheirs
-Sol1: générer dans build/resources/main
-- mais dans ce cas, un clean risque de ne pas regénérer la ressource?
-- quel impact sur le maven?
-- un clean dans eclipse supprime le fichier
-==> Il faut être dans generates/resources 
+* Double the GraphQLRepositoryInvocationHandlerTest test: one for each of its constructors
+* add a _HowTo compile page_ on the wiki (to build the plugin project, Java 9 or latter is needed, even if the built plugin is compatible with Java 8)
+* The default name is Xxx, not XxxxType (Query versus QueryType)
+* The 'graphql-java-runtime.properties' exists two times, once for each schema (in generatedResources). So there is an issue when copying files
+Sol1: generate in build/resources/main
+- But then, a `clean` may not re-generate the resource?
+- What impact on maven
+- A `clean` in eclipse removes the file
+==> So it must be in  generates/resources 
 * Test the default values from the extensions in the gradle task
 * Check if spring-boot-starter-security is really needed. It should be added when a project needs OAuth2.
 * @EnableGraphQLRepositories: replace the string (that contains the package name) by a class (so that when changing a package name, the code is still valid)

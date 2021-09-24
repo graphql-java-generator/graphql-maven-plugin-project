@@ -74,8 +74,8 @@ public class GraphQLReactiveWebSocketHandler<R, T> implements WebSocketHandler {
 	}
 
 	@Override
-	public Mono<Void> handle(WebSocketSession session) {
-		this.session = session;
+	public Mono<Void> handle(WebSocketSession sessionParam) {
+		this.session = sessionParam;
 
 		logger.trace("new web socket session received: {}", session);
 

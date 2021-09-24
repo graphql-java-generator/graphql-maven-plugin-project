@@ -5,6 +5,7 @@ package com.graphql_java_generator.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -137,8 +138,8 @@ public class GraphqlUtils {
 	private Properties getProperties() {
 		if (properties == null) {
 			properties = new Properties();
-			try {
-				properties.load(getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE));
+			try (InputStream res = getClass().getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
+				properties.load(res);
 			} catch (IOException e) {
 				String msg = "Error while reading the '" + PROPERTIES_FILE + "' properties file: " + e.getMessage();
 				logger.error(msg);
