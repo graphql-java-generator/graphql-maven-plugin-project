@@ -28,17 +28,17 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 /**
- * This is the default implementation for the {@link QueryExecutor} This implementation has been added in version
+ * This is the default implementation for the {@link RequestExecution} This implementation has been added in version
  * 1.12.<BR/>
  * It is loaded by the {@link SpringConfiguration} Spring configuration class, that is generated with the client code.
  * 
  * @since 1.12
  * @author etienne-sf
  */
-public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
+public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(QueryExecutorSpringReactiveImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(RequestExecutionSpringReactiveImpl.class);
 
 	/**
 	 * A <I>graphqlEndpoint</I> Spring bean, of type String, must be provided, with the URL of the GraphQL endpoint, for
@@ -117,7 +117,7 @@ public class QueryExecutorSpringReactiveImpl implements QueryExecutor {
 	 *            information.
 	 */
 	@Autowired
-	public QueryExecutorSpringReactiveImpl(String graphqlEndpoint, //
+	public RequestExecutionSpringReactiveImpl(String graphqlEndpoint, //
 			String graphqlSubscriptionEndpoint, //
 			WebClient webClient, //
 			WebSocketClient webSocketClient,

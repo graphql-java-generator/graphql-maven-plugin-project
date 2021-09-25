@@ -9,7 +9,7 @@ import java.util.Random;
 import javax.annotation.Resource;
 
 import org.forum.server.graphql.Board;
-import org.forum.server.graphql.DataFetchersDelegateMutationType;
+import org.forum.server.graphql.DataFetchersDelegateMutation;
 import org.forum.server.graphql.Member;
 import org.forum.server.graphql.MemberInput;
 import org.forum.server.graphql.Post;
@@ -28,7 +28,7 @@ import io.reactivex.subjects.Subject;
  * @author etienne-sf
  */
 @Component
-public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegateMutationType {
+public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMutation {
 
 	@Resource
 	BoardRepository boardRepository;

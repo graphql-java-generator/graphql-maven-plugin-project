@@ -12,20 +12,20 @@ class QueryExecutorImplTest {
 
 	@Test
 	void testGetWebSocketURI_http() throws GraphQLRequestExecutionException {
-		QueryExecutorImpl queryExecutorImpl = new QueryExecutorImpl("http://my.local.host:123/my/path");
+		RequestExecutionImpl queryExecutorImpl = new RequestExecutionImpl("http://my.local.host:123/my/path");
 		assertEquals("ws://my.local.host:123/my/path", queryExecutorImpl.getWebSocketURI().toString());
 
 	}
 
 	@Test
 	void testGetWebSocketURI_https() throws GraphQLRequestExecutionException {
-		QueryExecutorImpl queryExecutorImpl = new QueryExecutorImpl("https://my.local.host:123/my/path");
+		RequestExecutionImpl queryExecutorImpl = new RequestExecutionImpl("https://my.local.host:123/my/path");
 		assertEquals("wss://my.local.host:123/my/path", queryExecutorImpl.getWebSocketURI().toString());
 	}
 
 	@Test
 	void testGetWebSocketURI_KO() {
-		QueryExecutorImpl queryExecutorImpl = new QueryExecutorImpl("ftp://my.local.host:123/my/path");
+		RequestExecutionImpl queryExecutorImpl = new RequestExecutionImpl("ftp://my.local.host:123/my/path");
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
 				() -> queryExecutorImpl.getWebSocketURI());
 		assertTrue(e.getMessage().contains("ftp://my.local.host:123/my/path"));

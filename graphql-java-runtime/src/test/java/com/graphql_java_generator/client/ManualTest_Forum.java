@@ -21,7 +21,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ManualTest_Forum {
 
 	static String graphqlEndpoint = "http://localhost:8180/graphql";
-	static QueryExecutor executor = new QueryExecutorImpl(graphqlEndpoint);
+	static RequestExecution executor = new RequestExecutionImpl(graphqlEndpoint);
 	static QueryType queryType = new QueryType(graphqlEndpoint);
 	static MutationType mutationType = new MutationType(graphqlEndpoint);
 

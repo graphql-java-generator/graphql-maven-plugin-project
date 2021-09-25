@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 
 public class MinimalNonSpringApp {
 
@@ -12,7 +12,7 @@ public class MinimalNonSpringApp {
 		// The executor, that allows to execute GraphQL queries. The class name is the one defined in the GraphQL
 		// schema.
 		// You can instanciate in the same way the mutation and the subscription executors.
-		QueryTypeExecutor queryExecutor = new QueryTypeExecutor("http://localhost:8182/graphql");
+		QueryExecutor queryExecutor = new QueryExecutor("http://localhost:8182/graphql");
 
 		// A basic demo of input parameters
 		@SuppressWarnings("deprecation")

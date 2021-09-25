@@ -8,7 +8,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.forum.server.graphql.Board;
-import org.forum.server.graphql.DataFetchersDelegateQueryType;
+import org.forum.server.graphql.DataFetchersDelegateQuery;
 import org.forum.server.graphql.Topic;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.TopicRepository;
@@ -22,7 +22,7 @@ import graphql.schema.DataFetchingEnvironment;
  * @author etienne-sf
  */
 @Component
-public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQueryType {
+public class DataFetchersDelegateQueryImpl implements DataFetchersDelegateQuery {
 
 	@Resource
 	BoardRepository boardRepository;

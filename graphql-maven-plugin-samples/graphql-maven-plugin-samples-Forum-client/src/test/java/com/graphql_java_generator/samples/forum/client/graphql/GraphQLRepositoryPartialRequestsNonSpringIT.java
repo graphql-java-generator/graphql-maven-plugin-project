@@ -7,9 +7,9 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvocationHandler;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionExecutor;
 
 /**
  * Integration tests for GraphQL Repository, in Spring mode<BR/>
@@ -26,8 +26,8 @@ class GraphQLRepositoryPartialRequestsNonSpringIT extends AbstractIT {
 	@BeforeEach
 	void setUp() throws Exception {
 		GraphQLRepositoryInvocationHandler<GraphQLRepositoryPartialRequests> invocationHandler = new GraphQLRepositoryInvocationHandler<GraphQLRepositoryPartialRequests>(
-				GraphQLRepositoryPartialRequests.class, new QueryTypeExecutor(ENDPOINT),
-				new MutationTypeExecutor(ENDPOINT), new SubscriptionTypeExecutor(ENDPOINT));
+				GraphQLRepositoryPartialRequests.class, new QueryExecutor(ENDPOINT),
+				new MutationExecutor(ENDPOINT), new SubscriptionExecutor(ENDPOINT));
 		queries = (GraphQLRepositoryPartialRequests) Proxy.newProxyInstance(getClass().getClassLoader(),
 				new Class[] { GraphQLRepositoryPartialRequests.class }, invocationHandler);
 	}

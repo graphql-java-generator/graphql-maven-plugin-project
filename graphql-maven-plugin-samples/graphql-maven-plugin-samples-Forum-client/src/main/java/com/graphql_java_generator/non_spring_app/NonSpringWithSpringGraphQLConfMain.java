@@ -10,9 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.minimal_app.MinimalSpringApp;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionExecutor;
 
 /**
  * This class demonstrates how to use the Spring Boot configuration capabilities, with a non spring app. It can be used
@@ -24,7 +24,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Subs
  * @author etienne-sf
  */
 @SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphQLConfiguration.class,
-		QueryTypeExecutor.class })
+		QueryExecutor.class })
 public class NonSpringWithSpringGraphQLConfMain implements CommandLineRunner {
 
 	/**
@@ -36,21 +36,21 @@ public class NonSpringWithSpringGraphQLConfMain implements CommandLineRunner {
 	 * The executor, that allows to execute GraphQL queries. The class name is the one defined in the GraphQL schema.
 	 */
 	@Autowired
-	QueryTypeExecutor queryExecutor;
+	QueryExecutor queryExecutor;
 
 	/**
 	 * The executor, that allows to execute GraphQL mutations. The class name is the one defined in the GraphQL schema.
 	 * It will be null if no mutation has been defined.
 	 */
 	@Autowired(required = false)
-	MutationTypeExecutor mutationExecutor;
+	MutationExecutor mutationExecutor;
 
 	/**
 	 * The executor, that allows to execute GraphQL subscriptions. The class name is the one defined in the GraphQL
 	 * schema. It will be null if no subscription has been defined.
 	 */
 	@Autowired(required = false)
-	SubscriptionTypeExecutor subscriptionExecutor;
+	SubscriptionExecutor subscriptionExecutor;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MinimalSpringApp.class, args);
@@ -68,20 +68,20 @@ public class NonSpringWithSpringGraphQLConfMain implements CommandLineRunner {
 	}
 
 	/**
-	 * Getter for the {@link QueryTypeExecutor} that has been loaded by Spring
+	 * Getter for the {@link QueryExecutor} that has been loaded by Spring
 	 * 
 	 * @return
 	 */
-	public static QueryTypeExecutor getQueryTypeExecutor() {
+	public static QueryExecutor getQueryExecutor() {
 		return nonSpringWithSpringGraphQLConfApp.queryExecutor;
 	}
 
 	/**
-	 * Getter for the {@link SubscriptionTypeExecutor} that has been loaded by Spring
+	 * Getter for the {@link SubscriptionExecutor} that has been loaded by Spring
 	 * 
 	 * @return
 	 */
-	public static SubscriptionTypeExecutor getSubscriptionTypeExecutor() {
+	public static SubscriptionExecutor getSubscriptionExecutor() {
 		return nonSpringWithSpringGraphQLConfApp.subscriptionExecutor;
 	}
 }

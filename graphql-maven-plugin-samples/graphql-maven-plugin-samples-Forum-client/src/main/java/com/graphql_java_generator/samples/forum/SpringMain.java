@@ -14,7 +14,7 @@ import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequestsDeprecated;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.subscription.SubscriptionRequests;
 
 /**
@@ -23,7 +23,7 @@ import com.graphql_java_generator.samples.forum.client.subscription.Subscription
  * @author etienne-sf
  */
 @SpringBootApplication(scanBasePackageClasses = { SpringMain.class, GraphQLConfiguration.class,
-		QueryTypeExecutor.class })
+		QueryExecutor.class })
 public class SpringMain implements CommandLineRunner {
 
 	@Autowired

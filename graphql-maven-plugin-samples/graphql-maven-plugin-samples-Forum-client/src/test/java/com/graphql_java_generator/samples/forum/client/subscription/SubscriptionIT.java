@@ -30,10 +30,10 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.SpringTestConfig;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
 
 /**
@@ -51,10 +51,10 @@ class SubscriptionIT {
 	static protected Logger logger = LoggerFactory.getLogger(SubscriptionIT.class);
 
 	@Autowired
-	SubscriptionTypeExecutor subscriptionType;
+	SubscriptionExecutor subscriptionType;
 
 	@Autowired
-	MutationTypeExecutor mutationType;
+	MutationExecutor mutationType;
 
 	GraphQLRequest subscriptionRequest;
 	GraphQLRequest createPostRequest;

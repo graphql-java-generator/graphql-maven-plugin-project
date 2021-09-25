@@ -24,8 +24,8 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.OAuthTokenExtractor;
-import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.QueryExecutorSpringReactiveImpl;
+import com.graphql_java_generator.client.RequestExecution;
+import com.graphql_java_generator.client.RequestExecutionSpringReactiveImpl;
 
 import reactor.netty.http.client.HttpClient;
 
@@ -132,7 +132,7 @@ public class SpringConfigurationForum {
 	}
 
 	/**
-	 * Creates the {@link QueryExecutor} for this schema.
+	 * Creates the {@link RequestExecution} for this schema.
 	 * 
 	 * @param graphqlEndpointForum
 	 * @param graphqlSubscriptionEndpointForum
@@ -143,13 +143,13 @@ public class SpringConfigurationForum {
 	 * @return
 	 */
 	@Bean
-	public QueryExecutor queryExecutorForum(String graphqlEndpointForum, //
+	public RequestExecution queryExecutorForum(String graphqlEndpointForum, //
 			@Autowired(required = false) String graphqlSubscriptionEndpointForum, //
 			WebClient webClientForum, //
 			@Autowired(required = false) WebSocketClient webSocketClientForum,
 			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionForum,
 			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractorForum) {
-		return new QueryExecutorSpringReactiveImpl(graphqlEndpointForum, graphqlSubscriptionEndpointForum,
+		return new RequestExecutionSpringReactiveImpl(graphqlEndpointForum, graphqlSubscriptionEndpointForum,
 				webClientForum, webSocketClientForum, serverOAuth2AuthorizedClientExchangeFilterFunctionForum,
 				oAuthTokenExtractorForum);
 	}
@@ -161,7 +161,7 @@ public class SpringConfigurationForum {
 	 * @return
 	 */
 	@Bean
-	GraphQLConfiguration graphQLConfigurationForum(QueryExecutor queryExecutorForum) {
+	GraphQLConfiguration graphQLConfigurationForum(RequestExecution queryExecutorForum) {
 		return new GraphQLConfiguration(queryExecutorForum);
 	}
 }

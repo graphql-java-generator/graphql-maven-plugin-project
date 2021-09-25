@@ -130,13 +130,13 @@ class DocumentParser_Forum_Client_Test {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_addAnnotations_Mutation1_client() {
 		// Preparation
-		Type mutation = documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("MutationType"))
-				.findFirst().get();
+		Type mutation = documentParser.getObjectTypes().stream().filter(o -> o.getName().equals("Mutation")).findFirst()
+				.get();
 
 		// Verification
 		assertEquals(""//
-				+ "@GraphQLQuery(name = \"MutationType\", type = RequestType.mutation)\n"
-				+ "@GraphQLObjectType(\"MutationType\")", mutation.getAnnotation());
+				+ "@GraphQLQuery(name = \"Mutation\", type = RequestType.mutation)\n"
+				+ "@GraphQLObjectType(\"Mutation\")", mutation.getAnnotation());
 		int i = 0;
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
@@ -153,8 +153,8 @@ class DocumentParser_Forum_Client_Test {
 
 		// Verification
 		assertEquals("" //
-				+ "@GraphQLQuery(name = \"MutationType\", type = RequestType.mutation)\n"
-				+ "@GraphQLObjectType(\"MutationType\")", mutation.getAnnotation());
+				+ "@GraphQLQuery(name = \"Mutation\", type = RequestType.mutation)\n"
+				+ "@GraphQLObjectType(\"Mutation\")", mutation.getAnnotation());
 		int i = 0;
 		checkFieldAnnotation(mutation.getFields().get(i++), "createBoard", ""//
 				+ "@JsonProperty(\"createBoard\")\n"
@@ -176,7 +176,7 @@ class DocumentParser_Forum_Client_Test {
 		ObjectType query = documentParser.getQueryType();
 
 		// Verification
-		assertEquals("QueryType", query.getName());
+		assertEquals("Query", query.getName());
 		assertEquals(7, query.getFields().size(), "4 + the 2 introspection queries added + __typename");
 
 		int j = 0; // The first query is 0, see ++j below

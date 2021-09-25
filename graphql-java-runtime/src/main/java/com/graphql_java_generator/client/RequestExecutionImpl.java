@@ -38,7 +38,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * @author etienne-sf
  */
 @Deprecated
-public class QueryExecutorImpl implements QueryExecutor {
+public class RequestExecutionImpl implements RequestExecution {
 
 	static {
 		GRAPHQL_QUERY_MARKER.add(GRAPHQL_MARKER);
@@ -47,7 +47,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	}
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(QueryExecutorImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(RequestExecutionImpl.class);
 
 	/** The Jersey {@link Client}, used to execute the request toward the GraphQL server */
 	Client client;
@@ -63,7 +63,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @param graphqlEndpoint
 	 *            the http URI for the GraphQL endpoint
 	 */
-	public QueryExecutorImpl(String graphqlEndpoint) {
+	public RequestExecutionImpl(String graphqlEndpoint) {
 		this(graphqlEndpoint, ClientBuilder.newClient());
 		this.graphqlEndpoint = graphqlEndpoint;
 	}
@@ -83,7 +83,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 * @param sslContext
 	 * @param hostnameVerifier
 	 */
-	public QueryExecutorImpl(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
+	public RequestExecutionImpl(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		if (graphqlEndpoint.startsWith("http:")) {
 			throw new IllegalArgumentException(
 					"This GraphQL endpoint is an http one. Please use the relevant Query/Mutation/Subscription constructor (without the SSLContext and HostnameVerifier parameters)");
@@ -108,7 +108,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
 	@Deprecated
-	public QueryExecutorImpl(String graphqlEndpoint, Client client) {
+	public RequestExecutionImpl(String graphqlEndpoint, Client client) {
 		this.client = client;
 		this.graphqlEndpoint = graphqlEndpoint;
 		this.webTarget = client.target(graphqlEndpoint);
@@ -133,7 +133,7 @@ public class QueryExecutorImpl implements QueryExecutor {
 			JsonResponseWrapper response = invocationBuilder
 					.post(Entity.entity(jsonRequest, MediaType.APPLICATION_JSON), JsonResponseWrapper.class);
 
-			return QueryExecutorSpringReactiveImpl.parseDataFromGraphQLServerResponse(
+			return RequestExecutionSpringReactiveImpl.parseDataFromGraphQLServerResponse(
 					graphQLRequest.getGraphQLObjectMapper(), response, dataResponseType);
 		} catch (IOException e) {
 			throw new GraphQLRequestExecutionException(

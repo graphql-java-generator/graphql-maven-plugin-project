@@ -6,8 +6,7 @@ import java.util.List;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 
 /**
@@ -22,11 +21,11 @@ public class PreparedQueriesWithFieldInputParameters {
 
 	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
 
-	final QueryTypeExecutor queryType;
+	final QueryExecutor queryType;
 	final GraphQLRequest topicAuthorPostAuthorResponse;
 
 	public PreparedQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {
-		queryType = new QueryType(GRAPHQL_ENDPOINT_URL);
+		queryType = new QueryExecutor(GRAPHQL_ENDPOINT_URL);
 		topicAuthorPostAuthorResponse = queryType.getTopicsGraphQLRequest(
 				"{id date author{name email alias id type} nbPosts title content posts(memberId:?memberId, memberName:?memberName, since:?since){id date author{name email alias} title content}}");
 	}

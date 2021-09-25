@@ -26,8 +26,8 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.OAuthTokenExtractor;
-import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.QueryExecutorSpringReactiveImpl;
+import com.graphql_java_generator.client.RequestExecution;
+import com.graphql_java_generator.client.RequestExecutionSpringReactiveImpl;
 
 import reactor.netty.http.client.HttpClient;
 
@@ -109,7 +109,7 @@ public class SpringConfiguration${springBeanSuffix} {
 	}
 
 	/**
-	 * Creates the {@link QueryExecutor} for this schema.
+	 * Creates the {@link RequestExecution} for this schema.
 	 * 
 	 * @param graphqlEndpoint${springBeanSuffix}
 	 * @param graphqlSubscriptionEndpoint${springBeanSuffix}
@@ -120,14 +120,14 @@ public class SpringConfiguration${springBeanSuffix} {
 	 * @return
 	 */
 	@Bean
-	public QueryExecutor queryExecutor${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}, //
+	public RequestExecution requestExecution${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}, //
 			@Autowired(required = false) @Qualifier("graphqlSubscriptionEndpoint${springBeanSuffix}") String graphqlSubscriptionEndpoint${springBeanSuffix}, //
 			@Autowired(required = false) @Qualifier("webClient${springBeanSuffix}") WebClient webClient${springBeanSuffix}, //
 			@Autowired(required = false) @Qualifier("webSocketClient${springBeanSuffix}") WebSocketClient webSocketClient${springBeanSuffix},
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix},
 			@Autowired(required = false) @Qualifier("oAuthTokenExtractor${springBeanSuffix}") OAuthTokenExtractor oAuthTokenExtractor${springBeanSuffix})
 	{
-		return new QueryExecutorSpringReactiveImpl(graphqlEndpoint${springBeanSuffix}, graphqlSubscriptionEndpoint${springBeanSuffix},
+		return new RequestExecutionSpringReactiveImpl(graphqlEndpoint${springBeanSuffix}, graphqlSubscriptionEndpoint${springBeanSuffix},
 				webClient${springBeanSuffix}, webSocketClient${springBeanSuffix}, serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix},
 				oAuthTokenExtractor${springBeanSuffix});
 	}
@@ -139,7 +139,7 @@ public class SpringConfiguration${springBeanSuffix} {
 	 * @return
 	 */
 	@Bean
-	GraphQLConfiguration graphQLConfiguration${springBeanSuffix}(QueryExecutor queryExecutor${springBeanSuffix}) {
-		return new GraphQLConfiguration(queryExecutor${springBeanSuffix});
+	GraphQLConfiguration graphQLConfiguration${springBeanSuffix}(RequestExecution requestExecution${springBeanSuffix}) {
+		return new GraphQLConfiguration(requestExecution${springBeanSuffix});
 	}
 }

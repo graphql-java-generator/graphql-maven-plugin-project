@@ -30,11 +30,11 @@ import com.graphql_java_generator.exception.GraphQLResponseParseException;
 @Execution(ExecutionMode.CONCURRENT)
 class QueryExecutorImpl_Forum_Test {
 
-	QueryExecutorImpl queryExecutorImpl;
+	RequestExecutionImpl queryExecutorImpl;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		queryExecutorImpl = new QueryExecutorImpl("http://localhost:8180/graphql");
+		queryExecutorImpl = new RequestExecutionImpl("http://localhost:8180/graphql");
 	}
 
 	@Test

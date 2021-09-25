@@ -156,30 +156,28 @@ class DocumentParser_Forum_Server_Test {
 		//
 		// dataFetcher, dataFetcherName, owningType, fieldName, returnedTypeName, list, completableFuture, sourceName,
 		// list of input parameters
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "QueryType", "boards", "Board", 1, false,
-				null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "QueryType", "nbBoards", "Int", 0, false,
-				null);
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "QueryType", "topics", "Topic", 1, false, null,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "boards", "Query", "boards", "Board", 1, false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "nbBoards", "Query", "nbBoards", "Int", 0, false, null);
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Query", "topics", "Topic", 1, false, null,
 				"boardName");
-		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "QueryType",
+		DataFetcher dataFetcher = checkDataFetcher(documentParser.dataFetchers.get(i++), "findTopics", "Query",
 				"findTopics", "Topic", 1, false, null, "boardName", "keyword");
 		// Let's check the input parameters for this dataFetcher
 		assertEquals(0, dataFetcher.getField().getInputParameters().get(0).getFieldTypeAST().getListDepth());
 		assertEquals(1, dataFetcher.getField().getInputParameters().get(1).getFieldTypeAST().getListDepth());
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "MutationType", "createBoard", "Board", 0,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createBoard", "Mutation", "createBoard", "Board", 0,
 				false, null, "name", "publiclyAvailable");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "MutationType", "createTopic", "Topic", 0,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createTopic", "Mutation", "createTopic", "Topic", 0,
 				false, null, "topic");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "MutationType", "createPost", "Post", 0,
-				false, null, "post");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "MutationType", "createPosts", "Post", 1,
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPost", "Mutation", "createPost", "Post", 0, false,
+				null, "post");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createPosts", "Mutation", "createPosts", "Post", 1,
 				false, null, "spam");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "createMember", "MutationType", "createMember", "Member",
-				0, false, null, "input");
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "createMember", "Mutation", "createMember", "Member", 0,
+				false, null, "input");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "subscribeToNewPost", "SubscriptionType",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "subscribeToNewPost", "Subscription",
 				"subscribeToNewPost", "Post", 0, false, null, "boardName");
 
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", 1, false, "Board",
@@ -190,14 +188,14 @@ class DocumentParser_Forum_Server_Test {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", 0, true, "Post");
 
 		//
-		// Verification of the data fetchers delegates : QueryType, MutationType and 4 objects
+		// Verification of the data fetchers delegates : Query, Mutation and 4 objects
 		//
 		assertEquals(7, documentParser.dataFetchersDelegates.size(), "data fetchers delegates");
 		i = 0;
 		int j = 0;
 
-		// Delegate for QueryType
-		assertEquals("DataFetchersDelegateQueryType", documentParser.dataFetchersDelegates.get(i).getName(),
+		// Delegate for Query
+		assertEquals("DataFetchersDelegateQuery", documentParser.dataFetchersDelegates.get(i).getName(),
 				"delegate name " + i);
 		assertEquals(4, documentParser.dataFetchersDelegates.get(i).getDataFetchers().size(),
 				"nb DataFetcher for delegate " + i);

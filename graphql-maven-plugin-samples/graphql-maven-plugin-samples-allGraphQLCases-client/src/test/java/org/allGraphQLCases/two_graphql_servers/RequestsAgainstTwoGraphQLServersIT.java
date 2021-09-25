@@ -21,7 +21,7 @@ import org.forum.client.Member;
 import org.forum.client.MemberType;
 import org.forum.client.Post;
 import org.forum.client.Topic;
-import org.forum.client.util.QueryTypeExecutorForum;
+import org.forum.client.util.QueryExecutorForum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -51,7 +51,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	GraphQLRepoAllGraphQLCases graphQLRepoAllGraphQLCases;
 
 	@Autowired
-	QueryTypeExecutorForum queryTypeForum;
+	QueryExecutorForum queryTypeForum;
 	@Autowired
 	GraphQLRepoForum graphQLRepoForum;
 

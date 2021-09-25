@@ -12,10 +12,10 @@ import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
 
@@ -28,10 +28,10 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 public class PartialDirectRequests implements Queries {
 
 	@Autowired
-	QueryTypeExecutor queryType;
+	QueryExecutor queryType;
 
 	@Autowired
-	MutationTypeExecutor mutationType;
+	MutationExecutor mutationType;
 
 	/** The constructor used, when this class is loaded as a Spring bean (useless if there is no other constructor) */
 	@Autowired
@@ -46,8 +46,8 @@ public class PartialDirectRequests implements Queries {
 	 *            The url for the GraphQL endpoint
 	 */
 	public PartialDirectRequests(String url) {
-		queryType = new QueryTypeExecutor(url);
-		mutationType = new MutationTypeExecutor(url);
+		queryType = new QueryExecutor(url);
+		mutationType = new MutationExecutor(url);
 	}
 
 	@Override

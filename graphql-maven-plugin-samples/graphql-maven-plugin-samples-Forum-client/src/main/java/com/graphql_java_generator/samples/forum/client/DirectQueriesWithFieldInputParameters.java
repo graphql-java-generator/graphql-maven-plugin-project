@@ -7,8 +7,7 @@ import java.util.UUID;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 
 /**
@@ -21,13 +20,13 @@ public class DirectQueriesWithFieldInputParameters {
 
 	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
 
-	QueryTypeExecutor queryType;
+	QueryExecutor query;
 
 	final String DATE_FORMAT = "yyyy-MM-dd";
 	final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
 	public DirectQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {
-		queryType = new QueryType(GRAPHQL_ENDPOINT_URL);
+		query = new QueryExecutor(GRAPHQL_ENDPOINT_URL);
 	}
 
 	public List<Topic> topics_since(String boardName, Date since)
@@ -36,7 +35,7 @@ public class DirectQueriesWithFieldInputParameters {
 		// We need to format each parameter, in each method that uses it.
 		String formatedDate = dateFormat.format(since);
 
-		return queryType.topics("{id date author{name email alias id type} nbPosts title content posts(since:\""
+		return query.topics("{id date author{name email alias id type} nbPosts title content posts(since:\""
 				+ formatedDate + "\"){id date author{name email alias} title content}}", boardName);
 	}
 
@@ -47,7 +46,7 @@ public class DirectQueriesWithFieldInputParameters {
 		String formatedDate = dateFormat.format(since);
 
 		//
-		return queryType.topics("{id date author{name email alias id type} nbPosts title content posts(since:\""
+		return query.topics("{id date author{name email alias id type} nbPosts title content posts(since:\""
 				+ formatedDate + "\", memberName:\"" + memberId.toString()
 				+ "\"){id date author{name email alias} title content}}", boardName);
 	}

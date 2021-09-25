@@ -5,7 +5,7 @@ package org.forum.server.specific_code;
 
 import javax.annotation.Resource;
 
-import org.forum.server.graphql.DataFetchersDelegateSubscriptionType;
+import org.forum.server.graphql.DataFetchersDelegateSubscription;
 import org.forum.server.graphql.Post;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -19,10 +19,10 @@ import io.reactivex.subjects.Subject;
  * @author etienne-sf
  */
 @Component
-public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDelegateSubscriptionType {
+public class DataFetchersDelegateSubscriptionImpl implements DataFetchersDelegateSubscription {
 
 	/** The logger for this instance */
-	static Logger logger = LoggerFactory.getLogger(DataFetchersDelegateSubscriptionTypeImpl.class);
+	static Logger logger = LoggerFactory.getLogger(DataFetchersDelegateSubscriptionImpl.class);
 
 	/**
 	 * This {@link Subject} will be notified for each Post creation. This is the basis for the <I>subscribeToNewPost</I>

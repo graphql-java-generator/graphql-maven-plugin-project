@@ -25,17 +25,17 @@ import reactor.netty.http.client.HttpClient;
 public class GraphQLConfiguration {
 
 	/**
-	 * The {@link QueryExecutor} is responsible for the execution of the GraphQLRequest, and for parsing the server
+	 * The {@link RequestExecution} is responsible for the execution of the GraphQLRequest, and for parsing the server
 	 * response.<BR/>
 	 * When the application is executed as a Spring app, then this field is field by the IoC Spring container.<BR/>
 	 * Otherwise, the default constructor should not be used. The other constructor will then build the relevant
-	 * instance of {@link QueryExecutor}.
+	 * instance of {@link RequestExecution}.
 	 */
-	final QueryExecutor executor;
+	final RequestExecution requestExecutor;
 
 	/** The default constructor, that is used by Spring. */
-	public GraphQLConfiguration(QueryExecutor executor) {
-		this.executor = executor;
+	public GraphQLConfiguration(RequestExecution requestExecutor) {
+		this.requestExecutor = requestExecutor;
 	}
 
 	/**
@@ -47,7 +47,7 @@ public class GraphQLConfiguration {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public GraphQLConfiguration(String graphqlEndpoint) {
-		this.executor = new QueryExecutorSpringReactiveImpl(graphqlEndpoint, null, getWebClient(graphqlEndpoint, null),
+		this.requestExecutor = new RequestExecutionSpringReactiveImpl(graphqlEndpoint, null, getWebClient(graphqlEndpoint, null),
 				getWebSocketClient(null), null, null);
 	}
 
@@ -117,7 +117,7 @@ public class GraphQLConfiguration {
 	 */
 	@Deprecated
 	public GraphQLConfiguration(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.executor = new QueryExecutorImpl(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.requestExecutor = new RequestExecutionImpl(graphqlEndpoint, sslContext, hostnameVerifier);
 	}
 
 	/**
@@ -135,12 +135,12 @@ public class GraphQLConfiguration {
 	 */
 	@Deprecated
 	public GraphQLConfiguration(String graphqlEndpoint, Client client) {
-		this.executor = new QueryExecutorImpl(graphqlEndpoint, client);
+		this.requestExecutor = new RequestExecutionImpl(graphqlEndpoint, client);
 	}
 
-	/** Retrieves the {@link QueryExecutor} for this GraphQL configuration */
-	public QueryExecutor getQueryExecutor() {
-		return executor;
+	/** Retrieves the {@link RequestExecution} for this GraphQL configuration */
+	public RequestExecution getQueryExecutor() {
+		return requestExecutor;
 	}
 
 }

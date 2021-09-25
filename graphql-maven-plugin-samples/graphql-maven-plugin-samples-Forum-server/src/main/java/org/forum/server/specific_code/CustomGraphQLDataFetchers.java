@@ -24,7 +24,7 @@ import graphql.schema.DataFetcher;
 public class CustomGraphQLDataFetchers extends org.forum.server.graphql.GraphQLDataFetchers {
 
 	@Override
-	public DataFetcher<Board> dataFetchersDelegateMutationTypeCreateBoard() {
+	public DataFetcher<Board> dataFetchersDelegateMutationCreateBoard() {
 		return dataFetchingEnvironment -> {
 			String name = (String) graphqlUtils.getArgument(dataFetchingEnvironment.getArgument("name"),
 					"${argument.type.graphQLTypeSimpleName}", "java.lang.Long", String.class);
@@ -36,7 +36,7 @@ public class CustomGraphQLDataFetchers extends org.forum.server.graphql.GraphQLD
 			try {
 				// HERE IS WHAT's CHANGED IN THIS OVERRIDDEN VERSION:
 				// We add " (Overridden DataFetcher)" to the name
-				ret = dataFetchersDelegateMutationType.createBoard(dataFetchingEnvironment,
+				ret = dataFetchersDelegateMutation.createBoard(dataFetchingEnvironment,
 						name + " (Overriden DataFetcher)", publiclyAvailable);
 			} catch (NoSuchElementException e) {
 				// There was no items in the Optional

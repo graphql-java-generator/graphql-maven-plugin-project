@@ -16,7 +16,7 @@ public class OldMain {
 						+ date + "'");
 
 		// In the below line, NonSpringWithSpringGraphQLConfApp static getter is used to retrieve the QueryExecutor
-		System.out.println(NonSpringWithSpringGraphQLConfMain.getQueryTypeExecutor()
+		System.out.println(NonSpringWithSpringGraphQLConfMain.getQueryExecutor()
 				.boards("{id name publiclyAvailable topics(since: &param){id}}", "param", date));
 
 		System.out.println("Normal end of the application");

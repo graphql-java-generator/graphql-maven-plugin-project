@@ -16,7 +16,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Query;
 
 /**
  * This class is both samples and integration tests for Full GraphQL request, that contains GraphQL fragments.
@@ -50,7 +50,7 @@ public class FullRequestIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
 
 		// Go, go, go
-		QueryType resp = boardsRequest.execQuery();
+		Query resp = boardsRequest.execQuery();
 
 		// Verifications
 		// The extensions field contains a Human instance, for the key "aValueToTestTheExtensionsField".

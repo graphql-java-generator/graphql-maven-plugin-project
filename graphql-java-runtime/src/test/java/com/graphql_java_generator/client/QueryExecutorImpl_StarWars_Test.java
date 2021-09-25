@@ -42,13 +42,13 @@ import com.graphql_java_generator.exception.GraphQLResponseParseException;
 @Execution(ExecutionMode.CONCURRENT)
 class QueryExecutorImpl_StarWars_Test {
 
-	QueryExecutorImpl queryExecutorImpl;
+	RequestExecutionImpl queryExecutorImpl;
 	QueryType queryType;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		queryType = new QueryType("http://localhost:8180/graphql");
-		queryExecutorImpl = new QueryExecutorImpl("http://localhost:8180/graphql");
+		queryExecutorImpl = new RequestExecutionImpl("http://localhost:8180/graphql");
 	}
 
 	@Disabled

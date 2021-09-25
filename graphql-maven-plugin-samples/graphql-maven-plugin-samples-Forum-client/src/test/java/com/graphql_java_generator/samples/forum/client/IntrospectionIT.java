@@ -20,7 +20,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.SpringTestConfig;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.__Schema;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.__Type;
 
@@ -37,7 +37,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.__Ty
 public class IntrospectionIT {
 
 	@Autowired
-	QueryTypeExecutor myQuery;
+	QueryExecutor myQuery;
 
 	@Test
 	void testSchema() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {

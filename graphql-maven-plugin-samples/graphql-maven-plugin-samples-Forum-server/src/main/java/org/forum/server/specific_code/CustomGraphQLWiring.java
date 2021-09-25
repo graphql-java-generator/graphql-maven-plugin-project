@@ -17,9 +17,9 @@ import graphql.schema.idl.TypeRuntimeWiring;
 public class CustomGraphQLWiring extends GraphQLWiring {
 
 	@Override
-	protected TypeRuntimeWiring.Builder addWiringForSubscriptionType(TypeRuntimeWiring.Builder typeWiring) {
+	protected TypeRuntimeWiring.Builder addWiringForSubscription(TypeRuntimeWiring.Builder typeWiring) {
 		typeWiring.dataFetcher("subscribeToNewPost",
-				graphQLDataFetchers.dataFetchersDelegateSubscriptionTypeSubscribeToNewPost());
+				graphQLDataFetchers.dataFetchersDelegateSubscriptionSubscribeToNewPost());
 		return typeWiring;
 	}
 

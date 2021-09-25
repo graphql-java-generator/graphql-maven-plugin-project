@@ -17,7 +17,7 @@ import com.graphql_java_generator.annotation.GraphQLIgnore;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
-import com.graphql_java_generator.client.QueryExecutorSpringReactiveImpl;
+import com.graphql_java_generator.client.RequestExecutionSpringReactiveImpl;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
@@ -126,7 +126,7 @@ public class InputParameter {
 	 *            Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false
 	 *            otherwise
 	 * @return The newly created {@link InputParameter}, according to these parameters
-	 * @see QueryExecutorSpringReactiveImpl#execute(String, ObjectResponse, List, Class)
+	 * @see RequestExecutionSpringReactiveImpl#execute(String, ObjectResponse, List, Class)
 	 */
 	public static InputParameter newBindParameter(String name, String bindParameterName, InputParameterType type,
 			String graphQLTypeName, boolean mandatory, int listDepth, boolean itemMandatory) {

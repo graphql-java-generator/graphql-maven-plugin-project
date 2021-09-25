@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.GraphQLRequestObject;
-import com.graphql_java_generator.client.QueryExecutor;
+import com.graphql_java_generator.client.RequestExecution;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
@@ -25,7 +25,7 @@ import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
- * {@link QueryExecutor} implementation using Spring {@link RestTemplate} as the http client Property grapql.endpoint in
+ * {@link RequestExecution} implementation using Spring {@link RestTemplate} as the http client Property grapql.endpoint in
  * required in application configuraion
  * 
  * @author ggomez
@@ -34,7 +34,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 @Component
 @Qualifier("RestTemplateQueryExecutor")
 @Primary
-public class RestTemplateQueryExecutor implements QueryExecutor {
+public class RestTemplateQueryExecutor implements RequestExecution {
 	/**
 	 * Logger for this class
 	 */

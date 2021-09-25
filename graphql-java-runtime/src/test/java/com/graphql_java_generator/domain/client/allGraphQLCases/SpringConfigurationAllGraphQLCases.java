@@ -24,8 +24,8 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.OAuthTokenExtractor;
-import com.graphql_java_generator.client.QueryExecutor;
-import com.graphql_java_generator.client.QueryExecutorSpringReactiveImpl;
+import com.graphql_java_generator.client.RequestExecution;
+import com.graphql_java_generator.client.RequestExecutionSpringReactiveImpl;
 
 import reactor.netty.http.client.HttpClient;
 
@@ -132,19 +132,19 @@ public class SpringConfigurationAllGraphQLCases {
 	}
 
 	@Bean
-	public QueryExecutor queryExecutorAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
+	public RequestExecution queryExecutorAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
 			@Autowired(required = false) String graphqlSubscriptionEndpointAllGraphQLCases, //
 			WebClient webClientAllGraphQLCases, //
 			@Autowired(required = false) WebSocketClient webSocketClientAllGraphQLCases,
 			@Autowired(required = false) ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases,
 			@Autowired(required = false) OAuthTokenExtractor oAuthTokenExtractorAllGraphQLCases) {
-		return new QueryExecutorSpringReactiveImpl(graphqlEndpointAllGraphQLCases,
+		return new RequestExecutionSpringReactiveImpl(graphqlEndpointAllGraphQLCases,
 				graphqlSubscriptionEndpointAllGraphQLCases, webClientAllGraphQLCases, webSocketClientAllGraphQLCases,
 				serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases, oAuthTokenExtractorAllGraphQLCases);
 	}
 
 	@Bean
-	GraphQLConfiguration graphQLConfigurationAllGraphQLCases(QueryExecutor queryExecutorAllGraphQLCases) {
+	GraphQLConfiguration graphQLConfigurationAllGraphQLCases(RequestExecution queryExecutorAllGraphQLCases) {
 		return new GraphQLConfiguration(queryExecutorAllGraphQLCases);
 	}
 }

@@ -16,10 +16,10 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Boar
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
 
@@ -40,9 +40,9 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 public class PartialPreparedRequests implements Queries {
 
 	@Autowired
-	QueryTypeExecutor queryTypeExecutor;
+	QueryExecutor queryTypeExecutor;
 	@Autowired
-	MutationTypeExecutor mutationTypeExecutor;
+	MutationExecutor mutationTypeExecutor;
 
 	// Below are the GraphQLRequest, that are created at initialization time. They contain the prepared requests
 	GraphQLRequest boardsSimpleRequest;

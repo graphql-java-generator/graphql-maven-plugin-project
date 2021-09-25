@@ -30,13 +30,13 @@ import com.graphql_java_generator.exception.GraphQLResponseParseException;
 @Execution(ExecutionMode.CONCURRENT)
 class QueryExecutorImpl_allGraphqlCases_Test {
 
-	QueryExecutorImpl queryExecutorImpl;
+	RequestExecutionImpl queryExecutorImpl;
 	MyQueryType myQueryType;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		myQueryType = new MyQueryType("http://localhost");
-		queryExecutorImpl = new QueryExecutorImpl("http://localhost:8180/graphql");
+		queryExecutorImpl = new RequestExecutionImpl("http://localhost:8180/graphql");
 
 		// For these test, we need to have directive that are properly registered
 		DirectiveRegistryInitializer.initDirectiveRegistry();

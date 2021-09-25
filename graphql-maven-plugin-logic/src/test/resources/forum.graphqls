@@ -1,19 +1,13 @@
 scalar Date
 
-schema {
-    query: QueryType
-    mutation: MutationType
-    subscription: SubscriptionType
-}
-
-type QueryType {
+type Query {
     boards: [Board]
     nbBoards: Int
     topics(boardName: String!): [Topic]!
     findTopics(boardName: String!, keyword: [String!]): [Topic]
 }
 
-type MutationType {
+type Mutation {
 	createBoard(name: String!, publiclyAvailable: Boolean): Board!
 	createTopic(topic: TopicInput): Topic!
 	createPost(post: PostInput!): Post!
@@ -21,7 +15,7 @@ type MutationType {
 	createMember(input: MemberInput!): Member
 }
 
-type SubscriptionType {
+type Subscription {
 	subscribeToNewPost(boardName: String!): Post!
 }
 

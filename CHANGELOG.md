@@ -8,6 +8,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# 1.17.3
+
+Client mode:
+* Corrected issue #98: Spring Bean name collision with the QueryExecutor (which is an internal Bean from the plugin). This is a regression of the previous 1.17x versions.
+
+Internal:
+* The `QueryExecutor` interface (and its implementations) has been renamed into `RequestExecution`, to avoid name collision with the QueryExecutor Spring Bean, coming from the GraphQL schema.
+
+
 # 1.17.2 
 
 Client mode:

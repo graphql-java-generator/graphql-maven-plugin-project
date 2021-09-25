@@ -12,10 +12,10 @@ import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MemberInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Mutation;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryType;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Query;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topic;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicInput;
 
@@ -37,8 +37,8 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 
 	final static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
 
-	QueryType queryType = new QueryType(GRAPHQL_ENDPOINT_URL);
-	MutationType mutationType = new MutationType(GRAPHQL_ENDPOINT_URL);
+	Query queryType = new Query(GRAPHQL_ENDPOINT_URL);
+	Mutation mutationType = new Mutation(GRAPHQL_ENDPOINT_URL);
 
 	// Below are the ObjectResponses, that are created at initialization time.
 	ObjectResponse boardsSimpleResponse;

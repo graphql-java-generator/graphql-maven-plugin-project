@@ -12,19 +12,19 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Member;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.PostInput;
-import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionTypeExecutor;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.SubscriptionExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
 
 @Component
 public class SubscriptionRequests {
 
 	@Autowired
-	MutationTypeExecutor mutationTypeExecutor;
+	MutationExecutor mutationTypeExecutor;
 	@Autowired
-	SubscriptionTypeExecutor subscriptionTypeExecutor;
+	SubscriptionExecutor subscriptionTypeExecutor;
 
 	/** The constructor used, when this class is loaded as a Spring bean (useless if there is no other constructor) */
 	@Autowired
@@ -41,8 +41,8 @@ public class SubscriptionRequests {
 	 *            The url for the GraphQL subscription endpoint (may be different, when the server is under java)
 	 */
 	public SubscriptionRequests(String url) {
-		mutationTypeExecutor = new MutationTypeExecutor(url);
-		subscriptionTypeExecutor = new SubscriptionTypeExecutor(url);
+		mutationTypeExecutor = new MutationExecutor(url);
+		subscriptionTypeExecutor = new SubscriptionExecutor(url);
 	}
 
 	public void execSubscription()
