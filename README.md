@@ -83,7 +83,7 @@ For the client mode, you'll find there a description on how to:
 
 * Start with a [non Spring app](https://graphql-maven-plugin-project.graphql-java-generator.com/client_non_spring.html)
 
-* [Execute GraphQL requests](https://graphql-maven-plugin-project.graphql-java-generator.com/exec_graphql_requests.html) with the help of this plugin
+* [Execute GraphQL requests](https://graphql-maven-plugin-project.graphql-java-generator.com/client_exec_graphql_requests.html) with the help of this plugin
 
 * [Customize the templates](https://graphql-maven-plugin-project.graphql-java-generator.com/customtemplates.html) to change the generated code, according to your needs.
 
