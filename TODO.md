@@ -6,7 +6,8 @@ Here are the next tasks listed, as a TODO list:
 * add a _HowTo compile page_ on the wiki (to build the plugin project, Java 9 or latter is needed, even if the built plugin is compatible with Java 8)
 * The default name is Xxx, not XxxxType (Query versus QueryType)
 * The 'graphql-java-runtime.properties' exists two times, once for each schema (in generatedResources). So there is an issue when copying files
-Sol1: generate in build/resources/main
+    * Sol1: generate in build/resources/main
+    * Sol2: Give a try to Gradle 8.0
 - But then, a `clean` may not re-generate the resource?
 - What impact on maven
 - A `clean` in eclipse removes the file

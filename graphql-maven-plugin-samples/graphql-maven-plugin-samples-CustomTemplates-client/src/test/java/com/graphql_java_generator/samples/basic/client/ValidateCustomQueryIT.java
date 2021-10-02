@@ -15,9 +15,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.Board;
-import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.QueryType;
-import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.QueryTypeExecutor;
-import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.SubscriptionTypeExecutor;
+import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.Query;
+import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.QueryExecutor;
+import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client.SubscriptionExecutor;
 
 @SpringBootTest()
 @ExtendWith(SpringExtension.class)
@@ -25,10 +25,10 @@ import com.graphql_java_generator.samples.customtemplates.client.graphql.forum.c
 class ValidateCustomQueryIT {
 
 	@Autowired
-	QueryTypeExecutor query;
+	QueryExecutor query;
 
 	@Autowired
-	SubscriptionTypeExecutor subscription;
+	SubscriptionExecutor subscription;
 
 	@Test
 	void test_customTemplateInTheProject() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
@@ -40,7 +40,7 @@ class ValidateCustomQueryIT {
 	void test_customTemplateInAnExternalJar()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Let's check that our QueryType is generated from the custom template
-		assertTrue(new QueryType().thisIsADummyFieldToCheckThatThisTemplateIsUsed);
+		assertTrue(new Query().thisIsADummyFieldToCheckThatThisTemplateIsUsed);
 
 		// And that it still works! :)
 		List<Board> response = query.boards("{id name}");
