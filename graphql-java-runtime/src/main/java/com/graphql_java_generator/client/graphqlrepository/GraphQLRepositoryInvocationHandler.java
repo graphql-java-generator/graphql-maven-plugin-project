@@ -169,6 +169,13 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 
 		// Does the GraphQLRepository annotation define a queryExecutor ?
 		GraphQLRepository graphQLRepoAnnotation = repositoryInterface.getAnnotation(GraphQLRepository.class);
+
+		if (graphQLRepoAnnotation == null) {
+			throw new GraphQLRequestPreparationException("The '" + repositoryInterface.getName()
+					+ "' class has been passed to the GraphQLRepositoryInvocationHandler constructor as a GraphQLRepository. It should be annotated by the '"
+					+ GraphQLRepository.class.getName() + "' annotation");
+		}
+
 		Package executorPackage = (graphQLRepoAnnotation.queryExecutor() == GraphQLQueryExecutor.class) ?
 		// No value has been provided for the queryExecutor annotation field. There should be only one GraphQL
 		// schema generated code (that is: it's the standard case)

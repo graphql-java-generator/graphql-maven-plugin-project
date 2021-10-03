@@ -5,7 +5,7 @@ import com.graphql_java_generator.domain.client.starwars.QueryTypeExecutor;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
- * This interface contains the test cases for the {@link GraphQLRepositoryInvocationHandlerTest} test class
+ * This interface contains the test cases for the {@link GraphQLRepositoryInvocationHandler} tests
  * 
  * @author etienne-sf
  */
