@@ -2,7 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Double the GraphQLRepositoryInvocationHandlerTest test: one for each of its constructors
+* Properly implement the graphql-transport-ws protocol, [specified by the graphql-ws library](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
 * add a _HowTo compile page_ on the wiki (to build the plugin project, Java 9 or latter is needed, even if the built plugin is compatible with Java 8)
 * The default name is Xxx, not XxxxType (Query versus QueryType)
 * The 'graphql-java-runtime.properties' exists two times, once for each schema (in generatedResources). So there is an issue when copying files
