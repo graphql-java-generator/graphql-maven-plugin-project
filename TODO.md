@@ -3,6 +3,12 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * Properly implement the graphql-transport-ws protocol, [specified by the graphql-ws library](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
+    * Add the Ping/Pong messages
+    * Restore the forum client pom (with runtime code copy and client dependencies)
+    * HowTo close the websocket, when the last subscription is unsubscribed. Issues :
+        * Be sure that no subscription is starting at the same time (probability is low, but...)
+        * update the RequestExecutionSpringReactiveImpl.webSocketHandler ?  Or mark the webSocketHandler as completed ?
+        * A way could be that the webSocketHandler marks itself as completed (in a synchronized method), and closes the session, so that RequestExecutionSpringReactiveImpl knows that it needs to open a new one.
 * add a _HowTo compile page_ on the wiki (to build the plugin project, Java 9 or latter is needed, even if the built plugin is compatible with Java 8)
 * The default name is Xxx, not XxxxType (Query versus QueryType)
 * The 'graphql-java-runtime.properties' exists two times, once for each schema (in generatedResources). So there is an issue when copying files

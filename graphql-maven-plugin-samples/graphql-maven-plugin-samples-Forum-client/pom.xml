@@ -22,6 +22,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<copyRuntimeSources>false</copyRuntimeSources>
 					<mode>client</mode>
 					<packageName>com.graphql_java_generator.samples.forum.client.graphql.forum.client</packageName>
 					<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
@@ -114,8 +115,9 @@
 		<!-- Dependencies for GraphQL -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client-dependencies</artifactId>
-			<type>pom</type>
+			<!--  artifactId>graphql-java-client-dependencies</artifactId>
+			<type>pom</type-->
+			<artifactId>graphql-java-runtime</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>

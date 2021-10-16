@@ -75,7 +75,7 @@ public class PostPublisher {
 	 * @param post
 	 */
 	void onNext(Post post) {
-		logger.trace("Emitting suscription notification for {}", post);
+		logger.trace("Emitting subscription notification for {}", post);
 		subject.onNext(post);
 	}
 
@@ -85,7 +85,7 @@ public class PostPublisher {
 	 * @return
 	 */
 	Publisher<Post> getPublisher(String boardName) {
-		logger.debug("Executing Suscription for {}", boardName);
+		logger.debug("Executing Subscription for {}", boardName);
 
 		Flowable<Post> publisher = subject.toFlowable(BackpressureStrategy.BUFFER);
 

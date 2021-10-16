@@ -2,6 +2,7 @@ package org.allGraphQLCases.subscription;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -126,5 +127,14 @@ public class ExecSubscriptionIT {
 
 		assertEquals(date1, client1.callback.lastReceivedMessage, "The client 1 should have received a message");
 		assertEquals(date2, client2.callback.lastReceivedMessage, "The client 2 should have received a message");
+	}
+
+	/**
+	 * Tests that an error in the subscription is properly sent back to the client
+	 */
+	@Execution(ExecutionMode.CONCURRENT)
+	@Test
+	public void test_subscribeToADate_error() {
+		fail("not yet implemented");
 	}
 }

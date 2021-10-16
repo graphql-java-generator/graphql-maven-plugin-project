@@ -3,7 +3,6 @@
  */
 package com.graphql_java_generator.client;
 
-import org.springframework.web.reactive.socket.CloseStatus;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -18,47 +17,33 @@ import reactor.core.publisher.Flux;
  */
 public class SubscriptionClientReactiveImpl implements SubscriptionClient {
 
-	/**
-	 * The {@link Disposable} That allows to close the underlying {@link Flux}, that receive the subscription
-	 * notifications
-	 */
-	Disposable disposable;
-
 	/** The connected {@link WebSocketSession} */
-	WebSocketSession session;
+	final GraphQLReactiveWebSocketHandler session;
+
+	/** The unique id the identify each operation, as specified by the graphql-transport-ws protocol */
+	final String uniqueIdOperation;
 
 	/**
 	 * 
 	 * @param disposable
 	 *            The {@link Disposable} That allows to close the underlying {@link Flux}, that receive the subscription
 	 *            notifications
-	 * @param session
+	 * @param webSocketHandler
 	 *            The connected {@link WebSocketSession}
 	 */
-	public SubscriptionClientReactiveImpl(Disposable disposable, WebSocketSession session) {
-		this.disposable = disposable;
-		this.session = session;
+	public SubscriptionClientReactiveImpl(String uniqueIdOperation, GraphQLReactiveWebSocketHandler webSocketHandler) {
+		this.uniqueIdOperation = uniqueIdOperation;
+		this.session = webSocketHandler;
 	}
 
 	@Override
 	public void unsubscribe() throws GraphQLRequestExecutionException {
-		try {
-			if (session != null) {
-				session.close(CloseStatus.NORMAL);
-				session = null;
-			}
-			if (disposable != null) {
-				disposable.dispose();
-				disposable = null;
-			}
-		} catch (Exception e) {
-			throw new GraphQLRequestExecutionException(e.getMessage(), e);
-		}
+		session.unsubscribe(uniqueIdOperation);
 	}
 
 	@Override
 	public WebSocketSession getSession() {
-		return session;
+		return session.getSession();
 	}
 
 }

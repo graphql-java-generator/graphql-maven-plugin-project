@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,9 +24,7 @@ import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 /**
  * This is the default implementation for the {@link RequestExecution} This implementation has been added in version
@@ -82,6 +81,12 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
 	 */
 	WebSocketClient webSocketClient;
+
+	/**
+	 * The {@link WebSocketHandler} that manages the socket. It is null when no socket has been connected yet by this
+	 * client against this server.
+	 */
+	GraphQLReactiveWebSocketHandler webSocketHandler = null;
 
 	/**
 	 * This constructor may be called by Spring, once it has build a {@link WebClient} bean, or directly, in non Spring
@@ -179,6 +184,9 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
 			throws GraphQLRequestExecutionException {
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 1: check that the parameters are valid
+
 		// This method accepts only subscription at a time (no query and no mutation)
 		if (!graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions");
@@ -191,35 +199,44 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 							+ " subscriptions in this GraphQLRequest");
 		}
 
+		String request = graphQLRequest.buildRequest(parameters);
 		String subscriptionName = graphQLRequest.getSubscription().getFields().get(0).getName();
 
-		// Is there an OAuth authentication to handle?
-		HttpHeaders headers = new HttpHeaders();
-		if (serverOAuth2AuthorizedClientExchangeFilterFunction != null && oAuthTokenExtractor != null) {
-			String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
-			logger.debug("Got this OAuth token (authorization header value): {}", authorizationHeaderValue);
-			headers.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
-		} else {
-			logger.debug(
-					"No serverOAuth2AuthorizedClientExchangeFilterFunction or no oAuthTokenExtractor where provided. No OAuth token is provided.");
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 2: Open a Web Socket if we don't have an already opened one
+		synchronized (this) {
+			if (webSocketHandler == null) {
+				// Is there an OAuth authentication to handle?
+				HttpHeaders headers = new HttpHeaders();
+				if (serverOAuth2AuthorizedClientExchangeFilterFunction != null && oAuthTokenExtractor != null) {
+					String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
+					logger.debug("Got this OAuth token (authorization header value): {}", authorizationHeaderValue);
+					headers.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
+				} else {
+					logger.debug(
+							"No serverOAuth2AuthorizedClientExchangeFilterFunction or no oAuthTokenExtractor where provided. No OAuth token is provided.");
+				}
+
+				logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName,
+						request);
+
+				// Let's create and start the Web Socket
+				webSocketHandler = new GraphQLReactiveWebSocketHandler(graphQLRequest.getGraphQLObjectMapper());
+				webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler)
+						// Let's have a dedicated thread
+						// .subscribeOn(Schedulers.single())
+						.subscribe();
+			}
 		}
 
-		String request = graphQLRequest.buildRequest(parameters);
-		logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 3: start the asked subscription
+		String uniqueIdOperation = webSocketHandler.executeSubscription(request, subscriptionName, subscriptionCallback,
+				subscriptionType, messageType);
 
-		// Let's create and start the Web Socket
-		GraphQLReactiveWebSocketHandler<R, T> webSocketHandler = new GraphQLReactiveWebSocketHandler<>(request,
-				subscriptionName, subscriptionCallback, subscriptionType, messageType,
-				graphQLRequest.getGraphQLObjectMapper());
-		logger.trace(GRAPHQL_MARKER, "Before execution of GraphQL subscription '{}' with request {}", subscriptionName,
-				request);
-		Disposable disposable = webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler)
-				.subscribeOn(Schedulers.single())// Let's have a dedicated thread
-				.subscribe();
-		logger.trace(GRAPHQL_MARKER, "After execution of GraphQL subscription '{}' with request {}", subscriptionName,
-				request);
-
-		return new SubscriptionClientReactiveImpl(disposable, webSocketHandler.getSession());
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 3: return the SubscriptionClient
+		return new SubscriptionClientReactiveImpl(uniqueIdOperation, webSocketHandler);
 	}
 
 	/**

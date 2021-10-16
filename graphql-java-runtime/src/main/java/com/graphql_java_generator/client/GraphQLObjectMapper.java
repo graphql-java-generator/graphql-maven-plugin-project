@@ -233,9 +233,14 @@ public class GraphQLObjectMapper {
 	////////////////// Below are the method that comes from the Jackson ObjectMapper
 	////////////////////////////////////////////////////////////////////////////////////////////
 
-	/** @See {@link ObjectMapper#convertValue(Object, Class)} */
+	/** @See {@link ObjectMapper#convertValue(Object, TypeReference)} */
 	public Map<String, JsonNode> convertValue(JsonNode extensions, TypeReference<Map<String, JsonNode>> typeReference) {
 		return objectMapper.convertValue(extensions, typeReference);
+	}
+
+	/** @See {@link ObjectMapper#convertValue(Object, Class)} */
+	public <T> T convertValue(Object o, Class<T> clazz) {
+		return objectMapper.convertValue(o, clazz);
 	}
 
 	/** @See {@link ObjectMapper#readValue(String, Class)} */
@@ -249,7 +254,7 @@ public class GraphQLObjectMapper {
 	}
 
 	/** @See {@link ObjectMapper#writeValueAsString(Object)} */
-	public Object writeValueAsString(Object o) throws JsonProcessingException {
+	public String writeValueAsString(Object o) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(o);
 	}
 }
