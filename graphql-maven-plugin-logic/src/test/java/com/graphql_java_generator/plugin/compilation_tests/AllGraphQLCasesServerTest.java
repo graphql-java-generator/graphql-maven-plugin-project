@@ -19,6 +19,6 @@ class AllGraphQLCasesServerTest extends AbstractIntegrationTest {
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(53, nbGeneratedClasses);
+		assertEquals(52, nbGeneratedClasses);
 	}
 }

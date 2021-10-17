@@ -27,7 +27,7 @@ mutation createPost {createPost(post: {topicId:"1", input: {title:"a title" ,con
 
 </PRE>
  */
-package org.forum.server.webocket;
+package com.graphql_java_generator.server.util;
 
 import static java.util.Collections.singletonList;
 

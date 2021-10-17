@@ -2,6 +2,8 @@ package org.allGraphQLCases.subscription.graphqlrepository;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.concurrent.TimeUnit;
+
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.subscription.SubscriptionCallbackListIntegerForTest;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ public class FullRequestSubscriptionIT {
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	void test_SubscribeToAList() throws GraphQLRequestExecutionException {
+	void test_SubscribeToAList() throws GraphQLRequestExecutionException, InterruptedException {
 		// Preparation
 		SubscriptionCallbackListIntegerForTest callback = new SubscriptionCallbackListIntegerForTest(
 				"FullRequestSubscriptionIT.test_SubscribeToAList");
@@ -34,22 +36,8 @@ public class FullRequestSubscriptionIT {
 		SubscriptionClient sub = graphQLRepo.subscribeToAList(callback);
 
 		// Verification
-		try {
-			Thread.sleep(500); // Wait 0.5 second, so that other thread is ready
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
-
-		// Let's wait a max of 10 second, until we receive some notifications
-		try {
-			for (int i = 1; i < 100; i += 1) {
-				if (callback.lastReceivedMessage != null)
-					break;
-				Thread.sleep(100); // Wait 0.1 second
-			} // for
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
+		// Let's wait a max of 20 second, until we receive some notifications
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 
 		// Let's disconnect from the subscription
 		sub.unsubscribe();

@@ -41,7 +41,6 @@ public enum CodeTemplate {
 	DATA_FETCHER_DELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), //
 	SERVER(CodeTemplateScope.SERVER, "templates/server_GraphQLServerMain.vm.java"), //
 	WEB_SOCKET_CONFIG(CodeTemplateScope.SERVER, "templates/server_WebSocketConfig.vm.java"), //
-	WEB_SOCKET_HANDLER(CodeTemplateScope.SERVER, "templates/server_WebSocketHandler.vm.java"), //
 	WIRING(CodeTemplateScope.SERVER, "templates/server_GraphQLWiring.vm.java"), //
 
 	// Template for the GraphQL relay schema generation

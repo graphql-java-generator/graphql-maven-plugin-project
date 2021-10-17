@@ -435,10 +435,6 @@ public class GenerateCodeGenerator implements Generator {
 			ret += generateOneFile(getJavaFile("WebSocketConfig", true), "generating WebSocketConfig", context,
 					resolveTemplate(CodeTemplate.WEB_SOCKET_CONFIG));
 
-			logger.debug("Generating WebSocketHandler");
-			ret += generateOneFile(getJavaFile("WebSocketHandler", true), "generating WebSocketHandler", context,
-					resolveTemplate(CodeTemplate.WEB_SOCKET_HANDLER));
-
 			// When the addRelayConnections parameter is true, and we're in server mode, we must generate the resulting
 			// GraphQL schema, so that the graphql-java can access it at runtime.
 			if (configuration.isAddRelayConnections() && configuration.getMode().equals(PluginMode.server)) {
@@ -523,6 +519,7 @@ public class GenerateCodeGenerator implements Generator {
 	 */
 	int generateOneFile(File targetFile, String msg, VelocityContext context, String templateFilename) {
 		try {
+			@SuppressWarnings("resource")
 			Writer writer = null;
 			Template template = null;
 
@@ -536,15 +533,20 @@ public class GenerateCodeGenerator implements Generator {
 			}
 
 			targetFile.getParentFile().mkdirs();
-			if (configuration.getSourceEncoding() != null) {
-				writer = new OutputStreamWriter(new FileOutputStream(targetFile),
-						Charset.forName(configuration.getSourceEncoding()));
-			} else {
-				writer = new OutputStreamWriter(new FileOutputStream(targetFile));
+			try {
+				if (configuration.getSourceEncoding() != null) {
+					writer = new OutputStreamWriter(new FileOutputStream(targetFile),
+							Charset.forName(configuration.getSourceEncoding()));
+				} else {
+					writer = new OutputStreamWriter(new FileOutputStream(targetFile));
+				}
+				template.merge(context, writer);
+				writer.flush();
+			} finally {
+				if (writer != null) {
+					writer.close();
+				}
 			}
-			template.merge(context, writer);
-			writer.flush();
-			writer.close();
 
 			// Let's return the number of created files. That is: 1.
 			// Not very useful. But it helps making simpler the code of the caller for this

@@ -12,12 +12,14 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
+import com.graphql_java_generator.server.util.GraphQlWebSocketHandler;
+
 import graphql.schema.GraphQLSchema;
 
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
-	
+
 	protected Logger logger = LoggerFactory.getLogger(WebSocketConfig.class);
 
 	private final GraphQLSchema graphQLSchema;
@@ -27,7 +29,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	// IT defaults to "graphql"
 	@Value("/${dollar}{graphql.url:graphql}")
 	private String url;
-	
+
 	@Autowired
 	public WebSocketConfig(GraphQLWiring graphQLWiring, GraphQLSchema graphQLSchema) {
 		this.graphQLWiring = graphQLWiring;
@@ -46,7 +48,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		logger.debug("Registering WebSocketHandler for URL {}", url);
-		registry.addHandler(new WebSocketHandler(graphQLWiring, graphQLSchema), url).setAllowedOrigins("*");
+		// registry.addHandler(new WebSocketHandler(graphQLWiring, graphQLSchema), url).setAllowedOrigins("*");
+		registry.addHandler(new GraphQlWebSocketHandler(graphQLSchema), url).setAllowedOrigins("*");
 	}
 
 }

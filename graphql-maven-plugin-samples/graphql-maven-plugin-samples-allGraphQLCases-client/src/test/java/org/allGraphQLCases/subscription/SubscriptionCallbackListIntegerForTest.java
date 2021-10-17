@@ -4,6 +4,7 @@
 package org.allGraphQLCases.subscription;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallb
 	final String clientName;
 	public List<Integer> lastReceivedMessage = null;
 
+	/** A latch that will be freed when a the first notification arrives for this subscription */
+	public CountDownLatch latchForMessageReception = new CountDownLatch(1);
+
 	public SubscriptionCallbackListIntegerForTest(String clientName) {
 		this.clientName = clientName;
 	}
@@ -36,6 +40,7 @@ public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallb
 	public void onMessage(List<Integer> t) {
 		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
+		latchForMessageReception.countDown();
 	}
 
 	@Override

@@ -21,7 +21,7 @@ class ForumServerTest extends AbstractIntegrationTest {
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(28, nbGeneratedClasses);
+		assertEquals(27, nbGeneratedClasses);
 	}
 
 }

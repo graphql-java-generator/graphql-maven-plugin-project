@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -140,10 +141,11 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		public void onNext(Map<String, Object> result) {
 			if (completed) {
 				logger.trace(
-						"Message received from the Web Socket session {}, but the operation {} has already completed (the message was {})",
-						session, uniqueIdOperation, result);
+						"Message received for a subscription of id {} from the Web Socket session {}, but the operation {} has already completed (the message was {})",
+						uniqueIdOperation, session, uniqueIdOperation, result);
 			} else {
-				logger.trace("Message received from the Web Socket: {} (on session {})", result, session);
+				logger.trace("Message received for a subscription of id {}, from the Web Socket: {} (on session {})",
+						uniqueIdOperation, result, session);
 
 				// The generated POJOs have annotations that allow proper deserialization by the Jackson mapper,
 				// including management of interfaces and unions. Let's reuse that.
@@ -273,7 +275,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 * Contains the list of subscriptions that have been executed on this Web Socket. This allows to dispatch the
 	 * incoming subscription notifications toward the relevant {@link SubscriptionCallback}
 	 */
-	Map<String, SubscriptionData<?, ?>> registeredSubscriptions = new HashMap<>();
+	Map<String, SubscriptionData<?, ?>> registeredSubscriptions = new ConcurrentHashMap<>();
 
 	public GraphQLReactiveWebSocketHandler(GraphQLObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
@@ -297,6 +299,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	public <R, T> String executeSubscription(String request, String subscriptionName,
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType)
 			throws GraphQLRequestExecutionException {
+		SubscriptionData<R, T> subData;
 
 		// Let's wait until the web socket is properly initialized, as specified by the graphql-transport-ws protocol
 		try {
@@ -307,9 +310,11 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 			throw new GraphQLRequestExecutionException(e.getMessage(), e);
 		}
 
-		SubscriptionData<R, T> subData = new SubscriptionData<R, T>(request, subscriptionName, subscriptionCallback,
-				subscriptionType, messsageType, ++lastUsedUniqueIdOperation);
-		registeredSubscriptions.put(subData.uniqueIdOperation, subData);
+		synchronized (registeredSubscriptions) {
+			subData = new SubscriptionData<R, T>(request, subscriptionName, subscriptionCallback, subscriptionType,
+					messsageType, ++lastUsedUniqueIdOperation);
+			registeredSubscriptions.put(subData.uniqueIdOperation, subData);
+		}
 
 		// Let's do the subscription into the websocket, toward the GraphQL server
 		logger.trace("Emitting execution of the subscription on the web socket, with uniqueIdOperation={} (request={})",
@@ -384,6 +389,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 							webSocketEmitter = new SubscriptionRequestEmitter() {
 								@Override
 								public void emit(SubscriptionData<?, ?> subData, WebSocketMessage msg) {
+									logger.trace("Emitting message for uniqueIdOperation {}", subData.uniqueIdOperation,
+											msg);
 									sink.next(msg);
 									if (subData != null)
 										subData.onSubscriptionExecuted();
@@ -451,8 +458,6 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 						"Invalid message (id is null): " + message.getPayloadAsText());
 				return;
 			}
-
-			logger.trace("Message received from the Web Socket session {} (id={}, payload={})", session, id, message);
 
 			if (subData == null) {
 				// Oups! The server sent a message with a uniqueIdOperation that is unknown by the client

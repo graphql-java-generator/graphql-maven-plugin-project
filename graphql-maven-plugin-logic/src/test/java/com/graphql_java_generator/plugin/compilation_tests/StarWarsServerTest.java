@@ -21,7 +21,7 @@ class StarWarsServerTest extends AbstractIntegrationTest {
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(21, nbGeneratedClasses);
+		assertEquals(20, nbGeneratedClasses);
 	}
 
 }

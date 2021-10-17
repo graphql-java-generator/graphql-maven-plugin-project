@@ -48,6 +48,6 @@ class CustomTemplatesServerTest extends AbstractCustomTemplateIntegrationTest {
 
 	@Override
 	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(53, nbGeneratedClasses);
+		assertEquals(52, nbGeneratedClasses);
 	}
 }

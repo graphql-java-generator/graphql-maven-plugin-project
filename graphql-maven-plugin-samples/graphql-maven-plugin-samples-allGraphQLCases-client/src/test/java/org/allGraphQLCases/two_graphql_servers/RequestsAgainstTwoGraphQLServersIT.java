@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.Character;
@@ -97,7 +98,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_GraphQLRepository_allGraphQLCases() throws GraphQLRequestExecutionException {
+	void test_GraphQLRepository_allGraphQLCases() throws GraphQLRequestExecutionException, InterruptedException {
 		// Preparation
 		SubscriptionCallbackListIntegerForTest callback = new SubscriptionCallbackListIntegerForTest(
 				"FullRequestSubscriptionIT.test_SubscribeToAList");
@@ -106,22 +107,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		SubscriptionClient sub = graphQLRepoAllGraphQLCases.subscribeToAList(callback);
 
 		// Verification
-		try {
-			Thread.sleep(500); // Wait 0.5 second, so that other thread is ready
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
-
-		// Let's wait a max of 10 second, until we receive some notifications
-		try {
-			for (int i = 1; i < 100; i += 1) {
-				if (callback.lastReceivedMessage != null)
-					break;
-				Thread.sleep(100); // Wait 0.1 second
-			} // for
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
+		// Let's wait a max of 20 second, until we receive some notifications
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 
 		// Let's disconnect from the subscription
 		sub.unsubscribe();
