@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 #end
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 #foreach($import in ${object.imports})
 import $import;
