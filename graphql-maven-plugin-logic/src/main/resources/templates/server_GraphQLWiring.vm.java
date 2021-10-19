@@ -18,13 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.dataloader.DataLoader;
 import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.context.request.WebRequest;
 
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
@@ -39,11 +33,6 @@ import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import graphql.schema.idl.TypeRuntimeWiring;
 import graphql.schema.idl.TypeRuntimeWiring.Builder;
-import graphql.spring.web.servlet.ExecutionInputCustomizer;
-import graphql.spring.web.servlet.GraphQLInvocation;
-import graphql.spring.web.servlet.GraphQLInvocationData;
-import graphql.spring.web.servlet.OnDemandDataLoaderRegistry;
-import graphql.spring.web.servlet.components.DefaultGraphQLInvocation;
 
 #if($configuration.generateBatchLoaderEnvironment)
 import com.graphql_java_generator.server.util.BatchLoaderDelegateWithContext;

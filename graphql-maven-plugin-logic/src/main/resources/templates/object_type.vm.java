@@ -4,11 +4,12 @@ package ${configuration.packageName};
 import java.util.HashMap;
 import java.util.Map;
 
+#if(${configuration.mode}=="client" && ${object.requestType})
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+#end
 
 #foreach($import in ${object.imports})
 import $import;
