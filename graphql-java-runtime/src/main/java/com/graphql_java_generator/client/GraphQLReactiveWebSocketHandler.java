@@ -4,6 +4,7 @@
 package com.graphql_java_generator.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.graphql_java_generator.client.response.Error;
+import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.util.GraphqlUtils;
 
@@ -148,11 +151,35 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 						uniqueIdOperation, result, session);
 
 				// The generated POJOs have annotations that allow proper deserialization by the Jackson mapper,
-				// including management of interfaces and unions. Let's reuse that.
-				R r = objectMapper.convertValue(result, subscriptionType);
-				@SuppressWarnings("unchecked")
-				T t = (T) graphqlUtils.invokeGetter(r, subscriptionName);
-				subscriptionCallback.onMessage(t);
+				// including management of interfaces and unions. Let's reuse that .
+				JsonResponseWrapper response = objectMapper.convertValue(result, JsonResponseWrapper.class);
+
+				if (response.errors != null && response.errors.size() > 0) {
+					List<String> errMessages = null;
+					if (response.errors == null) {
+						logger.error(
+								"Unknwon error received from the GraphQL server for subscription " + uniqueIdOperation);
+					} else {
+						StringBuilder sb = new StringBuilder();
+						sb.append("An error has been received from the GraphQL server for subscription ");
+						sb.append(uniqueIdOperation);
+						sb.append(": ");
+						errMessages = new ArrayList<>();
+						for (Error err : response.errors) {
+							errMessages.add(err.message);
+							if (errMessages.size() > 0)
+								sb.append(" | ");
+							sb.append(err.message);
+						}
+						logger.error(sb.toString());
+					}
+					subscriptionCallback.onError(new GraphQLRequestExecutionException(errMessages));
+				} else {
+					R r = objectMapper.convertValue(response.data, subscriptionType);
+					@SuppressWarnings("unchecked")
+					T t = (T) graphqlUtils.invokeGetter(r, subscriptionName);
+					subscriptionCallback.onMessage(t);
+				}
 			}
 		}
 
@@ -338,10 +365,9 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 			throw new GraphQLRequestExecutionException("Unknown uniqueIdOperation " + uniqueIdOperation
 					+ " for web socket session " + session + " when trying to unsubscribe");
 		} else {
+			subData.setCompleted(true);
 			webSocketEmitter.emit(subData,
 					session.textMessage(encode(subData.uniqueIdOperation, MessageType.COMPLETE, null)));
-
-			subData.setCompleted(true);
 		}
 
 	}
@@ -392,7 +418,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 									logger.trace("Emitting message for uniqueIdOperation {}", subData.uniqueIdOperation,
 											msg);
 									sink.next(msg);
-									if (subData != null)
+									if (!subData.isCompleted())
 										subData.onSubscriptionExecuted();
 								}
 							};
@@ -497,8 +523,12 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	}
 
 	public void onError(Throwable t) {
+		if (t == null) {
+			t = new RuntimeException("Unknown error");
+		}
 		logger.error("The Web Socket session {} ended with an error ({}: {})", t.getClass().getSimpleName(),
 				t.getMessage());
+
 		for (StackTraceElement row : t.getStackTrace()) {
 			logger.error("   {}", row.toString());
 		}

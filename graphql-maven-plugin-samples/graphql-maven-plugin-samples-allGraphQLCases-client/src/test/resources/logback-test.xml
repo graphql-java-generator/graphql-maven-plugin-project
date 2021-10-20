@@ -17,6 +17,8 @@
 		<appender-ref ref="File" />
 	</logger>
 
+	<!-- logger name="com.graphql_java_generator" level="trace" />
+	<logger name="org.allGraphQLCases" level="trace" / -->
 	<root level="warn">
 		<appender-ref ref="Console" />
 	</root>

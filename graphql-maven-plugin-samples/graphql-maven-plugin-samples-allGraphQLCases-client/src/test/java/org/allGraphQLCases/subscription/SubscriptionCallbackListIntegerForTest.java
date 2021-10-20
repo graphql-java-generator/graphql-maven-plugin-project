@@ -50,7 +50,8 @@ public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallb
 
 	@Override
 	public void onError(Throwable cause) {
-		logger.error("Oups! An error occurred: " + cause.getMessage());
+		logger.error("Oups! An error occurred: "
+				+ ((cause == null) ? null : cause.getClass().getSimpleName() + ": " + cause.getMessage()));
 	}
 
 }

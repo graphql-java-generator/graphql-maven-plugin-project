@@ -97,6 +97,9 @@ type TheSubscriptionType {
 	
     #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
     issue53(date: Date!): Date!
+    
+    #A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
+    subscriptionTest(param: SubscriptionTestParam!): String!
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
@@ -249,6 +252,13 @@ type AllFieldCasesWithIdSubtype {
 
 type AllFieldCasesWithoutIdSubtype {
     name: String!
+}
+
+input SubscriptionTestParam {
+	errorOnSubscription: Boolean!
+	errorOnNext: Boolean!
+	completeAfterFirstNotification: Boolean!
+	closeWebSocketBeforeFirstNotification: Boolean!
 }
 
 ##############################################################################################################

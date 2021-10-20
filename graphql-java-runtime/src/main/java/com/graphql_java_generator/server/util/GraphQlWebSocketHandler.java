@@ -161,7 +161,9 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				return;
 			}
 			TextMessage outputMessage = encode(null, MessageType.CONNECTION_ACK, null);
-			session.sendMessage(outputMessage);
+			synchronized (session) {
+				session.sendMessage(outputMessage);
+			}
 			return;
 		case START: // This message seems to be sent by graphiql instead of SUBSCRIBE :(
 		case SUBSCRIBE:
@@ -261,7 +263,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			public void onNext(ExecutionResult er) {
 
 				try {
-					TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.getData());
+					TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.toSpecification());
 					log.trace("Sending new notification for subscription {}, on Web Socket Session {}: {}",
 							uniqueOperationId, session.getId(), msg.getPayload());
 
@@ -288,7 +290,9 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 					Map<String, Object> errorMap = GraphqlErrorBuilder.newError().errorType(errorType).message(message)
 							.build().toSpecification();
 					try {
-						session.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errorMap));
+						synchronized (session) {
+							session.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errorMap));
+						}
 					} catch (IOException e) {
 						log.error("Could not send error message for subscription {} due to {}: {}", id,
 								e.getClass().getSimpleName(), e.getMessage());
@@ -307,7 +311,9 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			public void onComplete() {
 				log.debug("Subscription complete");
 				try {
-					session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
+					synchronized (session) {
+						session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
+					}
 
 					// Let's close this session
 					SessionState info = sessionInfoMap.remove(session.getId());

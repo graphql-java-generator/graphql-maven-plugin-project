@@ -1,6 +1,7 @@
 package org.allGraphQLCases.subscription;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 
@@ -26,28 +27,13 @@ public class SubscribeToADate implements Runnable {
 		try {
 			SubscriptionClient sub = subscriptionExecutor.issue53("", callback, date);
 
-			try {
-				Thread.sleep(500); // Wait 0.5 second, so that other thread is ready
-			} catch (InterruptedException ex) {
-				Thread.currentThread().interrupt();
-			}
-
-			// Let's wait a max of 1 second, until we receive some notifications
-			try {
-				for (int i = 1; i < 10; i += 1) {
-					if (callback.lastReceivedMessage != null)
-						break;
-					Thread.sleep(100); // Wait 0.1 second
-				} // for
-			} catch (InterruptedException ex) {
-				Thread.currentThread().interrupt();
-			}
+			// Let's wait a max of 20 second, until we receive some notifications
+			// (20s will never occur... unless using the debugger to undebug some stuff)
+			callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 
 			// Let's disconnect from the subscription
 			sub.unsubscribe();
-		} catch (GraphQLRequestExecutionException |
-
-				GraphQLRequestPreparationException e) {
+		} catch (GraphQLRequestExecutionException | GraphQLRequestPreparationException | InterruptedException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}

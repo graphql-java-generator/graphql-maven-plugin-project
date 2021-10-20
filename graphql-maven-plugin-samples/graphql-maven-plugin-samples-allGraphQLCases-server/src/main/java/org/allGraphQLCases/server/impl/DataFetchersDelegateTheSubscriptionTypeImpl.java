@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.SubscriptionTestParam;
 import org.allGraphQLCases.server.util.DataFetchersDelegateTheSubscriptionType;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,4 +71,37 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 				});
 	}
 
+	@Override
+	public Publisher<String> subscriptionTest(DataFetchingEnvironment dataFetchingEnvironment,
+			SubscriptionTestParam param) {
+		if (param.getErrorOnSubscription()) {
+			// We have to raise an exception now
+			throw new RuntimeException("Oups, the subscriber ask for an error during the subscription");
+		} else if (param.getErrorOnNext()) {
+			return Flux//
+					.interval(Duration.ofMillis(100))// A message every 0.1 second
+					.map((l) -> {
+						boolean b = true;
+						if (b)
+							throw new RuntimeException("Oups, the subscriber ask for an error for each next message");
+						// The line below will never get executed. But doing this prevents a compilation error !
+						return "won't go there";
+					});
+		} else if (param.getCompleteAfterFirstNotification()) {
+			return Flux.just("The subscriber ask for a complete after the first notification");
+		} else if (param.getCloseWebSocketBeforeFirstNotification()) {
+			return Flux//
+					.interval(Duration.ofMillis(100))// A message every 0.1 second
+					.map((l) -> {
+						boolean b = true;
+						if (b)
+							throw new RuntimeException(
+									"Oups, the subscriber ask that the web socket get disconnected before the first notification");
+						// The line below will never get executed. But doing this prevents a compilation error !
+						return "won't go there";
+					});
+		} else {
+			throw new RuntimeException("Unexpected value for 'param'");
+		}
+	}
 }
