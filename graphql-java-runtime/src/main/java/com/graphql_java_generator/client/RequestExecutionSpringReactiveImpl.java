@@ -205,7 +205,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 2: Open a Web Socket if we don't have an already opened one
 		synchronized (this) {
-			if (webSocketHandler == null) {
+			if (webSocketHandler == null || webSocketHandler.session == null || !webSocketHandler.session.isOpen()) {
 				// Is there an OAuth authentication to handle?
 				HttpHeaders headers = new HttpHeaders();
 				if (serverOAuth2AuthorizedClientExchangeFilterFunction != null && oAuthTokenExtractor != null) {

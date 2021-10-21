@@ -2,17 +2,17 @@ package org.allGraphQLCases.subscription;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
+import org.allGraphQLCases.client.SubscriptionTestParam;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,6 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 //"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
 //More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Execution(ExecutionMode.CONCURRENT)
 public class ExecSubscriptionIT {
 
 	/** Logger for this class */
@@ -64,7 +63,6 @@ public class ExecSubscriptionIT {
 		}
 	}
 
-	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	public void test_subscribeToAList()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
@@ -130,7 +128,6 @@ public class ExecSubscriptionIT {
 		assertNotNull(client10.callback.lastReceivedMessage, "The client 10 should have received a message");
 	}
 
-	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	public void test_subscribeToADate_issue53()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
@@ -168,65 +165,172 @@ public class ExecSubscriptionIT {
 	/**
 	 * Tests that the graphql-transport-ws 'complete' message is properly propagated from the server to the client, if
 	 * it occurs
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws InterruptedException
 	 */
-	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	public void test_subscribeToADate_serverComplete() {
+	public void test_subscribeToADate_serverComplete()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_serverComplete");
 
-		fail("not yet implemented");
+		SubscriptionTestParam param = getSubscriptionTestParam();
+		param.setCompleteAfterFirstNotification(true);
+		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_serverComplete");
+		subscriptionExecutor.subscriptionTest("", callback, param);
+		// Let's wait a max of 20 second, until we receive some notifications
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's wait for our first message
+		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
+
+		// Then we wait for the subscription completion, which should be sent by the server
+		callback.latchForCompleteReception.await(20, TimeUnit.SECONDS);
+
+		// The subscription should be closed
+		assertTrue(callback.closedHasBeenReceived,
+				"The subscription should have received a 'complete' message from the server");
 	}
 
 	/**
 	 * Tests that the graphql-transport-ws 'complete' message is properly propagated from the client to the server, if
 	 * it occurs
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws InterruptedException
 	 */
-	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	public void test_subscribeToADate_clientComplete() {
+	public void test_subscribeToADate_clientComplete()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_clientComplete");
 
-		fail("not yet implemented");
+		SubscriptionTestParam param = getSubscriptionTestParam();
+		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_clientComplete");
+		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		// Let's wait a max of 20 second, until we receive some notifications
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's wait for our first message
+		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
+
+		// Let's unsubscribe from this subscription
+		sub.unsubscribe();
+
+		// Now, we wait for 1s to be sure that the server has executed this unsubscription
+		Thread.sleep(1000);
+		callback.lastReceivedMessage = null;
+
+		///////////////// Now, we wait another second: no message should be sent by the server
+		Thread.sleep(1000);
+		assertNull(callback.lastReceivedMessage, "no more message should be sent by the server");
 	}
 
 	/**
 	 * Tests that an error in the subscription is properly sent back to the client, when it occurs during the
 	 * subscription
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws InterruptedException
 	 */
-	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	public void test_subscribeToADate_subscriptionError() {
+	public void test_subscribeToADate_subscriptionError()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_subscriptionError");
 
-		fail("not yet implemented");
+		SubscriptionTestParam param = getSubscriptionTestParam();
+		param.setErrorOnSubscription(true);
+		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_subscriptionError");
+		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		// Let's wait a max of 20 second, until we receive an exception
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForErrorReception.await(20, TimeUnit.SECONDS);
+
+		// Let's test this exception
+		assertNotNull(callback.lastExceptionReceived, "we should have received an exception");
+		assertTrue(callback.lastExceptionReceived.getMessage()
+				.endsWith("Oups, the subscriber asked for an error during the subscription"));
+
+		// Let's unsubscribe from this subscription
+		sub.unsubscribe();
 	}
 
 	/**
 	 * Tests that an error in the subscription is properly sent back to the client, when it occurs after the
 	 * subscription is active (typically when notifications are coming).
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws InterruptedException
 	 */
-	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	public void test_subscribeToADate_nextError() {
+	public void test_subscribeToADate_nextError()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_nextError");
 
-		fail("not yet implemented");
+		SubscriptionTestParam param = getSubscriptionTestParam();
+		param.setErrorOnNext(true);
+		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_nextError");
+		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		// Let's wait a max of 20 second, until we receive an exception
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForErrorReception.await(20, TimeUnit.SECONDS);
+
+		// Let's test this exception
+		assertNotNull(callback.lastExceptionReceived, "we must have received an exception");
+		assertTrue(callback.lastExceptionReceived.getMessage()
+				.endsWith("Oups, the subscriber asked for an error for each next message"));
+
+		// Let's unsubscribe from this subscription
+		sub.unsubscribe();
 	}
 
 	/**
 	 * Tests that an error in the subscription is properly sent back to the client, when it occurs if the web socket got
 	 * closed
+	 * 
+	 * @throws GraphQLRequestPreparationException
+	 * @throws GraphQLRequestExecutionException
+	 * @throws InterruptedException
 	 */
-	@Execution(ExecutionMode.CONCURRENT)
 	@Test
-	public void test_subscribeToADate_webSocketCloseError() {
+	public void test_subscribeToADate_webSocketCloseError()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_webSocketCloseError");
 
-		fail("not yet implemented");
+		SubscriptionTestParam param = getSubscriptionTestParam();
+		param.setCloseWebSocketBeforeFirstNotification(true);
+		SubscriptionCallbackString callback = new SubscriptionCallbackString(
+				"test_subscribeToADate_webSocketCloseError");
+		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
+		// Let's wait a max of 20 second, until we receive an exception
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForErrorReception.await(20, TimeUnit.SECONDS);
+
+		// Let's test this exception
+		assertNotNull(callback.lastExceptionReceived, "we must have received an exception");
+		assertTrue(callback.lastExceptionReceived.getMessage().endsWith(
+				"Oups, the subscriber asked that the web socket get disconnected before the first notification"));
+
+		// Let's unsubscribe from this subscription
+		sub.unsubscribe();
+	}
+
+	private SubscriptionTestParam getSubscriptionTestParam() {
+		SubscriptionTestParam param = new SubscriptionTestParam();
+		param.setCloseWebSocketBeforeFirstNotification(false);
+		param.setCompleteAfterFirstNotification(false);
+		param.setErrorOnNext(false);
+		param.setErrorOnSubscription(false);
+		return param;
 	}
 }

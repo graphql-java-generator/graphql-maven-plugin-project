@@ -75,20 +75,20 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	public Publisher<String> subscriptionTest(DataFetchingEnvironment dataFetchingEnvironment,
 			SubscriptionTestParam param) {
 		if (param.getErrorOnSubscription()) {
-			// We have to raise an exception now
-			throw new RuntimeException("Oups, the subscriber ask for an error during the subscription");
+			// The client asked that an exception is thrown now
+			throw new RuntimeException("Oups, the subscriber asked for an error during the subscription");
 		} else if (param.getErrorOnNext()) {
 			return Flux//
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> {
 						boolean b = true;
 						if (b)
-							throw new RuntimeException("Oups, the subscriber ask for an error for each next message");
+							throw new RuntimeException("Oups, the subscriber asked for an error for each next message");
 						// The line below will never get executed. But doing this prevents a compilation error !
 						return "won't go there";
 					});
 		} else if (param.getCompleteAfterFirstNotification()) {
-			return Flux.just("The subscriber ask for a complete after the first notification");
+			return Flux.just("The subscriber asked for a complete after the first notification");
 		} else if (param.getCloseWebSocketBeforeFirstNotification()) {
 			return Flux//
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
@@ -96,12 +96,16 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 						boolean b = true;
 						if (b)
 							throw new RuntimeException(
-									"Oups, the subscriber ask that the web socket get disconnected before the first notification");
+									"Oups, the subscriber asked that the web socket get disconnected before the first notification");
 						// The line below will never get executed. But doing this prevents a compilation error !
 						return "won't go there";
 					});
 		} else {
-			throw new RuntimeException("Unexpected value for 'param'");
+			// The client didn't ask for any specific error. Let's return a valid flux, that will sent 10 string each
+			// second
+			return Flux//
+					.interval(Duration.ofMillis(100))// A message every 0.1 second
+					.map((l) -> Long.toString(l));
 		}
 	}
 }

@@ -195,6 +195,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			if (id != null) {
 				Subscription subscription = sessionState.getSubscriptions().remove(id);
 				if (subscription != null) {
+					log.trace("Cancelling subscription for operation id {} on web socket {}", id, session);
 					subscription.cancel();
 				}
 			}
@@ -238,93 +239,111 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 		ExecutionResult executionResult = graphQL.execute(executionInput);
 
-		Publisher<ExecutionResult> publisher = executionResult.getData();
-
-		publisher.subscribe(new Subscriber<ExecutionResult>() {
-
-			private String uniqueOperationId = id;
-			private Subscription subscription;
-
-			@Override
-			public void onSubscribe(Subscription s) {
-				this.subscription = s;
-
-				log.trace("Executing onSubscribe for subscription {} in Web Socket Session {}", id, session.getId());
-
-				Subscription prev = getSessionInfo(session).getSubscriptions().putIfAbsent(id, subscription);
-				if (prev != null) {
-					throw new SubscriptionExistsException();
+		if (executionResult.getErrors() != null && executionResult.getErrors().size() > 0) {
+			// If the subscription failed, we must return an error.
+			try {
+				Object errors = executionResult.toSpecification().get("errors");
+				log.trace("Sending 'error' message for subscription {}: {}", id, errors);
+				synchronized (session) {
+					session.sendMessage(encode(id, MessageType.ERROR, errors));
 				}
-
-				subscription.request(1);
+			} catch (IOException e) {
+				log.error("Could not send error message for subscription {} due to {}: {}", id,
+						e.getClass().getSimpleName(), e.getMessage());
 			}
+		} else {
+			// Otherwise, let's build the reactive Publisher
+			Publisher<ExecutionResult> publisher = executionResult.getData();
 
-			@Override
-			public void onNext(ExecutionResult er) {
+			publisher.subscribe(new Subscriber<ExecutionResult>() {
 
-				try {
-					TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.toSpecification());
-					log.trace("Sending new notification for subscription {}, on Web Socket Session {}: {}",
-							uniqueOperationId, session.getId(), msg.getPayload());
+				private String uniqueOperationId = id;
+				private Subscription subscription;
 
-					synchronized (session) {
-						session.sendMessage(msg);
+				@Override
+				public void onSubscribe(Subscription s) {
+					this.subscription = s;
+
+					log.trace("Executing onSubscribe for subscription {} in Web Socket Session {}", id,
+							session.getId());
+
+					Subscription prev = getSessionInfo(session).getSubscriptions().putIfAbsent(id, subscription);
+					if (prev != null) {
+						throw new SubscriptionExistsException();
 					}
 
 					subscription.request(1);
-				} catch (IOException e) {
-					onError(e);
 				}
-			}
 
-			@Override
-			public void onError(Throwable t) {
-				log.error("Subscription threw an exception", t);
+				@Override
+				public void onNext(ExecutionResult er) {
 
-				if (t instanceof SubscriptionExistsException) {
-					CloseStatus status = new CloseStatus(4409, "Subscriber for " + id + " already exists");
-					GraphQlStatus.closeSession(session, status);
-				} else {
-					ErrorType errorType = ErrorType.DataFetchingException;
-					String message = t.getMessage();
-					Map<String, Object> errorMap = GraphqlErrorBuilder.newError().errorType(errorType).message(message)
-							.build().toSpecification();
+					try {
+						TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.toSpecification());
+						log.trace("Sending new notification for subscription {}, on Web Socket Session {}: {}",
+								uniqueOperationId, session.getId(), msg.getPayload());
+
+						synchronized (session) {
+							session.sendMessage(msg);
+						}
+
+						subscription.request(1);
+					} catch (IOException e) {
+						onError(e);
+					}
+				}
+
+				@Override
+				public void onError(Throwable t) {
+					log.error("Subscription threw an exception", t);
+
+					if (t instanceof SubscriptionExistsException) {
+						CloseStatus status = new CloseStatus(4409, "Subscriber for " + id + " already exists");
+						GraphQlStatus.closeSession(session, status);
+					} else {
+						ErrorType errorType = ErrorType.DataFetchingException;
+						String message = t.getMessage();
+						Map<String, Object> errorMap = GraphqlErrorBuilder.newError().errorType(errorType)
+								.message(message).build().toSpecification();
+						List<Map<String, Object>> errors = Arrays.asList(errorMap);
+
+						try {
+							synchronized (session) {
+								session.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errors));
+							}
+						} catch (IOException e) {
+							log.error("Could not send error message for subscription {} due to {}: {}", id,
+									e.getClass().getSimpleName(), e.getMessage());
+						}
+
+						// Let's close this session
+						SessionState info = sessionInfoMap.remove(session.getId());
+						if (info != null) {
+							info.dispose();
+						}
+					}
+
+				}
+
+				@Override
+				public void onComplete() {
+					log.debug("Subscription complete");
 					try {
 						synchronized (session) {
-							session.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errorMap));
+							session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
+						}
+
+						// Let's close this session
+						SessionState info = sessionInfoMap.remove(session.getId());
+						if (info != null) {
+							info.dispose();
 						}
 					} catch (IOException e) {
-						log.error("Could not send error message for subscription {} due to {}: {}", id,
-								e.getClass().getSimpleName(), e.getMessage());
-					}
-
-					// Let's close this session
-					SessionState info = sessionInfoMap.remove(session.getId());
-					if (info != null) {
-						info.dispose();
+						log.error("Unable to close websocket session", e);
 					}
 				}
-
-			}
-
-			@Override
-			public void onComplete() {
-				log.debug("Subscription complete");
-				try {
-					synchronized (session) {
-						session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
-					}
-
-					// Let's close this session
-					SessionState info = sessionInfoMap.remove(session.getId());
-					if (info != null) {
-						info.dispose();
-					}
-				} catch (IOException e) {
-					log.error("Unable to close websocket session", e);
-				}
-			}
-		});
+			});
+		}
 	}
 
 	@SuppressWarnings("unchecked")

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -415,8 +416,9 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 							webSocketEmitter = new SubscriptionRequestEmitter() {
 								@Override
 								public void emit(SubscriptionData<?, ?> subData, WebSocketMessage msg) {
-									logger.trace("Emitting message for uniqueIdOperation {}", subData.uniqueIdOperation,
-											msg);
+									if (logger.isTraceEnabled())
+										logger.trace("Emitting message for uniqueIdOperation {}: {}",
+												subData.uniqueIdOperation, msg.getPayloadAsText());
 									sink.next(msg);
 									if (!subData.isCompleted())
 										subData.onSubscriptionExecuted();
@@ -508,8 +510,24 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 				subData.onNext((Map<String, Object>) map.get("payload"));
 			}
 			break;
+		case ERROR:
+			logger.warn("Received 'error' for id {} on web socket {} (payload={})", id, session,
+					message.getPayloadAsText());
+			// The payload is a list of GraphQLErrors
+			if (map.get("payload") instanceof Map) {
+				// The payload is one error
+				String msg = (String) ((Map<?, ?>) map.get("payload")).get("message");
+				subData.onError(new GraphQLRequestExecutionException(msg));
+			} else {
+				// The payload is a list of errors
+				List<Map<String, Object>> errors = (List<Map<String, Object>>) map.get("payload");
+				List<String> errorMessages = errors.stream().map(e -> (String) e.get("message"))
+						.collect(Collectors.toList());
+				subData.onError(new GraphQLRequestExecutionException(errorMessages));
+			}
+			break;
 		default:
-			logger.trace("Received non managed message '{}' for id {} on web socket {} (payload={})", type, id, session,
+			logger.warn("Received non managed message '{}' for id {} on web socket {} (payload={})", type, id, session,
 					message);
 			// Oups! This message type exists in MessageType, but is not properly managed here.
 			// This is an internal error.
