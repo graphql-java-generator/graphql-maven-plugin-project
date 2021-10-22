@@ -73,6 +73,7 @@
 						</configuration>
 					</execution>
 					<execution>
+					<!-- This second generation of the client code for the same  -->
 						<id>graphql-generateCode 2</id>
 						<goals>
 							<goal>generateClientCode</goal>

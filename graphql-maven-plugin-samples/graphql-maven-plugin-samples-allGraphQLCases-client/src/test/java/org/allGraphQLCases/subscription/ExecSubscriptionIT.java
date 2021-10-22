@@ -4,14 +4,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.SubscriptionTestParam;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,68 +68,62 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	public void test_subscribeToAList()
+	public void test_multiSubscribersToAList()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
+		final int NB_THREADS = 10;
+		List<SubscribeToAList> subs = new ArrayList<>(NB_THREADS);
+		List<Thread> threads = new ArrayList<>(NB_THREADS);
+
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToAList");
 
-		// To test the issue 72, we create two clients for the subscription, and check that each of them properly
-		// receives the notifications
-		SubscribeToAList client1 = new SubscribeToAList(subscriptionExecutor, "client1");
-		SubscribeToAList client2 = new SubscribeToAList(subscriptionExecutor, "client2");
-		SubscribeToAList client3 = new SubscribeToAList(subscriptionExecutor, "client3");
-		SubscribeToAList client4 = new SubscribeToAList(subscriptionExecutor, "client4");
-		SubscribeToAList client5 = new SubscribeToAList(subscriptionExecutor, "client5");
-		SubscribeToAList client6 = new SubscribeToAList(subscriptionExecutor, "client6");
-		SubscribeToAList client7 = new SubscribeToAList(subscriptionExecutor, "client7");
-		SubscribeToAList client8 = new SubscribeToAList(subscriptionExecutor, "client8");
-		SubscribeToAList client9 = new SubscribeToAList(subscriptionExecutor, "client9");
-		SubscribeToAList client10 = new SubscribeToAList(subscriptionExecutor, "client10");
+		// To test the issue 72, we create NB_THREADS clients for the subscription, and check that each of them properly
+		// receives the relevant notifications
+		for (int i = 0; i < NB_THREADS; i += 1) {
+			SubscribeToAList sub = new SubscribeToAList(subscriptionExecutor, "client" + i);
+			subs.add(sub);
+			threads.add(new Thread(sub));
+		}
 
-		Thread thread1 = new Thread(client1);
-		Thread thread2 = new Thread(client2);
-		Thread thread3 = new Thread(client3);
-		Thread thread4 = new Thread(client4);
-		Thread thread5 = new Thread(client5);
-		Thread thread6 = new Thread(client6);
-		Thread thread7 = new Thread(client7);
-		Thread thread8 = new Thread(client8);
-		Thread thread9 = new Thread(client9);
-		Thread thread10 = new Thread(client10);
+		// We start the thread only now, so that all these threads execute as possible in the same time
+		for (Thread thread : threads) {
+			thread.start();
+		}
 
-		thread1.start();
-		thread2.start();
-		thread3.start();
-		thread4.start();
-		thread5.start();
-		thread6.start();
-		thread7.start();
-		thread8.start();
-		thread9.start();
-		thread10.start();
+		// Let's wait for the end of all our subscription client threads
+		for (Thread thread : threads) {
+			thread.join();
+		}
 
-		// Let's wait for the end of our two subscription client threads
-		thread1.join();
-		thread2.join();
-		thread3.join();
-		thread4.join();
-		thread5.join();
-		thread6.join();
-		thread7.join();
-		thread8.join();
-		thread9.join();
-		thread10.join();
+		// Let's check that each thread received a message
+		for (SubscribeToAList sub : subs) {
+			assertNotNull(sub.callback.lastReceivedMessage,
+					"The " + sub.clientName + " should have received a message");
+		}
 
-		assertNotNull(client1.callback.lastReceivedMessage, "The client 1 should have received a message");
-		assertNotNull(client2.callback.lastReceivedMessage, "The client 2 should have received a message");
-		assertNotNull(client3.callback.lastReceivedMessage, "The client 3 should have received a message");
-		assertNotNull(client4.callback.lastReceivedMessage, "The client 4 should have received a message");
-		assertNotNull(client5.callback.lastReceivedMessage, "The client 5 should have received a message");
-		assertNotNull(client6.callback.lastReceivedMessage, "The client 6 should have received a message");
-		assertNotNull(client7.callback.lastReceivedMessage, "The client 7 should have received a message");
-		assertNotNull(client8.callback.lastReceivedMessage, "The client 8 should have received a message");
-		assertNotNull(client9.callback.lastReceivedMessage, "The client 9 should have received a message");
-		assertNotNull(client10.callback.lastReceivedMessage, "The client 10 should have received a message");
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// No other message should come for these subscriptions. Let's check that.
+
+		// Some messages may have been sent during the unsubscription process.
+		// So we accept all messages in the next second, and then we clear the lastReceivedMessage of each client
+		Thread.sleep(1000);
+		for (SubscribeToAList sub : subs) {
+			sub.callback.lastReceivedMessage = null;
+		}
+
+		// No other messages should come now. As the server was sending 10 messages each second, waiting 1 second is
+		// enough to be sure that each subscription is properly unsubscribed
+		Thread.sleep(1000);
+		for (SubscribeToAList sub : subs) {
+			assertNull(sub.callback.lastReceivedMessage,
+					"The " + sub.clientName + " should not have received a message after having unsubscribed");
+		}
+	}
+
+	@Disabled
+	@Test
+	public void test_withTwoWebSockets() {
+		fail("not yet implemented");
 	}
 
 	@Test

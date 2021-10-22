@@ -277,7 +277,6 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 				@Override
 				public void onNext(ExecutionResult er) {
-
 					try {
 						TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.toSpecification());
 						log.trace("Sending new notification for subscription {}, on Web Socket Session {}: {}",
@@ -295,7 +294,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 				@Override
 				public void onError(Throwable t) {
-					log.error("Subscription threw an exception", t);
+					log.error("Received onError for Subscription id={}, on web socket {}", id, session.getId());
 
 					if (t instanceof SubscriptionExistsException) {
 						CloseStatus status = new CloseStatus(4409, "Subscriber for " + id + " already exists");
@@ -315,28 +314,21 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 							log.error("Could not send error message for subscription {} due to {}: {}", id,
 									e.getClass().getSimpleName(), e.getMessage());
 						}
-
-						// Let's close this session
-						SessionState info = sessionInfoMap.remove(session.getId());
-						if (info != null) {
-							info.dispose();
-						}
 					}
-
 				}
 
 				@Override
 				public void onComplete() {
-					log.debug("Subscription complete");
+					log.debug("Received onComplete for Subscription id={} on web socket {}", id, session.getId());
 					try {
 						synchronized (session) {
 							session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
 						}
 
-						// Let's close this session
-						SessionState info = sessionInfoMap.remove(session.getId());
-						if (info != null) {
-							info.dispose();
+						// Let's close this subscription
+						Subscription sub = getSessionInfo(session).getSubscriptions().remove(id);
+						if (sub != null) {
+							sub.cancel();
 						}
 					} catch (IOException e) {
 						log.error("Unable to close websocket session", e);

@@ -288,6 +288,18 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 
 	/** The session, that will receive upon connection of the web socket. */
 	WebSocketSession session = null;
+
+	/**
+	 * This latch allows to wait until the session has been initialized. This can be used by consumer to properly check
+	 * the that the session is open, and reuse it, including in heavy multi-tasking environment. <BR/>
+	 * This latch is decremented in the {@link #handle(WebSocketSession)} method.
+	 */
+	CountDownLatch latchWaitingForSessionInitialized = new CountDownLatch(1);
+
+	/**
+	 * The {@link SubscriptionRequestEmitter} is the instance that can write messages into the output flux of the web
+	 * socket, toward the server
+	 */
 	SubscriptionRequestEmitter webSocketEmitter = null;
 
 	/** Used to wait before executing the subscription, until the ConnectionInit has been sent through the Web Socket */
@@ -331,9 +343,9 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 
 		// Let's wait until the web socket is properly initialized, as specified by the graphql-transport-ws protocol
 		try {
-			logger.trace("Waiting for GraphQL web socket inialization");
+			logger.trace("Waiting for GraphQL web socket inialization, for socket {}", session);
 			webSocketConnectionInitializationLatch.await();
-			logger.trace("GraphQL web socket has been inialized (let's execute the subscription)");
+			logger.trace("GraphQL web socket {} has been inialized (let's execute the subscription)", session);
 		} catch (InterruptedException e) {
 			throw new GraphQLRequestExecutionException(e.getMessage(), e);
 		}
@@ -345,8 +357,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 
 		// Let's do the subscription into the websocket, toward the GraphQL server
-		logger.trace("Emitting execution of the subscription on the web socket, with uniqueIdOperation={} (request={})",
-				subData.uniqueIdOperation, request);
+		logger.trace("Emitting execution of the subscription id={} on the web socket {} (request={})",
+				subData.uniqueIdOperation, session, request);
 
 		webSocketEmitter.emit(subData,
 				session.textMessage(encode(subData.uniqueIdOperation, MessageType.SUBSCRIBE, subData.request)));
@@ -355,8 +367,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	}
 
 	public void unsubscribe(String uniqueIdOperation) throws GraphQLRequestExecutionException {
-		logger.trace("Emitting 'complete' message to close the subscription for the uniqueIdOperation={}",
-				uniqueIdOperation);
+		logger.trace("Emitting 'complete' message to close the subscription for the uniqueIdOperation={} on socket {}",
+				uniqueIdOperation, session);
 
 		// Let's find the subscription that manages this uniqueIdOperation
 		SubscriptionData<?, ?> subData = registeredSubscriptions.get(uniqueIdOperation);
@@ -382,9 +394,9 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		// The web socket initialization phase must be finished
 		if (webSocketConnectionInitializationLatch.getCount() > 0) {
 			try {
-				logger.trace("Waiting for GraphQL web socket inialization");
+				logger.trace("Waiting for GraphQL web socket inialization, on socket {}", session);
 				webSocketConnectionInitializationLatch.await();
-				logger.trace("GraphQL web socket has been inialized");
+				logger.trace("GraphQL web socket {} has been inialized", session);
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
@@ -395,6 +407,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	@Override
 	public Mono<Void> handle(WebSocketSession sessionParam) {
 		this.session = sessionParam;
+		latchWaitingForSessionInitialized.countDown();
 		logger.trace("new web socket session received: {}", session);
 
 		Mono<Void> input = session.receive()//
@@ -409,7 +422,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 						.push(sink -> {
 							// The first action must be to send the connection_init message to the server
 							sink.next(session.textMessage(encode(null, MessageType.CONNECTION_INIT, null)));
-							logger.trace("The 'connection_init' message has been written on the Websocket");
+							logger.trace("The 'connection_init' message has been written on the web socket {}",
+									session);
 
 							// Then, we attach the publisher that will allow to send the incoming subscriptions into
 							// this flux
@@ -417,8 +431,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 								@Override
 								public void emit(SubscriptionData<?, ?> subData, WebSocketMessage msg) {
 									if (logger.isTraceEnabled())
-										logger.trace("Emitting message for uniqueIdOperation {}: {}",
-												subData.uniqueIdOperation, msg.getPayloadAsText());
+										logger.trace("Emitting message for uniqueIdOperation {} on web socket {}: {}",
+												subData.uniqueIdOperation, session, msg.getPayloadAsText());
 									sink.next(msg);
 									if (!subData.isCompleted())
 										subData.onSubscriptionExecuted();
@@ -433,7 +447,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 				// })
 				);
 
-		logger.trace("End of handle(session) method execution");
+		logger.trace("End of handle(session {}) method execution", session);
 		return Mono.zip(input, output).then();
 	}
 
@@ -510,6 +524,10 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 				subData.onNext((Map<String, Object>) map.get("payload"));
 			}
 			break;
+		case COMPLETE:
+			logger.trace("Received 'complete' for id {} on web socket {} (payload={})", id, session, message);
+			subData.onComplete();
+			break;
 		case ERROR:
 			logger.warn("Received 'error' for id {} on web socket {} (payload={})", id, session,
 					message.getPayloadAsText());
@@ -557,6 +575,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 
 		session.close(CloseStatus.SERVER_ERROR);
+		// This session should not be reused
+		session = null;
 	}
 
 	public void onComplete() {
@@ -575,6 +595,10 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 
 	public WebSocketSession getSession() {
 		return session;
+	}
+
+	public CountDownLatch getLatchWaitingForSessionInitialized() {
+		return latchWaitingForSessionInitialized;
 	}
 
 	/**

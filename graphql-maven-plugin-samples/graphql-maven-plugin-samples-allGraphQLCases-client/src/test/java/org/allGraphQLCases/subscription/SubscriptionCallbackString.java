@@ -41,7 +41,7 @@ public class SubscriptionCallbackString implements SubscriptionCallback<String> 
 
 	@Override
 	public void onMessage(String t) {
-		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
+		logger.debug("Received this message from the 'subscriptionTest' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
 		latchForMessageReception.countDown();
 	}

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,6 +227,14 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 						// Let's have a dedicated thread
 						// .subscribeOn(Schedulers.single())
 						.subscribe();
+
+				// Let's wait until we get the session value. This allows proper reuse of the web socket in heavy
+				// multi-tasking environment, withing this synchronized block.
+				try {
+					webSocketHandler.getLatchWaitingForSessionInitialized().await(500, TimeUnit.MILLISECONDS);
+				} catch (InterruptedException e) {
+					// No action, let's go
+				}
 			}
 		}
 
