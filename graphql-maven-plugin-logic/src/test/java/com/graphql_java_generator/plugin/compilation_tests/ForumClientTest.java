@@ -1,7 +1,5 @@
 package com.graphql_java_generator.plugin.compilation_tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 
@@ -17,11 +15,6 @@ class ForumClientTest extends AbstractIntegrationTest {
 	@BeforeEach
 	public void setUp() {
 		graphqlTestHelper.checkSchemaStringProvider("forum.graphqls");
-	}
-
-	@Override
-	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(37, nbGeneratedClasses);
 	}
 
 }

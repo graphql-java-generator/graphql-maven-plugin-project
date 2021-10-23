@@ -1,7 +1,5 @@
 package com.graphql_java_generator.plugin.compilation_tests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.BeforeEach;
 
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
@@ -20,8 +18,4 @@ class AllGraphQLCasesClient_separateUtilityClasses_Test extends AbstractIntegrat
 		graphqlTestHelper.checkSchemaStringProvider("allGraphQLCases*.graphqls");
 	}
 
-	@Override
-	protected void checkNbGeneratedClasses(int nbGeneratedClasses) {
-		assertEquals(53, nbGeneratedClasses);
-	}
 }

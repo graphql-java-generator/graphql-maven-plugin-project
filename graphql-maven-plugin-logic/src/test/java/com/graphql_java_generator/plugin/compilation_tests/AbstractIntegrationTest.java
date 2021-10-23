@@ -3,7 +3,6 @@ package com.graphql_java_generator.plugin.compilation_tests;
 import java.io.IOException;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -65,21 +64,10 @@ abstract class AbstractIntegrationTest {
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetClassFolder());
 
 		// Go, go, go
-		int i = codeGenerator.generateCode();
+		codeGenerator.generateCode();
 
 		// Verifications
-		checkNbGeneratedClasses(i);
 		compilationTestHelper.checkCompleteCompilationStatus(null);
 	}
-
-	/**
-	 * This method is responsible for checking the number of classes that have been generated. It may do nothing. The
-	 * check should be done with JUnit methods, like {@link Assertions#fail()},
-	 * {@link Assertions#assertEquals(Object, Object, String)}...
-	 *
-	 * @param nbGeneratedClasses
-	 *            The number of classes that have been generated during this plugin execution.
-	 */
-	protected abstract void checkNbGeneratedClasses(int nbGeneratedClasses);
 
 }

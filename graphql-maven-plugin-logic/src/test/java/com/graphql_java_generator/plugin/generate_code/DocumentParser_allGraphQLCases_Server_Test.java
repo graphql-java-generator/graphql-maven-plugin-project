@@ -75,9 +75,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = generateCodeDocumentParser.parseDocuments();
 
 		// Verification
-		assertEquals(27, i, "Nb java files are generated");
+		assertEquals(28, i, "Nb java files are generated");
 		assertEquals(8, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(19, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(20, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(4, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(5, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(3, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
@@ -849,7 +849,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(3, type.getFields().size());
+		assertEquals(4, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
