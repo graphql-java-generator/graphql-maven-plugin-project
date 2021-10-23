@@ -64,7 +64,7 @@
 					<skip>${skipTests}</skip>
 					<container>
 						<containerId>tomcat9x</containerId>
-						<timeout>180000</timeout> <!-- 3 minutes: McAfee is such a sh..., up to 98% of CPU, and I can't configure it as it's an enterprise computer -->
+						<timeout>300000</timeout> <!-- 5 minutes: McAfee is such a sh..., up to 98% of CPU, and I can't configure it as it's an enterprise computer -->
 						<zipUrlInstaller>
 							<url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/9.0.39/tomcat-9.0.39.zip</url>
 							<downloadDir>${project.basedir}/downloads</downloadDir>

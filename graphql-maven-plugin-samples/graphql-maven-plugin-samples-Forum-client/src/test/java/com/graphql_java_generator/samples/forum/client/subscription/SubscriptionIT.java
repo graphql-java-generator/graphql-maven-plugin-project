@@ -6,12 +6,11 @@ package com.graphql_java_generator.samples.forum.client.subscription;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BooleanSupplier;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
@@ -87,22 +86,13 @@ class SubscriptionIT {
 		logger.debug("Subscribing to the GraphQL subscription");
 		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest, callback, "Board name 1");
 
-		// Due to parallel treatments on the same computer during the IT tests, it may happen that the subscription is
-		// not totally active yet. So we wait a little (my PC is very slow...), to let the subscription by plainly
-		// active on both the client and the server side.
-		waitForEvent(10, () -> {
-			return callback.connected;
-		}, "Waiting for the subscription to be active");
-
-		// The subscription may be executed a little latter on server side, due to parallel jobs
-		Thread.sleep(500); // Wait 0.5s
+		// We wait a little, just to be sure that the subscription is active on server side
+		Thread.sleep(500);
 
 		Post createdPost = mutationType.createPost(createPostRequest, postInput);
 
 		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
-		waitForEvent(10, () -> {
-			return callback.lastReceivedMessage != null;
-		}, "Waiting for the notifications to come");
+		callback.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 
 		// Verification
 		assertNull(callback.lastReceivedClose,
@@ -119,36 +109,6 @@ class SubscriptionIT {
 		client.unsubscribe();
 
 		logger.debug("Stopped listening");
-	}
-
-	/**
-	 * Wait for as long as the given delay, but will return as soon as the test is ok. If the given delay expires, then
-	 * this method fails
-	 * 
-	 * @param nbSeconds
-	 * @param test
-	 * @param expectedEvent
-	 */
-	public static void waitForEvent(int nbSeconds, BooleanSupplier test, String expectedEvent) {
-		logger.debug("Starting to wait for '{}'", expectedEvent);
-		int increment = 20;
-		for (int i = 0; i < nbSeconds * 1000 / increment; i += 1) {
-			if (test.getAsBoolean()) {
-				// The condition is met. Let's return to the caller.
-				logger.debug("Finished waiting for '{}' (the condition is met)", expectedEvent);
-				return;
-			}
-			try {
-				Thread.sleep(increment);
-			} catch (InterruptedException e) {
-				logger.trace("got interrupted");
-			}
-		}
-
-		// Too bad...
-		String msg = "The delay has expired, when waiting for '" + expectedEvent + "'";
-		logger.error(msg);
-		fail(msg);
 	}
 
 	private TopicPostInput getTopicPostInput(Member author, String content, Date date, boolean publiclyAvailable,

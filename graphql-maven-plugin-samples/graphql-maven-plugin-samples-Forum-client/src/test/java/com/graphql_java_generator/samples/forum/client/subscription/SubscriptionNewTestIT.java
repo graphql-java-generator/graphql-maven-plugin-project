@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
@@ -103,7 +104,7 @@ class SubscriptionNewTestIT {
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		logger.debug(
-				"Creating dummy posts, to be sure we won't receive a notification, latter on, for this one, once subscribed");
+				"Creating dummy posts, to check that we won't receive a notification, latter on, for this one, once subscribed");
 		createdPost = mutationType.createPost(createPostRequest, postInput1);
 		createdPost = mutationType.createPost(createPostRequest, postInput2);
 
@@ -117,23 +118,15 @@ class SubscriptionNewTestIT {
 		SubscriptionClient client2 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback2,
 				"Board name 1");
 
-		// Due to parallel treatments on the same computer during the IT tests, it may happen that the subscription is
-		// not totally active yet. So we wait, to let the subscription by plainly active on both the client and the
-		// server side.
-		SubscriptionIT.waitForEvent(10, () -> {
-			return callback1.connected && callback2.connected;
-		}, "The first two subscriptions should be active (1&2)");
-
-		// The subscription may be executed a little latter on server side, due to parallel jobs
-		Thread.sleep(500); // Wait 0.5s
+		// We wait a little, just to be sure that the subscription is active on server side
+		Thread.sleep(200);
 
 		logger.debug("Creating the post, for which we should receive the notification");
 		createdPost = mutationType.createPost(createPostRequest, postInput1);
 
 		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
-		SubscriptionIT.waitForEvent(10, () -> {
-			return callback1.lastReceivedMessage != null && callback2.lastReceivedMessage != null;
-		}, "The notifications should arrive (1&2)");
+		callback1.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
+		callback2.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 
 		// Verification
 		logger.trace("postInput1: {}", postInput1);
@@ -151,9 +144,6 @@ class SubscriptionNewTestIT {
 		logger.debug("(client 3) Subscribing to the GraphQL subscription");
 		SubscriptionClient client3 = subscriptionType.subscribeToNewPost(subscriptionRequest, callback3,
 				"Board name 1");
-		SubscriptionIT.waitForEvent(4, () -> {
-			return callback1.connected && callback2.connected && callback3.connected;
-		}, "The three subscriptions should be active (1&2&3)");
 		//
 		callback1.nbReceivedMessages = 0;
 		callback2.nbReceivedMessages = 0;
@@ -163,10 +153,9 @@ class SubscriptionNewTestIT {
 		createdPost = mutationType.createPost(createPostRequest, postInput2);
 
 		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
-		SubscriptionIT.waitForEvent(10, () -> {
-			return callback1.lastReceivedMessage != null && callback2.lastReceivedMessage != null
-					&& callback3.lastReceivedMessage != null;
-		}, "The notifications should arrive (1&2&3)");
+		callback1.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
+		callback2.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
+		callback3.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 
 		// Verification
 		logger.trace("Checking callback1");
