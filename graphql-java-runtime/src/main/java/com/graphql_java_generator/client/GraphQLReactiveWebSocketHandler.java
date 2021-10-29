@@ -48,8 +48,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(GraphQLReactiveWebSocketHandler.class);
 
-	private static final List<String> SUB_PROTOCOL_LIST = Arrays.asList("graphql-transport-ws",
-			"subscriptions-transport-ws");
+	private static final List<String> SUB_PROTOCOL_LIST = Arrays.asList("graphql-transport-ws");
 
 	private enum MessageType {
 		CONNECTION_INIT("connection_init"), CONNECTION_ACK("connection_ack"), SUBSCRIBE("subscribe"), NEXT(
@@ -203,7 +202,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 						session, uniqueIdOperation, reason, session);
 			} else {
 
-				logger.trace("onClose({}, {}) received for WebSocketSession {}: {}", statusCode, reason, session);
+				logger.trace("onClose(code={}, reason={}) received for WebSocketSession {}: {}", statusCode, reason,
+						session);
 				// Let's forward the information to the application callback
 				subscriptionCallback.onClose(statusCode, reason);
 			}
@@ -215,7 +215,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 						"Complete received from the Web Socket session {}, but the operation {} has already completed",
 						session, uniqueIdOperation);
 			} else {
-				logger.trace("onComplete received for WebSocketSession {}: {}", session);
+				logger.trace("onComplete received for id {} on WebSocketSession {}", uniqueIdOperation, session);
 				// Let's forward the information to the application callback
 				subscriptionCallback.onClose(0, "onComplete");
 			}
