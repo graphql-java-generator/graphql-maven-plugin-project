@@ -158,6 +158,17 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	public boolean isGenerateBatchLoaderEnvironment();
 
 	/**
+	 * {@inheritDoc}
+	 * <P>
+	 * In server mode, the <A HREF="https://github.com/FasterXML/jackson">Jackson</A> annotations are always generated
+	 * </P>
+	 */
+	@Override
+	default public boolean isGenerateJacksonAnnotations() {
+		return false;
+	}
+
+	/**
 	 * <P>
 	 * (only for server mode) Indicates whether the plugin should generate the JPA annotations, for generated objects.
 	 * </P>

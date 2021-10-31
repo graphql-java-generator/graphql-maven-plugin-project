@@ -43,6 +43,7 @@ import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.BatchLoader;
@@ -52,7 +53,7 @@ import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
- * This class generates the code for the graphql goal/task of the plugin, from the classes coming from the
+ * This class generates the code for the graphql goals/tasks of the plugin, from the classes coming from the
  * com.graphql_java_generator.plugin.language package. This classes have been created by {link
  * {@link GenerateCodeDocumentParser}.<BR/>
  * This class should not be used directly. Please use the {@link GenerateCodePluginExecutor} instead.
@@ -163,8 +164,11 @@ public class GenerateCodeGenerator implements Generator {
 		imports.add("java.util.List");
 		context.put("imports", imports);
 		context.put("customDeserializers", generateCodeDocumentParser.getCustomDeserializers());
-		i += generateOneFile(getJavaFile("CustomJacksonDeserializers", true), "Generating custom deserializers",
-				context, resolveTemplate(CodeTemplate.JACKSON_DESERIALIZERS));
+
+		if (configuration.isGenerateJacksonAnnotations()) {
+			i += generateOneFile(getJavaFile("CustomJacksonDeserializers", true), "Generating custom deserializers",
+					context, resolveTemplate(CodeTemplate.JACKSON_DESERIALIZERS));
+		}
 
 		if (configuration.isGenerateUtilityClasses()) {
 
@@ -257,6 +261,10 @@ public class GenerateCodeGenerator implements Generator {
 			java.io.File file;
 			while ((entry = jar.getNextJarEntry()) != null) {
 
+				// Folders are ignored here.
+				if (entry.isDirectory())
+					continue;
+
 				// We skip the /META-INF/ folder that just contains the MANIFEST file
 				if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
 						|| entry.getName().equals("resources/")) {
@@ -282,24 +290,33 @@ public class GenerateCodeGenerator implements Generator {
 
 				boolean clientFile = !targetFilename.startsWith("com/graphql_java_generator/server");
 
+				boolean copyFile;
+				if (configuration instanceof GeneratePojoConfiguration) {
+					// if the goal/task is generatePojo, then only part of the dependencies should be copied.
+					copyFile = targetFilename.startsWith("com/graphql_java_generator/GraphQLField")
+							|| targetFilename.startsWith("com/graphql_java_generator/annotation")
+							|| targetFilename.startsWith("com/graphql_java_generator/exception")
+							|| (configuration.isGenerateJacksonAnnotations() && (targetFilename
+									.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
+									|| targetFilename.startsWith(
+											"com/graphql_java_generator/client/response/AbstractCustomJacksonDeserializer")));
+				} else {
+					copyFile = (configuration.getMode().equals(PluginMode.client) && clientFile)
+							|| (configuration.getMode().equals(PluginMode.server) && serverFile);
+				}
+
 				// if (!metaInfAndNotSpringFactories && !serverAndIsClientFile & !clientAndIsServerFile
 
-				if ((configuration.getMode().equals(PluginMode.client) && clientFile)
-						|| (configuration.getMode().equals(PluginMode.server) && serverFile)) {
+				if (copyFile) {
 					if (resources)
 						file = new java.io.File(configuration.getTargetResourceFolder(), targetFilename);
 					else
 						file = new java.io.File(configuration.getTargetSourceFolder(), targetFilename);
 
-					if (entry.isDirectory()) {
-						// if its a directory, create it
-						file.mkdir();
-					} else {
-						file.getParentFile().mkdirs();
-						try (OutputStream fos = new FileOutputStream(file)) {
-							while ((nbBytesRead = jar.read(bytes, 0, bytes.length)) > 0) {
-								fos.write(bytes, 0, nbBytesRead);
-							}
+					file.getParentFile().mkdirs();
+					try (OutputStream fos = new FileOutputStream(file)) {
+						while ((nbBytesRead = jar.read(bytes, 0, bytes.length)) > 0) {
+							fos.write(bytes, 0, nbBytesRead);
 						}
 					}
 				}

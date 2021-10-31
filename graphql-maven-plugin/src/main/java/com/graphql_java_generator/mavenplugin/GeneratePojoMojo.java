@@ -53,6 +53,10 @@ import graphql.ThreadSafe;
  * <I>generateServerCode</I>, you need to either add the <I>graphql-java-client-dependencies</I> dependencies, or set
  * the <I>copyRuntimeSources</I> plugin parameter to false and add the <I>graphql-java-runtime</I>.</LI>
  * </UL>
+ * <P>
+ * <U>Note:</U> in this mode, <I>copyRuntimeSources</I> must be set to false. Some dependencies must be copied for the
+ * code to compile (exceptions, annotations...)
+ * </P>
  * 
  * @author etienne-sf
  */

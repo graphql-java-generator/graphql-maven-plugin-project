@@ -18,8 +18,8 @@
 	</logger>
 
 	<logger name="com.graphql_java_generator" level="info" />
-		<root level="error">
-			<appender-ref ref="Console" />
-		</root>
+	<root level="error">
+		<appender-ref ref="Console" />
+	</root>
 
 </configuration>

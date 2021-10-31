@@ -116,7 +116,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
 		if (log.isTraceEnabled()) {
-			log.trace("Executing 'afterConnectionEstablished' for session " + session.getId());
+			log.trace("Executing 'afterConnectionEstablished' for session " + session.getId()
+					+ ", with acceptedProtocol=" + session.getAcceptedProtocol());
 		}
 		if ("subscriptions-transport-ws".equalsIgnoreCase(session.getAcceptedProtocol())) {
 			if (log.isTraceEnabled()) {

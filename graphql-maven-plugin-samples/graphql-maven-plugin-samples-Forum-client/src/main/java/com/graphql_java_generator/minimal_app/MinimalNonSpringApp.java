@@ -21,7 +21,7 @@ public class MinimalNonSpringApp {
 		// For this simple sample, we execute a direct query. But prepared queries are recommended.
 		// Please note that input parameters are mandatory for list or input types.
 		System.out.println(
-				"Executing query: '{id name publiclyAvailable topics(since: &param){id}}', with input parameter param of value '"
+				"Executing query: 'boards {id name publiclyAvailable topics(since: &param){id}}', with input parameter param of value '"
 						+ date + "'");
 		System.out
 				.println(queryExecutor.boards("{id name publiclyAvailable topics(since: &param){id}}", "param", date));

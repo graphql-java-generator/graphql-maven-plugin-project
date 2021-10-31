@@ -2,6 +2,9 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Simplify the $generateJacksonStuff expression (directly use $configuration.generateJacksonAnnotations)
+* Check of the [issue 9 on Gradle project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project/issues/9): comments marked with `"` or `###` are ignored (but they also don't respect the GraphQL spec)
+* Subscription: if calling a bad URL (connection refused), the app remain started (no error is thrown back to the client)
 * Properly implement the graphql-transport-ws protocol, [specified by the graphql-ws library](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md)
     * Add the Ping/Pong messages
     * Restore the forum client pom (with runtime code copy and client dependencies)
@@ -11,6 +14,7 @@ Here are the next tasks listed, as a TODO list:
         * A way could be that the webSocketHandler marks itself as completed (in a synchronized method), and closes the session, so that RequestExecutionSpringReactiveImpl knows that it needs to open a new one.
 * add a _HowTo compile page_ on the wiki (to build the plugin project, Java 9 or latter is needed, even if the built plugin is compatible with Java 8)
 * The default name is Xxx, not XxxxType (Query versus QueryType)
+* Remove the dependency to GSON (in the server runtime)
 * The 'graphql-java-runtime.properties' exists two times, once for each schema (in generatedResources). So there is an issue when copying files
     * Sol1: generate in build/resources/main
     * Sol2: Give a try to Gradle 8.0

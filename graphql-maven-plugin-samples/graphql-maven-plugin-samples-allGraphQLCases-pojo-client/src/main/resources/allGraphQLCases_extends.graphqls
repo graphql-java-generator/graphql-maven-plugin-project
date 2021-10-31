@@ -1,0 +1,8 @@
+
+extend type MyQueryType {
+    
+    ################################################################################
+    # A particular test, based on the github schema: a query that returns the query object.
+    # It introduces complexity in the code generation, that must be tested    
+    relay: MyQueryType!
+}

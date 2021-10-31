@@ -339,37 +339,40 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		// No specific annotation for objects and interfaces when in client mode.
 
 		if (type instanceof InterfaceType || type instanceof UnionType) {
-			type.addImport(configuration.getPackageName(), JsonTypeInfo.class.getName());
-			type.addImport(configuration.getPackageName(), JsonTypeInfo.Id.class.getName());
-			type.addAnnotation(
-					"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)");
+			if (configuration.isGenerateJacksonAnnotations()) {
+				type.addImport(configuration.getPackageName(), JsonTypeInfo.class.getName());
+				type.addImport(configuration.getPackageName(), JsonTypeInfo.Id.class.getName());
+				type.addAnnotation(
+						"@JsonTypeInfo(use = Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = \"__typename\", visible = true)");
 
-			// jsonSubTypes annotation looks like this:
-			// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name = "Human") })
-			StringBuffer jsonSubTypes = new StringBuffer();
-			type.addImport(configuration.getPackageName(), JsonSubTypes.class.getName());
-			type.addImport(configuration.getPackageName(), JsonSubTypes.Type.class.getName());
-			jsonSubTypes.append("@JsonSubTypes({");
-			boolean addSeparator = false;
+				// jsonSubTypes annotation looks like this:
+				// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name =
+				// "Human") })
+				StringBuffer jsonSubTypes = new StringBuffer();
+				type.addImport(configuration.getPackageName(), JsonSubTypes.class.getName());
+				type.addImport(configuration.getPackageName(), JsonSubTypes.Type.class.getName());
+				jsonSubTypes.append("@JsonSubTypes({");
 
-			List<ObjectType> types;
-			if (type instanceof InterfaceType)
-				types = ((InterfaceType) type).getImplementingTypes();
-			else
-				types = ((UnionType) type).getMemberTypes();
-
-			for (ObjectType t : types) {
-				// No separator for the first iteration
-				if (addSeparator)
-					jsonSubTypes.append(",");
+				boolean addSeparator = false;
+				List<ObjectType> types;
+				if (type instanceof InterfaceType)
+					types = ((InterfaceType) type).getImplementingTypes();
 				else
-					addSeparator = true;
-				jsonSubTypes.append(" @Type(value = ").append(t.getName()).append(".class, name = \"")
-						.append(t.getName()).append("\")");
-			}
-			jsonSubTypes.append(" })");
+					types = ((UnionType) type).getMemberTypes();
 
-			type.addAnnotation(jsonSubTypes.toString());
+				for (ObjectType t : types) {
+					// No separator for the first iteration
+					if (addSeparator)
+						jsonSubTypes.append(",");
+					else
+						addSeparator = true;
+					jsonSubTypes.append(" @Type(value = ").append(t.getName()).append(".class, name = \"")
+							.append(t.getName()).append("\")");
+				}
+				jsonSubTypes.append(" })");
+
+				type.addAnnotation(jsonSubTypes.toString());
+			}
 		}
 
 		// Add the GraphQLQuery annotation fpr query/mutation/subscription and for objects that are a
@@ -445,8 +448,10 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 */
 	void addFieldAnnotationForClientMode(FieldImpl field) {
 
-		field.getOwningType().addImport(configuration.getPackageName(), JsonProperty.class.getName());
-		field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
+		if (configuration.isGenerateJacksonAnnotations()) {
+			field.getOwningType().addImport(configuration.getPackageName(), JsonProperty.class.getName());
+			field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
+		}
 
 		// No json deserialization for input type
 		if (!field.getOwningType().isInputType()) {
@@ -455,19 +460,22 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			if (field.getFieldTypeAST().getListDepth() > 0) {
 				field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
 			}
-			if (field.getFieldTypeAST().getListDepth() > 0 || field.getType().isCustomScalar()) {
-				String classSimpleName = "CustomJacksonDeserializers."//
-						+ CustomDeserializer.getCustomDeserializerClassSimpleName(
-								field.getFieldTypeAST().getListDepth(),
-								graphqlUtils.getJavaName(field.getType().getName()));
-				field.getOwningType().addImport(configuration.getPackageName(),
-						getUtilPackageName() + ".CustomJacksonDeserializers");
-				using = classSimpleName + ".class";
-			}
 
-			if (contentAs != null || using != null) {
-				field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
-				field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
+			if (configuration.isGenerateJacksonAnnotations()) {
+				if (field.getFieldTypeAST().getListDepth() > 0 || field.getType().isCustomScalar()) {
+					String classSimpleName = "CustomJacksonDeserializers."//
+							+ CustomDeserializer.getCustomDeserializerClassSimpleName(
+									field.getFieldTypeAST().getListDepth(),
+									graphqlUtils.getJavaName(field.getType().getName()));
+					field.getOwningType().addImport(configuration.getPackageName(),
+							getUtilPackageName() + ".CustomJacksonDeserializers");
+					using = classSimpleName + ".class";
+				}
+
+				if (contentAs != null || using != null) {
+					field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
+					field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
+				}
 			}
 		}
 
@@ -811,7 +819,9 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 			switch (configuration.getMode()) {
 			case client:
-				addAnImportForOneType(type, JsonProperty.class);
+				if (configuration.isGenerateJacksonAnnotations()) {
+					addAnImportForOneType(type, JsonProperty.class);
+				}
 				break;
 			case server:
 				break;

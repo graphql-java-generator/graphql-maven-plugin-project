@@ -8,6 +8,13 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+All modes (client and server):
+* PR #101: Remove unused imports in some generated classes
+* generatePojo: corrected compilation errors (before this release, the graphql-java-runtime, graphql-java-client-dependencies or graphql-java-server-dependencies) was necessary to compile the generated code.
+
+
 # 1.17.3
 
 Client mode:
@@ -25,7 +32,7 @@ Client mode:
 
 # 1.17
 
-Both modes:
+All modes (client and server):
 * The maven plugin is now better integrated in the IDE. No more need of the maven-helper-plugin, to add the folder for the generated sources and generated resources.
 
 Client mode:

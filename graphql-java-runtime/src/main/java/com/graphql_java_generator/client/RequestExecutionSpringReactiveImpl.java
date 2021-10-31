@@ -6,7 +6,9 @@ package com.graphql_java_generator.client;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -220,6 +222,28 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 
 				logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName,
 						request);
+				if (logger.isTraceEnabled()) {
+					// Let's log the sent headers
+					StringBuffer sb = new StringBuffer();
+					sb.append("The Subscription GET request will be sent with these headers:\n");
+					if (headers.entrySet().size() == 0) {
+						sb.append("    ").append("<No headers!>");
+					} else {
+						for (Entry<String, List<String>> header : headers.entrySet()) {
+							sb.append("    ").append(header.getKey());
+							boolean first = false;
+							for (String value : header.getValue()) {
+								if (!first)
+									sb.append(",");
+								sb.append(value);
+								if (!first)
+									sb.append("\n");
+								first = false;
+							}
+						}
+					}
+					logger.trace(sb.toString());
+				}
 
 				// Let's create and start the Web Socket
 				webSocketHandler = new GraphQLReactiveWebSocketHandler(graphQLRequest.getGraphQLObjectMapper());

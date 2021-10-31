@@ -8,8 +8,8 @@
 		<version>local-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>graphql-maven-plugin-samples-allGraphQLCases-pojo</artifactId>
-	<description>This module do integration tests for the generatePojo goal</description>
+	<artifactId>graphql-maven-plugin-samples-allGraphQLCases-pojo-server</artifactId>
+	<description>This module do integration tests for the generatePojo goal, in server mode</description>
 
 	<build>
 		<plugins>
@@ -18,43 +18,6 @@
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>generatePojo-client</id>
-						<goals>
-							<goal>generatePojo</goal>
-						</goals>
-						<configuration>
-							<!-- Choosing client or server is useless. It's here only to check that if used, everything is still Ok -->
-							<mode>client</mode>
-							<packageName>org.allGraphQLCases.client.pojo</packageName>
-							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
-							<targetSourceFolder>${project.build.directory}/generated-sources/pojo-client</targetSourceFolder>
-							<targetResourceFolder>${project.build.directory}/generated-resources/pojo-client</targetResourceFolder>
-							<customScalars>
-								<customScalar>
-									<graphQLTypeName>Date</graphQLTypeName>
-									<javaType>java.util.Date</javaType>
-									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date
-									</graphQLScalarTypeStaticField>
-								</customScalar>
-								<customScalar>
-									<graphQLTypeName>else</graphQLTypeName>
-									<javaType>java.lang.String</javaType>
-									<graphQLScalarTypeGetter>org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
-								</customScalar>
-								<customScalar>
-									<graphQLTypeName>Long</graphQLTypeName>
-									<javaType>java.lang.Long</javaType>
-									<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
-								</customScalar>
-								<customScalar>
-									<graphQLTypeName>NonNegativeInt</graphQLTypeName>
-									<javaType>java.lang.Integer</javaType>
-									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
-								</customScalar>
-							</customScalars>
-						</configuration>
-					</execution>
-					<execution>
 						<id>generatePojo-server</id>
 						<goals>
 							<goal>generatePojo</goal>
@@ -62,11 +25,8 @@
 						<configuration>
 							<!-- Choosing client or server is useless. It's here only to check that if used, everything is still Ok -->
 							<mode>server</mode>
-							<copyRuntimeSources>false</copyRuntimeSources>
 							<packageName>org.allGraphQLCases.server.pojo</packageName>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
-							<targetSourceFolder>${project.build.directory}/generated-sources/pojo-server</targetSourceFolder>
-							<targetResourceFolder>${project.build.directory}/generated-resources/pojo-server</targetResourceFolder>
 							<customScalars>
 								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>
@@ -106,19 +66,6 @@
 	</build>
 
 	<dependencies>
-		<!-- Dependencies for tests -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Runtime for the generated code -->
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-client-dependencies</artifactId>
-			<type>pom</type>
-		</dependency>
 
 		<!-- Complementary graphql dependencies, for the custom scalars -->
 		<dependency>

@@ -3,7 +3,9 @@ package ${packageUtilName};
 
 import java.util.List;
 
+#if($configuration.isGenerateJacksonAnnotations())
 import com.fasterxml.jackson.annotation.JsonProperty;
+#end
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
@@ -17,16 +19,22 @@ import ${configuration.packageName}.${object.classSimpleName};
 
 public class ${object.classSimpleName}RootResponse {
 
+#if($configuration.isGenerateJacksonAnnotations())
 	@JsonProperty("data")
+#end
 	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeSimpleName = "${object.javaName}", javaClass = ${object.classSimpleName}.class)
 	${object.classSimpleName} ${object.requestType};
 
+#if($configuration.isGenerateJacksonAnnotations())
 	@JsonProperty("errors")
+#end
 	@JsonDeserialize(contentAs = Error.class)
 	public List<Error> errors;
 
+#if($configuration.isGenerateJacksonAnnotations())
 	@JsonProperty("extensions")
 	public JsonNode extensions;
+#end
 
 	// This getter is needed for the Json serialization
 	public ${object.classSimpleName} getData() {
@@ -46,6 +54,7 @@ public class ${object.classSimpleName}RootResponse {
 		this.errors = errors;
 	}
 
+#if($configuration.isGenerateJacksonAnnotations())
 	public JsonNode getExtensions() {
 		return extensions;
 	}
@@ -53,5 +62,6 @@ public class ${object.classSimpleName}RootResponse {
 	public void setExtensions(JsonNode extensions) {
 		this.extensions = extensions;
 	}
+#end
 
 }

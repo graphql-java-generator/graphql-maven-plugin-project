@@ -62,6 +62,7 @@ abstract class AbstractIntegrationTest {
 		// Preparation
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetSourceFolder());
 		mavenTestHelper.deleteDirectoryAndContentIfExists(pluginConfiguration.getTargetClassFolder());
+		pluginConfiguration.logConfiguration();
 
 		// Go, go, go
 		codeGenerator.generateCode();

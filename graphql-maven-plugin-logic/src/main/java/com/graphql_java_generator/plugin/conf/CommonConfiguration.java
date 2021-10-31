@@ -106,6 +106,16 @@ public interface CommonConfiguration {
 	public boolean isAddRelayConnections();
 
 	/**
+	 * This method is used only in {@link GeneratePojoConfiguration}.
+	 * 
+	 * @return The {@link GeneratePojoConfiguration} implementation of this method always returns true
+	 * @see GeneratePojoConfiguration#isGenerateJacksonAnnotations()
+	 */
+	default public boolean isGenerateJacksonAnnotations() {
+		return true;
+	}
+
+	/**
 	 * <P>
 	 * This parameter is now <B><I>deprecated</I></B>: it's value used in the plugin is always true, that is: if the
 	 * generated sources or resources are older than the GraphQL schema file(s), then there is no source or resource

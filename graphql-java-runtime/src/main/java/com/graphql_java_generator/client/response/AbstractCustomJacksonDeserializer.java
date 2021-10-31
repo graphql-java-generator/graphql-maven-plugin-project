@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,9 +29,6 @@ import graphql.schema.GraphQLScalarType;
 public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializer<T> {
 
 	private static final long serialVersionUID = 1L;
-
-	/** Logger for this class */
-	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * The class that can deserialize the items in the list. This recursion allows to deserialize list of lists.<BR/>
@@ -111,11 +105,6 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 	@Override
 	public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
-		JsonToken currentToken = p.currentToken();
-		if (logger.isTraceEnabled()) {
-			logger.trace("Reading a {} token. Its String value is '{}'", currentToken, p.getCurrentValue());
-		}
-
 		if (p.currentToken().equals(JsonToken.VALUE_NULL)) {
 			return null;
 		} else if (list) {
@@ -130,7 +119,6 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 			List<Object> returnedList = new ArrayList<>();
 			// Let's loop until we find the end of the array
 			while (!p.nextToken().equals(JsonToken.END_ARRAY)) {
-				currentToken = p.currentToken();
 				if (p.currentToken().equals(JsonToken.START_ARRAY)) {
 					// We're starting a sublist.
 					if (itemDeserializer == null) {
@@ -141,10 +129,7 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 								+ " JSON token, but the itemDeserializer doesn't manage list. Hint: The number of embedded lists doesn't match the defined deserializer for the GraphQL field.");
 					} else {
 						// Ok. Let's deserialize the sublist.
-						logger.trace("Sending deserialization for a sublist to {} with token {}",
-								itemDeserializer.getClass().getName(), p.currentToken());
 						returnedList.add(itemDeserializer.deserialize(p, ctxt));
-						currentToken = p.currentToken();
 					}
 				} else if (itemDeserializer != null) {
 					// We've found a final value (not a list).
@@ -154,29 +139,20 @@ public abstract class AbstractCustomJacksonDeserializer<T> extends StdDeserializ
 						throw new JsonParseException(p, "Found a " + p.currentToken().asString()
 								+ " JSON token, but the itemDeserializer expects a list. Hint: the number of embedded lists doesn't match the defined deserializer for the GraphQL field.");
 					} else {
-						logger.trace("Sending deserialization for a value to {} with token {}",
-								itemDeserializer.getClass().getName(), p.currentToken());
 						returnedList.add(itemDeserializer.deserialize(p, ctxt));
-						currentToken = p.currentToken();
 					}
 				} else {
 					// It's a final value, and it is not a custom scalar (otherwise, itemDeserializer would be defined)
 					// Let's let Jackson parse this value.
-					logger.trace("Executing JsonParser.readValueAs({}) with token {}", handledType.getName(),
-							p.currentToken());
 					Object o = p.readValueAs(handledType);
-					logger.trace("  Read value was {}", o == null ? "null" : o.toString());
 					returnedList.add(o);
 				}
 			} // while
-			logger.trace("The read list contains {} items", returnedList.size());
 			return (T) returnedList;
 
 		} else if (itemDeserializer != null) {
 
 			// We're not in a list, and a deserializer has been defined. Let's use it to deserialize this value
-			logger.trace("Recursing down one leel, by sending the {} token to the {} deserializer", p.currentToken(),
-					itemDeserializer.getClass().getName());
 			return (T) itemDeserializer.deserialize(p, ctxt);
 
 		} else if (graphQLScalarType == null) {

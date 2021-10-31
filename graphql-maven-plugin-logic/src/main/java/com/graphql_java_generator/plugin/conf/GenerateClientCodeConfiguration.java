@@ -33,6 +33,17 @@ public interface GenerateClientCodeConfiguration extends GenerateCodeCommonConfi
 	 */
 	public boolean isGenerateDeprecatedRequestResponse();
 
+	/**
+	 * {@inheritDoc}
+	 * <P>
+	 * In client mode, the <A HREF="https://github.com/FasterXML/jackson">Jackson</A> annotations are always generated
+	 * </P>
+	 */
+	@Override
+	default public boolean isGenerateJacksonAnnotations() {
+		return true;
+	}
+
 	/** Logs all the configuration parameters (only when in the debug level) */
 	@Override
 	public default void logConfiguration() {

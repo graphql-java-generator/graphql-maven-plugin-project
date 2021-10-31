@@ -588,10 +588,10 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 	}
 
-	@Override
-	public List<String> getSubProtocols() {
-		return SUB_PROTOCOL_LIST;
-	}
+	// @Override
+	// public List<String> getSubProtocols() {
+	// return SUB_PROTOCOL_LIST;
+	// }
 
 	public WebSocketSession getSession() {
 		return session;

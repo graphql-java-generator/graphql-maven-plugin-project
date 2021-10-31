@@ -24,6 +24,18 @@ public interface GraphQLConfiguration extends GenerateClientCodeConfiguration, G
 	public final String DEFAULT_MODE = "client";
 
 	/**
+	 * {@inheritDoc}
+	 * <P>
+	 * In client mode, the <A HREF="https://github.com/FasterXML/jackson">Jackson</A> annotations are always generated.
+	 * In server mode, these annotations are never generated.
+	 * </P>
+	 */
+	@Override
+	default public boolean isGenerateJacksonAnnotations() {
+		return getMode().equals(PluginMode.client);
+	}
+
+	/**
 	 * Logs all the configuration parameters for the <I>graphql</I> maven goal or <I>graphqlGenerateCode</I> gradle task
 	 * (only when in the debug level)
 	 */

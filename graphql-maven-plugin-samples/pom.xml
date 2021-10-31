@@ -16,7 +16,9 @@
 	</description>
 
 	<modules>
-		<module>graphql-maven-plugin-samples-allGraphQLCases-pojo</module>
+		<module>graphql-maven-plugin-samples-allGraphQLCases-pojo-client</module>
+		<module>graphql-maven-plugin-samples-allGraphQLCases-pojo-client-jackson</module>
+		<module>graphql-maven-plugin-samples-allGraphQLCases-pojo-server</module>
 		<module>graphql-maven-plugin-samples-allGraphQLCases-server</module>
 		<module>graphql-maven-plugin-samples-OAuth-authorization-server</module>
 		<module>graphql-maven-plugin-samples-allGraphQLCases-client</module>

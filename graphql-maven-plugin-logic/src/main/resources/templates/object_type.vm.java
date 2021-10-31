@@ -4,7 +4,7 @@ package ${configuration.packageName};
 import java.util.HashMap;
 import java.util.Map;
 
-#if(${configuration.mode}=="client" && ${object.requestType})
+#if ($configuration.isGenerateJacksonAnnotations())
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,12 +27,12 @@ import $import;
 ${object.annotation}
 public class ${targetFileName} 
 #if($object.implementz.size()>0)	implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end
-#if(${configuration.mode}=="client" && ${object.requestType})	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end
+#if($configuration.isGenerateJacksonAnnotations())	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end
 {
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
-#if(${configuration.mode}=="client" && ${object.requestType})
+#if($configuration.isGenerateJacksonAnnotations())
 
 	private ObjectMapper mapper = null;
 	private JsonNode extensions;
@@ -42,7 +42,7 @@ public class ${targetFileName}
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
-#if(${configuration.mode}=="client" && ${object.requestType})
+#if($configuration.isGenerateJacksonAnnotations())
 	private ObjectMapper getMapper() {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
@@ -84,7 +84,7 @@ public class ${targetFileName}
 	 * @throws JsonProcessingException
 	 *             When there is an error when converting the key's value into the _t_ class
 	 */
-	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
+	public <T> T getExtensionsField(String key, Class<T> t)#if($configuration.isGenerateJacksonAnnotations()) throws JsonProcessingException#end {
 		JsonNode node = getExtensionsAsMap().get(key);
 		return (node == null) ? null : getMapper().treeToValue(node, t);
 	}
