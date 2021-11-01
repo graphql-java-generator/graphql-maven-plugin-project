@@ -88,7 +88,7 @@ public class GraphQLObjectMapper {
 				logger.trace("Reading alias '" + propertyName + "' for " + beanOrClass.getClass().getName());
 			}
 
-			// Let's check of there is a CustomDeserializer for the field that this alias maps to
+			// Let's check if there is a CustomDeserializer for the field that this alias maps to
 			if (aliasFields != null) {
 				aliases = aliasFields.get(beanOrClass.getClass());
 			}
@@ -100,17 +100,18 @@ public class GraphQLObjectMapper {
 			}
 
 			// If the plugin defined a CustomDeserializer, let's use it
-			if (jsonDeserialize != null) {
-				try {
+			try {
+				if (jsonDeserialize != null) {
 					JsonDeserializer<?> graphQLDeserializer = jsonDeserialize.using().getDeclaredConstructor()
 							.newInstance();
 					value = graphQLDeserializer.deserialize(p, ctxt);
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-					throw new RuntimeException(e.getMessage(), e);
+				} else {
+					value = getAliasValue(p, targetField, p.readValueAsTree());
 				}
-			} else {
-				value = getAliasValue(p, targetField, p.readValueAsTree());
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException
+					| GraphQLRequestExecutionException e) {
+				throw new RuntimeException(e.getMessage(), e);
 			}
 
 			// Let's call the setAliasValue of the target object, to set the alias's value we've just read
@@ -156,9 +157,11 @@ public class GraphQLObjectMapper {
 	 * @return The parsed value. That is, according to the above sample: a String, a List<String> or a
 	 *         List<List<String>>
 	 * @throws IOException
+	 * @throws GraphQLRequestExecutionException
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object getAliasValue(JsonParser parser, Field targetField, TreeNode value) throws IOException {
+	public Object getAliasValue(JsonParser parser, Field targetField, TreeNode value)
+			throws IOException, GraphQLRequestExecutionException {
 		if (value instanceof ArrayNode) {
 			// value is a list. Let's do a recursive call for each of its item.
 			List<Object> list = new ArrayList<>(((ArrayNode) value).size());
@@ -224,7 +227,7 @@ public class GraphQLObjectMapper {
 			// tries to use this value. These non managed types can be:
 			// 1) A custom scalar that returns a specific json type
 			// 2) A bug
-			return new GraphQLRequestExecutionException(
+			throw new GraphQLRequestExecutionException(
 					"Non managed json type. This can happen in two cases: the value for this alias is a GraphQL custom scalar (in which case you should use the getAliasCustomScalarValue method) or a bug");
 		}
 	}

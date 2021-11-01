@@ -4,7 +4,7 @@
 #if(${configuration.mode}=="client")
 
 	/**
-	 * This map contains the deserialiazed values for the alias, as parsed from the json response from the GraphQL
+	 * This map contains the deserialized values for the alias, as parsed from the json response from the GraphQL
 	 * server. The key is the alias name, the value is the deserialiazed value (taking into account custom scalars,
 	 * lists, ...)
 	 */
@@ -85,15 +85,9 @@
 	 * 
 	 * @param alias
 	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 *             If the value can not be parsed
 	 */
-	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
-		Object value = aliasValues.get(alias);
-		if (value instanceof GraphQLRequestExecutionException)
-			throw (GraphQLRequestExecutionException) value;
-		else
-			return value;
+	public Object getAliasValue(String alias) {
+		return aliasValues.get(alias);
 	}
 
 #end

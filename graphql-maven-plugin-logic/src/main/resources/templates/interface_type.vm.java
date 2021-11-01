@@ -4,7 +4,6 @@ package ${configuration.packageName};
 #foreach($import in ${object.imports})
 import $import;
 #end
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
 #foreach ($comment in $object.comments)
@@ -67,10 +66,8 @@ public interface ${object.javaName} #if($object.implementz.size()>0)extends #for
 	 * 
 	 * @param alias
 	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 *             If the value can not be parsed
 	 */
-	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException;
+	public Object getAliasValue(String alias);
 
 #end
 }

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.graphql_java_generator.client.response.AbstractCustomJacksonDeserializer;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 import graphql.schema.GraphQLScalarType;
 

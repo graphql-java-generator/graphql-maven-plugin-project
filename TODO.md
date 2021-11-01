@@ -2,6 +2,8 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Solve issue #103 (define the Velocity log file, toward the target folder)
+* Subscription: the client remain active after a `Connection refused` (even if the main thread stops)
 * Simplify the $generateJacksonStuff expression (directly use $configuration.generateJacksonAnnotations)
 * Check of the [issue 9 on Gradle project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project/issues/9): comments marked with `"` or `###` are ignored (but they also don't respect the GraphQL spec)
 * Subscription: if calling a bad URL (connection refused), the app remain started (no error is thrown back to the client)

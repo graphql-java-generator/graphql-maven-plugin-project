@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 #end
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 #foreach($import in ${object.imports})
 import $import;
@@ -27,12 +26,12 @@ import $import;
 ${object.annotation}
 public class ${targetFileName} 
 #if($object.implementz.size()>0)	implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end
-#if($configuration.isGenerateJacksonAnnotations())	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end
+#if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end
 {
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
-#if($configuration.isGenerateJacksonAnnotations())
+#if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
 
 	private ObjectMapper mapper = null;
 	private JsonNode extensions;
@@ -42,7 +41,7 @@ public class ${targetFileName}
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
-#if($configuration.isGenerateJacksonAnnotations())
+#if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})
 	private ObjectMapper getMapper() {
 		if (mapper == null) {
 			mapper = new ObjectMapper();

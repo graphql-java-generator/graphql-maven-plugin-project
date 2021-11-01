@@ -295,7 +295,6 @@ public class GenerateCodeGenerator implements Generator {
 					// if the goal/task is generatePojo, then only part of the dependencies should be copied.
 					copyFile = targetFilename.startsWith("com/graphql_java_generator/GraphQLField")
 							|| targetFilename.startsWith("com/graphql_java_generator/annotation")
-							|| targetFilename.startsWith("com/graphql_java_generator/exception")
 							|| (configuration.isGenerateJacksonAnnotations() && (targetFilename
 									.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
 									|| targetFilename.startsWith(
