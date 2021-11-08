@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
@@ -94,8 +95,13 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}", null, null);
 	}
 
 	@Test
@@ -165,8 +171,13 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn friendsAlias:friends{aliasId:id aliasName2:name __typename} __typename}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn friendsAlias:friends{aliasId:id aliasName2:name __typename} __typename}}", //
+				null, null);
 	}
 
 	@Test
@@ -188,8 +199,13 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}", //
+				null, null);
 	}
 
 	@Test
@@ -208,8 +224,13 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}", //
+				null, null);
 	}
 
 	@Test
@@ -236,8 +257,16 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				+ "anArray:[  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ],"
 				+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation mut1" //
+				+ "{createHuman(human:{name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]})"
+				+ " @testDirective(value:\"the directive value\",anotherValue:\"the other directive value\","
+				+ "anArray:[  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ],"
+				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}", //
+				null, null);
 	}
 
 	@Test

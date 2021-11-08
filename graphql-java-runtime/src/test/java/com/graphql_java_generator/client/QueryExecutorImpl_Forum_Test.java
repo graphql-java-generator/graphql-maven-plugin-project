@@ -90,12 +90,20 @@ class QueryExecutorImpl_Forum_Test {
 				.build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(null);
+		String request = objectResponse.buildRequestAsString(null);
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2018-12-20\\\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2018-12-20\\\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}\"}",
 				request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+
+		// Verification
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map,
+				"query{boards{id name publiclyAvailable topics(since:\"2018-12-20\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}",
+				null, null);
 	}
 
 	@Test
@@ -109,11 +117,19 @@ class QueryExecutorImpl_Forum_Test {
 		Map<String, Object> parameters = new HashMap<>();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2019-12-21\\\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{boards{id name publiclyAvailable topics(since:\\\"2019-12-21\\\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}\"}",
 				request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+
+		// Verification
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map,
+				"query{boards{id name publiclyAvailable topics(since:\"2019-12-21\"){id date author{id name email type __typename} nbPosts posts{date author{name email type __typename} __typename} __typename} __typename}}",
+				null, null);
 	}
 }

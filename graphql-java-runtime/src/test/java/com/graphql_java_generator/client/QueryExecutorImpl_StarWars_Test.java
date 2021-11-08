@@ -83,11 +83,16 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
-		assertEquals("{\"query\":\"query{hero{id name __typename}}\",\"variables\":null,\"operationName\":null}",
-				request);
+		assertEquals("{\"query\":\"query{hero{id name __typename}}\"}", request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+
+		// Verification
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map, "query{hero{id name __typename}}", null, null);
 	}
 
 	/**
@@ -114,12 +119,17 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
-		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE){id name __typename}}\",\"variables\":null,\"operationName\":null}",
-				request);
+		assertEquals("{\"query\":\"query{hero(episode:NEWHOPE){id name __typename}}\"}", request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+
+		// Verification
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map, "query{hero(episode:NEWHOPE){id name __typename}}",
+				null, null);
 	}
 
 	/**
@@ -145,11 +155,11 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
 		assertEquals(
-				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn friends{name __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
+				"{\"query\":\"query{hero(episode:NEWHOPE){id name appearsIn friends{name __typename} __typename}}\"}",
 				request);
 	}
 
@@ -175,12 +185,10 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
-		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn friends{name __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
-				request);
+		assertEquals("{\"query\":\"query{hero{id name appearsIn friends{name __typename} __typename}}\"}", request);
 	}
 
 	/**
@@ -203,12 +211,10 @@ class QueryExecutorImpl_StarWars_Test {
 				.build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(null); // No map given (null instead)
+		String request = objectResponse.buildRequestAsString(null); // No map given (null instead)
 
 		// Verification
-		assertEquals(
-				"{\"query\":\"query{hero{id name appearsIn friends{name __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
-				request);
+		assertEquals("{\"query\":\"query{hero{id name appearsIn friends{name __typename} __typename}}\"}", request);
 	}
 
 	/**
@@ -231,9 +237,9 @@ class QueryExecutorImpl_StarWars_Test {
 
 		// Go, go, go
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> objectResponse.buildRequest(new HashMap<>())); // Empty map given
+				() -> objectResponse.buildRequestAsString(new HashMap<>())); // Empty map given
 		GraphQLRequestExecutionException e2 = assertThrows(GraphQLRequestExecutionException.class,
-				() -> objectResponse.buildRequest(null)); // No map given (null instead)
+				() -> objectResponse.buildRequestAsString(null)); // No map given (null instead)
 
 		// Verification
 		assertTrue(e.getMessage().contains("queryTypeDroidId"));

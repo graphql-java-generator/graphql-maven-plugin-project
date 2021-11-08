@@ -445,27 +445,12 @@ public class InputParameter {
 							}
 							previousToken = token;
 							token = qt.nextToken(true);
-							if (token.contentEquals("\"")) {
-								// We've found a double quote. So we probably are starting or leaving a string.
-
-								// But perhaps we're within a String, and we've just read an escaped double quote. So,
-								// then we're still in the string (it's not the end of the string).
-								// As the query parameter is a string, the string delimiters are thesemlves escaped. So
-								// an escaped double-quote within a string of a paremeter needs two \ to be escaped
-								// within a string parameter in the query string of the json.
-								boolean doubleQuoteEscapedWithinAString = withinAString && previousToken.endsWith("\\");
-								if (doubleQuoteEscapedWithinAString) {
-									// We must escape the previous '\', then escape the '"'
-									sb.append("\\\\");
-								} else {
-									// We've found the start or the end of the string value. This important, as []{}
-									// characters should be ignored, when in a string
-									withinAString = !withinAString;
-									// We must escape this '"', as in the JSON query, this string is itself in a String
-									sb.append("\\");
-								}
-							}
 							sb.append(token);
+							if (token.contentEquals("\"") && !(withinAString && previousToken.endsWith("\\"))) {
+								// We've found the start or the end of the string value. This important, as []{}
+								// characters should be ignored, when in a string
+								withinAString = !withinAString;
+							}
 							if (!withinAString) {
 								if ((list && token.equals("[") || (!list && token.equals("{")))) {
 									// We're going deeper in the list or object
@@ -545,6 +530,7 @@ public class InputParameter {
 
 		throw new GraphQLRequestPreparationException(
 				"The list of parameters for the field '" + fieldName + "' is not finished (no closing parenthesis)");
+
 	}
 
 	/**
@@ -711,18 +697,18 @@ public class InputParameter {
 					graphQLVariable);
 		} else if (graphQLScalarTypeParam != null) {
 			Object ret = graphQLScalarTypeParam.getCoercing().serialize(val);
-			if (ret instanceof String)
-				return getStringValue((String) ret, graphQLVariable);
-			else
+			if (ret instanceof String) {
+				return getStringValue((String) ret);
+			} else
 				return ret.toString();
 		} else if (val instanceof RawGraphQLString) {
 			// The value is a part of the GraphQL request. Let's write it as is.
 			return ((RawGraphQLString) val).toString();
 		} else if (val instanceof String) {
 			// The value is a String. Let's limit it by double quotes
-			return getStringValue((String) val, graphQLVariable);
+			return getStringValue((String) val);
 		} else if (val instanceof UUID) {
-			return getStringValue(((UUID) val).toString(), graphQLVariable);
+			return getStringValue(((UUID) val).toString());
 		} else if (val.getClass().getAnnotation(GraphQLInputType.class) != null) {
 			return getInputTypeStringValue(writingGraphQLVariables, val, graphQLVariable);
 		} else {
@@ -737,20 +723,12 @@ public class InputParameter {
 	 *
 	 * @param str
 	 *            The String value that should be formated for the GraphQL request
-	 * @param graphQLVariable
-	 *            true if the current input type should be deserialize as a GraphQL variable. In this case, the string
-	 *            should not be escaped. Otherwise, the string value is in the query parameter, which is a string. So
-	 *            the double quotes must be escaped
 	 * @see <a href="https://www.json.org/">json.org section on strings</a>
 	 * @return escaped string
 	 */
-	private String getStringValue(String str, boolean graphQLVariable) {
-		return ""//
-				+ (graphQLVariable ? "" : "\\")//
-				+ "\"" //
-				+ StringEscapeUtils.escapeJson(StringEscapeUtils.escapeJson(str)) //
-				+ (graphQLVariable ? "" : "\\")//
-				+ "\"";
+	private String getStringValue(String str) {
+		String r = "\"" + StringEscapeUtils.escapeJson(str) + "\"";
+		return r;
 	}
 
 	/**
@@ -812,7 +790,8 @@ public class InputParameter {
 					result//
 							.append(separator)//
 							.append(graphQLVariable ? "\"" : "")//
-							.append(field.getName()).append(graphQLVariable ? "\"" : "")//
+							.append(field.getName())//
+							.append(graphQLVariable ? "\"" : "")//
 							.append(":")//
 							.append(getValueForGraphqlQuery(writingGraphQLVariables, val, graphQLTypeName,
 									graphqlClientUtils.getGraphQLCustomScalarType(field), graphQLVariable));

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -48,7 +49,14 @@ class AbstractGraphQLRequest_unionTest {
 				+ "... on AnyCharacter{__typename} " //
 				+ "... on Droid{id primaryFunction ... on Character{name friends{name __typename} __typename}}" //
 				+ "}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "query{unionTest{" //
+				+ "... on AnyCharacter{__typename} " //
+				+ "... on Droid{id primaryFunction ... on Character{name friends{name __typename} __typename}}" //
+				+ "}}", //
+				null, null);
 	}
 }

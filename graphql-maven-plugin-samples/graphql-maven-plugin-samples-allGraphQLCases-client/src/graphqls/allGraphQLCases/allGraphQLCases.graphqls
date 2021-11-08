@@ -259,6 +259,7 @@ input SubscriptionTestParam {
 	errorOnNext: Boolean!
 	completeAfterFirstNotification: Boolean!
 	closeWebSocketBeforeFirstNotification: Boolean!
+	messages: [String!]!
 }
 
 ##############################################################################################################

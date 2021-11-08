@@ -3,6 +3,7 @@ package org.allGraphQLCases;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -102,8 +103,8 @@ class GraphQLVariablesIT {
 				+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
 		Map<String, Object> params = new HashMap<>();
 		params.put("uppercase", true);
-		params.put("anotherValue", "another value");
-		params.put("Value", "a first value");
+		params.put("anotherValue", "another value with an antislash: \\");
+		params.put("Value", "a first \"value\"");
 
 		// Go, go, go
 		MyQueryType resp = directiveOnQuery.execQuery(params);
@@ -114,8 +115,8 @@ class GraphQLVariablesIT {
 		assertNotNull(ret);
 		assertEquals(2, ret.size());
 		//
-		assertEquals("A FIRST VALUE", ret.get(0));
-		assertEquals("ANOTHER VALUE", ret.get(1));
+		assertEquals("A FIRST \"VALUE\"", ret.get(0));
+		assertEquals("ANOTHER VALUE WITH AN ANTISLASH: \\", ret.get(1));
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -211,5 +212,10 @@ class GraphQLVariablesIT {
 
 		// Verification
 		assertNotNull(callback.lastReceivedMessage, "The subscription should have received a message");
+	}
+
+	@Test
+	public void test_GraphQLVariables_subscribeWithStringParameters() {
+		fail("not yet implemented (use of SubscriptionTestParam.messages)");
 	}
 }

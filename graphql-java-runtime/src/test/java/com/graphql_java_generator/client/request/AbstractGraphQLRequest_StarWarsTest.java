@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.starwars.Character;
 import com.graphql_java_generator.domain.client.starwars.GraphQLRequest;
 import com.graphql_java_generator.domain.client.starwars.Human;
@@ -73,19 +74,26 @@ class AbstractGraphQLRequest_StarWarsTest {
 		String query2 = "  \n\r\t query \n\r\t  {human(id:&theHumanId) {id name friends {name appearsIn}}}  \n\r\t ";
 
 		String expected = "{\"query\":\""//
-				+ "query{human(id:\\\"00000000-0000-0000-0000-000000000031\\\"){id name friends{name appearsIn __typename} __typename}}\"" //
-				+ ",\"variables\":null,\"operationName\":null}";
+				+ "query{human(id:\\\"00000000-0000-0000-0000-000000000031\\\"){id name friends{name appearsIn __typename} __typename}}\"}";
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("theHumanId", "00000000-0000-0000-0000-000000000031");
 
 		// Go, go, go
-		String request1 = new GraphQLRequest(query1).buildRequest(null);
-		String request2 = new GraphQLRequest(query2).buildRequest(params);
+		String request1 = new GraphQLRequest(query1).buildRequestAsString(null);
+		String request2 = new GraphQLRequest(query2).buildRequestAsString(params);
 
 		// Verification
 		assertEquals(expected, request1);
 		assertEquals(expected, request2);
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(new GraphQLRequest(query1).buildRequestAsMap(params), ""//
+				+ "query{human(id:\"00000000-0000-0000-0000-000000000031\"){id name friends{name appearsIn __typename} __typename}}", //
+				null, null);
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(new GraphQLRequest(query2).buildRequestAsMap(params), ""//
+				+ "query{human(id:\"00000000-0000-0000-0000-000000000031\"){id name friends{name appearsIn __typename} __typename}}", //
+				null, null);
 	}
 
 	@Test
@@ -95,11 +103,11 @@ class AbstractGraphQLRequest_StarWarsTest {
 		String query1 = "  \n\r\t   {__schema {types{kind name}}}  \n\r\t ";
 		String query2 = "  \n\r\t query \n\r\t  {__schema {types{kind name}}} \n\r\t ";
 
-		String expected = "{\"query\":\"query{__schema{types{kind name __typename} __typename}}\",\"variables\":null,\"operationName\":null}";
+		String expected = "{\"query\":\"query{__schema{types{kind name __typename} __typename}}\"}";
 
 		// Go, go, go
-		String request1 = new GraphQLRequest(query1).buildRequest(null);
-		String request2 = new GraphQLRequest(query2).buildRequest(null);
+		String request1 = new GraphQLRequest(query1).buildRequestAsString(null);
+		String request2 = new GraphQLRequest(query2).buildRequestAsString(null);
 
 		// Verification
 		assertEquals(expected, request1);
@@ -369,8 +377,11 @@ class AbstractGraphQLRequest_StarWarsTest {
 		assertEquals("human", human.name, "field name");
 		//
 		assertEquals(
-				"{\"query\":\"query{human(id:\\\"00000000-0000-0000-0000-000000000666\\\"){id friends{id nameAlias:name amis:friends{id name __typename} appearsIn __typename} name __typename}}\",\"variables\":null,\"operationName\":null}",
-				graphQLRequest.buildRequest(paramsHuman));
+				"{\"query\":\"query{human(id:\\\"00000000-0000-0000-0000-000000000666\\\"){id friends{id nameAlias:name amis:friends{id name __typename} appearsIn __typename} name __typename}}\"}",
+				graphQLRequest.buildRequestAsString(paramsHuman));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(paramsHuman), ""//
+				+ "query{human(id:\"00000000-0000-0000-0000-000000000666\"){id friends{id nameAlias:name amis:friends{id name __typename} appearsIn __typename} name __typename}}", //
+				null, null);
 	}
 
 	@SuppressWarnings("deprecation")

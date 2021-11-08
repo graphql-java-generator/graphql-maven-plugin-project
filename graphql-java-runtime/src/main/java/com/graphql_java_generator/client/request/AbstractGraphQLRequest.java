@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.client.request;
 
 import java.io.IOException;
@@ -12,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -98,6 +96,36 @@ public abstract class AbstractGraphQLRequest {
 	private enum Step {
 		NAME, TYPE
 	};
+
+	/**
+	 * This class contains the payload that will be sent to the server. This payload is serialized differently,
+	 * depending on the transport, for instance: http POST for query and mutation, or web socket with the
+	 * graphql-transport-ws protocol for query, mutation and subscription.
+	 * 
+	 * @author etienne_sf
+	 */
+	private static class Payload {
+		String query = null;
+		Map<String, String> variables = new HashMap<>();
+		String operationName = null;
+
+		public String getVariablesAsString() {
+			StringBuffer sb = new StringBuffer();
+			sb.append("{");
+			boolean first = true;
+			for (String key : variables.keySet()) {
+				if (!first)
+					sb.append(",");
+				first = false;
+				sb.append("\"");
+				sb.append(StringEscapeUtils.escapeJson(key));
+				sb.append("\":");
+				sb.append(variables.get(key));
+			}
+			sb.append("}");
+			return sb.toString();
+		}
+	}
 
 	/**
 	 * Create the instance, from the GraphQL request, for a partial request.<BR/>
@@ -562,13 +590,19 @@ public abstract class AbstractGraphQLRequest {
 	}
 
 	/**
+	 * Returns the payload for this request. This payload can then be serialized, according to the transport protocol
+	 * used.
 	 * 
 	 * @param params
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public String buildRequest(Map<String, Object> params) throws GraphQLRequestExecutionException {
-		StringBuilder sb = new StringBuilder("{\"query\":\"");
+	private Payload getPayload(Map<String, Object> params) throws GraphQLRequestExecutionException {
+		Payload payload = new Payload();
+		StringBuilder sb = new StringBuilder();
+
+		// sbGraphQLValues contains the variable declaration of the query
+		StringBuilder sbGraphQLVariables = new StringBuilder();
 
 		// Let's start by the fragments
 		for (Fragment fragment : fragments) {
@@ -593,14 +627,14 @@ public abstract class AbstractGraphQLRequest {
 		if (requestName != null) {
 			sb.append(" ").append(requestName);
 		}
-		// Let's add all GraphQL variables here
-		StringBuilder sbGraphQLVariables = new StringBuilder();
-		StringBuilder sbGraphQLValues = new StringBuilder();
+
+		//////////////////////////////////////////////////////////////////////////////////
+		// Step 2 : collect the GraphQL variables
 		String separator = "";
 		for (InputParameter param : request.inputParameters) {
 			if (param.getType() == InputParameterType.GRAPHQL_VARIABLE) {
 				//////////////////////////////////////////////////////////////////////
-				// Let's complete the variable list,
+				// Let's complete the variable list
 				sbGraphQLVariables.append(separator)//
 						.append("$")//
 						.append(param.getBindParameterName())//
@@ -623,11 +657,7 @@ public abstract class AbstractGraphQLRequest {
 
 				//////////////////////////////////////////////////////////////////////
 				// And the variable value list (for the json variables field)
-				sbGraphQLValues.append(separator)//
-						.append("\"")//
-						.append(param.getBindParameterName())//
-						.append("\":")//
-						.append(param.getValueForGraphqlQuery(true, params));
+				payload.variables.put(param.getBindParameterName(), param.getValueForGraphqlQuery(true, params));
 
 				separator = ",";
 			}
@@ -642,12 +672,77 @@ public abstract class AbstractGraphQLRequest {
 		// Let's add the whole request
 		request.appendToGraphQLRequests(sb, params, false);
 
-		// Let's finish the json string
-		sb.append("\",\"variables\":")//
-				.append((graphQLVariables.length() > 0) ? "{" + sbGraphQLValues + "}" : "null")//
-				.append(",\"operationName\":null}");
+		// And add the result in the output map
+		payload.query = sb.toString();
+
+		// Step 3 : add the operationName
+		//
+		// This parameter is not mandatory, and is not transmitted by the plugin
+
+		return payload;
+	}
+
+	/**
+	 * Builds the request, and return it as a String
+	 * 
+	 * 
+	 * @param params
+	 *            The parameters values to transmit to the server
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	public String buildRequestAsString(Map<String, Object> params) throws GraphQLRequestExecutionException {
+		Payload payload = getPayload(params);
+
+		// Step 1: add the query
+		StringBuilder sb = new StringBuilder("{\"query\":\"");
+		sb.append(StringEscapeUtils.escapeJson(payload.query));
+		sb.append("\"");
+
+		// Step 2: add the variables
+		if (payload.variables.size() > 0) {
+			sb.append(",\"variables\":");
+			sb.append(payload.getVariablesAsString());
+		}
+
+		// Step 3: add the operation name
+		if (payload.operationName != null) {
+			sb.append(",\"operationName\":");
+			sb.append(payload.operationName);
+		}
+
+		sb.append("}");
 
 		return sb.toString();
+	}
+
+	/**
+	 * Builds the request, and return it as a String
+	 * 
+	 * 
+	 * @param params
+	 *            The parameters values to transmit to the server
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	public Map<String, String> buildRequestAsMap(Map<String, Object> params) throws GraphQLRequestExecutionException {
+		Map<String, String> ret = new HashMap<>();
+		Payload payload = getPayload(params);
+
+		// Step 1: add the query (mandatory)
+		ret.put("query", payload.query);
+
+		// Step 2: add the variable entry
+		if (payload.variables.size() > 0) {
+			ret.put("variables", payload.getVariablesAsString());
+		}
+
+		// Step 3: add the operationName
+		if (payload.operationName != null) {
+			ret.put("operationName", StringEscapeUtils.escapeJson(payload.operationName));
+		}
+
+		return ret;
 	}
 
 	/**

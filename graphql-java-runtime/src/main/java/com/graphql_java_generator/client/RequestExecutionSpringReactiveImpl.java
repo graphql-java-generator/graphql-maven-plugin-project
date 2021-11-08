@@ -158,7 +158,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");
 
-		String jsonRequest = graphQLRequest.buildRequest(parameters);
+		String jsonRequest = graphQLRequest.buildRequestAsString(parameters);
 
 		try {
 
@@ -202,7 +202,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 							+ " subscriptions in this GraphQLRequest");
 		}
 
-		String request = graphQLRequest.buildRequest(parameters);
+		Map<String, String> request = graphQLRequest.buildRequestAsMap(parameters);
 		String subscriptionName = graphQLRequest.getSubscription().getFields().get(0).getName();
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////

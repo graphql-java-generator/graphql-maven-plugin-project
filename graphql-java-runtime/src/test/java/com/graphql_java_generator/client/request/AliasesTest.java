@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
@@ -85,8 +86,14 @@ class AliasesTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn aliasFriends:friends{aliasId2:id aliasName2:name __typename} __typename}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn aliasFriends:friends{aliasId2:id aliasName2:name __typename} __typename}}", //
+				null, null);
 	}
 
 	@Test
@@ -111,7 +118,14 @@ class AliasesTest {
 				+ "{id name appearsIn friends{id name __typename} __typename} " //
 				+ "createHuman2:createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{a1:id a2:name a3:appearsIn a4:friends{a5:id a6:name __typename} __typename}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{id name appearsIn friends{id name __typename} __typename} " //
+				+ "createHuman2:createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{a1:id a2:name a3:appearsIn a4:friends{a5:id a6:name __typename} __typename}}", //
+				null, null);
 	}
 }

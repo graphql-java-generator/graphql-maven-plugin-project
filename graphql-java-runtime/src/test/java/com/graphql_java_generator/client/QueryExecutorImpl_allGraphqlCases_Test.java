@@ -28,7 +28,7 @@ import com.graphql_java_generator.exception.GraphQLResponseParseException;
  * @author etienne-sf
  */
 @Execution(ExecutionMode.CONCURRENT)
-class QueryExecutorImpl_allGraphqlCases_Test {
+public class QueryExecutorImpl_allGraphqlCases_Test {
 
 	RequestExecutionImpl queryExecutorImpl;
 	MyQueryType myQueryType;
@@ -60,7 +60,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getWithEnumResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
 		assertEquals("{\"query\":\"query{withEnum(episode:JEDI)"//
@@ -69,7 +69,18 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 				+ "appearsIn @testDirective(value:\\\"a value2\\\",anotherValue:\\\"something else2\\\") "
 				+ "friends{id @anotherTestDirective name @testDirective(value:\\\"a value3\\\",anotherValue:\\\"something_else3\\\") @anotherTestDirective "//
 				+ "__typename} __typename}}\"" //
-				+ ",\"variables\":null,\"operationName\":null}", request);
+				+ "}", request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+
+		// Verification
+		checkRequestMap(map, "query{withEnum(episode:JEDI)"//
+				+ "{id @anotherTestDirective @testDirective(value:\"id1 value\",anotherValue:\" something else for id1 \") "
+				+ "name " //
+				+ "appearsIn @testDirective(value:\"a value2\",anotherValue:\"something else2\") "
+				+ "friends{id @anotherTestDirective name @testDirective(value:\"a value3\",anotherValue:\"something_else3\") @anotherTestDirective "//
+				+ "__typename} __typename}}", null, null);
 	}
 
 	@Test
@@ -90,7 +101,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
 		assertEquals("{\"query\":\"query{" + //
@@ -99,7 +110,18 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 				"friends{name @anotherTestDirective @testDirective(value:\\\"no value\\\") __typename} " + //
 				"__typename}" + //
 				"}\"" + //
-				",\"variables\":null,\"operationName\":null}", request);
+				"}", request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+
+		// Verification
+		checkRequestMap(map, "query{" + //
+				"withoutParameters @include(if:true) @anotherTestDirective{" + //
+				"id name @include(if:false) " + //
+				"friends{name @anotherTestDirective @testDirective(value:\"no value\") __typename} " + //
+				"__typename}}" //
+				, null, null);
 	}
 
 	@Disabled
@@ -147,7 +169,7 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(parameters);
+		String request = objectResponse.buildRequestAsString(parameters);
 
 		// Verification
 		assertEquals("{\"query\":\"query{" + //
@@ -161,6 +183,21 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 				"}" + //
 				"}\"" //
 				+ ",\"variables\":null,\"operationName\":null}", request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+
+		// Verification
+		checkRequestMap(map, "query{" + //
+				"withoutParameters @include(if:true) @anotherTestDirective{" + //
+				"id name @include(if:false) __typename " + //
+				"friends{name @anotherTestDirective @testDirective(value:\"no value\")}" + //
+				"}" + //
+				"withFriendsName:withoutParameters @testDirective(value:\" the value for withFriendssName\",anotherValue:\" no idea of this one\"){"
+				+ "id name @skip(if:true) __typename" + //
+				"friends{name @anotherTestDirective __typename}" + //
+				"}" //
+				, null, null);
 	}
 
 	@Disabled
@@ -193,11 +230,18 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 		ObjectResponse objectResponse = myQueryType.getResponseBuilder().withQueryResponseDef(query).build();
 
 		// Go, go, go
-		String request = objectResponse.buildRequest(null);
+		String request = objectResponse.buildRequestAsString(null);
 
 		// Verification
 		assertEquals("{\"query\":\"query{withoutParameters{__typename id name friends{id name appearsIn __typename}}}" //
 				+ ",\"variables\":null,\"operationName\":null}", request);
+
+		// Go, go, go
+		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+
+		// Verification
+		checkRequestMap(map, "query{withoutParameters{__typename id name friends{id name appearsIn __typename}}}" //
+				, null, null);
 	}
 
 	<T> T parseResponse(String rawResponse, ObjectResponse createPostResponse, Class<T> valueType)
@@ -221,5 +265,15 @@ class QueryExecutorImpl_allGraphqlCases_Test {
 			throw new GraphQLResponseParseException("Could not retrieve the 'post' node");
 
 		return mapper.treeToValue(post, valueType);
+	}
+
+	public static void checkRequestMap(Map<String, String> map, String query, String variables, String operationName) {
+		assertEquals(query, map.get("query"));
+
+		if (variables != null)
+			assertEquals(variables, map.get("variables"));
+
+		if (variables != null)
+			assertEquals(operationName, map.get("operationName"));
 	}
 }

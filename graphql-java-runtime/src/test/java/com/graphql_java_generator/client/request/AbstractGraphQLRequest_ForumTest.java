@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.domain.client.forum.Board;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
@@ -73,9 +74,16 @@ class AbstractGraphQLRequest_ForumTest {
 				+ "{id name publiclyAvailable"//
 				+ " topics{id date author{id name email type __typename} nbPosts"
 				+ " posts(memberName:\\\"Me!\\\",since:\\\"1900-10-24\\\"){date author{name email type __typename} __typename} __typename} __typename}" //
-				+ "}\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "}\"}", //
+				graphQLRequest.buildRequestAsString(params));
 
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "query{boards" //
+				+ "{id name publiclyAvailable"//
+				+ " topics{id date author{id name email type __typename} nbPosts"
+				+ " posts(memberName:\"Me!\",since:\"1900-10-24\"){date author{name email type __typename} __typename} __typename} __typename}" //
+				+ "}", //
+				null, null);
 	}
 
 	@Test
@@ -131,14 +139,14 @@ class AbstractGraphQLRequest_ForumTest {
 		// First parameter is hard coded
 		assertEquals("memberName", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\\\"a member Name\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
+		assertEquals("\"a member Name\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
 		assertEquals("memberName", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.OPTIONAL, postsInputParameters.get(i).type);
 		i = 1;
 		// The second parameter is a bind variable
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\\\"1900-10-24\\\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
+		assertEquals("\"1900-10-24\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
 		assertEquals("sinceParam", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.MANDATORY, postsInputParameters.get(i).type);
 
@@ -146,7 +154,13 @@ class AbstractGraphQLRequest_ForumTest {
 		assertEquals("{\"query\":\"query{boards"//
 				+ "{id name publiclyAvailable topics{id date author{id name email type __typename} nbPosts "
 				+ "posts(memberName:\\\"a member Name\\\",since:\\\"1900-10-24\\\"){date author{name email type __typename} __typename} __typename} __typename}"
-				+ "}\",\"variables\":null,\"operationName\":null}", graphQLRequest.buildRequest(params));
+				+ "}\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "query{boards"//
+				+ "{id name publiclyAvailable topics{id date author{id name email type __typename} nbPosts "
+				+ "posts(memberName:\"a member Name\",since:\"1900-10-24\"){date author{name email type __typename} __typename} __typename} __typename}}", //
+				null, null);
 	}
 
 	@Test
@@ -188,9 +202,11 @@ class AbstractGraphQLRequest_ForumTest {
 
 		// Verification
 		assertEquals("aQueryName", graphQLRequest.getRequestName());
-		assertEquals(
-				"{\"query\":\"query aQueryName{boards{topics{id __typename} __typename}}\",\"variables\":null,\"operationName\":null}",
-				graphQLRequest.buildRequest(params));
+		assertEquals("{\"query\":\"query aQueryName{boards{topics{id __typename} __typename}}\"}",
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "query aQueryName{boards{topics{id __typename} __typename}}", //
+				null, null);
 	}
 
 }

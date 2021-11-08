@@ -71,9 +71,10 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 /**
- * WebSocketHandler for GraphQL based on
- * <a href="https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">GraphQL Over WebSocket Protocol</a> and for
- * use on a Servlet container with {@code spring-websocket}.
+ * WebSocketHandler for GraphQL based on <a href=
+ * "https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">GraphQL
+ * Over WebSocket Protocol</a> and for use on a Servlet container with
+ * {@code spring-websocket}.
  *
  * @author Rossen Stoyanchev
  * @since 1.0.0
@@ -90,7 +91,10 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	/** This {@link Map} contains all active web sockets */
 	private final Map<String, SessionState> sessionInfoMap = new ConcurrentHashMap<>();
 
-	/** The Jackson {@link ObjectMapper} that will decode the incoming request, and encode the output */
+	/**
+	 * The Jackson {@link ObjectMapper} that will decode the incoming request, and
+	 * encode the output
+	 */
 	ObjectMapper objectMapper;
 
 	/** The {@link GraphQL} that will manage actually the request */
@@ -103,7 +107,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	public GraphQlWebSocketHandler(GraphQLSchema graphQLSchema) {
 		objectMapper = new ObjectMapper();
 
-		// In order to have subscriptions in graphql-java, we MUST use the SubscriptionExecutionStrategy strategy.
+		// In order to have subscriptions in graphql-java, we MUST use the
+		// SubscriptionExecutionStrategy strategy.
 		Instrumentation instrumentation = new ChainedInstrumentation(singletonList(new TracingInstrumentation()));
 		graphQL = GraphQL.newGraphQL(graphQLSchema).instrumentation(instrumentation).build();
 	}
@@ -168,8 +173,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			return;
 		case START: // This message seems to be sent by graphiql instead of SUBSCRIBE :(
 		case SUBSCRIBE:
+			log.trace("Received 'subscribe' for operation id {} on web socket {} ({})", id, session, map);
 			Map<String, Object> request = getPayload(map);
-			log.trace("Received 'subscribe' for operation id {} on web socket {} ({})", id, session, request);
 			if (sessionState.isConnectionInitNotProcessed()) {
 				GraphQlStatus.closeSession(session, GraphQlStatus.UNAUTHORIZED_STATUS);
 				return;
@@ -185,9 +190,11 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			// if (logger.isTraceEnabled()) {
 			// logger.trace("Executing: " + input);
 			// }
-			// this.graphQlHandler.handle(input).flatMapMany((output) -> handleWebOutput(session, input.getId(),
+			// this.graphQlHandler.handle(input).flatMapMany((output) ->
+			// handleWebOutput(session, input.getId(),
 			// output))
-			// .publishOn(sessionState.getScheduler()) // Serial blocking send via single thread
+			// .publishOn(sessionState.getScheduler()) // Serial blocking send via single
+			// thread
 			// .subscribe(new SendMessageSubscriber(id, session, sessionState));
 			manageSubscription(uri, headers, request, id, session);
 			return;
@@ -210,14 +217,12 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	/**
 	 * Actual Management of the Subscription
 	 * 
-	 * @param uri
-	 *            The called URI
-	 * @param headers
-	 *            The HTTP headers
-	 * @param payload
-	 *            The payload map, that may contain these entries (according toe the <I>Subscribe</I> message of the
-	 *            <I>graphql-transport-ws</I> protocol: operationName, query, variables and extensions. query is the
-	 *            only mandatory value.
+	 * @param uri     The called URI
+	 * @param headers The HTTP headers
+	 * @param payload The payload map, that may contain these entries (according toe
+	 *                the <I>Subscribe</I> message of the
+	 *                <I>graphql-transport-ws</I> protocol: operationName, query,
+	 *                variables and extensions. query is the only mandatory value.
 	 * 
 	 * @param id
 	 * @param session
@@ -341,20 +346,12 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getPayload(Map<String, Object> message) {
-		Map<String, Object> map;
-
 		Object payload = message.get("payload");
 		Assert.notNull(payload, "No payload in message: " + message);
-		Assert.isTrue(payload instanceof String, "The payload should be a String, but is a "
-				+ payload.getClass().getName() + ", in message: " + message);
+		Assert.isTrue(payload instanceof Map, "The payload should be a Map, but is a " + payload.getClass().getName()
+				+ ", in message: " + message);
 
-		try {
-			map = objectMapper.readValue((String) payload, HashMap.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Error while reading '" + (String) payload + "' as a json value", e);
-		}
-
-		return map;
+		return (Map<String, Object>) payload;
 	}
 
 	private SessionState getSessionInfo(WebSocketSession session) {
@@ -374,7 +371,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 		}
 		try {
 			// HttpOutputMessageAdapter outputMessage = new HttpOutputMessageAdapter();
-			// ((HttpMessageConverter<T>) this.converter).write((T) payloadMap, null, outputMessage);
+			// ((HttpMessageConverter<T>) this.converter).write((T) payloadMap, null,
+			// outputMessage);
 			// return new TextMessage(outputMessage.toByteArray());
 			return new TextMessage(objectMapper.writeValueAsString(payloadMap));
 		} catch (IOException ex) {
@@ -413,8 +411,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 	private enum MessageType {
 
-		CONNECTION_INIT("connection_init"), CONNECTION_ACK("connection_ack"), SUBSCRIBE("subscribe"), NEXT(
-				"next"), ERROR("error"), COMPLETE("complete"),
+		CONNECTION_INIT("connection_init"), CONNECTION_ACK("connection_ack"), SUBSCRIBE("subscribe"), NEXT("next"),
+		ERROR("error"), COMPLETE("complete"),
 		// graphiql seems to send a START message, instead of a SUBSCRIBE one :(
 		// Let's add it ot this list
 		START("start");

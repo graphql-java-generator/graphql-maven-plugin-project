@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
@@ -126,8 +127,15 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ "fragment fragment2 on Character{id name(uppercase:true) __typename}"//
 				+ "fragment fragment3 on Character{appearsIn __typename}" //
 				+ "query{withoutParameters{appearsIn ...fragment1}}"//
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "fragment fragment1 on Character{id appearsIn friends{id ...fragment3 ...fragment2} __typename}"
+				+ "fragment fragment2 on Character{id name(uppercase:true) __typename}"//
+				+ "fragment fragment3 on Character{appearsIn __typename}" //
+				+ "query{withoutParameters{appearsIn ...fragment1}}", //
+				null, null);
 	}
 
 	@Test
@@ -247,8 +255,19 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ " ... on Human{homePlanet ... on Human{... on Character{name __typename}}}" //
 				+ "}"//
 				+ "}"//
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "fragment id on Character{id __typename}" //
+				+ "query{" //
+				+ "withoutParameters{appearsIn ...id" //
+				+ " ... on Character{friends{...id} ...id}" //
+				+ " ... on Droid{primaryFunction ... on Character{name(uppercase:false) friends{name __typename} __typename}}" //
+				+ " ... on Human{homePlanet ... on Human{... on Character{name __typename}}}" //
+				+ "}"//
+				+ "}", //
+				null, null);
 	}
 
 	@Test
@@ -282,8 +301,19 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ " ... on Human{homePlanetAlias:homePlanet ... on Human{... on Character{nameAlias:name __typename}}}" //
 				+ "}"//
 				+ "}"//
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "fragment id on Character{idAlias:id __typename}" //
+				+ "query{" //
+				+ "withoutParameters{appearsInAlias:appearsIn ...id" //
+				+ " ... on Character{friendsAlias:friends{...id} ...id}" //
+				+ " ... on Droid{primaryFunctionAlias:primaryFunction ... on Character{nameAlias:name(uppercase:false) friendsAlias:friends{nameAlias:name __typename} __typename}}" //
+				+ " ... on Human{homePlanetAlias:homePlanet ... on Human{... on Character{nameAlias:name __typename}}}" //
+				+ "}"//
+				+ "}", //
+				null, null);
 	}
 
 	@Test
@@ -306,9 +336,13 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals("{\"query\":\"" //
 				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
 				+ "mutation{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
-				+ "{...character}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "{...character}}\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
+				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{...character}}", //
+				null, null);
 	}
 
 	@Test
@@ -327,9 +361,14 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
 				+ "mutation{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{...character}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
 		;
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
+				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{...character}}", //
+				null, null);
 	}
 
 	@Test
@@ -353,8 +392,13 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name ... on Human{friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name ... on Human{friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}}}", //
+				null, null);
 	}
 
 	@Test
@@ -378,9 +422,13 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals("{\"query\":\"" //
 				+ "fragment humanFrag on Human{friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}"
 				+ "mutation{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
-				+ "{id name ...humanFrag @include(if:true)}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "{id name ...humanFrag @include(if:true)}}\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "fragment humanFrag on Human{friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}"
+				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name ...humanFrag @include(if:true)}}", //
+				null, null);
 	}
 
 	@Test
@@ -406,8 +454,13 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name ... on Human @include(if:true){friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name ... on Human @include(if:true){friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}}}", //
+				null, null);
 	}
 
 	@Test
@@ -433,8 +486,14 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals("{\"query\":\"mutation" //
 				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name ... @include(if:false){friends{id name __typename} appearsIn @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\") __typename}}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation" //
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{id name ... @include(if:false){friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}}}", //
+				null, null);
 	}
 
 	@Test
@@ -482,8 +541,21 @@ class AbstractGraphQLRequest_fragmentTest {
 				+ " listWithoutIdSubTypes(nbItems:69,textToAppendToTheForname:\\\"append3\\\"){name __typename}" //
 				+ " ... on WithID{id __typename}" //
 				+ "}}" //
-				+ "\",\"variables\":null,\"operationName\":null}", //
-				graphQLRequest.buildRequest(params));
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "query{allFieldCases" //
+				+ "{name" //
+				+ " forname(uppercase:true,textToAppendToTheForname:\"append\")"
+				+ " age nbComments comments booleans aliases planets friends{id __typename}" //
+				+ " oneWithIdSubType{id name __typename}"//
+				+ " listWithIdSubTypes(date:\"2022-05-20\",dates:[\"2022-05-01\",\"2022-05-02\",\"2022-05-03\"],"
+				+ "uppercaseName:true,textToAppendToTheForname:\"append2\"){name id __typename}"
+				+ " oneWithoutIdSubType{name __typename}"//
+				+ " listWithoutIdSubTypes(nbItems:69,textToAppendToTheForname:\"append3\"){name __typename}" //
+				+ " ... on WithID{id __typename}" //
+				+ "}}", //
+				null, null);
 	}
 
 }

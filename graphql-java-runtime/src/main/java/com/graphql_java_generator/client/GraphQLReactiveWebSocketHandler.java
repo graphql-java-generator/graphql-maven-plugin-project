@@ -91,9 +91,10 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 */
 	class SubscriptionData<R, T> {
 
-		SubscriptionData(String request, String subscriptionName, SubscriptionCallback<T> subscriptionCallback,
-				Class<R> subscriptionType, Class<T> messsageType, int uniqueIdOperation) {
-			this.request = request;
+		SubscriptionData(Map<String, String> request2, String subscriptionName,
+				SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType,
+				int uniqueIdOperation) {
+			this.request = request2;
 			this.subscriptionName = subscriptionName;
 			this.subscriptionCallback = subscriptionCallback;
 			this.subscriptionType = subscriptionType;
@@ -109,7 +110,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		final String uniqueIdOperation;
 
 		/** The request to send to the GraphQL server, to initiate the subscription */
-		final String request;
+		final Map<String, String> request;
 
 		/** The name of the subscription, to provide some context in log and in exception messages */
 		final String subscriptionName;
@@ -336,7 +337,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 *         protocol</a>
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public <R, T> String executeSubscription(String request, String subscriptionName,
+	public <R, T> String executeSubscription(Map<String, String> request, String subscriptionName,
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType)
 			throws GraphQLRequestExecutionException {
 		SubscriptionData<R, T> subData;
@@ -588,10 +589,10 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 	}
 
-	// @Override
-	// public List<String> getSubProtocols() {
-	// return SUB_PROTOCOL_LIST;
-	// }
+	@Override
+	public List<String> getSubProtocols() {
+		return SUB_PROTOCOL_LIST;
+	}
 
 	public WebSocketSession getSession() {
 		return session;

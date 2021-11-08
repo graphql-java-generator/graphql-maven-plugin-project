@@ -62,12 +62,54 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals(
-				"\\\"This is a string with two \\\\\\\"\\\\\\\", a \\\\uD83C\\\\uDF89 and some \\\\r \\\\t \\\\\\\\ to be escaped\\\"",
+		assertEquals("\"This is a string with two \\\"\\\", a \\uD83C\\uDF89 and some \\r \\t \\\\ to be escaped\"",
 				param.getValueForGraphqlQuery(false, null), "escaped value");
-		assertEquals('"' + value + '"',
-				StringEscapeUtils
-						.unescapeJson(StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(false, null))),
+		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(false, null)),
+				"roundtripped value");
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_getValueForGraphqlQuery_doubleQuoteAfterEscapedTrailingAntiSlash()
+			throws GraphQLRequestExecutionException {
+		String name = "aName";
+		String value = "A double quote after an escaped antislash: \\\" (it's not the end of string)";
+		InputParameter param = InputParameter.newHardCodedParameter(name, value, "String", false, 0, false);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(value, param.getValue(), "value");
+		assertEquals("\"A double quote after an escaped antislash: \\\\\\\" (it's not the end of string)\"",
+				param.getValueForGraphqlQuery(false, null), "escaped value");
+		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(false, null)),
+				"roundtripped value");
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_getValueForGraphqlQuery_oneTrailingAntiSlash() throws GraphQLRequestExecutionException {
+		String name = "aName";
+		String value = "One trailing antislash: \\";
+		InputParameter param = InputParameter.newHardCodedParameter(name, value, "String", false, 0, false);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(value, param.getValue(), "value");
+		assertEquals("\"One trailing antislash: \\\\\"", param.getValueForGraphqlQuery(false, null), "escaped value");
+		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(false, null)),
+				"roundtripped value");
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_getValueForGraphqlQuery_twoTrailingAntiSlahes() throws GraphQLRequestExecutionException {
+		String name = "aName";
+		String value = "One trailing antislash: \\\\";
+		InputParameter param = InputParameter.newHardCodedParameter(name, value, "String", false, 0, false);
+
+		assertEquals(name, param.getName(), "name");
+		assertEquals(value, param.getValue(), "value");
+		assertEquals("\"One trailing antislash: \\\\\\\\\"", param.getValueForGraphqlQuery(false, null),
+				"escaped value");
+		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getValueForGraphqlQuery(false, null)),
 				"roundtripped value");
 	}
 
@@ -116,8 +158,8 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(id, param.getValue(), "value");
-		assertEquals("\\\"00000000-0000-0000-0000-000000000012\\\"",
-				param.getValueForGraphqlQuery(false, new HashMap<>()), "escaped value");
+		assertEquals("\"00000000-0000-0000-0000-000000000012\"", param.getValueForGraphqlQuery(false, new HashMap<>()),
+				"escaped value");
 	}
 
 	@Test
@@ -140,7 +182,7 @@ class InputParameterTest {
 
 		// Verification
 		assertEquals(
-				"{topicId:\\\"00000000-0000-0000-0000-000000000022\\\",input:{authorId:\\\"00000000-0000-0000-0000-000000000012\\\",date:\\\"2009-11-21\\\",publiclyAvailable:false,title:\\\"The good title for a post\\\",content:\\\"Some other content\\\"}}",
+				"{topicId:\"00000000-0000-0000-0000-000000000022\",input:{authorId:\"00000000-0000-0000-0000-000000000012\",date:\"2009-11-21\",publiclyAvailable:false,title:\"The good title for a post\",content:\"Some other content\"}}",
 				param.getValueForGraphqlQuery(false, postInput, "PostInput", null, false));
 	}
 
@@ -171,7 +213,7 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
-		assertEquals("[\\\"" + value1 + "\\\",\\\"" + value2 + "\\\",\\\"" + value3 + "\\\"]",
+		assertEquals("[\"" + value1 + "\",\"" + value2 + "\",\"" + value3 + "\"]",
 				param.getValueForGraphqlQuery(false, new HashMap<>()));
 	}
 
@@ -257,7 +299,7 @@ class InputParameterTest {
 		Map<String, Object> goodValues = new HashMap<>();
 		goodValues.put("variableName", date);
 
-		assertEquals("\\\"2020-01-19\\\"", customScalarInputParameter.getValueForGraphqlQuery(false, goodValues));
+		assertEquals("\"2020-01-19\"", customScalarInputParameter.getValueForGraphqlQuery(false, goodValues));
 	}
 
 	@Test
@@ -308,7 +350,7 @@ class InputParameterTest {
 		parameters.put(bindParameterName, postInput);
 
 		// When
-		assertEquals("{from:\\\"2020-01-01\\\",in:[\\\"2020-02-01\\\",\\\"2020-03-01\\\"]}",
+		assertEquals("{from:\"2020-01-01\",in:[\"2020-02-01\",\"2020-03-01\"]}",
 				inputTypeInputParameter.getValueForGraphqlQuery(false, parameters));
 	}
 
@@ -317,7 +359,7 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_GraphQLVariable_InputType_CustomScalar_Date_OK()
 			throws GraphQLRequestExecutionException {
 		// Preparation
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
 				.withTitle("a title").withContent("some content").build();

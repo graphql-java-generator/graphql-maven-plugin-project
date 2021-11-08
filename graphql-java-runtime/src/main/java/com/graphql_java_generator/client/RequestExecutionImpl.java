@@ -122,7 +122,7 @@ public class RequestExecutionImpl implements RequestExecution {
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");
 
-		String jsonRequest = graphQLRequest.buildRequest(parameters);
+		String jsonRequest = graphQLRequest.buildRequestAsString(parameters);
 
 		try {
 
@@ -161,7 +161,7 @@ public class RequestExecutionImpl implements RequestExecution {
 
 		String subscriptionName = graphQLRequest.getSubscription().getFields().get(0).getName();
 
-		String request = graphQLRequest.buildRequest(parameters);
+		String request = graphQLRequest.buildRequestAsString(parameters);
 		logger.trace(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName, request);
 
 		// Let's create and start the Web Socket
