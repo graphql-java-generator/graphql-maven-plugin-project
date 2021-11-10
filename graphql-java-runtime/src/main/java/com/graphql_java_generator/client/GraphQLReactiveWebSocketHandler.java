@@ -91,7 +91,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 */
 	class SubscriptionData<R, T> {
 
-		SubscriptionData(Map<String, String> request2, String subscriptionName,
+		SubscriptionData(Map<String, Object> request2, String subscriptionName,
 				SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType,
 				int uniqueIdOperation) {
 			this.request = request2;
@@ -110,7 +110,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		final String uniqueIdOperation;
 
 		/** The request to send to the GraphQL server, to initiate the subscription */
-		final Map<String, String> request;
+		final Map<String, Object> request;
 
 		/** The name of the subscription, to provide some context in log and in exception messages */
 		final String subscriptionName;
@@ -337,7 +337,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 *         protocol</a>
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public <R, T> String executeSubscription(Map<String, String> request, String subscriptionName,
+	public <R, T> String executeSubscription(Map<String, Object> request, String subscriptionName,
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType)
 			throws GraphQLRequestExecutionException {
 		SubscriptionData<R, T> subData;

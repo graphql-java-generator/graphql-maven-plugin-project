@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Issue #105: it's no more possible to override the ExchangeFilterFunction
 * Solve issue #103 (define the Velocity log file, toward the target folder)
 * Subscription: the client remain active after a `Connection refused` (even if the main thread stops)
 * Simplify the $generateJacksonStuff expression (directly use $configuration.generateJacksonAnnotations)

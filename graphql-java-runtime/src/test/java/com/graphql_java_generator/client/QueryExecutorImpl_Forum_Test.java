@@ -98,7 +98,7 @@ class QueryExecutorImpl_Forum_Test {
 				request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(null);
 
 		// Verification
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map,
@@ -125,7 +125,7 @@ class QueryExecutorImpl_Forum_Test {
 				request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(null);
 
 		// Verification
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map,

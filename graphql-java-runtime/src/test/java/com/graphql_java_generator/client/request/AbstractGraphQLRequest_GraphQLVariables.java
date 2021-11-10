@@ -66,8 +66,8 @@ class AbstractGraphQLRequest_GraphQLVariables {
 
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
 				+ "mutation crPst($post:PostInput!,$anIntParam:Int){createPost(post:$post){id date author{id __typename} __typename}}",
-				"{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
-						+ "\"anIntParam\":666}", //
+				"{post={\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
+						+ " anIntParam=666}", //
 				null);
 	}
 
@@ -106,8 +106,8 @@ class AbstractGraphQLRequest_GraphQLVariables {
 				graphQLRequest.buildRequestAsString(params));
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
 				+ "query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType){boards{topics{id __typename} __typename}}",
-				"{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
-						+ "\"aCustomScalar\":[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]],\"anEnum\":\"ADMIN\",\"anIntParam\":666}", //
+				"{post={\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
+						+ " aCustomScalar=[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]], anEnum=\"ADMIN\", anIntParam=666}", //
 				null);
 	}
 }

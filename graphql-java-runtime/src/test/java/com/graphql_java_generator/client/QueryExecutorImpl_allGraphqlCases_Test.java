@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 				+ "}", request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(parameters);
 
 		// Verification
 		checkRequestMap(map, "query{withEnum(episode:JEDI)"//
@@ -113,7 +114,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 				"}", request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(parameters);
 
 		// Verification
 		checkRequestMap(map, "query{" + //
@@ -185,7 +186,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 				+ ",\"variables\":null,\"operationName\":null}", request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(parameters);
 
 		// Verification
 		checkRequestMap(map, "query{" + //
@@ -237,7 +238,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 				+ ",\"variables\":null,\"operationName\":null}", request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(null);
 
 		// Verification
 		checkRequestMap(map, "query{withoutParameters{__typename id name friends{id name appearsIn __typename}}}" //
@@ -267,11 +268,14 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 		return mapper.treeToValue(post, valueType);
 	}
 
-	public static void checkRequestMap(Map<String, String> map, String query, String variables, String operationName) {
+	public static void checkRequestMap(Map<String, Object> map, String query, Object variables, String operationName) {
 		assertEquals(query, map.get("query"));
 
-		if (variables != null)
-			assertEquals(variables, map.get("variables"));
+		if (variables != null) {
+			assertTrue(map.get("variables") instanceof Map,
+					"variables is an instance of " + variables.getClass().getName());
+			assertEquals(variables, map.get("variables").toString());
+		}
 
 		if (variables != null)
 			assertEquals(operationName, map.get("operationName"));

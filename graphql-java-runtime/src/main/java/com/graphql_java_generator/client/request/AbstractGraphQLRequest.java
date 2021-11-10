@@ -725,8 +725,8 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public Map<String, String> buildRequestAsMap(Map<String, Object> params) throws GraphQLRequestExecutionException {
-		Map<String, String> ret = new HashMap<>();
+	public Map<String, Object> buildRequestAsMap(Map<String, Object> params) throws GraphQLRequestExecutionException {
+		Map<String, Object> ret = new HashMap<>();
 		Payload payload = getPayload(params);
 
 		// Step 1: add the query (mandatory)
@@ -734,7 +734,7 @@ public abstract class AbstractGraphQLRequest {
 
 		// Step 2: add the variable entry
 		if (payload.variables.size() > 0) {
-			ret.put("variables", payload.getVariablesAsString());
+			ret.put("variables", payload.variables);
 		}
 
 		// Step 3: add the operationName

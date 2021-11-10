@@ -89,7 +89,7 @@ class QueryExecutorImpl_StarWars_Test {
 		assertEquals("{\"query\":\"query{hero{id name __typename}}\"}", request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(null);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(null);
 
 		// Verification
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map, "query{hero{id name __typename}}", null, null);
@@ -125,7 +125,7 @@ class QueryExecutorImpl_StarWars_Test {
 		assertEquals("{\"query\":\"query{hero(episode:NEWHOPE){id name __typename}}\"}", request);
 
 		// Go, go, go
-		Map<String, String> map = objectResponse.buildRequestAsMap(parameters);
+		Map<String, Object> map = objectResponse.buildRequestAsMap(parameters);
 
 		// Verification
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(map, "query{hero(episode:NEWHOPE){id name __typename}}",

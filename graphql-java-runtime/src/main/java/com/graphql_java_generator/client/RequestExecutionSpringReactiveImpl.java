@@ -202,7 +202,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 							+ " subscriptions in this GraphQLRequest");
 		}
 
-		Map<String, String> request = graphQLRequest.buildRequestAsMap(parameters);
+		Map<String, Object> request = graphQLRequest.buildRequestAsMap(parameters);
 		String subscriptionName = graphQLRequest.getSubscription().getFields().get(0).getName();
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
