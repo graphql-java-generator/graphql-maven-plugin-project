@@ -1,4 +1,4 @@
-package com.graphql_java_generator;
+package com.graphql_java_generator.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -32,7 +32,6 @@ import com.graphql_java_generator.domain.client.starwars.Episode;
 import com.graphql_java_generator.domain.client.starwars.Human;
 import com.graphql_java_generator.testcases.Isssue49AccountInput;
 import com.graphql_java_generator.testcases.Issue49Title;
-import com.graphql_java_generator.util.GraphqlUtils;
 
 @Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {
@@ -128,7 +127,8 @@ class GraphqlUtilsTest {
 		imports = new TreeSet<>();
 		graphqlUtils.addImport(imports, "another.target.package", AnInnerClass.class.getName());
 		assertEquals(1, imports.size(), "import added");
-		assertEquals("com.graphql_java_generator.GraphqlUtilsTest.AnInnerClass", imports.toArray(new String[0])[0]);
+		assertEquals("com.graphql_java_generator.util.GraphqlUtilsTest.AnInnerClass",
+				imports.toArray(new String[0])[0]);
 
 		imports = new TreeSet<>();
 		graphqlUtils.addImport(imports, "another.target.package", Type.class.getName());
@@ -466,4 +466,39 @@ class GraphqlUtilsTest {
 				graphqlUtils.getClass(packageName, "Human").getName());
 		assertEquals("java.util.Date", graphqlUtils.getClass(packageName, "Date").getName());
 	}
+
+	// @Test
+	// void test_graphqlEncodeString() {
+	// assertEquals("No escape characters. Some accents: èéàù",
+	// graphqlUtils.graphqlEncodeString("No escape characters. Some accents: èéàù"), "no escape characters");
+	//
+	// assertEquals("Simple escape chars: \\\" \\\\ \\b \\f \\n \\r \\t",
+	// graphqlUtils.graphqlEncodeString("Simple escape chars: \" \\ \b \f \n \r \t"),
+	// "simple escape characters");
+	//
+	// assertEquals("Double escaped chars: \\\\\\\"\\\\ \\\\\\\\ \\\\\\b \\\\\\\"\\f \\n \\r \\t",
+	// graphqlUtils.graphqlEncodeString("Double escaped chars: \\\"\\ \\\\ \\\b \\\"\f \n \r \t"),
+	// "Double escaped characters");
+	//
+	// String test = "Simple escape chars: \" \\ \b \f \n \r \t";
+	// assertEquals(test, graphqlUtils.graphqlDeencodeString(graphqlUtils.graphqlEncodeString(test)), "encode/decode");
+	//
+	// test = "Double escaped chars: \\\"\\ \\\\ \\\b \\\"\f \n \r \t";
+	// assertEquals(test, graphqlUtils.graphqlDeencodeString(graphqlUtils.graphqlEncodeString(test)), "encode/decode");
+	// }
+	//
+	// @Test
+	// void test_graphqlDeencodeString() {
+	// assertEquals("No escape characters. Some accents: èéàù",
+	// graphqlUtils.graphqlDeencodeString("No escape characters. Some accents: èéàù"), "no escape characters");
+	//
+	// assertEquals("Simple escape chars: \" \\ \b \f \n \r \t",
+	// graphqlUtils.graphqlDeencodeString("Simple escape chars: \\\" \\\\ \\b \\f \\n \\r \\t"),
+	// "simple escape characters");
+	//
+	// assertEquals("Double escaped chars: \\\"\\ \\\\ \\\b \\\"\f \n \r \t",
+	// graphqlUtils.graphqlDeencodeString(
+	// "Double escaped chars: \\\\\\\"\\\\ \\\\\\\\ \\\\\\b \\\\\\\"\\f \\n \\r \\t"),
+	// "simple escape characters");
+	// }
 }

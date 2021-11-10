@@ -2,6 +2,7 @@ package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -62,7 +63,8 @@ class AbstractGraphQLRequest_ForumTest {
 		assertEquals(2, posts.inputParameters.size());
 		int i = 0;
 		assertEquals("memberName", posts.inputParameters.get(i).name);
-		assertEquals("Me!", posts.inputParameters.get(i).value);
+		assertTrue(posts.inputParameters.get(i).value instanceof RawGraphQLString);
+		assertEquals("\"Me!\"", posts.inputParameters.get(i).value.toString());
 		assertEquals(null, posts.inputParameters.get(i).bindParameterName);
 		i += 1;
 		assertEquals("since", posts.inputParameters.get(i).name);

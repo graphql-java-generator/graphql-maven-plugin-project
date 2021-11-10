@@ -337,4 +337,42 @@ class FullQueriesIT {
 		assertEquals(verif, request.execQuery().getIssue53());
 	}
 
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testEscapedStringParameters() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		GraphQLRequest request = myQuery
+				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
+
+		// test 1 (with a hardcoded boolean and string parameter that contains stuff to escape)
+		String value = "\\, \"  trailing antislash \\";
+		String graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
+		request = myQuery.getGraphQLRequest(
+				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
+		List<String> strings = request.execQuery().getDirectiveOnQuery();
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertEquals(value.toUpperCase(), strings.get(0));
+
+		// test 2 (with a hardcoded boolean and string parameter that contains stuff to escape)
+		value = "antislash then escaped double-quote \\\"";
+		graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
+		request = myQuery.getGraphQLRequest(
+				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
+		strings = request.execQuery().getDirectiveOnQuery();
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertEquals(value.toUpperCase(), strings.get(0));
+
+		// test 3 (with a hardcoded boolean and string parameter that contains stuff to escape)
+		value = "escaped values with string read as same bloc (rstuv, tuvw...) \rstuv\tuvw\nopq)";
+		graphqlEscapedValue = value.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+		request = myQuery.getGraphQLRequest(
+				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
+		strings = request.execQuery().getDirectiveOnQuery();
+		assertNotNull(strings);
+		assertTrue(strings.size() == 1);
+		assertEquals(value.toUpperCase(), strings.get(0));
+	}
+
 }

@@ -1045,4 +1045,65 @@ public class GraphqlUtils {
 		scanBasePackages = ",\"" + scanBasePackages + "\"";// scanBasePackages is now ,"a","b","c","d"
 		return scanBasePackages;
 	}
+
+	// /**
+	// * Encode a string according to GraphQL specification rules:
+	// *
+	// * <PRE>
+	// StringValue ::
+	// "StringCharacter(list,opt)"
+	// """BlockStringCharacter(list,opt)"""
+	//
+	// StringCharacter ::
+	// SourceCharacter but not " or \ or LineTerminator
+	// \ u EscapedUnicode
+	// \ EscapedCharacter
+	//
+	// EscapedUnicode ::
+	// /[0-9 A-Fa-f]{4}/
+	//
+	// EscapedCharacter :: one of
+	// " \ / b f n r t
+	//
+	// BlockStringCharacter ::
+	// SourceCharacter but not""" or \"""
+	// \"""
+	//
+	// LineTerminator::
+	// New Line (U+000A)
+	// Carriage Return (U+000D)New Line (U+000A)
+	// Carriage Return (U+000D)New Line (U+000A)
+	// * </PRE>
+	// *
+	// * @param str
+	// * @return
+	// */
+	// public String graphqlEncodeString(String str) {
+	// return str.replace("\\", "\\\\").replace("\"", "\\\"").replace("\b", "\\b").replace("\f", "\\f")
+	// .replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+	// }
+	//
+	// /**
+	// * De-encode a string according to GraphQL specification rules. See {@link #graphqlEncodeString(String)} for the
+	// * GraphQL rules.
+	// *
+	// * @param str
+	// * @return
+	// */
+	// public String graphqlDeencodeString(String str) {
+	// StringBuffer sb = new StringBuffer();
+	// for (int i = 0; i < str.length(); i += 1) {
+	// char c = str.charAt(i);
+	// if (c == '\\') {
+	// if (i=str.length()-1) {
+	// The last character may not be an anti-slash
+	// }
+	// next..c.
+	// } else {
+	// sb.append(c);
+	// }
+	// }
+	// return str.replace("\\\\", "\\").replace("\\\"", "\"").replace("\b", "\\b").replace("\f", "\\f")
+	// .replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+	// }
 }

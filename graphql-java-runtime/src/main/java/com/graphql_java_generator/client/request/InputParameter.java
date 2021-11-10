@@ -474,7 +474,8 @@ public class InputParameter {
 								InputParameterType.GRAPHQL_VALUE, null, false, listDepth, false));
 					} else if (token.equals("\"")) {
 						// We've found a String value: let's read the string content
-						StringBuffer sb = new StringBuffer();
+						StringBuffer sb = new StringBuffer("\"");
+						boolean nextCharIsEscaped = false;
 						while (true) {
 							if (!qt.hasMoreTokens(true)) {
 								throw new GraphQLRequestPreparationException(
@@ -482,24 +483,27 @@ public class InputParameter {
 												+ sb.toString() + "'");
 							}
 							token = qt.nextToken(true);
-							if (token.contentEquals("\"")) {
+							if (!nextCharIsEscaped && token.equals("\"")) {
 								// We've found the end of the string value.
 								break;
 							}
+
 							sb.append(token);
-							if (token.equals("\\")) {
-								// It's the escape character. We add the next token, as is. Especially if it's a double
-								// quote (as a double quote here doens't mean we found the end of the string)
-								sb.append(qt.nextToken(true));
+							if (nextCharIsEscaped) {
+								nextCharIsEscaped = false;
+							} else if (token.equals("\\")) {
+								nextCharIsEscaped = true;
+							} else {
+
 							}
-
 						} // while (true)
+						sb.append("\"");
 
-						// It's a regular String.
+						// It's a regular String. It is encoded within the GraphQL query. So we keep it as-is.
 						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
 						// not used in this case)
-						ret.add(new InputParameter(parameterName, null, sb.toString(), InputParameterType.HARD_CODED,
-								"String", true, 0, false));
+						ret.add(new InputParameter(parameterName, null, new RawGraphQLString(sb.toString()),
+								InputParameterType.HARD_CODED, "String", true, 0, false));
 					} else if (token.startsWith("\"") || token.endsWith("\"")) {
 						// Too bad, there is a " only at the end or only at the beginning
 						throw new GraphQLRequestPreparationException(
@@ -695,15 +699,15 @@ public class InputParameter {
 		} else if (val instanceof java.util.List) {
 			return getListValue(writingGraphQLVariables, (List<?>) val, graphQLTypeNameParam, graphQLScalarTypeParam,
 					graphQLVariable);
+		} else if (val instanceof RawGraphQLString) {
+			// The value is a part of the GraphQL request. Let's write it as is.
+			return ((RawGraphQLString) val).toString();
 		} else if (graphQLScalarTypeParam != null) {
 			Object ret = graphQLScalarTypeParam.getCoercing().serialize(val);
 			if (ret instanceof String) {
 				return getStringValue((String) ret);
 			} else
 				return ret.toString();
-		} else if (val instanceof RawGraphQLString) {
-			// The value is a part of the GraphQL request. Let's write it as is.
-			return ((RawGraphQLString) val).toString();
 		} else if (val instanceof String) {
 			// The value is a String. Let's limit it by double quotes
 			return getStringValue((String) val);
