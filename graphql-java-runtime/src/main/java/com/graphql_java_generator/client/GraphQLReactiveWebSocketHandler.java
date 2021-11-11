@@ -606,19 +606,30 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 * Encodes a message, according to the
 	 * <a href="https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">graphql-transport-ws protocol</a>
 	 */
-	private String encode(@Nullable String id, MessageType messageType, @Nullable Object payload) {
-		Map<String, Object> payloadMap = new HashMap<>(3);
-		payloadMap.put("type", messageType.getType());
-		if (id != null) {
-			payloadMap.put("id", id);
-		}
-		if (payload != null) {
-			payloadMap.put("payload", payload);
-		}
+	String encode(String id, MessageType messageType, Map<String, Object> payload) {
+		String action = null;
+
+		StringBuffer sb = new StringBuffer("{\"type\":");
+		sb.append(messageType.getType());
+
 		try {
-			return objectMapper.writeValueAsString(payloadMap);
+			if (id != null) {
+				sb.append(",\"id\":");
+				action = "Writing id: <" + id + ">";
+				sb.append(objectMapper.writeValueAsString(id));
+			}
+
+			if (payload != null && payload.size() > 0) {
+				sb.append(",\"payload\":{");
+				action = "Writing payload: <" + payload + ">";
+				for ()
+				sb.append(objectMapper.writeValueAsString(payload));
+				sb.append("}");
+			}
 		} catch (IOException ex) {
-			throw new RuntimeException("Failed to write " + payloadMap + " as JSON", ex);
-		}
+			throw new RuntimeException("Failed to write payload as JSON, during action: " + action, ex);
+		} // try
+
+		return sb.toString();
 	}
 }
