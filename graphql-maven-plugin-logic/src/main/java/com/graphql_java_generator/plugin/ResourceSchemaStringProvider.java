@@ -85,7 +85,8 @@ public class ResourceSchemaStringProvider {
 		// We musts have found at least one schema
 		if (ret.size() == 0) {
 			throw new RuntimeException("No GraphQL schema found (the searched file pattern is: '"
-					+ configuration.getSchemaFilePattern() + "')");
+					+ configuration.getSchemaFilePattern() + "', and search folder is '"
+					+ configuration.getSchemaFileFolder().getCanonicalPath() + "')");
 		}
 
 		// In client mode, we need to read the introspection schema

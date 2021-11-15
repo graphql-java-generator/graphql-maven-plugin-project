@@ -3,31 +3,34 @@
  */
 package org.allGraphQLCases.subscription;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import org.allGraphQLCases.client.AllFieldCases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.client.SubscriptionCallback;
 
 /**
- * This class will receive the items returned by the "subscribeToAList" subscription
+ * This class will receive the items returned by the "allGraphQLCasesInput" and "allGraphQLCasesParam" subscriptions
  * 
  * @author etienne-sf
  */
-public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallback<List<Integer>> {
+public class SubscriptionCallbackToAllFieldCases implements SubscriptionCallback<AllFieldCases> {
 
 	/** The logger for this class */
-	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackListIntegerForTest.class);
+	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackToAllFieldCases.class);
 
 	final String clientName;
-	public List<Integer> lastReceivedMessage = null;
+	public String closureReason = null;
+	public AllFieldCases lastReceivedMessage = null;
+	public Throwable lastReceivedError = null;
 
 	/** A latch that will be freed when a the first notification arrives for this subscription */
 	public CountDownLatch latchForMessageReception = new CountDownLatch(1);
+	public CountDownLatch latchForClosure = new CountDownLatch(1);
 
-	public SubscriptionCallbackListIntegerForTest(String clientName) {
+	public SubscriptionCallbackToAllFieldCases(String clientName) {
 		this.clientName = clientName;
 	}
 
@@ -37,7 +40,7 @@ public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallb
 	}
 
 	@Override
-	public void onMessage(List<Integer> t) {
+	public void onMessage(AllFieldCases t) {
 		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
 		latchForMessageReception.countDown();
@@ -46,12 +49,15 @@ public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallb
 	@Override
 	public void onClose(int statusCode, String reason) {
 		logger.debug("The subscription is closed (for {})", clientName);
+		closureReason = reason;
+		latchForClosure.countDown();
 	}
 
 	@Override
 	public void onError(Throwable cause) {
-		logger.error("Oups! An error occurred: "
-				+ ((cause == null) ? null : cause.getClass().getSimpleName() + ": " + cause.getMessage()));
+		lastReceivedError = cause;
+		logger.error("Oups! An error occurred: " + cause.getClass().getSimpleName() + ": " + cause.getMessage());
+		latchForMessageReception.countDown();
 	}
 
 }

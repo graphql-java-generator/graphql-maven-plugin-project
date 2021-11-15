@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * This class contains the data that allows to generate a custom Jackson deserializer. These deserializer are used to
+ * This class contains the data that allows to generate a custom Jackson deserializer. These deserializers are used to
  * deserialize the incoming response. There are two types of custom deserializer:
  * <UL>
  * <LI>The GraphQL Custom Scalars deserialiser. It takes an input JSON token, and creates the Java instance that match
@@ -27,7 +27,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CustomDeserializer {
 
-	/** The name of the GraphQL type is used to name the java class for the deserialize */
+	/** The name of the GraphQL type is used to name the java class for the deserialization */
 	private String graphQLTypeName;
 
 	/**
@@ -59,7 +59,7 @@ public class CustomDeserializer {
 	/**
 	 * Returns the simple name for the deserializer class.
 	 * 
-	 * @return The simple name looks like this: <I>CustomJacksonDeserializerListListDate</I>, where:
+	 * @return The simple name looks like this: <I>ListListDate</I>, where:
 	 *         <UL>
 	 *         <LI>ListList shows that this custom scalar is a list deserializer. It reads items that are at level 2 of
 	 *         nested GraphQL arrays (= Java list).</LI>
@@ -67,7 +67,8 @@ public class CustomDeserializer {
 	 *         </UL>
 	 */
 	public String getClassSimpleName() {
-		return getCustomDeserializerClassSimpleName(listDepth, GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName));
+		return getCustomDeserializerClassSimpleName(listDepth,
+				GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName));
 	}
 
 	/**
@@ -86,8 +87,8 @@ public class CustomDeserializer {
 	}
 
 	/**
-	 * Standard utility to calculate a Custom Deserialize name. Used in this class, and to define the Jackson annotation
-	 * on the field
+	 * Standard utility to calculate a Custom Deserializer or Serializer name. Used in this class, and to define the
+	 * Jackson annotation on the field
 	 * 
 	 * @param listLevel
 	 *            Indicates at which level of nested array this custom deserializer is. To deserialize a value (for

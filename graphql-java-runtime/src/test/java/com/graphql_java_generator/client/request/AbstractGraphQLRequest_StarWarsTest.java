@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.starwars.Character;
 import com.graphql_java_generator.domain.client.starwars.GraphQLRequest;
@@ -68,7 +69,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 
 	@Test
 	void test_AbstractGraphQLRequest_oneQuery()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		String query1 = "  \n\r\t  {human(id:\"00000000-0000-0000-0000-000000000031\") {id name friends {name appearsIn}}}  \n\r\t ";
 		String query2 = "  \n\r\t query \n\r\t  {human(id:&theHumanId) {id name friends {name appearsIn}}}  \n\r\t ";
@@ -364,7 +365,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 
 	@Test
 	public void test_withQueryResponseDef_StarWars()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 
 		// Go, go, go
 		AbstractGraphQLRequest graphQLRequest = humanResponseDefBuilder

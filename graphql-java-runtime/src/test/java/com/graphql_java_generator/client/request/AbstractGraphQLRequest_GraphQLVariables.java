@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
@@ -40,7 +41,8 @@ class AbstractGraphQLRequest_GraphQLVariables {
 	}
 
 	@Test
-	void testBuild_withGraphQLVariables() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void testBuild_withGraphQLVariables()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
@@ -58,27 +60,28 @@ class AbstractGraphQLRequest_GraphQLVariables {
 
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
-		assertEquals(
-				"{\"query\":\"mutation crPst($post:PostInput!,$anIntParam:Int){createPost(post:$post){id date author{id __typename} __typename}}\",\"variables\":"//
-						+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
-						+ "\"anIntParam\":666}}",
-				graphQLRequest.buildRequestAsString(params));
+		assertEquals("{" //
+				+ "\"variables\":"//
+				+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
+				+ "\"anIntParam\":666}," //
+				+ "\"query\":\"mutation crPst($post:PostInput!,$anIntParam:Int){createPost(post:$post){id date author{id __typename} __typename}}\""
+				+ "}", graphQLRequest.buildRequestAsString(params));
 
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
 				+ "mutation crPst($post:PostInput!,$anIntParam:Int){createPost(post:$post){id date author{id __typename} __typename}}",
-				"{post={\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
-						+ " anIntParam=666}", //
+				"{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
+						+ "\"anIntParam\":666}", //
 				null);
 	}
 
 	@Test
 	void testBuild_withNameAndGraphQLVariables()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
-				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType ){boards{topics{id}}}");
+				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType, $aDate: Date!) {boards{topics{id}}}");
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
@@ -91,23 +94,27 @@ class AbstractGraphQLRequest_GraphQLVariables {
 				Arrays.asList(new GregorianCalendar(2021, 4 - 1, 3).getTime(),
 						new GregorianCalendar(2021, 4 - 1, 4).getTime()));
 		//
+		Date aDate = new GregorianCalendar(2021, 10 - 1, 11).getTime();
+		//
 		Map<String, Object> params = new HashMap<>();
 		params.put("post", inputPost);
 		params.put("anIntParam", 666);
 		params.put("aCustomScalar", dates);
 		params.put("anEnum", MemberType.ADMIN);
+		params.put("aDate", aDate);
 
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
-		assertEquals(
-				"{\"query\":\"query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType){boards{topics{id __typename} __typename}}\",\"variables\":"//
-						+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
-						+ "\"aCustomScalar\":[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]],\"anEnum\":\"ADMIN\",\"anIntParam\":666}}",
-				graphQLRequest.buildRequestAsString(params));
+		assertEquals("{" + //
+				"\"variables\":"//
+				+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
+				+ "\"aCustomScalar\":[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]],\"aDate\":\"2021-10-11\",\"anEnum\":\"ADMIN\",\"anIntParam\":666},"
+				+ "\"query\":\"query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType,$aDate:Date!){boards{topics{id __typename} __typename}}\""//
+				+ "}", graphQLRequest.buildRequestAsString(params));
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
-				+ "query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType){boards{topics{id __typename} __typename}}",
-				"{post={\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
-						+ " aCustomScalar=[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]], anEnum=\"ADMIN\", anIntParam=666}", //
+				+ "query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType,$aDate:Date!){boards{topics{id __typename} __typename}}",
+				"{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
+						+ "\"aCustomScalar\":[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]],\"aDate\":\"2021-10-11\",\"anEnum\":\"ADMIN\",\"anIntParam\":666}", //
 				null);
 	}
 }

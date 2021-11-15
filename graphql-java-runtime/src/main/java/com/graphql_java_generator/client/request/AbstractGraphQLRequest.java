@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
@@ -45,6 +46,8 @@ public abstract class AbstractGraphQLRequest {
 	 * instance
 	 */
 	static GraphQLConfiguration staticConfiguration = null;
+
+	static ObjectMapper objectMapper = new ObjectMapper();
 
 	/**
 	 * This contains the configuration for this instance. This configuration overrides the {@link #staticConfiguration},
@@ -106,10 +109,10 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	private static class Payload {
 		String query = null;
-		Map<String, String> variables = new HashMap<>();
+		Map<String, Object> variables = new HashMap<>();
 		String operationName = null;
 
-		public String getVariablesAsString() {
+		private String getVariablesAsStringOld() {
 			StringBuffer sb = new StringBuffer();
 			sb.append("{");
 			boolean first = true;
@@ -125,6 +128,7 @@ public abstract class AbstractGraphQLRequest {
 			sb.append("}");
 			return sb.toString();
 		}
+
 	}
 
 	/**
@@ -657,7 +661,7 @@ public abstract class AbstractGraphQLRequest {
 
 				//////////////////////////////////////////////////////////////////////
 				// And the variable value list (for the json variables field)
-				payload.variables.put(param.getBindParameterName(), param.getValueForGraphqlQuery(true, params));
+				payload.variables.put(param.getBindParameterName(), param.getValueForGraphqlQuery(params));
 
 				separator = ",";
 			}
@@ -692,28 +696,11 @@ public abstract class AbstractGraphQLRequest {
 	 * @throws GraphQLRequestExecutionException
 	 */
 	public String buildRequestAsString(Map<String, Object> params) throws GraphQLRequestExecutionException {
-		Payload payload = getPayload(params);
-
-		// Step 1: add the query
-		StringBuilder sb = new StringBuilder("{\"query\":\"");
-		sb.append(StringEscapeUtils.escapeJson(payload.query));
-		sb.append("\"");
-
-		// Step 2: add the variables
-		if (payload.variables.size() > 0) {
-			sb.append(",\"variables\":");
-			sb.append(payload.getVariablesAsString());
+		try {
+			return new ObjectMapper().writeValueAsString(buildRequestAsMap(params));
+		} catch (JsonProcessingException e1) {
+			throw new GraphQLRequestExecutionException(e1.getMessage(), e1);
 		}
-
-		// Step 3: add the operation name
-		if (payload.operationName != null) {
-			sb.append(",\"operationName\":");
-			sb.append(payload.operationName);
-		}
-
-		sb.append("}");
-
-		return sb.toString();
 	}
 
 	/**

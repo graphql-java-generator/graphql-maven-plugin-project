@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
@@ -68,7 +69,8 @@ class AliasesTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void testBuild_Partial_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void testBuild_Partial_createHuman()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 		params = new HashMap<>();
@@ -99,7 +101,7 @@ class AliasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_withBuilder()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 

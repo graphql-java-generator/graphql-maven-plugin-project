@@ -20,6 +20,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -68,9 +69,11 @@ class QueryExecutorImpl_StarWars_Test {
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 * @throws GraphQLRequestExecutionException
+	 * @throws JsonProcessingException
 	 */
 	@Test
-	void test_buildRequest_ID_characters() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void test_buildRequest_ID_characters()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("queryTypeHeroId", "1");
@@ -100,10 +103,11 @@ class QueryExecutorImpl_StarWars_Test {
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 * @throws GraphQLRequestExecutionException
+	 * @throws JsonProcessingException
 	 */
 	@Test
 	void test_buildRequest_EpisodeID_characters()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("queryTypeHeroEpisode", Episode.NEWHOPE);

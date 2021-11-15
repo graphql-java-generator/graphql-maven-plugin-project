@@ -26,6 +26,7 @@
 							<generateJacksonAnnotations>false</generateJacksonAnnotations>
 							<mode>client</mode>
 							<packageName>org.allGraphQLCases.client.pojo</packageName>
+							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<targetSourceFolder>${project.build.directory}/generated-sources/pojo-client</targetSourceFolder>
 							<targetResourceFolder>${project.build.directory}/generated-resources/pojo-client</targetResourceFolder>

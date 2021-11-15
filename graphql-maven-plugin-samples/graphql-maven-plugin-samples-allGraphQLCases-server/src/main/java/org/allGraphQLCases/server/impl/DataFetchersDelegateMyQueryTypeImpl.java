@@ -46,7 +46,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Resource
 	DataGenerator generator;
 
-	Mapper mapper = DozerBeanMapperBuilder.buildDefault();
+	static Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
 	@Override
 	public List<Character> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {

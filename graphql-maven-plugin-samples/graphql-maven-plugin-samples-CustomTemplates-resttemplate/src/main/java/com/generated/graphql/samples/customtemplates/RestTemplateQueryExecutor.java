@@ -25,8 +25,8 @@ import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
- * {@link RequestExecution} implementation using Spring {@link RestTemplate} as the http client Property grapql.endpoint in
- * required in application configuraion
+ * {@link RequestExecution} implementation using Spring {@link RestTemplate} as the http client Property grapql.endpoint
+ * in required in application configuraion
  * 
  * @author ggomez
  *
@@ -65,7 +65,7 @@ public class RestTemplateQueryExecutor implements RequestExecution {
 		String request = null;
 		try {
 			// Let's build the GraphQL request, to send to the server
-			request = graphQLRequest.buildRequest(parameters);
+			request = graphQLRequest.buildRequestAsString(parameters);
 			logger.trace(GRAPHQL_MARKER, "Generated GraphQL request: {}", request);
 
 			return doJsonRequestExecution(request, valueType);

@@ -54,7 +54,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ErrorType;
@@ -71,10 +70,9 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 /**
- * WebSocketHandler for GraphQL based on <a href=
- * "https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">GraphQL
- * Over WebSocket Protocol</a> and for use on a Servlet container with
- * {@code spring-websocket}.
+ * WebSocketHandler for GraphQL based on
+ * <a href= "https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">GraphQL Over WebSocket Protocol</a> and
+ * for use on a Servlet container with {@code spring-websocket}.
  *
  * @author Rossen Stoyanchev
  * @since 1.0.0
@@ -92,8 +90,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	private final Map<String, SessionState> sessionInfoMap = new ConcurrentHashMap<>();
 
 	/**
-	 * The Jackson {@link ObjectMapper} that will decode the incoming request, and
-	 * encode the output
+	 * The Jackson {@link ObjectMapper} that will decode the incoming request, and encode the output
 	 */
 	ObjectMapper objectMapper;
 
@@ -217,12 +214,14 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	/**
 	 * Actual Management of the Subscription
 	 * 
-	 * @param uri     The called URI
-	 * @param headers The HTTP headers
-	 * @param payload The payload map, that may contain these entries (according toe
-	 *                the <I>Subscribe</I> message of the
-	 *                <I>graphql-transport-ws</I> protocol: operationName, query,
-	 *                variables and extensions. query is the only mandatory value.
+	 * @param uri
+	 *            The called URI
+	 * @param headers
+	 *            The HTTP headers
+	 * @param payload
+	 *            The payload map, that may contain these entries (according toe the <I>Subscribe</I> message of the
+	 *            <I>graphql-transport-ws</I> protocol: operationName, query, variables and extensions. query is the
+	 *            only mandatory value.
 	 * 
 	 * @param id
 	 * @param session
@@ -300,7 +299,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 				@Override
 				public void onError(Throwable t) {
-					log.error("Received onError for Subscription id={}, on web socket {}", id, session.getId());
+					log.error("Received onError for Subscription id={}, on web socket {} (the error is {}: {}", id,
+							session.getId(), t.getClass().getSimpleName(), t.getMessage());
 
 					if (t instanceof SubscriptionExistsException) {
 						CloseStatus status = new CloseStatus(4409, "Subscriber for " + id + " already exists");
@@ -348,8 +348,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	private Map<String, Object> getPayload(Map<String, Object> message) {
 		Object payload = message.get("payload");
 		Assert.notNull(payload, "No payload in message: " + message);
-		Assert.isTrue(payload instanceof Map, "The payload should be a Map, but is a " + payload.getClass().getName()
-				+ ", in message: " + message);
+		Assert.isTrue(payload instanceof Map,
+				"The payload should be a Map, but is a " + payload.getClass().getName() + ", in message: " + message);
 
 		return (Map<String, Object>) payload;
 	}
@@ -411,8 +411,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 	private enum MessageType {
 
-		CONNECTION_INIT("connection_init"), CONNECTION_ACK("connection_ack"), SUBSCRIBE("subscribe"), NEXT("next"),
-		ERROR("error"), COMPLETE("complete"),
+		CONNECTION_INIT("connection_init"), CONNECTION_ACK("connection_ack"), SUBSCRIBE("subscribe"), NEXT(
+				"next"), ERROR("error"), COMPLETE("complete"),
 		// graphiql seems to send a START message, instead of a SUBSCRIBE one :(
 		// Let's add it ot this list
 		START("start");

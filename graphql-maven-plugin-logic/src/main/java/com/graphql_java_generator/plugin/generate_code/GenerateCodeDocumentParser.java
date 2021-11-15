@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
@@ -127,6 +128,9 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	/** The list of {@link CustomDeserializer} that contains the custom deserializers that must be generated. */
 	private List<CustomDeserializer> customDeserializers = new ArrayList<>();
 
+	/** The list of {@link CustomSerializer} that contains the custom serializers that must be generated. */
+	private List<CustomSerializer> customSerializers = new ArrayList<>();
+
 	/** The configuration for the code generation must implement the {@link GenerateCodeCommonConfiguration} */
 	GenerateCodeCommonConfiguration configuration;
 
@@ -220,6 +224,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		addAnnotations();
 		// List of all Custom Deserializers
 		initCustomDeserializers();
+		// List of all Custom Serializers
+		initCustomSerializers();
 		// List all data fetchers
 		logger.debug("Init data fetchers");
 		initDataFetchers();
@@ -453,29 +459,37 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
 		}
 
-		// No json deserialization for input type
-		if (!field.getOwningType().isInputType()) {
-			String contentAs = null;
-			String using = null;
-			if (field.getFieldTypeAST().getListDepth() > 0) {
-				field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
+		if (field.getFieldTypeAST().getListDepth() > 0) {
+			field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
+		}
+
+		if (configuration.isGenerateJacksonAnnotations()) {
+			// No json deserialization for input type
+			if (!field.getOwningType().isInputType()
+					&& (field.getFieldTypeAST().getListDepth() > 0 || field.getType().isCustomScalar())) {
+				// Custom Deserializer (for all lists and custom scalars)
+				String classSimpleName = "CustomJacksonDeserializers."//
+						+ CustomDeserializer.getCustomDeserializerClassSimpleName(
+								field.getFieldTypeAST().getListDepth(),
+								graphqlUtils.getJavaName(field.getType().getName()));
+				field.getOwningType().addImport(configuration.getPackageName(),
+						getUtilPackageName() + ".CustomJacksonDeserializers");
+				field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
+
+				field.addAnnotation(buildJsonDeserializeAnnotation(null, classSimpleName + ".class"));
 			}
 
-			if (configuration.isGenerateJacksonAnnotations()) {
-				if (field.getFieldTypeAST().getListDepth() > 0 || field.getType().isCustomScalar()) {
-					String classSimpleName = "CustomJacksonDeserializers."//
-							+ CustomDeserializer.getCustomDeserializerClassSimpleName(
-									field.getFieldTypeAST().getListDepth(),
-									graphqlUtils.getJavaName(field.getType().getName()));
-					field.getOwningType().addImport(configuration.getPackageName(),
-							getUtilPackageName() + ".CustomJacksonDeserializers");
-					using = classSimpleName + ".class";
-				}
+			// json serialization is only for input types
+			if (field.getOwningType().isInputType() && field.getType().isCustomScalar()) {
+				// Custom Serializer (only for custom scalars)
+				String classSimpleName = "CustomJacksonSerializers."//
+						+ CustomSerializer.getCustomSerializerClassSimpleName(field.getFieldTypeAST().getListDepth(),
+								graphqlUtils.getJavaName(field.getType().getName()));
+				field.getOwningType().addImport(configuration.getPackageName(),
+						getUtilPackageName() + ".CustomJacksonSerializers");
+				field.getOwningType().addImport(configuration.getPackageName(), JsonSerialize.class.getName());
 
-				if (contentAs != null || using != null) {
-					field.getOwningType().addImport(configuration.getPackageName(), JsonDeserialize.class.getName());
-					field.addAnnotation(buildJsonDeserializeAnnotation(contentAs, using));
-				}
+				field.addAnnotation(buildJsonSerializeAnnotation(classSimpleName + ".class"));
 			}
 		}
 
@@ -669,7 +683,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	}
 
 	/**
-	 * Build an @JsonDeserialize annotation with one or more attributes
+	 * Build an @{@link JsonDeserialize} annotation with one or more attributes
 	 * 
 	 * @param contentAs
 	 *            contentAs class name
@@ -685,6 +699,29 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			annotationBuf.append("contentAs = ").append(contentAs);
 			addComma = true;
 		}
+
+		if (using != null) {
+			if (addComma) {
+				annotationBuf.append(", ");
+			}
+			annotationBuf.append("using = ").append(using);
+		}
+		annotationBuf.append(")");
+		return annotationBuf.toString();
+	}
+
+	/**
+	 * Build an @{@link JsonSerialize} annotation with one or more attributes
+	 * 
+	 * 
+	 * @param using
+	 *            using class name
+	 * @return annotation string
+	 */
+	private String buildJsonSerializeAnnotation(String using) {
+		StringBuffer annotationBuf = new StringBuffer();
+		annotationBuf.append("@JsonSerialize(");
+		boolean addComma = false;
 
 		if (using != null) {
 			if (addComma) {
@@ -898,6 +935,40 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						t.getClassFullName(), null, i, lowerListLevelCustomDeserializer);
 				customDeserializers.add(currentListLevelCustomDeserializer);
 				lowerListLevelCustomDeserializer = currentListLevelCustomDeserializer;
+			}
+		}
+	}
+
+	/** This method reads all the input types, to identify all the {@link CustomSerializer} that must be defined. */
+	private void initCustomSerializers() {
+		Map<Type, Integer> maxListLevelPerType = new HashMap<>();
+		getObjectTypes().stream()
+				// We serialize data for the request. So only input types are concerned
+				.filter((o) -> o.isInputType())
+				// Let's read all their fields
+				.flatMap((o) -> o.getFields().stream())
+				// Only custom scalar fields need a custom serialize
+				.filter((f) -> f.getType() instanceof CustomScalarType)
+				// Let's store, for each type, the maximum level of list we've found
+				.forEach((f) -> {
+					// listLevel: 0 for non array GraphQL types, 1 for arrays like [Int], 2 for nested arrays like
+					// [[Int]]...
+					int listLevel = f.getFieldTypeAST().getListDepth();
+
+					Integer alreadyDefinedListLevel = maxListLevelPerType.get(f.getType());
+					if (alreadyDefinedListLevel == null || alreadyDefinedListLevel < listLevel) {
+						// The current type is a deeper nested array
+						maxListLevelPerType.put(f.getType(), listLevel);
+					}
+				});
+
+		// We now know the maximum listLevel for each type. We can now define all the necessary custom serializers
+		customSerializers = new ArrayList<>();
+		for (Type t : maxListLevelPerType.keySet()) {
+			// We manage all the list levels for the embedded arrays of this type, as found in the GraphQL schema.
+			for (int i = 0; i <= maxListLevelPerType.get(t); i += 1) {
+				customSerializers.add(new CustomSerializer(t.getName(), t.getClassFullName(),
+						((CustomScalar) t).getCustomScalarDefinition(), i));
 			}
 		}
 	}

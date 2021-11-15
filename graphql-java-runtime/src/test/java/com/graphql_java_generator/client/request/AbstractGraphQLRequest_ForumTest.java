@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.domain.client.forum.Board;
@@ -39,7 +40,7 @@ class AbstractGraphQLRequest_ForumTest {
 
 	@Test
 	public void test_withQueryResponseDef_withHardCodedParameters_Forum()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
 		String queryResponseDef = "{id name publiclyAvailable "
 				+ " topics{id date author{id name email type} nbPosts posts(memberName: \"Me!\", since: ?sinceParam) {date author{name email type}}}}";
@@ -90,7 +91,7 @@ class AbstractGraphQLRequest_ForumTest {
 
 	@Test
 	public void test_withQueryResponseDef_withBindVariableParameters_Forum()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 
 		// Go, go, go
@@ -141,14 +142,14 @@ class AbstractGraphQLRequest_ForumTest {
 		// First parameter is hard coded
 		assertEquals("memberName", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\"a member Name\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
+		assertEquals("\"a member Name\"", postsInputParameters.get(i).getStringContentForGraphqlQuery(false, params));
 		assertEquals("memberName", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.OPTIONAL, postsInputParameters.get(i).type);
 		i = 1;
 		// The second parameter is a bind variable
 		assertEquals("since", postsInputParameters.get(i).getName());
 		assertEquals(null, postsInputParameters.get(i).getValue());
-		assertEquals("\"1900-10-24\"", postsInputParameters.get(i).getValueForGraphqlQuery(false, params));
+		assertEquals("\"1900-10-24\"", postsInputParameters.get(i).getStringContentForGraphqlQuery(false, params));
 		assertEquals("sinceParam", postsInputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.MANDATORY, postsInputParameters.get(i).type);
 
@@ -197,7 +198,7 @@ class AbstractGraphQLRequest_ForumTest {
 
 	@Test
 	void testBuild_fullQueryWithQueryName()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest("query aQueryName {boards{topics{id}}}");
 		Map<String, Object> params = new HashMap<>();

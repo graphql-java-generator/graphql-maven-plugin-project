@@ -3,7 +3,6 @@ package org.allGraphQLCases;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -11,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.CharacterInput;
@@ -197,25 +197,14 @@ class GraphQLVariablesIT {
 
 		// Let's wait a max of 10 second, until we receive some notifications (my PC is really slow, especially when the
 		// antivirus consumes 98% of my CPU!
-		try {
-			for (int i = 1; i < 100; i += 1) {
-				if (callback.lastReceivedMessage != null)
-					break;
-				Thread.sleep(100); // Wait 0.1 second
-			} // for
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
+		callback.latchForMessageReception.await(10, TimeUnit.SECONDS);
 
 		// Let's disconnect from the subscription
 		sub.unsubscribe();
 
 		// Verification
+		assertNull(callback.lastReceivedError, "expected no error, but received " + callback.lastReceivedError);
 		assertNotNull(callback.lastReceivedMessage, "The subscription should have received a message");
 	}
 
-	@Test
-	public void test_GraphQLVariables_subscribeWithStringParameters() {
-		fail("not yet implemented (use of SubscriptionTestParam.messages)");
-	}
 }

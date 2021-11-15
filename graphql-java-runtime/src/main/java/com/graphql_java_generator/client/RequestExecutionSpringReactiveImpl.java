@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,13 +153,14 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 	@Override
 	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest,
 			Map<String, Object> parameters, Class<R> dataResponseType) throws GraphQLRequestExecutionException {
+		String jsonRequest = "not initialized yet";
 
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");
 
-		String jsonRequest = graphQLRequest.buildRequestAsString(parameters);
-
 		try {
+			Map<String, Object> map = graphQLRequest.buildRequestAsMap(parameters);
+			jsonRequest = graphQLRequest.getGraphQLObjectMapper().writeValueAsString(map);
 
 			logger.trace(GRAPHQL_MARKER, "Executing GraphQL request: {}", jsonRequest);
 
@@ -247,18 +247,16 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 
 				// Let's create and start the Web Socket
 				webSocketHandler = new GraphQLReactiveWebSocketHandler(graphQLRequest.getGraphQLObjectMapper());
-				webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler)
-						// Let's have a dedicated thread
-						// .subscribeOn(Schedulers.single())
-						.subscribe();
+				// We block, so that connection errors are thrown here, and can be managed by the caller
+				webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler).doOnError((t) -> {
+					webSocketHandler.onError(t);
+					// Then, as there is an error here, we specify that the web socket is initialized (as obviously,
+					// it's useless to expect any correct initialization here). The error will be manager just below.
+					webSocketHandler.setInitializationError(t);
+				}).subscribe();
 
-				// Let's wait until we get the session value. This allows proper reuse of the web socket in heavy
-				// multi-tasking environment, withing this synchronized block.
-				try {
-					webSocketHandler.getLatchWaitingForSessionInitialized().await(500, TimeUnit.MILLISECONDS);
-				} catch (InterruptedException e) {
-					// No action, let's go
-				}
+				// Let's check that there has been not exception during initialization
+				webSocketHandler.checkInitializationError(); // returns when it's ready, or throws an exception
 			}
 		}
 

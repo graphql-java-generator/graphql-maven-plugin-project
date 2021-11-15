@@ -96,7 +96,7 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 					if (null == getClass().getClassLoader().getResource(configuration.getTemplates().get(key))) {
 						throw new RuntimeException("The file provided for the '" + key
 								+ "' template could not be found. The provided filename is: '"
-								+ configuration.getTemplates().get(key) + "' (ithe full path is '"
+								+ configuration.getTemplates().get(key) + "' (the full path is '"
 								+ file.getCanonicalPath() + "')");
 					}
 

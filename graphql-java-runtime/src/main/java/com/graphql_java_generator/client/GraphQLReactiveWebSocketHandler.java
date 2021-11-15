@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 
 	private static final List<String> SUB_PROTOCOL_LIST = Arrays.asList("graphql-transport-ws");
 
-	private enum MessageType {
+	public enum MessageType {
 		CONNECTION_INIT("connection_init"), CONNECTION_ACK("connection_ack"), SUBSCRIBE("subscribe"), NEXT(
 				"next"), ERROR("error"), COMPLETE("complete"),
 		// graphiql seems to send a START message, instead of a SUBSCRIBE one :(
@@ -218,7 +219,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 			} else {
 				logger.trace("onComplete received for id {} on WebSocketSession {}", uniqueIdOperation, session);
 				// Let's forward the information to the application callback
-				subscriptionCallback.onClose(0, "onComplete");
+				subscriptionCallback.onClose(0, "Complete");
 			}
 		}
 
@@ -291,13 +292,6 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	WebSocketSession session = null;
 
 	/**
-	 * This latch allows to wait until the session has been initialized. This can be used by consumer to properly check
-	 * the that the session is open, and reuse it, including in heavy multi-tasking environment. <BR/>
-	 * This latch is decremented in the {@link #handle(WebSocketSession)} method.
-	 */
-	CountDownLatch latchWaitingForSessionInitialized = new CountDownLatch(1);
-
-	/**
 	 * The {@link SubscriptionRequestEmitter} is the instance that can write messages into the output flux of the web
 	 * socket, toward the server
 	 */
@@ -305,6 +299,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 
 	/** Used to wait before executing the subscription, until the ConnectionInit has been sent through the Web Socket */
 	CountDownLatch webSocketConnectionInitializationLatch = new CountDownLatch(1);
+
 	/**
 	 * Contains the error that occurs during the web socket initialization process (when sending the
 	 * <I>connection_init</I> message). It can be read as soon as the webSocketConnectionInitializationLatch count is
@@ -345,10 +340,11 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		// Let's wait until the web socket is properly initialized, as specified by the graphql-transport-ws protocol
 		try {
 			logger.trace("Waiting for GraphQL web socket inialization, for socket {}", session);
-			webSocketConnectionInitializationLatch.await();
+			webSocketConnectionInitializationLatch.await(30, TimeUnit.SECONDS);
 			logger.trace("GraphQL web socket {} has been inialized (let's execute the subscription)", session);
 		} catch (InterruptedException e) {
-			throw new GraphQLRequestExecutionException(e.getMessage(), e);
+			throw new GraphQLRequestExecutionException("Got interrupted while waiting for the subscription execution",
+					e);
 		}
 
 		synchronized (registeredSubscriptions) {
@@ -390,25 +386,47 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 * Returns the error that occurs during the initialization phase, that is while sending the <I>connection_init</I>
 	 *
 	 * @return The error that occurs, or null if no error occurred while sending the <I>connection_init</I>
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs before the Web Socket and the subscription are properly initialized.
 	 */
-	public Throwable getInitializationError() {
-		// The web socket initialization phase must be finished
-		if (webSocketConnectionInitializationLatch.getCount() > 0) {
-			try {
-				logger.trace("Waiting for GraphQL web socket inialization, on socket {}", session);
-				webSocketConnectionInitializationLatch.await();
-				logger.trace("GraphQL web socket {} has been inialized", session);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
+	public void checkInitializationError() throws GraphQLRequestExecutionException {
+		int nbSecondsTimeOut = 30;
+		// The web socket initialization phase must be finished. And we'll wait at most nbSecondsTimeOut for that.
+		try {
+			webSocketConnectionInitializationLatch.await(nbSecondsTimeOut, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new GraphQLRequestExecutionException(
+					"The thread got interrupted while waiting for web socket initialization");
 		}
-		return initializationError;
+
+		if (webSocketConnectionInitializationLatch.getCount() > 0) {
+			throw new GraphQLRequestExecutionException("The session on Web Socket " + session
+					+ " has not been initialized after " + nbSecondsTimeOut + " seconds");
+		} else if (initializationError != null) {
+			throw new GraphQLRequestExecutionException(
+					"Error during Web Socket or Subscription initialization: "
+							+ initializationError.getClass().getSimpleName() + "-" + initializationError.getMessage(),
+					initializationError);
+		}
+
+		// If we arrive here, we're happy. There has been no error during initialization
+	}
+
+	/**
+	 * This method may be called by the
+	 * {@link RequestExecutionSpringReactiveImpl#execute(com.graphql_java_generator.client.request.AbstractGraphQLRequest, Map, SubscriptionCallback, Class, Class)}
+	 * method
+	 * 
+	 * @param initializationError
+	 */
+	void setInitializationError(Throwable initializationError) {
+		this.initializationError = initializationError;
+		webSocketConnectionInitializationLatch.countDown();
 	}
 
 	@Override
 	public Mono<Void> handle(WebSocketSession sessionParam) {
 		this.session = sessionParam;
-		latchWaitingForSessionInitialized.countDown();
 		logger.trace("new web socket session received: {}", session);
 
 		Mono<Void> input = session.receive()//
@@ -575,9 +593,11 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 			subData.onError(t);
 		}
 
-		session.close(CloseStatus.SERVER_ERROR);
-		// This session should not be reused
-		session = null;
+		if (session != null) {
+			session.close(CloseStatus.SERVER_ERROR);
+			// This session should not be reused
+			session = null;
+		}
 	}
 
 	public void onComplete() {
@@ -598,38 +618,23 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		return session;
 	}
 
-	public CountDownLatch getLatchWaitingForSessionInitialized() {
-		return latchWaitingForSessionInitialized;
-	}
-
 	/**
 	 * Encodes a message, according to the
 	 * <a href="https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">graphql-transport-ws protocol</a>
 	 */
-	String encode(String id, MessageType messageType, Map<String, Object> payload) {
-		String action = null;
-
-		StringBuffer sb = new StringBuffer("{\"type\":");
-		sb.append(messageType.getType());
-
+	String encode(@Nullable String id, MessageType messageType, @Nullable Object payload) {
+		Map<String, Object> payloadMap = new HashMap<>(3);
+		payloadMap.put("type", messageType.getType());
+		if (id != null) {
+			payloadMap.put("id", id);
+		}
+		if (payload != null) {
+			payloadMap.put("payload", payload);
+		}
 		try {
-			if (id != null) {
-				sb.append(",\"id\":");
-				action = "Writing id: <" + id + ">";
-				sb.append(objectMapper.writeValueAsString(id));
-			}
-
-			if (payload != null && payload.size() > 0) {
-				sb.append(",\"payload\":{");
-				action = "Writing payload: <" + payload + ">";
-				for ()
-				sb.append(objectMapper.writeValueAsString(payload));
-				sb.append("}");
-			}
+			return objectMapper.writeValueAsString(payloadMap);
 		} catch (IOException ex) {
-			throw new RuntimeException("Failed to write payload as JSON, during action: " + action, ex);
-		} // try
-
-		return sb.toString();
+			throw new RuntimeException("Failed to write " + payloadMap + " as JSON", ex);
+		}
 	}
 }

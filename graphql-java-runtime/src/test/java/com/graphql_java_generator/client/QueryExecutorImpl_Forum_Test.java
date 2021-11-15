@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.RequestType;
@@ -82,7 +83,7 @@ class QueryExecutorImpl_Forum_Test {
 
 	@Test
 	void test_buildRequest_withFieldParameters_bindVariables()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		ObjectResponse objectResponse = new Builder(GraphQLRequest.class, "boards", RequestType.query)
 				.withQueryResponseDef(
@@ -108,7 +109,7 @@ class QueryExecutorImpl_Forum_Test {
 
 	@Test
 	void test_buildRequest_withFieldParameters_hardCoded()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		ObjectResponse objectResponse = new Builder(GraphQLRequest.class, "boards", RequestType.query)
 				.withQueryResponseDef(

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
@@ -77,7 +78,8 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void testBuild_Partial_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void testBuild_Partial_createHuman()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 		params = new HashMap<>();
@@ -124,7 +126,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Partial_createHuman_Alias()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		Class<?> droidClass;
 		Class<?> humanClass;
 
@@ -183,7 +185,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_withBuilder()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
 
@@ -210,7 +212,8 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void testBuild_Full_createHuman() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void testBuild_Full_createHuman()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 
 		// Go, go, go
@@ -236,7 +239,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Full_createHuman_WithHardCodedParameters()
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		params = new HashMap<>();
 		params.put("value", "the directive value");

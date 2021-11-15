@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 #if ($configuration.isGenerateJacksonAnnotations())
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,6 +26,9 @@ import $import;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 ${object.annotation}
+#if ($configuration.isGenerateJacksonAnnotations())
+@JsonInclude(Include.NON_NULL)
+#end
 public class ${targetFileName} 
 #if($object.implementz.size()>0)	implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end
 #if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end

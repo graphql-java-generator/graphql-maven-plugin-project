@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -34,6 +35,8 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 	RequestExecutionImpl queryExecutorImpl;
 	MyQueryType myQueryType;
 
+	static ObjectMapper objectMapper = new ObjectMapper();
+
 	@BeforeEach
 	void setUp() throws Exception {
 		myQueryType = new MyQueryType("http://localhost");
@@ -45,7 +48,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 
 	@Test
 	void buildRequest_withEnum_withDirectives_prepared()
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
 		// Preparation
 		String query = "{\n"
 				+ "    id     @anotherTestDirective    @testDirective  ( value: \"id1 value\", anotherValue:\" something else for id1 \")\n"
@@ -86,7 +89,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 
 	@Test
 	void buildRequest_query_withEnum_withDirectives_prepared()
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
 		// Preparation
 		String query = "{\n" + //
 				"  withoutParameters @include(if: true) @anotherTestDirective {\n" + //
@@ -146,7 +149,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 	@Disabled
 	@Test
 	void buildRequest_multipleQueries_withEnum_withDirectives_prepared()
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
 		// Preparation
 		String query = "{\n" + //
 				"  withoutParameters @include(if: true) @anotherTestDirective {\n" + //
@@ -203,7 +206,8 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 
 	@Disabled
 	@Test
-	void test_MultipleFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void test_MultipleFragments()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
 		String query = "fragment ChararacterIdNameFriends on Character {" + //
 				"	...ChararacterIdName" + //
@@ -249,8 +253,7 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 			throws IOException, GraphQLResponseParseException {
 
 		// Let's read this response with Jackson
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode node = mapper.readTree(rawResponse);
+		JsonNode node = objectMapper.readTree(rawResponse);
 
 		// The main node should be unique, named data, and be a container
 		if (node.size() != 1)
@@ -265,16 +268,19 @@ public class QueryExecutorImpl_allGraphqlCases_Test {
 		if (post == null)
 			throw new GraphQLResponseParseException("Could not retrieve the 'post' node");
 
-		return mapper.treeToValue(post, valueType);
+		return objectMapper.treeToValue(post, valueType);
 	}
 
-	public static void checkRequestMap(Map<String, Object> map, String query, Object variables, String operationName) {
+	public static void checkRequestMap(Map<String, Object> map, String query, Object variables, String operationName)
+			throws JsonProcessingException {
 		assertEquals(query, map.get("query"));
 
 		if (variables != null) {
 			assertTrue(map.get("variables") instanceof Map,
 					"variables is an instance of " + variables.getClass().getName());
-			assertEquals(variables, map.get("variables").toString());
+			// We want to compare the json generated from this map
+			String json = objectMapper.writeValueAsString(map.get("variables"));
+			assertEquals(variables, json);
 		}
 
 		if (variables != null)

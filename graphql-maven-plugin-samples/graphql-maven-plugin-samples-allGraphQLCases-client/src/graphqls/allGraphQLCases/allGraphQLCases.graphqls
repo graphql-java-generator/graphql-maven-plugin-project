@@ -89,16 +89,20 @@ type AnotherMutationType {
 
 type TheSubscriptionType {
 	
-	# Will be notified for each Human added to this Episode
+	# Will be notified for each Human added to this Episode 
 	subscribeNewHumanForEpisode(episode: Episode!): Human!
 	
-	#Issue 54
+	# Issue 54
 	subscribeToAList: [Int]!
 	
-    #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+    # issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
     issue53(date: Date!): Date!
     
-    #A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
+    # Some subscriptions to test all kind of input parameters (to check proper serialization and deserialization)
+    allGraphQLCasesInput(input: AllFieldCasesInput!): AllFieldCases!
+    allGraphQLCasesParam(id: String!, name: String!, age: Long!, integer: Int!, date: Date!, dates: [Date]!, matrix: [[Float]]!, oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!): AllFieldCases!
+    
+    # A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
     subscriptionTest(param: SubscriptionTestParam!): String!
 }
 
@@ -259,7 +263,7 @@ input SubscriptionTestParam {
 	errorOnNext: Boolean!
 	completeAfterFirstNotification: Boolean!
 	closeWebSocketBeforeFirstNotification: Boolean!
-	messages: [String!]!
+	messages: [String!]
 }
 
 ##############################################################################################################
@@ -436,5 +440,3 @@ bad: NonNegativeInt
 }
 
 scalar NonNegativeInt
-
-#############################

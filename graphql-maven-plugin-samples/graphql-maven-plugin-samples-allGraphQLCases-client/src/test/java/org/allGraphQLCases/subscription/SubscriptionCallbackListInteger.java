@@ -3,7 +3,7 @@
  */
 package org.allGraphQLCases.subscription;
 
-import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -16,19 +16,18 @@ import com.graphql_java_generator.client.SubscriptionCallback;
  * 
  * @author etienne-sf
  */
-public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
+public class SubscriptionCallbackListInteger implements SubscriptionCallback<List<Integer>> {
 
 	/** The logger for this class */
-	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackToADate.class);
+	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackListInteger.class);
 
 	final String clientName;
-	public Date lastReceivedMessage = null;
-	public Throwable lastReceivedError = null;
+	public List<Integer> lastReceivedMessage = null;
 
 	/** A latch that will be freed when a the first notification arrives for this subscription */
 	public CountDownLatch latchForMessageReception = new CountDownLatch(1);
 
-	public SubscriptionCallbackToADate(String clientName) {
+	public SubscriptionCallbackListInteger(String clientName) {
 		this.clientName = clientName;
 	}
 
@@ -38,7 +37,7 @@ public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 	}
 
 	@Override
-	public void onMessage(Date t) {
+	public void onMessage(List<Integer> t) {
 		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
 		latchForMessageReception.countDown();
@@ -51,9 +50,8 @@ public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 
 	@Override
 	public void onError(Throwable cause) {
-		lastReceivedError = cause;
-		logger.error("Oups! An error occurred: " + cause.getMessage());
-		latchForMessageReception.countDown();
+		logger.error("Oups! An error occurred: "
+				+ ((cause == null) ? null : cause.getClass().getSimpleName() + ": " + cause.getMessage()));
 	}
 
 }

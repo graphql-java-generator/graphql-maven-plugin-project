@@ -6,6 +6,7 @@ package com.graphql_java_generator.client.request;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -566,7 +567,8 @@ public class InputParameter {
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException(
 							"Could not read the value for the parameter '" + parameterName + "' of the field '"
-									+ fieldName + "' of the type '" + owningClass.getName() + "'");
+									+ fieldName + "' of the type '" + owningClass.getName() + "'",
+							e);
 				}
 			}
 		}
@@ -628,6 +630,46 @@ public class InputParameter {
 	}
 
 	/**
+	 * Returns the parameter value, as-is, without any escape character
+	 * 
+	 * @param bindVariables
+	 *            The map for the bind variables. It may be null, if this input parameter is a hard coded one. If this
+	 *            parameter is a Bind Variable, then bindVariables is mandatory, and it must contain a value for th bind
+	 *            parameter which name is stored in {@link #bindParameterName}.
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	public Object getValueForGraphqlQuery(Map<String, Object> bindVariables) {
+		return getValueForGraphqlQuery(bindVariables.get(bindParameterName), graphQLScalarType, bindVariables);
+	}
+
+	public static Object getValueForGraphqlQuery(Object val, GraphQLScalarType graphQLScalarTypeParam,
+			Map<String, Object> bindVariables) {
+		if (val == null) {
+			return null;
+		} else if (val.getClass().isArray()) {
+			// Doing just "Arrays.asList(val)" results in a StackOverflowError!
+			// We have to indicate that val is an array!
+			return getValueForAListValue(Arrays.asList((Object[]) val), graphQLScalarTypeParam, bindVariables);
+		} else if (val instanceof List) {
+			return getValueForAListValue((List<?>) val, graphQLScalarTypeParam, bindVariables);
+		} else if (graphQLScalarTypeParam != null) {
+			return graphQLScalarTypeParam.getCoercing().serialize(val);
+		} else {
+			return val;
+		}
+	}
+
+	private static Object getValueForAListValue(List<?> list, GraphQLScalarType graphQLScalarTypeParam,
+			Map<String, Object> bindVariables) {
+		List<Object> ret = new ArrayList<>(list.size());
+		for (Object v : list) {
+			ret.add(getValueForGraphqlQuery(v, graphQLScalarTypeParam, bindVariables));
+		}
+		return ret;
+	}
+
+	/**
 	 * Returns the parameter, as it should be written in the GraphQL query. For instance:
 	 * <UL>
 	 * <LI>String: a "string" -> "a \"string\""</LI>
@@ -643,12 +685,13 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	public String getValueForGraphqlQuery(boolean writingGraphQLVariables, Map<String, Object> bindVariables)
+	@Deprecated
+	public String getStringContentForGraphqlQuery(boolean writingGraphQLVariables, Map<String, Object> bindVariables)
 			throws GraphQLRequestExecutionException {
 		if (this.bindParameterName == null) {
 			// It's a hard coded value
-			return this.getValueForGraphqlQuery(writingGraphQLVariables, this.value, graphQLTypeName, graphQLScalarType,
-					false);
+			return this.getStringContentForGraphqlQuery(writingGraphQLVariables, this.value, graphQLTypeName,
+					graphQLScalarType, false);
 		}
 		// It's a Bind Variable.
 
@@ -662,8 +705,9 @@ public class InputParameter {
 		if (bindVariables == null || !bindVariables.keySet().contains(this.bindParameterName))
 			return null;
 		else
-			return this.getValueForGraphqlQuery(writingGraphQLVariables, bindVariables.get(this.bindParameterName),
-					graphQLTypeName, graphQLScalarType, type.equals(InputParameterType.GRAPHQL_VARIABLE));
+			return this.getStringContentForGraphqlQuery(writingGraphQLVariables,
+					bindVariables.get(this.bindParameterName), graphQLTypeName, graphQLScalarType,
+					type.equals(InputParameterType.GRAPHQL_VARIABLE));
 	}
 
 	/**
@@ -685,7 +729,8 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	String getValueForGraphqlQuery(boolean writingGraphQLVariables, Object val, String graphQLTypeNameParam,
+	@Deprecated
+	String getStringContentForGraphqlQuery(boolean writingGraphQLVariables, Object val, String graphQLTypeNameParam,
 			GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		if (val == null) {
 			return null;
@@ -696,9 +741,14 @@ public class InputParameter {
 		} else if (writingGraphQLVariables && val.getClass().isEnum()) {
 			// When writing an enum value in the variables section, values should be between double quotes
 			return "\"" + val.toString() + "\"";
-		} else if (val instanceof java.util.List) {
-			return getListValue(writingGraphQLVariables, (List<?>) val, graphQLTypeNameParam, graphQLScalarTypeParam,
-					graphQLVariable);
+		} else if (val.getClass().isArray()) {
+			// Doing just "Arrays.asList(val)" results in a StackOverflowError!
+			// We have to indicate that val is an array!
+			return getStringContentForAListValue(writingGraphQLVariables, Arrays.asList((Object[]) val),
+					graphQLTypeNameParam, graphQLScalarTypeParam, graphQLVariable);
+		} else if (val instanceof List) {
+			return getStringContentForAListValue(writingGraphQLVariables, (List<?>) val, graphQLTypeNameParam,
+					graphQLScalarTypeParam, graphQLVariable);
 		} else if (val instanceof RawGraphQLString) {
 			// The value is a part of the GraphQL request. Let's write it as is.
 			return ((RawGraphQLString) val).toString();
@@ -714,7 +764,7 @@ public class InputParameter {
 		} else if (val instanceof UUID) {
 			return getStringValue(((UUID) val).toString());
 		} else if (val.getClass().getAnnotation(GraphQLInputType.class) != null) {
-			return getInputTypeStringValue(writingGraphQLVariables, val, graphQLVariable);
+			return getStringContentForAnInputTypeValue(writingGraphQLVariables, val, graphQLVariable);
 		} else {
 			return val.toString();
 		}
@@ -730,6 +780,7 @@ public class InputParameter {
 	 * @see <a href="https://www.json.org/">json.org section on strings</a>
 	 * @return escaped string
 	 */
+	@Deprecated
 	private String getStringValue(String str) {
 		String r = "\"" + StringEscapeUtils.escapeJson(str) + "\"";
 		return r;
@@ -752,12 +803,14 @@ public class InputParameter {
 	 * @throws NullPointerException
 	 *             If list is null
 	 */
-	private String getListValue(boolean writingGraphQLVariables, List<?> list, String graphQLTypeNameParam,
-			GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable) throws GraphQLRequestExecutionException {
+	@Deprecated
+	private String getStringContentForAListValue(boolean writingGraphQLVariables, List<?> list,
+			String graphQLTypeNameParam, GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable)
+			throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("[");
 		for (int index = 0; index < list.size(); index++) {
 			Object obj = list.get(index);
-			result.append(this.getValueForGraphqlQuery(writingGraphQLVariables, obj, graphQLTypeNameParam,
+			result.append(this.getStringContentForGraphqlQuery(writingGraphQLVariables, obj, graphQLTypeNameParam,
 					graphQLScalarTypeParam, graphQLVariable));
 			if (index < list.size() - 1) {
 				result.append(",");
@@ -780,8 +833,9 @@ public class InputParameter {
 	 * @return The String that represents this object, according to GraphQL standard representation, as expected in the
 	 *         query to be sent to the server
 	 */
-	private String getInputTypeStringValue(boolean writingGraphQLVariables, Object object, boolean graphQLVariable)
-			throws GraphQLRequestExecutionException {
+	@Deprecated
+	private String getStringContentForAnInputTypeValue(boolean writingGraphQLVariables, Object object,
+			boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		StringBuilder result = new StringBuilder("{");
 		String separator = "";
 
@@ -797,7 +851,7 @@ public class InputParameter {
 							.append(field.getName())//
 							.append(graphQLVariable ? "\"" : "")//
 							.append(":")//
-							.append(getValueForGraphqlQuery(writingGraphQLVariables, val, graphQLTypeName,
+							.append(getStringContentForGraphqlQuery(writingGraphQLVariables, val, graphQLTypeName,
 									graphqlClientUtils.getGraphQLCustomScalarType(field), graphQLVariable));
 
 					separator = ",";
@@ -853,7 +907,7 @@ public class InputParameter {
 			// Let's list the non null parameters ...
 			List<String> params = new ArrayList<String>();
 			for (InputParameter param : inputParameters) {
-				String stringValue = param.getValueForGraphqlQuery(writingGraphQLVariables, parameters);
+				String stringValue = param.getStringContentForGraphqlQuery(writingGraphQLVariables, parameters);
 				if (stringValue != null) {
 					params.add(param.getName() + ":" + stringValue);
 				}

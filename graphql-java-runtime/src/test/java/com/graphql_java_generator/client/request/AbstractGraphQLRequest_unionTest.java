@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
@@ -29,7 +30,8 @@ class AbstractGraphQLRequest_unionTest {
 	}
 
 	@Test
-	void testBuild_withMissingFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void testBuild_withMissingFragments()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
 		MyQueryType queryType = new MyQueryType("http://localhost");
 

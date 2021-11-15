@@ -3,6 +3,7 @@
  */
 package graphql.mavenplugin_notscannedbyspring;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class AllGraphQLCases_Server_SpringConfiguration_separateUtilityClasses e
 
 	@Override
 	protected void addSpecificConfigurationParameterValue(GraphQLConfigurationTestHelper configuration) {
+		// The allGraphQLCases GraphQL schema is located in the allGraphQLCases client sample
+		configuration.schemaFileFolder = new File(mavenTestHelper.getModulePathFile(),
+				"../graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases");
 		configuration.customScalars = customScalars;
 		configuration.generateBatchLoaderEnvironment = true;
 		configuration.mode = PluginMode.server;

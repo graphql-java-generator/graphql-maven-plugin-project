@@ -4,11 +4,16 @@
 package org.allGraphQLCases.server.impl;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.allGraphQLCases.server.AllFieldCases;
+import org.allGraphQLCases.server.AllFieldCasesInput;
+import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
+import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtypeInput;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.SubscriptionTestParam;
@@ -16,6 +21,9 @@ import org.allGraphQLCases.server.util.DataFetchersDelegateTheSubscriptionType;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 
 import graphql.schema.DataFetchingEnvironment;
 import reactor.core.publisher.Flux;
@@ -29,6 +37,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Autowired
 	DataGenerator dataGenerator;
+
+	static Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
 	@Override
 	public Publisher<Human> subscribeNewHumanForEpisode(DataFetchingEnvironment dataFetchingEnvironment,
@@ -108,4 +118,45 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 					.map((l) -> Long.toString(l));
 		}
 	}
+
+	@Override
+	public Publisher<AllFieldCases> allGraphQLCasesInput(DataFetchingEnvironment dataFetchingEnvironment,
+			AllFieldCasesInput input) {
+		AllFieldCases ret = mapper.map(input, AllFieldCases.class);
+
+		List<AllFieldCasesWithoutIdSubtype> list = new ArrayList<>(input.getWithoutIdSubtype().size());
+		for (AllFieldCasesWithoutIdSubtypeInput item : input.getWithoutIdSubtype()) {
+			list.add(mapper.map(item, AllFieldCasesWithoutIdSubtype.class));
+		}
+		ret.setListWithoutIdSubTypes(list);
+
+		return Flux.just(ret);
+	}
+
+	@Override
+	public Publisher<AllFieldCases> allGraphQLCasesParam(DataFetchingEnvironment dataFetchingEnvironment, String id,
+			String name, Long age, Integer integer, Date date, List<Date> dates, List<List<Double>> matrix,
+			AllFieldCasesWithoutIdSubtypeInput onewithoutIdSubtype,
+			List<AllFieldCasesWithoutIdSubtypeInput> listwithoutIdSubtype) {
+		AllFieldCases ret = new AllFieldCases();
+		ret.setId(UUID.fromString(id));
+		ret.setName(name);
+		ret.setAge(age);
+		ret.setDate(date);
+		ret.setDates(dates);
+		ret.setMatrix(matrix);
+		ret.setAliases(Arrays.asList("an alias"));
+		ret.setPlanets(Arrays.asList("planet 1", "planet 2"));
+
+		ret.setOneWithoutIdSubType(mapper.map(onewithoutIdSubtype, AllFieldCasesWithoutIdSubtype.class));
+
+		List<AllFieldCasesWithoutIdSubtype> list = new ArrayList<>(listwithoutIdSubtype.size());
+		for (AllFieldCasesWithoutIdSubtypeInput item : listwithoutIdSubtype) {
+			list.add(mapper.map(item, AllFieldCasesWithoutIdSubtype.class));
+		}
+		ret.setListWithoutIdSubTypes(list);
+
+		return Flux.just(ret);
+	}
+
 }

@@ -22,7 +22,7 @@ import graphql.language.Value;
 import graphql.schema.GraphQLScalarType;
 
 /**
- * Jackson Deserializer for Custom Scalar.
+ * Jackson Deserializer for lists and Custom Scalars.
  * 
  * @author etienne-sf
  */

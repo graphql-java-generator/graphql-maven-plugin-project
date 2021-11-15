@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.subscription.SubscriptionCallbackListIntegerForTest;
+import org.allGraphQLCases.subscription.SubscriptionCallbackListInteger;
 import org.forum.client.Board;
 import org.forum.client.Member;
 import org.forum.client.MemberType;
@@ -100,7 +100,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_GraphQLRepository_allGraphQLCases() throws GraphQLRequestExecutionException, InterruptedException {
 		// Preparation
-		SubscriptionCallbackListIntegerForTest callback = new SubscriptionCallbackListIntegerForTest(
+		SubscriptionCallbackListInteger callback = new SubscriptionCallbackListInteger(
 				"FullRequestSubscriptionIT.test_SubscribeToAList");
 
 		// Go, go, go

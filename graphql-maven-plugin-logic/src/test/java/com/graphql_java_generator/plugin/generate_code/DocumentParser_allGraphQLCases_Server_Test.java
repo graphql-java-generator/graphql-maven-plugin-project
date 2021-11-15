@@ -849,7 +849,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(4, type.getFields().size());
+		assertEquals(6, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :

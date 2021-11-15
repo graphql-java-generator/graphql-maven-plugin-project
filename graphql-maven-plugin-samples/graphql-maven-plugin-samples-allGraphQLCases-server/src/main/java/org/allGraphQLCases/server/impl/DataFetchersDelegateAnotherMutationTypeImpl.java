@@ -37,6 +37,8 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 
 	static protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateAnotherMutationTypeImpl.class);
 
+	static Mapper mapper = DozerBeanMapperBuilder.buildDefault();
+
 	@Resource
 	DataGenerator generator;
 
@@ -91,7 +93,6 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 	@Override
 	public AllFieldCases createAllFieldCases(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCasesInput input) {
-		Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 		return mapper.map(input, AllFieldCases.class);
 	}
 

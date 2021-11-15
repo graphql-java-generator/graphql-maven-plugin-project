@@ -48,7 +48,7 @@ public class GraphQLScalarTypeDate {
 						 * Called to convert a Java object result of a DataFetcher to a valid runtime value for the
 						 * scalar type. <br/>
 						 * Note : Throw {@link graphql.schema.CoercingSerializeException} if there is fundamental
-						 * problem during serialisation, don't return null to indicate failure. <br/>
+						 * problem during serialization, don't return null to indicate failure. <br/>
 						 * Note : You should not allow {@link java.lang.RuntimeException}s to come out of your serialize
 						 * method, but rather catch them and fire them as
 						 * {@link graphql.schema.CoercingSerializeException} instead as per the method contract.
@@ -63,14 +63,14 @@ public class GraphQLScalarTypeDate {
 						 */
 						@Override
 						public String serialize(Object input) throws CoercingSerializeException {
-							if (!(input instanceof Date)) {
-								throw new CoercingSerializeException("Can't parse the '" + input.toString()
-										+ "' Date to a String (it should be a Date but is a "
-										+ input.getClass().getName() + ")");
-							} else {
+							if (input instanceof Date) {
 								synchronized (formater) {
 									return formater.format((Date) input);
 								}
+							} else {
+								throw new CoercingSerializeException("Can't parse the '" + input.toString()
+										+ "' Date to a String (it should be a " + Date.class.getName() + " but is a "
+										+ input.getClass().getName() + ")");
 							}
 						}
 

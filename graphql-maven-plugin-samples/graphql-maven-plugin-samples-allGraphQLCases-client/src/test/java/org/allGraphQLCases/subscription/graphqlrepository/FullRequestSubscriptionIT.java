@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.subscription.SubscriptionCallbackListIntegerForTest;
+import org.allGraphQLCases.subscription.SubscriptionCallbackListInteger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -29,7 +29,7 @@ public class FullRequestSubscriptionIT {
 	@Test
 	void test_SubscribeToAList() throws GraphQLRequestExecutionException, InterruptedException {
 		// Preparation
-		SubscriptionCallbackListIntegerForTest callback = new SubscriptionCallbackListIntegerForTest(
+		SubscriptionCallbackListInteger callback = new SubscriptionCallbackListInteger(
 				"FullRequestSubscriptionIT.test_SubscribeToAList");
 
 		// Go, go, go

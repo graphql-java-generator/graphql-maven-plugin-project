@@ -86,3 +86,41 @@ input PostInput {
 	from: Date
 	in: [Date!]
 }
+
+
+#############################
+# Tests for issue #106
+
+#type UnitPrice {
+#	id: ID!
+#	price: Float!
+#	unit: String
+#	currency: String
+#}
+#type CatalogItem {
+#	id: ID!
+#	name: String!
+#}
+#type PriceRecommendation {
+#	id: ID!
+#	name: String!
+#}
+#
+#type PriceCatalog {
+#	id: ID!
+#	catalogItem: CatalogItem!
+#	unitPrice: UnitPrice!
+#	applicableFrom: String!
+#	applicableTo: String
+#	latestExtendedOn: String
+#	""" Show first and last and implement pagination for the others, implement fragment for PriceRecommendation to include date, id """
+#	linkedPriceRecommendations: [PriceRecommendation]
+#}
+#
+#fragment PriceCatalogBase on PriceCatalog{
+#	catalogItem { id}
+#	unitPrice { price unit currency}
+#	applicableFrom
+#	applicableTo
+#	latestExtendedOn
+#}

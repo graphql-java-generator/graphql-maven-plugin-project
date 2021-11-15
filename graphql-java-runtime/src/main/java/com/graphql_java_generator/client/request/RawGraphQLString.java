@@ -16,7 +16,7 @@ package com.graphql_java_generator.client.request;
  * 
  * It's used to store parameters value that are given in their GraphQL form, when declaring queries. It must be of a
  * type that is not a {@link String}, for the
- * {@link InputParameter#getValueForGraphqlQuery(Object, graphql.schema.GraphQLScalarType)} to work. In this method,
+ * {@link InputParameter#getStringContentForGraphqlQuery(Object, graphql.schema.GraphQLScalarType)} to work. In this method,
  * double quotes are added to limit the values of {@link String}s.
  * 
  * @author etienne-sf

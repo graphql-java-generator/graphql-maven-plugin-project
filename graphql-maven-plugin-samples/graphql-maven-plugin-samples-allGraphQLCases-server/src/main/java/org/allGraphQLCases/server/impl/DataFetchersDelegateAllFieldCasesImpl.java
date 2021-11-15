@@ -38,6 +38,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
 		// If this attribute was set, let's keep its value
 		if (source.getComments() != null)
+			// The field has already been filled (probably from incoming argument). We'll keep it
 			return source.getComments();
 		else
 			return generator.generateInstanceList(String.class, 10);
@@ -47,6 +48,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	public List<Boolean> booleans(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
 		// If this attribute was set, let's keep its value
 		if (source.getBooleans() != null)
+			// The field has already been filled (probably from incoming argument). We'll keep it
 			return source.getBooleans();
 		else
 			return generator.generateInstanceList(Boolean.class, 10);
@@ -72,6 +74,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		// When the request is "withListOfList", the matrix field is field from the input parameter.
 		// So, if this field is non null, we let its value. Otherwise, we provide one.
 		if (origin.getMatrix() != null) {
+			// The field has already been filled (probably from incoming argument). We'll keep it
 			return origin.getMatrix();
 		} else {
 			List<List<Double>> list = new ArrayList<>();
@@ -123,31 +126,41 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	@Override
 	public AllFieldCasesWithoutIdSubtype oneWithoutIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCases source, FieldParameterInput input) {
-		AllFieldCasesWithoutIdSubtype ret = generator.generateInstance(AllFieldCasesWithoutIdSubtype.class);
+		if (source.getOneWithoutIdSubType() != null) {
+			// The field has already been filled (probably from incoming argument). We'll keep it
+			return source.getOneWithoutIdSubType();
+		} else {
+			AllFieldCasesWithoutIdSubtype ret = generator.generateInstance(AllFieldCasesWithoutIdSubtype.class);
 
-		if (input != null && input.getUppercase() != null && input.getUppercase()) {
-			if (ret.getName() != null) {
-				ret.setName(ret.getName().toUpperCase());
+			if (input != null && input.getUppercase() != null && input.getUppercase()) {
+				if (ret.getName() != null) {
+					ret.setName(ret.getName().toUpperCase());
+				}
 			}
-		}
 
-		return ret;
+			return ret;
+		}
 	}
 
 	@Override
 	public List<AllFieldCasesWithoutIdSubtype> listWithoutIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCases source, Long nbItems, FieldParameterInput input, String textToAppendToTheForname) {
-		List<AllFieldCasesWithoutIdSubtype> list = generator.generateInstanceList(AllFieldCasesWithoutIdSubtype.class,
-				nbItems.intValue());
+		if (source.getListWithoutIdSubTypes() != null) {
+			// The field has already been filled (probably from incoming argument). We'll keep it
+			return source.getListWithoutIdSubTypes();
+		} else {
+			List<AllFieldCasesWithoutIdSubtype> list = generator
+					.generateInstanceList(AllFieldCasesWithoutIdSubtype.class, nbItems.intValue());
 
-		for (AllFieldCasesWithoutIdSubtype item : list) {
-			if (input != null && input.getUppercase() != null && input.getUppercase()) {
-				item.setName(item.getName().toUpperCase());
+			for (AllFieldCasesWithoutIdSubtype item : list) {
+				if (input != null && input.getUppercase() != null && input.getUppercase()) {
+					item.setName(item.getName().toUpperCase());
+				}
+				item.setName(item.getName() + textToAppendToTheForname);
 			}
-			item.setName(item.getName() + textToAppendToTheForname);
-		}
 
-		return list;
+			return list;
+		}
 	}
 
 	@Override

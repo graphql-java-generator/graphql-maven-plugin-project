@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -15,18 +17,20 @@
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
 				<executions>
-					<!-- These two executions allow to test the merge goal, then generate the code from the merged GraphQL schema file. 
-						The graphql-maven-plugin-samples-allGraphQLCases-server project directly generates the code from the two (non merged) GraphQL 
-						schema files -->
+					<!-- These two executions allow to test the merge goal, then generate 
+						the code from the merged GraphQL schema file. The graphql-maven-plugin-samples-allGraphQLCases-server 
+						project directly generates the code from the two (non merged) GraphQL schema 
+						files -->
 					<execution>
 						<id>graphql-merge</id>
 						<goals>
 							<goal>generateGraphQLSchema</goal>
 						</goals>
 						<configuration>
-							<!-- addRelayConnections will generate all the Relay Connection stuff (Node, Edge and Connection interfaces, and creating 
-								the XxxEdge and XxxConnection interfaces or objects), for fields marked with the @RelatConnection directive. See the documentation 
-								for more information -->
+							<!-- addRelayConnections will generate all the Relay Connection stuff 
+								(Node, Edge and Connection interfaces, and creating the XxxEdge and XxxConnection 
+								interfaces or objects), for fields marked with the @RelatConnection directive. 
+								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<schemaFileFolder>${basedir}/src/graphqls/allGraphQLCases/</schemaFileFolder>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
@@ -40,8 +44,9 @@
 							<goal>generateClientCode</goal>
 						</goals>
 						<configuration>
-							<!-- In this pom, we choose not to copy the runtime. It allows to replace it by another one, for instance one updated 
-								for your needs. You then need to add this runtime as a dependency -->
+							<!-- In this pom, we choose not to copy the runtime. It allows to 
+								replace it by another one, for instance one updated for your needs. You then 
+								need to add this runtime as a dependency -->
 							<copyRuntimeSources>false</copyRuntimeSources>
 							<packageName>org.allGraphQLCases.client</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
@@ -73,14 +78,15 @@
 						</configuration>
 					</execution>
 					<execution>
-					<!-- This second generation of the client code for the same  -->
+						<!-- This second generation of the client code for the same -->
 						<id>graphql-generateCode 2</id>
 						<goals>
 							<goal>generateClientCode</goal>
 						</goals>
 						<configuration>
-							<!-- In this pom, we choose not to copy the runtime. It allows to replace it by another one, for instance one updated 
-								for your needs. You then need to add this runtime as a dependency -->
+							<!-- In this pom, we choose not to copy the runtime. It allows to 
+								replace it by another one, for instance one updated for your needs. You then 
+								need to add this runtime as a dependency -->
 							<copyRuntimeSources>false</copyRuntimeSources>
 							<packageName>org.allGraphQLCases.client2</packageName>
 							<schemaFileFolder>${basedir}/target/generated-resources/graphql-merge/</schemaFileFolder>
@@ -132,6 +138,25 @@
 									<javaType>java.util.Date</javaType>
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
 								</customScalar>
+								<!-- The scalars below are not used by the Forum schema. But they 
+									must be defined as they are used by the allGraphQLCases schema -->
+								<!-- This is the workaround of a bug, and it will be corrected in 
+									the future -->
+								<customScalar>
+									<graphQLTypeName>else</graphQLTypeName>
+									<javaType>java.lang.String</javaType>
+									<graphQLScalarTypeGetter>org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>
+								</customScalar>
+								<customScalar>
+									<graphQLTypeName>Long</graphQLTypeName>
+									<javaType>java.lang.Long</javaType>
+									<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
+									<graphQLTypeName>NonNegativeInt</graphQLTypeName>
+									<javaType>java.lang.Integer</javaType>
+									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
+								</customScalar>
 							</customScalars>
 						</configuration>
 					</execution>
@@ -155,7 +180,8 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot server in the background during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot server in the background 
+					during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
@@ -249,8 +275,22 @@
 	</build>
 
 	<dependencies>
+		<!-- Dependencies for the generated code -->
+		<!-- In this pom, we choose not to copy the runtime. It allows to replace 
+			it by another one, for instance one updated for your needs. You then need 
+			to add this runtime as a dependency -->
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-runtime</artifactId>
+		</dependency>
+		<!-- Complementary graphql dependencies, for the custom scalars -->
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java-extended-scalars</artifactId>
+		</dependency>
+
 		<!-- Dependencies for tests -->
-			<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -279,20 +319,6 @@
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
 			<scope>provided</scope>
-		</dependency>
-
-
-		<!-- Dependencies for the generated code -->
-		<!-- In this pom, we choose not to copy the runtime. It allows to replace it by another one, for instance one updated for 
-			your needs. You then need to add this runtime as a dependency -->
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-runtime</artifactId>
-		</dependency>
-		<!-- Complementary graphql dependencies, for the custom scalars -->
-		<dependency>
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java-extended-scalars</artifactId>
 		</dependency>
 
 	</dependencies>

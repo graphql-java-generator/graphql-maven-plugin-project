@@ -164,10 +164,13 @@ public class GenerateCodeGenerator implements Generator {
 		imports.add("java.util.List");
 		context.put("imports", imports);
 		context.put("customDeserializers", generateCodeDocumentParser.getCustomDeserializers());
+		context.put("customSerializers", generateCodeDocumentParser.getCustomSerializers());
 
 		if (configuration.isGenerateJacksonAnnotations()) {
 			i += generateOneFile(getJavaFile("CustomJacksonDeserializers", true), "Generating custom deserializers",
 					context, resolveTemplate(CodeTemplate.JACKSON_DESERIALIZERS));
+			i += generateOneFile(getJavaFile("CustomJacksonSerializers", true), "Generating custom serializers",
+					context, resolveTemplate(CodeTemplate.JACKSON_SERIALIZERS));
 		}
 
 		if (configuration.isGenerateUtilityClasses()) {
@@ -295,10 +298,10 @@ public class GenerateCodeGenerator implements Generator {
 					// if the goal/task is generatePojo, then only part of the dependencies should be copied.
 					copyFile = targetFilename.startsWith("com/graphql_java_generator/GraphQLField")
 							|| targetFilename.startsWith("com/graphql_java_generator/annotation")
-							|| (configuration.isGenerateJacksonAnnotations() && (targetFilename
-									.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
-									|| targetFilename.startsWith(
-											"com/graphql_java_generator/client/response/AbstractCustomJacksonDeserializer")));
+							|| (configuration.isGenerateJacksonAnnotations() && //
+									(targetFilename.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
+											|| targetFilename.contains("AbstractCustomJacksonSerializer")
+											|| targetFilename.contains("AbstractCustomJacksonDeserializer")));
 				} else {
 					copyFile = (configuration.getMode().equals(PluginMode.client) && clientFile)
 							|| (configuration.getMode().equals(PluginMode.server) && serverFile);

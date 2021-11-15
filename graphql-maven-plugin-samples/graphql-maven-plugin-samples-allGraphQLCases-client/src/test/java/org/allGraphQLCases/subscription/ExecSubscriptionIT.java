@@ -3,6 +3,7 @@ package org.allGraphQLCases.subscription;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.SubscriptionTestParam;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client2.util.TheSubscriptionTypeExecutorAllGraphQLCases2;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -39,15 +41,18 @@ public class ExecSubscriptionIT {
 	@Autowired
 	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
 
+	@Autowired
+	TheSubscriptionTypeExecutorAllGraphQLCases2 subscriptionExecutor2;
+
 	public static class SubscribeToAList implements Runnable {
 		final TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
-		final SubscriptionCallbackListIntegerForTest callback;
+		final SubscriptionCallbackListInteger callback;
 		final String clientName;
 
 		SubscribeToAList(TheSubscriptionTypeExecutorAllGraphQLCases executor, String clientName) {
 			this.subscriptionExecutor = executor;
 			this.clientName = clientName;
-			this.callback = new SubscriptionCallbackListIntegerForTest(clientName);
+			this.callback = new SubscriptionCallbackListInteger(clientName);
 		}
 
 		@Override
@@ -229,6 +234,15 @@ public class ExecSubscriptionIT {
 		assertNull(callback.lastReceivedMessage, "no more message should be sent by the server");
 	}
 
+	@Test
+	void test_connectionError() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		Date date = new Calendar.Builder().setDate(2018, 02, 01).build().getTime();
+		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate("test_connectionError");
+		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
+				() -> subscriptionExecutor2.issue53("", callback, date));
+		assertTrue(e.getMessage().contains("Connection refused"), "The received error message is: " + e.getMessage());
+	}
+
 	/**
 	 * Tests that an error in the subscription is properly sent back to the client, when it occurs during the
 	 * subscription
@@ -253,8 +267,10 @@ public class ExecSubscriptionIT {
 
 		// Let's test this exception
 		assertNotNull(callback.lastExceptionReceived, "we should have received an exception");
-		assertTrue(callback.lastExceptionReceived.getMessage()
-				.endsWith("Oups, the subscriber asked for an error during the subscription"));
+		assertTrue(
+				callback.lastExceptionReceived.getMessage()
+						.endsWith("Oups, the subscriber asked for an error during the subscription"),
+				"The received error message is: " + callback.lastExceptionReceived.getMessage());
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();
@@ -284,8 +300,10 @@ public class ExecSubscriptionIT {
 
 		// Let's test this exception
 		assertNotNull(callback.lastExceptionReceived, "we must have received an exception");
-		assertTrue(callback.lastExceptionReceived.getMessage()
-				.endsWith("Oups, the subscriber asked for an error for each next message"));
+		assertTrue(
+				callback.lastExceptionReceived.getMessage()
+						.endsWith("Oups, the subscriber asked for an error for each next message"),
+				"The received error message is: " + callback.lastExceptionReceived.getMessage());
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();
@@ -317,7 +335,8 @@ public class ExecSubscriptionIT {
 		// Let's test this exception
 		assertNotNull(callback.lastExceptionReceived, "we must have received an exception");
 		assertTrue(callback.lastExceptionReceived.getMessage().endsWith(
-				"Oups, the subscriber asked that the web socket get disconnected before the first notification"));
+				"Oups, the subscriber asked that the web socket get disconnected before the first notification"),
+				"The received error message is: " + callback.lastExceptionReceived.getMessage());
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();

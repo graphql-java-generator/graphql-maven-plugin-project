@@ -10,9 +10,16 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
+
 All modes (client and server):
-* PR #101: Remove unused imports in some generated classes
+* __Subscriptions__ are now managed with full respect of the [graphql-transport-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) WebSocket sub-protocol, as defined in the [graphql-ws](https://github.com/enisdenjo/graphql-ws) reference library.
+    * Caution: if you are using Subscriptions, you must upgrade both the client(s) and the server, as the subprotocol changes in this version.
+* PR #101: Removes unused imports in some generated classes
 * generatePojo: corrected compilation errors (before this release, the graphql-java-runtime, graphql-java-client-dependencies or graphql-java-server-dependencies) was necessary to compile the generated code.
+
+Client mode:
+* Subscription: better exception management (especially if a connection error occurs)
+* Simplified and secured the code that generates the request
 
 
 # 1.17.3
