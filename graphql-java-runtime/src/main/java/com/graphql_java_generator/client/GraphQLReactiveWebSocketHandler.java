@@ -90,15 +90,42 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 * @param <R>
 	 * @param <T>
 	 */
-	class SubscriptionData<R, T> {
+	class RequestData<R, T> {
 
-		SubscriptionData(Map<String, Object> request2, String subscriptionName,
-				SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType,
-				int uniqueIdOperation) {
-			this.request = request2;
+		/**
+		 * Holder for the Request Data. This class contains the field that identified request that are passed through
+		 * the Web Socket, according to the
+		 * <a href="https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">graphql-transport-ws protocol</a>
+		 * protocol.
+		 * 
+		 * @param request
+		 *            The JSON map that contains the request to execute. According to the
+		 *            <a href="https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">graphql-transport-ws
+		 *            protocol</a> protocol, it can be a query, a mutation or a subscription.
+		 * @param subscriptionName
+		 *            The name of the subscription: mandatory if this operation is a subscription. Must be null if it's
+		 *            a query or a mutation.
+		 * @param subscriptionCallback
+		 *            The callback that will be called a message is received for this idOperation on this web socket
+		 * @param requestType
+		 *            The java class that matches the query type, mutation type or subscription that is defined in the
+		 *            GraphQL schema
+		 * @param messsageType
+		 *            For subscription (that is when <I>subscriptionName</I> is not null), it's the type of the
+		 *            <i>subscriptionName</i> field of the requestType. When a message is read, a getter on this field
+		 *            is executed to retrieve the message itself.<BR/>
+		 *            For query and mutation (that is when <I>subscriptionName</I> is null), it must be the same class
+		 *            as requestType. The whole received object in the payload will be returned to the caller for this
+		 *            operation. This allows to execute a multifield query or mutation.
+		 * @param uniqueIdOperation
+		 *            The unique id that identifies messages dedicated to this operation, on the web socket
+		 */
+		RequestData(Map<String, Object> request, String subscriptionName, SubscriptionCallback<T> subscriptionCallback,
+				Class<R> requestType, Class<T> messsageType, int uniqueIdOperation) {
+			this.request = request;
 			this.subscriptionName = subscriptionName;
 			this.subscriptionCallback = subscriptionCallback;
-			this.subscriptionType = subscriptionType;
+			this.subscriptionType = requestType;
 			this.messageType = messsageType;
 			this.uniqueIdOperation = Integer.toString(uniqueIdOperation);
 		}
@@ -243,6 +270,39 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 	}
 
+	private static class QueryOrMutationCallback<R> implements SubscriptionCallback<R> {
+		CountDownLatch latchResponseOrExceptionReceived = new CountDownLatch(1);
+		R response = null;
+		List<Throwable> exceptions = new ArrayList<>();
+
+		@Override
+		public void onConnect() {
+			// no action
+		}
+
+		@Override
+		public void onMessage(R r) {
+			response = r;
+			latchResponseOrExceptionReceived.countDown();
+		}
+
+		@Override
+		public void onClose(int statusCode, String reason) {
+			if (response == null) {
+				exceptions
+						.add(new GraphQLRequestExecutionException("Received onClose while expecting a message (status="
+								+ statusCode + ", reason=" + reason + ")"));
+			}
+			latchResponseOrExceptionReceived.countDown();
+		}
+
+		@Override
+		public void onError(Throwable cause) {
+			exceptions.add(cause);
+			latchResponseOrExceptionReceived.countDown();
+		}
+	}
+
 	private static class GraphQlStatus {
 		private static final CloseStatus INVALID_MESSAGE_STATUS = new CloseStatus(4400, "Invalid message");
 		@SuppressWarnings("unused")
@@ -264,7 +324,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		 */
 		static void closeSession(GraphQLReactiveWebSocketHandler handler, WebSocketSession session, CloseStatus status,
 				String reason) {
-			for (SubscriptionData<?, ?> subData : handler.registeredSubscriptions.values()) {
+			for (RequestData<?, ?> subData : handler.registeredSubscriptions.values()) {
 				subData.onClose(status.getCode(), (reason == null) ? status.getReason() : reason);
 			}
 			session.close(status);
@@ -272,7 +332,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	}
 
 	static interface SubscriptionRequestEmitter {
-		void emit(SubscriptionData<?, ?> subData, WebSocketMessage msg);
+		void emit(RequestData<?, ?> subData, WebSocketMessage msg);
 	}
 
 	/**
@@ -311,7 +371,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	 * Contains the list of subscriptions that have been executed on this Web Socket. This allows to dispatch the
 	 * incoming subscription notifications toward the relevant {@link SubscriptionCallback}
 	 */
-	Map<String, SubscriptionData<?, ?>> registeredSubscriptions = new ConcurrentHashMap<>();
+	Map<String, RequestData<?, ?>> registeredSubscriptions = new ConcurrentHashMap<>();
 
 	public GraphQLReactiveWebSocketHandler(GraphQLObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
@@ -335,7 +395,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	public <R, T> String executeSubscription(Map<String, Object> request, String subscriptionName,
 			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messsageType)
 			throws GraphQLRequestExecutionException {
-		SubscriptionData<R, T> subData;
+		RequestData<R, T> subData;
 
 		// Let's wait until the web socket is properly initialized, as specified by the graphql-transport-ws protocol
 		try {
@@ -348,7 +408,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 
 		synchronized (registeredSubscriptions) {
-			subData = new SubscriptionData<R, T>(request, subscriptionName, subscriptionCallback, subscriptionType,
+			subData = new RequestData<R, T>(request, subscriptionName, subscriptionCallback, subscriptionType,
 					messsageType, ++lastUsedUniqueIdOperation);
 			registeredSubscriptions.put(subData.uniqueIdOperation, subData);
 		}
@@ -363,12 +423,70 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		return subData.uniqueIdOperation;
 	}
 
+	/**
+	 * This method executes a query or a mutation over this web socket, as described in the
+	 * <a href="https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md">graphql-transport-ws</a> protocol.
+	 * 
+	 * @param <R>
+	 * @param request
+	 *            The json map that contains the request to execute
+	 * @param requestType
+	 *            The java type that matches the query or mutation type defined in the GraphQL schema.
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	public <R extends GraphQLRequestObject> R executeQueryOrMutation(Map<String, Object> request, Class<R> requestType)
+			throws GraphQLRequestExecutionException {
+		RequestData<R, ?> subData;
+		QueryOrMutationCallback<R> callback = new QueryOrMutationCallback<R>();
+
+		// Let's wait until the web socket is properly initialized, as specified by the graphql-transport-ws protocol
+		try {
+			logger.trace("Waiting for GraphQL web socket inialization, for socket {}", session);
+			webSocketConnectionInitializationLatch.await(30, TimeUnit.SECONDS);
+			logger.trace("GraphQL web socket {} has been inialized (let's execute the query or mutation)", session);
+		} catch (InterruptedException e) {
+			throw new GraphQLRequestExecutionException(
+					"Got interrupted while waiting for the query or mutation execution", e);
+		}
+
+		synchronized (registeredSubscriptions) {
+			subData = new RequestData<R, R>(request, null, callback, requestType, requestType,
+					++lastUsedUniqueIdOperation);
+			registeredSubscriptions.put(subData.uniqueIdOperation, subData);
+		}
+
+		// Let's execute the request into the websocket, toward the GraphQL server
+		logger.trace("Emitting execution of the subscription id={} on the web socket {} (request={})",
+				subData.uniqueIdOperation, session, request);
+		webSocketEmitter.emit(subData,
+				session.textMessage(encode(subData.uniqueIdOperation, MessageType.SUBSCRIBE, subData.request)));
+
+		// Then we wait until an answer comes
+		int nbSecondsTimeOut = 30;
+		try {
+			callback.latchResponseOrExceptionReceived.await(nbSecondsTimeOut, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new GraphQLRequestExecutionException("Got interrupted while waiting for request response", e);
+		}
+
+		if (callback.exceptions.size() > 0) {
+			throw new GraphQLRequestExecutionException("An error occurred while processing the request",
+					callback.exceptions.get(0));
+		} else if (callback.response != null) {
+			return callback.response;
+		} else {
+			// Oups, we received no response. It's a time out error
+			throw new GraphQLRequestExecutionException("Received no answer after " + nbSecondsTimeOut + " seconds");
+		}
+	}
+
 	public void unsubscribe(String uniqueIdOperation) throws GraphQLRequestExecutionException {
 		logger.trace("Emitting 'complete' message to close the subscription for the uniqueIdOperation={} on socket {}",
 				uniqueIdOperation, session);
 
 		// Let's find the subscription that manages this uniqueIdOperation
-		SubscriptionData<?, ?> subData = registeredSubscriptions.get(uniqueIdOperation);
+		RequestData<?, ?> subData = registeredSubscriptions.get(uniqueIdOperation);
 
 		if (subData == null) {
 			// Oups! It is unknown
@@ -448,7 +566,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 							// this flux
 							webSocketEmitter = new SubscriptionRequestEmitter() {
 								@Override
-								public void emit(SubscriptionData<?, ?> subData, WebSocketMessage msg) {
+								public void emit(RequestData<?, ?> subData, WebSocketMessage msg) {
 									if (logger.isTraceEnabled())
 										logger.trace("Emitting message for uniqueIdOperation {} on web socket {}: {}",
 												subData.uniqueIdOperation, session, msg.getPayloadAsText());
@@ -490,7 +608,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 
 		String id = (String) map.get("id");
-		SubscriptionData<?, ?> subData = null;
+		RequestData<?, ?> subData = null;
 		if (id != null) {
 			// Let's find the subscription that manages this uniqueIdOperation
 			subData = registeredSubscriptions.get(id);
@@ -589,7 +707,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 
 		// We must free every resources for this websocket
-		for (SubscriptionData<?, ?> subData : registeredSubscriptions.values()) {
+		for (RequestData<?, ?> subData : registeredSubscriptions.values()) {
 			subData.onError(t);
 		}
 
@@ -604,7 +722,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		logger.trace("onComplete received for WebSocketSession {}", session);
 
 		// Let's forward the information to each subscription
-		for (SubscriptionData<?, ?> subData : registeredSubscriptions.values()) {
+		for (RequestData<?, ?> subData : registeredSubscriptions.values()) {
 			subData.onComplete();
 		}
 	}

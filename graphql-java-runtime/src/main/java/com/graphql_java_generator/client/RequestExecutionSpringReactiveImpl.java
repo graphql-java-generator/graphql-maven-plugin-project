@@ -207,58 +207,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 2: Open a Web Socket if we don't have an already opened one
-		synchronized (this) {
-			if (webSocketHandler == null || webSocketHandler.session == null || !webSocketHandler.session.isOpen()) {
-				// Is there an OAuth authentication to handle?
-				HttpHeaders headers = new HttpHeaders();
-				if (serverOAuth2AuthorizedClientExchangeFilterFunction != null && oAuthTokenExtractor != null) {
-					String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
-					logger.debug("Got this OAuth token (authorization header value): {}", authorizationHeaderValue);
-					headers.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
-				} else {
-					logger.debug(
-							"No serverOAuth2AuthorizedClientExchangeFilterFunction or no oAuthTokenExtractor where provided. No OAuth token is provided.");
-				}
-
-				logger.debug(GRAPHQL_MARKER, "Executing GraphQL subscription '{}' with request {}", subscriptionName,
-						request);
-				if (logger.isTraceEnabled()) {
-					// Let's log the sent headers
-					StringBuffer sb = new StringBuffer();
-					sb.append("The Subscription GET request will be sent with these headers:\n");
-					if (headers.entrySet().size() == 0) {
-						sb.append("    ").append("<No headers!>");
-					} else {
-						for (Entry<String, List<String>> header : headers.entrySet()) {
-							sb.append("    ").append(header.getKey());
-							boolean first = false;
-							for (String value : header.getValue()) {
-								if (!first)
-									sb.append(",");
-								sb.append(value);
-								if (!first)
-									sb.append("\n");
-								first = false;
-							}
-						}
-					}
-					logger.trace(sb.toString());
-				}
-
-				// Let's create and start the Web Socket
-				webSocketHandler = new GraphQLReactiveWebSocketHandler(graphQLRequest.getGraphQLObjectMapper());
-				// We block, so that connection errors are thrown here, and can be managed by the caller
-				webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler).doOnError((t) -> {
-					webSocketHandler.onError(t);
-					// Then, as there is an error here, we specify that the web socket is initialized (as obviously,
-					// it's useless to expect any correct initialization here). The error will be manager just below.
-					webSocketHandler.setInitializationError(t);
-				}).subscribe();
-
-				// Let's check that there has been not exception during initialization
-				webSocketHandler.checkInitializationError(); // returns when it's ready, or throws an exception
-			}
-		}
+		initWebSocketConnection(graphQLRequest.getGraphQLObjectMapper());
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Step 3: start the asked subscription
@@ -266,7 +215,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 				subscriptionType, messageType);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Step 3: return the SubscriptionClient
+		// Step 4: return the SubscriptionClient
 		return new SubscriptionClientReactiveImpl(uniqueIdOperation, webSocketHandler);
 	}
 
@@ -289,6 +238,65 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 		}
 		throw new GraphQLRequestExecutionException(
 				"non managed protocol for endpoint " + endpoint + ". This method manages only http and https");
+	}
+
+	/**
+	 * Initialization of the Web Socket
+	 * 
+	 * @param graphQLObjectMapper
+	 * @throws GraphQLRequestExecutionException
+	 */
+	protected synchronized void initWebSocketConnection(GraphQLObjectMapper graphQLObjectMapper)
+			throws GraphQLRequestExecutionException {
+		if (webSocketHandler == null || webSocketHandler.session == null || !webSocketHandler.session.isOpen()) {
+			// Is there an OAuth authentication to handle?
+			HttpHeaders headers = new HttpHeaders();
+			if (serverOAuth2AuthorizedClientExchangeFilterFunction != null && oAuthTokenExtractor != null) {
+				String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
+				logger.debug("Got this OAuth token (authorization header value): {}", authorizationHeaderValue);
+				headers.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
+			} else {
+				logger.debug(
+						"No serverOAuth2AuthorizedClientExchangeFilterFunction or no oAuthTokenExtractor where provided. No OAuth token is provided.");
+			}
+
+			logger.debug(GRAPHQL_MARKER, "Executing GraphQL web socket connection");
+			if (logger.isTraceEnabled()) {
+				// Let's log the sent headers
+				StringBuffer sb = new StringBuffer();
+				sb.append("The Subscription GET request will be sent with these headers:\n");
+				if (headers.entrySet().size() == 0) {
+					sb.append("    ").append("<No headers!>");
+				} else {
+					for (Entry<String, List<String>> header : headers.entrySet()) {
+						sb.append("    ").append(header.getKey());
+						boolean first = false;
+						for (String value : header.getValue()) {
+							if (!first)
+								sb.append(",");
+							sb.append(value);
+							if (!first)
+								sb.append("\n");
+							first = false;
+						}
+					}
+				}
+				logger.trace(sb.toString());
+			}
+
+			// Let's create and start the Web Socket
+			webSocketHandler = new GraphQLReactiveWebSocketHandler(graphQLObjectMapper);
+			// We block, so that connection errors are thrown here, and can be managed by the caller
+			webSocketClient.execute(getWebSocketURI(), headers, webSocketHandler).doOnError((t) -> {
+				webSocketHandler.onError(t);
+				// Then, as there is an error here, we specify that the web socket is initialized (as obviously,
+				// it's useless to expect any correct initialization here). The error will be manager just below.
+				webSocketHandler.setInitializationError(t);
+			}).subscribe();
+
+			// Let's check that there has been not exception during initialization
+			webSocketHandler.checkInitializationError(); // returns when it's ready, or throws an exception
+		}
 	}
 
 	/**
