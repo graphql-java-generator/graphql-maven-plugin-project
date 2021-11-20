@@ -4,8 +4,10 @@
 package com.graphql_java_generator.plugin.generate_code;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -13,8 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.jar.JarEntry;
@@ -154,7 +158,7 @@ public class GenerateCodeGenerator implements Generator {
 		return i;
 	}
 
-	private int generateClientFiles() {
+	private int generateClientFiles() throws IOException {
 		int i = 0;
 		logger.debug("Starting client specific code generation");
 
@@ -248,8 +252,48 @@ public class GenerateCodeGenerator implements Generator {
 			i += generateOneFile(getJavaFile("DirectiveRegistryInitializer", true),
 					"Generating DirectiveRegistryInitializer", getVelocityContext(),
 					resolveTemplate(CodeTemplate.DIRECTIVE_REGISTRY_INITIALIZER));
+
+			// Spring auto-configuration management
+			logger.debug("Generating Spring auto-configuration generation");
+			i += generateSpringAutoConfigurationDeclaration();
 		}
 		return i;
+	}
+
+	/**
+	 * Generates the Spring auto-configuration file (META-INF/spring.factories), or update it to declare the
+	 * SpringAutoConfiguration for this generation
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	private int generateSpringAutoConfigurationDeclaration() throws IOException {
+		File springFactories = new File(configuration.getTargetResourceFolder(), "META-INF/spring.factories");
+		String autoConfClass = configuration.getSpringAutoConfigurationPackage() + "." + "SpringConfiguration"
+				+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix());
+		if (springFactories.exists()) {
+			// The file already exists. Let's check if the spring auto configuration file that we've just generated is
+			// already declared (happens when the code generation had already been executed before)
+			Properties props = new Properties();
+			try (InputStream is = new FileInputStream(springFactories)) {
+				props.load(is);
+			}
+			String[] classes = ((String) props.get("org.springframework.boot.autoconfigure.EnableAutoConfiguration"))
+					.split("[, ]");
+			if (Arrays.binarySearch(classes, autoConfClass) >= 0) {
+				// The auto configuration class is already defined there. There is nothing to do
+				return 0;
+			}
+			autoConfClass = autoConfClass + ","
+					+ (String) props.get("org.springframework.boot.autoconfigure.EnableAutoConfiguration");
+		}
+
+		VelocityContext context = getVelocityContext();
+		context.put("springAutoConfigurationClasses", autoConfClass);
+		generateOneFile(getResourceFile("META-INF/spring.factories"), "Generating META-INF/spring.factories", context,
+				resolveTemplate(CodeTemplate.SPRING_AUTOCONFIGURATION_DEFINITION_FILE));
+
+		return 1;
 	}
 
 	void copyRuntimeSources() throws IOException {
@@ -589,11 +633,33 @@ public class GenerateCodeGenerator implements Generator {
 	 * @return
 	 */
 	File getJavaFile(String simpleClassname, boolean utilityClass) {
-		String packageName = (utilityClass && configuration.isSeparateUtilityClasses())
-				? generateCodeDocumentParser.getUtilPackageName()
-				: configuration.getPackageName();
+		String packageName;
+
+		if (simpleClassname.startsWith("SpringConfiguration")) {
+			packageName = configuration.getSpringAutoConfigurationPackage();
+		} else {
+			packageName = (utilityClass && configuration.isSeparateUtilityClasses())
+					? generateCodeDocumentParser.getUtilPackageName()
+					: configuration.getPackageName();
+		}
+
 		String relativePath = packageName.replace('.', '/') + '/' + simpleClassname + ".java";
 		File file = new File(configuration.getTargetSourceFolder(), relativePath);
+		file.getParentFile().mkdirs();
+		return file;
+	}
+
+	/**
+	 * This method returns the {@link File} where this resource must be generated. It adds the preceding path, and
+	 * creates the missing folders, if any
+	 * 
+	 * @param filename
+	 *            The relative filename, starting from the root of the class file (for instance:
+	 *            META-INF/spring.factories)
+	 * @return
+	 */
+	File getResourceFile(String filename) {
+		File file = new File(configuration.getTargetResourceFolder(), filename);
 		file.getParentFile().mkdirs();
 		return file;
 	}

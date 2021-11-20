@@ -32,6 +32,8 @@ public enum CodeTemplate {
 	QUERY_MUTATION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_query_mutation_executor.vm.java"), //
 	QUERY_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_response.vm.java"), //
 	ROOT_RESPONSE(CodeTemplateScope.CLIENT, "templates/client_query_mutation_subscription_rootResponse.vm.java"), //
+	SPRING_AUTOCONFIGURATION_DEFINITION_FILE(CodeTemplateScope.CLIENT,
+			"templates/client_spring_autoconfiguration_definition.vm.properties"), //
 	SPRING_CONFIGURATION_CLASS(CodeTemplateScope.CLIENT, "templates/client_spring_configuration.vm.java"), //
 	SUBSCRIPTION(CodeTemplateScope.CLIENT, "templates/client_subscription_type.vm.java"), //
 	SUBSCRIPTION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_subscription_executor.vm.java"), //

@@ -44,7 +44,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	 * Pattern for default templates
 	 */
 
-	protected static final Pattern templatePattern = Pattern.compile("templates\\/([a-zA-Z_]*)\\.vm\\.java");
+	protected static final Pattern templatePattern = Pattern
+			.compile("templates\\/([a-zA-Z_]*)\\.vm\\.(java|properties)");
 	protected static List<CustomScalarDefinition> customScalars;
 
 	static {
@@ -80,8 +81,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 				.map(codeTemplate -> {
 					Matcher matcher = templatePattern.matcher(codeTemplate.getDefaultValue());
 					if (matcher.matches()) {
-						return new Pair<CodeTemplate, String>(codeTemplate,
-								String.format("templates_personalization/%s.vm.java", matcher.group(1)));
+						return new Pair<CodeTemplate, String>(codeTemplate, String
+								.format("templates_personalization/%s.vm.%s", matcher.group(1), matcher.group(2)));
 					} else {
 						throw new RuntimeException(String.format("Template does not match expected pattern: %s - %s",
 								codeTemplate, codeTemplate.getDefaultValue()));
@@ -91,8 +92,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 	}
 
 	/**
-	 * Overrirdes {@link AbstractSpringConfiguratio#pluginConfigurationTestHelper} by configured custom templates
-	 * localted in src/test/resources/templates_personalization
+	 * Overrides {@link AbstractSpringConfiguratio#pluginConfigurationTestHelper} by configured custom templates located
+	 * in src/test/resources/templates_personalization
 	 */
 	@Override
 	@Bean

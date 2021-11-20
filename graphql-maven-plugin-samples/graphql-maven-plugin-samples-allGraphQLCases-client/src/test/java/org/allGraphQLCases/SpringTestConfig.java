@@ -1,7 +1,6 @@
 package org.allGraphQLCases;
 
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.SpringConfigurationAllGraphQLCases;
 import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.forum.client.util.QueryExecutorForum;
@@ -33,10 +32,8 @@ import reactor.netty.http.client.HttpClient;
 @SuppressWarnings("deprecation")
 public class SpringTestConfig {
 
-	@Autowired
-	SpringConfigurationAllGraphQLCases defaultConfiguration;
-
 	@Bean
+	@Primary
 	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases(
 			ReactiveClientRegistrationRepository clientRegistrations) {
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
@@ -46,6 +43,7 @@ public class SpringTestConfig {
 	}
 
 	@Bean
+	@Primary
 	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionForum(
 			ReactiveClientRegistrationRepository clientRegistrations) {
 		return null;
@@ -56,7 +54,7 @@ public class SpringTestConfig {
 	public WebClient webClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
 			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
-		return defaultConfiguration.webClientAllGraphQLCases(graphqlEndpointAllGraphQLCases, httpClientAllGraphQLCases,
+		return GraphQLConfiguration.getWebClient(graphqlEndpointAllGraphQLCases, httpClientAllGraphQLCases,
 				serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases);
 	}
 }

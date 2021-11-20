@@ -70,6 +70,7 @@ public abstract class AbstractSpringConfiguration {
 		configuration.projectDir = mavenTestHelper.getModulePathFile();
 		configuration.targetSourceFolder = mavenTestHelper.getTargetSourceFolder(
 				(classname.contains("$")) ? classname = classname.substring(0, classname.indexOf('$')) : classname);
+		configuration.targetResourceFolder = configuration.targetSourceFolder;
 		configuration.targetClassFolder = new File(configuration.targetSourceFolder.getParentFile(),
 				"compilation_test");
 

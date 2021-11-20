@@ -83,6 +83,23 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public String getSourceEncoding();
 
 	/**
+	 * Returns the package that contains the Spring Auto Configuration class. This package may not be the package that
+	 * contains the executor, nor one of its subpackages, so that the configuration class is not read as a standard
+	 * Spring configuration class.
+	 */
+	default public String getSpringAutoConfigurationPackage() {
+		if (isSeparateUtilityClasses()) {
+			// The Spring auto-configuration file can be in subpackage of the provided package.
+			return getPackageName() + ".spring_autoconfiguration";
+		} else {
+			// When all classes are generated in the same package, the Spring auto configuration class must be generated
+			// in a package that is not a subpackage of the main one (otherwise it will be read as a standard
+			// configuration class, and the @ConditionalOnMissingBean annotation will not work properly)
+			return getPackageName() + "_spring_autoconfiguration";
+		}
+	}
+
+	/**
 	 * Retrieves the suffix that will be applied to the name of the Spring Beans that are generated for this schema.
 	 * It's mandatory if you' using a Spring app and have more than one GraphQL schemas. The default value is an empty
 	 * String.
