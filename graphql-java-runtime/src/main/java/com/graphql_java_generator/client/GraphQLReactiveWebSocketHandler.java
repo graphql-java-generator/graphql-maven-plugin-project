@@ -110,7 +110,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		 * @param requestType
 		 *            The java class that matches the query type, mutation type or subscription that is defined in the
 		 *            GraphQL schema
-		 * @param messsageType
+		 * @param messageType
 		 *            For subscription (that is when <I>subscriptionName</I> is not null), it's the type of the
 		 *            <i>subscriptionName</i> field of the requestType. When a message is read, a getter on this field
 		 *            is executed to retrieve the message itself.<BR/>
@@ -119,15 +119,24 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		 *            operation. This allows to execute a multifield query or mutation.
 		 * @param uniqueIdOperation
 		 *            The unique id that identifies messages dedicated to this operation, on the web socket
+		 * @throws GraphQLRequestExecutionException
 		 */
 		RequestData(Map<String, Object> request, String subscriptionName, SubscriptionCallback<T> subscriptionCallback,
-				Class<R> requestType, Class<T> messsageType, int uniqueIdOperation) {
+				Class<R> requestType, Class<T> messageType, int uniqueIdOperation)
+				throws GraphQLRequestExecutionException {
 			this.request = request;
 			this.subscriptionName = subscriptionName;
 			this.subscriptionCallback = subscriptionCallback;
 			this.subscriptionType = requestType;
-			this.messageType = messsageType;
+			this.messageType = messageType;
 			this.uniqueIdOperation = Integer.toString(uniqueIdOperation);
+
+			// If it's a query or a mutation, T and R must be equal
+			if (subscriptionName == null && requestType != messageType) {
+				throw new GraphQLRequestExecutionException(
+						"[Internal error] When executing query or mutation, T and R should be equal. But R (requestType) is "
+								+ requestType.getName() + " and T (messsageType) is " + messageType.getName());
+			}
 		}
 
 		/**
@@ -205,9 +214,18 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 					subscriptionCallback.onError(new GraphQLRequestExecutionException(errMessages));
 				} else {
 					R r = objectMapper.convertValue(response.data, subscriptionType);
-					@SuppressWarnings("unchecked")
-					T t = (T) graphqlUtils.invokeGetter(r, subscriptionName);
-					subscriptionCallback.onMessage(t);
+
+					if (subscriptionName != null) {
+						// It's a subscription: we need to get the payload content, from the subscription's name
+						@SuppressWarnings("unchecked")
+						T t = (T) graphqlUtils.invokeGetter(r, subscriptionName);
+						subscriptionCallback.onMessage(t);
+					} else {
+						// It's a query or a mutation: we send the whole payload.
+						@SuppressWarnings("unchecked")
+						T t = (T) r;
+						subscriptionCallback.onMessage(t);
+					}
 				}
 			}
 		}
@@ -471,7 +489,8 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		}
 
 		if (callback.exceptions.size() > 0) {
-			throw new GraphQLRequestExecutionException("An error occurred while processing the request",
+			throw new GraphQLRequestExecutionException(
+					"An error occurred while processing the request: " + callback.exceptions.get(0).getMessage(),
 					callback.exceptions.get(0));
 		} else if (callback.response != null) {
 			return callback.response;
@@ -630,7 +649,9 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 			webSocketConnectionInitializationLatch.countDown();
 			break;
 		case NEXT:
-			logger.trace("Received 'next' for id {} on web socket {} (payload={})", id, session, message);
+			if (logger.isTraceEnabled())
+				logger.trace("Received 'next' for id {} on web socket {} (payload={})", id, session,
+						message.getPayloadAsText());
 			if (id == null) {
 				// Invalid message. We close the whole session, as described in the protocol
 				GraphQlStatus.closeSession(this, session, GraphQlStatus.INVALID_MESSAGE_STATUS,

@@ -183,17 +183,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			URI uri = session.getUri();
 			Assert.notNull(uri, "Expected handshake url");
 			HttpHeaders headers = session.getHandshakeHeaders();
-			// WebInput input = new WebInput(uri, headers, getPayload(map), id);
-			// if (logger.isTraceEnabled()) {
-			// logger.trace("Executing: " + input);
-			// }
-			// this.graphQlHandler.handle(input).flatMapMany((output) ->
-			// handleWebOutput(session, input.getId(),
-			// output))
-			// .publishOn(sessionState.getScheduler()) // Serial blocking send via single
-			// thread
-			// .subscribe(new SendMessageSubscriber(id, session, sessionState));
-			manageSubscription(uri, headers, request, id, session);
+			manageSubscribeMessage(uri, headers, request, id, session);
 			return;
 		case COMPLETE:
 			log.trace("Received 'complete' for operation id {} on web socket {}", id, session);
@@ -225,9 +215,10 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	 * 
 	 * @param id
 	 * @param session
+	 * @throws IOException
 	 */
-	private void manageSubscription(URI uri, HttpHeaders headers, Map<String, Object> payload, String id,
-			WebSocketSession session) {
+	private void manageSubscribeMessage(URI uri, HttpHeaders headers, Map<String, Object> payload, String id,
+			WebSocketSession session) throws IOException {
 		String query = payload.get("query").toString();
 		Object operationName = payload.get("operationName");
 		@SuppressWarnings("unchecked")
@@ -244,11 +235,13 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 		ExecutionResult executionResult = graphQL.execute(executionInput);
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Case 1: the execution results in an error
 		if (executionResult.getErrors() != null && executionResult.getErrors().size() > 0) {
 			// If the subscription failed, we must return an error.
 			try {
 				Object errors = executionResult.toSpecification().get("errors");
-				log.trace("Sending 'error' message for subscription {}: {}", id, errors);
+				log.trace("Sending 'error' message for operation {}: {}", id, errors);
 				synchronized (session) {
 					session.sendMessage(encode(id, MessageType.ERROR, errors));
 				}
@@ -256,8 +249,10 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				log.error("Could not send error message for subscription {} due to {}: {}", id,
 						e.getClass().getSimpleName(), e.getMessage());
 			}
-		} else {
-			// Otherwise, let's build the reactive Publisher
+		} else if (executionResult.getData() instanceof Publisher) {
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// Case 2: the execution results in an reactive Publisher (the request is a Subscription).
+			// Let's subscribe to it
 			Publisher<ExecutionResult> publisher = executionResult.getData();
 
 			publisher.subscribe(new Subscriber<ExecutionResult>() {
@@ -341,6 +336,28 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 					}
 				}
 			});
+		} else if (executionResult.getData() instanceof Map) {
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// Case 3: the execution result is a Map (the request is a query or a mutation)
+			// Let's return its result with a unique "Next" message
+			TextMessage msg = encode(id, MessageType.NEXT, executionResult.toSpecification());
+			log.trace("Sending response for query or mutation {}, on Web Socket Session {}: {}", id, session.getId(),
+					msg.getPayload());
+
+			synchronized (session) {
+				session.sendMessage(msg);
+			}
+		} else {
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// Case 4: the execution result is of an unexpected data type
+			// Let's return its result in an error message
+			TextMessage msg = encode(id, MessageType.ERROR, executionResult.toSpecification());
+			log.trace("Sending error for query or mutation {}, on Web Socket Session {}: {}", id, session.getId(),
+					msg.getPayload());
+
+			synchronized (session) {
+				session.sendMessage(msg);
+			}
 		}
 	}
 

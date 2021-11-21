@@ -18,8 +18,10 @@ All modes (client and server):
 * generatePojo: corrected compilation errors (before this release, the graphql-java-runtime, graphql-java-client-dependencies or graphql-java-server-dependencies) was necessary to compile the generated code.
 
 Client mode:
+* The Spring Configuration is an auto-configuration. This was not the case in 1.17.x releases, which would prevent the Spring `@Primary` annotation to work, causing a regression compared to previous version. Thanks to that, it's now easy (again) to override Spring beans.
 * Subscription: better exception management (especially if a connection error occurs)
 * Simplified and secured the code that generates the request
+* You can override the `RequestExecution` to use query, mutation and subscription according to the [graphql-transport-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md). Please find a sample in the `GraphQLTransportWSSpringConfiguration` spring configuration class of [this test](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/test/java/org/allGraphQLCases/GraphQLTransportWSIT.java)
 
 
 # 1.17.3

@@ -295,7 +295,18 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 			}).subscribe();
 
 			// Let's check that there has been not exception during initialization
-			webSocketHandler.checkInitializationError(); // returns when it's ready, or throws an exception
+			try {
+				webSocketHandler.checkInitializationError(); // returns when it's ready, or throws an exception
+			} catch (Exception e) {
+				// If an error occurs here, it means that the web socket is not properly initialized. Let's clear it to
+				// avoid it to be reused.
+				webSocketHandler = null;
+				if (e instanceof GraphQLRequestExecutionException) {
+					throw e;
+				} else {
+					throw new GraphQLRequestExecutionException(e.getMessage(), e);
+				}
+			}
 		}
 	}
 
