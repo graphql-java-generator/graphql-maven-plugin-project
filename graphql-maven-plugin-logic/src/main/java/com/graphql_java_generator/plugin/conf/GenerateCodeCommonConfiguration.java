@@ -29,6 +29,26 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	public final String DEFAULT_TARGET_SOURCE_FOLDER = "./target/generated-sources/graphql-maven-plugin";
 
 	/**
+	 * Determines the package that contains the Spring auto configuration class, that is generated for each GraphQL
+	 * schema, based on the given parameters
+	 * 
+	 * @param separateUtilityClasses
+	 * @param packageName
+	 * @return
+	 */
+	public static String getSpringAutoConfigurationPackage(boolean separateUtilityClasses, String packageName) {
+		if (separateUtilityClasses) {
+			// The Spring auto-configuration file can be in subpackage of the provided package.
+			return packageName + ".spring_autoconfiguration";
+		} else {
+			// When all classes are generated in the same package, the Spring auto configuration class must be generated
+			// in a package that is not a subpackage of the main one (otherwise it will be read as a standard
+			// configuration class, and the @ConditionalOnMissingBean annotation will not work properly)
+			return packageName + "_spring_autoconfiguration";
+		}
+	}
+
+	/**
 	 * <P>
 	 * This parameter contains the list of custom scalars implementations. One such implementation must be provided for
 	 * each custom scalar defined in the GraphQL implemented by the project for its GraphQL schema. It's a list, where
@@ -88,15 +108,8 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	 * Spring configuration class.
 	 */
 	default public String getSpringAutoConfigurationPackage() {
-		if (isSeparateUtilityClasses()) {
-			// The Spring auto-configuration file can be in subpackage of the provided package.
-			return getPackageName() + ".spring_autoconfiguration";
-		} else {
-			// When all classes are generated in the same package, the Spring auto configuration class must be generated
-			// in a package that is not a subpackage of the main one (otherwise it will be read as a standard
-			// configuration class, and the @ConditionalOnMissingBean annotation will not work properly)
-			return getPackageName() + "_spring_autoconfiguration";
-		}
+		return GenerateCodeCommonConfiguration.getSpringAutoConfigurationPackage(isSeparateUtilityClasses(),
+				getPackageName());
 	}
 
 	/**
