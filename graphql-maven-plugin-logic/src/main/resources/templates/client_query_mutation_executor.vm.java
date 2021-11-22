@@ -114,6 +114,24 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	}
 
 	/**
+	 * This constructor expects a GraphQLConfiguration instance.  This is useful for non-Spring frameworks like Micronaut.
+	 *
+	 * @param configuration
+	 *            an already built GraphQLConfiguration instance
+	 */
+	public ${object.classSimpleName}Executor${springBeanSuffix}(GraphQLConfiguration configuration) {
+## The @..@ is the placeholder for the maven resource filtering
+		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
+			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
+					+ graphqlUtils.getRuntimeVersion()
+					+ "' whereas the GraphQL plugin version is '@project.version@'");
+		}
+		this.graphQLConfiguration = configuration;
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+		DirectiveRegistryInitializer.initDirectiveRegistry();
+	}
+
+	/**
 	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
 	 * https ones.<BR/>
 	 * For example: http://my.server.com/graphql
@@ -122,15 +140,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint) {
-## The @..@ is the placeholder for the maven resource filtering
-		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
-			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
-					+ graphqlUtils.getRuntimeVersion() 
-					+ "' whereas the GraphQL plugin version is '@project.version@'");
-		}
-		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
+		this(new GraphQLConfiguration(graphqlEndpoint));
 	}
 
 	/**
