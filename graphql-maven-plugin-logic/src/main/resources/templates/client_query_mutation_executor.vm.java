@@ -126,7 +126,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 					+ graphqlUtils.getRuntimeVersion()
 					+ "' whereas the GraphQL plugin version is '@project.version@'");
 		}
-		this.graphQLConfiguration = configuration;
+		this.graphQLConfiguration${springBeanSuffix} = configuration;
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
