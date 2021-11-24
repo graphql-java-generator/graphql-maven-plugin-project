@@ -4,6 +4,7 @@
 package org.allGraphQLCases.demo.subscription;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import com.graphql_java_generator.client.SubscriptionCallback;
 
@@ -14,6 +15,8 @@ import com.graphql_java_generator.client.SubscriptionCallback;
  */
 public class SubscriptionCallbackListInteger implements SubscriptionCallback<List<Integer>> {
 
+	CountDownLatch latchFor10Notifications = new CountDownLatch(10);
+
 	@Override
 	public void onConnect() {
 		System.out.println("The subscription is connected");
@@ -21,6 +24,7 @@ public class SubscriptionCallbackListInteger implements SubscriptionCallback<Lis
 
 	@Override
 	public void onMessage(List<Integer> t) {
+		latchFor10Notifications.countDown();
 		System.out.println("Received this list from the 'subscribeToAList' subscription: " + t);
 	}
 

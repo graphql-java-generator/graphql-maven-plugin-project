@@ -2,7 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* [local branch graphql-transport-ws] Finish the tests for the graphql-transport-ws protocol
 * Issue #109: understand the error `a bean of type 'graphql.GraphQL' that could not be found` when `web-application-type` is removed from the application.yml file
 * Remove getVariablesAsStringOld() (in Payload)
 * In allGraphQLCasesClient: in this sample, the list of custom scalars defined for the Forum schema should not contain `Long` and `NonNegativeInt`. In this case, their definition is erased at runtime in the `CustomScalarRegistryImpl.customScalarRegistry`.
