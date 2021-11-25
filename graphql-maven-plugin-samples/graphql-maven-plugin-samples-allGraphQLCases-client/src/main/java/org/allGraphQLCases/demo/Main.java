@@ -1,5 +1,6 @@
 package org.allGraphQLCases.demo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,10 +21,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.InMemoryReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
@@ -148,8 +153,40 @@ public class Main implements CommandLineRunner {
 	}
 
 	@Bean
+	public ReactiveClientRegistrationRepository reactiveClientRegistrationRepository(
+			OAuth2ClientProperties oAuth2ClientProperties) {
+		List<ClientRegistration> clientRegistrations = new ArrayList<>();
+
+		// because autoconfigure does not work for an unknown reason, here the ClientRegistrations are manually
+		// configured based on the application.yml
+		oAuth2ClientProperties.getRegistration().forEach((k, v) -> {
+			String tokenUri = oAuth2ClientProperties.getProvider().get(k).getTokenUri();
+			ClientRegistration clientRegistration = ClientRegistration.withRegistrationId(k).tokenUri(tokenUri)
+					.clientId(v.getClientId()).clientSecret(v.getClientSecret())
+					.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS).build();
+			clientRegistrations.add(clientRegistration);
+		});
+
+		return new InMemoryReactiveClientRegistrationRepository(clientRegistrations);
+	}
+
+	@Bean
 	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases(
 			ReactiveClientRegistrationRepository clientRegistrations) {
+		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
+				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
+		oauth.setDefaultClientRegistrationId("provider_test");
+		return oauth;
+	}
+
+	// @Bean
+	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases() {
+
+		ClientRegistration reg = ClientRegistration.withRegistrationId("provider_test")
+				.authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS).build();
+		ReactiveClientRegistrationRepository clientRegistrations = new InMemoryReactiveClientRegistrationRepository(
+				reg);
+
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
 				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
 		oauth.setDefaultClientRegistrationId("provider_test");
