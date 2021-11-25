@@ -8,4 +8,5 @@ com.graphql_java_generator.client.response
 com.graphql_java_generator.customscalars
 com.graphql_java_generator.exception
 com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client
+com.graphql_java_generator.samples.customtemplates.client.graphql.forum.client_spring_autoconfiguration
 com.graphql_java_generator.util

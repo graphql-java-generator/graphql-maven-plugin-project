@@ -1,5 +1,9 @@
 org.allGraphQLCases.client
+org.allGraphQLCases.client.spring_autoconfiguration
 org.allGraphQLCases.client.util
+org.allGraphQLCases.client2
+org.allGraphQLCases.client2.spring_autoconfiguration
+org.allGraphQLCases.client2.util
 org.allGraphQLCases.demo
 org.allGraphQLCases.demo.impl
 org.allGraphQLCases.demo.subscription
@@ -7,4 +11,5 @@ org.allGraphQLCases.graphqlrepository.non_spring
 org.allGraphQLCases.minimal.oauth_app
 org.allGraphQLCases.minimal.spring_app
 org.forum.client
+org.forum.client.spring_autoconfiguration
 org.forum.client.util
