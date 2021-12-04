@@ -279,7 +279,7 @@
 			to add this runtime as a dependency -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-runtime</artifactId>
+			<artifactId>graphql-java-client-runtime</artifactId>
 		</dependency>
 		<!-- Complementary graphql dependencies, for the custom scalars -->
 		<dependency>

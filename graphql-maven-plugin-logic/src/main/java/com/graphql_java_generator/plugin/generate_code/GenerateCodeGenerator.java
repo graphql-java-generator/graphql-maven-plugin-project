@@ -69,7 +69,9 @@ public class GenerateCodeGenerator implements Generator {
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeGenerator.class);
 
-	private final static String RUNTIME_SOURCE_FILENAME = "/graphql-java-runtime-sources.jar";
+	private final static String COMMON_RUNTIME_SOURCE_FILENAME = "/graphql-java-common-runtime-sources.jar";
+	private final static String CLIENT_RUNTIME_SOURCE_FILENAME = "/graphql-java-client-runtime-sources.jar";
+	private final static String SERVER_RUNTIME_SOURCE_FILENAME = "/graphql-java-server-runtime-sources.jar";
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
@@ -298,14 +300,16 @@ public class GenerateCodeGenerator implements Generator {
 
 	void copyRuntimeSources() throws IOException {
 		final int NB_BYTES = 1000;
-		ClassPathResource res = new ClassPathResource(RUNTIME_SOURCE_FILENAME);
 		JarEntry entry;
+		java.io.File file;
 		String targetFilename;
 		int nbBytesRead;
 		byte[] bytes = new byte[NB_BYTES];
 
-		try (JarInputStream jar = new JarInputStream(res.getInputStream())) {
-			java.io.File file;
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 1 : the common runtime
+		try (JarInputStream jar = new JarInputStream(
+				new ClassPathResource(COMMON_RUNTIME_SOURCE_FILENAME).getInputStream())) {
 			while ((entry = jar.getNextJarEntry()) != null) {
 
 				// Folders are ignored here.
@@ -318,46 +322,22 @@ public class GenerateCodeGenerator implements Generator {
 					continue;
 				}
 				if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) {
-					throw new RuntimeException("The entries in the '" + RUNTIME_SOURCE_FILENAME
+					throw new RuntimeException("The entries in the '" + COMMON_RUNTIME_SOURCE_FILENAME
 							+ "' file should start either by 'java' or by 'resources', but this entry doesn't: "
 							+ entry.getName());
 				}
 
-				boolean resources = entry.getName().startsWith("resources");
-				boolean metaInf = entry.getName().startsWith("resources/META-INF");
-				if (resources) {
-					targetFilename = entry.getName().substring("resources".length() + 1);
-				} else {
-					targetFilename = entry.getName().substring("java".length() + 1);
-				}
+				targetFilename = entry.getName().substring("java".length() + 1);
 
-				boolean serverFile = !metaInf //
-						&& !targetFilename.startsWith("com/graphql_java_generator/client")
-						&& !targetFilename.startsWith("com/graphql_java_generator/spring/client");
-
-				boolean clientFile = !targetFilename.startsWith("com/graphql_java_generator/server");
-
-				boolean copyFile;
+				boolean copyFile = true;// Default is to copy the file
 				if (configuration instanceof GeneratePojoConfiguration) {
 					// if the goal/task is generatePojo, then only part of the dependencies should be copied.
-					copyFile = targetFilename.startsWith("com/graphql_java_generator/GraphQLField")
-							|| targetFilename.startsWith("com/graphql_java_generator/annotation")
-							|| (configuration.isGenerateJacksonAnnotations() && //
-									(targetFilename.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
-											|| targetFilename.contains("AbstractCustomJacksonSerializer")
-											|| targetFilename.contains("AbstractCustomJacksonDeserializer")));
-				} else {
-					copyFile = (configuration.getMode().equals(PluginMode.client) && clientFile)
-							|| (configuration.getMode().equals(PluginMode.server) && serverFile);
+					copyFile = targetFilename.startsWith("com/graphql_java_generator/annotation")
+							|| targetFilename.contains("/GraphQLField.java");
 				}
 
-				// if (!metaInfAndNotSpringFactories && !serverAndIsClientFile & !clientAndIsServerFile
-
 				if (copyFile) {
-					if (resources)
-						file = new java.io.File(configuration.getTargetResourceFolder(), targetFilename);
-					else
-						file = new java.io.File(configuration.getTargetSourceFolder(), targetFilename);
+					file = new java.io.File(configuration.getTargetSourceFolder(), targetFilename);
 
 					file.getParentFile().mkdirs();
 					try (OutputStream fos = new FileOutputStream(file)) {
@@ -368,6 +348,115 @@ public class GenerateCodeGenerator implements Generator {
 				}
 			}
 		}
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step 2 : the client runtime
+		if (configuration.getMode().equals(PluginMode.client)) {
+			try (JarInputStream jar = new JarInputStream(
+					new ClassPathResource(CLIENT_RUNTIME_SOURCE_FILENAME).getInputStream())) {
+				while ((entry = jar.getNextJarEntry()) != null) {
+
+					// Folders are ignored here.
+					if (entry.isDirectory())
+						continue;
+
+					// We skip the /META-INF/ folder that just contains the MANIFEST file
+					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
+							|| entry.getName().equals("resources/")) {
+						continue;
+					}
+					if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) {
+						throw new RuntimeException("The entries in the '" + CLIENT_RUNTIME_SOURCE_FILENAME
+								+ "' file should start either by 'java' or by 'resources', but this entry doesn't: "
+								+ entry.getName());
+					}
+
+					boolean resources = entry.getName().startsWith("resources");
+					boolean metaInf = entry.getName().startsWith("resources/META-INF");
+					if (resources) {
+						targetFilename = entry.getName().substring("resources".length() + 1);
+					} else {
+						targetFilename = entry.getName().substring("java".length() + 1);
+					}
+
+					boolean copyFile = true;// Default is to copy the file
+					if (configuration instanceof GeneratePojoConfiguration) {
+						// if the goal/task is generatePojo, then only part of the dependencies should be copied.
+						copyFile = targetFilename.startsWith("com/graphql_java_generator/GraphQLField")
+								|| targetFilename.startsWith("com/graphql_java_generator/annotation")
+								|| (configuration.isGenerateJacksonAnnotations() && //
+										(targetFilename
+												.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
+												|| targetFilename.contains("AbstractCustomJacksonSerializer")
+												|| targetFilename.contains("AbstractCustomJacksonDeserializer")));
+					}
+
+					if (copyFile) {
+						if (resources)
+							file = new java.io.File(configuration.getTargetResourceFolder(), targetFilename);
+						else
+							file = new java.io.File(configuration.getTargetSourceFolder(), targetFilename);
+
+						file.getParentFile().mkdirs();
+						try (OutputStream fos = new FileOutputStream(file)) {
+							while ((nbBytesRead = jar.read(bytes, 0, bytes.length)) > 0) {
+								fos.write(bytes, 0, nbBytesRead);
+							}
+						}
+					}
+				}
+			}
+		} // if (mode==client)
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Step3 : the server runtime
+		if (configuration.getMode().equals(PluginMode.server)) {
+			try (JarInputStream jar = new JarInputStream(
+					new ClassPathResource(SERVER_RUNTIME_SOURCE_FILENAME).getInputStream())) {
+				while ((entry = jar.getNextJarEntry()) != null) {
+
+					// Folders are ignored here.
+					if (entry.isDirectory())
+						continue;
+
+					// We skip the /META-INF/ folder that just contains the MANIFEST file
+					if (entry.getName().startsWith("META-INF") || entry.getName().equals("java/")
+							|| entry.getName().equals("resources/")) {
+						continue;
+					}
+					if (!entry.getName().startsWith("resources") && !entry.getName().startsWith("java")) {
+						throw new RuntimeException("The entries in the '" + SERVER_RUNTIME_SOURCE_FILENAME
+								+ "' file should start either by 'java' or by 'resources', but this entry doesn't: "
+								+ entry.getName());
+					}
+
+					targetFilename = entry.getName().substring("java".length() + 1);
+
+					boolean copyFile = true; // Default is to copy the file
+					if (configuration instanceof GeneratePojoConfiguration) {
+						// if the goal/task is generatePojo, then only part of the dependencies should be copied.
+						copyFile = targetFilename.startsWith("com/graphql_java_generator/GraphQLField")
+								|| targetFilename.startsWith("com/graphql_java_generator/annotation")
+								|| (configuration.isGenerateJacksonAnnotations() && //
+										(targetFilename
+												.startsWith("com/graphql_java_generator/client/GraphQLRequestObject")
+												|| targetFilename.contains("AbstractCustomJacksonSerializer")
+												|| targetFilename.contains("AbstractCustomJacksonDeserializer")));
+					}
+
+					if (copyFile) {
+						file = new java.io.File(configuration.getTargetSourceFolder(), targetFilename);
+
+						file.getParentFile().mkdirs();
+						try (OutputStream fos = new FileOutputStream(file)) {
+							while ((nbBytesRead = jar.read(bytes, 0, bytes.length)) > 0) {
+								fos.write(bytes, 0, nbBytesRead);
+							}
+						}
+					}
+				}
+			}
+		} // if (server mode)
 	}
 
 	/**

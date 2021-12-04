@@ -64,7 +64,9 @@
 		<!-- The samples (within graphql-maven-plugin-samples module) are activated only when not in release mode (see profiles) -->
 		<module>graphql-java-client-dependencies</module>
 		<module>graphql-java-server-dependencies</module>
-		<module>graphql-java-runtime</module>
+		<module>graphql-java-common-runtime</module>
+		<module>graphql-java-client-runtime</module>
+		<module>graphql-java-server-runtime</module>
 		<module>graphql-java-spring-mvc</module>
 		<module>graphql-maven-plugin-logic</module>
 		<module>graphql-maven-plugin</module>
@@ -322,7 +324,17 @@
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
-				<artifactId>graphql-java-runtime</artifactId>
+				<artifactId>graphql-java-common-runtime</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-java-client-runtime</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-java-server-runtime</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

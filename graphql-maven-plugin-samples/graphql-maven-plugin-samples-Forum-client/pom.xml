@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
@@ -49,7 +51,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<!-- This plugin allows to start the SpringBoot Forum-server in the background during the integration tests -->
+				<!-- This plugin allows to start the SpringBoot Forum-server in the background 
+					during the integration tests -->
 				<groupId>com.bazaarvoice.maven.plugins</groupId>
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
@@ -115,15 +118,7 @@
 		<!-- Dependencies for GraphQL -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<!--  artifactId>graphql-java-client-dependencies</artifactId>
-			<type>pom</type-->
-			<artifactId>graphql-java-runtime</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			</exclusions>
+			<artifactId>graphql-java-client-runtime</artifactId>
 		</dependency>
 
 		<!-- Spring is needed, to manage OAuth -->
@@ -135,12 +130,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-websocket</artifactId> </dependency> 
-			<dependency> <groupId>org.springframework.security</groupId> <artifactId>spring-security-oauth2-client</artifactId> </dependency -->
-		<!-- Below : are they necessary, once spring-boot-starter-websocket is added -->
-		<!-- dependency> <groupId>org.springframework</groupId> <artifactId>spring-websocket</artifactId> </dependency -->
-		<!-- dependency> <groupId>org.springframework</groupId> <artifactId>spring-messaging</artifactId> </dependency -->
-		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-websocket</artifactId> </dependency -->
+		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-websocket</artifactId> 
+			</dependency> <dependency> <groupId>org.springframework.security</groupId> 
+			<artifactId>spring-security-oauth2-client</artifactId> </dependency -->
+		<!-- Below : are they necessary, once spring-boot-starter-websocket is 
+			added -->
+		<!-- dependency> <groupId>org.springframework</groupId> <artifactId>spring-websocket</artifactId> 
+			</dependency -->
+		<!-- dependency> <groupId>org.springframework</groupId> <artifactId>spring-messaging</artifactId> 
+			</dependency -->
+		<!-- dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-websocket</artifactId> 
+			</dependency -->
 	</dependencies>
 
 	<reporting>

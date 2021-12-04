@@ -8,6 +8,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+All modes (client and server):
+* Dependencies has been restructured to properly separate client and server runtimes:
+    * When `copyRuntimeSources` is false, the used dependencies should be either `graphql-java-client-runtime` or `graphql-java-server-runtime`
+    * When `copyRuntimeSources` is true, the used dependencies should be either `graphql-java-client-dependencies` or `graphql-java-server-dependencies`
+
+
+
 # 1.18
 
 All modes (client and server):

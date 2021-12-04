@@ -75,7 +75,7 @@
 		<!-- Dependencies for the generated code -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-runtime</artifactId>
+			<artifactId>graphql-java-server-runtime</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
