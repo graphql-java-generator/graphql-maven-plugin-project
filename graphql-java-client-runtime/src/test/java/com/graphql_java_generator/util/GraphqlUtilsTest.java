@@ -33,6 +33,8 @@ import com.graphql_java_generator.domain.client.starwars.Human;
 import com.graphql_java_generator.testcases.Isssue49AccountInput;
 import com.graphql_java_generator.testcases.Issue49Title;
 
+import graphql.scalars.ExtendedScalars;
+
 @Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {
 
@@ -203,7 +205,7 @@ class GraphqlUtilsTest {
 		// And we need to register the custom scalar
 		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDServer.ID,
 				String.class);
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(graphql.Scalars.GraphQLLong,
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
 				Long.class);
 
 		// Go, go, go
@@ -258,7 +260,7 @@ class GraphqlUtilsTest {
 		// And we need to register the custom scalar
 		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDServer.ID,
 				String.class);
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(graphql.Scalars.GraphQLLong,
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
 				Long.class);
 
 		// Go, go, go

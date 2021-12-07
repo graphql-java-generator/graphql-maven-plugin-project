@@ -190,6 +190,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     			id: "11111111-1111-1111-1111-111111111111",
     			name: "A name",
     			age: 1234567890,
+				dates: [],
     			nbComments: 123,
     			comments: ["s1", "s2"],
     			booleans: [true, false],
@@ -202,8 +203,10 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     		{    
     			id: "22222222-2222-2222-2222-222222222222",
     			name: "name2",
-    			age: 1
-    			planets: [],
+    			age: 1,
+				dates: [],
+    			aliases: [],
+    			planets: ["a planet"],
     			matrix: [[]],
     			withIdSubtype: [{id: "66666666-6666-6666-6666-666666666666", name: "name6"}, {id: "77777777-7777-7777-7777-777777777777", name: "name7"}],
     			withoutIdSubtype: [{name: "name8"}]
@@ -231,7 +234,7 @@ interface AllFieldCasesInterface  {
 }
 
 # A concrete class that just implements the above interface
-type AllFieldCasesInterfaceType implements AllFieldCasesInterface, WithID {
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface & WithID {
     id: ID!
     name: String!
     forname(uppercase: Boolean, textToAppendToTheForname: String): String

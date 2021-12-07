@@ -45,7 +45,7 @@ ${param.name}: ${param.graphQLType}#if($param.defaultValue)=${param.getDefaultVa
 #set($appendImplements=false)##
 ## the implementz field contains both the interfaces (that we want here) and the unions (that we don't want here)
 #if($documentParser.getType($implement).class.simpleName == "InterfaceType")
-#if($appendSep), #end##
+#if($appendSep)& #end##
 $implement##
 #end
 #set($appendSep=true)

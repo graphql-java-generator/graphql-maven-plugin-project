@@ -42,7 +42,7 @@
 								<customScalar>
 									<graphQLTypeName>Long</graphQLTypeName>
 									<javaType>java.lang.Long</javaType>
-									<graphQLScalarTypeStaticField>graphql.Scalars.GraphQLLong</graphQLScalarTypeStaticField>
+									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.GraphQLLong</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
 									<graphQLTypeName>NonNegativeInt</graphQLTypeName>

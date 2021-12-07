@@ -3,6 +3,7 @@
 New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
 Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
 Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
+* copyRuntimeSources: false _(both client and server mode)_
 * generateBatchLoaderEnvironment: true _(server only)_
 * generateDeprecatedRequestResponse: false _(client only)_
 * separateUtilityClasses: true _(both client and server mode)_
@@ -12,9 +13,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 All modes (client and server):
 * Dependencies has been restructured to properly separate client and server runtimes:
+    * The __`graphql-java-runtime` module no longer exists__ . If you're using, you must change to one of `graphql-java-client-runtime` or `graphql-java-server-runtime`.
     * When `copyRuntimeSources` is false, the used dependencies should be either `graphql-java-client-runtime` or `graphql-java-server-runtime`
     * When `copyRuntimeSources` is true, the used dependencies should be either `graphql-java-client-dependencies` or `graphql-java-server-dependencies`
-
+    * 	This solves issues #109 and #56
+* Switch from graphql-java 16.2 to 17.3
+	* You can check the changes on the [graphq-java release page](https://github.com/graphql-java/graphql-java/releases)
+    * The main changes are:
+        * __Non standard scalars__ have moved from the `graphql.Scalars` class (that is included in the graphql-java module) to the `graphql-java-extended-scalars`. So, if you're using non standard scalars like `Byte`, `Short` and `Long` (...), you'll probably have to change your configuration in your pom.xml or gradle.build file, from `graphql.Scalars.xxx` to `graphql.scalars.ExtendedScalars.xxx`
+        * The graphQL schema is, by default, limited to 15000 items.
 
 
 # 1.18

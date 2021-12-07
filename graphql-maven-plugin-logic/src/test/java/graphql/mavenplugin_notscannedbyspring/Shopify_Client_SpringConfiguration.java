@@ -35,7 +35,7 @@ public class Shopify_Client_SpringConfiguration extends AbstractSpringConfigurat
 		customScalars.add(new CustomScalarDefinition("DateTime", "java.util.Date", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDateTime.DateTime", null));
 		customScalars.add(new CustomScalarDefinition("Decimal", "java.math.BigDecimal", null,
-				"graphql.Scalars.GraphQLBigDecimal", null));
+				"graphql.scalars.ExtendedScalars.GraphQLBigDecimal", null));
 		customScalars.add(new CustomScalarDefinition("FormattedString", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 		customScalars.add(new CustomScalarDefinition("HTML", "java.lang.String", null,
@@ -43,11 +43,11 @@ public class Shopify_Client_SpringConfiguration extends AbstractSpringConfigurat
 		customScalars.add(new CustomScalarDefinition("JSON", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 		customScalars.add(
-				new CustomScalarDefinition("Money", "java.lang.Float", null, "graphql.Scalars.GraphQLFloat", null));
+				new CustomScalarDefinition("Money", "java.lang.Float", null, "graphql.scalars.ExtendedScalars.GraphQLFloat", null));
 		customScalars.add(new CustomScalarDefinition("StorefrontID", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 		customScalars.add(new CustomScalarDefinition("UnsignedInt64", "java.math.BigInteger", null,
-				"graphql.Scalars.GraphQLBigInteger", null));
+				"graphql.scalars.ExtendedScalars.GraphQLBigInteger", null));
 		customScalars.add(new CustomScalarDefinition("URL", "java.lang.String", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String", null));
 		customScalars.add(new CustomScalarDefinition("UtcOffset", "java.lang.String", null,

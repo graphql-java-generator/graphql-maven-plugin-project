@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.graphql_java_generator.client.response.AbstractCustomJacksonDeserializer;
 
+import graphql.scalars.ExtendedScalars;
 import graphql.schema.GraphQLScalarType;
 
 /**
@@ -58,7 +59,7 @@ public class CustomJacksonDeserializers {
 		private static final long serialVersionUID = 1L;
 
 		public Long() {
-			super(null, false, java.lang.Long.class, graphql.Scalars.GraphQLLong);
+			super(null, false, java.lang.Long.class, ExtendedScalars.GraphQLLong);
 		}
 	}
 

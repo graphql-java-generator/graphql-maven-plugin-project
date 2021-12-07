@@ -4,7 +4,8 @@ package com.graphql_java_generator.domain.client.allGraphQLCases;
 import com.graphql_java_generator.customscalars.CustomScalarRegistry;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
-import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDServer;
+
+import graphql.scalars.ExtendedScalars;
 
 public class CustomScalarRegistryInitializer {
 
@@ -16,12 +17,15 @@ public class CustomScalarRegistryInitializer {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
 		// Registering the ID parser, for client mode
-		customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID, String.class);		
+		customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID, String.class);
 
-		customScalarRegistry.registerGraphQLScalarType(com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date, java.util.Date.class);
-		customScalarRegistry.registerGraphQLScalarType(graphql.Scalars.GraphQLLong, java.lang.Long.class);
-		customScalarRegistry.registerGraphQLScalarType(com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String, java.lang.String.class);
-		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.NonNegativeInt, java.lang.Integer.class);
+		customScalarRegistry.registerGraphQLScalarType(
+				com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date, java.util.Date.class);
+		customScalarRegistry.registerGraphQLScalarType(ExtendedScalars.GraphQLLong, java.lang.Long.class);
+		customScalarRegistry.registerGraphQLScalarType(
+				com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String, java.lang.String.class);
+		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.NonNegativeInt,
+				java.lang.Integer.class);
 
 		CustomScalarRegistryImpl.customScalarRegistry = customScalarRegistry;
 		return customScalarRegistry;

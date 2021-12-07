@@ -32,7 +32,7 @@ import com.graphql_java_generator.domain.client.forum.TopicPostInput;
 import com.graphql_java_generator.domain.client.starwars.Episode;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
-import graphql.Scalars;
+import graphql.scalars.ExtendedScalars;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
 
@@ -64,7 +64,8 @@ class InputParameterTest {
 		assertEquals(value, param.getValue(), "value");
 		assertEquals("\"This is a string with two \\\"\\\", a \\uD83C\\uDF89 and some \\r \\t \\\\ to be escaped\"",
 				param.getStringContentForGraphqlQuery(false, null), "escaped value");
-		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
+		assertEquals('"' + value + '"',
+				StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
 				"roundtripped value");
 	}
 
@@ -80,7 +81,8 @@ class InputParameterTest {
 		assertEquals(value, param.getValue(), "value");
 		assertEquals("\"A double quote after an escaped antislash: \\\\\\\" (it's not the end of string)\"",
 				param.getStringContentForGraphqlQuery(false, null), "escaped value");
-		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
+		assertEquals('"' + value + '"',
+				StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
 				"roundtripped value");
 	}
 
@@ -93,8 +95,10 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals("\"One trailing antislash: \\\\\"", param.getStringContentForGraphqlQuery(false, null), "escaped value");
-		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
+		assertEquals("\"One trailing antislash: \\\\\"", param.getStringContentForGraphqlQuery(false, null),
+				"escaped value");
+		assertEquals('"' + value + '"',
+				StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
 				"roundtripped value");
 	}
 
@@ -109,7 +113,8 @@ class InputParameterTest {
 		assertEquals(value, param.getValue(), "value");
 		assertEquals("\"One trailing antislash: \\\\\\\\\"", param.getStringContentForGraphqlQuery(false, null),
 				"escaped value");
-		assertEquals('"' + value + '"', StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
+		assertEquals('"' + value + '"',
+				StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
 				"roundtripped value");
 	}
 
@@ -158,8 +163,8 @@ class InputParameterTest {
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(id, param.getValue(), "value");
-		assertEquals("\"00000000-0000-0000-0000-000000000012\"", param.getStringContentForGraphqlQuery(false, new HashMap<>()),
-				"escaped value");
+		assertEquals("\"00000000-0000-0000-0000-000000000012\"",
+				param.getStringContentForGraphqlQuery(false, new HashMap<>()), "escaped value");
 	}
 
 	@Test
@@ -249,7 +254,8 @@ class InputParameterTest {
 		assertThrows(GraphQLRequestExecutionException.class,
 				() -> mandatoryBindParam.getStringContentForGraphqlQuery(false, null), "escaped value (null map)");
 		assertThrows(GraphQLRequestExecutionException.class,
-				() -> mandatoryBindParam.getStringContentForGraphqlQuery(false, new HashMap<>()), "escaped value (empty map)");
+				() -> mandatoryBindParam.getStringContentForGraphqlQuery(false, new HashMap<>()),
+				"escaped value (empty map)");
 
 		Map<String, Object> bindVariablesValues = new HashMap<>();
 		bindVariablesValues.put("anotherBind", "A value");
@@ -270,7 +276,8 @@ class InputParameterTest {
 		assertEquals(null, mandatoryBindParam.getValue(), "value");
 		assertEquals(bindParameterName, mandatoryBindParam.bindParameterName, "bindParameterName");
 		assertNull(mandatoryBindParam.getStringContentForGraphqlQuery(false, null), "with no given map");
-		assertNull(mandatoryBindParam.getStringContentForGraphqlQuery(false, new HashMap<>()), "escaped value (empty map)");
+		assertNull(mandatoryBindParam.getStringContentForGraphqlQuery(false, new HashMap<>()),
+				"escaped value (empty map)");
 
 		Map<String, Object> bindVariablesValues = new HashMap<>();
 		bindVariablesValues.put("anotherBind", "A value");
@@ -307,9 +314,10 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_BindParameter_CustomScalar_Long_OK() throws GraphQLRequestExecutionException {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		// We add a specific custom scalar for this test, as this test is about the Long custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(Scalars.GraphQLLong, Long.class);
+		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
+				Long.class);
 
-		GraphQLScalarType graphQLScalarTypeLong = Scalars.GraphQLLong;
+		GraphQLScalarType graphQLScalarTypeLong = ExtendedScalars.GraphQLLong;
 		String name = "aName";
 		String bindParameterName = "variableName";
 		InputParameter customScalarInputParameter = InputParameter.newBindParameter(name, bindParameterName,
