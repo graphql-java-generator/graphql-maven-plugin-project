@@ -43,7 +43,7 @@ public class Shopify_Server_SpringConfiguration extends AbstractSpringConfigurat
 		customScalars.add(new CustomScalarDefinition("JSON", "java.lang.String",
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
 		customScalars.add(
-				new CustomScalarDefinition("Money", "java.lang.Float", null, "graphql.scalars.ExtendedScalars.GraphQLFloat", null));
+				new CustomScalarDefinition("Money", "java.lang.Float", null, "graphql.Scalars.GraphQLFloat", null));
 		customScalars.add(new CustomScalarDefinition("StorefrontID", "java.lang.String",
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null));
 		customScalars.add(new CustomScalarDefinition("UnsignedInt64", "java.math.BigInteger", null,

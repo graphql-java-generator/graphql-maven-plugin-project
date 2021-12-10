@@ -14,6 +14,7 @@ import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Packaging;
+import com.graphql_java_generator.plugin.conf.ParserOptions;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 import lombok.Getter;
@@ -46,6 +47,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
+	public ParserOptions parserOptions;
 	public Packaging packaging = null;
 	public File projectDir;// Initialized in the constructor
 	public String scanBasePackages = "null";
@@ -68,6 +70,9 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	 */
 	public GraphQLConfigurationTestHelper(Object caller) {
 		logger = LoggerFactory.getLogger(caller.getClass());
+
+		parserOptions = new ParserOptions();
+		parserOptions.setMaxTokens(200000); // Necessary for github and shopify schemas.
 
 		try {
 			projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //

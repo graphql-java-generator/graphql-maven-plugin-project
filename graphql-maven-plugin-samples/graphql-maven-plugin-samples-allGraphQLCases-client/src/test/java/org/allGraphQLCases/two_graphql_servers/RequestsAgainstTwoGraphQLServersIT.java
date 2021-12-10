@@ -107,8 +107,9 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		SubscriptionClient sub = graphQLRepoAllGraphQLCases.subscribeToAList(callback);
 
 		// Verification
-		// Let's wait a max of 20 second, until we receive some notifications
-		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		// Let's wait a max of 80 second, until we receive some notifications (this allows some debugging check in the
+		// server)
+		callback.latchForMessageReception.await(80, TimeUnit.SECONDS);
 
 		// Let's disconnect from the subscription
 		sub.unsubscribe();

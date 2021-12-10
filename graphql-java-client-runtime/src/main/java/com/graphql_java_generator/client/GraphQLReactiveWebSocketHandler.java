@@ -416,14 +416,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		RequestData<R, T> subData;
 
 		// Let's wait until the web socket is properly initialized, as specified by the graphql-transport-ws protocol
-		try {
-			logger.trace("Waiting for GraphQL web socket inialization, for socket {}", session);
-			webSocketConnectionInitializationLatch.await(30, TimeUnit.SECONDS);
-			logger.trace("GraphQL web socket {} has been inialized (let's execute the subscription)", session);
-		} catch (InterruptedException e) {
-			throw new GraphQLRequestExecutionException("Got interrupted while waiting for the subscription execution",
-					e);
-		}
+		checkInitializationError();
 
 		synchronized (registeredSubscriptions) {
 			subData = new RequestData<R, T>(request, subscriptionName, subscriptionCallback, subscriptionType,
@@ -459,14 +452,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		QueryOrMutationCallback<R> callback = new QueryOrMutationCallback<R>();
 
 		// Let's wait until the web socket is properly initialized, as specified by the graphql-transport-ws protocol
-		try {
-			logger.trace("Waiting for GraphQL web socket inialization, for socket {}", session);
-			webSocketConnectionInitializationLatch.await(30, TimeUnit.SECONDS);
-			logger.trace("GraphQL web socket {} has been inialized (let's execute the query or mutation)", session);
-		} catch (InterruptedException e) {
-			throw new GraphQLRequestExecutionException(
-					"Got interrupted while waiting for the query or mutation execution", e);
-		}
+		checkInitializationError();
 
 		synchronized (registeredSubscriptions) {
 			subData = new RequestData<R, R>(request, null, callback, requestType, requestType,
@@ -585,7 +571,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 							// this flux
 							webSocketEmitter = new SubscriptionRequestEmitter() {
 								@Override
-								public void emit(RequestData<?, ?> subData, WebSocketMessage msg) {
+								public synchronized void emit(RequestData<?, ?> subData, WebSocketMessage msg) {
 									if (logger.isTraceEnabled())
 										logger.trace("Emitting message for uniqueIdOperation {} on web socket {}: {}",
 												subData.uniqueIdOperation, session, msg.getPayloadAsText());
@@ -720,7 +706,7 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 		if (t == null) {
 			t = new RuntimeException("Unknown error");
 		}
-		logger.error("The Web Socket session {} ended with an error ({}: {})", t.getClass().getSimpleName(),
+		logger.error("The Web Socket session {} ended with an error ({}: {})", session, t.getClass().getSimpleName(),
 				t.getMessage());
 
 		for (StackTraceElement row : t.getStackTrace()) {

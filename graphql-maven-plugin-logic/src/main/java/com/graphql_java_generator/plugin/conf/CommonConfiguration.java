@@ -34,6 +34,43 @@ public interface CommonConfiguration {
 	public final String DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED = "true";
 
 	/**
+	 * <P>
+	 * Defines the options that must be sent to the GraphQL parser, that will read the graphQL schema.
+	 * </P>
+	 * <P>
+	 * Its current only parameter is <I>maxTokens</I>, which default value is 15000. For bigger GraphQL schema, you can
+	 * define the maxTokens to the needed value, like this:
+	 * </P>
+	 * <P>
+	 * In a maven pom.xml file:
+	 * </P>
+	 * <code>
+	&lt;configuration>
+		...
+		&lt;parserOptions>
+			&lt;maxTokens>15001</maxTokens>
+		&lt;/parserOptions>
+		...
+	&lt;/configuration>
+	 * </code>
+	 * <P>
+	 * Or in a gradle build.gradle file:
+	 * </P>
+	 * <code>
+	generateServerCode {
+		...
+		parserOptions {
+			maxTokens = 1234
+		}
+		...
+	}
+	</code>
+	 * 
+	 * @return
+	 */
+	public ParserOptions getParserOptions();
+
+	/**
 	 * Get the {@link File} for the current project's directory. This allows to compute the full path of file that are
 	 * within this project (like custom templates for instance)
 	 * 
@@ -144,6 +181,8 @@ public interface CommonConfiguration {
 			logger.debug("  Common parameters:");
 			logger.debug("    addRelayConnections: " + isAddRelayConnections());
 			logger.debug("    defaultTargetSchemaFileName: " + getDefaultTargetSchemaFileName());
+			logger.debug("    parserOptions.maxTokens: "
+					+ ((getParserOptions() == null) ? "null" : getParserOptions().getMaxTokens()));
 			logger.debug("    projectDir: " + getProjectDir().getAbsolutePath());
 			logger.debug("    schemaFileFolder: " + getSchemaFileFolder());
 			logger.debug("    schemaFilePattern: " + getSchemaFilePattern());

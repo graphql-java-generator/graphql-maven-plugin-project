@@ -48,6 +48,7 @@ import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
+import com.graphql_java_generator.plugin.conf.ParserOptions;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.BatchLoader;
@@ -372,7 +373,6 @@ public class GenerateCodeGenerator implements Generator {
 					}
 
 					boolean resources = entry.getName().startsWith("resources");
-					boolean metaInf = entry.getName().startsWith("resources/META-INF");
 					if (resources) {
 						targetFilename = entry.getName().substring("resources".length() + 1);
 					} else {
@@ -591,6 +591,11 @@ public class GenerateCodeGenerator implements Generator {
 			// GraphQL schema, so that the graphql-java can access it at runtime.
 			if (configuration.isAddRelayConnections() && configuration.getMode().equals(PluginMode.server)) {
 				GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
+
+					@Override
+					public ParserOptions getParserOptions() {
+						return configuration.getParserOptions();
+					}
 
 					@Override
 					public File getProjectDir() {

@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -21,13 +23,17 @@
 							<goal>generateServerCode</goal>
 						</goals>
 						<configuration>
-							<!-- addRelayConnections will generate all the Relay Connection stuff (Node, Edge and Connection interfaces, and creating 
-								the XxxEdge and XxxConnection interfaces or objects), for fields marked with the RelayConnection directive. See the documentation 
-								for more information -->
+							<!-- addRelayConnections will generate all the Relay Connection stuff 
+								(Node, Edge and Connection interfaces, and creating the XxxEdge and XxxConnection 
+								interfaces or objects), for fields marked with the RelayConnection directive. 
+								See the documentation for more information -->
 							<addRelayConnections>true</addRelayConnections>
 							<copyRuntimeSources>false</copyRuntimeSources>
 							<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 							<packageName>org.allGraphQLCases.server</packageName>
+							<parserOptions>
+								<maxTokens>12345</maxTokens>
+							</parserOptions>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
 							<separateUtilityClasses>true</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
@@ -72,6 +78,23 @@
 	</build>
 
 	<dependencies>
+		<!-- Dependencies for tests -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Dependencies for the generated code -->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>

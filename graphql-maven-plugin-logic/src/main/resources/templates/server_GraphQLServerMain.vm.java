@@ -35,6 +35,7 @@ import com.graphql_java_generator.util.GraphqlUtils;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.parser.ParserOptions;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -80,11 +81,21 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 	public static void main(String[] args) {
 		SpringApplication.run(GraphQLServerMain.class, args);
 	}
+
+#if($configuration.parserOptions && $configuration.parserOptions.maxTokens)
+	public GraphQLServerMain() {
+		// Configuration of the GraphQL schema parser, from the project configuration
+		ParserOptions newDefault = ParserOptions.newParserOptions().maxTokens(${configuration.parserOptions.maxTokens}).build();
+		ParserOptions.setDefaultParserOptions(newDefault);
+	}
+
+#end
 	
 	@Bean
 	protected GraphQLSchema graphQLSchema() throws IOException {
 		Resource res;
 		StringBuffer sdl = new StringBuffer();
+
 #if($configuration.addRelayConnections)
 ## When addRelayConnections is true, then graphql-java should use the Generated schema, instead of the source schema
 		res = new ClassPathResource("/${configuration.defaultTargetSchemaFileName}");

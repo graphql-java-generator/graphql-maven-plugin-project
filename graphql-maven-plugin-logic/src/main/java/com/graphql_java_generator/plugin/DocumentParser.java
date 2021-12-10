@@ -64,6 +64,7 @@ import graphql.language.StringValue;
 import graphql.language.TypeName;
 import graphql.language.UnionTypeDefinition;
 import graphql.parser.Parser;
+import graphql.parser.ParserOptions;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -285,6 +286,13 @@ public abstract class DocumentParser {
 	 */
 	public int parseDocuments() throws IOException {
 		logger.debug("Starting documents parsing");
+
+		// Configuration of the GraphQL schema parser, from the project configuration
+		if (configuration.getParserOptions() != null && configuration.getParserOptions().getMaxTokens() != null) {
+			ParserOptions newDefault = ParserOptions.newParserOptions()
+					.maxTokens(configuration.getParserOptions().getMaxTokens()).build();
+			ParserOptions.setDefaultParserOptions(newDefault);
+		}
 
 		documents.getDocuments().stream().forEach(this::parseOneDocument);
 

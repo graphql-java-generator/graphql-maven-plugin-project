@@ -52,6 +52,8 @@ public class SubscriptionCallbackListInteger implements SubscriptionCallback<Lis
 	public void onError(Throwable cause) {
 		logger.error("Oups! An error occurred: "
 				+ ((cause == null) ? null : cause.getClass().getSimpleName() + ": " + cause.getMessage()));
+		// An error occurred. Let's free the test thread that is waiting for a message.
+		latchForMessageReception.countDown();
 	}
 
 }

@@ -80,7 +80,7 @@ public class ExecSubscriptionIT {
 		List<Thread> threads = new ArrayList<>(NB_THREADS);
 
 		logger.info("------------------------------------------------------------------------------------------------");
-		logger.info("Starting test_subscribeToAList");
+		logger.info("Starting test_multiSubscribersToAList");
 
 		// To test the issue 72, we create NB_THREADS clients for the subscription, and check that each of them properly
 		// receives the relevant notifications
@@ -95,10 +95,14 @@ public class ExecSubscriptionIT {
 			thread.start();
 		}
 
+		logger.debug("All {} threads have been started", threads.size());
+
 		// Let's wait for the end of all our subscription client threads
 		for (Thread thread : threads) {
 			thread.join();
 		}
+
+		logger.debug("All {} threads have finished", threads.size());
 
 		// Let's check that each thread received a message
 		for (SubscribeToAList sub : subs) {
@@ -217,9 +221,10 @@ public class ExecSubscriptionIT {
 		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive some notifications
 		// (20s will never occur... unless using the debugger to undebug some stuff)
-		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		boolean success = callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
 
 		// Let's wait for our first message
+		logger.debug("latchForMessageReception has been freed for client with status {}", success);
 		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
 
 		// Let's unsubscribe from this subscription
