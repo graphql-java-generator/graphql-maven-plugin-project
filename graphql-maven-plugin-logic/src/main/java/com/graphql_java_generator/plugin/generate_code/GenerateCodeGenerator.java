@@ -48,7 +48,6 @@ import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
-import com.graphql_java_generator.plugin.conf.ParserOptions;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.BatchLoader;
@@ -593,8 +592,8 @@ public class GenerateCodeGenerator implements Generator {
 				GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
 
 					@Override
-					public ParserOptions getParserOptions() {
-						return configuration.getParserOptions();
+					public int getMaxTokens() {
+						return configuration.getMaxTokens();
 					}
 
 					@Override

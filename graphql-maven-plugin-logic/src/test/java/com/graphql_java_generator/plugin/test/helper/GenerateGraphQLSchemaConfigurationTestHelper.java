@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
-import com.graphql_java_generator.plugin.conf.ParserOptions;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +25,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 
 	public boolean addRelayConnections = false;
 	public String packageName = "my.test.package";
-	public ParserOptions parserOptions = null;
+	public int maxTokens = 15000;
 	public File projectDir = new File("./graphql-maven-plugin-logic");
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;

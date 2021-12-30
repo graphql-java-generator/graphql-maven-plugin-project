@@ -2,7 +2,8 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Issue #109: understand the error `a bean of type 'graphql.GraphQL' that could not be found` when `web-application-type` is removed from the application.yml file
+* Manage [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228) : update to log4j >= 2.16.0 (last version as of 16 déc 2021)
+* Issue [#114](https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/114)
 * Remove getVariablesAsStringOld() (in Payload)
 * In allGraphQLCasesClient: in this sample, the list of custom scalars defined for the Forum schema should not contain `Long` and `NonNegativeInt`. In this case, their definition is erased at runtime in the `CustomScalarRegistryImpl.customScalarRegistry`.
     * Workaround : define in the pom or gradle.build file, the full list of all scalars in the `<configuration>` for every GraphQL schema.

@@ -21,7 +21,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.graphql_java_generator.plugin.PluginExecutor;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.conf.ParserOptions;
 
 /**
  * This class is the super class of all Mojos. It contains all parameters that are common to all goals, and the
@@ -62,41 +61,12 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	boolean addRelayConnections;
 
 	/**
-	 * <P>
-	 * Defines the options that must be sent to the GraphQL parser, that will read the graphQL schema.
-	 * </P>
-	 * <P>
-	 * Its current only parameter is <I>maxTokens</I>, which default value is 15000. For bigger GraphQL schema, you can
-	 * define the maxTokens to the needed value, like this:
-	 * </P>
-	 * <P>
-	 * In a maven pom.xml file:
-	 * </P>
-	 * <code>
-	&lt;configuration>
-		...
-		&lt;parserOptions>
-			&lt;maxTokens>15001</maxTokens>
-		&lt;/parserOptions>
-		...
-	&lt;/configuration>
-	 * </code>
-	 * <P>
-	 * Or in a gradle build.gradle file:
-	 * </P>
-	 * <code>
-	generateServerCode {
-		...
-		parserOptions {
-			maxTokens = 1234
-		}
-		...
-	}
-	</code>
-	 * 
+	 * Defines the options that maximum number of tokens that the GraphQL schema parser may read. The default value is
+	 * 15000. If the schema contains more than <I>maxTokens</I>, the build will fail with an error. For bigger GraphQL
+	 * schemas, you must define the <I>maxTokens</I> to the needed value.
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.parserOptions")
-	public ParserOptions parserOptions = null;
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.maxTokens", defaultValue = CommonConfiguration.DEFAULT_MAX_TOKENS)
+	public int maxTokens;
 
 	/**
 	 * Not available to the user: the {@link MavenProject} in which the plugin executes
@@ -169,8 +139,8 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	protected AnnotationConfigApplicationContext ctx;
 
 	@Override
-	public ParserOptions getParserOptions() {
-		return parserOptions;
+	public int getMaxTokens() {
+		return maxTokens;
 	}
 
 	@Override

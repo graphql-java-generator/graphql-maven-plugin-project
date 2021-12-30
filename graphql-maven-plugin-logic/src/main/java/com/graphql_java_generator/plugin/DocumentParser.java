@@ -288,11 +288,8 @@ public abstract class DocumentParser {
 		logger.debug("Starting documents parsing");
 
 		// Configuration of the GraphQL schema parser, from the project configuration
-		if (configuration.getParserOptions() != null && configuration.getParserOptions().getMaxTokens() != null) {
-			ParserOptions newDefault = ParserOptions.newParserOptions()
-					.maxTokens(configuration.getParserOptions().getMaxTokens()).build();
-			ParserOptions.setDefaultParserOptions(newDefault);
-		}
+		ParserOptions newDefault = ParserOptions.newParserOptions().maxTokens(configuration.getMaxTokens()).build();
+		ParserOptions.setDefaultParserOptions(newDefault);
 
 		documents.getDocuments().stream().forEach(this::parseOneDocument);
 

@@ -31,9 +31,6 @@
 							<copyRuntimeSources>false</copyRuntimeSources>
 							<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
 							<packageName>org.allGraphQLCases.server</packageName>
-							<parserOptions>
-								<maxTokens>12345</maxTokens>
-							</parserOptions>
 							<schemaFileFolder>../graphql-maven-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases</schemaFileFolder>
 							<separateUtilityClasses>true</separateUtilityClasses>
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
@@ -59,6 +56,24 @@
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
+							</sources>
 						</configuration>
 					</execution>
 				</executions>

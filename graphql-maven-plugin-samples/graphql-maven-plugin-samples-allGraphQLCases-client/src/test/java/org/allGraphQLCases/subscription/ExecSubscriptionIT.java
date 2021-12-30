@@ -61,8 +61,8 @@ public class ExecSubscriptionIT {
 				SubscriptionClient sub = subscriptionExecutor.subscribeToAList("", callback);
 
 				// Let's wait a max of 30 second, until we receive some notifications
-				// (30s will never occur... unless using the debugger to undebug some stuff)
-				callback.latchForMessageReception.await(30, TimeUnit.SECONDS);
+				// (80s will never occur... unless using the debugger to undebug some stuff)
+				callback.latchForMessageReception.await(80, TimeUnit.SECONDS);
 
 				// Let's disconnect from the subscription
 				sub.unsubscribe();
