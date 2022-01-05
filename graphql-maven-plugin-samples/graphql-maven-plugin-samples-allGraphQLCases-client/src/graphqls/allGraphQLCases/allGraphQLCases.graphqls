@@ -443,3 +443,74 @@ bad: NonNegativeInt
 }
 
 scalar NonNegativeInt
+
+
+#############################
+# test for issue #114
+
+interface IBar1 {
+    id: ID
+}
+
+interface IBar2 implements IBar1 {
+    id: ID
+}
+
+interface IBar3 implements IBar2 {
+    id: ID
+}
+
+interface IFoo1 {
+    id: ID
+    bar: IBar1
+}
+
+interface IFoo2 {
+    id: ID
+    bar: IBar2
+}
+
+type TBar1 implements IBar1{
+    id: ID
+}
+
+interface IBar12 implements IBar1 & IBar2 {
+    id: ID
+}
+
+type TBar12 implements IBar12 {
+    id: ID
+}
+
+type TBar2 implements IBar2 {
+    id: ID
+}
+
+# TFoo1 is the basic test case, for issue #114
+type TFoo1 implements IFoo1 {
+    id: ID
+    # The 'bar' field is a valid GraphQL field. 
+    # But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
+    # (and not IBar itself as declared in IFoo)
+    bar: TBar1 
+}
+
+# TFoo12 is a more complex one, with more than one interface implemented
+type TFoo12 implements IFoo1 & IFoo2 {
+    id: ID
+    # The 'bar' field is a valid GraphQL field. 
+    # But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
+    # (and not IBar itself as declared in IFoo)
+    bar: TBar12
+}
+
+interface IFoo3 implements IFoo1 & IFoo2 {
+	id: ID
+	bar: IBar12
+}
+
+type TFoo3 implements IFoo3 {
+	id: ID
+	bar: TBar12
+}
+

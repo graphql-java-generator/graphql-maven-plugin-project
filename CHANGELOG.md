@@ -22,7 +22,7 @@ All modes (client and server):
     * The main changes are:
         * __Non standard scalars__ have moved from the `graphql.Scalars` class (that is included in the graphql-java module) to the `graphql-java-extended-scalars`. So, if you're using non standard scalars like `Byte`, `Short` and `Long` (...), you'll probably have to change your configuration in your pom.xml or gradle.build file, from `graphql.Scalars.xxx` to `graphql.scalars.ExtendedScalars.xxx`
         * The graphQL schema is, by default, limited to 15000 tokens. This version adds the new plugin parameter __`maxTokens`__, that allows to override this limit.
-        
+* Issue #114: allows overriding field's type when implementing interface
 
 
 # 1.18

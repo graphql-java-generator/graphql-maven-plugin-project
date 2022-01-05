@@ -2,15 +2,24 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Manage [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228) : update to log4j >= 2.16.0 (last version as of 16 déc 2021)
+* Solve issue #103 (define the Velocity log file, toward the target folder)
 * Issue [#114](https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/114)
-* Remove getVariablesAsStringOld() (in Payload)
+    * Manage this case:
+```
+interface IList {
+	list: [IFoo]
+}
+
+type TList implements IList {
+	list: [TFoo]
+}
+```
 * In allGraphQLCasesClient: in this sample, the list of custom scalars defined for the Forum schema should not contain `Long` and `NonNegativeInt`. In this case, their definition is erased at runtime in the `CustomScalarRegistryImpl.customScalarRegistry`.
     * Workaround : define in the pom or gradle.build file, the full list of all scalars in the `<configuration>` for every GraphQL schema.
 * Check wiki, to properly indicate that the `allGraphQLCases.graphqls` is located in the allGraphQLCases client project
-* Remove Deprecated getStrincContentXxx in InputParameter
+* Remove gson from dependencies
+* Remove Deprecated getStringContentXxx methods in InputParameter
 * Issue #105: it's no more possible to override the ExchangeFilterFunction
-* Solve issue #103 (define the Velocity log file, toward the target folder)
 * Subscription: the client remain active after a `Connection refused` (even if the main thread stops)
 * Simplify the $generateJacksonStuff expression (directly use $configuration.generateJacksonAnnotations)
 * Check of the [issue 9 on Gradle project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project/issues/9): comments marked with `"` or `###` are ignored (but they also don't respect the GraphQL spec)

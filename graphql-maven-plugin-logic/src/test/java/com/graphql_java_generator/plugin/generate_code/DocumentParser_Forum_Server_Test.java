@@ -131,13 +131,13 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals(7, documentParser.dataFetchersDelegates.size());
 
 		// No DataFetchersDelegate creation
-		Type type = new ObjectType("Test", pluginConfiguration);
+		Type type = new ObjectType("Test", pluginConfiguration, documentParser);
 		DataFetchersDelegate dfd = documentParser.getDataFetchersDelegate(type, false);
 		assertNull(dfd, "No DataFetchersDelegate creation");
 		assertEquals(7, documentParser.dataFetchersDelegates.size());
 
 		// With DataFetchersDelegate creation
-		type = new ObjectType("Test2", pluginConfiguration);
+		type = new ObjectType("Test2", pluginConfiguration, documentParser);
 		dfd = documentParser.getDataFetchersDelegate(type, true);
 		assertNotNull(dfd, "With DataFetchersDelegate creation");
 		assertEquals(type, dfd.getType());

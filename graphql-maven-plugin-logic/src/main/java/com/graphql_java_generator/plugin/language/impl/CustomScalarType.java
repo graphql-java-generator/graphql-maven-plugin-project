@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodePluginExecutor;
@@ -31,12 +32,17 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 	 * @param configuration
 	 *            The current plugin configuration, which is accessible through an interface that extends
 	 *            {@link CommonConfiguration}
+	 * @param documentParser
+	 *            The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema
+	 *            definition
 	 * @see CustomScalarDefinition
 	 */
-	public CustomScalarType(CustomScalarDefinition customScalarDefinition, CommonConfiguration configuration) {
+	public CustomScalarType(CustomScalarDefinition customScalarDefinition, CommonConfiguration configuration,
+			DocumentParser documentParser) {
 		super(customScalarDefinition.getGraphQLTypeName(),
 				GraphqlUtils.graphqlUtils.getPackageName(customScalarDefinition.getJavaType()),
-				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()), configuration);
+				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()), configuration,
+				documentParser);
 		this.customScalarDefinition = customScalarDefinition;
 	}
 

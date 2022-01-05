@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
@@ -23,6 +24,9 @@ public abstract class AbstractType implements Type {
 	 * {@link CommonConfiguration}
 	 */
 	final CommonConfiguration configuration;
+
+	/** The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema definition */
+	final DocumentParser documentParser;
 
 	/** The name of the object type */
 	private String name;
@@ -59,11 +63,16 @@ public abstract class AbstractType implements Type {
 	 * @param configuration
 	 *            The current plugin configuration, which is accessible through an interface that extends
 	 *            {@link CommonConfiguration}
+	 * @param documentParser
+	 *            The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema
+	 *            definition
 	 */
-	public AbstractType(String name, GraphQlType graphQlType, CommonConfiguration configuration) {
+	public AbstractType(String name, GraphQlType graphQlType, CommonConfiguration configuration,
+			DocumentParser documentParser) {
 		this.name = name;
 		this.graphQlType = graphQlType;
 		this.configuration = configuration;
+		this.documentParser = documentParser;
 	}
 
 	@Override

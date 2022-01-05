@@ -43,9 +43,38 @@
 #if ($field.comments.size() > 0)
 	 */
 #end
+##
+#foreach ($type in $field.fieldJavaTypeNamesFromImplementedInterface)
+## The field inherited from an interface field, and the field's type has been narrowed. 
+## See IFoo and TFoo sample in the allGraphQLCases schema, used to check the #114 issue (search for 114 in allGraphQLCases.graphqls)
+
+	/**
+	 * This setter is inherited from an implemented interface. We must implement. And we mark it with the @Override annotation.
+	 */
+	@Override
+	public void set${field.pascalCaseName}($type ${field.javaName}) {
+#if ($field.javaType.startsWith("List<"))
+		if (${field.javaName} instanceof List)
+			this.${field.javaName} = (${field.javaType}) (Object) ${field.javaName};
+#else
+		if (${field.javaName} instanceof ${field.javaType})
+			this.${field.javaName} = (${field.javaType}) ${field.javaName};
+#end
+		else
+			throw new IllegalArgumentException("The given ${field.javaName} should be an instance of ${field.javaType}, but is an instance of "
+					+ ${field.javaName}.getClass().getName());
+	}
+#end
+
+#if (!$field.fieldJavaTypeNamesFromImplementedInterface.contains($field.javaType))
+
+	/** 
+	 * As the type declared in the class is not inherited from one of the implemented interfaces, we need a dedicated setter.
+	 */
 	public void set${field.pascalCaseName}(${field.javaType} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
+#end
 
 #if ($field.comments.size() > 0)
 	/**

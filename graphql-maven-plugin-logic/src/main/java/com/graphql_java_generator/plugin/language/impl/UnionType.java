@@ -6,6 +6,7 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 
 import lombok.Data;
@@ -32,9 +33,12 @@ public class UnionType extends ObjectType {
 	 * @param configuration
 	 *            The current plugin configuration, which is accessible through an interface that extends
 	 *            {@link CommonConfiguration}
+	 * @param documentParser
+	 *            The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema
+	 *            definition
 	 */
-	public UnionType(String name, CommonConfiguration configuration) {
-		super(name, GraphQlType.UNION, configuration);
+	public UnionType(String name, CommonConfiguration configuration, DocumentParser documentParser) {
+		super(name, GraphQlType.UNION, configuration, documentParser);
 	}
 
 	@Override

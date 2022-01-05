@@ -31,7 +31,7 @@ public class GenerateGraphQLSchemaDocumentParser extends DocumentParser {
 		// The custom scalar has not been added to the list yet, let's add it first.
 		CustomScalarDefinition customScalarDefinition = new CustomScalarDefinition(name, "java.lang.String",
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeString", null, null);
-		CustomScalarType customScalarType = new CustomScalarType(customScalarDefinition, configuration);
+		CustomScalarType customScalarType = new CustomScalarType(customScalarDefinition, configuration, this);
 		customScalars.add(customScalarType);
 		types.put(customScalarType.getName(), customScalarType);
 		return customScalarType;

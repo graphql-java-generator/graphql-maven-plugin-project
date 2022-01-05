@@ -3,8 +3,11 @@
  */
 package com.graphql_java_generator.plugin.language;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.language.Value;
@@ -88,6 +91,67 @@ public interface Field {
 	 */
 	default public String getJavaTypeFullClassname() {
 		return getFieldTypeAST().getJavaType(getType().getClassFullName());
+	}
+
+	/**
+	 * Return the list of java type names for this field, in all the interfaces implemented directly or indirectly by
+	 * the owning type, and that contains this field. <BR/>
+	 * For instance, in the next sample, when called for bar's field of TFoo, this method returns a Set that contains
+	 * the full java class names for both IBar1 and IBar2: <BR/>
+	 * <code>
+	interface IBar1 {
+		id: ID
+	}
+	
+	interface IBar2 {
+		id: ID
+	}
+	
+	interface IFoo1 {
+		id: ID
+		bar: IBar1
+	}
+	
+	interface IFoo2 {
+		id: ID
+		bar: IBar2
+	}
+	
+	type TBar12 implements IBar1 & IBar2 {
+		id: ID
+	}
+	
+	type TFoo implements IFoo1 & IFoo2 {
+		id: ID
+		bar: TBar12
+	}
+	</code>
+	 * 
+	 * @return
+	 */
+	default public Set<String> getFieldJavaTypeNamesFromImplementedInterface() {
+		Set<String> ret = new HashSet<>();
+
+		Type owningType = getOwningType();
+		if (owningType instanceof ObjectType) {
+			for (ObjectType implementedType : ((ObjectType) owningType).getImplementedTypes()) {
+				// If this type contains a field with the same name as the current field's name, we add its to the set
+				// to be returned.
+				for (Field f : implementedType.getFields()) {
+					if (f.getName().equals(getName())) {
+						ret.add(f.getJavaType());
+
+						// This field may itself inherit this field from an implemented type. Let's recurse once.
+						ret.addAll(f.getFieldJavaTypeNamesFromImplementedInterface());
+
+						// We're done for the fields of this object
+						break;
+					}
+				} // for (Field)
+			} // for (ObjectType)
+		} // if (owningType instanceof ObjectType)
+
+		return ret;
 	}
 
 	/**

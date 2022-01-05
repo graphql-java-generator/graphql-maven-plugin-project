@@ -32,7 +32,7 @@ class ObjectTypeTest {
 		name = "A name";
 		packageName = "a.package.name";
 		mode = PluginMode.server;
-		objectType = new ObjectType(name, pluginConfiguration);
+		objectType = new ObjectType(name, pluginConfiguration, null);
 
 		FieldImpl f = FieldImpl.builder().documentParser(null).name("field1")
 				.fieldTypeAST(FieldTypeAST.builder().graphQLTypeSimpleName("ID").build()).build();

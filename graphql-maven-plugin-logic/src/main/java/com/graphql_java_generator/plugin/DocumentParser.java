@@ -266,13 +266,14 @@ public abstract class DocumentParser {
 	 * 
 	 */
 	protected void initScalarTypes(Class<?> IDclass) {
-		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", configuration));
+		scalarTypes.add(new ScalarType("Boolean", "java.lang", "Boolean", configuration, this));
 		// GraphQL Float is a double precision number
-		scalarTypes.add(new ScalarType("Float", "java.lang", "Double", configuration));
+		scalarTypes.add(new ScalarType("Float", "java.lang", "Double", configuration, this));
 		// By default, we use the UUID type for the ID GraphQL type
-		scalarTypes.add(new ScalarType("ID", IDclass.getPackage().getName(), IDclass.getSimpleName(), configuration));
-		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", configuration));
-		scalarTypes.add(new ScalarType("String", "java.lang", "String", configuration));
+		scalarTypes.add(
+				new ScalarType("ID", IDclass.getPackage().getName(), IDclass.getSimpleName(), configuration, this));
+		scalarTypes.add(new ScalarType("Int", "java.lang", "Integer", configuration, this));
+		scalarTypes.add(new ScalarType("String", "java.lang", "String", configuration, this));
 	}
 
 	/**
@@ -567,7 +568,7 @@ public abstract class DocumentParser {
 	 * @return
 	 */
 	public ObjectType readObjectTypeDefinition(ObjectTypeDefinition node) {
-		ObjectType objectType = new ObjectType(node.getName(), configuration);
+		ObjectType objectType = new ObjectType(node.getName(), configuration, this);
 		return addObjectTypeDefinition(objectType, node);
 	}
 
@@ -624,7 +625,7 @@ public abstract class DocumentParser {
 	 */
 	ObjectType readInputObjectType(InputObjectTypeDefinition node) {
 
-		ObjectType objectType = new ObjectType(node.getName(), configuration);
+		ObjectType objectType = new ObjectType(node.getName(), configuration, this);
 		objectType.setInputType(true);
 
 		objectType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
@@ -657,7 +658,7 @@ public abstract class DocumentParser {
 		// Let's check if it's a real object, or part of a schema (query, subscription,
 		// mutation) definition
 
-		InterfaceType interfaceType = new InterfaceType(node.getName(), configuration);
+		InterfaceType interfaceType = new InterfaceType(node.getName(), configuration, this);
 
 		interfaceType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
@@ -688,7 +689,7 @@ public abstract class DocumentParser {
 	 * @return
 	 */
 	UnionType readUnionType(UnionTypeDefinition node) {
-		UnionType unionType = new UnionType(node.getName(), configuration);
+		UnionType unionType = new UnionType(node.getName(), configuration, this);
 		unionType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 
 		// Let's store its comments
@@ -744,7 +745,7 @@ public abstract class DocumentParser {
 		}
 
 		ScalarExtensionType scalarExtensionType = new ScalarExtensionType(name, scalarType.getPackageName(),
-				scalarType.getClassSimpleName(), configuration);
+				scalarType.getClassSimpleName(), configuration, this);
 		scalarExtensionType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 		scalarExtensionType.setComments(node.getComments());
 
@@ -790,7 +791,7 @@ public abstract class DocumentParser {
 	 * @return
 	 */
 	public EnumType readEnumType(EnumTypeDefinition node) {
-		EnumType enumType = new EnumType(node.getName(), configuration);
+		EnumType enumType = new EnumType(node.getName(), configuration, this);
 
 		enumType.setAppliedDirectives(readAppliedDirectives(node.getDirectives()));
 

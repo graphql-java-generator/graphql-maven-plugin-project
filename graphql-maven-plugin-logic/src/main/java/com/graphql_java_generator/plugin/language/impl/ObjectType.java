@@ -6,9 +6,11 @@ package com.graphql_java_generator.plugin.language.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Getter;
@@ -61,9 +63,12 @@ public class ObjectType extends AbstractType {
 	 * @param configuration
 	 *            The current plugin configuration, which is accessible through an interface that extends
 	 *            {@link CommonConfiguration}
+	 * @param documentParser
+	 *            The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema
+	 *            definition
 	 */
-	public ObjectType(String name, CommonConfiguration configuration) {
-		super(name, GraphQlType.OBJECT, configuration);
+	public ObjectType(String name, CommonConfiguration configuration, DocumentParser documentParser) {
+		super(name, GraphQlType.OBJECT, configuration, documentParser);
 	}
 
 	/**
@@ -76,10 +81,13 @@ public class ObjectType extends AbstractType {
 	 * @param configuration
 	 *            The current plugin configuration, which is accessible through an interface that extends
 	 *            {@link CommonConfiguration}
-	 * @param type
+	 * @param documentParser
+	 *            The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema
+	 *            definition
 	 */
-	protected ObjectType(String name, GraphQlType type, CommonConfiguration configuration) {
-		super(name, type, configuration);
+	protected ObjectType(String name, GraphQlType type, CommonConfiguration configuration,
+			DocumentParser documentParser) {
+		super(name, type, configuration, documentParser);
 	}
 
 	@Override
@@ -148,6 +156,21 @@ public class ObjectType extends AbstractType {
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * Returns the list of {@link Type}s that this object implements. These types may interfaces or unions.
+	 * 
+	 * @return
+	 */
+	public List<ObjectType> getImplementedTypes() {
+		List<ObjectType> ret = new ArrayList<>();
+
+		for (String typeName : getImplementz()) {
+			ret.add((ObjectType) documentParser.getType(typeName));
+		}
+
+		return ret;
 	}
 
 }

@@ -172,7 +172,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		logger.debug("Storing custom scalar's implementations [START]");
 		if (configuration.getCustomScalars() != null) {
 			for (CustomScalarDefinition customScalarDef : configuration.getCustomScalars()) {
-				CustomScalarType type = new CustomScalarType(customScalarDef, configuration);
+				CustomScalarType type = new CustomScalarType(customScalarDef, configuration, this);
 				getCustomScalars().add(type);
 				getTypes().put(type.getName(), type);
 			}
@@ -752,7 +752,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				logger.debug("The source schema contains no query: creating an empty query type");
 
 				// There was no query. We need to create one. It will contain only the Introspection Query
-				queryType = new ObjectType(DEFAULT_QUERY_NAME, configuration);
+				queryType = new ObjectType(DEFAULT_QUERY_NAME, configuration, this);
 				queryType.setName(INTROSPECTION_QUERY);
 				queryType.setRequestType("query");
 

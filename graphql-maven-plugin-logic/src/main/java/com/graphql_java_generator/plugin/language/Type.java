@@ -187,6 +187,23 @@ public interface Type {
 	}
 
 	/**
+	 * Returns the Field of the given name
+	 * 
+	 * @param fieldName
+	 * @return
+	 * @throws NoSuchFieldException
+	 *             If this type has not field of this name
+	 */
+	default public Field getField(String fieldName) throws NoSuchFieldException {
+		for (Field f : getFields()) {
+			if (f.getName().equals(fieldName)) {
+				return f;
+			}
+		}
+		throw new NoSuchFieldException("The type '" + getName() + " has no field of name '" + fieldName + "'");
+	}
+
+	/**
 	 * Returns the identifier for this type. Typically : the field which has an ID as a type.
 	 * 
 	 * @return The identifier for this type, or null of this type has no identifier or multiplier identifers (that is:

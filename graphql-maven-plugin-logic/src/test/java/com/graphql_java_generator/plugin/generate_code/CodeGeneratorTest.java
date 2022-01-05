@@ -114,7 +114,7 @@ class CodeGeneratorTest {
 		codeGenerator.generateCodeDocumentParser = mock(GenerateCodeDocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
 
-		ObjectType object1 = new ObjectType("O1", pluginConfiguration);
+		ObjectType object1 = new ObjectType("O1", pluginConfiguration, null);
 		// ObjectType object2 = new ObjectType("O2", configuration);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
@@ -167,7 +167,7 @@ class CodeGeneratorTest {
 
 		pluginConfiguration.mode = PluginMode.server;
 
-		ObjectType object1 = new ObjectType("O1", pluginConfiguration);
+		ObjectType object1 = new ObjectType("O1", pluginConfiguration, null);
 		List<Type> objects = new ArrayList<>();
 		objects.add(object1);
 

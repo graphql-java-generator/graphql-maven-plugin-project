@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
+import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
@@ -26,10 +27,13 @@ public class ScalarExtensionType extends ScalarType {
 	 *            The simple name (without the package) of the java class that will hold this value
 	 * @param configuration
 	 *            The current {@link GraphQLConfiguration}
+	 * @param documentParser
+	 *            The {@link DocumentParser} that has parsed the schema, and so that contains the whole schema
+	 *            definition
 	 */
 	public ScalarExtensionType(String name, String packageName, String classSimpleName,
-			CommonConfiguration configuration) {
-		super(name, packageName, classSimpleName, configuration);
+			CommonConfiguration configuration, DocumentParser documentParser) {
+		super(name, packageName, classSimpleName, configuration, documentParser);
 	}
 
 }
