@@ -807,6 +807,7 @@ public class GenerateCodeGenerator implements Generator {
 		context.put("sharp", "#");
 		context.put("dollar", "$");
 		context.put("configuration", configuration);
+		context.put("exceptionThrower", new ExceptionThrower());
 		// Velocity can't access to enum values. So we add it into the context
 		context.put("isPluginModeClient", configuration.getMode() == PluginMode.client);
 

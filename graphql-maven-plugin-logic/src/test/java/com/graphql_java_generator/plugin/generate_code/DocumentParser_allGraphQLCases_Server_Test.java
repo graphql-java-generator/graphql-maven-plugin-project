@@ -75,11 +75,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = generateCodeDocumentParser.parseDocuments();
 
 		// Verification
-		assertEquals(28, i, "Nb java files are generated");
+		assertEquals(43, i, "Nb java files are generated");
 		assertEquals(8, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(20, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(27, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(4, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
-		assertEquals(5, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
+		assertEquals(13, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(3, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
 		assertNotNull(generateCodeDocumentParser.getMutationType(), "One mutation");

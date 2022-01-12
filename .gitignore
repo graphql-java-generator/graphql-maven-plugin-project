@@ -1,5 +1,6 @@
 .settings/
 target/
+downloads/
 logs/
 *.log
 

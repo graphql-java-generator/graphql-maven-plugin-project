@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<build>
 		<plugins>

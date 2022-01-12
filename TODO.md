@@ -2,6 +2,8 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
+* Check issue #118 (CompletableFuture method is not generated for lists)
 * Solve issue #103 (define the Velocity log file, toward the target folder)
 * Issue [#114](https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/114)
     * Manage this case:

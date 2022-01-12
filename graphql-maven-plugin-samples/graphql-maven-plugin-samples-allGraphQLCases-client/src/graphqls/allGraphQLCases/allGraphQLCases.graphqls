@@ -456,7 +456,7 @@ interface IBar2 implements IBar1 {
     id: ID
 }
 
-interface IBar3 implements IBar2 {
+interface IBar3 implements IBar1 & IBar2 {
     id: ID
 }
 
@@ -470,7 +470,7 @@ interface IFoo2 {
     bar: IBar2
 }
 
-type TBar1 implements IBar1{
+type TBar1 implements IBar1 {
     id: ID
 }
 
@@ -478,11 +478,11 @@ interface IBar12 implements IBar1 & IBar2 {
     id: ID
 }
 
-type TBar12 implements IBar12 {
+type TBar12 implements IBar12 & IBar1 & IBar2 {
     id: ID
 }
 
-type TBar2 implements IBar2 {
+type TBar2 implements IBar2 & IBar1 {
     id: ID
 }
 
@@ -509,8 +509,16 @@ interface IFoo3 implements IFoo1 & IFoo2 {
 	bar: IBar12
 }
 
-type TFoo3 implements IFoo3 {
+type TFoo3 implements IFoo3 & IFoo1 & IFoo2 {
 	id: ID
 	bar: TBar12
 }
 
+
+interface IList {
+	list: [IFoo1]
+}
+
+type TList implements IList {
+	list: [TFoo1]
+}

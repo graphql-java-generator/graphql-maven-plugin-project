@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(256) NOT NULL,
   password VARCHAR(256) NOT NULL,
-  enabled TINYINT(1),
-  UNIQUE KEY unique_username(username)
+  enabled TINYINT,
+  UNIQUE (username)
 );
 
 CREATE TABLE IF NOT EXISTS authorities (
