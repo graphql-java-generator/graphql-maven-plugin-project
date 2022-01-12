@@ -63,26 +63,26 @@ abstract class AbstractIT {
 		Character friends_1 = c.getFriends().get(1);
 		checkCharacter(friends_1, "testHeroFriendsFriendsFriends[friends_1]", null, "Luke Skywalker", 3);
 
-		Character friends_1_0 = friends_1.getFriends().get(0); // "24", "Padmé Amidala"
+		Character friends_1_0 = friends_1.getFriends().get(0); // "94", "Mara Jade"
 		checkCharacter(friends_1_0, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 1);
 		Character friends_1_0_0 = friends_1_0.getFriends().get(0);
 		checkCharacter(friends_1_0_0, "testHeroFriendsFriendsFriends[friends_1_0]",
-				"00000000-0000-0000-0000-000000000179", "Anakin Skywalker", 0, Episode.NEWHOPE);
+				"00000000-0000-0000-0000-000000000180", "Luke Skywalker", 0, Episode.EMPIRE);
 
-		Character friends_1_1 = friends_1.getFriends().get(1); // "94", "Mara Jade"
+		Character friends_1_1 = friends_1.getFriends().get(1); // "179", "Anakin Skywalker"
 		checkCharacter(friends_1_1, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 1);
 		Character friends_1_1_0 = friends_1_1.getFriends().get(0);
 		checkCharacter(friends_1_1_0, "testHeroFriendsFriendsFriends[friends_1_0]",
-				"00000000-0000-0000-0000-000000000180", "Luke Skywalker", 0, Episode.EMPIRE);
+				"00000000-0000-0000-0000-000000000008", "Obi-Wan Kenobi", 0, Episode.NEWHOPE);
 
-		Character friends_1_2 = friends_1.getFriends().get(2); // "179", "Anakin Skywalker"
+		Character friends_1_2 = friends_1.getFriends().get(2); // "220", "Watto"
 		checkCharacter(friends_1_2, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 2);
 		Character friends_1_2_0 = friends_1_2.getFriends().get(0);
 		checkCharacter(friends_1_2_0, "testHeroFriendsFriendsFriends[friends_1_0]",
-				"00000000-0000-0000-0000-000000000008", "Obi-Wan Kenobi", 0, Episode.NEWHOPE);
+				"00000000-0000-0000-0000-000000000007", "Qui-Gon Jinn", 0, Episode.JEDI);
 		Character friends_1_2_1 = friends_1_2.getFriends().get(1);
 		checkCharacter(friends_1_2_1, "testHeroFriendsFriendsFriends[friends_1_0]",
-				"00000000-0000-0000-0000-000000000213", "Dark Vador", 0, Episode.NEWHOPE);
+				"00000000-0000-0000-0000-000000000181", "Shmi Skywalker", 0, Episode.JEDI);
 	}
 
 	@Test
@@ -111,25 +111,25 @@ abstract class AbstractIT {
 		Human h = queries.humanFriendsFriendsFriends("00000000-0000-0000-0000-000000000180");
 
 		checkCharacter(h, "testHeroFriendsFriendsFriends[friends_1]", "00000000-0000-0000-0000-000000000180",
-				"Luke Skywalker", 3, Episode.EMPIRE);
+				"Luke Skywalker", 2, Episode.EMPIRE);
 		assertNull(h.getHomePlanet());
 
-		Character friends_0 = h.getFriends().get(0); // "24", "Padmé Amidala"
-		checkCharacter(friends_0, "testHeroFriendsFriendsFriends[friends_0]", null, "Padme Amidala", 1);
+		Character friends_0 = h.getFriends().get(0); // "94", "Mara Jade"
+		checkCharacter(friends_0, "testHeroFriendsFriendsFriends[friends_0]", null, "Mara Jade", 1);
 		//
-		Character friends_0_0 = friends_0.getFriends().get(0); // "179", "Anakin Skywalker"
-		checkCharacter(friends_0_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 2);
+		Character friends_0_0 = friends_0.getFriends().get(0); // "180", "Luke Skywalker"
+		checkCharacter(friends_0_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 3);
 
-		Character friends_1 = h.getFriends().get(1); // "94", "Mara Jade"
-		checkCharacter(friends_1, "testHeroFriendsFriendsFriends[friends_0]", null, "Mara Jade", 1);
-		Character friends_1_0 = friends_1.getFriends().get(0); // "180", "Luke Skywalker"
-		checkCharacter(friends_1_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 3);
+		Character friends_1 = h.getFriends().get(1); // "179", "Anakin Skywalker"
+		checkCharacter(friends_1, "testHeroFriendsFriendsFriends[friends_0]", null, "Anakin Skywalker", 1);
+		Character friends_1_0 = friends_1.getFriends().get(0); // "8", "Obi-Wan Kenobi"
+		checkCharacter(friends_1_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 4);
 
-		Character friends_2 = h.getFriends().get(2); // "179", "Anakin Skywalker"
-		checkCharacter(friends_2, "testHeroFriendsFriendsFriends[friends_0]", null, "Anakin Skywalker", 2);
-		Character friends_2_0 = friends_2.getFriends().get(0); // "8", "Obi-Wan Kenobi"
+		Character friends_2 = h.getFriends().get(2); // "220", "Watto"
+		checkCharacter(friends_2, "testHeroFriendsFriendsFriends[friends_0]", null, "Watto", 2);
+		Character friends_2_0 = friends_2.getFriends().get(0); // "7" "Qui-Gon Jinn"
 		checkCharacter(friends_2_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 4);
-		Character friends_2_1 = friends_2.getFriends().get(1); // "213", "Dark Vador"
+		Character friends_2_1 = friends_2.getFriends().get(1); // "181", "Shmi Skywalker"
 		checkCharacter(friends_2_1, "testHeroFriendsFriendsFriends[friends_0]", null, null, 3);
 	}
 
@@ -165,7 +165,7 @@ abstract class AbstractIT {
 		checkCharacter(friends_0, "testDroidFriendsFriendsFriends[friends_0]", null, "Poe Dameron", 0);
 
 		Character friends_1 = d.getFriends().get(1); // "180", "Luke Skywalker"
-		checkCharacter(friends_1, "testDroidFriendsFriendsFriends[friends_1]", null, "Luke Skywalker", 3);
+		checkCharacter(friends_1, "testDroidFriendsFriendsFriends[friends_1]", null, "Luke Skywalker", 2);
 	}
 
 	@Test
