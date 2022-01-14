@@ -113,12 +113,6 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<!-- Needed only for this project as a sample: we load the data into the 
-				database, from csv files -->
-			<groupId>com.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-		</dependency>
 
 		<!-- Added Reactive stuff, to manage subscriptions -->
 		<dependency>

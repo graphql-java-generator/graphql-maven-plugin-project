@@ -8,8 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.generated.graphql.Character;
 import com.generated.graphql.Droid;
@@ -26,7 +24,6 @@ import com.graphql_java_generator.samples.simple.client.Queries;
  * 
  * @author etienne-sf
  */
-@Execution(ExecutionMode.CONCURRENT)
 abstract class AbstractIT {
 
 	QueryTypeExecutor queryType;
@@ -61,7 +58,7 @@ abstract class AbstractIT {
 		checkCharacter(friends_0, "testHeroFriendsFriendsFriends[friends_0]", null, "Poe Dameron", 0);
 
 		Character friends_1 = c.getFriends().get(1);
-		checkCharacter(friends_1, "testHeroFriendsFriendsFriends[friends_1]", null, "Luke Skywalker", 3);
+		checkCharacter(friends_1, "testHeroFriendsFriendsFriends[friends_1]", null, "Luke Skywalker", 2);
 
 		Character friends_1_0 = friends_1.getFriends().get(0); // "94", "Mara Jade"
 		checkCharacter(friends_1_0, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 1);
@@ -74,15 +71,6 @@ abstract class AbstractIT {
 		Character friends_1_1_0 = friends_1_1.getFriends().get(0);
 		checkCharacter(friends_1_1_0, "testHeroFriendsFriendsFriends[friends_1_0]",
 				"00000000-0000-0000-0000-000000000008", "Obi-Wan Kenobi", 0, Episode.NEWHOPE);
-
-		Character friends_1_2 = friends_1.getFriends().get(2); // "220", "Watto"
-		checkCharacter(friends_1_2, "testHeroFriendsFriendsFriends[friends_1_0]", null, null, 2);
-		Character friends_1_2_0 = friends_1_2.getFriends().get(0);
-		checkCharacter(friends_1_2_0, "testHeroFriendsFriendsFriends[friends_1_0]",
-				"00000000-0000-0000-0000-000000000007", "Qui-Gon Jinn", 0, Episode.JEDI);
-		Character friends_1_2_1 = friends_1_2.getFriends().get(1);
-		checkCharacter(friends_1_2_1, "testHeroFriendsFriendsFriends[friends_1_0]",
-				"00000000-0000-0000-0000-000000000181", "Shmi Skywalker", 0, Episode.JEDI);
 	}
 
 	@Test
@@ -118,19 +106,12 @@ abstract class AbstractIT {
 		checkCharacter(friends_0, "testHeroFriendsFriendsFriends[friends_0]", null, "Mara Jade", 1);
 		//
 		Character friends_0_0 = friends_0.getFriends().get(0); // "180", "Luke Skywalker"
-		checkCharacter(friends_0_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 3);
+		checkCharacter(friends_0_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 2);
 
 		Character friends_1 = h.getFriends().get(1); // "179", "Anakin Skywalker"
 		checkCharacter(friends_1, "testHeroFriendsFriendsFriends[friends_0]", null, "Anakin Skywalker", 1);
 		Character friends_1_0 = friends_1.getFriends().get(0); // "8", "Obi-Wan Kenobi"
 		checkCharacter(friends_1_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 4);
-
-		Character friends_2 = h.getFriends().get(2); // "220", "Watto"
-		checkCharacter(friends_2, "testHeroFriendsFriendsFriends[friends_0]", null, "Watto", 2);
-		Character friends_2_0 = friends_2.getFriends().get(0); // "7" "Qui-Gon Jinn"
-		checkCharacter(friends_2_0, "testHeroFriendsFriendsFriends[friends_0]", null, null, 4);
-		Character friends_2_1 = friends_2.getFriends().get(1); // "181", "Shmi Skywalker"
-		checkCharacter(friends_2_1, "testHeroFriendsFriendsFriends[friends_0]", null, null, 3);
 	}
 
 	@Test
@@ -197,22 +178,21 @@ abstract class AbstractIT {
 	@Test
 	void test_addFriend() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		List<Character> charsBefore = queryType.characters("{id name friends{id name}}", null);
-		int idCharacter = (int) (Math.random() * charsBefore.size());
-		Character characterBefore = charsBefore.get(idCharacter);
+		String idMaceWindu = "00000000-0000-0000-0000-000000000224";
+		Human maceWindu = queries.humanFriendsFriendsFriends(idMaceWindu);
+		int nbBefore = (maceWindu.getFriends() == null) ? 0 : maceWindu.getFriends().size();
 		//
-		List<Character> friends = queryType.characters("{id name friends{id name}}", null);
-		int idFriend = (int) (Math.random() * friends.size());
-		Character friend = friends.get(idFriend);
+		List<Character> chars = queryType.characters("{id name friends{id name}}", null);
+		int idFriend = (int) (Math.random() * chars.size());
+		Character friend = chars.get(idFriend);
 
 		// Go, go, go
-		Character characterAfter = queries.addFriend(characterBefore.getId(), friend.getId());
+		Character characterAfter = queries.addFriend(idMaceWindu, friend.getId());
 
 		// Verification
-		assertNotNull(characterBefore);
+		assertNotNull(maceWindu);
 		assertNotNull(characterAfter);
 		assertNotNull(characterAfter.getFriends());
-		int nbBefore = (characterBefore.getFriends() == null) ? 0 : characterBefore.getFriends().size();
 		assertEquals(nbBefore + 1, characterAfter.getFriends().size());
 		// The new friend should be somewhere in the list
 		boolean found = false;
