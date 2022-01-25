@@ -25,14 +25,14 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 abstract public class ObjectResponse extends AbstractGraphQLRequest {
 
 	/** {@inheritDoc} */
-	public ObjectResponse(String graphQLRequest) throws GraphQLRequestPreparationException {
-		super(graphQLRequest);
+	public ObjectResponse(String schema, String graphQLRequest) throws GraphQLRequestPreparationException {
+		super(schema, graphQLRequest);
 	}
 
 	/** {@inheritDoc} */
-	public ObjectResponse(String graphQLRequest, RequestType requestType, String queryName,
+	public ObjectResponse(String schema, String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
-		super(graphQLRequest, requestType, queryName, inputParams);
+		super(schema, graphQLRequest, requestType, queryName, inputParams);
 	}
 
 }

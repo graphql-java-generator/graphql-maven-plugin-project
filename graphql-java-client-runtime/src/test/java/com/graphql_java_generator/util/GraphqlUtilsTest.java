@@ -154,9 +154,9 @@ class GraphqlUtilsTest {
 		map.put("input", mapTopicPostInput);
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
 				String.class);
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		// Go, go, go
 		com.graphql_java_generator.domain.client.forum.TopicInput topicInput = (com.graphql_java_generator.domain.client.forum.TopicInput) graphqlUtils
@@ -203,9 +203,9 @@ class GraphqlUtilsTest {
 		map.put("withoutIdSubtype", withoutIdSubtypes);
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDServer.ID,
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeIDServer.ID,
 				String.class);
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
 				Long.class);
 
 		// Go, go, go
@@ -258,9 +258,9 @@ class GraphqlUtilsTest {
 
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDServer.ID,
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeIDServer.ID,
 				String.class);
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
 				Long.class);
 
 		// Go, go, go
@@ -280,7 +280,7 @@ class GraphqlUtilsTest {
 		map.put("date", new GregorianCalendar(2345, 2 - 1, 24).getTime());
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		// Go, go, go
 		com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput input = (com.graphql_java_generator.domain.server.allGraphQLCases.FieldParameterInput) graphqlUtils
@@ -364,7 +364,7 @@ class GraphqlUtilsTest {
 		mapAllFieldCasesWithIdSubtypeInput.put("withIdSubtype", listAllFieldCasesWithIdSubtypeInputs);
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
 				String.class);
 
 		// Go, go, go
@@ -427,9 +427,9 @@ class GraphqlUtilsTest {
 		map2.put("input", input2);
 		//
 		// And we need to register the custom scalar
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID,
 				String.class);
-		CustomScalarRegistryImpl.customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
+		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(GraphQLScalarTypeDate.Date, Date.class);
 
 		List<Map<String, Object>> list = new ArrayList<>();
 		list.add(map1);

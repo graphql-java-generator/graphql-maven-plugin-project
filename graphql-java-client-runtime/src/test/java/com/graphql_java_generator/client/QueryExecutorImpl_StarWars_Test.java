@@ -81,7 +81,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef(" {   id      name   }   ")
-				// .withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null))//
+				// .withInputParameter(InputParameter.newBindParameter("", "id", "queryTypeHeroId", false, null))//
 				// .withField("id").withField("name").
 				.build();
 
@@ -116,9 +116,9 @@ class QueryExecutorImpl_StarWars_Test {
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef(" {   id      name   }   ")
-				// .withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false,
+				// .withInputParameter(InputParameter.newBindParameter("", "episode", "queryTypeHeroEpisode", false,
 				// null))//
-				// .withInputParameter(InputParameter.newBindParameter("id", "queryTypeHeroId", false, null))//
+				// .withInputParameter(InputParameter.newBindParameter("", "id", "queryTypeHeroId", false, null))//
 				// .withField("id").withField("name")
 				.build();
 
@@ -152,7 +152,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef("{ id\nname\rappearsIn\tfriends{name}}")
-				// .withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false,
+				// .withInputParameter(InputParameter.newBindParameter("", "episode", "queryTypeHeroEpisode", false,
 				// null))//
 				// .withField("id").withField("name").withField("appearsIn")
 				// .withSubObject(new Builder(Character.class, "friends").withField("name").build())
@@ -182,7 +182,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef("{ id name appearsIn friends{name}}")
-				// .withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false,
+				// .withInputParameter(InputParameter.newBindParameter("", "episode", "queryTypeHeroEpisode", false,
 				// null))//
 				// .withField("id").withField("name").withField("appearsIn")
 				// .withSubObject(new Builder(Character.class, "friends").withField("name").build())
@@ -208,7 +208,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder().withQueryResponseDef(
 				"\t\n\r {\t\n\r id\t\n\r name\t\n\r appearsIn\t\n\r friends\t\n\r {\t\n\r name\t\n\r }\t\n\r }\t\n\r ")
-				// .withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", false,
+				// .withInputParameter(InputParameter.newBindParameter("", "episode", "queryTypeHeroEpisode", false,
 				// null))//
 				// .withField("id").withField("name").withField("appearsIn")
 				// .withSubObject(new Builder(Character.class, "friends").withField("name").build())
@@ -234,7 +234,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getDroidResponseBuilder()
 				.withQueryResponseDef(" { id name appearsIn friends { name } } ")
-				// .withInputParameter(InputParameter.newBindParameter("episode", "queryTypeHeroEpisode", true, null))//
+				// .withInputParameter(InputParameter.newBindParameter("", "episode", "queryTypeHeroEpisode", true, null))//
 				// .withField("id").withField("name").withField("appearsIn")
 				// .withSubObject(new Builder(Character.class, "friends").withField("name").build())
 				.build();
@@ -255,7 +255,7 @@ class QueryExecutorImpl_StarWars_Test {
 		// Preparation
 		Exception exception;
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, "Episode", false, 0, false));
+		parameters.add(InputParameter.newHardCodedParameter("","episode", Episode.NEWHOPE, "Episode", false, 0, false));
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
 				.withQueryResponseDef(" { id name appearsIn friends { name } } ")
@@ -296,7 +296,7 @@ class QueryExecutorImpl_StarWars_Test {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, "Episode", false, 0, false));
+		parameters.add(InputParameter.newHardCodedParameter("","episode", Episode.NEWHOPE, "Episode", false, 0, false));
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()
@@ -330,7 +330,7 @@ class QueryExecutorImpl_StarWars_Test {
 			throws GraphQLResponseParseException, IOException, GraphQLRequestPreparationException {
 		// Preparation
 		List<InputParameter> parameters = new ArrayList<>();
-		parameters.add(InputParameter.newHardCodedParameter("episode", Episode.NEWHOPE, "Episode", false, 0, false));
+		parameters.add(InputParameter.newHardCodedParameter("","episode", Episode.NEWHOPE, "Episode", false, 0, false));
 
 		// The response should contain id and name
 		ObjectResponse objectResponse = queryType.getHeroResponseBuilder()

@@ -997,7 +997,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	public com.graphql_java_generator.client.request.Builder getTopicsResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "topics", RequestType.query,
-				InputParameter.newBindParameter("boardName", "queryTypeTopicsBoardName", InputParameterType.MANDATORY,
+				InputParameter.newBindParameter("", "boardName", "queryTypeTopicsBoardName", InputParameterType.MANDATORY,
 						"String", true, 0, false));
 	}
 
@@ -1012,7 +1012,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "topics", InputParameter.newBindParameter(
+		return new GraphQLRequest(partialRequest, RequestType.query, "topics", InputParameter.newBindParameter("", 
 				"boardName", "queryTypeTopicsBoardName", InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
@@ -1243,9 +1243,9 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "findTopics",
 				RequestType.query,
-				InputParameter.newBindParameter("boardName", "queryTypeFindTopicsBoardName",
+				InputParameter.newBindParameter("", "boardName", "queryTypeFindTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("keyword", "queryTypeFindTopicsKeyword", InputParameterType.OPTIONAL,
+				InputParameter.newBindParameter("", "keyword", "queryTypeFindTopicsKeyword", InputParameterType.OPTIONAL,
 						"String", false, 1, true));
 	}
 
@@ -1261,9 +1261,9 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getFindTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "findTopics",
-				InputParameter.newBindParameter("boardName", "queryTypeFindTopicsBoardName",
+				InputParameter.newBindParameter("", "boardName", "queryTypeFindTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
-				InputParameter.newBindParameter("keyword", "queryTypeFindTopicsKeyword", InputParameterType.OPTIONAL,
+				InputParameter.newBindParameter("", "keyword", "queryTypeFindTopicsKeyword", InputParameterType.OPTIONAL,
 						"String", false, 1, true));
 	}
 
@@ -1704,7 +1704,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	public com.graphql_java_generator.client.request.Builder get__typeResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "__type", RequestType.query,
-				InputParameter.newBindParameter("name", "queryType__typeName", InputParameterType.MANDATORY, "String",
+				InputParameter.newBindParameter("", "name", "queryType__typeName", InputParameterType.MANDATORY, "String",
 						true, 0, false));
 	}
 
@@ -1719,7 +1719,7 @@ public class QueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__type", InputParameter.newBindParameter("name",
+		return new GraphQLRequest(partialRequest, RequestType.query, "__type", InputParameter.newBindParameter("", "name",
 				"queryType__typeName", InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 

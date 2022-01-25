@@ -27,7 +27,7 @@ public class CustomScalarRegistryInitializer {
 		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.NonNegativeInt,
 				java.lang.Integer.class);
 
-		CustomScalarRegistryImpl.customScalarRegistry = customScalarRegistry;
+		CustomScalarRegistryImpl.setCustomScalarRegistry("", customScalarRegistry);
 		return customScalarRegistry;
 	}
 

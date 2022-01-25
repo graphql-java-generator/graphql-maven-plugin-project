@@ -275,12 +275,12 @@ class GraphqlClientUtilsTest {
 	@Test
 	void test_getGraphQLScalarType() throws Exception {
 		// Given
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 
 		// When
 		Field field = Post.class.getDeclaredField("date");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field);
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "");
 
 		// Then
 		assertNotNull(graphQlScalarType);
@@ -289,12 +289,12 @@ class GraphqlClientUtilsTest {
 	@Test
 	void test_getGraphQLScalarTypeGivenInputPojo() throws Exception {
 		// Given
-		new CustomScalarRegistryInitializer().initCustomScalarRegistry();
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 
 		// When
 		Field field = PostInput.class.getDeclaredField("from");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field);
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "");
 
 		// Then
 		assertNotNull(graphQlScalarType);
@@ -322,9 +322,9 @@ class GraphqlClientUtilsTest {
 	public void test_getClass() {
 		String packageName = "com.graphql_java_generator.domain.client.allGraphQLCases";
 
-		assertEquals("java.lang.Integer", graphqlClientUtils.getClass(packageName, "Integer").getName());
+		assertEquals("java.lang.Integer", graphqlClientUtils.getClass(packageName, "Integer", "").getName());
 		assertEquals("com.graphql_java_generator.domain.client.allGraphQLCases.Human",
-				graphqlClientUtils.getClass(packageName, "Human").getName());
-		assertEquals("java.util.Date", graphqlClientUtils.getClass(packageName, "Date").getName());
+				graphqlClientUtils.getClass(packageName, "Human", "").getName());
+		assertEquals("java.util.Date", graphqlClientUtils.getClass(packageName, "Date", "").getName());
 	}
 }

@@ -681,7 +681,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class,
 				"subscribeNewHumanForEpisode", RequestType.subscription,
-				InputParameter.newBindParameter("episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode",
+				InputParameter.newBindParameter("", "episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode",
 						InputParameterType.MANDATORY, "Episode", true, 0, false));
 	}
 
@@ -700,7 +700,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	public GraphQLRequest getSubscribeNewHumanForEpisodeGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeNewHumanForEpisode",
-				InputParameter.newBindParameter("episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode",
+				InputParameter.newBindParameter("", "episode", "theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode",
 						InputParameterType.MANDATORY, "Episode", true, 0, false));
 		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;
@@ -1300,7 +1300,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	public com.graphql_java_generator.client.request.Builder getIssue53ResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "issue53",
-				RequestType.subscription, InputParameter.newBindParameter("date", "theSubscriptionTypeIssue53Date",
+				RequestType.subscription, InputParameter.newBindParameter("", "date", "theSubscriptionTypeIssue53Date",
 						InputParameterType.MANDATORY, "Date", true, 0, false));
 	}
 
@@ -1317,7 +1317,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	 */
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "issue53",
-				InputParameter.newBindParameter("date", "theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY,
+				InputParameter.newBindParameter("", "date", "theSubscriptionTypeIssue53Date", InputParameterType.MANDATORY,
 						"Date", true, 0, false));
 		ret.setInstanceConfiguration(graphQLConfigurationAllGraphQLCases);
 		return ret;

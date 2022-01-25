@@ -4,7 +4,6 @@ package com.graphql_java_generator.domain.client.starwars;
 import com.graphql_java_generator.customscalars.CustomScalarRegistry;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
-import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDServer;
 
 public class CustomScalarRegistryInitializer {
 
@@ -16,10 +15,9 @@ public class CustomScalarRegistryInitializer {
 		CustomScalarRegistry customScalarRegistry = new CustomScalarRegistryImpl();
 
 		// Registering the ID parser, for client mode
-		customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID, String.class);		
+		customScalarRegistry.registerGraphQLScalarType(GraphQLScalarTypeIDClient.ID, String.class);
 
-
-		CustomScalarRegistryImpl.customScalarRegistry = customScalarRegistry;
+		CustomScalarRegistryImpl.setCustomScalarRegistry("", customScalarRegistry);
 		return customScalarRegistry;
 	}
 

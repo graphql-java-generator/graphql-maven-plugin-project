@@ -158,10 +158,13 @@ public class QueryField {
 	 * @param aliasFields
 	 *            This maps contains the {@link Field}, that matches each alias, of each GraphQL type. This allows a
 	 *            proper deserialization of each alias value returned in the json response
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public void readTokenizerForResponseDefinition(QueryTokenizer qt, Map<Class<?>, Map<String, Field>> aliasFields)
-			throws GraphQLRequestPreparationException {
+	public void readTokenizerForResponseDefinition(QueryTokenizer qt, Map<Class<?>, Map<String, Field>> aliasFields,
+			String schema) throws GraphQLRequestPreparationException {
 		// The field we're reading
 		QueryField currentField = null;
 
@@ -172,13 +175,13 @@ public class QueryField {
 			switch (token) {
 			case "@":
 				// We're found a GraphQL directive.
-				currentField.directives.add(new Directive(qt));
+				currentField.directives.add(new Directive(qt, schema));
 				break;
 			case "(":
 				if (currentField != null) {
 					// We're starting the reading of field parameters for the current field
 					currentField.inputParameters = InputParameter.readTokenizerForInputParameters(qt, null,
-							currentField.owningClazz, currentField.name);
+							currentField.owningClazz, currentField.name, schema);
 				} else {
 					throw new GraphQLRequestPreparationException(
 							"The given query has a parentesis '(' not preceded by a field name (error while reading field '"
@@ -203,14 +206,14 @@ public class QueryField {
 				} else {
 					// Ok, let's read the field for the subobject, for which we just read the name (and potentiel
 					// alias :
-					currentField.readTokenizerForResponseDefinition(qt, aliasFields);
+					currentField.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 					// Let's clear the lastReadField, as we already have read its content.
 					currentField = null;
 				}
 				break;
 			case "...":
 				// We're reading an inline fragment
-				inlineFragments.add(new Fragment(qt, aliasFields, packageName, true, clazz));
+				inlineFragments.add(new Fragment(qt, aliasFields, packageName, true, clazz, schema));
 				break;
 			case "}":
 				// We're finished our current object : let's get out of this method
@@ -219,7 +222,7 @@ public class QueryField {
 			default:
 				if (token.startsWith("...")) {
 					// This token starts by "...", we've read a global fragment
-					fragments.add(new AppliedGlobalFragment(token, qt));
+					fragments.add(new AppliedGlobalFragment(token, qt, schema));
 					logger.trace("Found fragment {} for field {}", token, name);
 				} else {
 					// We've read a regular field
@@ -263,8 +266,8 @@ public class QueryField {
 	 * @param aliasFields
 	 * @throws GraphQLRequestPreparationException
 	 */
-	void addAlias(Class<?> clazzParam, String aliasName, String fieldName, Map<Class<?>, Map<String, Field>> aliasFields)
-			throws GraphQLRequestPreparationException {
+	void addAlias(Class<?> clazzParam, String aliasName, String fieldName,
+			Map<Class<?>, Map<String, Field>> aliasFields) throws GraphQLRequestPreparationException {
 		if (aliasFields == null) {
 			throw new NullPointerException("[Internal Error] aliasFields may not be null");
 		}

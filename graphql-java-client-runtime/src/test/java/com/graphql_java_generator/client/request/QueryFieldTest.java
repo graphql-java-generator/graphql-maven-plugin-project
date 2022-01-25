@@ -37,11 +37,11 @@ class QueryFieldTest {
 		GraphQLRequestPreparationException e;
 
 		// Go, go, go: no alias
-		queryField.readTokenizerForResponseDefinition(new QueryTokenizer("id}"), aliasFields);
+		queryField.readTokenizerForResponseDefinition(new QueryTokenizer("id}"), aliasFields, "");
 		assertEquals(0, aliasFields.size());
 
 		// Go, go, go: a valid alias for a field that already exists
-		queryField.readTokenizerForResponseDefinition(new QueryTokenizer("idAlias : id }"), aliasFields);
+		queryField.readTokenizerForResponseDefinition(new QueryTokenizer("idAlias : id }"), aliasFields, "");
 		assertEquals(1, aliasFields.size());
 		Class<?> clazz = aliasFields.keySet().iterator().next();
 		assertEquals(AllFieldCases.class, clazz, "The alias is set for this class");
@@ -51,7 +51,7 @@ class QueryFieldTest {
 		assertEquals("id", aliasFields.get(clazz).get(aliasName).getName());
 
 		// Go, go, go: another valid alias
-		queryField.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias: matrix}"), aliasFields);
+		queryField.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias: matrix}"), aliasFields, "");
 		assertEquals(1, aliasFields.size());
 		clazz = aliasFields.keySet().iterator().next();
 		assertEquals(AllFieldCases.class, clazz, "The alias is set for this class");
@@ -62,21 +62,21 @@ class QueryFieldTest {
 
 		// Some invalid aliases (check for error messages)
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> queryField.readTokenizerForResponseDefinition(
-				new QueryTokenizer("anotherAlias: thisFieldDoesNotExist}"), aliasFields));
+				new QueryTokenizer("anotherAlias: thisFieldDoesNotExist}"), aliasFields, ""));
 		assertTrue(e.getMessage().contains("'thisFieldDoesNotExist'"));
 
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> queryField
-				.readTokenizerForResponseDefinition(new QueryTokenizer("invalid%alias: matrix}"), aliasFields));
+				.readTokenizerForResponseDefinition(new QueryTokenizer("invalid%alias: matrix}"), aliasFields, ""));
 		assertTrue(e.getMessage().contains("'invalid%alias'"));
 
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> queryField
-				.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias: dates}"), aliasFields));
+				.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias: dates}"), aliasFields, ""));
 		assertTrue(e.getMessage().contains("'matrixAlias'"),
 				"an already defined alias for the same class, but for another field "
 						+ " (the received error message is: " + e.getMessage() + ")");
 
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> queryField
-				.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias: name}"), aliasFields));
+				.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias: name}"), aliasFields, ""));
 		assertTrue(e.getMessage().contains("'matrixAlias'"),
 				"an already defined alias for the same class, but for another field"
 						+ " (the received error message is: " + e.getMessage() + ")");
@@ -92,7 +92,7 @@ class QueryFieldTest {
 
 		// If the alias is the same for the same field, nothing should happen
 		QueryField withIDQueryField = new QueryField(WithID.class);
-		withIDQueryField.readTokenizerForResponseDefinition(new QueryTokenizer("idAlias : id }"), aliasFields);
+		withIDQueryField.readTokenizerForResponseDefinition(new QueryTokenizer("idAlias : id }"), aliasFields, "");
 		assertEquals(4, aliasFields.size());
 		clazz = AllFieldCases.class;
 		assertEquals(2, aliasFields.get(clazz).size());
@@ -106,7 +106,7 @@ class QueryFieldTest {
 
 		// If the alias is the same but for another field, then an error should be thrown
 		e = assertThrows(GraphQLRequestPreparationException.class, () -> withIDQueryField
-				.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias : id }"), aliasFields));
+				.readTokenizerForResponseDefinition(new QueryTokenizer("matrixAlias : id }"), aliasFields, ""));
 		assertTrue(e.getMessage().contains("'matrixAlias'"),
 				"an already defined alias for the same class, but for another field");
 		assertTrue(e.getMessage().contains("'id'"),

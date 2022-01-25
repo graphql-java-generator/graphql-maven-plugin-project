@@ -47,10 +47,13 @@ public class Fragment {
 	 * @param clazz
 	 *            The owning class is mandatory for inlineFragment: if the "on Type" clause is not give, we need it to
 	 *            load the proper java class (that represents the proper GraphQL type)
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Fragment(QueryTokenizer qt, Map<Class<?>, Map<String, Field>> aliasFields, String packageName,
-			boolean inlineFragment, Class<?> clazz) throws GraphQLRequestPreparationException {
+			boolean inlineFragment, Class<?> clazz, String schema) throws GraphQLRequestPreparationException {
 
 		// We expect a string like this: " fragmentName on fragmentTargetType"
 		// Let's read these three tokens
@@ -78,7 +81,7 @@ public class Fragment {
 
 			if (token.equals("@")) {
 				// This Fragment contains a (or more) directive
-				directives.add(new Directive(qt));
+				directives.add(new Directive(qt, schema));
 				// Let's iterate once more
 				continue;
 			}
@@ -106,7 +109,7 @@ public class Fragment {
 		}
 
 		content = new QueryField(clazz);
-		content.readTokenizerForResponseDefinition(qt, aliasFields);
+		content.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 	}
 
 	public String getName() {

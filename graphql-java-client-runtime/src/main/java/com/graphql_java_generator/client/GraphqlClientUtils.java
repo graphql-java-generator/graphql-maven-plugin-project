@@ -194,9 +194,12 @@ public class GraphqlClientUtils {
 	 *            The name of the package, where the code has been generated.
 	 * @param graphQLTypeName
 	 *            The name of the class
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @return
 	 */
-	public Class<?> getClass(String packageName, String graphQLTypeName) {
+	public Class<?> getClass(String packageName, String graphQLTypeName, String schema) {
 
 		// First case, the simplest: standard GraphQL type
 		if ("Boolean".equals(graphQLTypeName) || "boolean".equals(graphQLTypeName))
@@ -209,7 +212,8 @@ public class GraphqlClientUtils {
 			return Double.class;
 
 		// Then custom scalars
-		CustomScalar customScalar = CustomScalarRegistryImpl.customScalarRegistry.getCustomScalar(graphQLTypeName);
+		CustomScalar customScalar = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
+				.getCustomScalar(graphQLTypeName);
 		if (customScalar != null) {
 			return customScalar.getValueClazz();
 		}
@@ -359,14 +363,18 @@ public class GraphqlClientUtils {
 	 * @param parameterValue
 	 * @param parameterType
 	 * @param packageName
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @return
 	 * @throws RuntimeException
 	 *             When the value could be parsed
 	 */
-	public Object parseValueForInputParameter(Object parameterValue, String parameterType, Class<?> parameterClass) {
+	public Object parseValueForInputParameter(Object parameterValue, String parameterType, Class<?> parameterClass,
+			String schema) {
 
 		// Let's check if this type is a Custom Scalar
-		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.customScalarRegistry
+		GraphQLScalarType graphQLScalarType = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
 				.getGraphQLCustomScalarType(parameterType);
 
 		if (graphQLScalarType != null) {
@@ -462,9 +470,12 @@ public class GraphqlClientUtils {
 	 *
 	 * @param fieldOrMethod
 	 *            The field or method of the generated POJO class
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @return the {@link GraphQLScalarType}
 	 */
-	public GraphQLScalarType getGraphQLCustomScalarType(AccessibleObject fieldOrMethod) {
+	public GraphQLScalarType getGraphQLCustomScalarType(AccessibleObject fieldOrMethod, String schema) {
 		String graphQLTypeName;
 		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
 			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLScalar.class).graphQLTypeSimpleName();
@@ -472,7 +483,7 @@ public class GraphqlClientUtils {
 			graphQLTypeName = null;
 		}
 		if (graphQLTypeName != null) {
-			return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLCustomScalarType(graphQLTypeName);
+			return CustomScalarRegistryImpl.getCustomScalarRegistry(schema).getGraphQLCustomScalarType(graphQLTypeName);
 		} else {
 			return null;
 		}
@@ -484,9 +495,12 @@ public class GraphqlClientUtils {
 	 * serialize the value (for instance to write it into a JSON string)
 	 * 
 	 * @param typeName
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @return The GraphQL type. Or null if not found (enum, object, input type, interface, union)
 	 */
-	public GraphQLScalarType getGraphQLScalarTypeFromName(String typeName) {
+	public GraphQLScalarType getGraphQLScalarTypeFromName(String typeName, String schema) {
 
 		// Is it a known type ?
 		if (typeName.equals("String")) {
@@ -501,7 +515,7 @@ public class GraphqlClientUtils {
 			return graphql.Scalars.GraphQLID;
 		}
 
-		return CustomScalarRegistryImpl.customScalarRegistry.getGraphQLCustomScalarType(typeName);
+		return CustomScalarRegistryImpl.getCustomScalarRegistry(schema).getGraphQLCustomScalarType(typeName);
 	}
 
 }

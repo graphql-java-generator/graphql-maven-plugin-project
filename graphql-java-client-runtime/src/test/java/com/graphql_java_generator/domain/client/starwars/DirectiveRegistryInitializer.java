@@ -26,7 +26,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("skip");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.starwars_client_springconfiguration");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -40,7 +40,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("include");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.starwars_client_springconfiguration");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -54,7 +54,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("defer");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.starwars_client_springconfiguration");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directiveRegistry.registerDirective(directive);
@@ -66,7 +66,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("deprecated");
 		directive.setPackageName("org.graphql.mavenplugin.junittest.starwars_client_springconfiguration");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"reason", null, "String", false, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		directive.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);

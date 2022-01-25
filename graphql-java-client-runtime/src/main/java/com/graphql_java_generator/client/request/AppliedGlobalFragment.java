@@ -29,9 +29,13 @@ public class AppliedGlobalFragment {
 	 * @param currentToken
 	 *            The fragment declaration that has just been read in <I>qt</I>, for instance <I>...fragmentName</I>
 	 * @param qt
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AppliedGlobalFragment(String currentToken, QueryTokenizer qt) throws GraphQLRequestPreparationException {
+	public AppliedGlobalFragment(String currentToken, QueryTokenizer qt, String schema)
+			throws GraphQLRequestPreparationException {
 		if (!currentToken.startsWith("...")) {
 			throw new GraphQLRequestPreparationException(
 					"The currentToken should start by \"...\", but is: '" + currentToken + "'");
@@ -42,7 +46,7 @@ public class AppliedGlobalFragment {
 			// We must first read the '@'
 			qt.nextToken();
 			// The next token is a directive. This directive applies to the current fragment.
-			directives.add(new Directive(qt));
+			directives.add(new Directive(qt, schema));
 		}
 	}
 

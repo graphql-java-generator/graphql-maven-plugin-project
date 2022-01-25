@@ -111,24 +111,6 @@ public abstract class AbstractGraphQLRequest {
 		String query = null;
 		Map<String, Object> variables = new HashMap<>();
 		String operationName = null;
-
-		private String getVariablesAsStringOld() {
-			StringBuffer sb = new StringBuffer();
-			sb.append("{");
-			boolean first = true;
-			for (String key : variables.keySet()) {
-				if (!first)
-					sb.append(",");
-				first = false;
-				sb.append("\"");
-				sb.append(StringEscapeUtils.escapeJson(key));
-				sb.append("\":");
-				sb.append(variables.get(key));
-			}
-			sb.append("}");
-			return sb.toString();
-		}
-
 	}
 
 	/**
@@ -138,6 +120,9 @@ public abstract class AbstractGraphQLRequest {
 	 * may change in the future. To prepare Partial Requests, application code <B>SHOULD</B> call the
 	 * getXxxxGraphQLRequests methods, that are generated in the query/mutation/subscription java classes.
 	 * 
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param graphQLRequest
 	 *            The <B>partial</B> GraphQL request, in text format. Writing partial request allows use to execute a
 	 *            query/mutation/subscription, and only define what's expected as a response for this
@@ -154,7 +139,7 @@ public abstract class AbstractGraphQLRequest {
 	 *            The list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(String graphQLRequest, RequestType requestType, String fieldName,
+	public AbstractGraphQLRequest(String schema, String graphQLRequest, RequestType requestType, String fieldName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
 		if (requestType == null) {
 			throw new NullPointerException("requestType is mandatory, but a null value has been provided");
@@ -208,7 +193,7 @@ public abstract class AbstractGraphQLRequest {
 				throw new GraphQLRequestPreparationException(
 						"The Partial GraphQL Request should start by a '{', but it doesn't: " + graphQLRequest);
 			}
-			field.readTokenizerForResponseDefinition(qt, aliasFields);
+			field.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 		}
 
 		// Let's finish the job
@@ -226,6 +211,9 @@ public abstract class AbstractGraphQLRequest {
 	 * necessary to allow proper deserialization of interfaces and unions.</LI>
 	 * </UL>
 	 * 
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param graphQLRequest
 	 *            The GraphQL request, in text format, as defined in the GraphQL specifications, and as it can be used
 	 *            in GraphiQL. Please read the
@@ -234,7 +222,7 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
+	public AbstractGraphQLRequest(String schema, String graphQLRequest) throws GraphQLRequestPreparationException {
 		String localQueryName = null;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = getGraphQLClassesPackageName();
@@ -254,7 +242,7 @@ public abstract class AbstractGraphQLRequest {
 
 			switch (token) {
 			case "fragment":
-				fragments.add(new Fragment(qt, aliasFields, packageName, false, null));
+				fragments.add(new Fragment(qt, aliasFields, packageName, false, null, schema));
 				break;
 			case "query":
 			case "mutation":
@@ -264,7 +252,7 @@ public abstract class AbstractGraphQLRequest {
 				break;
 			case "(":
 				try {
-					readRequestParameters(qt, inputParameters);
+					readRequestParameters(qt, inputParameters, schema);
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException(
 							e.getMessage() + " (while reading the request parameters)", e);
@@ -276,17 +264,17 @@ public abstract class AbstractGraphQLRequest {
 				case query:
 					query = getQueryContext();// Get the query field from the concrete class
 					query.inputParameters = inputParameters;
-					query.readTokenizerForResponseDefinition(qt, aliasFields);
+					query.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 					break;
 				case mutation:
 					mutation = getMutationContext();// Get the mutation field from the concrete class
 					mutation.inputParameters = inputParameters;
-					mutation.readTokenizerForResponseDefinition(qt, aliasFields);
+					mutation.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 					break;
 				case subscription:
 					subscription = getSubscriptionContext();// Get the subscription field from the concrete class
 					subscription.inputParameters = inputParameters;
-					subscription.readTokenizerForResponseDefinition(qt, aliasFields);
+					subscription.readTokenizerForResponseDefinition(qt, aliasFields, schema);
 					break;
 				default:
 					throw new GraphQLRequestPreparationException("Non managed request type '" + requestType
@@ -326,7 +314,7 @@ public abstract class AbstractGraphQLRequest {
 	 *            The empty list if {@link InputParameter}s.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private void readRequestParameters(QueryTokenizer qt, List<InputParameter> inputParameters)
+	private void readRequestParameters(QueryTokenizer qt, List<InputParameter> inputParameters, String schema)
 			throws GraphQLRequestPreparationException {
 		String token;
 		// We're reading the request parameters. It should be something like "($param1: Type1, $param2: Type2!)"
@@ -421,7 +409,7 @@ public abstract class AbstractGraphQLRequest {
 					mandatory = false;
 				}
 
-				inputParameters.add(InputParameter.newGraphQLVariableParameter(name, graphQLTypeName, mandatory,
+				inputParameters.add(InputParameter.newGraphQLVariableParameter(schema, name, graphQLTypeName, mandatory,
 						listDepth, itemMandatory));
 				// The next token should be either the end of parameters (with a ')') or a name
 				step = Step.NAME;

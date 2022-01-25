@@ -45,9 +45,12 @@ public class Directive {
 	 * and the next token should be the directive's name.
 	 * 
 	 * @param qt
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public Directive(QueryTokenizer qt) throws GraphQLRequestPreparationException {
+	public Directive(QueryTokenizer qt, String schema) throws GraphQLRequestPreparationException {
 		name = qt.nextToken();
 
 		// We need to get some data from the registration of this directive.
@@ -59,7 +62,7 @@ public class Directive {
 			// We must consume the parenthesis, then read the list of argument.
 			qt.nextToken();
 			// This directive has one or more parameters
-			arguments = InputParameter.readTokenizerForInputParameters(qt, this, null, null);
+			arguments = InputParameter.readTokenizerForInputParameters(qt, this, null, null, schema);
 		}
 	}
 

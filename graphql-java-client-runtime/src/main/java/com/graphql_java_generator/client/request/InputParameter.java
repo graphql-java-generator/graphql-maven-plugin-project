@@ -72,6 +72,12 @@ public class InputParameter {
 		NAME, VALUE
 	};
 
+	/**
+	 * value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one schema,
+	 * this plugin parameter is usually not set. In this case, its default value ("") is used.
+	 */
+	final String schema;
+
 	/** The parameter name, as defined in the GraphQL schema */
 	final String name;
 
@@ -108,6 +114,9 @@ public class InputParameter {
 	 * Creates and returns a new instance of {@link InputParameter}, which is bound to a bind variable. The value for
 	 * this bind variable must be provided, when calling the request execution.
 	 *
+	 * @param schema
+	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param name
 	 * @param bindParameterName
 	 *            The name of the bind parameter, as defined in the GraphQL response definition. It is mandator for bind
@@ -129,12 +138,12 @@ public class InputParameter {
 	 * @return The newly created {@link InputParameter}, according to these parameters
 	 * @see RequestExecutionSpringReactiveImpl#execute(String, ObjectResponse, List, Class)
 	 */
-	public static InputParameter newBindParameter(String name, String bindParameterName, InputParameterType type,
-			String graphQLTypeName, boolean mandatory, int listDepth, boolean itemMandatory) {
+	public static InputParameter newBindParameter(String schema, String name, String bindParameterName,
+			InputParameterType type, String graphQLTypeName, boolean mandatory, int listDepth, boolean itemMandatory) {
 		if (bindParameterName == null) {
 			throw new NullPointerException("[Internal error] The bind parameter name is mandatory");
 		}
-		return new InputParameter(name, bindParameterName, null, type, graphQLTypeName, mandatory, listDepth,
+		return new InputParameter(schema, name, bindParameterName, null, type, graphQLTypeName, mandatory, listDepth,
 				itemMandatory);
 	}
 
@@ -142,6 +151,9 @@ public class InputParameter {
 	 * Creates and returns a new instance of {@link InputParameter}, which value is given, and can not be changed
 	 * afterwards.
 	 *
+	 * @param value
+	 *            of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param name
 	 *            The parameter name, as defined in the GraphQL schema
 	 * @param graphQLTypeName
@@ -156,16 +168,19 @@ public class InputParameter {
 	 *            otherwise
 	 * @return The newly created {@link InputParameter}, according to these parameters
 	 */
-	public static InputParameter newGraphQLVariableParameter(String name, String graphQLTypeName, boolean mandatory,
-			int listDepth, boolean itemMandatory) {
-		return new InputParameter(name, name, null, InputParameterType.GRAPHQL_VARIABLE, graphQLTypeName, mandatory,
-				listDepth, itemMandatory);
+	public static InputParameter newGraphQLVariableParameter(String schema, String name, String graphQLTypeName,
+			boolean mandatory, int listDepth, boolean itemMandatory) {
+		return new InputParameter(schema, name, name, null, InputParameterType.GRAPHQL_VARIABLE, graphQLTypeName,
+				mandatory, listDepth, itemMandatory);
 	}
 
 	/**
 	 * Creates and returns a new instance of {@link InputParameter}, which value is given, and can not be changed
 	 * afterwards.
 	 *
+	 * @param value
+	 *            of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param name
 	 *            The parameter name, as defined in the GraphQL schema
 	 * @param value
@@ -183,9 +198,9 @@ public class InputParameter {
 	 *            otherwise
 	 * @return The newly created {@link InputParameter}, according to these parameters
 	 */
-	public static InputParameter newHardCodedParameter(String name, Object value, String graphQLTypeName,
+	public static InputParameter newHardCodedParameter(String schema, String name, Object value, String graphQLTypeName,
 			boolean mandatory, int listDepth, boolean itemMandatory) {
-		return new InputParameter(name, null, value, InputParameterType.HARD_CODED, graphQLTypeName, mandatory,
+		return new InputParameter(schema, name, null, value, InputParameterType.HARD_CODED, graphQLTypeName, mandatory,
 				listDepth, itemMandatory);
 	}
 
@@ -193,6 +208,9 @@ public class InputParameter {
 	 * The constructor is private. Instances must be created with one of these helper methods:
 	 * {@link #newBindParameter(String, String)} or {@link #newHardCodedParameter(String, Object)}
 	 *
+	 * @param value
+	 *            of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param name
 	 *            The parameter name, as defined in the GraphQL schema
 	 * @param bindParameterName
@@ -216,19 +234,20 @@ public class InputParameter {
 	 *            Used only if this parameter is a list. In this case: true if the item of the list are mandatory, false
 	 *            otherwise
 	 */
-	private InputParameter(String name, String bindParameterName, Object value, InputParameterType type,
+	private InputParameter(String schema, String name, String bindParameterName, Object value, InputParameterType type,
 			String graphQLTypeName, boolean mandatory, int listDepth, boolean itemMandatory) {
 		if (name == null) {
 			throw new NullPointerException("The input parameter's name is mandatory");
 		}
 
+		this.schema = schema;
 		this.name = name;
 		this.bindParameterName = bindParameterName;
 		this.value = value;
 		this.type = type;
 		this.graphQLTypeName = graphQLTypeName;
 		this.graphQLScalarType = (graphQLTypeName == null) ? null
-				: graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName);
+				: graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName, schema);
 		this.mandatory = mandatory;
 		this.listDepth = listDepth;
 		this.itemMandatory = itemMandatory;
@@ -238,6 +257,10 @@ public class InputParameter {
 	 * The constructor is private. Instances must be created with one of these helper methods:
 	 * {@link #newBindParameter(String, String)} or {@link #newHardCodedParameter(String, Object)}
 	 *
+	 *
+	 * @param value
+	 *            of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
+	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
 	 * @param name
 	 *            The parameter name, as defined in the GraphQL schema
 	 * @param parameterName
@@ -259,7 +282,7 @@ public class InputParameter {
 	 *            The field name
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private InputParameter(String name, String parameterName, Object value, InputParameterType type,
+	private InputParameter(String schema, String name, String parameterName, Object value, InputParameterType type,
 			Directive directive, Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
 		String localGraphQLCustomScalarType = null;
 		boolean localMandatory = false;
@@ -351,12 +374,13 @@ public class InputParameter {
 			}
 		}
 
+		this.schema = schema;
 		this.name = name;
 		this.bindParameterName = parameterName;
 		this.value = value;
 		this.type = type;
 		this.graphQLTypeName = localGraphQLCustomScalarType;
-		this.graphQLScalarType = graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName);
+		this.graphQLScalarType = graphqlClientUtils.getGraphQLScalarTypeFromName(graphQLTypeName, schema);
 		this.mandatory = localMandatory;
 		this.listDepth = localList;
 		this.itemMandatory = localItemMandatory;
@@ -381,7 +405,7 @@ public class InputParameter {
 	 *             If the request string is invalid
 	 */
 	public static List<InputParameter> readTokenizerForInputParameters(QueryTokenizer qt, Directive directive,
-			Class<?> owningClass, String fieldName) throws GraphQLRequestPreparationException {
+			Class<?> owningClass, String fieldName, String schema) throws GraphQLRequestPreparationException {
 		List<InputParameter> ret = new ArrayList<>(); // The list that will be returned by this method
 		InputParameterStep step = InputParameterStep.NAME;
 
@@ -419,13 +443,13 @@ public class InputParameter {
 				case VALUE:
 					// We've read the parameter value. Let's add this parameter.
 					if (token.startsWith("?")) {
-						ret.add(new InputParameter(parameterName, token.substring(1), null, InputParameterType.OPTIONAL,
-								directive, owningClass, fieldName));
+						ret.add(new InputParameter(schema, parameterName, token.substring(1), null,
+								InputParameterType.OPTIONAL, directive, owningClass, fieldName));
 					} else if (token.startsWith("&")) {
-						ret.add(new InputParameter(parameterName, token.substring(1), null,
+						ret.add(new InputParameter(schema, parameterName, token.substring(1), null,
 								InputParameterType.MANDATORY, directive, owningClass, fieldName));
 					} else if (token.startsWith("$")) {
-						ret.add(new InputParameter(parameterName, token.substring(1), null,
+						ret.add(new InputParameter(schema, parameterName, token.substring(1), null,
 								InputParameterType.GRAPHQL_VARIABLE, directive, owningClass, fieldName));
 					} else if (token.equals("[") || token.equals("{")) {
 						// We've found the start of a JSON list or JSON object. Let's read this object.
@@ -471,7 +495,7 @@ public class InputParameter {
 						// It's a GraphQL list or object. We store the read characters as is.
 						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
 						// not used in this case)
-						ret.add(new InputParameter(parameterName, null, new RawGraphQLString(sb.toString()),
+						ret.add(new InputParameter(schema, parameterName, null, new RawGraphQLString(sb.toString()),
 								InputParameterType.GRAPHQL_VALUE, null, false, listDepth, false));
 					} else if (token.equals("\"")) {
 						// We've found a String value: let's read the string content
@@ -503,7 +527,7 @@ public class InputParameter {
 						// It's a regular String. It is encoded within the GraphQL query. So we keep it as-is.
 						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
 						// not used in this case)
-						ret.add(new InputParameter(parameterName, null, new RawGraphQLString(sb.toString()),
+						ret.add(new InputParameter(schema, parameterName, null, new RawGraphQLString(sb.toString()),
 								InputParameterType.HARD_CODED, "String", true, 0, false));
 					} else if (token.startsWith("\"") || token.endsWith("\"")) {
 						// Too bad, there is a " only at the end or only at the beginning
@@ -513,19 +537,20 @@ public class InputParameter {
 										+ parameterName
 										+ ">. Maybe you wanted to add a bind parameter instead (bind parameter must start with a ? or a &");
 					} else if (directive != null) {
-						Object parameterValue = parseDirectiveArgumentValue(directive, parameterName, token);
+						Object parameterValue = parseDirectiveArgumentValue(schema, directive, parameterName, token);
 						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
 						// not used in this case)
-						InputParameter arg = new InputParameter(parameterName, null, parameterValue,
+						InputParameter arg = new InputParameter(schema, parameterName, null, parameterValue,
 								InputParameterType.HARD_CODED, null, true, 0, false);
 						ret.add(arg);
 						directive.getArguments().add(arg);
 					} else {
-						Object parameterValue = parseInputParameterValue(owningClass, fieldName, parameterName, token);
+						Object parameterValue = parseInputParameterValue(schema, owningClass, fieldName, parameterName,
+								token);
 						// The inputParameters mandatory, list and itemMandatory are forced (as theses attributes are
 						// not used in this case)
-						ret.add(new InputParameter(parameterName, null, parameterValue, InputParameterType.HARD_CODED,
-								null, true, 0, false));
+						ret.add(new InputParameter(schema, parameterName, null, parameterValue,
+								InputParameterType.HARD_CODED, null, true, 0, false));
 					}
 					step = InputParameterStep.NAME;
 					break;
@@ -548,8 +573,8 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private static Object parseInputParameterValue(Class<?> owningClass, String fieldName, String parameterName,
-			String parameterValue) throws GraphQLRequestPreparationException {
+	private static Object parseInputParameterValue(String schema, Class<?> owningClass, String fieldName,
+			String parameterName, String parameterValue) throws GraphQLRequestPreparationException {
 		Field field = graphqlUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(fieldName), true);
 
 		GraphQLInputParameters graphQLInputParameters = field.getDeclaredAnnotation(GraphQLInputParameters.class);
@@ -562,7 +587,7 @@ public class InputParameter {
 			if (graphQLInputParameters.names()[i].equals(parameterName)) {
 				// We've found the parameterType. Let's get its value.
 				try {
-					return parseValueForInputParameter(parameterValue, graphQLInputParameters.types()[i],
+					return parseValueForInputParameter(schema, parameterValue, graphQLInputParameters.types()[i],
 							owningClass.getPackage().getName());
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException(
@@ -578,8 +603,8 @@ public class InputParameter {
 				+ parameterName + "' of the field '" + fieldName + "'");
 	}
 
-	private static Object parseDirectiveArgumentValue(Directive directive, String parameterName, String parameterValue)
-			throws GraphQLRequestPreparationException {
+	private static Object parseDirectiveArgumentValue(String schema, Directive directive, String parameterName,
+			String parameterValue) throws GraphQLRequestPreparationException {
 		// Let's find the directive definition for this read directive
 		Directive directiveDefinition = directive.getDirectiveDefinition();
 
@@ -588,7 +613,7 @@ public class InputParameter {
 			if (param.getName().equals(parameterName)) {
 				// We've found the parameterType. Let's get its value.
 				try {
-					return parseValueForInputParameter(parameterValue, param.getGraphQLTypeName(),
+					return parseValueForInputParameter(schema, parameterValue, param.getGraphQLTypeName(),
 							directive.getPackageName());
 				} catch (Exception e) {
 					throw new GraphQLRequestPreparationException("Could not read the value for the parameter '"
@@ -605,17 +630,18 @@ public class InputParameter {
 	/**
 	 * Parse a value, depending on the parameter type.
 	 *
+	 * @param schema
 	 * @param parameterValue
 	 * @param parameterType
 	 * @param packageName
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private static Object parseValueForInputParameter(String parameterValue, String parameterType, String packageName)
-			throws GraphQLRequestPreparationException {
+	private static Object parseValueForInputParameter(String schema, String parameterValue, String parameterType,
+			String packageName) throws GraphQLRequestPreparationException {
 		try {
 			return graphqlClientUtils.parseValueForInputParameter(parameterValue, parameterType,
-					graphqlClientUtils.getClass(packageName, parameterType));
+					graphqlClientUtils.getClass(packageName, parameterType, schema), schema);
 		} catch (RuntimeException e) {
 			throw new GraphQLRequestPreparationException(e.getMessage(), e);
 		}
@@ -852,7 +878,7 @@ public class InputParameter {
 							.append(graphQLVariable ? "\"" : "")//
 							.append(":")//
 							.append(getStringContentForGraphqlQuery(writingGraphQLVariables, val, graphQLTypeName,
-									graphqlClientUtils.getGraphQLCustomScalarType(field), graphQLVariable));
+									graphqlClientUtils.getGraphQLCustomScalarType(field, schema), graphQLVariable));
 
 					separator = ",";
 				}

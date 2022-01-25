@@ -662,7 +662,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "subscribeToNewPost",
 				RequestType.subscription,
-				InputParameter.newBindParameter("boardName", "subscriptionTypeSubscribeToNewPostBoardName",
+				InputParameter.newBindParameter("", "boardName", "subscriptionTypeSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
@@ -679,7 +679,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 	public GraphQLRequest getSubscribeToNewPostGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeToNewPost",
-				InputParameter.newBindParameter("boardName", "subscriptionTypeSubscribeToNewPostBoardName",
+				InputParameter.newBindParameter("", "boardName", "subscriptionTypeSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 		ret.setInstanceConfiguration(graphQLConfigurationForum);
 		return ret;

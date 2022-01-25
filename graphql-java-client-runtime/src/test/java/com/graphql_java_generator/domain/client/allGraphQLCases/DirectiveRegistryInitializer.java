@@ -26,7 +26,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("skip");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -40,7 +40,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("include");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
@@ -54,7 +54,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("defer");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directiveRegistry.registerDirective(directive);
@@ -66,7 +66,7 @@ public class DirectiveRegistryInitializer {
 		directive.setName("deprecated");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"reason", null, "String", false, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		directive.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
@@ -97,31 +97,31 @@ public class DirectiveRegistryInitializer {
 		directive.setName("testDirective");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"value", null, "String", true, 0, false));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"anotherValue", null, "String", false, 0, false));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"anArray", null, "String", false, 1, true));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"anObject", null, "CharacterInput", false, 0, false));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"anInt", null, "Int", false, 0, false));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"aFloat", null, "Float", false, 0, false));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"aBoolean", null, "Boolean", false, 0, false));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"anID", null, "ID", false, 0, false));
 		directive.getArguments().add(
-			InputParameter.newHardCodedParameter(
+			InputParameter.newHardCodedParameter("",
 					"aCustomScalarDate", null, "Date", false, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.QUERY);
 		directive.getDirectiveLocations().add(DirectiveLocation.MUTATION);
