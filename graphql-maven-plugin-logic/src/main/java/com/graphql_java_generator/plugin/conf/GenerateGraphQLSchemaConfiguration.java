@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +52,7 @@ public interface GenerateGraphQLSchemaConfiguration extends CommonConfiguration 
 							? getTemplates().entrySet().stream()
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
-							: StringUtils.EMPTY));
+							: ""));
 			logger.debug("-- end configuration --");
 		}
 	}

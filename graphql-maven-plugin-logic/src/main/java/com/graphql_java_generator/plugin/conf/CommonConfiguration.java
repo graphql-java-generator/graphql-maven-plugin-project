@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -164,7 +163,7 @@ public interface CommonConfiguration {
 							? getTemplates().entrySet().stream()
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
-							: StringUtils.EMPTY));
+							: ""));
 		}
 	}
 

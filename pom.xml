@@ -135,7 +135,8 @@
 							</goals>
 						</execution>
 					</executions>
-					<configuration> <!-- add this to disable checking -->
+					<configuration>
+						<!-- add this to disable checking -->
 						<doclint>none</doclint>
 						<failOnError>false</failOnError>
 						<sourceFileExcludes>
@@ -453,8 +454,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.velocity</groupId>
-				<artifactId>velocity</artifactId>
-				<version>1.7</version>
+				<artifactId>velocity-engine-core</artifactId>
+				<version>2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.awaitility</groupId>
@@ -476,7 +477,6 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
 
 
 	<profiles>
