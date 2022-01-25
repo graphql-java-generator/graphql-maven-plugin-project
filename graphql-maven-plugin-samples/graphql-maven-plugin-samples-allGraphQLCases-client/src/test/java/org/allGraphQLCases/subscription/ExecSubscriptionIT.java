@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.graphql_java_generator.client.GraphQLReactiveWebSocketHandler;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -73,6 +74,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
+	@DirtiesContext
 	public void test_multiSubscribersToAList()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		final int NB_THREADS = 10;
@@ -136,6 +138,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
+	@DirtiesContext
 	public void test_subscribeToADate_issue53()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -178,6 +181,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
+	@DirtiesContext
 	public void test_subscribeToADate_serverComplete()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -211,6 +215,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
+	@DirtiesContext
 	public void test_subscribeToADate_clientComplete()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -240,6 +245,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
+	@DirtiesContext
 	void test_connectionError() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		Date date = new Calendar.Builder().setDate(2018, 02, 01).build().getTime();
 		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate("test_connectionError");
@@ -257,6 +263,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
+	@DirtiesContext
 	public void test_subscribeToADate_subscriptionError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -290,6 +297,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
+	@DirtiesContext
 	public void test_subscribeToADate_nextError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -323,6 +331,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
+	@DirtiesContext
 	public void test_subscribeToADate_webSocketCloseError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
