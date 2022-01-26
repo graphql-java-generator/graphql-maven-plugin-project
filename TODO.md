@@ -4,20 +4,6 @@ Here are the next tasks listed, as a TODO list:
 ## TODO list for the current version
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
 * Check issue #118 (CompletableFuture method is not generated for lists)
-* Solve issue #103 (define the Velocity log file, toward the target folder)
-* Issue [#114](https://github.com/graphql-java-generator/graphql-maven-plugin-project/issues/114)
-    * Manage this case:
-```
-interface IList {
-	list: [IFoo]
-}
-
-type TList implements IList {
-	list: [TFoo]
-}
-```
-* In allGraphQLCasesClient: in this sample, the list of custom scalars defined for the Forum schema should not contain `Long` and `NonNegativeInt`. In this case, their definition is erased at runtime in the `CustomScalarRegistryImpl.customScalarRegistry`.
-    * Workaround : define in the pom or gradle.build file, the full list of all scalars in the `<configuration>` for every GraphQL schema.
 * Check wiki, to properly indicate that the `allGraphQLCases.graphqls` is located in the allGraphQLCases client project
 * Remove gson from dependencies
 * Remove Deprecated getStringContentXxx methods in InputParameter

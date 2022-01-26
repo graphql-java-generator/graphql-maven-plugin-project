@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Graphql clients can send GET or POST HTTP requests. The spec does not make an explicit distinction. So you may need
  * to handle both. The following was tested using a graphiql client tool found here :
@@ -18,6 +21,8 @@ import java.util.Map;
  * http://graphql.org/learn/serving-over-http/
  */
 public class QueryParameters {
+
+	private static ObjectMapper objectMapper = new ObjectMapper();
 
 	private String query;
 	private String operationName;
@@ -35,23 +40,25 @@ public class QueryParameters {
 		return variables;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static QueryParameters from(String queryMessage) {
 		QueryParameters parameters = new QueryParameters();
-		Map<String, Object> json = JsonKit.toMap(queryMessage);
+		Map<String, Object> json;
+		try {
+			json = objectMapper.readValue(queryMessage, Map.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 		parameters.query = (String) json.get("query");
 		parameters.operationName = (String) json.get("operationName");
-		parameters.variables = getVariables(json.get("variables"));
+		parameters.variables = getVariables((Map<?, ?>) json.get("variables"));
 		return parameters;
 	}
 
-	private static Map<String, Object> getVariables(Object variables) {
-		if (variables instanceof Map) {
-			Map<?, ?> inputVars = (Map<?, ?>) variables;
-			Map<String, Object> vars = new HashMap<>();
-			inputVars.forEach((k, v) -> vars.put(String.valueOf(k), v));
-			return vars;
-		}
-		return JsonKit.toMap(String.valueOf(variables));
+	private static Map<String, Object> getVariables(Map<?, ?> variables) {
+		Map<String, Object> vars = new HashMap<>();
+		variables.forEach((k, v) -> vars.put(String.valueOf(k), v));
+		return vars;
 	}
 
 }
