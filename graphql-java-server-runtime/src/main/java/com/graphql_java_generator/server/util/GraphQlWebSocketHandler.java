@@ -138,6 +138,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 		Mono.delay(this.initTimeoutDuration).then(Mono.fromRunnable(() -> {
 			if (sessionState.isConnectionInitNotProcessed()) {
+				log.trace("Timeout ({}s) while waiting for the connection initialization",
+						this.initTimeoutDuration.getSeconds());
 				GraphQlStatus.closeSession(session, GraphQlStatus.INIT_TIMEOUT_STATUS);
 			}
 		})).subscribe();
@@ -186,14 +188,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			manageSubscribeMessage(uri, headers, request, id, session);
 			return;
 		case COMPLETE:
-			log.trace("Received 'complete' for operation id {} on web socket {}", id, session);
-			if (id != null) {
-				Subscription subscription = sessionState.getSubscriptions().remove(id);
-				if (subscription != null) {
-					log.trace("Cancelling subscription for operation id {} on web socket {}", id, session);
-					subscription.cancel();
-				}
-			}
+			manageCompleteMessage(session, id, sessionState);
 			return;
 		default:
 			GraphQlStatus.closeSession(session, GraphQlStatus.INVALID_MESSAGE_STATUS);
@@ -202,7 +197,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	}
 
 	/**
-	 * Actual Management of the Subscription
+	 * Actual Management of the Subscription, in a synchronized method
 	 * 
 	 * @param uri
 	 *            The called URI
@@ -217,8 +212,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	 * @param session
 	 * @throws IOException
 	 */
-	private void manageSubscribeMessage(URI uri, HttpHeaders headers, Map<String, Object> payload, String id,
-			WebSocketSession session) throws IOException {
+	private synchronized void manageSubscribeMessage(URI uri, HttpHeaders headers, Map<String, Object> payload,
+			String id, WebSocketSession session) throws IOException {
 		String query = payload.get("query").toString();
 		Object operationName = payload.get("operationName");
 		@SuppressWarnings("unchecked")
@@ -261,11 +256,12 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				private Subscription subscription;
 
 				@Override
-				public void onSubscribe(Subscription s) {
+				public synchronized void onSubscribe(Subscription s) {
 					this.subscription = s;
 
-					log.trace("Executing onSubscribe for subscription {} in Web Socket Session {}", id,
-							session.getId());
+					log.trace(
+							"Executing onSubscribe for subscription of id {} in Web Socket Session {} (the reactive flux subscription is {})",
+							id, session.getId(), s);
 
 					Subscription prev = getSessionInfo(session).getSubscriptions().putIfAbsent(id, subscription);
 					if (prev != null) {
@@ -276,7 +272,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				}
 
 				@Override
-				public void onNext(ExecutionResult er) {
+				public synchronized void onNext(ExecutionResult er) {
 					try {
 						TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.toSpecification());
 						log.trace("Sending new notification for subscription {}, on Web Socket Session {}: {}",
@@ -293,7 +289,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				}
 
 				@Override
-				public void onError(Throwable t) {
+				public synchronized void onError(Throwable t) {
 					log.error("Received onError for Subscription id={}, on web socket {} (the error is {}: {}", id,
 							session.getId(), t.getClass().getSimpleName(), t.getMessage());
 
@@ -308,9 +304,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 						List<Map<String, Object>> errors = Arrays.asList(errorMap);
 
 						try {
-							synchronized (session) {
-								session.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errors));
-							}
+							session.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errors));
 						} catch (IOException e) {
 							log.error("Could not send error message for subscription {} due to {}: {}", id,
 									e.getClass().getSimpleName(), e.getMessage());
@@ -319,16 +313,16 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				}
 
 				@Override
-				public void onComplete() {
+				public synchronized void onComplete() {
 					log.debug("Received onComplete for Subscription id={} on web socket {}", id, session.getId());
 					try {
-						synchronized (session) {
-							session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
-						}
+						session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
 
 						// Let's close this subscription
-						Subscription sub = getSessionInfo(session).getSubscriptions().remove(id);
+						Subscription sub = getSessionInfo(session).getSubscriptions().get(id);
 						if (sub != null) {
+							log.trace("Removing reactive flux subscription is {}, after onComplete", sub);
+							getSessionInfo(session).getSubscriptions().remove(id);
 							sub.cancel();
 						}
 					} catch (IOException e) {
@@ -357,6 +351,26 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 			synchronized (session) {
 				session.sendMessage(msg);
+			}
+		}
+	}
+
+	/**
+	 * Manage of the Complete message, in a synchronized method
+	 * 
+	 * @param session
+	 * @param id
+	 * @param sessionState
+	 */
+	private synchronized void manageCompleteMessage(WebSocketSession session, String id, SessionState sessionState) {
+		log.trace("Received 'complete' for operation id {} on web socket {}", id, session);
+		if (id != null) {
+			Subscription subscription = sessionState.getSubscriptions().remove(id);
+			if (subscription != null) {
+				log.trace(
+						"Cancelling subscription for operation id {} on web socket {} (the reactive flux subscription is {})",
+						id, session, subscription);
+				subscription.cancel();
 			}
 		}
 	}

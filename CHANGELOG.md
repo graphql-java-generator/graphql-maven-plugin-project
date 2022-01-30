@@ -25,10 +25,17 @@ All modes (client and server):
 * Issue #114: allows overriding field's type when implementing interface
 
 
+Server mode:
+* More robust multi-threading management for subscriptions
+
+
 Upgrade of dependencies versions (to remove security issues):
 * h2 is used only for sample. Upgraded from 1.4.200 to 2.1.210
 * velocity is the template engine. Upgraded from 1.7 to 2.3
     * A (positive) side effect, is that the velocity logging is managed through slf4j, like all the plugin's code logging. So this solves the issue #103, caused by velocity.log beeing created in the Intellij `bin` folder.
+    
+    
+    
 
 
 # 1.18
