@@ -559,7 +559,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 			#inputParams(), 
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		logger.debug("Executing subscription '${field.name}' in query mode: {} ", queryResponseDef);
+		logger.debug("Executing subscription '${field.name}'. queryResponseDef is '{}'", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return ${field.javaName}WithBindValues(objectResponse, subscriptionCallback#inputValues(), graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
