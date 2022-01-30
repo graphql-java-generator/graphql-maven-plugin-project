@@ -92,14 +92,6 @@
 			<artifactId>graphql-java-server-dependencies</artifactId>
 			<type>pom</type>
 		</dependency>
-		<dependency>
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java-spring-boot-starter-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java</groupId>
-			<artifactId>graphql-java-spring-webmvc</artifactId>
-		</dependency>
 
 		<!-- Dependencies that are specific to this project -->
 		<dependency>
