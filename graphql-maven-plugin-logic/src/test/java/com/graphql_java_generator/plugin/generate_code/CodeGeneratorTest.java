@@ -94,7 +94,7 @@ class CodeGeneratorTest {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testCodeGenerator() {
-		assertNotNull(codeGenerator.velocityEngineFromClasspath, "Velocity engine must be initialized");
+		assertNotNull(codeGenerator.velocityEngine, "Velocity engine must be initialized");
 	}
 
 	/**
@@ -106,10 +106,9 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_client() {
 		// Let's mock the Velocity engine, to check how it is called
-		codeGenerator.velocityEngineFromClasspath = mock(VelocityEngine.class);
+		codeGenerator.velocityEngine = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngineFromClasspath.getTemplate(anyString(), anyString()))
-				.thenReturn(mockedTemplate);
+		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
 		codeGenerator.generateCodeDocumentParser = mock(GenerateCodeDocumentParser.class);
 		pluginConfiguration.mode = PluginMode.client;
@@ -132,8 +131,7 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngineFromClasspath, times(1)).getTemplate(argument1.capture(),
-				argument2.capture());
+		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
 		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 
@@ -160,10 +158,9 @@ class CodeGeneratorTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_generateTargetFile_server() {
 		// Let's mock the Velocity engine, to check how it is called
-		codeGenerator.velocityEngineFromClasspath = mock(VelocityEngine.class);
+		codeGenerator.velocityEngine = mock(VelocityEngine.class);
 		Template mockedTemplate = mock(Template.class);
-		when(codeGenerator.velocityEngineFromClasspath.getTemplate(anyString(), anyString()))
-				.thenReturn(mockedTemplate);
+		when(codeGenerator.velocityEngine.getTemplate(anyString(), anyString())).thenReturn(mockedTemplate);
 
 		pluginConfiguration.mode = PluginMode.server;
 
@@ -183,8 +180,7 @@ class CodeGeneratorTest {
 		// Let's check the parameter for getTemplate
 		ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> argument2 = ArgumentCaptor.forClass(String.class);
-		verify(codeGenerator.velocityEngineFromClasspath, times(1)).getTemplate(argument1.capture(),
-				argument2.capture());
+		verify(codeGenerator.velocityEngine, times(1)).getTemplate(argument1.capture(), argument2.capture());
 		assertEquals(templateFilename, argument1.getValue(), "checks the parameter for getTemplate");
 		assertEquals("UTF-8", argument2.getValue());
 

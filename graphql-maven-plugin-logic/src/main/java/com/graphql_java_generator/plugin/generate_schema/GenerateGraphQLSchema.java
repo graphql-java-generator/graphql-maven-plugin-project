@@ -162,8 +162,9 @@ public class GenerateGraphQLSchema {
 		if (velocityEngine == null) {
 			// Initialization for Velocity
 			velocityEngine = new VelocityEngine();
-			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-			velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath");
+			velocityEngine.setProperty("resource.loader.classpath.description", "Velocity Classpath Resource Loader");
+			velocityEngine.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName());
 			velocityEngine.init();
 		}
 		return velocityEngine;

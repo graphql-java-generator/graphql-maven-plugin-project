@@ -35,6 +35,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.TemplateInitException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,13 +90,8 @@ public class GenerateCodeGenerator implements Generator {
 	@Autowired
 	GraphqlUtils graphqlUtils;
 
-	/** The Velocity engine used to generate the target file */
-	VelocityEngine velocityEngineFromClasspath = null;
-	/**
-	 * The context for Velocity, when the templates are on the file system (that is for custom templates provided for
-	 * the project being build
-	 */
-	VelocityEngine velocityEngineFromFile = null;
+	/** The Velocity engine, that will merge the templates with their context */
+	VelocityEngine velocityEngine = null;
 
 	/** The context for server mode. Stored here, so that it is calculated only once */
 	VelocityContext serverContext = null;
@@ -103,17 +99,20 @@ public class GenerateCodeGenerator implements Generator {
 	@PostConstruct
 	void init() {
 		// Initialization for Velocity
-		velocityEngineFromClasspath = new VelocityEngine();
-		velocityEngineFromClasspath.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		velocityEngineFromClasspath.setProperty("classpath.resource.loader.class",
-				ClasspathResourceLoader.class.getName());
-		velocityEngineFromClasspath.init();
+		velocityEngine = new VelocityEngine();
+		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADERS, "classpath, file");
 
-		velocityEngineFromFile = new VelocityEngine();
-		velocityEngineFromFile.setProperty(RuntimeConstants.RESOURCE_LOADER, "file");
-		velocityEngineFromFile.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH,
-				configuration.getProjectDir().getAbsolutePath());
-		velocityEngineFromFile.init();
+		// Configuration for 'real' executions of the plugin (that is: from the plugin's packaged jar)
+		velocityEngine.setProperty("resource.loader.classpath.description", "Velocity Classpath Resource Loader");
+		velocityEngine.setProperty("resource.loader.classpath.class", ClasspathResourceLoader.class.getName());
+
+		// Configuration for the unit tests (that is: from the file system)
+		velocityEngine.setProperty("resource.loader.file.description", "Velocity File Resource Loader");
+		velocityEngine.setProperty("resource.loader.file.class", FileResourceLoader.class.getName());
+		velocityEngine.setProperty("resource.loader.file.path", configuration.getProjectDir().getAbsolutePath());
+		velocityEngine.setProperty("resource.loader.file.cache", true);
+
+		velocityEngine.init();
 	}
 
 	/**
@@ -675,18 +674,10 @@ public class GenerateCodeGenerator implements Generator {
 	 */
 	int generateOneFile(File targetFile, String msg, VelocityContext context, String templateFilename) {
 		try {
-			@SuppressWarnings("resource")
 			Writer writer = null;
-			Template template = null;
-
-			File localFile = new File(configuration.getProjectDir(), templateFilename);
 			logger.debug(msg);
 
-			if (localFile.exists()) {
-				template = velocityEngineFromFile.getTemplate(templateFilename, "UTF-8");
-			} else {
-				template = velocityEngineFromClasspath.getTemplate(templateFilename, "UTF-8");
-			}
+			Template template = velocityEngine.getTemplate(templateFilename, "UTF-8");
 
 			targetFile.getParentFile().mkdirs();
 			try {
