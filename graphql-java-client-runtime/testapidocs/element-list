@@ -1,0 +1,14 @@
+com.graphql_java_generator.client
+com.graphql_java_generator.client.graphqlrepository
+com.graphql_java_generator.client.response
+com.graphql_java_generator.customscalars
+com.graphql_java_generator.domain.client.allGraphQLCases
+com.graphql_java_generator.domain.client.forum
+com.graphql_java_generator.domain.client.starwars
+com.graphql_java_generator.domain.client.starwars.scalar
+com.graphql_java_generator.domain.server.allGraphQLCases
+com.graphql_java_generator.it_tests.spring_graphql_one_graphql_repo
+com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos
+com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ko_missing_queryExecutor
+com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ok
+com.graphql_java_generator.testcases
