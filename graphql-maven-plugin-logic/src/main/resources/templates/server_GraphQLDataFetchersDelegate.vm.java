@@ -99,7 +99,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 */
 #if ($dataFetcherDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
-	public Publisher<${dataFetcher.field.javaType}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
+	public Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaType}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
 #else
 	public ${dataFetcher.field.javaType} ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaType} ${argument.javaName}#end);
 #end 

@@ -4,6 +4,7 @@ package ${packageUtilName};
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -49,7 +50,7 @@ public class GraphQLDataFetchers {
 	////////////////////////////////////////////////////////////////////////////////////////////////
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 
-	public DataFetcher<#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end${dataFetcher.field.javaType}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end#if(${dataFetcher.completableFuture})>#end> ${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}#if(${dataFetcher.completableFuture})WithDataLoader#end() {
+	public DataFetcher<#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end${dataFetcher.field.javaType}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end#if(${dataFetcher.completableFuture})>#end> ${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}#if(${dataFetcher.completableFuture})WithDataLoader#end() {
 		return dataFetchingEnvironment -> {
 #foreach ($argument in $dataFetcher.field.inputParameters)          
 ## $argument is an instance of Field
@@ -74,14 +75,14 @@ public class GraphQLDataFetchers {
 						() -> ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end));
 			}
 #elseif (${dataFetcher.field.fieldTypeAST.listDepth}>0)
-			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end${dataFetcher.field.javaType}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
+			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end${dataFetcher.field.javaType}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 #if (${dataFetcher.dataFetcherDelegate.type.requestType}!="subscription")
 			logger.debug("${dataFetcher.name}: {} found rows", (ret==null) ? 0 : ret.size());
 #end
 
 			return ret;
 #else
-			#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")>#end ret = null;
+			#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end${dataFetcher.field.type.classSimpleName}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end ret = null;
 			try {
 				ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			} catch (NoSuchElementException e) {
