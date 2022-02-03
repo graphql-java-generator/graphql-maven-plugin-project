@@ -25,7 +25,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 
 	public boolean addRelayConnections = false;
 	public String packageName = "my.test.package";
-	public int maxTokens = 15000;
+	public Integer maxTokens = 15000;
 	public File projectDir = new File("./graphql-maven-plugin-logic");
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;

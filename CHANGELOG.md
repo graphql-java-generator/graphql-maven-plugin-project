@@ -9,6 +9,13 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+
+# Not released yet
+
+Gradle plugin:
+* Solved an build issue with some old configurations of the plugin
+
+
 # 1.18.1
 
 All modes (client and server):

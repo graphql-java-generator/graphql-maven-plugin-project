@@ -46,7 +46,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
-	public int maxTokens;
+	public Integer maxTokens;
 	public Packaging packaging = null;
 	public File projectDir;// Initialized in the constructor
 	public String scanBasePackages = "null";

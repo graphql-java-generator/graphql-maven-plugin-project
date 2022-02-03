@@ -591,7 +591,7 @@ public class GenerateCodeGenerator implements Generator {
 				GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
 
 					@Override
-					public int getMaxTokens() {
+					public Integer getMaxTokens() {
 						return configuration.getMaxTokens();
 					}
 

@@ -66,7 +66,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	 * schemas, you must define the <I>maxTokens</I> to the needed value.
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.maxTokens", defaultValue = CommonConfiguration.DEFAULT_MAX_TOKENS)
-	public int maxTokens;
+	public Integer maxTokens;
 
 	/**
 	 * Not available to the user: the {@link MavenProject} in which the plugin executes
@@ -139,7 +139,7 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	protected AnnotationConfigApplicationContext ctx;
 
 	@Override
-	public int getMaxTokens() {
+	public Integer getMaxTokens() {
 		return maxTokens;
 	}
 

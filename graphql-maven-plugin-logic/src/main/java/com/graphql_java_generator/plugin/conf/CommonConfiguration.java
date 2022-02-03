@@ -40,7 +40,7 @@ public interface CommonConfiguration {
 	 * 
 	 * @return
 	 */
-	public int getMaxTokens();
+	public Integer getMaxTokens();
 
 	/**
 	 * Get the {@link File} for the current project's directory. This allows to compute the full path of file that are
