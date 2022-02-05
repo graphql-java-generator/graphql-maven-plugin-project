@@ -3,6 +3,8 @@
  */
 package org.starwars.server.datafetchersdelegate;
 
+import java.util.Optional;
+
 import javax.annotation.Resource;
 
 import org.reactivestreams.Publisher;
@@ -33,7 +35,7 @@ public class DataFetchersDelegateSubscriptionTypeImpl implements DataFetchersDel
 	CharacterPublisher characterPublisher;
 
 	@Override
-	public Publisher<Character> newCharacter(DataFetchingEnvironment dataFetchingEnvironment) {
+	public Publisher<Optional<Character>> newCharacter(DataFetchingEnvironment dataFetchingEnvironment) {
 		logger.debug("Received a 'newCharacter' subscription");
 		return characterPublisher.getPublisher();
 	}

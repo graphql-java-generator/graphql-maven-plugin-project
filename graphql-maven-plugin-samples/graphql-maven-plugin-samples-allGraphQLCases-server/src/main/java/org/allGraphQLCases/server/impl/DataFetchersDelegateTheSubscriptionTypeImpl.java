@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.allGraphQLCases.server.AllFieldCases;
@@ -157,6 +158,13 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 		ret.setListWithoutIdSubTypes(list);
 
 		return Flux.just(ret);
+	}
+
+	@Override
+	public Publisher<Optional<String>> subscriptionWithNullResponse(DataFetchingEnvironment dataFetchingEnvironment) {
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> Optional.ofNullable(null));
 	}
 
 }

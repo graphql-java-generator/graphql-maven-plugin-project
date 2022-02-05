@@ -290,8 +290,8 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 				@Override
 				public synchronized void onError(Throwable t) {
-					log.error("Received onError for Subscription id={}, on web socket {} (the error is {}: {}", id,
-							session.getId(), t.getClass().getSimpleName(), t.getMessage());
+					log.error("Received onError for Subscription id={}, on web socket {}. The exception is {}", id,
+							session.getId(), t);
 
 					if (t instanceof SubscriptionExistsException) {
 						CloseStatus status = new CloseStatus(4409, "Subscriber for " + id + " already exists");

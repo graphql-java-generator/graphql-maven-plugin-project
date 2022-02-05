@@ -104,6 +104,9 @@ type TheSubscriptionType {
     
     # A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
     subscriptionTest(param: SubscriptionTestParam!): String!
+    
+    # Issue 122: Check Subscription behavior when notification response is null
+    subscriptionWithNullResponse: String
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {

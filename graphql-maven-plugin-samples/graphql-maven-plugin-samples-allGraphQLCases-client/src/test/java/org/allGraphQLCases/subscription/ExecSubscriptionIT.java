@@ -175,6 +175,28 @@ public class ExecSubscriptionIT {
 		assertEquals(date2, client2.callback.lastReceivedMessage, "The client 2 should have received a message");
 	}
 
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	public void test_subscribeToANullableString()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
+		logger.info("------------------------------------------------------------------------------------------------");
+		logger.info("Starting test_subscribeToANullableString");
+
+		SubscriptionCallbackNullableString callback = new SubscriptionCallbackNullableString(
+				"test_subscribeToANullableString");
+		SubscriptionClient sub = subscriptionExecutor.subscriptionWithNullResponse("", callback);
+
+		// Let's wait a max of 20 second, until we receive some notifications
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's disconnect from the subscription
+		sub.unsubscribe();
+
+		assertTrue(callback.hasReceveivedAMessage, "We should have received a message");
+		assertNull(callback.lastReceivedMessage, "The message should be null");
+	}
+
 	/**
 	 * Tests that the graphql-transport-ws 'complete' message is properly propagated from the server to the client, if
 	 * it occurs
