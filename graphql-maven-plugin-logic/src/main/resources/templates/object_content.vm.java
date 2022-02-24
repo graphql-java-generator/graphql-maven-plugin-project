@@ -175,7 +175,7 @@
 ##
 ## So, in this case (!$field.fieldJavaTypeNamesFromImplementedInterface.size()>1 && $field.javaType.startsWith("List<")), we throw an exception:
 ##
-${exceptionThrower.throwRuntimeException("For fields which type are a list, the GraphQL type may not be a GraphQl type that implements an interface that itself implements an interface. Only one level of inheritance is accepted, due to java syntax limitation")}
+${exceptionThrower.throwRuntimeException("For fields which type are a list, the GraphQL type may not be a GraphQl type that implements an interface that itself implements an interface. Only one level of inheritance is accepted, due to java syntax limitation. Sample: TList implements IList2 that itself implements IList1. TList contains an attribute 'list' that is a list of TFoo, where TFoo implements IFoo1 that itself implements IFoo2. It comes from IList2.list (list of IFoo2), which itself comes from IList1 (list of IFoo1). In this case, TList must implement these two methods: 'List<IFoo2> getList()' and ' List<IFoo1> getList()', which is not possible.")}
 #end
 ##
 ##
