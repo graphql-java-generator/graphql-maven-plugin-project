@@ -10,6 +10,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# 1.18.3
+
+All modes:
+* Solved an issue: an Exception would be thrown when using the POJO setters with a null value.
+
+
 # 1.18.2
 
 Gradle plugin:
