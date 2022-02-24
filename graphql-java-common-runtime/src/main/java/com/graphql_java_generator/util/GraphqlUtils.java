@@ -149,7 +149,7 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Convert the given name, to a camel case name. Currenly very simple : it puts the first character in lower case.
+	 * Convert the given name, to a camel case name. Currently very simple : it puts the first character in lower case.
 	 * 
 	 * @return
 	 */
