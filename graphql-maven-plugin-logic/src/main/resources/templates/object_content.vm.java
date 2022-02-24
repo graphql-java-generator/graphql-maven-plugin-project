@@ -87,7 +87,7 @@
 #end
 	public void set${field.pascalCaseName}($type ${field.javaName}) {
 #if ($field.javaType.startsWith("List<"))
-		if (${field.javaName} instanceof List) {
+		if (${field.javaName} == null || ${field.javaName} instanceof List) {
 #if ($field.javaType != $type)
 			// ${field.javaName} is an instance of $type. Let's check that this can be copied into a ${field.javaType} 
 			for (Object item : ${field.javaName}) {
@@ -98,7 +98,7 @@
 #end
 			this.${field.javaName} = (${field.javaType}) (Object) ${field.javaName};
 #else
-		if (${field.javaName} instanceof ${field.javaType}) {
+		if (${field.javaName} == null || ${field.javaName} instanceof ${field.javaType}) {
 			this.${field.javaName} = (${field.javaType}) ${field.javaName};
 #end
 		} else {

@@ -623,8 +623,9 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					// 1) It's a Data Fetcher from an object to another one (we're already in this case)
 					// 2) That target object has an id (it can be either a list or a single object)
 					// 3) The Relation toward the target object is OneToOne or ManyToOne. That is this field is not a
-					// list graphql-java will then determines at runtime if a dataloader is needed in the running case,
-					// or not
+					// list
+					// graphql-java will then determines at runtime if a dataloader is needed in the running case, or
+					// not
 					boolean withDataLoader = field.getType().getIdentifier() != null
 							&& !(field.getFieldTypeAST().getListDepth() > 0);
 
