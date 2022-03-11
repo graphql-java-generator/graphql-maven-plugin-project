@@ -39,6 +39,11 @@
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
 								</customScalar>
 								<customScalar>
+									<graphQLTypeName>DateTime</graphQLTypeName>
+									<javaType>java.time.OffsetDateTime</javaType>
+									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.DateTime</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
 									<graphQLTypeName>else</graphQLTypeName>
 									<javaType>java.lang.String</javaType>
 									<graphQLScalarTypeGetter>org.allGraphQLCases.server.impl.GraphQLScalarTypeElse.getElseScalar()</graphQLScalarTypeGetter>

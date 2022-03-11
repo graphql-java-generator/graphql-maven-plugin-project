@@ -1,5 +1,6 @@
 package org.allGraphQLCases.demo.impl;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -81,11 +82,11 @@ public class PartialDirectQueries implements PartialQueries {
 
 	@Override
 	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
-			String textToAppendToTheForname, long nbItemsWithId, Date date, List<Date> dates, Boolean uppercaseNameList,
-			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
-			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
+			String textToAppendToTheForname, long nbItemsWithId, Date date, OffsetDateTime dateTime, List<Date> dates,
+			Boolean uppercaseNameList, String textToAppendToTheFornameWithId, FieldParameterInput input,
+			int nbItemsWithoutId, FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return queryType.allFieldCases("{id name " //
+		return queryType.allFieldCases("{id name date dateTime dates " //
 				// Parameter for fields are not managed yet)
 				// + " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 				+ " forname"//
@@ -99,6 +100,7 @@ public class PartialDirectQueries implements PartialQueries {
 				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
 				"nbItemsWithId", nbItemsWithId, //
 				"date", date, //
+				"dateTime", dateTime, //
 				"dates", dates, //
 				"uppercaseNameList", uppercaseNameList, //
 				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //

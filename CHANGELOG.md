@@ -10,6 +10,13 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# Not released yet
+
+
+__TODO:__ Issue #128 : having a `Client` interface in the GraphQL schema blocks the generated code's compilation
+
+
+
 # 1.18.3
 
 All modes:

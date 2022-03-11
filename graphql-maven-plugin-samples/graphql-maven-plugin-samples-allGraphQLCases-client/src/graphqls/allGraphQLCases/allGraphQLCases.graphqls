@@ -3,6 +3,9 @@ scalar Date
 	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
 	# (see issue 2055)
 
+# The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars)
+scalar DateTime
+
 scalar Long
 
 directive @IDScalarDirective
@@ -133,6 +136,7 @@ input AllFieldCasesInput @testDirective(value:"on Input Type") {
     forname: String
     age: Long!
     date: Date
+    dateTime: DateTime
     dates: [Date]!
     nbComments: Int
     comments: [String]
@@ -174,6 +178,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
     aFloat: Float
     date: Date
+    dateTime: DateTime
     dates: [Date]!
     nbComments: Int
     comments: [String]

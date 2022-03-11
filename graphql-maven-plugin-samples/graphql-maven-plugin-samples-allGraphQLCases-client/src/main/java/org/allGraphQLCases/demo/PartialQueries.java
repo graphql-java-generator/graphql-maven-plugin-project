@@ -1,5 +1,6 @@
 package org.allGraphQLCases.demo;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -64,9 +65,9 @@ public interface PartialQueries {
 	// Second part: partialQueries (based on the allGraphQLCases use case)
 
 	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
-			String textToAppendToTheForname, long nbItemsWithId, Date date, List<Date> dates, Boolean uppercaseNameList,
-			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
-			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
+			String textToAppendToTheForname, long nbItemsWithId, Date date, OffsetDateTime dateTime, List<Date> dates,
+			Boolean uppercaseNameList, String textToAppendToTheFornameWithId, FieldParameterInput input,
+			int nbItemsWithoutId, FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException;
 
 	////////////////////////////////////////////////////////////////////////////

@@ -3,6 +3,7 @@
  */
 package org.allGraphQLCases.demo.impl;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 	// Second part: partialQueries (based on the allGraphQLCases use case)
 
 	@Override
-	@PartialRequest(request = "{ ... on WithID { id } name " //
+	@PartialRequest(request = "{ ... on WithID { id } name date dateTime dates " //
 			+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
 			+ " age nbComments " + " comments booleans aliases planets friends {id}" //
 			+ " oneWithIdSubType {id name} "//
@@ -83,7 +84,8 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 			@BindParameter(name = "uppercase") Boolean uppercase,
 			@BindParameter(name = "textToAppendToTheForname") String textToAppendToTheForname,
 			@BindParameter(name = "nbItemsWithId") long nbItemsWithId, //
-			@BindParameter(name = "date") Date date, //
+			@BindParameter(name = "date") Date date, // ,
+			@BindParameter(name = "dateTime") OffsetDateTime dateTime, //
 			@BindParameter(name = "dates") List<Date> dates,
 			@BindParameter(name = "uppercaseNameList") Boolean uppercaseNameList,
 			@BindParameter(name = "textToAppendToTheFornameWithId") String textToAppendToTheFornameWithId,

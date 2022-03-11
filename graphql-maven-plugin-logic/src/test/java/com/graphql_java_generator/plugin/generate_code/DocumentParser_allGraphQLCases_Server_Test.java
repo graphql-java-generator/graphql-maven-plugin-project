@@ -78,7 +78,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals(43, i, "Nb java files are generated");
 		assertEquals(8, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
 		assertEquals(27, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
-		assertEquals(4, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
+		assertEquals(5, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(13, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(3, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
@@ -137,6 +137,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		j += 1;
 		// date: Date
 		checkField(objectType, j, "date", 0, false, null, "Date", "Date");
+		checkNbInputParameter(objectType, j, 0);
+		j += 1;
+		// dateTime: DateTime
+		checkField(objectType, j, "dateTime", 0, false, null, "DateTime", "OffsetDateTime");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// dates: [Date]!

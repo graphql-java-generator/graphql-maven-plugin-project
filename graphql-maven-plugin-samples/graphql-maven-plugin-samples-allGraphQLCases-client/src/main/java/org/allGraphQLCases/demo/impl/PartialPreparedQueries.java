@@ -3,6 +3,7 @@
  */
 package org.allGraphQLCases.demo.impl;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -89,14 +90,15 @@ public class PartialPreparedQueries implements PartialQueries {
 		withListRequest = queryType.getWithListGraphQLRequest("{id name appearsIn friends {id name}}");
 		errorRequest = queryType.getErrorGraphQLRequest("{id name appearsIn friends {id name}}");
 		aBreakRequest = queryType.getABreakGraphQLRequest("{case(test: &test, if: ?if)}");
-		allFieldCasesRequest = queryType.getAllFieldCasesGraphQLRequest("{ ... on WithID { id } name " //
-				+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
-				+ " age nbComments " + " comments booleans aliases planets friends {id}" //
-				+ " oneWithIdSubType {id name} "//
-				+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
-				+ " oneWithoutIdSubType(input: ?input) {name}"//
-				+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
-				+ "}");
+		allFieldCasesRequest = queryType
+				.getAllFieldCasesGraphQLRequest("{ ... on WithID { id } name date dateTime dates " //
+						+ " forname(uppercase: ?uppercase, textToAppendToTheForname: ?textToAppendToTheForname) "
+						+ " age nbComments " + " comments booleans aliases planets friends {id}" //
+						+ " oneWithIdSubType {id name} "//
+						+ " listWithIdSubTypes(nbItems: ?nbItemsWithId, date: ?date, dates: &dates, uppercaseName: ?uppercaseNameList, textToAppendToTheForname: ?textToAppendToTheFornameWithId) {name id}"
+						+ " oneWithoutIdSubType(input: ?input) {name}"//
+						+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
+						+ "}");
 	}
 
 	@Override
@@ -137,14 +139,15 @@ public class PartialPreparedQueries implements PartialQueries {
 
 	@Override
 	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput, Boolean uppercase,
-			String textToAppendToTheForname, long nbItemsWithId, Date date, List<Date> dates, Boolean uppercaseNameList,
-			String textToAppendToTheFornameWithId, FieldParameterInput input, int nbItemsWithoutId,
-			FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
+			String textToAppendToTheForname, long nbItemsWithId, Date date, OffsetDateTime dateTime, List<Date> dates,
+			Boolean uppercaseNameList, String textToAppendToTheFornameWithId, FieldParameterInput input,
+			int nbItemsWithoutId, FieldParameterInput inputList, String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return queryType.allFieldCases(allFieldCasesRequest, allFieldCasesInput, //
 				"uppercase", uppercase, "textToAppendToTheForname", textToAppendToTheForname, //
 				"nbItemsWithId", nbItemsWithId, //
 				"date", date, //
+				"dateTime", dateTime, //
 				"dates", dates, //
 				"uppercaseNameList", uppercaseNameList, //
 				"textToAppendToTheFornameWithId", textToAppendToTheFornameWithId, //

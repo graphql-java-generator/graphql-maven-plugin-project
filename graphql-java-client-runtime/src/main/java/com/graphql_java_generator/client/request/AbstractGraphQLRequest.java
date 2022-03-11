@@ -47,8 +47,6 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	static GraphQLConfiguration staticConfiguration = null;
 
-	static ObjectMapper objectMapper = new ObjectMapper();
-
 	/**
 	 * This contains the configuration for this instance. This configuration overrides the {@link #staticConfiguration},
 	 * if defined.

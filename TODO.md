@@ -2,10 +2,13 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Issue #128 : having a `Client` interface in the GraphQL schema blocks the generated code's compilation
+* Issue #118 : CompletableFuture method is not generated for lists
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
 * Check issue #118 (CompletableFuture method is not generated for lists)
 * Check wiki, to properly indicate that the `allGraphQLCases.graphqls` is located in the allGraphQLCases client project
 * Remove gson from dependencies
+* GraphQLObjectMapper: keep the same Jackson ObjectMapper (instead of recreate it in the constructor)
 * Remove Deprecated getStringContentXxx methods in InputParameter
 * Issue #105: it's no more possible to override the ExchangeFilterFunction
 * Subscription: the client remain active after a `Connection refused` (even if the main thread stops)
