@@ -100,7 +100,7 @@ type TheSubscriptionType {
 	
 	# Issue 54
 	subscribeToAList: [Int]!
-	subscribeToAListOfScalar: [Date]
+	subscribeToAListOfScalars: [Date]
 	
     # issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
     issue53(date: Date!): Date!

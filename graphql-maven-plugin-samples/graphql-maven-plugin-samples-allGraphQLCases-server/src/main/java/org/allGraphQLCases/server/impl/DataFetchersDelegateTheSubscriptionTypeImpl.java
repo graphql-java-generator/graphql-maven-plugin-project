@@ -171,7 +171,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	 * Returns a Flux, that will produce a list of two random dates, every 0.1s
 	 */
 	@Override
-	public Publisher<Optional<List<Date>>> subscribeToAListOfScalar(DataFetchingEnvironment dataFetchingEnvironment) {
+	public Publisher<Optional<List<Date>>> subscribeToAListOfScalars(DataFetchingEnvironment dataFetchingEnvironment) {
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> Optional.ofNullable(dataGenerator.generateInstanceList(Date.class, 2)));

@@ -197,6 +197,35 @@ public class ExecSubscriptionIT {
 		assertNull(callback.lastReceivedMessage, "The message should be null");
 	}
 
+	/** Tests a subscription that returns a list of Custom Scalars */
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	public void test_subscribeToAListOfDates()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
+		logger.info("------------------------------------------------------------------------------------------------");
+		logger.info("Starting test_subscribeToAListOfDate");
+
+		SubscriptionCallbackToAListOfDates callback = new SubscriptionCallbackToAListOfDates(
+				"test_subscribeToAListOfDate");
+		SubscriptionClient sub = subscriptionExecutor.subscribeToAListOfScalars("", callback);
+
+		// Let's wait a max of 20 second, until we receive some notifications
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's disconnect from the subscription
+		sub.unsubscribe();
+
+		assertTrue(callback.hasReceveivedAMessage, "We should have received a message");
+		assertNotNull(callback.lastReceivedMessage, "The message should be null");
+		// Each message contains two dates
+		assertEquals(2, callback.lastReceivedMessage.size());
+		assertNotNull(callback.lastReceivedMessage.get(0), "date0 is not null");
+		assertNotNull(callback.lastReceivedMessage.get(1), "date1 is not null");
+		assertTrue(callback.lastReceivedMessage.get(0) instanceof Date, "date0 is an instance of Date");
+		assertTrue(callback.lastReceivedMessage.get(1) instanceof Date, "date1 is an instance of Date");
+	}
+
 	/**
 	 * Tests that the graphql-transport-ws 'complete' message is properly propagated from the server to the client, if
 	 * it occurs
