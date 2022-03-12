@@ -22,7 +22,7 @@ public class ${object.classSimpleName}RootResponse {
 #if($configuration.isGenerateJacksonAnnotations())
 	@JsonProperty("data")
 #end
-	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeSimpleName = "${object.javaName}", javaClass = ${object.classSimpleName}.class)
+	@GraphQLNonScalar(fieldName = "${object.name}", graphQLTypeSimpleName = "${object.javaName}", javaClass = ${object.classFullName}.class)
 	${object.classSimpleName} ${object.requestType};
 
 #if($configuration.isGenerateJacksonAnnotations())

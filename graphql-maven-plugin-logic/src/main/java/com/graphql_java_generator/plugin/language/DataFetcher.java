@@ -83,7 +83,7 @@ public interface DataFetcher {
 	 * 
 	 * @return the GraphQL name of the type that contains this field, or null if this is a request ()
 	 */
-	public String getGraphQLOriginType();
+	public Type getGraphQLOriginType();
 
 	/**
 	 * Returns true if this DataFetcher returns a {@link CompletableFuture}, which will be used within a

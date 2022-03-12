@@ -28,7 +28,7 @@
 	 */
 #end
 	${field.annotation}
-	${field.javaType} ${field.javaName};
+	${field.javaTypeFullClassname} ${field.javaName};
 
 
 #end
@@ -38,7 +38,7 @@
 ####################################################################################################################################################
 ###########  Case 1 (standard case): the field's type is NOT a type that implements an interface defined in the GraphQL schema  ####################
 ####################################################################################################################################################
-#if ($field.fieldJavaTypeNamesFromImplementedInterface.size() == 0)
+#if ($field.fieldJavaFullClassnamesFromImplementedInterface.size() == 0)
 ##
 #if ($field.comments.size() > 0)
 	/**
@@ -49,7 +49,7 @@
 #if ($field.comments.size() > 0)
 	 */
 #end
-	public void set${field.pascalCaseName}(${field.javaType} ${field.javaName}) {
+	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
 
@@ -62,7 +62,7 @@
 #if ($field.comments.size() > 0)
 	*/
 #end
-	public ${field.javaType} get${field.pascalCaseName}() {
+	public ${field.javaTypeFullClassname} get${field.pascalCaseName}() {
 		return ${field.javaName};
 	}
 		
@@ -71,7 +71,7 @@
 ###########  Case 2: the field's type is implements an interface defined in the GraphQL schema  ####################################################
 ####################################################################################################################################################
 ##
-#foreach ($type in $field.fieldJavaTypeNamesFromImplementedInterface)
+#foreach ($type in $field.fieldJavaFullClassnamesFromImplementedInterface)
 ##
 ## The field inherited from an interface field, and the field's type has been narrowed (it's not the type defined in the interface, but a subclass or subinterface of it) 
 ## See IFoo and TFoo sample in the allGraphQLCases schema, used to check the #114 issue (search for 114 in allGraphQLCases.graphqls)
@@ -88,27 +88,27 @@
 	public void set${field.pascalCaseName}($type ${field.javaName}) {
 #if ($field.javaType.startsWith("List<"))
 		if (${field.javaName} == null || ${field.javaName} instanceof List) {
-#if ($field.javaType != $type)
+#if ($field.javaTypeFullClassname != $type)
 			// ${field.javaName} is an instance of $type. Let's check that this can be copied into a ${field.javaType} 
 			for (Object item : ${field.javaName}) {
-				if (! (item instanceof ${field.graphQLTypeSimpleName}))
-					throw new IllegalArgumentException("The given ${field.javaName} should be a list of instances of ${field.graphQLTypeSimpleName}, but at least one item is an instance of "
+				if (! (item instanceof ${field.type.classFullName}))
+					throw new IllegalArgumentException("The given ${field.javaName} should be a list of instances of ${field.type.classFullName}, but at least one item is an instance of "
 							+ item.getClass().getName());
 			}
 #end
-			this.${field.javaName} = (${field.javaType}) (Object) ${field.javaName};
+			this.${field.javaName} = (${field.javaTypeFullClassname}) (Object) ${field.javaName};
 #else
-		if (${field.javaName} == null || ${field.javaName} instanceof ${field.javaType}) {
-			this.${field.javaName} = (${field.javaType}) ${field.javaName};
+		if (${field.javaName} == null || ${field.javaName} instanceof ${field.javaTypeFullClassname}) {
+			this.${field.javaName} = (${field.javaTypeFullClassname}) ${field.javaName};
 #end
 		} else {
-			throw new IllegalArgumentException("The given ${field.javaName} should be an instance of ${field.javaType}, but is an instance of "
+			throw new IllegalArgumentException("The given ${field.javaName} should be an instance of ${field.javaTypeFullClassname}, but is an instance of "
 					+ ${field.javaName}.getClass().getName());
 		}
 	}
-#end ##(foreach ($type in $field.fieldJavaTypeNamesFromImplementedInterface))
+#end ##(foreach ($type in $field.fieldJavaFullClassnamesFromImplementedInterface))
 
-#if (!$field.fieldJavaTypeNamesFromImplementedInterface.contains($field.javaType))
+#if (!$field.fieldJavaFullClassnamesFromImplementedInterface.contains($field.javaTypeFullClassname))
 
 	/** 
 	 * As the type declared in the class is not inherited from one of the implemented interfaces, we need a dedicated setter.
@@ -124,7 +124,7 @@
 	 * $comment
 #end
 	 */
-	public void set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaType} ${field.javaName}) {
+	public void set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #else
 	 * 
 	 * @param
@@ -132,13 +132,13 @@
 	 * $comment
 #end
 	 */
-	public void set${field.pascalCaseName}(${field.javaType} ${field.javaName}) {
+	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #end
 		this.${field.javaName} = ${field.javaName};
 	}
 #end
 
-#if ($field.fieldJavaTypeNamesFromImplementedInterface.size()>1 && $field.javaType.startsWith("List<"))
+#if ($field.fieldJavaFullClassnamesFromImplementedInterface.size()>1 && $field.javaType.startsWith("List<"))
 ##
 ## We are in the complex case: the type is a list. And because of java's type erasure, we need to have different methods, for each possible return type.
 ## So we need to have more than one getter for this field. And these getters must have different name.
@@ -173,14 +173,14 @@
 ## List<IFoo2> getList();
 ## List<IFoo1> getList();
 ##
-## So, in this case (!$field.fieldJavaTypeNamesFromImplementedInterface.size()>1 && $field.javaType.startsWith("List<")), we throw an exception:
+## So, in this case (!$field.fieldJavaFullClassnamesFromImplementedInterface.size()>1 && $field.javaType.startsWith("List<")), we throw an exception:
 ##
 ${exceptionThrower.throwRuntimeException("For fields which type are a list, the GraphQL type may not be a GraphQl type that implements an interface that itself implements an interface. Only one level of inheritance is accepted, due to java syntax limitation. Sample: TList implements IList2 that itself implements IList1. TList contains an attribute 'list' that is a list of TFoo, where TFoo implements IFoo1 that itself implements IFoo2. It comes from IList2.list (list of IFoo2), which itself comes from IList1 (list of IFoo1). In this case, TList must implement these two methods: 'List<IFoo2> getList()' and ' List<IFoo1> getList()', which is not possible.")}
 #end
 ##
 ##
 ##
-## There is only one item in the fieldJavaTypeNamesFromImplementedInterface.
+## There is only one item in the fieldJavaFullClassnamesFromImplementedInterface.
 ## If this field is not a list, only the normal getter is enough. It will override the getters from the implemented interface(s)
 ## But if this field is a list, and the field's type is not the same as in the implemented interface (for instance [TFoo2] versus [IFoo2] as in the above sample), then
 ## we need separate getters. In this case, we need these getters:
@@ -190,7 +190,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 ##
 ##
 #if ($field.javaType.startsWith("List<"))
-#foreach ($supertype in $field.fieldJavaTypeNamesFromImplementedInterface) ##This is a Set with one item. As it is a Set, we can not do a get(0), so we iterate over it.
+#foreach ($supertype in $field.fieldJavaFullClassnamesFromImplementedInterface) ##This is a Set with one item. As it is a Set, we can not do a get(0), so we iterate over it.
 	/**
 #foreach ($comment in $field.comments)
 	 * $comment
@@ -212,12 +212,12 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #if (!$field.javaType.startsWith("List<"))
 	@Override
 #end
-	public ${field.javaType} get${field.pascalCaseName}#if ($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
+	public ${field.javaTypeFullClassname} get${field.pascalCaseName}#if ($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
 		return ${field.javaName};
 	}
 #end
 
-#end ##end of test "if ($field.fieldJavaTypeNamesFromImplementedInterface.size() == 0)"
+#end ##end of test "if ($field.fieldJavaFullClassnamesFromImplementedInterface.size() == 0)"
 ####################################################################################################################################################
 ####################################################################################################################################################
 ##
@@ -298,14 +298,14 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 	public static class Builder {
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
-		private ${field.javaType} ${field.javaName};
+		private ${field.javaTypeFullClassname} ${field.javaName};
 #end
 #end
 
 
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
-		public Builder with${field.pascalCaseName}(${field.javaType} ${field.javaName}) {
+		public Builder with${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 			this.${field.javaName} = ${field.javaName};
 			return this;
 		}
@@ -318,7 +318,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #if(${field.javaName} == '__typename')
 			_object.set__typename("${object.javaName}");
 #else
-#if ($field.fieldJavaTypeNamesFromImplementedInterface.size()>0 && !$field.fieldJavaTypeNamesFromImplementedInterface.contains($field.javaType) && $field.javaType.startsWith("List<"))
+#if ($field.fieldJavaFullClassnamesFromImplementedInterface.size()>0 && !$field.fieldJavaFullClassnamesFromImplementedInterface.contains($field.javaTypeFullClassname) && $field.javaType.startsWith("List<"))
 			_object.set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaName});
 #else
 			_object.set${field.pascalCaseName}(${field.javaName});

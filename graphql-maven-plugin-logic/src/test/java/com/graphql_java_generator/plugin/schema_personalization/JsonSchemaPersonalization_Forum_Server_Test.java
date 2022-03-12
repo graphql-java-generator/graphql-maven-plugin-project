@@ -95,7 +95,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 		//
 		Field name = jsonSchemaPersonalization.findFieldFromName(board, "name");
 		assertEquals(
-				"@GraphQLScalar(fieldName = \"name\", graphQLTypeSimpleName = \"String\", javaClass = String.class)\n\t@Column(name=\"column_name\")",
+				"@GraphQLScalar(fieldName = \"name\", graphQLTypeSimpleName = \"String\", javaClass = java.lang.String.class)\n\t@Column(name=\"column_name\")",
 				name.getAnnotation(), "board.name annotation");
 	}
 

@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -274,7 +275,11 @@ class DocumentParserTest {
 		assertEquals(list, dataFetcher.getField().getFieldTypeAST().getListDepth(), "list");
 		assertEquals(type, dataFetcher.getField().getOwningType(), "type");
 		assertEquals(inputParameters, dataFetcher.getField().getInputParameters(), "arguments");
-		assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType(), "graphQLOriginType");
+		if (graphQLOriginType == null)
+			assertNull(dataFetcher.getGraphQLOriginType(), "graphQLOriginType");
+		else
+			assertEquals(graphQLOriginType, dataFetcher.getGraphQLOriginType().getClassSimpleName(),
+					"graphQLOriginType");
 	}
 
 }

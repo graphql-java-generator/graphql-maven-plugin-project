@@ -80,6 +80,9 @@ type MyQueryType {
     #issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no method with a simple float parameter
     issue82Float(aFloat: Float!): Float!
     issue82ID(aID: ID!): ID!
+
+	# test for issue #128 (compilation error when a Query returns a type 'Client')
+	issue128: Client
 }
 
 type AnotherMutationType {
@@ -97,6 +100,7 @@ type TheSubscriptionType {
 	
 	# Issue 54
 	subscribeToAList: [Int]!
+	subscribeToAListOfScalar: [Date]
 	
     # issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
     issue53(date: Date!): Date!
@@ -529,4 +533,12 @@ interface IList {
 
 type TList implements IList {
 	list: [TFoo1]
+}
+
+
+#############################
+# test for issue #128
+
+interface Client {
+	foo: String
 }

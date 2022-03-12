@@ -3,10 +3,13 @@
  */
 package com.graphql_java_generator.plugin.language.impl;
 
+import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
+import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Field;
+import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import lombok.Data;
@@ -36,14 +39,14 @@ public class DataFetcherImpl implements DataFetcher {
 	 * There are two kinds of {@link DataFetcher}:
 	 * <UL>
 	 * <LI>{@link DataFetcher} for fields of object, interface(...). These {@link DataFetcher} need to have access to
-	 * the object instance, that contains the field (or attribute) it fetches. This instance is the orgin, and will be a
-	 * parameter in the DataFetcher call, that contains the instance of the object, for which this field is
+	 * the object instance, that contains the field (or attribute) it fetches. This instance is the origin, and will be
+	 * a parameter in the DataFetcher call, that contains the instance of the object, for which this field is
 	 * fetched.</LI>
 	 * <LI>{@link DataFetcher} for query/mutation/subscription. In these case, the field that is fetched by this
 	 * {@link DataFetcher} has no origin: it's the start of the request.</LI>
 	 * </UL>
 	 */
-	private String graphQLOriginType = null;
+	private Type graphQLOriginType = null;
 
 	private boolean completableFuture = false;
 
@@ -77,7 +80,7 @@ public class DataFetcherImpl implements DataFetcher {
 	 *            </UL>
 	 */
 	public DataFetcherImpl(Field field, DataFetchersDelegate dataFetcherDelegate, boolean declareInGraphQLProvider,
-			boolean completableFuture, String graphQLOriginType) {
+			boolean completableFuture, Type graphQLOriginType) {
 		this.field = field;
 		this.dataFetcherDelegate = dataFetcherDelegate;
 		this.completableFuture = completableFuture;

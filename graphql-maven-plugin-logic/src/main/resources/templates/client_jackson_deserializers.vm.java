@@ -2,6 +2,7 @@
 package ${packageUtilName};
 
 import java.io.IOException;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,10 +12,6 @@ import com.graphql_java_generator.client.response.AbstractCustomJacksonDeseriali
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 
 import graphql.schema.GraphQLScalarType;
-
-#foreach($import in $imports)
-import $import;
-#end
 
 /**
  * This class is a standard Deserializer for Jackson. It uses the {@link GraphQLScalarType} that is implemented by the project for this scalar

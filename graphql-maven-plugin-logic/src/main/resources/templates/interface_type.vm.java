@@ -30,7 +30,7 @@ public interface ${object.javaName} #if($object.implementz.size()>0)extends #for
 	 */
 #end
 	${field.annotation}
-	public void set${field.pascalCaseName}(${field.javaType} ${field.javaName});
+	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName});
 
 #if ($field.comments.size() > 0)
 	/**
@@ -42,7 +42,7 @@ public interface ${object.javaName} #if($object.implementz.size()>0)extends #for
 	 */
 #end
 	${field.annotation}
-	public ${field.javaType} get${field.pascalCaseName}();
+	public ${field.javaTypeFullClassname} get${field.pascalCaseName}();
 #end
 ##
 ## When in client mode, we add the capability to receive unknown JSON attributes, which includes returned values for GraphQL aliases

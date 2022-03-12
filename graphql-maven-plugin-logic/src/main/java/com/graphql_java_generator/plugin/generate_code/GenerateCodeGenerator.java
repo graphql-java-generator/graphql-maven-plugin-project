@@ -19,8 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -54,7 +52,6 @@ import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
-import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
@@ -165,9 +162,6 @@ public class GenerateCodeGenerator implements Generator {
 
 		// Custom Deserializers and array deserialization (always generated)
 		VelocityContext context = getVelocityContext();
-		List<String> imports = new ArrayList<>();
-		imports.add("java.util.List");
-		context.put("imports", imports);
 		context.put("customDeserializers", generateCodeDocumentParser.getCustomDeserializers());
 		context.put("customSerializers", generateCodeDocumentParser.getCustomSerializers());
 
@@ -818,24 +812,6 @@ public class GenerateCodeGenerator implements Generator {
 			serverContext.put("batchLoaders", generateCodeDocumentParser.getBatchLoaders());
 			serverContext.put("interfaces", generateCodeDocumentParser.getInterfaceTypes());
 			serverContext.put("unions", generateCodeDocumentParser.getUnionTypes());
-
-			// ConcurrentSkipListSet: We need to be thread safe, for the parallel stream we use to fill it
-			Set<String> imports = new ConcurrentSkipListSet<>();
-			// Let's calculate the list of imports of all the GraphQL schema object, input types, interfaces and unions,
-			// that must be imported in the utility classes
-			final String utilityPackage = configuration.getPackageName()
-					+ ((configuration.isSeparateUtilityClasses()) ? ("." + GenerateCodeDocumentParser.UTIL_PACKAGE_NAME)
-							: "");
-			generateCodeDocumentParser.getTypes().values().parallelStream().forEach(o -> {
-				if (o instanceof ScalarType) {
-					graphqlUtils.addImport(imports, utilityPackage,
-							((ScalarType) o).getPackageName() + "." + ((ScalarType) o).getClassSimpleName());
-				} else {
-					graphqlUtils.addImport(imports, utilityPackage,
-							configuration.getPackageName() + "." + o.getClassSimpleName());
-				}
-			});
-			serverContext.put("imports", imports);
 		}
 		return serverContext;
 	}

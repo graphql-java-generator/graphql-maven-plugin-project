@@ -13,6 +13,7 @@ import org.allGraphQLCases.server.AnyCharacter;
 import org.allGraphQLCases.server.Character;
 import org.allGraphQLCases.server.CharacterConnection;
 import org.allGraphQLCases.server.CharacterInput;
+import org.allGraphQLCases.server.Client;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.DroidInput;
 import org.allGraphQLCases.server.Episode;
@@ -324,6 +325,11 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public UUID issue82ID(DataFetchingEnvironment dataFetchingEnvironment, UUID id) {
 		return id;
+	}
+
+	@Override
+	public Client issue128(DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
 	}
 
 }

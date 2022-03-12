@@ -2,7 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Issue #128 : having a `Client` interface in the GraphQL schema blocks the generated code's compilation
+* Add a test for subscriptions that returns a list (of Int, of Custom Scalar, of objects)
 * Issue #118 : CompletableFuture method is not generated for lists
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
 * Check issue #118 (CompletableFuture method is not generated for lists)

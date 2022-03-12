@@ -101,21 +101,21 @@ class DocumentParser_Forum_Server_Test {
 		// For the test below, the String class is expected, as there is this config update in the setup, here above:
 		// pluginConfiguration.setJavaTypeForIDType("java.lang.String");
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = String.class)");
+				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = java.lang.String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = Date.class)");
+				"@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = java.util.Date.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = Member.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = org.graphql.mavenplugin.junittest.forum_server_springconfiguration.Member.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
-				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeSimpleName = \"Boolean\", javaClass = Boolean.class)");
+				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeSimpleName = \"Boolean\", javaClass = java.lang.Boolean.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts",
-				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeSimpleName = \"Int\", javaClass = Integer.class)");
+				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeSimpleName = \"Int\", javaClass = java.lang.Integer.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title",
-				"@GraphQLScalar(fieldName = \"title\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"title\", graphQLTypeSimpleName = \"String\", javaClass = java.lang.String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content",
-				"@GraphQLScalar(fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = String.class)");
+				"@GraphQLScalar(fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = java.lang.String.class)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = Post.class)");
+				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = org.graphql.mavenplugin.junittest.forum_server_springconfiguration.Post.class)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {
@@ -274,7 +274,10 @@ class DocumentParser_Forum_Server_Test {
 		assertEquals(list, dataFetcher.getField().getFieldTypeAST().getListDepth(), "list");
 		assertEquals(completableFuture, dataFetcher.isCompletableFuture(), "completableFuture");
 		assertEquals(fieldName, dataFetcher.getField().getName(), "fieldName");
-		assertEquals(sourceName, dataFetcher.getGraphQLOriginType(), "sourceName");
+		if (sourceName == null)
+			assertNull(dataFetcher.getGraphQLOriginType(), "sourceName");
+		else
+			assertEquals(sourceName, dataFetcher.getGraphQLOriginType().getClassSimpleName(), "sourceName");
 
 		// Check of the data fetcher input parameters
 		assertEquals(inputParameters.length, dataFetcher.getField().getInputParameters().size(),
@@ -351,8 +354,6 @@ class DocumentParser_Forum_Server_Test {
 				"expecting javax.persistence.GeneratedValue");
 		assertTrue(board.getImports().contains("javax.persistence.Id"), "expecting javax.persistence.Id");
 		assertTrue(board.getImports().contains("javax.persistence.Transient"), "expecting javax.persistence.Transient");
-		assertTrue(board.getImports().contains("com.graphql_java_generator.GraphQLField"),
-				"expecting com.graphql_java_generator.GraphQLField");
 		assertTrue(board.getImports().contains("com.graphql_java_generator.annotation.GraphQLNonScalar"),
 				"expecting com.graphql_java_generator.annotation.GraphQLNonScalar");
 		assertTrue(board.getImports().contains("com.graphql_java_generator.annotation.GraphQLObjectType"),

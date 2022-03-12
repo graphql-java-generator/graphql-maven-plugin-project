@@ -459,10 +459,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			field.addAnnotation("@JsonProperty(\"" + field.getName() + "\")");
 		}
 
-		if (field.getFieldTypeAST().getListDepth() > 0) {
-			field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
-		}
-
 		if (configuration.isGenerateJacksonAnnotations()) {
 			// No json deserialization for input type
 			if (!field.getOwningType().isInputType()
@@ -488,6 +484,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				field.getOwningType().addImport(configuration.getPackageName(),
 						getUtilPackageName() + ".CustomJacksonSerializers");
 				field.getOwningType().addImport(configuration.getPackageName(), JsonSerialize.class.getName());
+				field.getOwningType().addImport(configuration.getPackageName(), field.getType().getClassFullName());
 
 				field.addAnnotation(buildJsonSerializeAnnotation(classSimpleName + ".class"));
 			}
@@ -552,16 +549,20 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @param field
 	 */
 	void addFieldAnnotationForBothClientAndServerMode(Field field) {
+		if (field.getFieldTypeAST().getListDepth() > 0) {
+			field.getOwningType().addImport(configuration.getPackageName(), List.class.getName());
+		}
+
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
 			field.getOwningType().addImport(configuration.getPackageName(), GraphQLScalar.class.getName());
 			((FieldImpl) field).addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName()
 					+ "\", graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\", javaClass = "
-					+ field.getType().getClassSimpleName() + ".class)");
+					+ field.getType().getClassFullName() + ".class)");
 		} else {
 			field.getOwningType().addImport(configuration.getPackageName(), GraphQLNonScalar.class.getName());
 			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName()
 					+ "\", graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\", javaClass = "
-					+ field.getType().getClassSimpleName() + ".class)");
+					+ field.getType().getClassFullName() + ".class)");
 		}
 	}
 
@@ -629,8 +630,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					boolean withDataLoader = field.getType().getIdentifier() != null
 							&& !(field.getFieldTypeAST().getListDepth() > 0);
 
-					dataFetchers.add(
-							new DataFetcherImpl(newField, dataFetcherDelegate, true, withDataLoader, type.getName()));
+					dataFetchers.add(new DataFetcherImpl(newField, dataFetcherDelegate, true, withDataLoader, type));
 				}
 			} // for
 
@@ -824,33 +824,29 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	}
 
 	/**
-	 * Add all import that are needed for this type
+	 * Add all imports that are needed for this type
 	 * 
 	 * @param type
 	 */
 	private void addImportsForOneType(Type type) {
 		if (type != null) {
-			// First, the import for the object itself. It should do something only for separate utility classes.
-			addAnImportForOneType(type, configuration.getPackageName() + "." + type.getClassSimpleName());
 
 			// Let's loop through all the fields
 			for (Field f : type.getFields()) {
 				if (f.getFieldTypeAST().getListDepth() > 0) {
-					addAnImportForOneType(type, List.class);
+					type.addImportForUtilityClasses(getUtilPackageName(), List.class.getName());
 				}
-				addAnImportForOneType(type, f.getType());
 
 				for (Field param : f.getInputParameters()) {
 					if (param.getFieldTypeAST().getListDepth() > 0) {
-						addAnImportForOneType(type, List.class);
+						type.addImportForUtilityClasses(getUtilPackageName(), List.class.getName());
 					}
-					addAnImportForOneType(type, param.getType());
 				} // for(inputParameters)
 			} // for(Fields)
 
 			// Let's add some common imports
-			addAnImportForOneType(type, GraphQLField.class);
-			addAnImportForOneType(type, GraphQLInputParameters.class);
+			type.addImportForUtilityClasses(getUtilPackageName(), GraphQLField.class.getName());
+			type.addImportForUtilityClasses(getUtilPackageName(), GraphQLInputParameters.class.getName());
 
 			// Some imports that are only for utility classes
 			type.addImportForUtilityClasses(getUtilPackageName(), RequestType.class.getName());
@@ -858,7 +854,8 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			switch (configuration.getMode()) {
 			case client:
 				if (configuration.isGenerateJacksonAnnotations()) {
-					addAnImportForOneType(type, JsonProperty.class);
+					type.addImportForUtilityClasses(getUtilPackageName(), JsonDeserialize.class.getName());
+					type.addImportForUtilityClasses(getUtilPackageName(), JsonProperty.class.getName());
 				}
 				break;
 			case server:
@@ -867,27 +864,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				throw new RuntimeException("unexpected plugin mode: " + configuration.getMode().name());
 			}
 		}
-	}
-
-	private void addAnImportForOneType(Type type, Class<?> clazzToImport) {
-		addAnImportForOneType(type, clazzToImport.getName());
-	}
-
-	private void addAnImportForOneType(Type type, Type typeToImport) {
-		if (typeToImport instanceof ScalarType) {
-			addAnImportForOneType(type,
-					((ScalarType) typeToImport).getPackageName() + "." + typeToImport.getClassSimpleName());
-		} else {
-			addAnImportForOneType(type, configuration.getPackageName() + "." + typeToImport.getClassSimpleName());
-		}
-	}
-
-	private void addAnImportForOneType(Type type, String classname) {
-		final String targetPackage = configuration.getPackageName();
-		final String utilityPackage = getUtilPackageName();
-
-		type.addImport(targetPackage, classname);
-		type.addImportForUtilityClasses(utilityPackage, classname);
 	}
 
 	/**

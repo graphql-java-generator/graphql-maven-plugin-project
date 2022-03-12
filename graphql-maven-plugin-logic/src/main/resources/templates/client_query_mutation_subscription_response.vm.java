@@ -5,9 +5,10 @@ package ${packageUtilName};
 import ${configuration.packageName}.${object.javaName};
 #end
 
-#foreach($import in ${object.imports})
-import $import;
-#end
+import com.graphql_java_generator.annotation.GraphQLObjectType;
+import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.RequestType;
+
 
 /**
  * This class is deprecated. Please use the #if(${configuration.separateUtilityClasses})${configuration.packageName}.#end${object.javaName} instead.<BR/>

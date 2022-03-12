@@ -704,13 +704,16 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 
 	public void onError(Throwable t) {
 		if (t == null) {
-			t = new RuntimeException("Unknown error");
-		}
-		logger.error("The Web Socket session {} ended with an error ({}: {})", session, t.getClass().getSimpleName(),
-				t.getMessage());
-
-		for (StackTraceElement row : t.getStackTrace()) {
-			logger.error("   {}", row.toString());
+			t = new RuntimeException("Unknown exception");
+			logger.error("The Web Socket session {} ended with an unknown error", session);
+		} else {
+			StringBuilder sb = new StringBuilder();
+			sb.append("The Web Socket session ").append(session).append(" ended with an error (")
+					.append(t.getClass().getSimpleName()).append(t.getMessage()).append(")");
+			for (StackTraceElement row : t.getStackTrace()) {
+				sb.append("\n    ").append(row);
+			}
+			logger.error(sb.toString());
 		}
 
 		// We must free every resources for this websocket

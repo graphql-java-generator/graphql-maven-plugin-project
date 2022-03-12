@@ -18,9 +18,13 @@
 package ${packageUtilName};
 ##
 ## The inputParams macto lists the input parameters for a field
-#macro(inputParams)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaType} ${inputParameter.javaName}#end#end
+#macro(inputParams)
+#foreach ($inputParameter in $field.inputParameters)
+			${inputParameter.javaTypeFullClassname} ${inputParameter.javaName},
+#end
+#end
 ##
-## The inputParams macro lists the input values for the parameters for a field
+## The inputValues macro lists the input values for the parameters for a field
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
 
 import java.util.HashMap;
@@ -37,7 +41,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
-import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.GraphQLObjectType;
+import com.graphql_java_generator.annotation.GraphQLQuery;
+import com.graphql_java_generator.annotation.GraphQLScalar; 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
@@ -54,13 +60,6 @@ import $import;
 import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.util.GraphqlUtils;
-
-## When seperateUtilityClasses is set to true, the current class is generated in the util subpackage.
-## So we need to import the object.classSimpleName
-#if(${configuration.separateUtilityClasses})
-// Utility classes are generated in the util subpackage. We need to import the ${object.classSimpleName} from the 'main' package
-import ${configuration.packageName}.${object.classSimpleName};
-#end
 
 
 /**
@@ -433,8 +432,11 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 
-#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classSimpleName}.class)
-	public ${field.javaType} ${field.name}WithBindValues(String queryResponseDef#inputParams(), Map<String, Object> parameters)
+#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+	public ${field.javaTypeFullClassname} ${field.name}WithBindValues(
+			String queryResponseDef,
+#inputParams()
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} '${field.name}': {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -482,9 +484,12 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 */
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
-## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classSimpleName}.class)
-#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classSimpleName}.class)
-	public ${field.javaType} ${field.name}(String queryResponseDef#inputParams(), Object... paramsAndValues)
+## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+	public ${field.javaTypeFullClassname} ${field.name}(
+			String queryResponseDef,
+#inputParams()
+			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} '${field.name}': {} ", queryResponseDef);
 		ObjectResponse objectResponse = get${field.pascalCaseName}ResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -536,9 +541,12 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 */
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
-## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classSimpleName}.class)
-#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classSimpleName}.class)
-	public ${field.javaType} ${field.name}WithBindValues(ObjectResponse objectResponse#inputParams(), Map<String, Object> parameters)
+## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+	public ${field.javaTypeFullClassname} ${field.name}WithBindValues(
+			ObjectResponse objectResponse,
+#inputParams()
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing ${object.requestType} '${field.name}' with parameters: #foreach ($inputParameter in $field.inputParameters){}#if($foreach.hasNext),#end #end"#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end);
@@ -608,9 +616,12 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 */
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
-## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classSimpleName}.class)
-#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classSimpleName}.class)
-	public ${field.javaType} ${field.javaName}(ObjectResponse objectResponse#inputParams(), Object... paramsAndValues)
+## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+	public ${field.javaTypeFullClassname} ${field.javaName}(
+			ObjectResponse objectResponse,
+#inputParams()
+			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();

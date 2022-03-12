@@ -40,10 +40,6 @@ import com.graphql_java_generator.server.util.BatchLoaderDelegateWithContext;
 import com.graphql_java_generator.server.util.BatchLoaderDelegate;
 #end
 
-#foreach($import in $imports)
-import $import;
-#end
-
 /**
  * This class is responsible for providing all the GraphQL Beans to the graphql-java Spring Boot integration.
  * <BR/><BR/>
@@ -144,7 +140,7 @@ public class GraphQLWiring {
 				Object javaObject = env.getObject();
 				String ret = null;
 #foreach ($implementingType in ${interface.implementingTypes})
-				if (javaObject instanceof ${implementingType.javaName}) {
+				if (javaObject instanceof ${implementingType.classFullName}) {
 					ret = "${implementingType.javaName}";
 				} else
 #end
@@ -168,7 +164,7 @@ public class GraphQLWiring {
 				String ret = null;
 
 #foreach ($memberType in ${union.memberTypes})
-				if (javaObject instanceof ${memberType.javaName}) {
+				if (javaObject instanceof ${memberType.classFullName}) {
 					ret = "${memberType.javaName}";
 				} else
 #end

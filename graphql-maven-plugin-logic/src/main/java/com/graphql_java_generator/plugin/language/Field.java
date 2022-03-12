@@ -94,8 +94,8 @@ public interface Field {
 	}
 
 	/**
-	 * Return the list of java type names for this field, in all the interfaces implemented directly or indirectly by
-	 * the owning type, and that contains this field. <BR/>
+	 * Return the list of java full classnames for this field, in all the interfaces implemented directly or indirectly
+	 * by the owning type, and that contains this field. <BR/>
 	 * For instance, in the next sample, when called for bar's field of TFoo, this method returns a Set that contains
 	 * the full java class names for both IBar1 and IBar2: <BR/>
 	 * <code>
@@ -129,7 +129,7 @@ public interface Field {
 	 * 
 	 * @return
 	 */
-	default public Set<String> getFieldJavaTypeNamesFromImplementedInterface() {
+	default public Set<String> getFieldJavaFullClassnamesFromImplementedInterface() {
 		Set<String> ret = new HashSet<>();
 
 		Type owningType = getOwningType();
@@ -139,10 +139,10 @@ public interface Field {
 				// to be returned.
 				for (Field f : implementedType.getFields()) {
 					if (f.getName().equals(getName())) {
-						ret.add(f.getJavaType());
+						ret.add(f.getJavaTypeFullClassname());
 
 						// This field may itself inherit this field from an implemented type. Let's recurse once.
-						ret.addAll(f.getFieldJavaTypeNamesFromImplementedInterface());
+						ret.addAll(f.getFieldJavaFullClassnamesFromImplementedInterface());
 
 						// We're done for the fields of this object
 						break;

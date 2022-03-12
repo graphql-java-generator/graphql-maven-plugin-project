@@ -12,8 +12,8 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
-
-__TODO:__ Issue #128 : having a `Client` interface in the GraphQL schema blocks the generated code's compilation
+Both modes (client and server):
+* (Issue #128) partial rewrite of the generation code, to avoid conflicts between the POJO's java types, and other class names (like Client, Date...)
 
 
 
