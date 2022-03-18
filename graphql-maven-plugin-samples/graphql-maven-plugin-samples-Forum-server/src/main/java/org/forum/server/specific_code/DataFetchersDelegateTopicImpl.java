@@ -6,7 +6,6 @@ package org.forum.server.specific_code;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
@@ -58,26 +57,6 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<Long, Member> dataLoader, Topic source) {
 		return dataLoader.load(source.getAuthorId());
-	}
-
-	/**
-	 * This method should not be called. The {@link DataFetchersDelegateMemberImpl#batchLoader(List)} should be called
-	 * instead. The name returned by this method is marked by "[SL] ", to check that in integration tests.
-	 */
-	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
-		logger.debug("Loading author of topic {}", origin.getId());
-		Optional<Member> opt = memberRepository.findById(origin.getAuthorId());
-
-		if (opt.isPresent()) {
-			// Let's mark all the entries retrieved here by [SL] (Single Loader), to check this in integration tests
-			// These tests are in the graphql-maven-plugin-samples-Forum-client project
-			Member m = opt.get();
-			m.setName("[SL] " + m.getName());
-			return m;
-		} else {
-			return null;
-		}
 	}
 
 	@Override

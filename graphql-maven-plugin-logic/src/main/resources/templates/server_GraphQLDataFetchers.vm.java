@@ -65,9 +65,13 @@ public class GraphQLDataFetchers {
 			if (dataLoader != null) { 
 				return ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment, dataLoader#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);
 			} else {
+#if ($configuration.legacyDataLoaderCall)
 				logger.warn("No DataLoader found for key '{}'", "${dataFetcher.field.type.classSimpleName}");
 				return CompletableFuture.supplyAsync(
 						() -> ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end));
+#else
+				throw new NullPointerException("The dataloader for ${dataFetcher.field.type.classSimpleName} may not be null");
+#end
 			}
 #elseif (${dataFetcher.field.fieldTypeAST.listDepth}>0)
 			#if (${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end${dataFetcher.field.javaTypeFullClassname}#if(${dataFetcher.dataFetcherDelegate.type.requestType}=="subscription")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end ret = ${dataFetchersDelegate.camelCaseName}.${dataFetcher.javaName}(dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), source#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end);

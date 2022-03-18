@@ -627,15 +627,19 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					// list
 					// graphql-java will then determines at runtime if a dataloader is needed in the running case, or
 					// not
-					boolean withDataLoader = field.getType().getIdentifier() != null
-							&& !(field.getFieldTypeAST().getListDepth() > 0);
+					boolean withDataLoader = field.getType().getIdentifier() != null;
+					if (((GenerateServerCodeConfiguration) configuration).isLegacyDataLoaderCall()
+							&& field.getFieldTypeAST().getListDepth() > 0) {
+						// In versions before 1.18.3, there was be no CompletableFuture for field that are lists
+						// This behavior is controlled by the legacyDataLoaderCall plugin parameter
+						withDataLoader = false;
+					}
 
 					dataFetchers.add(new DataFetcherImpl(newField, dataFetcherDelegate, true, withDataLoader, type));
 				}
 			} // for
 
-			// If at least one DataFetcher has been created, we register this
-			// DataFetchersDelegate
+			// If at least one DataFetcher has been created, we register this DataFetchersDelegate
 			if (dataFetcherDelegate.getDataFetchers().size() > 0) {
 				dataFetchersDelegates.add(dataFetcherDelegate);
 			}

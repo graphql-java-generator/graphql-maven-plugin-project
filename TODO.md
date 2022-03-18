@@ -2,12 +2,12 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Issue #127: Add a test with a parameter query
 * Issue #118 : CompletableFuture method is not generated for lists
+* Gradle plugin's issue #9: manage triple quoted comments (should be done by graphql-java, to be tested)
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
 * Check issue #118 (CompletableFuture method is not generated for lists)
 * Check wiki, to properly indicate that the `allGraphQLCases.graphqls` is located in the allGraphQLCases client project
-* Remove gson from dependencies
-* GraphQLObjectMapper: keep the same Jackson ObjectMapper (instead of recreate it in the constructor)
 * Remove Deprecated getStringContentXxx methods in InputParameter
 * Issue #105: it's no more possible to override the ExchangeFilterFunction
 * Subscription: the client remain active after a `Connection refused` (even if the main thread stops)

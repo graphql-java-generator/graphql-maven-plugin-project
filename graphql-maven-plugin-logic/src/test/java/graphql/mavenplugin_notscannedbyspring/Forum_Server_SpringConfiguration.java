@@ -35,6 +35,7 @@ public class Forum_Server_SpringConfiguration extends AbstractSpringConfiguratio
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date", null));
 
 		configuration.schemaFilePattern = "forum.graphqls";
+		configuration.legacyDataLoaderCall = false;
 		configuration.mode = PluginMode.server;
 		configuration.schemaPersonalizationFile = new File(mavenTestHelper.getModulePathFile(),
 				"src/test/resources/forum_personalization.json");

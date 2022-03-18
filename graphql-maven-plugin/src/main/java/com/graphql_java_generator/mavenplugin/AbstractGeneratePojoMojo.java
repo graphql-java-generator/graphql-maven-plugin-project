@@ -5,7 +5,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
-public class AbstractGeneratePojoMojo extends AbstractGraphQLMojo implements GeneratePojoConfiguration {
+public abstract class AbstractGeneratePojoMojo extends AbstractGraphQLMojo implements GeneratePojoConfiguration {
 
 	/**
 	 * <P>

@@ -5,6 +5,7 @@ package com.graphql_java_generator.mavenplugin;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.maven.plugins.annotations.Parameter;
 import org.dataloader.BatchLoaderEnvironment;
@@ -86,6 +87,30 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.generateJPAAnnotation", defaultValue = GraphQLConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION)
 	boolean generateJPAAnnotation;
+
+	/**
+	 * <P>
+	 * (only for server mode) Defines how the methods in the data fetchers delegates are generated.
+	 * </P>
+	 * <P>
+	 * When legacyDataLoaderCall is true (default mode), the data loaders are used only for fields that don't return a
+	 * list. And a useless method without data loader (that is: a method that doesn't return a
+	 * {@link CompletableFuture}) for each fields that use a data loader. In other words, for fields which type is a
+	 * sub-object with an id, two methods are generated: one which returns a {@link CompletableFuture}, and one which
+	 * returns a none {@link CompletableFuture} result (and that is not used by the generated code).
+	 * </P>
+	 * <P>
+	 * When legacyDataLoaderCall is false, there is one getter for field of this data fetcher. If the field's type is a
+	 * type with an id (whether it is a list or not), then the return type is a {@link CompletableFuture}. If the
+	 * field's type is a type that has no id, then a method is generated with a direct return (not a
+	 * {@link CompletableFuture}). When the field's type is a scalar, then no method is generated (no need to fetch it)
+	 * </P>
+	 * <P>
+	 * This parameter is available since version 1.18.4
+	 * </P>
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.legacyDataLoaderCall", defaultValue = GraphQLConfiguration.DEFAULT_LEGACY_DATA_LOADER_CALL)
+	boolean legacyDataLoaderCall;
 
 	/**
 	 * <P>
@@ -178,6 +203,11 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	@Override
 	public boolean isGenerateJPAAnnotation() {
 		return generateJPAAnnotation;
+	}
+
+	@Override
+	public boolean isLegacyDataLoaderCall() {
+		return legacyDataLoaderCall;
 	}
 
 	@Override

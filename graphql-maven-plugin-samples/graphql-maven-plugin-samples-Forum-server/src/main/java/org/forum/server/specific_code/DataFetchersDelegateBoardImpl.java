@@ -5,10 +5,12 @@ package org.forum.server.specific_code;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
 import org.dataloader.BatchLoaderEnvironment;
+import org.dataloader.DataLoader;
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.DataFetchersDelegateBoard;
 import org.forum.server.graphql.Topic;
@@ -50,5 +52,12 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 	public List<Board> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return boardRepository.findByIds(keys);
+	}
+
+	@Override
+	public CompletableFuture<List<Topic>> topics(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<Long, List<Topic>> dataLoader, Board origin, Date since) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

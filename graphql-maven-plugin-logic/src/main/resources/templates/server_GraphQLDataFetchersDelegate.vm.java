@@ -27,7 +27,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 ##
 ##
 ## If this dataFetcher is a completableFuture, we add a DataLoader parameter
-#if (${dataFetcher.completableFuture})
+#if ($dataFetcher.completableFuture)
 	/**
 	 * This method loads the data for ${dataFetcher.field.owningType.name}.${dataFetcher.field.name}. 
 	 * <BR/>
@@ -96,7 +96,11 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 #if ($dataFetcherDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
 	public Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
-#else
+##
+#elseif ($configuration.legacyDataLoaderCall || ! $dataFetcher.completableFuture)
+## When NOT using the legacyDataLoaderCall mode, there is a generation of a 'standard' method only for fields NOT based on a data loader 
+## When using the legacyDataLoaderCall mode, there is a 'standard' method (not dataloader) for each field, whether or not there is a data loader for it.
+##     (which is a bug. But changing it would impact the existing code. So we keep it)
 	public ${dataFetcher.field.javaTypeFullClassname} ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
 #end 
 

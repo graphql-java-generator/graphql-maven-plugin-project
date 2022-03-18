@@ -180,10 +180,10 @@ class DocumentParser_Forum_Server_Test {
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "subscribeToNewPost", "Subscription",
 				"subscribeToNewPost", "Post", 0, false, null, "boardName");
 
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", 1, false, "Board",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "topics", "Board", "topics", "Topic", 1, true, "Board",
 				"since");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Topic", "author", "Member", 0, true, "Topic");
-		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", 1, false, "Topic",
+		checkDataFetcher(documentParser.dataFetchers.get(i++), "posts", "Topic", "posts", "Post", 1, true, "Topic",
 				"memberId", "memberName", "since");
 		checkDataFetcher(documentParser.dataFetchers.get(i++), "author", "Post", "author", "Member", 0, true, "Post");
 
