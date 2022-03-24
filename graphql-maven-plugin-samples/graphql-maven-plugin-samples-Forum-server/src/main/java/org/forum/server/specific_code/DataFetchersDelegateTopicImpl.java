@@ -4,6 +4,7 @@
 package org.forum.server.specific_code;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -104,9 +105,45 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
+	public CompletableFuture<List<Post>> posts(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<Long, Post> dataLoader, Topic origin, Long memberId, String memberName, Date since) {
+		// When the data is modeled this way (that is: in a relational database), using Data Loader is not an
+		// optimization.
+		// But this is used here for integration tests
+		List<Long> ids = new ArrayList<>();
+
+		for (Post post : posts(dataFetchingEnvironment, origin, memberId, memberName, since)) {
+			ids.add(post.getId());
+		}
+
+		if (logger.isDebugEnabled()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Retrieving posts for topic {id=");
+			sb.append(origin.getId());
+			sb.append(", autorId=");
+			sb.append(memberId);
+			sb.append(", since=");
+			sb.append(since);
+			sb.append("}. The requested ids of posts are:");
+			for (Long id : ids) {
+				sb.append(" ");
+				sb.append(id);
+			}
+			logger.debug(sb.toString());
+		}
+
+		return dataLoader.loadMany(ids);
+	}
+
+	@Override
 	public List<Topic> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
+	}
+
+	@Override
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
+		return memberRepository.findById(origin.getAuthorId()).orElseGet(() -> null);
 	}
 
 }

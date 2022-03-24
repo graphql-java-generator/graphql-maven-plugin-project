@@ -24,10 +24,10 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 
-	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
 	public final String DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT = "false";
+	public final String DEFAULT_GENERATE_DATA_LOADER_FOR_LISTS = "false";
+	public final String DEFAULT_GENERATE_JPA_ANNOTATION = "false";
 	public final String DEFAULT_JAVA_TYPE_FOR_ID_TYPE = "java.util.UUID";
-	public final String DEFAULT_LEGACY_DATA_LOADER_CALL = "true";
 	public final String DEFAULT_SCAN_BASE_PACKAGES = "null";
 	public final String DEFAULT_SCHEMA_PERSONALIZATION_FILE = "null"; // Can't by null, must be a valid String.
 
@@ -160,6 +160,30 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	public boolean isGenerateBatchLoaderEnvironment();
 
 	/**
+	 * <P>
+	 * (only for server mode) Defines how the methods in the data fetchers delegates are generated.
+	 * </P>
+	 * <P>
+	 * When generateDataLoaderForLists is false (default mode), the data loaders are used only for fields that don't
+	 * return a list. In other words, for fields which type is a sub-object with an id, two methods are generated: one
+	 * which returns a {@link CompletableFuture}, and one which returns a none {@link CompletableFuture} result (that is
+	 * used by the generated code only if no data loader is available).
+	 * </P>
+	 * <P>
+	 * When generateDataLoaderForLists is true, there is one getter for field of this data fetcher. If the field's type
+	 * is a type with an id (whether it is a list or not), then the return type is a {@link CompletableFuture}. If the
+	 * field's type is a type that has no id, then a method is generated with a direct return (not a
+	 * {@link CompletableFuture}). When the field's type is a scalar, then no method is generated (no need to fetch it)
+	 * </P>
+	 * <P>
+	 * This parameter is available since version 1.18.4
+	 * </P>
+	 * 
+	 * @return
+	 */
+	public boolean isGenerateDataLoaderForLists();
+
+	/**
 	 * {@inheritDoc}
 	 * <P>
 	 * In server mode, the <A HREF="https://github.com/FasterXML/jackson">Jackson</A> annotations are always generated
@@ -179,31 +203,6 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * </P>
 	 */
 	public boolean isGenerateJPAAnnotation();
-
-	/**
-	 * <P>
-	 * (only for server mode) Defines how the methods in the data fetchers delegates are generated.
-	 * </P>
-	 * <P>
-	 * When legacyDataLoaderCall is true (default mode), the data loaders are used only for fields that don't return a
-	 * list. And a useless method without data loader (that is: a method that doesn't return a
-	 * {@link CompletableFuture}) for each fields that use a data loader. In other words, for fields which type is a
-	 * sub-object with an id, two methods are generated: one which returns a {@link CompletableFuture}, and one which
-	 * returns a none {@link CompletableFuture} result (and that is not used by the generated code).
-	 * </P>
-	 * <P>
-	 * When legacyDataLoaderCall is false, there is one getter for field of this data fetcher. If the field's type is a
-	 * type with an id (whether it is a list or not), then the return type is a {@link CompletableFuture}. If the
-	 * field's type is a type that has no id, then a method is generated with a direct return (not a
-	 * {@link CompletableFuture}). When the field's type is a scalar, then no method is generated (no need to fetch it)
-	 * </P>
-	 * <P>
-	 * This parameter is available since version 1.18.4
-	 * </P>
-	 * 
-	 * @return
-	 */
-	public boolean isLegacyDataLoaderCall();
 
 	/** Logs all the configuration parameters (only when in the debug level) */
 	@Override

@@ -3,6 +3,7 @@
  */
 package org.forum.server.specific_code;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -56,8 +57,15 @@ public class DataFetchersDelegateBoardImpl implements DataFetchersDelegateBoard 
 
 	@Override
 	public CompletableFuture<List<Topic>> topics(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<Long, List<Topic>> dataLoader, Board origin, Date since) {
-		// TODO Auto-generated method stub
-		return null;
+			DataLoader<Long, Topic> dataLoader, Board origin, Date since) {
+		// When the data is modeled this way (that is: in a relational database), using Data Loader is not an
+		// optimization.
+		// But this is used here for integration tests
+		List<Long> ids = new ArrayList<>();
+		for (Topic topic : topics(dataFetchingEnvironment, origin, since)) {
+			ids.add(topic.getId());
+		}
+		return dataLoader.loadMany(ids);
+
 	}
 }

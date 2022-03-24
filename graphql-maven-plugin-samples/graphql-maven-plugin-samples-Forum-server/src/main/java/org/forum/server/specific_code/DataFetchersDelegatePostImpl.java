@@ -37,12 +37,19 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 
 	@Override
 	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<Long, Member> dataLoader, Post source) {
-		return dataLoader.load(source.getAuthorId());
+			DataLoader<Long, Member> dataLoader, Post origin) {
+		return dataLoader.load(origin.getAuthorId());
 	}
 
 	@Override
-	public List<Post> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin) {
+		return memberRepository.findById(origin.getAuthorId()).orElseGet(() -> {
+			return null;
+		});
+	}
+
+	@Override
+	public List<Post> unorderedReturnBatchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} posts", keys.size());
 		return postRepository.findByIds(keys);
 	}

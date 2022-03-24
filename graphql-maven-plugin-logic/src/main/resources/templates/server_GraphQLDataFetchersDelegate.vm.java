@@ -10,6 +10,8 @@ import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.reactivestreams.Publisher;
 
+import com.graphql_java_generator.util.GraphqlUtils;
+
 import graphql.schema.DataFetchingEnvironment;
 #if($configuration.generateBatchLoaderEnvironment)
 import org.dataloader.BatchLoaderEnvironment;
@@ -69,7 +71,11 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
-	public CompletableFuture<${dataFetcher.field.javaTypeFullClassname}> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment, DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.javaTypeFullClassname}> dataLoader#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
+	public CompletableFuture<${dataFetcher.field.javaTypeFullClassname}> ${dataFetcher.javaName}(
+			DataFetchingEnvironment dataFetchingEnvironment, 
+			DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#if($dataFetcher.graphQLOriginType), 
+			${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
+			${argument.javaTypeFullClassname} ${argument.javaName}#end);
 #end ## #if (${dataFetcher.completableFuture})
 
 	/**
@@ -96,11 +102,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 #if ($dataFetcherDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
 	public Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
-##
-#elseif ($configuration.legacyDataLoaderCall || ! $dataFetcher.completableFuture)
-## When NOT using the legacyDataLoaderCall mode, there is a generation of a 'standard' method only for fields NOT based on a data loader 
-## When using the legacyDataLoaderCall mode, there is a 'standard' method (not dataloader) for each field, whether or not there is a data loader for it.
-##     (which is a bug. But changing it would impact the existing code. So we keep it)
+#else
 	public ${dataFetcher.field.javaTypeFullClassname} ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
 #end 
 
@@ -122,13 +124,65 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
 	 * number of requests to the server, when recursing down through the object associations.<BR/>
 	 * You can find more information on this page:
-	 * <A HREF="https://www.graphql-java.com/documentation/master/batching/">graphql-java batching</A>
+	 * <A HREF="https://www.graphql-java.com/documentation/master/batching/">graphql-java batching</A><BR/>
+	 * <B>Important notes:</B> 
+	 * <UL>
+	 * <LI>The list returned by this method must be sorted in the exact same order as the given <i>keys</i> list. If values 
+	 * are missing (no value for a given key), then the returned list must contain a null value at this key's position.</LI>
+	 * <LI>One of <code>batchLoader</code> or <code>unorderedReturnBatchLoader</code> must be overriden in the data fetcher 
+	 * implementation. If not, then a NullPointerException will be thrown at runtime, with a proper error message.</LI>
+	 * <LI>If your data storage implementation makes it complex to return values in the same order as the keys list, then it's 
+	 * easier to override <code>unorderedReturnBatchLoader</code>, and let the default implementation of 
+	 * <code>batchLoader</code> order the values</LI>
+	 * </UL> 
 	 * 
 	 * @param keys
-	 *            A list of ${batchLoader.type.identifier.type.name}'s id
+	 *            A list of ${batchLoader.type.identifier.type.name}'s id, for which the matching objects must be returned
+#if($configuration.generateBatchLoaderEnvironment)
+	 * @param environment
+	 *            The Data Loader environment
+#end
 	 * @return A list of ${batchLoader.type.identifier.type.name}s
 	 */
-	public List<${batchLoader.type.classFullName}> batchLoader(List<${batchLoader.type.identifier.javaTypeFullClassname}> keys#if($configuration.generateBatchLoaderEnvironment), BatchLoaderEnvironment environment#end);
+	default public List<${batchLoader.type.classFullName}> batchLoader(List<${batchLoader.type.identifier.javaTypeFullClassname}> keys#if($configuration.generateBatchLoaderEnvironment), BatchLoaderEnvironment environment#end) {
+		List<${batchLoader.type.classFullName}> ret = unorderedReturnBatchLoader(keys#if($configuration.generateBatchLoaderEnvironment), environment#end);
+		if (ret == null)
+			throw new NullPointerException("Either batchLoader or unorderedReturnBatchLoader must be overriden in ${dataFetcherDelegate.pascalCaseName} implementation. And unorderedReturnBatchLoader must return a list.");
+		return GraphqlUtils.graphqlUtils.orderList(keys, ret, "${batchLoader.type.identifier.javaName}");
+	}
+
+	/**
+	 * This method loads a list of ${dataFetcher.field.name}, based on the list of id to be fetched. This method is used by
+	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
+	 * number of requests to the server, when recursing down through the object associations.<BR/>
+	 * You can find more information on this page:
+	 * <A HREF="https://www.graphql-java.com/documentation/master/batching/">graphql-java batching</A><BR/>
+	 * <B>Important notes:</B> 
+	 * <UL>
+	 * <LI>The list returned may be in any order: this method is called by the default implementation of <code>batchLoader</code>, 
+	 * which will sort the value return by this method, according to the given <i>keys</i> list.</LI>
+	 * <LI>There may be missing values (no value for a given key): the default implementation of <code>batchLoader</code> will
+	 * replace these missing values by a null value at this key's position.</LI>
+	 * <LI>One of <code>batchLoader</code> or <code>unorderedReturnBatchLoader</code> must be overriden in the data fetcher 
+	 * implementation. If not, then a NullPointerException will be thrown at runtime, with a proper error message.</LI>
+	 * <LI>If your data storage implementation makes it complex to return values in the same order as the keys list, then it's 
+	 * easier to override <code>unorderedReturnBatchLoader</code>, and let the default implementation of 
+	 * <code>batchLoader</code> order the values</LI>
+	 * <LI>If your data storage implementation makes it easy to return values in the same order as the keys list, then the  
+	 * execution is a little quicker if you override <code>batchLoader</code>, as there would be no sort of the returned list.</LI>
+	 * </UL> 
+	 * 
+	 * @param keys
+	 *            A list of ${batchLoader.type.identifier.type.name}'s id, for which the matching objects must be returned
+#if($configuration.generateBatchLoaderEnvironment)
+	 * @param environment
+	 *            The Data Loader environment
+#end
+	 * @return
+	 */
+	default public List<${batchLoader.type.classFullName}> unorderedReturnBatchLoader(List<${batchLoader.type.identifier.javaTypeFullClassname}> keys#if($configuration.generateBatchLoaderEnvironment), BatchLoaderEnvironment environment#end) {
+		return null;
+	}
 
 #end
 }

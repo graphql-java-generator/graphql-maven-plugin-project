@@ -16,6 +16,10 @@ Both modes (client and server):
 * (Issue #128) partial rewrite of the generation code, to avoid conflicts between the POJO's java types, and other class names (like Client, Date...)
 
 
+Server mode:
+* Uprade of java-dataloader from version 2.2.3 to version 3.1.2
+* Added a `generateDataLoaderForLists` plugin parameter. The default value is false, which let the generated code unchanged. When set to true, data loader methods is also generated for lists (in DataFetcherDelegates)
+
 
 # 1.18.3
 

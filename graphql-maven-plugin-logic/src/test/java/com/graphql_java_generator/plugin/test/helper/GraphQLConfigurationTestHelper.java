@@ -35,16 +35,16 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	// to load several generated source folders in the IDE.
 	public List<CustomScalarDefinition> customScalars = new ArrayList<>();
 	public boolean generateBatchLoaderEnvironment = false;
+	public boolean generateDataLoaderForLists = false;
+	public boolean generateDeprecatedRequestResponse = true;
 	private Boolean generateJacksonAnnotations = null; // See below: isGenerateJacksonAnnotations() either
 														// generateJacksonAnnotations if it is not null, or true id
 														// client mode, or false if server mode. Because of this rule,
 														// Velocity MUST call the isGenerateJacksonAnnotations() method.
 														// So this attribute must be private
-	public boolean generateDeprecatedRequestResponse = true;
 	public boolean generateJPAAnnotation = true;
 	public boolean generateUtilityClasses = true;
 	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
-	public boolean legacyDataLoaderCall = true;
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
 	public Integer maxTokens;

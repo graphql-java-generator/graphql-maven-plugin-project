@@ -393,7 +393,7 @@
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>java-dataloader</artifactId>
-				<version>2.2.3</version>
+				<version>3.1.2</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>

@@ -7,10 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
@@ -121,20 +125,58 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_GraphQLRepository_forum() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = new Calendar.Builder().set(0, 0).build();
 		cal.clear();
-		cal.set(2009, 11, 20);// Month is 0-based, so this date is 2009, December the 20th
+		cal.set(2009, 12 - 1, 20);// Month is 0-based, so this date is 2009, December the 20th
 		List<Topic> topics = graphQLRepoForum.topicAuthorPostAuthor("Board name 2", cal.getTime());
 
-		assertTrue(topics.size() >= 5);
+		// The returned list must contain these topics:
 
-		Topic topic12 = topics.get(1);
+		Map<String, Topic> verif = new HashMap<>();
+		verif.put("2", Topic.builder().withId("2")
+				.withDate(new Calendar.Builder().setDate(2018, 12 - 1, 29).setTimeOfDay(13, 57, 10).build().getTime())
+				.withTitle("The title of <2>").withContent("The content of the topic <2>").withPubliclyAvailable(true)
+				.build());
+		verif.put("12", Topic.builder().withId("12")
+				.withDate(new Calendar.Builder().setDate(2018, 12 - 1, 29).setTimeOfDay(13, 57, 10).build().getTime())
+				.withTitle("The title of <12>").withContent("The content of the topic <12>").withPubliclyAvailable(true)
+				.build());
+		verif.put("22", Topic.builder().withId("22")
+				.withDate(new Calendar.Builder().setDate(2018, 12 - 1, 29).setTimeOfDay(13, 57, 10).build().getTime())
+				.withTitle("The title of <22>").withContent("The content of the topic <22>").withPubliclyAvailable(true)
+				.build());
+		verif.put("32", Topic.builder().withId("32")
+				.withDate(new Calendar.Builder().setDate(2018, 12 - 1, 29).setTimeOfDay(13, 57, 10).build().getTime())
+				.withTitle("The title of <32>").withContent("The content of the topic <32>").withPubliclyAvailable(true)
+				.build());
+		verif.put("42", Topic.builder().withId("42")
+				.withDate(new Calendar.Builder().setDate(2018, 12 - 1, 29).setTimeOfDay(13, 57, 10).build().getTime())
+				.withTitle("The title of <42>").withContent("The content of the topic <42>").withPubliclyAvailable(true)
+				.build());
+
 		//
+		Topic topic12 = null;
+		assertTrue(topics.size() >= verif.size());
+		for (Topic t : topics) {
+			// The returned topics may contain unexpected items, as some Integration Tests create data in the server.
+			// We managed here only the expected items
+			if (verif.containsKey(t.getId())) {
+				// We store the topic 12 for further tests
+				if (t.getId().equals("12")) {
+					topic12 = t;
+				}
+				// We remove this item from the map: if the map becomes empty, we'll have found every expected items
+				verif.remove(t.getId());
+			}
+		}
+		assertEquals(0, verif.size(), "The verif map should be empty (all of its items must have been found");
+
+		//
+		assertEquals("12", topic12.getId());
 		assertEquals("The content of the topic <12>", topic12.getContent());
 		assertEquals(new GregorianCalendar(2018, 12 - 1, 20).getTime(), topic12.getDate());
-		assertEquals(12, (int) topic12.getNbPosts());
+		assertEquals(12, (int) topic12.getNbPosts()); // This number is a field unrelated to the real number of posts
 		assertEquals("The title of <12>", topic12.getTitle());
-		assertEquals("12", topic12.getId());
 		//
 		Member author12 = topic12.getAuthor();// All its fields have been loaded
 		assertNotNull(author12);
@@ -146,11 +188,23 @@ public class RequestsAgainstTwoGraphQLServersIT {
 
 		// Let's check for one post
 		List<Post> posts12 = topic12.getPosts();
-		assertEquals(8, posts12.size());
+		Post post232 = null;
 		//
-		Post post232 = posts12.get(5);
-		assertEquals(new GregorianCalendar(2018, 05 - 1, 13).getTime(), post232.getDate());
+		assertEquals(8, posts12.size());
+		List<String> ids = Arrays.asList("12", "56", "100", "144", "188", "232", "276", "320");
+		for (Post p : posts12) {
+			if (p.getId().equals("232")) {
+				post232 = p;
+			}
+			if (!ids.contains(p.getId())) {
+				fail("posts12 contains an expected post (id=" + p.getId() + ")");
+			}
+		}
+		//
+
+		assertNotNull(post232, "We should have found the post of id 232");
 		assertEquals("232", post232.getId());
+		assertEquals(new GregorianCalendar(2018, 05 - 1, 13).getTime(), post232.getDate());
 		assertEquals("The content of the post <232>", post232.getContent());
 		assertEquals(null, post232.getPubliclyAvailable()); // Not queried
 		assertEquals("The title of <232>", post232.getTitle());

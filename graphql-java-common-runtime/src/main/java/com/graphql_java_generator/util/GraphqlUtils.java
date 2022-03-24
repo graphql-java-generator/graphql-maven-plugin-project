@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -210,6 +211,43 @@ public class GraphqlUtils {
 	 */
 	public <T> T optionalToObject(Optional<T> optional) {
 		return optional.isPresent() ? optional.get() : null;
+	}
+
+	/**
+	 * Reads a non ordered list, and return the same content sorted according the <i>keys</i> list. This method is used
+	 * for batch loader method: they must return their result in the exact same order as the provided keys, so that the
+	 * returned values are properly dispatched in the server's response.
+	 * 
+	 * @param <T>
+	 *            The type of items in these list
+	 * @param keys
+	 *            The list which ordered must be respected.
+	 * @param unorderedList
+	 *            A list of items in any order. Each item in this list must have a key which is in the <i>keys</i>
+	 *            list.<br/>
+	 *            There may be missing values (for instance if a key doesn't match an item in the database). In this
+	 *            case, this value is replaced by a null value.
+	 * @param keyFieldName
+	 *            The name of the field, that contain the key, that is: the T's attribute the can be matched against the
+	 *            <i>keys</i> list. For instance: "id"
+	 * @return A list of T instances coming from the <i>unorderedList</i>, where the key (retrieved by the <i>getter</i>
+	 *         method) of these instances is in the exact same order as the <i>keys</i> list. Missing values in the
+	 *         <i>unorderedList</i> list are replaced by null.
+	 */
+	public <T> List<T> orderList(List<?> keys, List<T> unorderedList, String keyFieldName) {
+		Map<Object, T> map = new HashMap<>();
+		for (T t : unorderedList) {
+			map.put(invokeGetter(t, keyFieldName), t);
+		}
+		List<T> ret = new ArrayList<>(keys.size());
+		for (Object id : keys) {
+			if (map.containsKey(id))
+				ret.add(map.get(id));
+			else
+				ret.add(null);
+
+		}
+		return ret;
 	}
 
 	/**

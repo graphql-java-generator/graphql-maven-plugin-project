@@ -32,9 +32,9 @@
 				<configuration>
 					<mode>server</mode>
 					<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
+					<generateDataLoaderForLists>true</generateDataLoaderForLists>
 					<generateJPAAnnotation>true</generateJPAAnnotation>
 					<javaTypeForIDType>java.lang.Long</javaTypeForIDType>
-					<legacyDataLoaderCall>false</legacyDataLoaderCall>
 					<packageName>org.forum.server.graphql</packageName>
 					<scanBasePackages>org.forum.server.jpa , org.forum.server.specific_code </scanBasePackages>
 					<schemaPersonalizationFile>src/main/graphql/forum_personalization.json</schemaPersonalizationFile>
