@@ -269,7 +269,6 @@ abstract class AbstractIT {
 		assertEquals(nbItemsWithoutId, allFieldCases.getListWithoutIdSubTypes().size());
 		assertTrue(
 				allFieldCases.getListWithoutIdSubTypes().get(0).getName().endsWith(textToAppendToTheFornameWithoutId));
-
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)

@@ -17,6 +17,7 @@ import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.impl.DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl.KeyContext;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCases;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
@@ -98,13 +99,36 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	public CompletableFuture<AllFieldCasesWithIdSubtype> oneWithIdSubType(
 			DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
 			AllFieldCases source, Boolean uppercase) {
-		return dataLoader.load(UUID.randomUUID(), uppercase);
+		KeyContext kc = new KeyContext();
+		kc.uppercase = uppercase;
+		return dataLoader.load(UUID.randomUUID(), kc);
 	}
 
 	@Override
 	public AllFieldCasesWithIdSubtype oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
 			AllFieldCases origin, Boolean uppercase) {
 		return generator.generateInstance(AllFieldCasesWithIdSubtype.class);
+	}
+
+	@Override
+	public CompletableFuture<List<AllFieldCasesWithIdSubtype>> listWithIdSubTypes(
+			DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
+			AllFieldCases origin, Long nbItems, Date date, List<Date> dates, Boolean uppercaseName,
+			String textToAppendToTheForname) {
+
+		List<UUID> uuids = generator.generateInstanceList(UUID.class, nbItems.intValue());
+
+		// We store the parameter that'll allow the datafetcher to return a AllFieldCasesWithIdSubtype that respects
+		// what the GraphQL request expects
+		List<Object> keyContexts = new ArrayList<>();
+		KeyContext kc = new KeyContext();
+		kc.uppercase = uppercaseName;
+		kc.textToAppendToTheForname = textToAppendToTheForname;
+		for (int i = 0; i < uuids.size(); i += 1) {
+			keyContexts.add(kc);
+		}
+
+		return dataLoader.loadMany(uuids, keyContexts);
 	}
 
 	@Override
@@ -139,6 +163,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 			}
 
 			return ret;
+
 		}
 	}
 

@@ -161,7 +161,9 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 
 	/**
 	 * <P>
-	 * (only for server mode) Defines how the methods in the data fetchers delegates are generated.
+	 * (only for server mode) Defines how the methods in the data fetchers delegates are generated. The detailed
+	 * information is available in the
+	 * <a href="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/server">Wiki server page</a>
 	 * </P>
 	 * <P>
 	 * When generateDataLoaderForLists is false (default mode), the data loaders are used only for fields that don't
@@ -170,10 +172,17 @@ public interface GenerateServerCodeConfiguration extends GenerateCodeCommonConfi
 	 * used by the generated code only if no data loader is available).
 	 * </P>
 	 * <P>
-	 * When generateDataLoaderForLists is true, there is one getter for field of this data fetcher. If the field's type
-	 * is a type with an id (whether it is a list or not), then the return type is a {@link CompletableFuture}. If the
-	 * field's type is a type that has no id, then a method is generated with a direct return (not a
-	 * {@link CompletableFuture}). When the field's type is a scalar, then no method is generated (no need to fetch it)
+	 * When generateDataLoaderForLists is true, the above behavior is extended to fields that are a list.
+	 * </P>
+	 * <P>
+	 * Note: if set to true, this plugin parameter make the use of data loader mandatory for every field which type is a
+	 * list of GraphQL objects, which have an id. This may not be suitable, for instance when your data is stored in a
+	 * relational database, where you would need a first query to retrieve the ids and push them into the data loader,
+	 * then another one to retrieve the associated values. If you want to use data loader for only some of particular
+	 * fields, you should <b>consider using the <code>GenerateDataLoaderForLists</code></b>. You'll find more
+	 * information on the
+	 * <a href="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/server">Wiki server
+	 * page</a>.
 	 * </P>
 	 * <P>
 	 * This parameter is available since version 1.18.4

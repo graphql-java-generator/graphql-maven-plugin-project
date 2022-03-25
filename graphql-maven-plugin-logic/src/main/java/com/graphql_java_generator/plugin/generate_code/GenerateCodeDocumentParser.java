@@ -628,11 +628,17 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					// graphql-java will then determines at runtime if a dataloader is needed in the running case, or
 					// not
 					boolean withDataLoader = field.getType().getIdentifier() != null;
-					if (!((GenerateServerCodeConfiguration) configuration).isGenerateDataLoaderForLists()
-							&& field.getFieldTypeAST().getListDepth() > 0) {
+					if (field.getFieldTypeAST().getListDepth() > 0) {
 						// In versions before 1.18.3, there was be no CompletableFuture for field that are lists
-						// This behavior is controlled by the legacyDataLoaderCall plugin parameter
-						withDataLoader = false;
+						// This behavior is controlled by the generateDataLoaderForLists plugin parameter and the
+						// GenerateDataLoaderForLists directive (that can associated directly to the GraphQL field)
+						withDataLoader = ((GenerateServerCodeConfiguration) configuration)
+								.isGenerateDataLoaderForLists()
+								|| null != field.getAppliedDirectives().stream()//
+										.filter(directive -> directive.getDirective().getName()
+												.equals("GenerateDataLoaderForLists"))
+										.findAny()//
+										.orElse(null);
 					}
 
 					dataFetchers.add(new DataFetcherImpl(newField, dataFetcherDelegate, true, withDataLoader, type));

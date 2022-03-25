@@ -81,10 +81,10 @@ public class DataGenerator {
 			// enum are a special case
 			int x = RANDOM.nextInt(clazzToReturn.getEnumConstants().length);
 			return clazzToReturn.getEnumConstants()[x];
-
 		} else if (clazzToReturn.equals(Boolean.class)) {
 			return (T) (Boolean) (RANDOM.nextBoolean());
-
+		} else if (clazzToReturn.equals(UUID.class)) {
+			return (T) UUID.randomUUID();
 		} else {
 
 			// Standard case

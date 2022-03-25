@@ -136,7 +136,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
-	public List<Topic> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
+	public List<Topic> unorderedReturnBatchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
 	}

@@ -18,6 +18,15 @@ public class DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl
 	@Resource
 	DataGenerator generator;
 
+	/**
+	 * This class contains the context that allows to precise what should be done on the returned
+	 * AllFieldCasesWithIdSubtype instance
+	 */
+	public static class KeyContext {
+		public Boolean uppercase;
+		public String textToAppendToTheForname;
+	}
+
 	@Override
 	public List<AllFieldCasesWithIdSubtype> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		List<AllFieldCasesWithIdSubtype> list = new ArrayList<>(keys.size());
@@ -26,10 +35,24 @@ public class DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl
 			AllFieldCasesWithIdSubtype item = generator.generateInstance(AllFieldCasesWithIdSubtype.class);
 			item.setId(id);
 
-			// Let's manage the uppercase parameter, that was associated with this key
-			Boolean uppercase = (Boolean) environment.getKeyContexts().get(id);
-			if (uppercase != null && uppercase) {
-				item.setName(item.getName().toUpperCase());
+			Object context = environment.getKeyContexts().get(id);
+			if (context != null) {
+
+				if (!(context instanceof KeyContext))
+					throw new RuntimeException(
+							"The DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl's batchLoader received a bad context: it's an instance of "
+									+ context.getClass().getName() + ", but the expected class is "
+									+ KeyContext.class.getName());
+
+				KeyContext keyContext = (KeyContext) context;
+
+				// Let's manage the KeyContext parameter, that was associated with this key
+				if (keyContext.textToAppendToTheForname != null) {
+					item.setName(item.getName() + keyContext.textToAppendToTheForname);
+				}
+				if (keyContext.uppercase != null && keyContext.uppercase) {
+					item.setName(item.getName().toUpperCase());
+				}
 			}
 
 			list.add(item);

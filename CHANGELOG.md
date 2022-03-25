@@ -17,8 +17,10 @@ Both modes (client and server):
 
 
 Server mode:
-* Uprade of java-dataloader from version 2.2.3 to version 3.1.2
 * Added a `generateDataLoaderForLists` plugin parameter. The default value is false, which let the generated code unchanged. When set to true, data loader methods is also generated for lists (in DataFetcherDelegates)
+* Added the `GenerateDataLoaderForLists` directive: it can be added to a specific GraphQL field, which type is a list of GraphQL objects, which have an id. The generated code will then make use of a Data Loader. Please read the details are on the [Wiki server page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/server).
+* The `DataFetcherDelegate` interfaces has now two methods for batch loading (instead of once before). The provided default implementation prevent side effect on the existing `DataFetcherDelegate` implementations. These methods are `batchLoader` and `unorderedReturnBatchLoader`. All the details are on the [Wiki server page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/server).
+* Upgrade of java-dataloader from version 2.2.3 to version 3.1.2
 
 
 # 1.18.3

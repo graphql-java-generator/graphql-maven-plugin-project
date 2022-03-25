@@ -17,6 +17,9 @@ extend scalar ID @IDScalarDirective
 directive @RelayConnection
 on FIELD_DEFINITION
 
+directive @GenerateDataLoaderForLists
+on FIELD_DEFINITION
+
 schema @testDirective(value:"on Schema") {
 	#A comment on the query
     query: MyQueryType
@@ -193,6 +196,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     matrix: [[Float]]!
     oneWithIdSubType(uppercase: Boolean): AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+       @GenerateDataLoaderForLists
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
     listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
     issue65(inputs: [FieldParameterInput!]): [AllFieldCasesWithoutIdSubtype]
