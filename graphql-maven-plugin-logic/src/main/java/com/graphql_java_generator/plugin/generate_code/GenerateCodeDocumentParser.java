@@ -631,12 +631,12 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 					if (field.getFieldTypeAST().getListDepth() > 0) {
 						// In versions before 1.18.3, there was be no CompletableFuture for field that are lists
 						// This behavior is controlled by the generateDataLoaderForLists plugin parameter and the
-						// GenerateDataLoaderForLists directive (that can associated directly to the GraphQL field)
+						// generateDataLoaderForLists directive (that can associated directly to the GraphQL field)
 						withDataLoader = ((GenerateServerCodeConfiguration) configuration)
 								.isGenerateDataLoaderForLists()
 								|| null != field.getAppliedDirectives().stream()//
 										.filter(directive -> directive.getDirective().getName()
-												.equals("GenerateDataLoaderForLists"))
+												.equals("generateDataLoaderForLists"))
 										.findAny()//
 										.orElse(null);
 					}

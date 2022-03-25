@@ -108,7 +108,7 @@ public abstract class AbstractGenerateServerCodeMojo extends AbstractGenerateCod
 	 * list of GraphQL objects, which have an id. This may not be suitable, for instance when your data is stored in a
 	 * relational database, where you would need a first query to retrieve the ids and push them into the data loader,
 	 * then another one to retrieve the associated values. If you want to use data loader for only some of particular
-	 * fields, you should <b>consider using the <code>GenerateDataLoaderForLists</code></b>. You'll find more
+	 * fields, you should <b>consider using the <code>generateDataLoaderForLists</code></b>. You'll find more
 	 * information on the
 	 * <a href="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/server">Wiki server
 	 * page</a>.

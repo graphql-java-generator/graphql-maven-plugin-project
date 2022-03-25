@@ -94,7 +94,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertTrue(dataFetcher.isCompletableFuture(), "oneWithIdSubType: the dataLoader one");
 		//
 		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "listWithIdSubTypes", 1);
-		assertTrue(dataFetcher.isCompletableFuture(), "listWithIdSubTypes is annotated by @GenerateDataLoaderForLists");
+		assertTrue(dataFetcher.isCompletableFuture(), "listWithIdSubTypes is annotated by @generateDataLoaderForLists");
 		//
 		dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithoutIdSubType", 1);
 		assertFalse(dataFetcher.isCompletableFuture(), "oneWithoutIdSubType (only standard dataFetcher here)");
@@ -237,7 +237,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("deprecated", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("IDScalarDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("RelayConnection", generateCodeDocumentParser.getDirectives().get(i++).getName());
-		assertEquals("GenerateDataLoaderForLists", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("generateDataLoaderForLists", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("testDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("anotherTestDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 
