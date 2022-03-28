@@ -10,7 +10,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
-# Not released yet
+# 1.18.4
 
 Both modes (client and server):
 * (Issue #128) partial rewrite of the generation code, to avoid conflicts between the POJO's java types, and other class names (like Client, Date...)

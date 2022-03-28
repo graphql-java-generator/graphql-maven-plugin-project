@@ -2,8 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Issue #118 : CompletableFuture method is not generated for lists
-    * Add a test, that DataLoader is used for the listWithIdSubTypes DataFetcher
 * Gradle plugin's issue #9: manage triple quoted comments (should be done by graphql-java, to be tested)
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
 * Check issue #118 (CompletableFuture method is not generated for lists)
