@@ -546,3 +546,14 @@ type TList implements IList {
 interface Client {
 	foo: String
 }
+
+#############################
+# test for issue #130
+type Field {
+	# Generates a clash between the java classname, and the enum that contains the list of of fields.
+    someValue : String
+}
+type Builder {
+	# Generates a clash between the java classname, and the Builder class generated in each POJO
+	someValue: String
+}

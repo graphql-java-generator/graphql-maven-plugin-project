@@ -261,41 +261,22 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
         		+ "}";
     }
 
-    /**
-	 * Enum of field names
-	 */
-	 public static enum Field implements GraphQLField {
-#foreach ($field in $object.fields)
-		${field.pascalCaseName}("${field.name}")#if($foreach.hasNext),
-#end
-#end;
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
-	}
-
-	public static Builder builder() {
-			return new Builder();
+## Issue 130: if the GraphQL type's name is Builder, the inner static class may not be named Builder. So we prefix it with '_'
+	public static#if($targetFileName=="Builder") _Builder#else Builder#end builder() {
+			return new#if($targetFileName=="Builder") _Builder#else Builder#end();
 		}
 
 
 
 	/**
-	 * Builder
+	 * The Builder that helps building instance of this POJO. You can get an instance of this class, by calling the
+	 * {@link #builder()}
+#if($targetFileName=="Builder")
+	 * <br/>As this GraphQL type's name is Builder, the inner Builder class is renamed to _Builder, to avoid name 
+	 * collision during Java compilation.
+#end 
 	 */
-	public static class Builder {
+	public static class#if($targetFileName=="Builder") _Builder#else Builder#end {
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
 		private ${field.javaTypeFullClassname} ${field.javaName};
@@ -305,7 +286,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
-		public Builder with${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
+		public#if($targetFileName=="Builder") _Builder#else Builder#end with${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 			this.${field.javaName} = ${field.javaName};
 			return this;
 		}

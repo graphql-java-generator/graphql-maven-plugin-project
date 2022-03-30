@@ -53,7 +53,7 @@ public class IntrospectionIT {
 		__Schema schema = myQuery.__schema("{types {name fields(includeDeprecated:true) {name type {name}}}}");
 
 		// Verification
-		assertEquals(69, schema.getTypes().size());
+		assertEquals(71, schema.getTypes().size());
 		assertEquals("AllFieldCases", schema.getTypes().get(0).getName());
 		// As the order of fields seems to depend on the way this is compile, let's use a rough method to check the
 		// field names
