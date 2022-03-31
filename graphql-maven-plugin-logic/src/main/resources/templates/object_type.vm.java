@@ -4,8 +4,6 @@ package ${configuration.packageName};
 import java.util.HashMap;
 import java.util.Map;
 
-import com.graphql_java_generator.GraphQLField;
-
 #if ($configuration.isGenerateJacksonAnnotations())
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

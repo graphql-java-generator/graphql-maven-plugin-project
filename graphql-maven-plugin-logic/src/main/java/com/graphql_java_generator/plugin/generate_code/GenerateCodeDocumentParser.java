@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLInterfaceType;
@@ -855,7 +854,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			} // for(Fields)
 
 			// Let's add some common imports
-			type.addImportForUtilityClasses(getUtilPackageName(), GraphQLField.class.getName());
 			type.addImportForUtilityClasses(getUtilPackageName(), GraphQLInputParameters.class.getName());
 
 			// Some imports that are only for utility classes

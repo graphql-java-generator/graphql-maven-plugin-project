@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -118,30 +117,6 @@ public class SubscriptionType extends SubscriptionTypeExecutor
 	public String toString() {
 		return "SubscriptionType {" + "subscribeToNewPost: " + subscribeToNewPost + ", " + "__typename: " + __typename
 				+ "}";
-	}
-
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		SubscribeToNewPost("subscribeToNewPost"), __typename("__typename");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
 	}
 
 	public static Builder builder() {

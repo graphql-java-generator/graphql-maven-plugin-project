@@ -15,7 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -182,31 +181,6 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 				+ __typename + "}";
 	}
 
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		SubscribeNewHumanForEpisode("subscribeNewHumanForEpisode"), SubscribeToAList("subscribeToAList"), Issue53(
-				"issue53"), __typename("__typename");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
-	}
-
 	public static Builder builder() {
 		return new Builder();
 	}
@@ -261,8 +235,7 @@ public class TheSubscriptionType extends TheSubscriptionTypeExecutor
 
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
-			extensionMapper = new GraphQLObjectMapper(
-					"com.graphql_java_generator.domain.client.allGraphQLCases", null);
+			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null);
 		}
 		return extensionMapper;
 	}

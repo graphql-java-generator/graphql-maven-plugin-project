@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -368,35 +367,6 @@ public class AllFieldCases implements WithID {
 				+ listWithIdSubTypes + ", " + "oneWithoutIdSubType: " + oneWithoutIdSubType + ", "
 				+ "listWithoutIdSubTypes: " + listWithoutIdSubTypes + ", " + "issue65: " + issue65 + ", " + "issue66: "
 				+ issue66 + ", " + "__typename: " + __typename + "}";
-	}
-
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		Id("id"), Name("name"), Forname("forname"), Age("age"), AFloat("aFloat"), Date("date"), Dates(
-				"dates"), NbComments("nbComments"), Comments("comments"), Booleans("booleans"), Aliases(
-						"aliases"), Planets("planets"), Friends("friends"), Matrix("matrix"), OneWithIdSubType(
-								"oneWithIdSubType"), ListWithIdSubTypes("listWithIdSubTypes"), OneWithoutIdSubType(
-										"oneWithoutIdSubType"), ListWithoutIdSubTypes("listWithoutIdSubTypes"), Issue65(
-												"issue65"), Issue66("issue66"), __typename("__typename");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
 	}
 
 	public static Builder builder() {

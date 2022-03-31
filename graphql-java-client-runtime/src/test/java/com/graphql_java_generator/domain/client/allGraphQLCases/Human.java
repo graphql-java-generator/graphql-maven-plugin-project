@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -201,31 +200,6 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 				+ "friends: " + friends + ", " + "nbComments: " + nbComments + ", " + "comments: " + comments + ", "
 				+ "appearsIn: " + appearsIn + ", " + "homePlanet: " + homePlanet + ", " + "__typename: " + __typename
 				+ "}";
-	}
-
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		Id("id"), Name("name"), BestFriend("bestFriend"), Friends("friends"), NbComments("nbComments"), Comments(
-				"comments"), AppearsIn("appearsIn"), HomePlanet("homePlanet"), __typename("__typename");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
 	}
 
 	public static Builder builder() {

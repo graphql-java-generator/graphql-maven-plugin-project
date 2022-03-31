@@ -9,7 +9,6 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
@@ -120,30 +119,6 @@ public class PostInput {
 	public String toString() {
 		return "PostInput {" + "topicId: " + topicId + ", " + "input: " + input + ", " + "from: " + from + ", " + "in: "
 				+ in + "}";
-	}
-
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		TopicId("topicId"), Input("input"), From("from"), In("in");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
 	}
 
 	public static Builder builder() {

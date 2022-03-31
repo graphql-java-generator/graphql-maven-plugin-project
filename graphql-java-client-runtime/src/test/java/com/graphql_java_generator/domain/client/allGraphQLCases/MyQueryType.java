@@ -15,7 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -557,47 +556,6 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 				+ __schema + ", " + "__type: " + __type + ", " + "__typename: " + __typename + "}";
 	}
 
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		WithoutParameters("withoutParameters"), WithOneOptionalParam("withOneOptionalParam"), WithOneMandatoryParam(
-				"withOneMandatoryParam"), WithOneMandatoryParamDefaultValue(
-						"withOneMandatoryParamDefaultValue"), WithTwoMandatoryParamDefaultVal(
-								"withTwoMandatoryParamDefaultVal"), WithEnum("withEnum"), WithListOfList(
-										"withListOfList"), WithList("withList"), AllFieldCases(
-												"allFieldCases"), UnionTest("unionTest"), Error("error"), ABreak(
-														"aBreak"), DirectiveOnQuery(
-																"directiveOnQuery"), DirectiveOnField(
-																		"directiveOnField"), ConnectionWithoutParameters(
-																				"connectionWithoutParameters"), ConnectionOnHuman(
-																						"connectionOnHuman"), Issue53(
-																								"issue53"), Issue82Float(
-																										"issue82Float"), Issue82ID(
-																												"issue82ID"), Relay(
-																														"relay"), __schema(
-																																"__schema"), __type(
-																																		"__type"), __typename(
-																																				"__typename");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
-	}
-
 	public static Builder builder() {
 		return new Builder();
 	}
@@ -785,8 +743,7 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 
 	private GraphQLObjectMapper getExtensionMapper() {
 		if (extensionMapper == null) {
-			extensionMapper = new GraphQLObjectMapper(
-					"com.graphql_java_generator.domain.client.allGraphQLCases", null);
+			extensionMapper = new GraphQLObjectMapper("com.graphql_java_generator.domain.client.allGraphQLCases", null);
 		}
 		return extensionMapper;
 	}

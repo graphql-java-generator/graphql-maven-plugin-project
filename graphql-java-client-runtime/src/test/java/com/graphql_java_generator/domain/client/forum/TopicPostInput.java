@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
@@ -129,30 +128,6 @@ public class TopicPostInput {
 	public String toString() {
 		return "TopicPostInput {" + "authorId: " + authorId + ", " + "date: " + date + ", " + "publiclyAvailable: "
 				+ publiclyAvailable + ", " + "title: " + title + ", " + "content: " + content + "}";
-	}
-
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		AuthorId("authorId"), Date("date"), PubliclyAvailable("publiclyAvailable"), Title("title"), Content("content");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
 	}
 
 	public static Builder builder() {

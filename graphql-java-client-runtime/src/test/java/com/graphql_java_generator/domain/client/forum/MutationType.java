@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.graphql_java_generator.GraphQLField;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
@@ -176,31 +175,6 @@ public class MutationType extends MutationTypeExecutor
 		return "MutationType {" + "createBoard: " + createBoard + ", " + "createTopic: " + createTopic + ", "
 				+ "createPost: " + createPost + ", " + "createPosts: " + createPosts + ", " + "createMember: "
 				+ createMember + ", " + "__typename: " + __typename + "}";
-	}
-
-	/**
-	 * Enum of field names
-	 */
-	public static enum Field implements GraphQLField {
-		CreateBoard("createBoard"), CreateTopic("createTopic"), CreatePost("createPost"), CreatePosts(
-				"createPosts"), CreateMember("createMember"), __typename("__typename");
-
-		private String fieldName;
-
-		Field(String fieldName) {
-			this.fieldName = fieldName;
-		}
-
-		@Override
-		public String getFieldName() {
-			return fieldName;
-		}
-
-		@Override
-		public Class<?> getGraphQLType() {
-			return this.getClass().getDeclaringClass();
-		}
-
 	}
 
 	public static Builder builder() {

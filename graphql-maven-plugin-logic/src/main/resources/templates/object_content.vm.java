@@ -263,10 +263,8 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 
 ## Issue 130: if the GraphQL type's name is Builder, the inner static class may not be named Builder. So we prefix it with '_'
 	public static#if($targetFileName=="Builder") _Builder#else Builder#end builder() {
-			return new#if($targetFileName=="Builder") _Builder#else Builder#end();
-		}
-
-
+		return new#if($targetFileName=="Builder") _Builder#else Builder#end();
+	}
 
 	/**
 	 * The Builder that helps building instance of this POJO. You can get an instance of this class, by calling the
@@ -282,7 +280,6 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 		private ${field.javaTypeFullClassname} ${field.javaName};
 #end
 #end
-
 
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')

@@ -2,7 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Remove useless interface com.graphql_java_generator.GraphQLField (in common-runtime)
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
 * Check wiki, to properly indicate that the `allGraphQLCases.graphqls` is located in the allGraphQLCases client project
 * Remove Deprecated getStringContentXxx methods in InputParameter
