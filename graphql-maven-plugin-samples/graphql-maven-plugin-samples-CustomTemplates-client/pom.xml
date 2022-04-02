@@ -84,8 +84,7 @@
 				<artifactId>process-exec-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>switchboard-process</id>
-						<phase>pre-integration-test</phase>
+						<id>start-Forum-server</id>
 						<goals>
 							<goal>start</goal>
 						</goals>
@@ -104,7 +103,7 @@
 					</execution>
 					<!--Stop all processes in reverse order -->
 					<execution>
-						<id>stop-all</id>
+						<id>stop-Forum-server</id>
 						<phase>post-integration-test</phase>
 						<goals>
 							<goal>stop-all</goal>

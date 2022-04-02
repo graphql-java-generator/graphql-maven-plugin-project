@@ -16,6 +16,9 @@
 	<logger name="com.graphql_java_generator" level="trace" additivity="false">
 		<appender-ref ref="File" />
 	</logger>
+	<logger name="org.springframework" level="info" additivity="false">
+		<appender-ref ref="File" />
+	</logger>
 
 	<root level="warn">
 		<appender-ref ref="Console" />

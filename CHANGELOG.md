@@ -10,11 +10,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
-# Not released yet
-
+# 1.18.5
 
 Both modes (client and server):
 * Issue #130: A GraphQL type of name `Field` or `Builder` would prevent the generated code to compile
+
+Client mode:
+* Removes some useless dependencies (that could lead to a wrong error message, about a missing graphQL bean)
+* commons-io upgraded from 2.8.0 to 2.11.0
+* commons-text upgraded from 1.8 to 1.9
 
 Server mode:
 * Issue #131: Spring configuration properties like `spring.codec.max-in-memory-size` would be ignored.

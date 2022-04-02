@@ -131,12 +131,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-StarWars-server</artifactId>
-			<type>war</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
@@ -149,13 +143,6 @@
 			<artifactId>graphql-java-client-dependencies</artifactId>
 			<type>pom</type>
 		</dependency>
-
-		<!-- Spring is needed, to manage OAuth -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
-
 
 	</dependencies>
 

@@ -314,22 +314,6 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-allGraphQLCases-server</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-maven-plugin-samples-Forum-server</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
 
 	<reporting>

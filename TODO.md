@@ -2,6 +2,8 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Tutorial: add the documentation about the application.yml file
+    * Especially: `spring.main.web-application-type = none`
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
 * Check wiki, to properly indicate that the `allGraphQLCases.graphqls` is located in the allGraphQLCases client project
 * Remove Deprecated getStringContentXxx methods in InputParameter
