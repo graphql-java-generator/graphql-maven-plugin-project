@@ -7,6 +7,7 @@ import org.forum.client.util.QueryExecutorForum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -52,9 +53,10 @@ public class SpringTestConfig {
 	@Bean
 	@Primary
 	public WebClient webClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
+			CodecCustomizer defaultCodecCustomizer, //
 			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
-		return GraphQLConfiguration.getWebClient(graphqlEndpointAllGraphQLCases, httpClientAllGraphQLCases,
-				serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases);
+		return GraphQLConfiguration.getWebClient(graphqlEndpointAllGraphQLCases, defaultCodecCustomizer,
+				httpClientAllGraphQLCases, serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases);
 	}
 }

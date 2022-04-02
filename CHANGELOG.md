@@ -10,6 +10,16 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# Not released yet
+
+
+Both modes (client and server):
+* Issue #130: A GraphQL type of name `Field` or `Builder` would prevent the generated code to compile
+
+Server mode:
+* Issue #131: Spring configuration properties like `spring.codec.max-in-memory-size` would be ignored.
+
+
 # 1.18.4
 
 Both modes (client and server):

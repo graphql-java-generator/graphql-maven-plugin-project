@@ -6,6 +6,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 
+import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -47,8 +48,9 @@ public class GraphQLConfiguration {
 	 *            the http URI for the GraphQL endpoint
 	 */
 	public GraphQLConfiguration(String graphqlEndpoint) {
-		this.requestExecutor = new RequestExecutionSpringReactiveImpl(graphqlEndpoint, null, getWebClient(graphqlEndpoint, null),
-				getWebSocketClient(null), null, null);
+		this.requestExecutor = new RequestExecutionSpringReactiveImpl(graphqlEndpoint, null,
+				getWebClient(graphqlEndpoint, null, null, (ExchangeFilterFunction[]) null), getWebSocketClient(null),
+				null, null);
 	}
 
 	/**
@@ -64,10 +66,33 @@ public class GraphQLConfiguration {
 	 */
 	public static WebClient getWebClient(String graphqlEndpoint, HttpClient httpClient,
 			ExchangeFilterFunction... filters) {
+		return getWebClient(graphqlEndpoint, null, httpClient, filters);
+	}
+
+	/**
+	 * Builds a Spring reactive {@link WebClient}, from the specified parameters.<BR/>
+	 * Note: this utility can be used if you need to create your own {@link WebClient}, for instance to add your own
+	 * filters to the {@link WebClient}
+	 * 
+	 * @param graphqlEndpoint
+	 * @param codecCustomizer
+	 *            The Spring {@link CodecCustomizer}. Typically, the generated Spring autoconfiguration uses the
+	 *            defaultCodecCustomizer that loads the spring.codec.xxx properties from the Spring configuration file.
+	 * @param httpClient
+	 * @param filters
+	 *            Optional list of additional filters that will be added to the returned {@link WebClient}
+	 * @return
+	 */
+	public static WebClient getWebClient(String graphqlEndpoint, CodecCustomizer codecCustomizer, HttpClient httpClient,
+			ExchangeFilterFunction... filters) {
 		Builder webClientBuilder = WebClient.builder()//
 				.baseUrl(graphqlEndpoint)//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint));
+
+		if (codecCustomizer != null) {
+			webClientBuilder.codecs(configurer -> codecCustomizer.customize(configurer));
+		}
 
 		if (httpClient != null) {
 			webClientBuilder.clientConnector(new ReactorClientHttpConnector(httpClient));

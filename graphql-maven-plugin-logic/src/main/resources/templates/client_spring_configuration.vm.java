@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -82,10 +83,12 @@ public class SpringConfiguration${springBeanSuffix} {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "webClient${springBeanSuffix}")
-	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}, //
+	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix},
+			@Autowired(required = false) CodecCustomizer defaultCodecCustomizer,
 			@Autowired(required = false) @Qualifier("httpClient${springBeanSuffix}") HttpClient httpClient${springBeanSuffix},
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}) {
-		return GraphQLConfiguration.getWebClient(graphqlEndpoint${springBeanSuffix}, httpClient${springBeanSuffix}, serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix});
+		return GraphQLConfiguration.getWebClient(graphqlEndpoint${springBeanSuffix}, defaultCodecCustomizer,
+				httpClient${springBeanSuffix}, serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix});
 	}
 
 

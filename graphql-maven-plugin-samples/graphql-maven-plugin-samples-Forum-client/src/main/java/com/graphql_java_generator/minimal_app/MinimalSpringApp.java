@@ -57,6 +57,7 @@ public class MinimalSpringApp implements CommandLineRunner {
 						+ date + "'");
 		System.out
 				.println(queryExecutor.boards("{id name publiclyAvailable topics(since: &param){id}}", "param", date));
+		System.out.println("");
 		System.out.println("Normal end of the application");
 	}
 }
