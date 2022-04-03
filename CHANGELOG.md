@@ -10,6 +10,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# Not released yet
+
+Gradle plugin:
+* Removed a warning (about a missing `javax.annotation.meta.When` annotation), when building from the Gradle plugin
+
+
 # 1.18.5
 
 Both modes (client and server):
