@@ -43,6 +43,11 @@
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
 		</dependency>
+		<!-- Avoids this warning (when building in Gradle): unknown enum constant When.MAYBE -->
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+		</dependency>
 
 		<dependency>
 			<!-- You need to provide in your pom the fact the this dependency is provided. This is to ensure that the embedded servlet 

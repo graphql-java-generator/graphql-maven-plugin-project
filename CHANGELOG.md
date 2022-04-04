@@ -13,6 +13,8 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 # Not released yet
 
 Gradle plugin:
+* As soon as a task defined in the _build.gradle_ , it is added as a dependency for the _compileJava_ and _processResources_ tasks
+    * No more need to write _compileJava.dependsOn(generateServerCode)_ or _processResources.dependsOn(generateServerCode)_
 * Removed a warning (about a missing `javax.annotation.meta.When` annotation), when building from the Gradle plugin
 
 
