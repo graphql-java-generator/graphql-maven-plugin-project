@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-project</artifactId>
-		<version>local-SNAPSHOT</version>
+		<version>1.18.6</version>
 	</parent>
 	<artifactId>graphql-java-server-runtime</artifactId>
 
