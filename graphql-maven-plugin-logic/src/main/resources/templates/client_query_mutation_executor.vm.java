@@ -26,6 +26,15 @@ package ${packageUtilName};
 ##
 ## The inputValues macro lists the input values for the parameters for a field
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
+##
+##
+##
+#if($configuration.generateDeprecatedRequestResponse)
+#set ($executionResponse = "${object.classSimpleName}Response")
+#else
+#set ($executionResponse = "${configuration.packageName}.${object.classSimpleName}")
+#end
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,6 +94,7 @@ import com.graphql_java_generator.util.GraphqlUtils;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @Component
+@SuppressWarnings("unused")
 public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if($object.requestType=="mutation") GraphQLMutationExecutor #else GraphQLQueryExecutor #end{
 
 	/** Logger for this class */
@@ -212,7 +222,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+	public $executionResponse execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -249,7 +259,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end exec(String queryResponseDef, Object... paramsAndValues)
+	public $executionResponse exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing ${object.requestType} {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -292,7 +302,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+	public $executionResponse execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			if (parameters == null) {
@@ -315,7 +325,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters, ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end.class);
+		return graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters, ${executionResponse}.class);
 	}
 
 	/**
@@ -354,7 +364,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end exec(ObjectResponse objectResponse, Object... paramsAndValues)
+	public $executionResponse exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}

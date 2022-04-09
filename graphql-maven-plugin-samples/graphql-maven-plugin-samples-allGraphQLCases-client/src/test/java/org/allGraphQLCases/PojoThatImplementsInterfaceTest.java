@@ -6,6 +6,7 @@ package org.allGraphQLCases;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.allGraphQLCases.client.IBar1;
 import org.allGraphQLCases.client.IBar12;
@@ -94,10 +95,14 @@ public class PojoThatImplementsInterfaceTest {
 		assertEquals(ibar1, ifoo1.getBar());
 
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo1.setBar(tbar2));
+		assertTrue(e.getMessage().contains("TBar1"));
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo1.setBar(ibar2));
+		assertTrue(e.getMessage().contains("TBar1"));
 
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo1.setBar(tbar12));
+		assertTrue(e.getMessage().contains("TBar1"));
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo1.setBar(ibar12));
+		assertTrue(e.getMessage().contains("TBar1"));
 
 		// Check of issue #124 correction: setting a field to null should not raise an exception
 		ifoo1.setBar(null);
@@ -114,10 +119,14 @@ public class PojoThatImplementsInterfaceTest {
 		assertEquals(ibar1, tfoo1.getBar());
 
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo1.setBar(tbar2));
+		assertTrue(e.getMessage().contains("TBar1"));
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo1.setBar(ibar2));
+		assertTrue(e.getMessage().contains("TBar1"));
 
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo1.setBar(tbar12));
+		assertTrue(e.getMessage().contains("TBar1"));
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo1.setBar(ibar12));
+		assertTrue(e.getMessage().contains("TBar1"));
 
 		// Check of issue #124 correction: setting a field to null should not raise an exception
 		tfoo1.setBar(null);
@@ -129,10 +138,14 @@ public class PojoThatImplementsInterfaceTest {
 		assertNull(ifoo12.getBar());
 
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo12.setBar(tbar1));
+		assertTrue(e.getMessage().contains("TBar12"));
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo12.setBar(ibar1));
+		assertTrue(e.getMessage().contains("TBar12"));
 
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo12.setBar(tbar2));
+		assertTrue(e.getMessage().contains("TBar12"));
 		e = assertThrows(IllegalArgumentException.class, () -> ifoo12.setBar(ibar2));
+		assertTrue(e.getMessage().contains("TBar12"));
 
 		ifoo12.setBar(tbar12);
 		assertEquals(tbar12, ifoo12.getBar());
@@ -149,10 +162,14 @@ public class PojoThatImplementsInterfaceTest {
 		assertNull(tfoo12.getBar());
 
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo12.setBar(tbar1));
+		assertTrue(e.getMessage().contains("TBar12"));
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo12.setBar(ibar1));
+		assertTrue(e.getMessage().contains("TBar12"));
 
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo12.setBar(tbar2));
+		assertTrue(e.getMessage().contains("TBar12"));
 		e = assertThrows(IllegalArgumentException.class, () -> tfoo12.setBar(ibar2));
+		assertTrue(e.getMessage().contains("TBar12"));
 
 		tfoo12.setBar(tbar12);
 		assertEquals(tbar12, tfoo12.getBar());

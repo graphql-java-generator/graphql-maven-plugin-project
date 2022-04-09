@@ -26,6 +26,14 @@ package ${packageUtilName};
 ##
 ## The inputValues macro lists the input values for the parameters for a field
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
+##
+##
+##
+#if($configuration.generateDeprecatedRequestResponse)
+#set ($executionResponse = "${object.classSimpleName}Response")
+#else
+#set ($executionResponse = "${configuration.packageName}.${object.classSimpleName}")
+#end
 
 import java.util.HashMap;
 import java.util.List;
@@ -343,9 +351,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 #if ($field.name != "__typename")
 		case "${field.name}":
 			return graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters,
-					(SubscriptionCallback<#if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end>) subscriptionCallback, 
-					${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end.class, 
-					#if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+					 (SubscriptionCallback<#if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end>) subscriptionCallback, 
+					 ${executionResponse}.class, 
+					 #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
 #end
 #end
 		default:

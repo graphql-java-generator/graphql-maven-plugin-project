@@ -8,14 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.MyQueryType;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.AnotherMutationTypeResponse;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -32,7 +32,6 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 //"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
 //More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@SuppressWarnings("deprecation")
 @Execution(ExecutionMode.CONCURRENT)
 class FullQueriesDeprecatedIT {
 
@@ -79,8 +78,8 @@ class FullQueriesDeprecatedIT {
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-																		// simple cases
+		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+																// simple cases
 
 		// Verifications
 		assertNotNull(resp);
@@ -94,7 +93,7 @@ class FullQueriesDeprecatedIT {
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
+		MyQueryType resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
 				"value", "the value", "skip", Boolean.FALSE);
 
 		// Verifications
@@ -111,7 +110,7 @@ class FullQueriesDeprecatedIT {
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = myQuery.exec(withDirectiveTwoParametersResponse, //
+		MyQueryType resp = myQuery.exec(withDirectiveTwoParametersResponse, //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -140,7 +139,7 @@ class FullQueriesDeprecatedIT {
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		AnotherMutationTypeResponse resp = mutationType.exec(mutationWithoutDirectiveResponse, "humanInput", input);
+		AnotherMutationType resp = mutationType.exec(mutationWithoutDirectiveResponse, "humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
@@ -190,7 +189,7 @@ class FullQueriesDeprecatedIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		MyQueryTypeResponse resp = myQuery.exec(multipleQueriesResponse, //
+		MyQueryType resp = myQuery.exec(multipleQueriesResponse, //
 				"value", "An expected returned string", //
 				"skipAppearsIn", true, //
 				"skipName", false);

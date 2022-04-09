@@ -45,7 +45,7 @@
 									<classifier>sources</classifier>
 									<overWrite>true</overWrite>
 									<destFileName>graphql-java-common-runtime-sources.jar</destFileName>
-									<outputDirectory>${project.build.directory}/classes/</outputDirectory>
+									<outputDirectory>${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
 								</artifactItem>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
@@ -54,7 +54,7 @@
 									<classifier>sources</classifier>
 									<overWrite>true</overWrite>
 									<destFileName>graphql-java-client-runtime-sources.jar</destFileName>
-									<outputDirectory>${project.build.directory}/classes/</outputDirectory>
+									<outputDirectory>${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
 								</artifactItem>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
@@ -63,7 +63,7 @@
 									<classifier>sources</classifier>
 									<overWrite>true</overWrite>
 									<destFileName>graphql-java-server-runtime-sources.jar</destFileName>
-									<outputDirectory>${project.build.directory}/classes/</outputDirectory>
+									<outputDirectory>${project.build.directory}/generated-resources/runtime_sources/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -74,6 +74,18 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
+					<execution>
+						<id>add-resource</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>add-resource</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource><directory>${project.build.directory}/generated-resources/runtime_sources</directory></resource>
+							</resources>
+						</configuration>
+					</execution>
 					<execution>
 						<id>add-test-source</id>
 						<phase>generate-test-sources</phase>

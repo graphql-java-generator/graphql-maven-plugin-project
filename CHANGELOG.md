@@ -10,7 +10,10 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
-# Not released yet
+# 1.18.6
+
+Client mode:
+* Issue #132 (regression in 1.18.5). The code would not compile when generateDeprecatedRequestResponse=false and separateUtilityClasses=true.
 
 Gradle plugin:
 * As soon as a task defined in the _build.gradle_ , it is added as a dependency for the _compileJava_ and _processResources_ tasks
