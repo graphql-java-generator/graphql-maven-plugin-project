@@ -17,6 +17,7 @@ import com.graphql_java_generator.client.response.Error;
 import ${configuration.packageName}.${object.classSimpleName};
 #end
 
+@SuppressWarnings("unused")
 public class ${object.classSimpleName}RootResponse {
 
 #if($configuration.isGenerateJacksonAnnotations())

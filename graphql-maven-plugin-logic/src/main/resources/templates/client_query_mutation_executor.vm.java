@@ -165,6 +165,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * @param sslContext
 	 * @param hostnameVerifier
 	 */
+	@SuppressWarnings("deprecation")
 	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
@@ -181,6 +182,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
+	@SuppressWarnings("deprecation")
 	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, Client client) {
 		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();

@@ -15,6 +15,7 @@ import com.graphql_java_generator.annotation.GraphQLEnumType;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @GraphQLEnumType("${object.name}")
+@SuppressWarnings("unused")
 public enum ${object.javaName} {
 	#foreach ($value in $object.values)${value.name}#if($foreach.hasNext), #end#end;
 }

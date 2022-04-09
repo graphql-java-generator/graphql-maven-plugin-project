@@ -13,6 +13,7 @@ import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 
+@SuppressWarnings("unused")
 public class DirectiveRegistryInitializer {
 	
 	/**

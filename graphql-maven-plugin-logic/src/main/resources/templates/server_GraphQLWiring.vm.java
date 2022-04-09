@@ -48,6 +48,7 @@ import com.graphql_java_generator.server.util.BatchLoaderDelegate;
  * @author etienne-sf
  */
 @Component
+@SuppressWarnings("unused")
 public class GraphQLWiring {
 
 	/** The logger for this instance */

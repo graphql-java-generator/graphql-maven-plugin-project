@@ -40,6 +40,7 @@ import reactor.netty.http.client.HttpClient;
  */
 @Configuration("springConfiguration${springBeanSuffix}") // The name of this bean will be springConfiguration${springBeanSuffix}
 @ComponentScan("${packageUtilName}")
+@SuppressWarnings("unused")
 public class SpringConfiguration${springBeanSuffix} {
 
 	@Value(value = "${D}{graphql.endpoint${springBeanSuffix}.url}")

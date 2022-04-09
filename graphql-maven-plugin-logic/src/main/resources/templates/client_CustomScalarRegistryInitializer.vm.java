@@ -20,6 +20,7 @@ import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDServer;
 
+@SuppressWarnings("unused")
 public class CustomScalarRegistryInitializer {
 
 	/**

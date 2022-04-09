@@ -88,6 +88,7 @@ import com.graphql_java_generator.client.SubscriptionClient;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @Component
+@SuppressWarnings("unused")
 public class ${object.classSimpleName}Executor${springBeanSuffix}  implements GraphQLSubscriptionExecutor {
 
 	/** Logger for this class */
@@ -148,6 +149,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @param sslContext
 	 * @param hostnameVerifier
 	 */
+	@SuppressWarnings("deprecation")
 	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
 		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
@@ -164,6 +166,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @param client
 	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
 	 */
+	@SuppressWarnings("deprecation")
 	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, Client client) {
 		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
@@ -297,7 +300,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public SubscriptionClient execWithBindValues(
 			ObjectResponse objectResponse, 
 			SubscriptionCallback<?> subscriptionCallback,
@@ -635,6 +638,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+#if($field.fieldTypeAST.listDepth>0)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+#end 
 	public SubscriptionClient ${field.name}WithBindValues(ObjectResponse objectResponse,
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 #inputParams() 
@@ -721,6 +727,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+#if($field.fieldTypeAST.listDepth>0)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+#end 
 	public SubscriptionClient ${field.javaName}(ObjectResponse objectResponse,
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 #inputParams() 

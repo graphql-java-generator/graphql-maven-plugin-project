@@ -29,6 +29,7 @@ ${object.annotation}
 #if ($configuration.isGenerateJacksonAnnotations())
 @JsonInclude(Include.NON_NULL)
 #end
+@SuppressWarnings("unused")
 public class ${targetFileName} 
 #if($object.implementz.size()>0)	implements #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end
 #if($configuration.isGenerateJacksonAnnotations() && ${object.requestType})	#if($object.implementz.size()>0),#else implements#end com.graphql_java_generator.client.GraphQLRequestObject#end

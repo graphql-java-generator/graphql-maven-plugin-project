@@ -11,6 +11,7 @@ import $import;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 ${object.annotation}
+@SuppressWarnings("unused")
 public interface ${object.javaName} {
 
 }

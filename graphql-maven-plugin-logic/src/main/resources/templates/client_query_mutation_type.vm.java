@@ -74,6 +74,7 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
 @Deprecated
 #end
 ${object.annotation}
+@SuppressWarnings("unused")
 public class ${object.classSimpleName} extends ${object.classSimpleName}Executor${springBeanSuffix} #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.GraphQLRequestObject #end{
 
 #if(!${configuration.separateUtilityClasses})

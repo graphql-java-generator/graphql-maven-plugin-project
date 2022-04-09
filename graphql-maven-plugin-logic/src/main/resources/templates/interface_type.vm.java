@@ -17,6 +17,7 @@ import $import;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 ${object.annotation}
+@SuppressWarnings("unused")
 public interface ${object.javaName} #if($object.implementz.size()>0)extends #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
 #foreach ($field in $object.fields)
 

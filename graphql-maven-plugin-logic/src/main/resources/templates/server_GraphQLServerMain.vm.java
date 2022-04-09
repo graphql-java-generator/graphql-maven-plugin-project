@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.DataLoader;
+import org.dataloader.DataLoaderFactory;
 import org.dataloader.DataLoaderRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -63,6 +64,7 @@ import graphql.spring.web.servlet.components.DefaultGraphQLInvocation;
 @EntityScan(basePackages = { "${configuration.packageName}", "com.graphql_java_generator" ${configuration.quotedScanBasePackages} })
 #end
 @EnableConfigurationProperties
+@SuppressWarnings("unused")
 public class GraphQLServerMain#if(${configuration.packaging}=="war") extends SpringBootServletInitializer#end {
 
 	@Autowired
@@ -133,7 +135,7 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 	
 				for (BatchLoaderDelegateWithContext<?, ?> batchLoaderDelegate : applicationContext
 						.getBeansOfType(BatchLoaderDelegateWithContext.class).values()) {
-					registry.register(batchLoaderDelegate.getName(), DataLoader.newDataLoader(batchLoaderDelegate));
+					registry.register(batchLoaderDelegate.getName(), DataLoaderFactory.newDataLoader(batchLoaderDelegate));
 				} // for
 	
 				return registry;

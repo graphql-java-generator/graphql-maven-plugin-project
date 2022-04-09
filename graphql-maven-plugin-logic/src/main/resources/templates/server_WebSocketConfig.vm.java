@@ -18,6 +18,7 @@ import graphql.schema.GraphQLSchema;
 
 @Configuration
 @EnableWebSocket
+@SuppressWarnings("unused")
 public class WebSocketConfig implements WebSocketConfigurer {
 
 	protected Logger logger = LoggerFactory.getLogger(WebSocketConfig.class);

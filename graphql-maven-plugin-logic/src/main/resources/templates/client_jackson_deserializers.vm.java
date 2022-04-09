@@ -16,6 +16,7 @@ import graphql.schema.GraphQLScalarType;
 /**
  * This class is a standard Deserializer for Jackson. It uses the {@link GraphQLScalarType} that is implemented by the project for this scalar
  */
+@SuppressWarnings("unused")
 public class CustomJacksonDeserializers {
 	
 #foreach ($customDeserializer in $customDeserializers)

@@ -12,6 +12,9 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # 1.18.6
 
+All modes:
+* Removed various compilation warnings in the generated code
+
 Client mode:
 * Issue #132 (regression in 1.18.5). The code would not compile when generateDeprecatedRequestResponse=false and separateUtilityClasses=true.
 

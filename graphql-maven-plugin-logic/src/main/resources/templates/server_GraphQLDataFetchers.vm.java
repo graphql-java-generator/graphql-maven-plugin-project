@@ -26,6 +26,7 @@ import graphql.schema.DataFetcher;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @Component
+@SuppressWarnings("unused")
 public class GraphQLDataFetchers {
 
 	/** The logger for this instance */
