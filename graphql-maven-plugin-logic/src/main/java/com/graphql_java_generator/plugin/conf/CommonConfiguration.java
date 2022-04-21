@@ -128,7 +128,7 @@ public interface CommonConfiguration {
 	 * <P>
 	 * This parameter is now <B><I>deprecated</I></B>: it's value used in the plugin is always true, that is: if the
 	 * generated sources or resources are older than the GraphQL schema file(s), then there is no source or resource
-	 * generation. In clear, the source and resource generation is always executed only if the provided input (GraphQL
+	 * generation. In clear, the source and resource generation is executed only if the provided input (GraphQL
 	 * schema...) has been updated since the last plugin execution.
 	 * </P>
 	 */
