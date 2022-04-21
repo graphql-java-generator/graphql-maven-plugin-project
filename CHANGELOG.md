@@ -22,6 +22,7 @@ Gradle plugin:
 * As soon as a task defined in the _build.gradle_ , it is added as a dependency for the _compileJava_ and _processResources_ tasks
     * No more need to write _compileJava.dependsOn(generateServerCode)_ or _processResources.dependsOn(generateServerCode)_
 * Removed a warning (about a missing `javax.annotation.meta.When` annotation), when building from the Gradle plugin
+* No more Gradle 8 compatibility warning
 
 
 # 1.18.5
