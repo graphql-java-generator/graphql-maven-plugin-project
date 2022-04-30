@@ -9,6 +9,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+Dependency upgrade :
+* Upgrade from graphql-java 17.3 to graphql-java 18.0
+* Upgrade from graphql-java-extended-scalars 17.0 to 18.0
+
 
 # 1.18.6
 
