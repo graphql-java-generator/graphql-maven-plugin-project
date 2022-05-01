@@ -116,7 +116,6 @@ public class GenerateGraphQLSchema {
 			context.put("documentParser", documentParser);
 			context.put("graphqlUtils", graphqlUtils);
 			//
-			context.put("scalars", documentParser.getScalarTypes());
 			context.put("customScalars", documentParser.getCustomScalars());
 			context.put("directives", documentParser.getDirectives());
 			context.put("enumTypes", documentParser.getEnumTypes());
@@ -124,6 +123,8 @@ public class GenerateGraphQLSchema {
 			context.put("mutationType", documentParser.getMutationType());
 			context.put("objectTypes", documentParser.getObjectTypes());
 			context.put("queryType", documentParser.getQueryType());
+			context.put("scalars", documentParser.getScalarTypes());
+			context.put("schemaDirectives", documentParser.getSchemaDirectives());
 			context.put("subscriptionType", documentParser.getSubscriptionType());
 			context.put("unionTypes", documentParser.getUnionTypes());
 			Template template = getVelocityEngine().getTemplate(resolveTemplate(CodeTemplate.RELAY_SCHEMA), "UTF-8");

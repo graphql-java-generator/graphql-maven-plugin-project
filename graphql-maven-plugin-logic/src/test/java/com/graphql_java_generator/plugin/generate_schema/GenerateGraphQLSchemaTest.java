@@ -61,6 +61,7 @@ class GenerateGraphQLSchemaTest {
 		/////////////// Ignored classes //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredClass(AddRelayConnections.class);
 		deepComparator.addIgnoredClass(Document.class);
+		deepComparator.addIgnoredClass(DocumentParser.ExtensionDefinitions.class);
 		deepComparator.addIgnoredClass(GenerateGraphQLSchemaConfigurationTestHelper.class);
 		deepComparator.addIgnoredClass(GraphqlUtils.class);
 
@@ -71,6 +72,7 @@ class GenerateGraphQLSchemaTest {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
+		deepComparator.addIgnoredFields(DocumentParser.class, "schemaDirectives");
 		deepComparator.addIgnoredFields(
 				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
 				"configuration");

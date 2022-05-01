@@ -38,11 +38,21 @@ ${param.name}: ${param.graphQLType}#if($param.defaultValue)=${param.getDefaultVa
 ##
 ######
 #macro(implements $implements)
-#set($appendImplements=true)## As not all items in implements will be displayed, we dont even know if there is an interface in the list
+##
+## As not all items in implements will be displayed, we don't even know if there is an interface in the list. So we loop a first time
+## to check if at least there is one implemented interface
+#set($appendImplements=false)##
+#foreach($implement in $implements)##
+#if($documentParser.getType($implement).class.simpleName == "InterfaceType")##
+#set($appendImplements=true)## Ok, we'll add the 'implements' keyword
+#end##
+#end## end of foreach
+##
 #set($appendSep=false)## As not all items in implements will be displayed, we can't rely on the ($foreach.hasNext) stuff
+##
 #foreach($implement in $implements)##
 #if($appendImplements) implements #end##
-#set($appendImplements=false)##
+#set($appendImplements=false)## We won't add it again
 ## the implementz field contains both the interfaces (that we want here) and the unions (that we don't want here)
 #if($documentParser.getType($implement).class.simpleName == "InterfaceType")
 #if($appendSep)& #end##
@@ -72,16 +82,16 @@ $argName: ${graphqlUtils.getValueAsText($appliedDir.argumentValues[$argName])}#i
 #end
 ##
 ###############################################################################################################
-################  Scalar Extensions ###########################################################################
+################  Scalar Extensions (of standard GraphQL scalars) #############################################
 ###############################################################################################################
 #foreach ($scalar in $scalars)
-#if (${scalar.class.name} == "com.graphql_java_generator.plugin.language.impl.ScalarExtensionType")
-#foreach ($comment in $scalar.comments)
-	#$comment
-#end
+#if ($scalar.class.name != "com.graphql_java_generator.plugin.language.impl.CustomScalarType")
+## This scalar is a standard scalar type. It may have been extended with a directive
+#if ($scalar.appliedDirectives.size() > 0)
 extend scalar ${scalar.name}#implementedDirective($scalar.appliedDirectives)$space
-
 #end
+#end
+
 #end
 
 ###############################################################################################################
@@ -136,7 +146,7 @@ on #foreach($loc in $directive.directiveLocations)$loc#if($foreach.hasNext) | #e
 ###############################################################################################################
 ################  Schema          #############################################################################
 ###############################################################################################################
-schema {
+schema#implementedDirective($schemaDirectives) {
 #if ($queryType)
 	query: $queryType.name
 #end

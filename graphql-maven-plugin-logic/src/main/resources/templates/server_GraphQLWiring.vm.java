@@ -59,9 +59,9 @@ public class GraphQLWiring {
 
 	protected RuntimeWiring buildWiring() {
 		return RuntimeWiring.newRuntimeWiring()
+				//
+				// Wiring every custom scalar definitions
 #foreach ($customScalar in $customScalars)
-			//
-			// Wiring every custom scalar definitions
 ##
 ## Step 1: wiring the custom scalar definitions
 ##

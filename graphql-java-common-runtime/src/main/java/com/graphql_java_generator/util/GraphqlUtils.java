@@ -550,8 +550,8 @@ public class GraphqlUtils {
 
 			return method;
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(
-					"The getter '" + getterMethodName + "' is missing in " + clazz.getName() + " class", e);
+			throw new RuntimeException("The " + clazz.getName() + " class should have a getter '" + getterMethodName
+					+ "', but this getter is missing", e);
 		} catch (SecurityException e) {
 			throw new RuntimeException(
 					"Error while accessing to the getter '" + getterMethodName + "' in " + clazz.getName() + " class",

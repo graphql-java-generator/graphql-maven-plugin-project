@@ -20,11 +20,19 @@ on FIELD_DEFINITION
 directive @generateDataLoaderForLists
 on FIELD_DEFINITION
 
+directive @testExtendKeyword
+on 
+# ExecutableDirectiveLocation
+	QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+
 schema @testDirective(value:"on Schema") {
 	#A comment on the query
     query: MyQueryType
     mutation: AnotherMutationType
-    subscription: TheSubscriptionType
+    # The subscription is defined in the 'extend schema', here below
 }
 
 type MyQueryType {
@@ -172,7 +180,7 @@ input AllFieldCasesWithoutIdSubtypeInput {
 enum Unit {
     YEAR
     MONTH
-    MINUTE
+    DAY
 }
 
 
@@ -557,3 +565,47 @@ type Builder {
 	# Generates a clash between the java classname, and the Builder class generated in each POJO
 	someValue: String
 }
+
+#############################
+# test for issue #130: test for all possible 'extend' use
+
+interface interfaceToTestExtendKeyword {
+	extendedField: String
+}
+
+type Pet {
+	id: ID!
+	name: String!
+}
+
+extend enum Unit @testExtendKeyword {
+	HOUR MINUTE SECOND
+}
+
+extend input AllFieldCasesInput @testExtendKeyword {
+	extendedField: String
+}
+
+extend interface AllFieldCasesInterface
+# Interface extension may not add implemented interface to an existing interface (as of juin 2018 GraphQL specs)
+# implements interfaceToTestExtendKeyword 
+@testExtendKeyword {
+	extendedField: String
+}
+# As we added a field in this interface, we need to add this field into every type that implements it
+extend type AllFieldCasesInterfaceType {
+	extendedField: String
+}
+
+extend scalar Long @testExtendKeyword
+
+extend schema @testExtendKeyword {
+    subscription: TheSubscriptionType @testExtendKeyword
+}
+
+extend type AllFieldCases implements interfaceToTestExtendKeyword @testExtendKeyword {
+	extendedField: String
+}
+
+extend union AnyCharacter @testExtendKeyword
+= Pet

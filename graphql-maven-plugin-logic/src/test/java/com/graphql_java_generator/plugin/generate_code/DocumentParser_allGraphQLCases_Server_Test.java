@@ -75,19 +75,18 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = generateCodeDocumentParser.parseDocuments();
 
 		// Verification
-		assertEquals(46, i, "Nb java files are generated");
-		assertEquals(9, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(29, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(48, i, "Nb java files are generated");
+		assertEquals(10, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
+		assertEquals(30, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(5, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
-		assertEquals(14, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
+		assertEquals(15, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(3, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
 		assertNotNull(generateCodeDocumentParser.getMutationType(), "One mutation");
-		assertNotNull(generateCodeDocumentParser.getSubscriptionType(), "One subscription");
+		assertNull(generateCodeDocumentParser.getSubscriptionType(), "The subscription is in the schema extension");
 
 		assertEquals("query", generateCodeDocumentParser.getQueryType().getRequestType());
 		assertEquals("mutation", generateCodeDocumentParser.getMutationType().getRequestType());
-		assertEquals("subscription", generateCodeDocumentParser.getSubscriptionType().getRequestType());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		DataFetcherImpl dataFetcher = findDataFetcher("DataFetchersDelegateAllFieldCases", "oneWithIdSubType", 1);
@@ -238,6 +237,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals("IDScalarDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("RelayConnection", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("generateDataLoaderForLists", generateCodeDocumentParser.getDirectives().get(i++).getName());
+		assertEquals("testExtendKeyword", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("testDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 		assertEquals("anotherTestDirective", generateCodeDocumentParser.getDirectives().get(i++).getName());
 
@@ -250,10 +250,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// null,
 		// null, null, true);
 		checkDirectivesOnType(generateCodeDocumentParser.getType("Long"), false, null, null, null, null, null, null,
-				null, null, false);
+				null, null, false, 1);
 
 		// On schema
-		// Currently not managed (schema is not stored, and no java classes is generated afteward for the schema)
+		// Currently not managed (schema is not stored, and no java classes is generated afterward for the schema)
 
 		// On enum
 		assertEquals(0, generateCodeDocumentParser.getType("Episode").getAppliedDirectives().size(),
@@ -264,7 +264,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// 666.666,
 		// true, "00000000-0000-0000-0000-000000000002", null, "2001-02-28", false);
 		checkDirectivesOnType(generateCodeDocumentParser.getType("Unit"), false, null, null, null, null, null, null,
-				null, null, false);
+				null, null, false, 1);
 
 		// On enum item
 		// The 3 below tests should be removed, and 3 next be uncommented, once the graphqm-java's issue 2055 is solved
@@ -282,9 +282,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// On interface
 		checkDirectivesOnType(generateCodeDocumentParser.getType("WithID"), true, "on Interface", "666", null, null,
-				null, null, null, null, false);
+				null, null, null, null, false, 0);
 		checkDirectivesOnType(generateCodeDocumentParser.getType("Character"), true, "on Character interface", null,
-				null, null, null, null, null, null, true);
+				null, null, null, null, null, null, true, 0);
 		// On interface field
 		checkDirectivesOnField(generateCodeDocumentParser.getType("Character"), "name", true, "on interface field",
 				null, true, 0);
@@ -294,7 +294,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// checkDirectivesOnType(documentParser.getType("AnyCharacter"), true, "on Union", null, false);
 		// On input type
 		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCasesInput"), true, "on Input Type", null,
-				null, null, null, null, null, null, false);
+				null, null, null, null, null, null, false, 1);
 		// On input type field
 		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "id", true, "on Input Field",
 				null, false, 0);
@@ -302,7 +302,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 				false, 0);
 		// On type
 		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCases"), true, "on Object", null, null, null,
-				null, null, null, null, true);
+				null, null, null, null, true, 1);
 		// On type field
 		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "id", true, "on Field", null, false,
 				0);
@@ -330,9 +330,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	 */
 	private void checkDirectivesOnType(Type type, boolean containsTestDirective, String value, String anotherValue,
 			Integer anInt, Float aFloat, Boolean aBoolean, String anID, String anEnumName, String aCustomScalarDate,
-			boolean containsAnotherTestDirective) {
+			boolean containsAnotherTestDirective, int nbOtherDirectives) {
 
-		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0);
+		int nbDirectives = (containsTestDirective ? 1 : 0) + (containsAnotherTestDirective ? 1 : 0) + nbOtherDirectives;
 		assertEquals(nbDirectives, type.getAppliedDirectives().size());
 		if (containsTestDirective) {
 			assertEquals("testDirective", type.getAppliedDirectives().get(0).getDirective().getName());
@@ -365,7 +365,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 								.getValue());
 		}
 		if (containsAnotherTestDirective) {
-			assertEquals("anotherTestDirective", type.getAppliedDirectives().get(1).getDirective().getName());
+			assertEquals(1, type.getAppliedDirectives().stream()
+					.filter(d -> d.getDirective().getName().equals("anotherTestDirective")).count());
 		}
 	}
 
@@ -669,8 +670,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals(1, mutations.size(), "Nb mutations");
 		assertEquals("AnotherMutationType", mutations.get(0), "the mutation");
 
-		assertEquals(1, subscriptions.size(), "Nb subscriptions");
-		assertEquals("TheSubscriptionType", subscriptions.get(0), "the subscription");
+		assertEquals(0, subscriptions.size(),
+				"Nb subscriptions is 0: the subscription is defined in the schema extension");
 	}
 
 	@Test
@@ -771,7 +772,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		generateCodeDocumentParser.setQueryType(null);
 
 		// Go, go, go
-		EnumType type = generateCodeDocumentParser.readEnumType(def);
+		EnumType type = generateCodeDocumentParser.readEnumType(//
+				new EnumType(def.getName(), pluginConfiguration, generateCodeDocumentParser), //
+				def);
 
 		// Verification
 		assertEquals(objectName, type.getName(), "The name is " + objectName);
