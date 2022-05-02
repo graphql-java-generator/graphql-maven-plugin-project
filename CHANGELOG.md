@@ -15,6 +15,9 @@ Dependency upgrade :
 * Upgrade from graphql-java 17.3 to graphql-java 18.0
 * Upgrade from graphql-java-extended-scalars 17.0 to 18.0
 
+All modes:
+* Issue #136: most usages of the `extend` GraphQL keyword where not managed
+
 
 # 1.18.6
 
