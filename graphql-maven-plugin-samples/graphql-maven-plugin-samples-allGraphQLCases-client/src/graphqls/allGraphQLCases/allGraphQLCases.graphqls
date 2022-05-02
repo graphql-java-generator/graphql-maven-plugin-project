@@ -600,7 +600,7 @@ extend type AllFieldCasesInterfaceType {
 extend scalar Long @testExtendKeyword
 
 extend schema @testExtendKeyword {
-    subscription: TheSubscriptionType @testExtendKeyword
+    subscription: TheSubscriptionType 
 }
 
 extend type AllFieldCases implements interfaceToTestExtendKeyword @testExtendKeyword {

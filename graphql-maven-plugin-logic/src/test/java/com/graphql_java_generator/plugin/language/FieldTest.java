@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.Documents;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 
@@ -17,14 +16,13 @@ class FieldTest {
 	AbstractApplicationContext ctx = null;
 	GenerateCodeDocumentParser documentParser;
 	GraphQLConfiguration pluginConfiguration;
-	Documents documents;
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Client_SpringConfiguration.class);
 		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
-		documents = ctx.getBean(Documents.class);
+
 	}
 
 	// @Test

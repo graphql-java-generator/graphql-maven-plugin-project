@@ -25,7 +25,7 @@ class CodeGeneratorForumTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 	}
 
 }

@@ -88,7 +88,7 @@ class AddRelayConnectionsTest {
 
 		// Go, go, go
 		if (executeParseDocuments) {
-			documentParser.parseDocuments();
+			documentParser.parseGraphQLSchemas();
 		}
 	}
 
@@ -246,7 +246,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Node interface compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		FieldImpl f = (FieldImpl) getField("AllFieldCasesInput", "booleans");
 		//
@@ -280,7 +280,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Node interface compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 
 		DirectiveImpl dir = new DirectiveImpl();
 		dir.setName("RelayConnection");
@@ -332,7 +332,7 @@ class AddRelayConnectionsTest {
 		ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
 
 		// Go, go, go
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 
 		// Verification
 		verify(mockLogger).warn(argument.capture());
@@ -466,7 +466,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Node interface compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		InterfaceType node = (InterfaceType) documentParser.getType("Node");
 		assertNotNull(node);
@@ -490,7 +490,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Edge interface compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		InterfaceType edge = (InterfaceType) documentParser.getType("Edge");
 		assertNotNull(edge);
@@ -514,7 +514,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Connection interface compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		InterfaceType connection = (InterfaceType) documentParser.getType("Connection");
 		assertNotNull(connection);
@@ -537,7 +537,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the PageInfo type compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		ObjectType pageInfo = (ObjectType) documentParser.getType("PageInfo");
 		assertNotNull(pageInfo);
@@ -560,7 +560,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the HumanEdge type compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		ObjectType humanEdge = (ObjectType) documentParser.getType("HumanEdge");
 		assertNotNull(humanEdge);
@@ -583,7 +583,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the HumanConnection type compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		ObjectType humanConnection = (ObjectType) documentParser.getType("HumanConnection");
 		assertNotNull(humanConnection);
@@ -612,7 +612,7 @@ class AddRelayConnectionsTest {
 		// Let's parse (load) the GraphQL schemas, but not call the addRelayConnections() method, so that we can break
 		// the Connection interface compliance for the relay connection specification
 		((GenerateGraphQLSchemaConfigurationTestHelper) configuration).addRelayConnections = false;
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 		//
 		DirectiveImpl dir = new DirectiveImpl();
 		dir.setName("RelayConnection");

@@ -4,9 +4,6 @@
 package graphql.mavenplugin_notscannedbyspring;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -15,12 +12,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.graphql_java_generator.plugin.Documents;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 
-import graphql.language.Document;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,19 +37,6 @@ public abstract class AbstractSpringConfiguration {
 
 	@Resource
 	MavenTestHelper mavenTestHelper;
-
-	public class DocumentsTestHelperImpl implements Documents {
-		List<Document> documents = new ArrayList<>();
-
-		@Override
-		public List<Document> getDocuments() throws IOException {
-			return documents;
-		}
-
-		public void setDocuments(List<Document> documents) {
-			this.documents = documents;
-		}
-	}
 
 	@Bean
 	GraphQLConfiguration graphQLConfigurationTestHelper(MavenTestHelper mavenTestHelper) {

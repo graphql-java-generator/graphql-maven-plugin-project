@@ -1,6 +1,7 @@
 package com.graphql_java_generator.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,14 +18,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 
-import graphql.language.Document;
 import graphql.language.FieldDefinition;
 import graphql.language.InputValueDefinition;
-import graphql.language.Node;
 import graphql.language.NonNullType;
 import graphql.language.ObjectTypeDefinition;
+import graphql.language.TypeDefinition;
 import graphql.language.TypeName;
 import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfiguration;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
 
 /**
  * @author etienne-sf
@@ -35,10 +37,10 @@ import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfigurat
 class GraphqlMavenPluginTest {
 
 	@Autowired
-	Documents documents;
+	GraphqlTestHelper graphqlTestHelper;
 
 	@Autowired
-	GraphqlTestHelper graphqlTestHelper;
+	protected ResourceSchemaStringProvider schemaStringProvider;
 
 	@BeforeEach
 	public void beforeAll() {
@@ -63,17 +65,18 @@ class GraphqlMavenPluginTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testDocuments_helloworld() throws IOException {
 		// Preparation
+		SchemaParser schemaParser = new SchemaParser();
+		TypeDefinitionRegistry typeDefinitionRegistry = schemaParser
+				.parse(schemaStringProvider.getConcatenatedSchemaStrings());
 
 		// Go, go, go
 
 		// Verification
-		assertNotNull(documents, "documents should be returned");
-		assertEquals(1, documents.getDocuments().size(), "documents should contain one doc");
+		assertNotNull(schemaStringProvider, "A schemaStringProvider should be returned");
+		assertNotNull(schemaStringProvider.getConcatenatedSchemaStrings(), "The schema should not be null");
+		assertNotEquals("", schemaStringProvider.getConcatenatedSchemaStrings(), "The schema should not be empty");
 
-		Document doc = documents.getDocuments().get(0);
-		assertEquals(1, doc.getDefinitions().size(), "One definition");
-
-		Node<?> node = doc.getDefinitions().get(0);
+		TypeDefinition<?> node = typeDefinitionRegistry.getType("Query").get();
 		assertTrue(node instanceof ObjectTypeDefinition, "The def is a ObjectTypeDefinition");
 		ObjectTypeDefinition query = (ObjectTypeDefinition) node;
 		assertEquals("Query", query.getName(), "the object type is a query");

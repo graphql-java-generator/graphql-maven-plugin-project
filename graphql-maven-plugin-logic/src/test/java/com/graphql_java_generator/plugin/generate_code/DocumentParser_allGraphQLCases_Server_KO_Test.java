@@ -42,10 +42,9 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 		// Preparation
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration_KO.class);
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		documentParser.getDocuments().getDocuments();
 
 		// Go, go, go
-		Exception e = assertThrows(Exception.class, () -> documentParser.parseDocuments());
+		Exception e = assertThrows(Exception.class, () -> documentParser.parseGraphQLSchemas());
 		assertTrue(e.getMessage().contains("must provide an implementation for the Custom Scalar 'Date'"));
 	}
 
@@ -56,7 +55,6 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		GraphQLConfigurationTestHelper pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
-		documentParser.getDocuments().getDocuments();
 
 		// Let's update some configuration parameters AFTER the documents are loaded, to check the control tests, when
 		// the parsing starts
@@ -64,7 +62,7 @@ class DocumentParser_allGraphQLCases_Server_KO_Test {
 		pluginConfiguration.schemaFilePattern = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
 
 		// Go, go, go
-		Exception e = assertThrows(IllegalArgumentException.class, () -> documentParser.parseDocuments());
+		Exception e = assertThrows(IllegalArgumentException.class, () -> documentParser.parseGraphQLSchemas());
 		assertTrue(e.getMessage().contains("addRelayConnections is set to true"));
 	}
 

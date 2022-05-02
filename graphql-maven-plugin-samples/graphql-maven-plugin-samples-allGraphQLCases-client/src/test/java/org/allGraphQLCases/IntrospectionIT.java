@@ -39,7 +39,8 @@ public class IntrospectionIT {
 
 	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "age", "aFloat", "date", "dateTime", "dates",
 			"nbComments", "comments", "booleans", "aliases", "planets", "friends", "matrix", "oneWithIdSubType",
-			"listWithIdSubTypes", "oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65", "issue66" };
+			"listWithIdSubTypes", "oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65", "issue66",
+			"extendedField" };
 	static List<String> AllFieldCases_FIELDNAMES = Arrays.asList(AllFieldCases_FIELDS);
 
 	@Autowired
@@ -53,7 +54,7 @@ public class IntrospectionIT {
 		__Schema schema = myQuery.__schema("{types {name fields(includeDeprecated:true) {name type {name}}}}");
 
 		// Verification
-		assertEquals(71, schema.getTypes().size());
+		assertEquals(73, schema.getTypes().size());
 		assertEquals("AllFieldCases", schema.getTypes().get(0).getName());
 		// As the order of fields seems to depend on the way this is compile, let's use a rough method to check the
 		// field names

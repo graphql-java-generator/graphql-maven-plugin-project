@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,8 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
@@ -42,7 +45,6 @@ import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.language.AbstractNode;
 import graphql.language.Argument;
-import graphql.language.Definition;
 import graphql.language.DirectiveDefinition;
 import graphql.language.Document;
 import graphql.language.EnumTypeDefinition;
@@ -64,11 +66,14 @@ import graphql.language.ScalarTypeExtensionDefinition;
 import graphql.language.SchemaDefinition;
 import graphql.language.SchemaExtensionDefinition;
 import graphql.language.StringValue;
+import graphql.language.TypeDefinition;
 import graphql.language.TypeName;
 import graphql.language.UnionTypeDefinition;
 import graphql.language.UnionTypeExtensionDefinition;
 import graphql.parser.Parser;
 import graphql.parser.ParserOptions;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -93,22 +98,8 @@ public abstract class DocumentParser {
 	protected final String DEFAULT_SUBSCRIPTION_NAME = "Subscription";
 
 	/**
-	 * Extensions Definitions allows to add extensions to various items of the GraphQL schema (type, input, scalar...).
-	 * To be applied, we must have properly read the item on which this extension applies. So we store these type
-	 * extensions in this list, and the content of these lists is managed afterward.
-	 */
-	@Getter
-	public class ExtensionDefinitions {
-		List<EnumTypeExtensionDefinition> enums = new ArrayList<>();
-		List<InputObjectTypeExtensionDefinition> inputs = new ArrayList<>();
-		List<InterfaceTypeExtensionDefinition> interfaces = new ArrayList<>();
-		List<ScalarTypeExtensionDefinition> scalars = new ArrayList<>();
-		List<ObjectTypeExtensionDefinition> types = new ArrayList<>();
-		List<UnionTypeExtensionDefinition> unions = new ArrayList<>();
-	}
-
-	/**
-	 * This instance is responsible for providing all the configuration parameter from the project (Maven, Gradle...)
+	 * This instance is responsible for providing all the configuration parameters from the project configuration
+	 * (Maven, Gradle...)
 	 */
 	@Autowired
 	protected CommonConfiguration configuration;
@@ -128,13 +119,14 @@ public abstract class DocumentParser {
 	// Internal attributes for this class
 
 	/**
-	 * This Spring Bean is created by {@link SpringConfiguration}. The {@link ResourceSchemaStringProvider} adds the
-	 * introspection schema into the documents list.<BR/>
-	 * See also the {@link #addIntrospectionCapabilities()} that finalize the introspection capabilities for the
-	 * generated code.
+	 * This Spring Bean is responsible for finding and loading all the GraphQL schema files, based on the project
+	 * configuration.
 	 */
 	@Autowired
-	protected Documents documents;
+	protected ResourceSchemaStringProvider schemaStringProvider;
+
+	/** The result of the GraphQL schema parsing */
+	TypeDefinitionRegistry typeDefinitionRegistry;
 
 	/** List of all the directives that have been read in the GraphQL schema */
 	@Getter
@@ -146,19 +138,23 @@ public abstract class DocumentParser {
 	@Setter
 	protected List<AppliedDirective> schemaDirectives = new ArrayList<>();
 
+	/**
+	 * The name of the type that implements the query operation. The default name is "Query". It is overridden in the
+	 * {@link #readSchemaDefinition()} method, if defined in the provided GraphQL schema.
+	 */
+	@Getter
+	protected String queryTypeName = DEFAULT_QUERY_NAME;
 	/** The Query root operation for this Document */
 	@Getter
 	@Setter
 	protected ObjectType queryType = null;
 
 	/**
-	 * The Subscription root operation for this Document, if defined (that is: if this schema implements one or more
-	 * subscriptions)
+	 * The name of the type that implements the mutation operation. The default name is "Mutation". It is overridden in
+	 * the {@link #readSchemaDefinition()} method, if defined in the provided GraphQL schema.
 	 */
 	@Getter
-	@Setter
-	protected ObjectType subscriptionType = null;
-
+	protected String mutationTypeName = DEFAULT_MUTATION_NAME;
 	/**
 	 * The Mutation root operation for this Document, if defined (that is: if this schema implements one or more
 	 * mutations)
@@ -168,17 +164,25 @@ public abstract class DocumentParser {
 	protected ObjectType mutationType = null;
 
 	/**
+	 * The name of the type that implements the subscription operation. The default name is "Subscription". It is
+	 * overridden in the {@link #readSchemaDefinition()} method, if defined in the provided GraphQL schema.
+	 */
+	@Getter
+	protected String subscriptionTypeName = DEFAULT_SUBSCRIPTION_NAME;
+	/**
+	 * The Subscription root operation for this Document, if defined (that is: if this schema implements one or more
+	 * subscriptions)
+	 */
+	@Getter
+	@Setter
+	protected ObjectType subscriptionType = null;
+
+	/**
 	 * All the {@link ObjectType} which have been read during the reading of the documents
 	 */
 	@Getter
 	@Setter
 	List<ObjectType> objectTypes = new ArrayList<>();
-
-	/**
-	 * We store all the found object extensions (extend GraphQL keyword), to manage them once all object definitions
-	 * have been read
-	 */
-	ExtensionDefinitions extensionDefinitions = new ExtensionDefinitions();
 
 	/**
 	 * All the {@link InterfaceTypeDefinition} which have been read during the reading of the documents
@@ -301,29 +305,124 @@ public abstract class DocumentParser {
 	}
 
 	/**
-	 * The main method of the class: it graphqlUtils.executes the generation of the given documents
+	 * The main method of the class: it graphqlUtils.executes the generation of the GraphQL schemas, as defined in the
+	 * project configuration
 	 * 
-	 * @param documents
-	 *            The GraphQL definition schema, from which the code is to be generated
 	 * @return
 	 * @throws IOException
 	 *             When an error occurs, during the parsing of the GraphQL schemas
 	 */
-	public int parseDocuments() throws IOException {
+	public int parseGraphQLSchemas() throws IOException {
 		logger.debug("Starting documents parsing");
 
 		// Configuration of the GraphQL schema parser, from the project configuration
 		ParserOptions newDefault = ParserOptions.newParserOptions().maxTokens(configuration.getMaxTokens()).build();
 		ParserOptions.setDefaultParserOptions(newDefault);
+		SchemaParser schemaParser = new SchemaParser();
 
-		documents.getDocuments().stream().forEach(this::parseOneDocument);
+		// Let's parse the provided GraphQL schema(s)
+		String concatenatedSchemas = schemaStringProvider.getConcatenatedSchemaStrings();
+		typeDefinitionRegistry = schemaParser.parse(concatenatedSchemas);
 
-		logger.debug("Documents have been parsed. Executing internal finalizations");
+		// The Directives must be read first, as they may be found on almost any kind of definition in the GraphQL
+		// schema
+		typeDefinitionRegistry.getDirectiveDefinitions().values().stream()
+				.forEach(def -> directives.add(readDirectiveDefinition(def)));
+
+		// Then a look at the schema definition, to list the defined queries, mutations and subscriptions (should be
+		// only one of each), but we're ready for more. (for instance if several schema files have been merged)
+		logger.debug("Reading schema definition");
+		readSchemaDefinition();
+
+		// Scalar definitions are not returned by the typeDefinitionRegistry.types() method. So we need a specific loop
+		for (ScalarTypeDefinition def : typeDefinitionRegistry.scalars().values()) {
+			// The scalars() method returns all scalars, whether they are custom or not. But we need here to add only
+			// custom scalars (mainly to be able to properly re-generate the schema afterwards)
+			boolean isCustom = true;
+			for (ScalarType s : scalarTypes) {
+				if (s.getName().equals(def.getName())) {
+					isCustom = false;
+					break;
+				}
+			}
+			if (isCustom)
+				customScalars.add(readCustomScalarType(def));
+		}
+
+		logger.debug("Reading type definitions");
+		for (TypeDefinition<?> def : typeDefinitionRegistry.types().values()) {
+			// directive
+			if ((Object) def instanceof DirectiveDefinition) {
+				// This test is awful, but without the (Object) there is a compilation error. And I want to be sure that
+				// these tests resist to a change in the graphql-java hierarchy change (like it already happened), so I
+				// want to keep this test here
+
+				// Directives have already been read
+			} else
+			// enum
+			if (def instanceof EnumTypeDefinition) {
+				enumTypes.add(readEnumType(//
+						new EnumType(((EnumTypeDefinition) def).getName(), configuration, this),
+						(EnumTypeDefinition) def));
+			} else
+			// input object
+			if (def instanceof InputObjectTypeDefinition) {
+				objectTypes.add(readInputType(//
+						new ObjectType(((InputObjectTypeDefinition) def).getName(), configuration, this),
+						(InputObjectTypeDefinition) def));
+			} else
+			// interface
+			if (def instanceof InterfaceTypeDefinition) {
+				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) def));
+			} else
+			// object
+			if (def instanceof ObjectTypeDefinition) {
+				// Let's check what kind of ObjectDefinition we have
+				ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) def);
+				objectTypes.add(o);
+
+				// Let's register this type as a request, if it is the case
+				if (o.getName().equals(queryTypeName)) {
+					queryType = o;
+					o.setRequestType("query");
+				} else if (o.getName().equals(mutationTypeName)) {
+					o.setRequestType("mutation");
+					mutationType = o;
+				} else if (o.getName().equals(subscriptionTypeName)) {
+					o.setRequestType("subscription");
+					subscriptionType = o;
+				}
+			} else
+			// schema
+			if ((Object) def instanceof SchemaDefinition || (Object) def instanceof SchemaExtensionDefinition) {
+				// This test is awful, but without the (Object) there is a compilation error. And I want to be sure that
+				// these tests resist to a change in the graphql-java hierarchy change (like it already happened), so I
+				// want to keep this test here
+
+				// No action, we already parsed it
+			} else
+			// union
+			if (def instanceof UnionTypeDefinition) {
+				// Unions are read latter, once all GraphQL types have been parsed
+			} else {
+				logger.warn("Non managed node type: " + def.getClass().getName());
+			}
+		} // for
+
+		// Once all Types have been properly read, we can read the union types
+		logger.debug("Reading union definitions");
+		typeDefinitionRegistry.types().values().stream()//
+				.filter(n -> (n instanceof UnionTypeDefinition)) // We want the union definitions
+				.filter(n -> !(n instanceof UnionTypeExtensionDefinition)) // We want their extensions (to avoid doubled
+																			// definitions)
+				.forEach(n -> unionTypes
+						.add(readUnionType(new UnionType(((UnionTypeDefinition) n).getName(), configuration, this),
+								(UnionTypeDefinition) n)));
 
 		// Let's finalize some "details":
 
 		// The types Map allows to retrieve easily a Type from its name
-		logger.debug("Fill type map");
+		logger.debug("Fill the type map");
 		fillTypesMap();
 
 		// Manage the ExtensionDefinitions that have been read from the GraphQL schema
@@ -346,168 +445,9 @@ public abstract class DocumentParser {
 
 		// We're done
 		int nbClasses = objectTypes.size() + enumTypes.size() + interfaceTypes.size();
-		logger.debug(documents.getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
+		logger.debug("classes identified = " + nbClasses);
 		return nbClasses;
-	}
 
-	/**
-	 * Generates the target classes for the given GraphQL schema definition
-	 * 
-	 * @param document
-	 */
-	public void parseOneDocument(Document document) {
-		// List of all the names of the query types. There should be only one. But we're ready for more (for instance if
-		// several schema files have been merged)
-		List<String> queryObjectNames = new ArrayList<>();
-		// List of all the names of the mutation types. There should be only one. But we're ready for more (for instance
-		// if several schema files have been merged)
-		List<String> mutationObjectNames = new ArrayList<>();
-		// List of all the names of the subscription types. There should be only one. But we're ready for more (for
-		// instance if several schema files have been merged)
-		List<String> subscriptionObjectNames = new ArrayList<>();
-
-		// The Directives must be read first, as they may be found on almost any kind of definition in the GraphQL
-		// schema
-		document.getDefinitions().stream().filter(n -> (n instanceof DirectiveDefinition))
-				.forEach(node -> directives.add(readDirectiveDefinition((DirectiveDefinition) node)));
-
-		// Looks for a schema definitions, to list the defined queries, mutations and subscriptions (should be only one
-		// of each), but we're ready for more. (for instance if several schema files have been merged)
-		logger.debug("Looking for schema definition");
-		for (Definition<?> node : document.getDefinitions()) {
-			if (node instanceof SchemaDefinition && !(node instanceof SchemaExtensionDefinition)) {
-				readSchemaDefinition((SchemaDefinition) node, queryObjectNames, mutationObjectNames,
-						subscriptionObjectNames);
-			} // if
-		} // for
-		logger.debug("Looking for schema definition extensions");
-		// Extensions expect that that basis schema has alreadu been read, so we do it in a second time
-		for (Definition<?> node : document.getDefinitions()) {
-			if (node instanceof SchemaExtensionDefinition) {
-				readSchemaExtensionDefinition((SchemaExtensionDefinition) node, queryObjectNames, mutationObjectNames,
-						subscriptionObjectNames);
-			} // if
-		} // for
-
-		logger.debug("Reading node definitions");
-		for (Definition<?> node : document.getDefinitions()) {
-			// directive
-			if (node instanceof DirectiveDefinition) {
-				// Directives are read latter
-			} else
-			// enum
-			if (node instanceof EnumTypeExtensionDefinition) {
-				// Extensions are managed latter, once all basis definitions have been read
-				extensionDefinitions.enums.add((EnumTypeExtensionDefinition) node);
-			} else if (node instanceof EnumTypeDefinition) {
-				enumTypes.add(readEnumType(//
-						new EnumType(((EnumTypeDefinition) node).getName(), configuration, this),
-						(EnumTypeDefinition) node));
-			} else
-			// input object
-			if (node instanceof InputObjectTypeExtensionDefinition) {
-				// Extensions are managed latter, once all basis definitions have been read
-				extensionDefinitions.inputs.add((InputObjectTypeExtensionDefinition) node);
-			} else if (node instanceof InputObjectTypeDefinition) {
-				objectTypes.add(readInputType(//
-						new ObjectType(((InputObjectTypeDefinition) node).getName(), configuration, this),
-						(InputObjectTypeDefinition) node));
-			} else
-			// interface
-			if (node instanceof InterfaceTypeExtensionDefinition) {
-				// Extensions are managed latter, once all basis definitions have been read
-				extensionDefinitions.interfaces.add((InterfaceTypeExtensionDefinition) node);
-			} else if (node instanceof InterfaceTypeDefinition) {
-				interfaceTypes.add(readInterfaceType((InterfaceTypeDefinition) node));
-			} else
-			// object
-			if (node instanceof ObjectTypeExtensionDefinition) {
-				// Extensions are managed latter, once all basis definitions have been read
-				extensionDefinitions.types.add((ObjectTypeExtensionDefinition) node);
-			} else if (node instanceof ObjectTypeDefinition) {
-				// Let's check what kind of ObjectDefinition we have
-				String name = ((ObjectTypeDefinition) node).getName();
-				if (queryObjectNames.contains(name) || DEFAULT_QUERY_NAME.equals(name)) {
-					// We first read the object type, that'll go to the main package
-					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
-					o.setRequestType("query");
-					objectTypes.add(o);
-					// Then we read the query, that'll go in the util subpackage: its imports are different
-					if (queryType != null) {
-						throw new RuntimeException(
-								"Error while reading the query '" + ((ObjectTypeDefinition) node).getName()
-										+ "'. A Query root operation has already been read, with name'"
-										+ queryType.getName() + "'");
-					}
-					queryType = o;
-				} else if (mutationObjectNames.contains(name) || DEFAULT_MUTATION_NAME.equals(name)) {
-					// We first read the object type, that'll go to the main package
-					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
-					o.setRequestType("mutation");
-					objectTypes.add(o);
-					// Then we read the mutation, that'll go in the util subpackage: its imports are different
-					if (mutationType != null) {
-						throw new RuntimeException(
-								"Error while reading the mutation '" + ((ObjectTypeDefinition) node).getName()
-										+ "'. A Mutation root operation has already been read, with name'"
-										+ mutationType.getName() + "'");
-					}
-					mutationType = o;
-				} else if (subscriptionObjectNames.contains(name) || DEFAULT_SUBSCRIPTION_NAME.equals(name)) {
-					// We first read the object type, that'll go to the main package
-					ObjectType o = readObjectTypeDefinition((ObjectTypeDefinition) node);
-					o.setRequestType("subscription");
-					objectTypes.add(o);
-					// Then we read the subscription, that'll go in the util subpackage: its imports are different
-					if (subscriptionType != null) {
-						throw new RuntimeException(
-								"Error while reading the subscription '" + ((ObjectTypeDefinition) node).getName()
-										+ "'. A Subscription root operation has already been read, with name'"
-										+ subscriptionType.getName() + "'");
-					}
-					subscriptionType = o;
-				} else {
-					objectTypes.add(readObjectTypeDefinition((ObjectTypeDefinition) node));
-				}
-			} else
-			// scalar
-			if (node instanceof ScalarTypeExtensionDefinition) {
-				// Extensions are managed latter, once all basis definitions have been read
-				extensionDefinitions.scalars.add((ScalarTypeExtensionDefinition) node);
-			} else if (node instanceof ScalarTypeDefinition) {
-				// Custom scalars implementation must be provided by the configuration. We just check that it's OK.
-				readCustomScalarType((ScalarTypeDefinition) node);
-			} else
-			// schema
-			if (node instanceof SchemaDefinition || node instanceof SchemaExtensionDefinition) {
-				// No action, we already parsed it
-			} else
-			// union
-			if (node instanceof UnionTypeExtensionDefinition) {
-				// Extensions are managed latter, once all basis definitions have been read
-				extensionDefinitions.unions.add((UnionTypeExtensionDefinition) node);
-			} else if (node instanceof UnionTypeDefinition) {
-				// Unions are read latter, once all GraphQL types have been parsed
-			} else {
-				logger.warn("Non managed node type: " + node.getClass().getName());
-			}
-		} // for
-
-		// Once all directive are read, we can parse the schema directives
-		document.getDefinitions().stream()//
-				.filter(n -> (n instanceof SchemaDefinition)) // We want the union definitions, and their extension.
-																// Which is ok here.
-				.forEach(n -> schemaDirectives.addAll(readAppliedDirectives(((SchemaDefinition) n).getDirectives())));
-
-		// Once all Types have been properly read, we can read the union types
-		logger.debug("Reading union definitions");
-		document.getDefinitions().stream()//
-				.filter(n -> (n instanceof UnionTypeDefinition)) // We want the union definitions
-				.filter(n -> !(n instanceof UnionTypeExtensionDefinition)) // We want their extensions (to avoid doubled
-																			// definitions)
-				.forEach(n -> unionTypes
-						.add(readUnionType(new UnionType(((UnionTypeDefinition) n).getName(), configuration, this),
-								(UnionTypeDefinition) n)));
 	}
 
 	/**
@@ -520,6 +460,7 @@ public abstract class DocumentParser {
 		// TODO remove this method, and add each type in the types map as it is read
 
 		scalarTypes.stream().forEach(s -> types.put(s.getName(), s));
+		customScalars.stream().forEach(s -> types.put(s.getName(), s));
 		objectTypes.stream().forEach(o -> types.put(o.getName(), o));
 		interfaceTypes.stream().forEach(i -> types.put(i.getName(), i));
 		unionTypes.stream().forEach(u -> types.put(u.getName(), u));
@@ -603,51 +544,32 @@ public abstract class DocumentParser {
 	 * @param subscriptionObjectNames
 	 * 
 	 */
-	public void readSchemaDefinition(SchemaDefinition schemaDef, List<String> queryObjectNames,
-			List<String> mutationObjectNames, List<String> subscriptionObjectNames) {
+	void readSchemaDefinition() {
+		// First step: read the schema definition, if it exists
+		Optional<SchemaDefinition> optSchemaDef = typeDefinitionRegistry.schemaDefinition();
+		if (optSchemaDef.isPresent()) {
+			// The schema has been defined in the provided schema
+			readOneSchemaDefinition(optSchemaDef.get());
+		}
 
-		for (OperationTypeDefinition opDef : schemaDef.getOperationTypeDefinitions()) {
-			TypeName type = opDef.getTypeName();
-			switch (opDef.getName()) {
-			case "query":
-				queryObjectNames.add(type.getName());
-				break;
-			case "mutation":
-				mutationObjectNames.add(type.getName());
-				break;
-			case "subscription":
-				subscriptionObjectNames.add(type.getName());
-				break;
-			default:
-				throw new RuntimeException(
-						"Unexpected OperationTypeDefinition while reading schema: " + opDef.getName());
-			}// switch
+		// Second step, read the schema extensions, if any
+		for (SchemaExtensionDefinition extDef : typeDefinitionRegistry.getSchemaExtensionDefinitions()) {
+			readOneSchemaDefinition(extDef);
 		} // for
 	}
 
-	/**
-	 * Reads the <code>schema</code> extension definition from the GraphQL schema
-	 * 
-	 * @param schemaDef
-	 * @param queryObjectNames
-	 * @param mutationObjectNames
-	 * @param subscriptionObjectNames
-	 * 
-	 */
-	public void readSchemaExtensionDefinition(SchemaExtensionDefinition schemaDef, List<String> queryObjectNames,
-			List<String> mutationObjectNames, List<String> subscriptionObjectNames) {
-
-		for (OperationTypeDefinition opDef : schemaDef.getOperationTypeDefinitions()) {
+	private void readOneSchemaDefinition(SchemaDefinition def) {
+		for (OperationTypeDefinition opDef : def.getOperationTypeDefinitions()) {
 			TypeName type = opDef.getTypeName();
 			switch (opDef.getName()) {
 			case "query":
-				queryObjectNames.add(type.getName());
+				queryTypeName = type.getName();
 				break;
 			case "mutation":
-				mutationObjectNames.add(type.getName());
+				mutationTypeName = type.getName();
 				break;
 			case "subscription":
-				subscriptionObjectNames.add(type.getName());
+				subscriptionTypeName = type.getName();
 				break;
 			default:
 				throw new RuntimeException(
@@ -655,7 +577,7 @@ public abstract class DocumentParser {
 			}// switch
 		} // for
 
-		// Schema directives are read latter
+		schemaDirectives.addAll(readAppliedDirectives(def.getDirectives()));
 	}
 
 	/**
@@ -670,32 +592,42 @@ public abstract class DocumentParser {
 	}
 
 	void manageEnumExtensionDefinitions() {
-		for (EnumTypeExtensionDefinition node2 : extensionDefinitions.enums) {
-			EnumType enumType = getType(node2.getName(), EnumType.class, true);
-			readEnumType(enumType, node2);
+		for (List<EnumTypeExtensionDefinition> extList : typeDefinitionRegistry.enumTypeExtensions().values()) {
+			for (EnumTypeExtensionDefinition def : extList) {
+				EnumType enumType = getType(def.getName(), EnumType.class, true);
+				readEnumType(enumType, def);
+			}
 		}
 	}
 
 	void manageInputExtensionDefinitions() {
-		for (InputObjectTypeExtensionDefinition node : extensionDefinitions.inputs) {
-			ObjectType objectType = getType(node.getName(), ObjectType.class, true);
-			readInputType(objectType, node);
+		for (List<InputObjectTypeExtensionDefinition> extList : typeDefinitionRegistry.inputObjectTypeExtensions()
+				.values()) {
+			for (InputObjectTypeExtensionDefinition def : extList) {
+				ObjectType objectType = getType(def.getName(), ObjectType.class, true);
+				readInputType(objectType, def);
+			}
 		}
 	}
 
 	void manageInterfaceExtensionDefinitions() {
-		for (InterfaceTypeExtensionDefinition node : extensionDefinitions.interfaces) {
-			InterfaceType interfaceType = getType(node.getName(), InterfaceType.class, true);
-			interfaceType.getAppliedDirectives().addAll(readAppliedDirectives(node.getDirectives()));
-			interfaceType.getFields().addAll(node.getFieldDefinitions().stream()
-					.map(def -> readField(def, interfaceType)).collect(Collectors.toList()));
+		for (List<InterfaceTypeExtensionDefinition> extList : typeDefinitionRegistry.interfaceTypeExtensions()
+				.values()) {
+			for (InterfaceTypeExtensionDefinition def : extList) {
+				InterfaceType interfaceType = getType(def.getName(), InterfaceType.class, true);
+				interfaceType.getAppliedDirectives().addAll(readAppliedDirectives(def.getDirectives()));
+				interfaceType.getFields().addAll(def.getFieldDefinitions().stream()
+						.map(d -> readField(d, interfaceType)).collect(Collectors.toList()));
+			}
 		}
 	}
 
 	void manageScalarExtensionDefinitions() {
-		for (ScalarTypeExtensionDefinition node : extensionDefinitions.scalars) {
-			ScalarType type = getType(node.getName(), ScalarType.class, true);
-			type.getAppliedDirectives().addAll(readAppliedDirectives(node.getDirectives()));
+		for (List<ScalarTypeExtensionDefinition> extList : typeDefinitionRegistry.scalarTypeExtensions().values()) {
+			for (ScalarTypeExtensionDefinition node : extList) {
+				ScalarType type = getType(node.getName(), ScalarType.class, true);
+				type.getAppliedDirectives().addAll(readAppliedDirectives(node.getDirectives()));
+			}
 		}
 	}
 
@@ -703,16 +635,20 @@ public abstract class DocumentParser {
 	 * Manages the type extensions found in the read {@link Document}s, and them to the relevant object(s)
 	 */
 	void manageTypeExtensionDefinitions() {
-		for (ObjectTypeExtensionDefinition node : extensionDefinitions.types) {
-			ObjectType objectType = getType(node.getName(), ObjectType.class, true);
-			addObjectTypeDefinition(objectType, node);
+		for (List<ObjectTypeExtensionDefinition> extList : typeDefinitionRegistry.objectTypeExtensions().values()) {
+			for (ObjectTypeExtensionDefinition node : extList) {
+				ObjectType objectType = getType(node.getName(), ObjectType.class, true);
+				addObjectTypeDefinition(objectType, node);
+			}
 		}
 	}
 
 	void manageUnionExtensionDefinitions() {
-		for (UnionTypeExtensionDefinition node : extensionDefinitions.unions) {
-			UnionType unionType = getType(node.getName(), UnionType.class, true);
-			readUnionType(unionType, node);
+		for (List<UnionTypeExtensionDefinition> extList : typeDefinitionRegistry.unionTypeExtensions().values()) {
+			for (UnionTypeExtensionDefinition node : extList) {
+				UnionType unionType = getType(node.getName(), UnionType.class, true);
+				readUnionType(unionType, node);
+			}
 		}
 	}
 
@@ -871,7 +807,28 @@ public abstract class DocumentParser {
 	CustomScalarType readCustomScalarType(ScalarTypeDefinition node) {
 		String name = node.getName();
 
-		CustomScalarType customScalarType = getCustomScalarType(name);
+		CustomScalarDefinition customScalarDef = null;
+		if (!(this instanceof GenerateGraphQLSchemaDocumentParser)) {
+			// An implementation of this custom scalar must have been provided
+			@SuppressWarnings("unchecked")
+			List<CustomScalarDefinition> confCustomScalarDefs = (List<CustomScalarDefinition>) graphqlUtils
+					.invokeGetter(configuration, "customScalars");
+			if (confCustomScalarDefs != null) {
+				for (CustomScalarDefinition csd : confCustomScalarDefs) {
+					if (name.equals(csd.getGraphQLTypeName())) {
+						customScalarDef = csd;
+						break;
+					}
+				}
+			}
+			if (customScalarDef == null) {
+				throw new RuntimeException(
+						"The plugin configuration must provide an implementation for the Custom Scalar '" + name
+								+ "' custom scalar");
+			}
+		}
+		CustomScalarType customScalarType = new CustomScalarType(name, customScalarDef, configuration, this);
+
 		customScalarType.getAppliedDirectives().addAll(readAppliedDirectives(node.getDirectives()));
 
 		// Let's store its comments
@@ -879,14 +836,6 @@ public abstract class DocumentParser {
 
 		return customScalarType;
 	}
-
-	/**
-	 * This method retrieves the definition for the given Custom Scalar.
-	 * 
-	 * @param name
-	 * @return
-	 */
-	protected abstract CustomScalarType getCustomScalarType(String name);
 
 	/**
 	 * Reads an enum definition. It can be called from either an {@link EnumTypeDefinition} or an

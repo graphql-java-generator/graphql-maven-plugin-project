@@ -20,7 +20,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.Documents;
+import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
@@ -35,18 +35,17 @@ import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
 import graphql.language.ArrayValue;
 import graphql.language.BooleanValue;
-import graphql.language.Definition;
-import graphql.language.DirectiveDefinition;
 import graphql.language.EnumTypeDefinition;
 import graphql.language.FloatValue;
 import graphql.language.IntValue;
 import graphql.language.ObjectField;
 import graphql.language.ObjectTypeDefinition;
 import graphql.language.ObjectValue;
-import graphql.language.SchemaDefinition;
 import graphql.language.StringValue;
 import graphql.language.Value;
 import graphql.mavenplugin_notscannedbyspring.AllGraphQLCases_Server_SpringConfiguration;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
 
 /**
  * 
@@ -58,21 +57,24 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	AbstractApplicationContext ctx = null;
 	GenerateCodeDocumentParser generateCodeDocumentParser;
 	GraphQLConfiguration pluginConfiguration;
-	Documents documents;
+	TypeDefinitionRegistry typeDefinitionRegistry;
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(AllGraphQLCases_Server_SpringConfiguration.class);
 		generateCodeDocumentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
-		documents = ctx.getBean(Documents.class);
+		ResourceSchemaStringProvider schemaStringProvider = ctx.getBean(ResourceSchemaStringProvider.class);
+
+		SchemaParser schemaParser = new SchemaParser();
+		typeDefinitionRegistry = schemaParser.parse(schemaStringProvider.getConcatenatedSchemaStrings());
 	}
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_parseOneDocument_allGraphQLCases() throws IOException {
 		// Go, go, go
-		int i = generateCodeDocumentParser.parseDocuments();
+		int i = generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
 		assertEquals(48, i, "Nb java files are generated");
@@ -83,7 +85,8 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals(3, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
 		assertNotNull(generateCodeDocumentParser.getMutationType(), "One mutation");
-		assertNull(generateCodeDocumentParser.getSubscriptionType(), "The subscription is in the schema extension");
+		assertNotNull(generateCodeDocumentParser.getSubscriptionType(),
+				"One subscription (defined in the schema extension)");
 
 		assertEquals("query", generateCodeDocumentParser.getQueryType().getRequestType());
 		assertEquals("mutation", generateCodeDocumentParser.getMutationType().getRequestType());
@@ -527,15 +530,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	private void test_addObjectType_noImplement() throws IOException {
 		// Preparation
 		String objectName = "AllFieldCases";
-		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
-			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
-				def = (ObjectTypeDefinition) node;
-			}
-		} // for
+		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseDocuments();
+		generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
@@ -592,15 +590,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_addObjectType_withImplement() throws IOException {
 		// Preparation
 		String objectName = "Human";
-		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
-			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
-				def = (ObjectTypeDefinition) node;
-			}
-		} // for
+		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseDocuments();
+		generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
@@ -645,33 +638,20 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_readSchemaDefinition() throws IOException {
 		// Preparation
-		List<String> queries = new ArrayList<>();
-		List<String> mutations = new ArrayList<>();
-		List<String> subscriptions = new ArrayList<>();
-		String objectName = "schema";
-		SchemaDefinition schema = null;
-		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
-			if (node instanceof SchemaDefinition) {
-				schema = (SchemaDefinition) node;
-				break;
-			}
-		} // for
-		assertNotNull(schema, "We should have found our test case (" + objectName + ")");
-		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
-		generateCodeDocumentParser.setObjectTypes(new ArrayList<>());
 
 		// Go, go, go
-		generateCodeDocumentParser.readSchemaDefinition(schema, queries, mutations, subscriptions);
+		generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals(1, queries.size(), "Nb queries");
-		assertEquals("MyQueryType", queries.get(0), "the query");
+		assertEquals("MyQueryType", generateCodeDocumentParser.getQueryTypeName(), "the query");
+		assertNotNull(generateCodeDocumentParser.getQueryType());
 
-		assertEquals(1, mutations.size(), "Nb mutations");
-		assertEquals("AnotherMutationType", mutations.get(0), "the mutation");
+		assertEquals("AnotherMutationType", generateCodeDocumentParser.getMutationTypeName(), "the mutation");
+		assertNotNull(generateCodeDocumentParser.getMutationType());
 
-		assertEquals(0, subscriptions.size(),
+		assertEquals("TheSubscriptionType", generateCodeDocumentParser.getSubscriptionTypeName(),
 				"Nb subscriptions is 0: the subscription is defined in the schema extension");
+		assertNotNull(generateCodeDocumentParser.getSubscriptionType());
 	}
 
 	@Test
@@ -679,15 +659,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_readObjectType_QueryType() throws IOException {
 		// Preparation
 		String objectName = "MyQueryType";
-		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
-			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
-				def = (ObjectTypeDefinition) node;
-			}
-		} // for
+		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseDocuments();
+		generateCodeDocumentParser.parseGraphQLSchemas();
 
 		//
 		// We need this ObjectValue for one of the next tests:
@@ -755,19 +730,13 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_readEnumType() throws IOException {
 		// Preparation
 		String objectName = "Episode";
-		EnumTypeDefinition def = null;
-		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
-			if (node instanceof EnumTypeDefinition && ((EnumTypeDefinition) node).getName().equals(objectName)) {
-				def = (EnumTypeDefinition) node;
-			}
-		} // for
+		EnumTypeDefinition def = (EnumTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to read the directives first
 		generateCodeDocumentParser.postConstruct();
-		generateCodeDocumentParser.getDocuments().getDocuments().get(0).getDefinitions().stream()
-				.filter(n -> (n instanceof DirectiveDefinition))
+		typeDefinitionRegistry.getDirectiveDefinitions().values().stream()//
 				.forEach(node -> generateCodeDocumentParser.getDirectives()
-						.add(generateCodeDocumentParser.readDirectiveDefinition((DirectiveDefinition) node)));
+						.add(generateCodeDocumentParser.readDirectiveDefinition(node)));
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		generateCodeDocumentParser.setQueryType(null);
 
@@ -792,15 +761,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_addObjectType_MutationType() throws IOException {
 		// Preparation
 		String objectName = "AnotherMutationType";
-		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
-			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
-				def = (ObjectTypeDefinition) node;
-			}
-		} // for
+		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseDocuments();
+		generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		generateCodeDocumentParser.setMutationType(null);
 
@@ -840,15 +804,10 @@ class DocumentParser_allGraphQLCases_Server_Test {
 	void test_addObjectType_SubscriptionType() throws IOException {
 		// Preparation
 		String objectName = "TheSubscriptionType";
-		ObjectTypeDefinition def = null;
-		for (Definition<?> node : documents.getDocuments().get(0).getDefinitions()) {
-			if (node instanceof ObjectTypeDefinition && ((ObjectTypeDefinition) node).getName().equals(objectName)) {
-				def = (ObjectTypeDefinition) node;
-			}
-		} // for
+		ObjectTypeDefinition def = (ObjectTypeDefinition) typeDefinitionRegistry.getType(objectName).get();
 		assertNotNull(def, "We should have found our test case (" + objectName + ")");
 		// We need to parse the whole document, to get the types map filled.
-		generateCodeDocumentParser.parseDocuments();
+		generateCodeDocumentParser.parseGraphQLSchemas();
 		// To be sure to properly find our parsed object type, we empty the documentParser objects list.
 		generateCodeDocumentParser.setSubscriptionType(null);
 

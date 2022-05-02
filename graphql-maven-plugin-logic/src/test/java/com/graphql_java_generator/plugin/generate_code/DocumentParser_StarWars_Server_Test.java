@@ -17,7 +17,6 @@ import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.DataFetcher;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 
-import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.StarWars_Server_SpringConfiguration;
 
 /**
@@ -30,16 +29,14 @@ class DocumentParser_StarWars_Server_Test {
 	AbstractApplicationContext ctx = null;
 	GenerateCodeDocumentParser documentParser;
 	GraphQLConfiguration pluginConfiguration;
-	List<Document> documents;
 
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(StarWars_Server_SpringConfiguration.class);
 		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
-		documents = documentParser.getDocuments().getDocuments();
 
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 	}
 
 	/** Tests the Data Fetchers that are listed during parsing */

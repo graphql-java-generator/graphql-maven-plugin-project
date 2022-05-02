@@ -37,7 +37,6 @@ import com.graphql_java_generator.annotation.GraphQLUnionType;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
-import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
@@ -165,18 +164,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// In client mode, ID type is managed as a String
 			super.initScalarTypes(String.class);
 		}
-
-		//////////////////////////////////////////////////////////////////////////////////////////
-		// Add of all GraphQL custom scalar implementations must be provided by the plugin configuration
-		logger.debug("Storing custom scalar's implementations [START]");
-		if (configuration.getCustomScalars() != null) {
-			for (CustomScalarDefinition customScalarDef : configuration.getCustomScalars()) {
-				CustomScalarType type = new CustomScalarType(customScalarDef, configuration, this);
-				getCustomScalars().add(type);
-				getTypes().put(type.getName(), type);
-			}
-		}
-		logger.debug("Storing custom scalar's implementations [END]");
 	}
 
 	/**
@@ -189,7 +176,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 *             When an error occurs, during the parsing of the GraphQL schemas
 	 */
 	@Override
-	public int parseDocuments() throws IOException {
+	public int parseGraphQLSchemas() throws IOException {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Let's start by some controls on the configuration parameters
 		if (configuration.getMode().equals(PluginMode.server)) {
@@ -206,7 +193,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Then we read the GraphQL documents
-		super.parseDocuments();
+		super.parseGraphQLSchemas();
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////
 		// And to finish, we calculate and store the capabilities for code generation
@@ -240,7 +227,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		// We're done
 		int nbClasses = getObjectTypes().size() + getEnumTypes().size() + getInterfaceTypes().size();
-		logger.debug(getDocuments().getDocuments().size() + " document(s) parsed (" + nbClasses + ")");
+		logger.debug("Nb classes identified = " + nbClasses);
 		return nbClasses;
 	}
 
@@ -974,18 +961,6 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 		} else {
 			return configuration.getPackageName();
 		}
-	}
-
-	@Override
-	protected CustomScalarType getCustomScalarType(String name) {
-		for (CustomScalarType customScalarType : customScalars) {
-			if (customScalarType.getName().equals(name)) {
-				return customScalarType;
-			}
-		}
-		// No custom scalar definition have been found from the provided plugin configuration
-		throw new RuntimeException(
-				"The plugin configuration must provide an implementation for the Custom Scalar '" + name + "'.");
 	}
 
 }

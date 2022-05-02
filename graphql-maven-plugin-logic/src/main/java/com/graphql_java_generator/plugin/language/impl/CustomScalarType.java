@@ -29,6 +29,9 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 	 * 
 	 * @param name
 	 *            The name of the GraphQL type
+	 * @param customScalarDefinition
+	 *            The custom scalar implementation, as provided by the plugin's configuration. It may be null in some
+	 *            cases (e.g.: when the goal is to generate the schema, as there is no code generation)
 	 * @param configuration
 	 *            The current plugin configuration, which is accessible through an interface that extends
 	 *            {@link CommonConfiguration}
@@ -37,12 +40,19 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 	 *            definition
 	 * @see CustomScalarDefinition
 	 */
-	public CustomScalarType(CustomScalarDefinition customScalarDefinition, CommonConfiguration configuration,
-			DocumentParser documentParser) {
-		super(customScalarDefinition.getGraphQLTypeName(),
-				GraphqlUtils.graphqlUtils.getPackageName(customScalarDefinition.getJavaType()),
-				GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()), configuration,
-				documentParser);
+	public CustomScalarType(String name, CustomScalarDefinition customScalarDefinition,
+			CommonConfiguration configuration, DocumentParser documentParser) {
+		super(name, //
+				(customScalarDefinition == null) ? null
+						: GraphqlUtils.graphqlUtils.getPackageName(customScalarDefinition.getJavaType()),
+				(customScalarDefinition == null) ? null
+						: GraphqlUtils.graphqlUtils.getClassSimpleName(customScalarDefinition.getJavaType()),
+				configuration, documentParser);
+
+		if (customScalarDefinition != null && !name.equals(customScalarDefinition.getGraphQLTypeName()))
+			throw new RuntimeException("The provided custom scalar implementation has a wrong name (expected: '" + name
+					+ "', actual: '" + customScalarDefinition.getGraphQLTypeName() + "')");
+
 		this.customScalarDefinition = customScalarDefinition;
 	}
 

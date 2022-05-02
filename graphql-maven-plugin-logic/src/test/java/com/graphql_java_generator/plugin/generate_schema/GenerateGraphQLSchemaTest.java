@@ -17,6 +17,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.AddRelayConnections;
 import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
@@ -31,6 +32,7 @@ import com.graphql_java_generator.plugin.test.helper.MavenTestHelper;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.language.Document;
+import graphql.schema.idl.TypeDefinitionRegistry;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration;
 import merge.mavenplugin_notscannedbyspring.AllGraphQLCases_Client_SpringConfiguration_addRelayConnections;
 import merge.mavenplugin_notscannedbyspring.Forum_Client_SpringConfiguration;
@@ -61,9 +63,9 @@ class GenerateGraphQLSchemaTest {
 		/////////////// Ignored classes //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredClass(AddRelayConnections.class);
 		deepComparator.addIgnoredClass(Document.class);
-		deepComparator.addIgnoredClass(DocumentParser.ExtensionDefinitions.class);
 		deepComparator.addIgnoredClass(GenerateGraphQLSchemaConfigurationTestHelper.class);
 		deepComparator.addIgnoredClass(GraphqlUtils.class);
+		deepComparator.addIgnoredClass(TypeDefinitionRegistry.class);
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Id fields //////////////////////////////////////////////////////////////////////////
@@ -73,18 +75,12 @@ class GenerateGraphQLSchemaTest {
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
 		deepComparator.addIgnoredFields(DocumentParser.class, "schemaDirectives");
-		deepComparator.addIgnoredFields(
-				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
-				"configuration");
-		deepComparator.addIgnoredFields(
-				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
-				"graphqlUtils");
-		deepComparator.addIgnoredFields(
-				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
-				"documents");
-		deepComparator.addIgnoredFields(
-				com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser.class,
-				"objectTypeExtensionDefinitions");
+		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "configuration");
+		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "graphqlUtils");
+		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "documents");
+		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "objectTypeExtensionDefinitions");
+		deepComparator.addIgnoredFields(ResourceSchemaStringProvider.class, "applicationContext");
+		deepComparator.addIgnoredFields(ResourceSchemaStringProvider.class, "configuration");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// To break the cycle where comparing the type of a FieldImpl, we define some specific comparison rules:
@@ -171,7 +167,7 @@ class GenerateGraphQLSchemaTest {
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(sourceSpringConfClass);
 		GenerateGraphQLSchema sourceRelaySchema = ctx.getBean(GenerateGraphQLSchema.class);
 		GenerateGraphQLSchemaDocumentParser sourceDocumentParser = (GenerateGraphQLSchemaDocumentParser) sourceRelaySchema.documentParser;
-		sourceDocumentParser.parseDocuments();
+		sourceDocumentParser.parseGraphQLSchemas();
 		sourceRelaySchema.generateGraphQLSchema();
 		// Let's log the current configuration (this will do something only when in debug mode)
 		ctx.getBean(GenerateGraphQLSchemaConfiguration.class).logConfiguration();
@@ -191,7 +187,7 @@ class GenerateGraphQLSchemaTest {
 		GenerateGraphQLSchemaDocumentParser generatedDocumentParser = ctx
 				.getBean(GenerateGraphQLSchemaDocumentParser.class);
 		GenerateGraphQLSchema generatedRelaySchema = ctx.getBean(GenerateGraphQLSchema.class);
-		generatedDocumentParser.parseDocuments();
+		generatedDocumentParser.parseGraphQLSchemas();
 		generatedRelaySchema.generateGraphQLSchema();
 		//
 		ctx.close();

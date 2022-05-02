@@ -45,7 +45,7 @@ class DocumentParser_Forum_Client_Test {
 		codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 		configuration = ctx.getBean(GraphQLConfigurationTestHelper.class);
 
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 	}
 
 	@AfterEach

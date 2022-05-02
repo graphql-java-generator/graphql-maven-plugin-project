@@ -102,6 +102,21 @@ public class ResourceSchemaStringProvider {
 		return ret;
 	}
 
+	/**
+	 * Returns the concatenation of all the GraphQL schema, in one string
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public String getConcatenatedSchemaStrings() throws IOException {
+		StringBuffer sb = new StringBuffer();
+		for (String str : schemaStrings()) {
+			sb.append(str);
+			sb.append('\n');
+		}
+		return sb.toString();
+	}
+
 	public List<String> schemaStrings() throws IOException {
 		List<org.springframework.core.io.Resource> resources = schemas();
 		if (resources.size() == 0) {

@@ -2,6 +2,8 @@ package com.graphql_java_generator.plugin.generate_code;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,14 +11,11 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.core.io.Resource;
 
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 
-import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.HelloWorld_Server_SpringConfiguration;
-import graphql.parser.Parser;
 
 /**
  * 
@@ -29,8 +28,6 @@ class DocumentParser_helloworld_Test {
 	GraphqlTestHelper graphqlTestHelper;
 	GraphQLConfiguration pluginConfiguration;
 	GenerateCodeDocumentParser documentParser;
-
-	private Parser parser = new Parser();
 
 	@BeforeEach
 	void loadApplicationContext() {
@@ -51,13 +48,11 @@ class DocumentParser_helloworld_Test {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_parseOneDocument_helloworld() {
+	void test_parseOneDocument_helloworld() throws IOException {
 		// Preparation
-		Resource resource = ctx.getResource("/helloworld.graphqls");
-		Document doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
 
 		// Go, go, go
-		documentParser.parseOneDocument(doc);
+		documentParser.parseGraphQLSchemas();
 
 		// Verification
 		int nbClasses = (documentParser.getQueryType() == null ? 0 : 1)

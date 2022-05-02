@@ -42,7 +42,7 @@ class DocumentParser_Forum_Server_Test {
 		ctx = new AnnotationConfigApplicationContext(Forum_Server_SpringConfiguration.class);
 		documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfigurationTestHelper.class);
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 	}
 
 	@Test

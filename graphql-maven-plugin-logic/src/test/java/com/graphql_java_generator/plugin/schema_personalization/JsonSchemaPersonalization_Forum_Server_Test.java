@@ -66,7 +66,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 		jsonSchemaPersonalization.configuration = pluginConfiguration;
 
 		// Go, go, go
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 
 		// Verification
 		ObjectType member = jsonSchemaPersonalization.findObjectTypeFromName("Member");
@@ -108,7 +108,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 				"src/test/resources/schema_personalization/forum_KO_WrongEntity.json");
 
 		// Go, go, go
-		RuntimeException e = assertThrows(RuntimeException.class, () -> documentParser.parseDocuments());
+		RuntimeException e = assertThrows(RuntimeException.class, () -> documentParser.parseGraphQLSchemas());
 		assertTrue(e.getMessage().contains("This entity does not exist"),
 				"expected the wrong entity name in: " + e.getMessage());
 	}
@@ -122,7 +122,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 				"src/test/resources/schema_personalization/forum_KO_WrongFieldName.json");
 
 		// Go, go, go
-		RuntimeException e = assertThrows(RuntimeException.class, () -> documentParser.parseDocuments());
+		RuntimeException e = assertThrows(RuntimeException.class, () -> documentParser.parseGraphQLSchemas());
 		assertTrue(e.getMessage().contains("this field does not exist"),
 				"expected the wrong field name in: " + e.getMessage());
 	}
@@ -136,7 +136,7 @@ class JsonSchemaPersonalization_Forum_Server_Test {
 				"src/test/resources/schema_personalization/forum_KO_FieldNameAlreadyExist.json");
 
 		// Go, go, go
-		RuntimeException e = assertThrows(RuntimeException.class, () -> documentParser.parseDocuments());
+		RuntimeException e = assertThrows(RuntimeException.class, () -> documentParser.parseGraphQLSchemas());
 		assertTrue(e.getMessage().contains("email"), "expected the wrong field name in: " + e.getMessage());
 	}
 

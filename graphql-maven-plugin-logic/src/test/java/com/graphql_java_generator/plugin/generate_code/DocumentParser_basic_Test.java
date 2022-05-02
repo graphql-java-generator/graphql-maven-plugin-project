@@ -10,14 +10,11 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.io.Resource;
 
 import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHelper;
 import com.graphql_java_generator.plugin.test.helper.GraphqlTestHelper;
 
-import graphql.language.Document;
 import graphql.mavenplugin_notscannedbyspring.Basic_Server_SpringConfiguration;
-import graphql.parser.Parser;
 
 /**
  * 
@@ -31,10 +28,6 @@ class DocumentParser_basic_Test {
 	GraphQLConfigurationTestHelper pluginConfiguration;
 	GenerateCodeDocumentParser documentParser;
 
-	private Parser parser = new Parser();
-
-	private Document doc;
-
 	@BeforeEach
 	void loadApplicationContext() throws IOException {
 		ctx = new AnnotationConfigApplicationContext(Basic_Server_SpringConfiguration.class);
@@ -47,13 +40,11 @@ class DocumentParser_basic_Test {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_parseOneDocument_basic() {
+	void test_parseOneDocument_basic() throws IOException {
 		// Preparation
-		Resource resource = ctx.getResource("/basic.graphqls");
-		doc = parser.parseDocument(graphqlTestHelper.readSchema(resource));
 
 		// Go, go, go
-		documentParser.parseOneDocument(doc);
+		documentParser.parseGraphQLSchemas();
 
 		// Verification
 		int nbClasses = (documentParser.getQueryType() == null ? 0 : 1)

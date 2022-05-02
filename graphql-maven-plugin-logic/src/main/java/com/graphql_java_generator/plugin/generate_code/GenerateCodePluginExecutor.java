@@ -70,7 +70,7 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
 		} else {
 			// Let's do the job
-			documentParser.parseDocuments();
+			documentParser.parseGraphQLSchemas();
 			generator.generateCode();
 		}
 	}

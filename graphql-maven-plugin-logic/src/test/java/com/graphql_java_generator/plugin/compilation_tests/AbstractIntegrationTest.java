@@ -41,7 +41,7 @@ abstract class AbstractIntegrationTest {
 		mavenTestHelper = ctx.getBean(MavenTestHelper.class);
 		pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 
-		generateCodeDocumentParser.parseDocuments();
+		generateCodeDocumentParser.parseGraphQLSchemas();
 	}
 
 	@AfterEach
