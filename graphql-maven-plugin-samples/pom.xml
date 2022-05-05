@@ -16,6 +16,9 @@
 	</description>
 
 	<modules>
+		<!--(to be removed) tests for proper use of spring-graphql-->
+		<module>spring-graphql-test-client</module>
+		<module>spring-graphql-test-server</module>
 		<!-- allGraphQLCases and Forum server build -->
 		<module>graphql-maven-plugin-samples-allGraphQLCases-server</module>
 		<module>graphql-maven-plugin-samples-OAuth-authorization-server</module>

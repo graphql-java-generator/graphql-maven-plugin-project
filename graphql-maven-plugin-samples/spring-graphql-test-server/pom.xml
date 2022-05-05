@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.graphql-java-generator</groupId>
+		<artifactId>graphql-maven-plugin-samples</artifactId>
+		<version>local-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>spring-graphql-test-server</artifactId>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+
+	<build>
+
+		<plugins>
+		<!--
+			<plugin>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generateServerCode</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<packageName>com.spring_graphql_test_client.old_generated</packageName>
+					<scanBasePackages>org.forum.server.impl, org.forum.server.jpa</scanBasePackages>
+					<customScalars>
+						<customScalar>
+							<graphQLTypeName>Date</graphQLTypeName>
+							<javaType>java.util.Date</javaType>
+							<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date
+							</graphQLScalarTypeStaticField>
+						</customScalar>
+					</customScalars>
+					<copyRuntimeSources>false</copyRuntimeSources>
+					<generateBatchLoaderEnvironment>true</generateBatchLoaderEnvironment>
+					<separateUtilityClasses>true</separateUtilityClasses>
+					<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+				</configuration>
+			</plugin> -->
+			<plugin>
+				<!-- This helps by adding the generated source in the build path of your IDE -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- Needed to properly package the jar or war, so that spring can link all resources together -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>org.forum.server.graphql.util.GraphQLServerMain</mainClass>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- Dependencies for GraphQL -->
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-server-runtime</artifactId>
+		</dependency>
+
+		<!-- Add of the graphiql interface, to test your GraphQL server -->
+		<!-- It's available at http://localhost:8180/graphiql -->
+		<dependency>
+			<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
+			<groupId>com.graphql-java-kickstart</groupId>
+			<artifactId>graphiql-spring-boot-starter</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Database access dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Only here for the tests, to load the data in an in-memory database -->
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- A mapper that'll help you to create Entities from GraphQL objects, and reverse -->
+		<dependency>
+			<groupId>com.github.dozermapper</groupId>
+			<artifactId>dozer-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.reactivex.rxjava2</groupId>
+			<artifactId>rxjava</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>

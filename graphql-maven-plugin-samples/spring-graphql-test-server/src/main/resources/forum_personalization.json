@@ -1,0 +1,50 @@
+{
+	"entityPersonalizations": [
+		{
+			"name": "Member",
+			"fieldPersonalizations": [
+				{
+					"name": "type",
+					"addAnnotation": "@javax.persistence.Enumerated(javax.persistence.EnumType.STRING)"
+				}
+			]		},
+		{
+			"name": "Post",
+			"newFields": [
+				{
+					"name": "authorId",
+					"type": "ID",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				},
+				{
+					"name": "topicId",
+					"type": "ID",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				}
+			]
+		},
+		{
+			"name": "Topic",
+			"newFields": [
+				{
+					"name": "boardId",
+					"type": "ID",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				},
+				{
+					"name": "authorId",
+					"type": "ID",
+					"id": false,
+					"list": false,
+					"mandatory": false
+				}
+			]
+		}
+	]
+}
