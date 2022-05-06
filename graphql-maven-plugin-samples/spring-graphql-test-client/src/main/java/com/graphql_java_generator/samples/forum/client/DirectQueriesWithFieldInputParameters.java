@@ -19,7 +19,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public class DirectQueriesWithFieldInputParameters {
 
-	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
+	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8183/graphql";
 
 	QueryExecutor query;
 

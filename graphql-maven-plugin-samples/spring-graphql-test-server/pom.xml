@@ -18,7 +18,7 @@
 	<build>
 
 		<plugins>
-		<!--
+			<!--
 			<plugin>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-maven-plugin</artifactId>
@@ -77,7 +77,14 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>org.forum.server.graphql.util.GraphQLServerMain</mainClass>
+					<mainClass>org.forum.generated.util.GraphQLServerMain</mainClass>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- We don't want to spam the repository with test/sample artefacts -->
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 		</plugins>
