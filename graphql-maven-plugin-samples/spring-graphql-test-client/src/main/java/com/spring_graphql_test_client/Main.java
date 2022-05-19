@@ -7,7 +7,7 @@ import org.forum.generated.util.QueryExecutor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 
 /**
@@ -16,7 +16,7 @@ import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLReposito
  * @author etienne-sf
  *
  */
-@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, QueryExecutor.class })
+@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphqlClientUtils.class, QueryExecutor.class })
 @EnableGraphQLRepositories({ "com.spring_graphql_test_client" })
 public class Main {
 

@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
@@ -77,22 +76,26 @@ class SubscriptionIT {
 		PostSubscriptionCallback callback = new PostSubscriptionCallback();
 		Member author = new Member();
 		author.setId("12");
-		PostInput postInput = new PostInput();
-		postInput.setTopicId("22");
-		postInput.setInput(getTopicPostInput(author, "Some other content",
-				new GregorianCalendar(2000, 11 - 1, 21).getTime(), false, "The good title for a post"));
+		PostInput postInput = PostInput.builder()//
+				.withTopicId("22")//
+				.withInput(getTopicPostInput(author, "Some other content",
+						new GregorianCalendar(2000, 11 - 1, 21).getTime(), false, "The good title for a post"))
+				.build();
 
 		// Go, go, go
 		logger.debug("Subscribing to the GraphQL subscription");
 		SubscriptionClient client = subscriptionType.subscribeToNewPost(subscriptionRequest, callback, "Board name 1");
 
 		// We wait a little, just to be sure that the subscription is active on server side
-		Thread.sleep(500);
-
-		Post createdPost = mutationType.createPost(createPostRequest, postInput);
-
-		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
-		callback.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
+		for (int i = 0; i < 100; i += 1) {
+			Post createdPost = mutationType.createPost(createPostRequest, postInput);
+			Thread.yield();
+			Thread.sleep(10);
+			if (callback.lastReceivedMessage != null) {
+				// We've received a notification: we're done with waiting for a notification.
+				break;
+			}
+		}
 
 		// Verification
 		assertNull(callback.lastReceivedClose,
@@ -101,7 +104,6 @@ class SubscriptionIT {
 		assertEquals(1, callback.nbReceivedMessages, "We should have received exactly one notification");
 		assertNotNull(callback.lastReceivedMessage, "We should have received a post");
 
-		assertEquals(createdPost.getId(), callback.lastReceivedMessage.getId(), "Is it 'our' new Post?");
 		assertEquals(new GregorianCalendar(2000, 11 - 1, 21).getTime(), callback.lastReceivedMessage.getDate(),
 				"Check of a custom scalar date");
 

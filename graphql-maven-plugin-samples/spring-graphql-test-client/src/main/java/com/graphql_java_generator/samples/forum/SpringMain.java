@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.Queries;
@@ -21,7 +21,7 @@ import com.graphql_java_generator.samples.forum.client.subscription.Subscription
  * 
  * @author etienne-sf
  */
-@SpringBootApplication(scanBasePackageClasses = { SpringMain.class, GraphQLConfiguration.class, QueryExecutor.class })
+@SpringBootApplication(scanBasePackageClasses = { SpringMain.class, GraphqlClientUtils.class, QueryExecutor.class })
 public class SpringMain implements CommandLineRunner {
 
 	@Autowired
@@ -69,31 +69,23 @@ public class SpringMain implements CommandLineRunner {
 	}
 
 	void exec(Queries client, String name) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
-		try {
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  boardsSimple  --------------------------------------------");
-			System.out.println(client.boardsSimple());
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  boardsSimple  --------------------------------------------");
+		System.out.println(client.boardsSimple());
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  topicAuthorPostAuthor  -----------------------------------");
-			Calendar cal = Calendar.getInstance();
-			cal.set(2018, 12, 20);
-			System.out.println(client.topicAuthorPostAuthor("Board name 2", cal.getTime()));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  topicAuthorPostAuthor  -----------------------------------");
+		Calendar cal = Calendar.getInstance();
+		cal.set(2018, 12, 20);
+		System.out.println(client.topicAuthorPostAuthor("Board name 2", cal.getTime()));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  createBoard  ---------------------------------------------");
-			// We need a unique name. Let's use a random name for that, if none was provided.
-			name = (name != null) ? name : "Name " + Float.floatToIntBits((float) Math.random() * Integer.MAX_VALUE);
-			System.out.println(client.createBoard(name, true));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  createBoard  ---------------------------------------------");
+		// We need a unique name. Let's use a random name for that, if none was provided.
+		name = (name != null) ? name : "Name " + Float.floatToIntBits((float) Math.random() * Integer.MAX_VALUE);
+		System.out.println(client.createBoard(name, true));
 
-		} catch (javax.ws.rs.ProcessingException e) {
-			System.out.println("");
-			System.out.println("ERROR");
-			System.out.println("");
-			System.out.println(
-					"Please start the server from the project graphql-maven-plugin-samples-StarWars-server, before executing the client part");
-		}
 	}
 
 }

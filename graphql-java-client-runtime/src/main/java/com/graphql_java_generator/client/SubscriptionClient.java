@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.client;
 
-import org.springframework.web.reactive.socket.WebSocketSession;
-
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
@@ -26,13 +24,5 @@ public interface SubscriptionClient {
 	 * 
 	 */
 	void unsubscribe() throws GraphQLRequestExecutionException;
-
-	/**
-	 * Allow to retrieve the {@link WebSocketSession}, when the implementation is based on Spring Reactive, which is the
-	 * default since release 1.12<BR/>
-	 * 
-	 * @return The {@link WebSocketSession}, if the Spring reactive implementation is used. Or null otherwise
-	 */
-	WebSocketSession getSession();
 
 }

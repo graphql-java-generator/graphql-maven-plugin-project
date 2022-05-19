@@ -5,20 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
@@ -27,7 +22,6 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This class contains the methods that allows the execution of the queries or mutations that are defined in the
@@ -55,82 +49,12 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(MutationExecutor.class);
 
-	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
-	GraphqlUtils graphqlUtils = new GraphqlUtils();
-
 	@Autowired
-	@Qualifier("graphQLConfiguration")
-	GraphQLConfiguration graphQLConfiguration;
-
-	/**
-	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
-	 */
+	GraphQlClient graphQlClient;
 	@Autowired
+	GraphqlClientUtils graphqlClientUtils;
+
 	public MutationExecutor() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects a GraphQLConfiguration instance. This is useful for non-Spring frameworks like
-	 * Micronaut.
-	 *
-	 * @param configuration
-	 *            an already built GraphQLConfiguration instance
-	 */
-	public MutationExecutor(GraphQLConfiguration configuration) {
-		this.graphQLConfiguration = configuration;
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: http://my.server.com/graphql
-	 * 
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 */
-	public MutationExecutor(String graphqlEndpoint) {
-		this(new GraphQLConfiguration(graphqlEndpoint));
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
-	 * http ones.<BR/>
-	 * For example: https://my.server.com/graphql<BR/>
-	 * <BR/>
-	 * {@link SSLContext} and {@link HostnameVerifier} are regular Java stuff. You'll find lots of documentation on the
-	 * web. The StarWars sample is based on the <A HREF=
-	 * "http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https">http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https</A>
-	 * blog. But this sample implements a noHostVerification, which of course, is the simplest but the safest way to go.
-	 * 
-	 * @param graphqlEndpoint
-	 *            the https URI for the GraphQL endpoint
-	 * @param sslContext
-	 * @param hostnameVerifier
-	 */
-	@SuppressWarnings("deprecation")
-	public MutationExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.graphQLConfiguration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client that gives the opportunity
-	 * to customize the REST request<BR/>
-	 * For example: http://my.server.com/graphql
-	 *
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 * @param client
-	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 */
-	@SuppressWarnings("deprecation")
-	public MutationExecutor(String graphqlEndpoint, Client client) {
-		this.graphQLConfiguration = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -170,8 +94,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public org.forum.generated.Mutation execWithBindValues(String queryResponseDef,
-			Map<String, Object> parameters)
+	public org.forum.generated.Mutation execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -208,8 +131,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public org.forum.generated.Mutation exec(String queryResponseDef,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public org.forum.generated.Mutation exec(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
@@ -274,8 +197,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return graphQLConfiguration.getQueryExecutor().execute(objectResponse, parameters,
-				org.forum.generated.Mutation.class);
+		return objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 	}
 
 	/**
@@ -314,8 +236,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public org.forum.generated.Mutation exec(ObjectResponse objectResponse,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public org.forum.generated.Mutation exec(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
@@ -328,7 +250,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class);
 	}
 
 	/**
@@ -344,8 +266,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(graphQLConfiguration);
+		GraphQLRequest ret = new GraphQLRequest(graphQlClient, fullRequest);
 		return ret;
 	}
 
@@ -388,8 +309,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeSimpleName = "Board", javaClass = org.forum.generated.Board.class)
-	public org.forum.generated.Board createBoardWithBindValues(String queryResponseDef,
-			java.lang.String name, java.lang.Boolean publiclyAvailable, Map<String, Object> parameters)
+	public org.forum.generated.Board createBoardWithBindValues(String queryResponseDef, java.lang.String name,
+			java.lang.Boolean publiclyAvailable, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation 'createBoard': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateBoardResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -432,8 +353,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeSimpleName = "Board", javaClass = org.forum.generated.Board.class)
-	public org.forum.generated.Board createBoard(String queryResponseDef,
-			java.lang.String name, java.lang.Boolean publiclyAvailable, Object... paramsAndValues)
+	public org.forum.generated.Board createBoard(String queryResponseDef, java.lang.String name,
+			java.lang.Boolean publiclyAvailable, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation 'createBoard': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateBoardResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -480,8 +401,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeSimpleName = "Board", javaClass = org.forum.generated.Board.class)
-	public org.forum.generated.Board createBoardWithBindValues(ObjectResponse objectResponse,
-			java.lang.String name, java.lang.Boolean publiclyAvailable, Map<String, Object> parameters)
+	public org.forum.generated.Board createBoardWithBindValues(ObjectResponse objectResponse, java.lang.String name,
+			java.lang.Boolean publiclyAvailable, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing mutation 'createBoard' with parameters: {}, {} ", name, publiclyAvailable);
@@ -494,8 +415,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		parameters.put("mutationCreateBoardName", name);
 		parameters.put("mutationCreateBoardPubliclyAvailable", publiclyAvailable);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreateBoard();
 	}
@@ -540,9 +460,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createBoard", graphQLTypeSimpleName = "Board", javaClass = org.forum.generated.Board.class)
-	public org.forum.generated.Board createBoard(ObjectResponse objectResponse,
-			java.lang.String name, java.lang.Boolean publiclyAvailable, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public org.forum.generated.Board createBoard(ObjectResponse objectResponse, java.lang.String name,
+			java.lang.Boolean publiclyAvailable, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing mutation 'createBoard' with bind variables: ");
@@ -564,8 +483,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		parameters.put("mutationCreateBoardName", name);
 		parameters.put("mutationCreateBoardPubliclyAvailable", publiclyAvailable);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreateBoard();
 	}
@@ -579,7 +497,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getCreateBoardResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createBoard",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createBoard",
 				RequestType.mutation,
 				InputParameter.newBindParameter("", "name", "mutationCreateBoardName", InputParameterType.MANDATORY,
 						"String", true, 0, false),
@@ -599,7 +517,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreateBoardGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createBoard",
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createBoard",
 				InputParameter.newBindParameter("", "name", "mutationCreateBoardName", InputParameterType.MANDATORY,
 						"String", true, 0, false),
 				InputParameter.newBindParameter("", "publiclyAvailable", "mutationCreateBoardPubliclyAvailable",
@@ -685,9 +603,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createTopic", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public org.forum.generated.Topic createTopic(String queryResponseDef,
-			org.forum.generated.TopicInput topic, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public org.forum.generated.Topic createTopic(String queryResponseDef, org.forum.generated.TopicInput topic,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation 'createTopic': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateTopicResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return createTopicWithBindValues(objectResponse, topic,
@@ -744,8 +661,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationCreateTopicTopic", topic);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreateTopic();
 	}
@@ -788,9 +704,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createTopic", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public org.forum.generated.Topic createTopic(ObjectResponse objectResponse,
-			org.forum.generated.TopicInput topic, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public org.forum.generated.Topic createTopic(ObjectResponse objectResponse, org.forum.generated.TopicInput topic,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing mutation 'createTopic' with bind variables: ");
@@ -811,8 +726,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationCreateTopicTopic", topic);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreateTopic();
 	}
@@ -826,7 +740,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getCreateTopicResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createTopic",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createTopic",
 				RequestType.mutation, InputParameter.newBindParameter("", "topic", "mutationCreateTopicTopic",
 						InputParameterType.OPTIONAL, "TopicInput", false, 0, false));
 	}
@@ -843,8 +757,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreateTopicGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createTopic", InputParameter.newBindParameter(
-				"", "topic", "mutationCreateTopicTopic", InputParameterType.OPTIONAL, "TopicInput", false, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createTopic",
+				InputParameter.newBindParameter("", "topic", "mutationCreateTopicTopic", InputParameterType.OPTIONAL,
+						"TopicInput", false, 0, false));
 	}
 
 	/**
@@ -926,9 +841,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createPost", graphQLTypeSimpleName = "Post", javaClass = org.forum.generated.Post.class)
-	public org.forum.generated.Post createPost(String queryResponseDef,
-			org.forum.generated.PostInput post, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public org.forum.generated.Post createPost(String queryResponseDef, org.forum.generated.PostInput post,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation 'createPost': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreatePostResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return createPostWithBindValues(objectResponse, post,
@@ -985,8 +899,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationCreatePostPost", post);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreatePost();
 	}
@@ -1029,9 +942,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createPost", graphQLTypeSimpleName = "Post", javaClass = org.forum.generated.Post.class)
-	public org.forum.generated.Post createPost(ObjectResponse objectResponse,
-			org.forum.generated.PostInput post, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public org.forum.generated.Post createPost(ObjectResponse objectResponse, org.forum.generated.PostInput post,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing mutation 'createPost' with bind variables: ");
@@ -1052,8 +964,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationCreatePostPost", post);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreatePost();
 	}
@@ -1067,7 +978,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getCreatePostResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createPost",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createPost",
 				RequestType.mutation, InputParameter.newBindParameter("", "post", "mutationCreatePostPost",
 						InputParameterType.MANDATORY, "PostInput", true, 0, false));
 	}
@@ -1083,8 +994,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getCreatePostGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createPost", InputParameter.newBindParameter(
-				"", "post", "mutationCreatePostPost", InputParameterType.MANDATORY, "PostInput", true, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createPost",
+				InputParameter.newBindParameter("", "post", "mutationCreatePostPost", InputParameterType.MANDATORY,
+						"PostInput", true, 0, false));
 	}
 
 	/**
@@ -1166,9 +1078,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createPosts", graphQLTypeSimpleName = "Post", javaClass = org.forum.generated.Post.class)
-	public List<org.forum.generated.Post> createPosts(String queryResponseDef,
-			List<org.forum.generated.PostInput> spam, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public List<org.forum.generated.Post> createPosts(String queryResponseDef, List<org.forum.generated.PostInput> spam,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation 'createPosts': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreatePostsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return createPostsWithBindValues(objectResponse, spam,
@@ -1212,9 +1123,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createPosts", graphQLTypeSimpleName = "Post", javaClass = org.forum.generated.Post.class)
-	public List<org.forum.generated.Post> createPostsWithBindValues(
-			ObjectResponse objectResponse, List<org.forum.generated.PostInput> spam,
-			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public List<org.forum.generated.Post> createPostsWithBindValues(ObjectResponse objectResponse,
+			List<org.forum.generated.PostInput> spam, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing mutation 'createPosts' with parameters: {} ", spam);
 		} else if (logger.isDebugEnabled()) {
@@ -1225,8 +1136,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationCreatePostsSpam", spam);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreatePosts();
 	}
@@ -1292,8 +1202,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationCreatePostsSpam", spam);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreatePosts();
 	}
@@ -1307,7 +1216,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getCreatePostsResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createPosts",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "createPosts",
 				RequestType.mutation, InputParameter.newBindParameter("", "spam", "mutationCreatePostsSpam",
 						InputParameterType.MANDATORY, "PostInput", true, 1, true));
 	}
@@ -1324,8 +1233,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreatePostsGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createPosts", InputParameter.newBindParameter(
-				"", "spam", "mutationCreatePostsSpam", InputParameterType.MANDATORY, "PostInput", true, 1, true));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createPosts",
+				InputParameter.newBindParameter("", "spam", "mutationCreatePostsSpam", InputParameterType.MANDATORY,
+						"PostInput", true, 1, true));
 	}
 
 	/**
@@ -1407,9 +1317,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createMember", graphQLTypeSimpleName = "Member", javaClass = org.forum.generated.Member.class)
-	public org.forum.generated.Member createMember(String queryResponseDef,
-			org.forum.generated.MemberInput input, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public org.forum.generated.Member createMember(String queryResponseDef, org.forum.generated.MemberInput input,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing mutation 'createMember': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getCreateMemberResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return createMemberWithBindValues(objectResponse, input,
@@ -1453,9 +1362,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createMember", graphQLTypeSimpleName = "Member", javaClass = org.forum.generated.Member.class)
-	public org.forum.generated.Member createMemberWithBindValues(
-			ObjectResponse objectResponse, org.forum.generated.MemberInput input,
-			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public org.forum.generated.Member createMemberWithBindValues(ObjectResponse objectResponse,
+			org.forum.generated.MemberInput input, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing mutation 'createMember' with parameters: {} ", input);
 		} else if (logger.isDebugEnabled()) {
@@ -1466,8 +1375,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("mutationCreateMemberInput", input);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreateMember();
 	}
@@ -1510,9 +1418,8 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "createMember", graphQLTypeSimpleName = "Member", javaClass = org.forum.generated.Member.class)
-	public org.forum.generated.Member createMember(ObjectResponse objectResponse,
-			org.forum.generated.MemberInput input, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public org.forum.generated.Member createMember(ObjectResponse objectResponse, org.forum.generated.MemberInput input,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing mutation 'createMember' with bind variables: ");
@@ -1533,8 +1440,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("mutationCreateMemberInput", input);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.getCreateMember();
 	}
@@ -1548,9 +1454,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getCreateMemberResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "createMember",
-				RequestType.mutation, InputParameter.newBindParameter("", "input", "mutationCreateMemberInput",
-						InputParameterType.MANDATORY, "MemberInput", true, 0, false));
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
+				"createMember", RequestType.mutation, InputParameter.newBindParameter("", "input",
+						"mutationCreateMemberInput", InputParameterType.MANDATORY, "MemberInput", true, 0, false));
 	}
 
 	/**
@@ -1565,8 +1471,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreateMemberGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createMember", InputParameter.newBindParameter(
-				"", "input", "mutationCreateMemberInput", InputParameterType.MANDATORY, "MemberInput", true, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createMember",
+				InputParameter.newBindParameter("", "input", "mutationCreateMemberInput", InputParameterType.MANDATORY,
+						"MemberInput", true, 0, false));
 	}
 
 	/**
@@ -1697,8 +1604,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.get__typename();
 	}
@@ -1760,8 +1666,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		org.forum.generated.Mutation ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Mutation.class);
+		org.forum.generated.Mutation ret = objectResponse.exec(org.forum.generated.Mutation.class, parameters);
 
 		return ret.get__typename();
 	}
@@ -1775,7 +1680,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder get__typenameResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "__typename",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "__typename",
 				RequestType.mutation);
 	}
 
@@ -1790,7 +1695,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "__typename");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "__typename");
 	}
 
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.4</version>
+		<version>2.7.0-RC1</version>
 		<relativePath />
 	</parent>
 
@@ -58,6 +58,27 @@
 			<url>https://graphql-maven-plugin-project.graphql-java-generator.com</url>
 		</site>
 	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<modules>
 		<!-- Below are the module that are always in the build -->
@@ -401,7 +422,6 @@
 				<artifactId>graphql-java-extended-scalars</artifactId>
 				<version>18.0</version>
 			</dependency>
-
 
 			<!-- Other dependencies -->
 			<dependency>

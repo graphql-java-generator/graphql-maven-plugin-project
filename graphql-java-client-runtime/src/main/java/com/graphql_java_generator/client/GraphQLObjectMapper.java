@@ -256,6 +256,20 @@ public class GraphQLObjectMapper {
 		return objectMapper.treeToValue(value, clazz);
 	}
 
+	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
+	public <T> T treeToValue(Map<?, ?> map, Class<T> clazz) throws JsonProcessingException {
+		// TODO Find a better way than map to json string, then json string to POJO object
+		JsonNode node = objectMapper.valueToTree(map);
+		return objectMapper.treeToValue(node, clazz);
+	}
+
+	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
+	public <T> T treeToValue(List<?> list, Class<T> clazz) throws JsonProcessingException {
+		// TODO Find a better way than list to json string, then json string to POJO object
+		JsonNode node = objectMapper.valueToTree(list);
+		return objectMapper.treeToValue(node, clazz);
+	}
+
 	/** @See {@link ObjectMapper#writeValueAsString(Object)} */
 	public String writeValueAsString(Object o) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(o);

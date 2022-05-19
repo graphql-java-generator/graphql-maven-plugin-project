@@ -575,7 +575,7 @@ public class InputParameter {
 	 */
 	private static Object parseInputParameterValue(String schema, Class<?> owningClass, String fieldName,
 			String parameterName, String parameterValue) throws GraphQLRequestPreparationException {
-		Field field = graphqlUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(fieldName), true);
+		Field field = graphqlClientUtils.getDeclaredField(owningClass, graphqlUtils.getJavaName(fieldName), true);
 
 		GraphQLInputParameters graphQLInputParameters = field.getDeclaredAnnotation(GraphQLInputParameters.class);
 		if (graphQLInputParameters == null) {

@@ -34,10 +34,19 @@ public interface GraphQLRepositoryPartialRequests extends Queries {
 	@Override
 	@PartialRequest(requestName = "topics", request = "{id date author{name email alias id type} nbPosts title content " //
 			+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias} title content}}")
-	List<Topic> topicAuthorPostAuthor(String boardName, //
+	List<Topic> topicAuthorPostAuthor(//
+			String boardName, //
 			@BindParameter(name = "sinceParam") Date since
 	// The other Bind Variables won't be fed
 	) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
+
+	@PartialRequest(requestName = "topics", request = "{id date author{name email alias id type} nbPosts title content " //
+			+ "posts(memberId:?memberId, memberName: ?memberName, since: &sinceParam){id date author{name email alias} title content}}")
+	List<Topic> topics_memberId_since(//
+			String boardName, //
+			@BindParameter(name = "memberId") Long uuid, //
+			@BindParameter(name = "sinceParam") Date since)
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException;
 
 	@Override
 	@PartialRequest(request = " {id date title content} ")

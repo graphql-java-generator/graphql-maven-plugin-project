@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
-import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.language.ArrayValue;
 import graphql.language.BooleanValue;
@@ -251,77 +250,6 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Retrieves the class of the fieldName field of the owningClass class.
-	 * 
-	 * @param owningClass
-	 * @param fieldName
-	 * @param returnIsMandatory
-	 *            If true, a {@link GraphQLRequestPreparationException} is thrown if the field is not found.
-	 * @return The class of the field. Or null of the field doesn't exist, and returnIdMandatory is false
-	 * @throws GraphQLRequestPreparationException
-	 */
-	public Class<?> getFieldType(Class<?> owningClass, String fieldName, boolean returnIsMandatory)
-			throws GraphQLRequestPreparationException {
-		if (owningClass.isInterface()) {
-			// We try to get the class of this getter of the field
-			try {
-				Method method = owningClass.getDeclaredMethod("get" + graphqlUtils.getPascalCase(fieldName));
-
-				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
-				GraphQLNonScalar graphQLNonScalar = method.getAnnotation(GraphQLNonScalar.class);
-				GraphQLScalar graphQLScalar = method.getAnnotation(GraphQLScalar.class);
-
-				if (graphQLNonScalar != null)
-					return graphQLNonScalar.javaClass();
-				else if (graphQLScalar != null)
-					return graphQLScalar.javaClass();
-				else
-					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
-							+ fieldName + "' in the interface '" + owningClass.getName()
-							+ "': this method should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
-			} catch (NoSuchMethodException e) {
-				// Hum, the field doesn't exist.
-				if (!returnIsMandatory)
-					return null;
-				else
-					throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
-							+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
-			} catch (SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the getter for the field '"
-						+ fieldName + "' in the class '" + owningClass.getName() + "'", e);
-			}
-		} else {
-			// We try to get the class of this field
-			try {
-				Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
-
-				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
-				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
-				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
-
-				if (graphQLNonScalar != null)
-					return graphQLNonScalar.javaClass();
-				else if (graphQLScalar != null)
-					return graphQLScalar.javaClass();
-				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-							+ "' in the class '" + owningClass.getName()
-							+ "': this field should have one of these annotations: GraphQLNonScalar or GraphQLScalar ");
-			} catch (NoSuchFieldException e) {
-				// Hum, the field doesn't exist.
-				if (!returnIsMandatory)
-					return null;
-				else
-					throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-							+ "' in the class '" + owningClass.getName() + "'", e);
-			} catch (SecurityException e) {
-				throw new GraphQLRequestPreparationException("Error while looking for the the field '" + fieldName
-						+ "' in the class '" + owningClass.getName() + "'", e);
-			}
-		}
-	}
-
-	/**
 	 * This method returns a GraphQL argument into the relevant Java object, within a data fetcher, from what has been
 	 * parsed by the graphql-java engine from the incoming JSON request
 	 * 
@@ -455,46 +383,6 @@ public class GraphqlUtils {
 		// Too bad...
 		throw new RuntimeException("Can't transform the jsonParsedValue (" + jsonParsedValue.getClass().getName()
 				+ ") into a " + clazz.getName());
-	}
-
-	/**
-	 * Returns a {@link Field} from the given class.
-	 * 
-	 * @param owningClass
-	 *            The class that should contain this field. If the class's name finishes by Response, as an empty
-	 *            XxxResponse class is created for each Query/Mutation/Subscription (to be compatible with previsous
-	 *            version), then this method also looks in the owningClass's superclass.
-	 * @param fieldName
-	 *            The name of the searched field
-	 * @param mustFindField
-	 *            If true and the field is not found, a {@link GraphQLRequestPreparationException} is thrown.<BR/>
-	 *            If false an the field is not found, the method returns null
-	 * @return
-	 * @throws GraphQLRequestPreparationException
-	 */
-	public Field getDeclaredField(Class<?> owningClass, String fieldName, boolean mustFindField)
-			throws GraphQLRequestPreparationException {
-
-		try {
-			return owningClass.getDeclaredField(fieldName);
-		} catch (NoSuchFieldException | SecurityException e1) {
-			// If the classname finishes by "Response", we take a look at the superclass, as the XxxResponse classes are
-			// built as just inheriting from the query/mutation/subscription class
-			if (owningClass.getSimpleName().endsWith("Response")) {
-				try {
-					return owningClass.getSuperclass().getDeclaredField(fieldName);
-				} catch (NoSuchFieldException | SecurityException e2) {
-					if (mustFindField)
-						throw new GraphQLRequestPreparationException("Could not find fied '" + fieldName + "' in "
-								+ owningClass.getName() + ", nor in " + owningClass.getSuperclass().getName(), e1);
-				}
-			}
-
-			if (mustFindField)
-				throw new GraphQLRequestPreparationException(
-						"Could not find fied '" + fieldName + "' in " + owningClass.getName(), e1);
-		}
-		return null;
 	}
 
 	/**

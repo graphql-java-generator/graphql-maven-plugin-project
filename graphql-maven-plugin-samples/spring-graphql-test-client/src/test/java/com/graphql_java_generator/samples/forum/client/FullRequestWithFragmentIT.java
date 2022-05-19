@@ -12,42 +12,50 @@ import java.util.List;
 import org.forum.generated.Board;
 import org.forum.generated.Query;
 import org.forum.generated.util.GraphQLRequest;
-import org.junit.jupiter.api.BeforeAll;
+import org.forum.generated.util.QueryExecutor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.SpringTestConfig;
 
 /**
  * This class is both samples and integration tests for Full GraphQL request, that contains GraphQL fragments.
  * 
  * @author etienne-sf
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+@TestPropertySource("classpath:application.properties")
 @Execution(ExecutionMode.CONCURRENT)
 public class FullRequestWithFragmentIT {
 
-	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8183/graphql";
+	@Autowired
+	QueryExecutor queryExecutor;
 
-	static GraphQLRequest boardsRequestWithGlobalFragments;
-	static GraphQLRequest boardsRequestWithInlineFragments;
+	GraphQLRequest boardsRequestWithGlobalFragments;
+	GraphQLRequest boardsRequestWithInlineFragments;
 
-	@BeforeAll
-	static void setupAll() throws GraphQLRequestPreparationException {
-		// We have one GraphQL endpoint. So we use the static configuration.
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(GRAPHQL_ENDPOINT_URL));
+	@BeforeEach
+	void setupAll() throws GraphQLRequestPreparationException {
 
 		// Let's build once the request, and use it for each further execution
-		boardsRequestWithGlobalFragments = new GraphQLRequest(""//
+		boardsRequestWithGlobalFragments = queryExecutor.getGraphQLRequest(""//
 				+ "fragment member on Member {name alias} "
 				+ "fragment post on Post {date content author{...member   id}}\n"
 				+ "fragment topic on Topic {title posts(since: &sinceParam){id ...post} author{...member}}\r"
 				+ "query{boards{id name topics {id ...topic}}}");
 
 		// The same request, with inline fragments
-		boardsRequestWithInlineFragments = new GraphQLRequest(""//
+		boardsRequestWithInlineFragments = queryExecutor.getGraphQLRequest(""//
 				+ "query{boards{" //
 				+ "  id name topics {"//
 				+ "     id ... on Topic {" //

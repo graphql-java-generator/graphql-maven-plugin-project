@@ -8,22 +8,32 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
-import org.apache.commons.text.StringEscapeUtils;
-import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.reactivestreams.Subscription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.graphql.ResponseError;
+import org.springframework.graphql.ResponseField;
+import org.springframework.graphql.client.ClientGraphQlResponse;
+import org.springframework.graphql.client.GraphQlClient;
+import org.springframework.graphql.client.GraphQlClient.RequestSpec;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphQLRequestObject;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
+import com.graphql_java_generator.client.SubscriptionClientReactiveImpl;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import reactor.core.publisher.Flux;
 
 /**
  * This class contains the description for a GraphQL request that will be sent to the server. It's an abstract class,
@@ -41,17 +51,10 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  */
 public abstract class AbstractGraphQLRequest {
 
-	/**
-	 * This contains the default configuration, that will apply if no local configuration has been defined for this
-	 * instance
-	 */
-	static GraphQLConfiguration staticConfiguration = null;
+	/** Logger for this class */
+	private static Logger logger = LoggerFactory.getLogger(AbstractGraphQLRequest.class);
 
-	/**
-	 * This contains the configuration for this instance. This configuration overrides the {@link #staticConfiguration},
-	 * if defined.
-	 */
-	GraphQLConfiguration instanceConfiguration = null;
+	final GraphQlClient graphQlClient;
 
 	/** The query, if any */
 	QueryField query = null;
@@ -105,10 +108,23 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @author etienne_sf
 	 */
-	private static class Payload {
+	public static class Payload {
 		String query = null;
 		Map<String, Object> variables = new HashMap<>();
 		String operationName = null;
+
+		public String getQuery() {
+			return query;
+		}
+
+		public Map<String, Object> getVariables() {
+			return variables;
+		}
+
+		public String getOperationName() {
+			return operationName;
+		}
+
 	}
 
 	/**
@@ -118,6 +134,8 @@ public abstract class AbstractGraphQLRequest {
 	 * may change in the future. To prepare Partial Requests, application code <B>SHOULD</B> call the
 	 * getXxxxGraphQLRequests methods, that are generated in the query/mutation/subscription java classes.
 	 * 
+	 * @param graphQlClient
+	 *            The {@link GraphQlClient} that is responsible for the actual execution of the request
 	 * @param schema
 	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
 	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
@@ -137,14 +155,16 @@ public abstract class AbstractGraphQLRequest {
 	 *            The list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(String schema, String graphQLRequest, RequestType requestType, String fieldName,
-			InputParameter... inputParams) throws GraphQLRequestPreparationException {
+	public AbstractGraphQLRequest(GraphQlClient graphQlClient, String schema, String graphQLRequest,
+			RequestType requestType, String fieldName, InputParameter... inputParams)
+			throws GraphQLRequestPreparationException {
 		if (requestType == null) {
 			throw new NullPointerException("requestType is mandatory, but a null value has been provided");
 		}
 		if (fieldName == null) {
 			throw new NullPointerException("fieldName is mandatory, but a null value has been provided");
 		}
+		this.graphQlClient = graphQlClient;
 		this.requestType = requestType;
 		this.requestName = null;
 		this.graphQLRequest = graphQLRequest;
@@ -209,6 +229,8 @@ public abstract class AbstractGraphQLRequest {
 	 * necessary to allow proper deserialization of interfaces and unions.</LI>
 	 * </UL>
 	 * 
+	 * @param requestExecution
+	 *            The class that will do the actual exe
 	 * @param schema
 	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
 	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
@@ -220,7 +242,9 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(String schema, String graphQLRequest) throws GraphQLRequestPreparationException {
+	public AbstractGraphQLRequest(GraphQlClient graphQlClient, String schema, String graphQLRequest)
+			throws GraphQLRequestPreparationException {
+		this.graphQlClient = graphQlClient;
 		String localQueryName = null;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = getGraphQLClassesPackageName();
@@ -433,16 +457,28 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	public <T extends GraphQLRequestObject> T exec(Class<T> t, Map<String, Object> params)
 			throws GraphQLRequestExecutionException {
-		if (instanceConfiguration != null) {
-			return instanceConfiguration.getQueryExecutor().execute(this, params, t);
-		} else if (staticConfiguration != null) {
-			return staticConfiguration.getQueryExecutor().execute(this, params, t);
-		} else {
-			throw new GraphQLRequestExecutionException(
-					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "
-							+ "Please set either the GraphQL instance configuration "
-							+ "or the GraphQL static configuration before executing a GraphQL request");
+		if (getRequestType().equals(RequestType.subscription))
+			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");
+
+		// Building of the request
+		Payload payload = getPayload(params);
+		RequestSpec requestSpec = graphQlClient.document(payload.query);
+		if (payload.variables.size() > 0)
+			requestSpec.variables(payload.variables);
+		if (payload.operationName != null)
+			requestSpec.operationName(payload.operationName);
+
+		// Actual execution of the request
+		logger.trace("Executing query or mutation {}", payload.query);
+		ClientGraphQlResponse response = requestSpec.execute().block();
+
+		// Does this response contain errors?
+		if (response.getErrors() != null && response.getErrors().size() > 0) {
+			throw new GraphQLRequestExecutionException(response.getErrors());
 		}
+
+		// No error, let's go!
+		return response.toEntity(t);
 	}
 
 	/**
@@ -483,18 +519,91 @@ public abstract class AbstractGraphQLRequest {
 	 */
 	public <R, T> SubscriptionClient exec(Map<String, Object> params, SubscriptionCallback<T> subscriptionCallback,
 			Class<R> subscriptionType, Class<T> messageType) throws GraphQLRequestExecutionException {
-		if (instanceConfiguration != null) {
-			return instanceConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback,
-					subscriptionType, messageType);
-		} else if (staticConfiguration != null) {
-			return staticConfiguration.getQueryExecutor().execute(this, params, subscriptionCallback, subscriptionType,
-					messageType);
-		} else {
+		// This method accepts only subscription at a time (no query and no mutation)
+		if (!requestType.equals(RequestType.subscription))
+			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions");
+
+		// Subscription may be subscribed only once at a time, as this method allows only one subscriptionCallback
+		if (subscription.getFields().size() != 1) {
 			throw new GraphQLRequestExecutionException(
-					"The GraphQLRequestConfiguration has not been set in the GraphQLRequest. "
-							+ "Please set either the GraphQL instance configuration "
-							+ "or the GraphQL static configuration before executing a GraphQL request");
+					"This method may be called only for one subscription at a time, but there was "
+							+ subscription.getFields().size() + " subscriptions in this GraphQLRequest");
 		}
+
+		// Building of the request
+		Payload payload = getPayload(params);
+		RequestSpec requestSpec = graphQlClient.document(payload.query);
+		if (payload.variables.size() > 0)
+			requestSpec.variables(payload.variables);
+		if (payload.operationName != null)
+			requestSpec.operationName(payload.operationName);
+
+		// Actual execution of the request
+		logger.trace("Executing subscription {}", payload.query);
+		Flux<ClientGraphQlResponse> flux = requestSpec//
+				.executeSubscription()//
+				// on subscription
+				.doOnSubscribe(new Consumer<Subscription>() {
+					@Override
+					public void accept(Subscription t) {
+						subscriptionCallback.onConnect();
+					}
+				})
+				// Next message
+				.doOnNext(new Consumer<ClientGraphQlResponse>() {
+					@Override
+					public void accept(ClientGraphQlResponse response) {
+						if (!response.isValid()) {
+							subscriptionCallback.onError(new GraphQLRequestExecutionException(response.getErrors()));
+						} else {
+							ResponseField field = response.field(subscription.getFields().get(0).getName());
+							if (!field.hasValue()) {
+								if (field.getError() != null) {
+									// Field failure...
+									List<ResponseError> errors = Arrays.asList(field.getError());
+									subscriptionCallback.onError(new GraphQLRequestExecutionException(errors));
+								} else {
+									// Optional field set to null...
+									subscriptionCallback.onMessage(null);
+								}
+							} else {
+								// It's a valid value. Let's notify the callback
+								Object o = field.getValue();
+								if (o == null) {
+									subscriptionCallback.onMessage(null);
+								} else if (o instanceof List<?>) {
+									try {
+										subscriptionCallback
+												.onMessage(getGraphQLObjectMapper().treeToValue((List<?>) o, messageType));
+									} catch (JsonProcessingException e) {
+										throw new RuntimeException(e.getMessage(), e);
+									}
+								} else if (o instanceof Map<?, ?>) {
+									try {
+										subscriptionCallback.onMessage(
+												getGraphQLObjectMapper().treeToValue((Map<?, ?>) o, messageType));
+									} catch (JsonProcessingException e) {
+										throw new RuntimeException(e.getMessage(), e);
+									}
+								} else {
+									subscriptionCallback.onMessage(field.getValue());
+								}
+							}
+						}
+					}
+				})
+				// on error
+				.doOnError(new Consumer<Throwable>() {
+					@Override
+					public void accept(Throwable t) {
+						subscriptionCallback.onError(t);
+					}
+				})
+				// on completion
+				.doOnComplete(() -> subscriptionCallback.onClose(0, null)) //
+		;
+
+		return new SubscriptionClientReactiveImpl<T>(flux.subscribe());
 	}
 
 	/**
@@ -532,8 +641,9 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 */
-	private void finishRequestPreparation() throws GraphQLRequestPreparationException {
-		// For each non scalar field, we add its non scalar fields, if none was defined
+	private void finishRequestPreparation() throws GraphQLRequestPreparationException {// For each non scalar field, we
+																						// add its non scalar fields, if
+																						// none was defined
 		AddScalarFieldToEmptyNonScalarField(query);
 		AddScalarFieldToEmptyNonScalarField(mutation);
 		AddScalarFieldToEmptyNonScalarField(subscription);
@@ -543,37 +653,63 @@ public abstract class AbstractGraphQLRequest {
 
 	}
 
-	private void AddScalarFieldToEmptyNonScalarField(QueryField field) throws GraphQLRequestPreparationException {
-		// If this field contains no subfield, and is not a scalar, we add all its scalar fields, as requested fields.
-		if (field == null || field.isScalar()) {
-			// No action
-		} else if (field.fields.size() == 0 && field.fragments.size() == 0 && field.inlineFragments.size() == 0) {
-			// This non scalar field has no subfields in the GraphQL request. It also have no fragment
+	private void AddScalarFieldToEmptyNonScalarField(QueryField field) throws GraphQLRequestPreparationException {// If
+																													// this
+																													// field
+																													// contains
+																													// no
+																													// subfield,
+																													// and
+																													// is
+																													// not
+																													// a
+																													// scalar,
+																													// we
+																													// add
+																													// all
+																													// its
+																													// scalar
+																													// fields,
+																													// as
+																													// requested
+																													// fields.
+		if (field == null || field.isScalar()) {// No action
+		} else if (field.fields.size() == 0 && field.fragments.size() == 0 && field.inlineFragments.size() == 0) {// This
+																													// non
+																													// scalar
+																													// field
+																													// has
+																													// no
+																													// subfields
+																													// in
+																													// the
+																													// GraphQL
+																													// request.
+																													// It
+																													// also
+																													// have
+																													// no
+																													// fragment
 			// We'll request all it scalar fields.
 
-			if (field.clazz.isInterface()) {
-				// For interfaces, we look for getters
+			if (field.clazz.isInterface()) {// For interfaces, we look for getters
 				for (Method m : field.clazz.getDeclaredMethods()) {
 					if (m.getName().startsWith("get")) {
 						GraphQLScalar graphQLScalar = m.getAnnotation(GraphQLScalar.class);
-						if (graphQLScalar != null) {
-							// We've found a subfield that is a scalar. Let's add it.
+						if (graphQLScalar != null) {// We've found a subfield that is a scalar. Let's add it.
 							field.fields.add(new QueryField(field.clazz, graphQLScalar.fieldName()));
 						}
 					}
 				}
-			} else {
-				// For objects, we look for class's attributes
+			} else {// For objects, we look for class's attributes
 				for (Field f : field.clazz.getDeclaredFields()) {
 					GraphQLScalar graphQLScalar = f.getAnnotation(GraphQLScalar.class);
-					if (graphQLScalar != null) {
-						// We've found a subfield that is a scalar. Let's add it.
+					if (graphQLScalar != null) {// We've found a subfield that is a scalar. Let's add it.
 						field.fields.add(new QueryField(field.clazz, graphQLScalar.fieldName()));
 					}
 				}
 			}
-		} else {
-			// This non scalar fields contains requested subfield. We recurse into each of its fields.
+		} else {// This non scalar fields contains requested subfield. We recurse into each of its fields.
 			for (QueryField f : field.fields)
 				AddScalarFieldToEmptyNonScalarField(f);
 		} // for
@@ -587,7 +723,7 @@ public abstract class AbstractGraphQLRequest {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	private Payload getPayload(Map<String, Object> params) throws GraphQLRequestExecutionException {
+	public Payload getPayload(Map<String, Object> params) throws GraphQLRequestExecutionException {
 		Payload payload = new Payload();
 		StringBuilder sb = new StringBuilder();
 
@@ -622,8 +758,7 @@ public abstract class AbstractGraphQLRequest {
 		// Step 2 : collect the GraphQL variables
 		String separator = "";
 		for (InputParameter param : request.inputParameters) {
-			if (param.getType() == InputParameterType.GRAPHQL_VARIABLE) {
-				//////////////////////////////////////////////////////////////////////
+			if (param.getType() == InputParameterType.GRAPHQL_VARIABLE) {//////////////////////////////////////////////////////////////////////
 				// Let's complete the variable list
 				sbGraphQLVariables.append(separator)//
 						.append("$")//
@@ -670,52 +805,6 @@ public abstract class AbstractGraphQLRequest {
 		// This parameter is not mandatory, and is not transmitted by the plugin
 
 		return payload;
-	}
-
-	/**
-	 * Builds the request, and return it as a String
-	 * 
-	 * 
-	 * @param params
-	 *            The parameters values to transmit to the server
-	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 */
-	public String buildRequestAsString(Map<String, Object> params) throws GraphQLRequestExecutionException {
-		try {
-			return new ObjectMapper().writeValueAsString(buildRequestAsMap(params));
-		} catch (JsonProcessingException e1) {
-			throw new GraphQLRequestExecutionException(e1.getMessage(), e1);
-		}
-	}
-
-	/**
-	 * Builds the request, and return it as a String
-	 * 
-	 * 
-	 * @param params
-	 *            The parameters values to transmit to the server
-	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 */
-	public Map<String, Object> buildRequestAsMap(Map<String, Object> params) throws GraphQLRequestExecutionException {
-		Map<String, Object> ret = new HashMap<>();
-		Payload payload = getPayload(params);
-
-		// Step 1: add the query (mandatory)
-		ret.put("query", payload.query);
-
-		// Step 2: add the variable entry
-		if (payload.variables.size() > 0) {
-			ret.put("variables", payload.variables);
-		}
-
-		// Step 3: add the operationName
-		if (payload.operationName != null) {
-			ret.put("operationName", StringEscapeUtils.escapeJson(payload.operationName));
-		}
-
-		return ret;
 	}
 
 	/**
@@ -792,48 +881,6 @@ public abstract class AbstractGraphQLRequest {
 
 	public String getRequestName() {
 		return requestName;
-	}
-
-	/**
-	 * This gets the default configuration, that will apply if no local configuration has been defined for this
-	 * instance.
-	 * 
-	 * @return the staticConfiguration
-	 */
-	public static GraphQLConfiguration getStaticConfiguration() {
-		return staticConfiguration;
-	}
-
-	/**
-	 * This sets the default configuration, that will apply if no local configuration has been defined for this
-	 * instance.
-	 * 
-	 * @param staticConfiguration
-	 *            the staticConfiguration to set
-	 */
-	public static void setStaticConfiguration(GraphQLConfiguration staticConfiguration) {
-		AbstractGraphQLRequest.staticConfiguration = staticConfiguration;
-	}
-
-	/**
-	 * This gets the configuration for this instance. This configuration overrides the
-	 * {@link #getStaticConfiguration()}, if defined.
-	 * 
-	 * @return the instanceConfiguration
-	 */
-	public GraphQLConfiguration getInstanceConfiguration() {
-		return instanceConfiguration;
-	}
-
-	/**
-	 * This sets the configuration for this instance. This configuration overrides the
-	 * {@link #getStaticConfiguration()}, if defined.
-	 * 
-	 * @param instanceConfiguration
-	 *            the instanceConfiguration to set
-	 */
-	public void setInstanceConfiguration(GraphQLConfiguration instanceConfiguration) {
-		this.instanceConfiguration = instanceConfiguration;
 	}
 
 }

@@ -8,6 +8,7 @@ package com.graphql_java_generator.exception;
  * 
  * @author etienne-sf
  */
+@Deprecated // Not used any more
 public class GraphQLInternalErrorException extends GraphQLRequestPreparationException {
 
 	private static final long serialVersionUID = 1L;

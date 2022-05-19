@@ -6,17 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.forum.generated.Topic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import org.forum.generated.Topic;
+import com.graphql_java_generator.samples.forum.SpringTestConfig;
+import com.graphql_java_generator.samples.forum.client.graphql.GraphQLRepositoryPartialRequests;
 
 /**
  * Some samples (and tests) with direct queries having input parameters
@@ -24,18 +29,17 @@ import org.forum.generated.Topic;
  * @author etienne-sf
  *
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+@TestPropertySource("classpath:application.properties")
 @Execution(ExecutionMode.CONCURRENT)
 public class DirectQueriesWithFieldInputParametersIT {
 
-	static DirectQueriesWithFieldInputParameters directQueriesWithFieldInputParameters;
+	@Autowired
+	GraphQLRepositoryPartialRequests graphQLRepositoryPartialRequests;
 
 	String boardName;
 	Date since;
-
-	@BeforeAll
-	static void beforeAll() throws GraphQLRequestPreparationException {
-		directQueriesWithFieldInputParameters = new DirectQueriesWithFieldInputParameters();
-	}
 
 	@BeforeEach
 	void beforeEach() {
@@ -51,7 +55,7 @@ public class DirectQueriesWithFieldInputParametersIT {
 	public void topics_since() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 
 		// Go, go, go
-		List<Topic> topics = directQueriesWithFieldInputParameters.topics_since(boardName, since);
+		List<Topic> topics = graphQLRepositoryPartialRequests.topicAuthorPostAuthor(boardName, since);
 
 		// Verifications
 		assertTrue(topics.size() >= 5);
@@ -61,11 +65,8 @@ public class DirectQueriesWithFieldInputParametersIT {
 	@Test
 	public void topics_memberId_since() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 
-		// Preparation
-		UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000012");
-
 		// Go, go, go
-		List<Topic> topics = directQueriesWithFieldInputParameters.topics_memberId_since(boardName, uuid, since);
+		List<Topic> topics = graphQLRepositoryPartialRequests.topics_memberId_since(boardName, (long) 12, since);
 
 		// Verifications
 		assertTrue(topics.size() >= 5);

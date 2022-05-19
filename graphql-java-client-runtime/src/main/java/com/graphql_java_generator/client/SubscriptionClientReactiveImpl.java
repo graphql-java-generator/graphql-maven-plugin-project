@@ -11,17 +11,16 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
 /**
- * Default implementation for the {@link SubscriptionClient} interface.
+ * Default implementation for the {@link SubscriptionClient} interface.<br/>
+ * Since 2.x release, this class is quite useless. A {@link Disposable} should be used instead. This class is kept for
+ * compatibility with existing code.
  * 
  * @author etienne-sf
  */
-public class SubscriptionClientReactiveImpl implements SubscriptionClient {
+public class SubscriptionClientReactiveImpl<T> implements SubscriptionClient {
 
-	/** The connected {@link WebSocketSession} */
-	final GraphQLReactiveWebSocketHandler session;
-
-	/** The unique id the identify each operation, as specified by the graphql-transport-ws protocol */
-	final String uniqueIdOperation;
+	/** The {@link Disposable} obtained when subscribing to the {@link #flux} */
+	final Disposable disposable;
 
 	/**
 	 * 
@@ -31,19 +30,13 @@ public class SubscriptionClientReactiveImpl implements SubscriptionClient {
 	 * @param webSocketHandler
 	 *            The connected {@link WebSocketSession}
 	 */
-	public SubscriptionClientReactiveImpl(String uniqueIdOperation, GraphQLReactiveWebSocketHandler webSocketHandler) {
-		this.uniqueIdOperation = uniqueIdOperation;
-		this.session = webSocketHandler;
+	public SubscriptionClientReactiveImpl(Disposable disposable) {
+		this.disposable = disposable;
 	}
 
 	@Override
 	public void unsubscribe() throws GraphQLRequestExecutionException {
-		session.unsubscribe(uniqueIdOperation);
-	}
-
-	@Override
-	public WebSocketSession getSession() {
-		return session.getSession();
+		disposable.dispose();
 	}
 
 }

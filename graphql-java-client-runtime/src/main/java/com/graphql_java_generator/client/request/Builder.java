@@ -6,6 +6,8 @@ package com.graphql_java_generator.client.request;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.springframework.graphql.client.GraphQlClient;
+
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -20,6 +22,8 @@ public class Builder {
 
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils;
 
+	/** The spring-graphql {@link GraphQlClient} that allows to execute requests */
+	final GraphQlClient graphQlClient;
 	/**
 	 * The graphQLRequestClass inherits from {@link AbstractGraphQLRequest}, and contains the generated context that
 	 * allows proper GraphQL request executions
@@ -46,7 +50,8 @@ public class Builder {
 	 *            The graphQLRequestClass inherits from {@link AbstractGraphQLRequest}, and contains the generated
 	 *            context that allows proper GraphQL request executions
 	 */
-	public Builder(Class<? extends AbstractGraphQLRequest> graphQLRequestClass) {
+	public Builder(GraphQlClient graphQlClient, Class<? extends AbstractGraphQLRequest> graphQLRequestClass) {
+		this.graphQlClient = graphQlClient;
 		this.graphQLRequestClass = graphQLRequestClass;
 		this.fieldName = null;
 		this.requestType = null; // It will be calculated by the QLRequest instance, from the request
@@ -76,8 +81,9 @@ public class Builder {
 	 * @param inputParams
 	 *            The input parameters for this query/mutation/subscription
 	 */
-	public Builder(Class<? extends AbstractGraphQLRequest> graphQLRequestClass, String fieldName,
-			RequestType requestType, InputParameter... inputParams) {
+	public Builder(GraphQlClient graphQlClient, Class<? extends AbstractGraphQLRequest> graphQLRequestClass,
+			String fieldName, RequestType requestType, InputParameter... inputParams) {
+		this.graphQlClient = graphQlClient;
 		this.graphQLRequestClass = graphQLRequestClass;
 		this.fieldName = fieldName;
 		this.requestType = requestType;
@@ -113,16 +119,16 @@ public class Builder {
 			// Is it a full request ?
 			if (fullRequest) {
 				genericErrorMessage = "Could not create an instance of GraphQLRequest (for a Full request)";
-				objectResponse = (ObjectResponse) graphQLRequestClass.getConstructor(String.class)
-						.newInstance(queryResponseDef);
+				objectResponse = (ObjectResponse) graphQLRequestClass.getConstructor(GraphQlClient.class, String.class)
+						.newInstance(graphQlClient, queryResponseDef);
 			} else {
 				// No, it's a Partial request
 				genericErrorMessage = "Could not create an instance of GraphQLRequest (for a Partial request)";
 
-				Constructor<? extends AbstractGraphQLRequest> constructor = graphQLRequestClass
-						.getConstructor(String.class, RequestType.class, String.class, InputParameter[].class);
-				objectResponse = (ObjectResponse) constructor.newInstance(queryResponseDef, requestType, fieldName,
-						inputParams);
+				Constructor<? extends AbstractGraphQLRequest> constructor = graphQLRequestClass.getConstructor(
+						GraphQlClient.class, String.class, RequestType.class, String.class, InputParameter[].class);
+				objectResponse = (ObjectResponse) constructor.newInstance(graphQlClient, queryResponseDef, requestType,
+						fieldName, inputParams);
 			}
 
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException

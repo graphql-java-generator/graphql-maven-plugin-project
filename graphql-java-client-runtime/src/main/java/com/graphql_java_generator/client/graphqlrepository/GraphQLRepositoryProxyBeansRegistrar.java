@@ -14,7 +14,6 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.MultiValueMap;
 
 import com.graphql_java_generator.util.GraphqlUtils;
-import com.nimbusds.oauth2.sdk.util.MapUtils;
 
 /**
  * Implementation of {@link ImportBeanDefinitionRegistrar}, that scans the given package for {@link GraphQLRepository}
@@ -57,7 +56,7 @@ public class GraphQLRepositoryProxyBeansRegistrar implements ImportBeanDefinitio
 		MultiValueMap<String, Object> allAnnotationAttributes = importingClassMetadata
 				.getAllAnnotationAttributes(EnableGraphQLRepositories.class.getName());
 
-		if (MapUtils.isNotEmpty(allAnnotationAttributes)) {
+		if (allAnnotationAttributes != null && allAnnotationAttributes.size() > 0) {
 			return (String[]) allAnnotationAttributes.getFirst("basePackages");
 		} else {
 			return null;

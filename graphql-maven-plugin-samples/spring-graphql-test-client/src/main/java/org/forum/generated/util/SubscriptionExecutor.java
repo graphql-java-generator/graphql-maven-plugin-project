@@ -4,18 +4,13 @@ package org.forum.generated.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SubscriptionCallback;
@@ -26,7 +21,6 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This class contains the methods that allows the execution of the subscriptions that are defined in the Subscription
@@ -52,71 +46,16 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(SubscriptionExecutor.class);
 
-	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
-	GraphqlUtils graphqlUtils = new GraphqlUtils();
+	@Autowired
+	GraphqlClientUtils graphqlClientUtils;
 
 	@Autowired
-	@Qualifier("graphQLConfiguration")
-	GraphQLConfiguration graphQLConfiguration;
+	GraphQlClient graphQlClient;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
 	 */
-	@Autowired
 	public SubscriptionExecutor() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: http://my.server.com/graphql
-	 * 
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 */
-	public SubscriptionExecutor(String graphqlEndpoint) {
-		this.graphQLConfiguration = new GraphQLConfiguration(graphqlEndpoint);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
-	 * http ones.<BR/>
-	 * For example: https://my.server.com/graphql<BR/>
-	 * <BR/>
-	 * {@link SSLContext} and {@link HostnameVerifier} are regular Java stuff. You'll find lots of documentation on the
-	 * web. The StarWars sample is based on the <A HREF=
-	 * "http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https">http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https</A>
-	 * blog. But this sample implements a noHostVerification, which of course, is the simplest but the safest way to go.
-	 * 
-	 * @param graphqlEndpoint
-	 *            the https URI for the GraphQL endpoint
-	 * @param sslContext
-	 * @param hostnameVerifier
-	 */
-	@SuppressWarnings("deprecation")
-	public SubscriptionExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.graphQLConfiguration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client that gives the opportunity
-	 * to customise the REST request<BR/>
-	 * For example: http://my.server.com/graphql
-	 *
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 * @param client
-	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 */
-	@SuppressWarnings("deprecation")
-	public SubscriptionExecutor(String graphqlEndpoint, Client client) {
-		this.graphQLConfiguration = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -239,7 +178,7 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public SubscriptionClient execWithBindValues(ObjectResponse objectResponse,
 			SubscriptionCallback<?> subscriptionCallback, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
@@ -288,10 +227,9 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 		// If someone has a better idea to call this parameterized method, please come in.
 		switch (objectResponse.getSubscription().getFields().get(0).getName()) {
 		case "subscribeToNewPost":
-			return graphQLConfiguration.getQueryExecutor().execute(objectResponse, parameters,
+			return objectResponse.exec(parameters,
 					(SubscriptionCallback<org.forum.generated.Post>) subscriptionCallback,
-					org.forum.generated.Subscription.class,
-					org.forum.generated.Post.class);
+					org.forum.generated.Subscription.class, org.forum.generated.Post.class);
 		default:
 			throw new GraphQLRequestExecutionException(
 					"Unexpected field name: " + objectResponse.getSubscription().getFields().get(0).getName());
@@ -350,7 +288,7 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class);
 	}
 
 	/**
@@ -366,9 +304,7 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(graphQLConfiguration);
-		return ret;
+		return new GraphQLRequest(graphQlClient, fullRequest);
 	}
 
 	/**
@@ -425,8 +361,8 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public SubscriptionClient subscribeToNewPostWithBindValues(String queryResponseDef,
-			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback,
-			java.lang.String boardName, Map<String, Object> parameters)
+			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback, java.lang.String boardName,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing subscription 'subscribeToNewPost': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getSubscribeToNewPostResponseBuilder().withQueryResponseDef(queryResponseDef)
@@ -487,9 +423,8 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public SubscriptionClient subscribeToNewPost(String queryResponseDef,
-			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback,
-			java.lang.String boardName, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback, java.lang.String boardName,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing subscription 'subscribeToNewPost'. queryResponseDef is '{}'", queryResponseDef);
 		ObjectResponse objectResponse = getSubscribeToNewPostResponseBuilder().withQueryResponseDef(queryResponseDef)
 				.build();
@@ -550,8 +485,8 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public SubscriptionClient subscribeToNewPostWithBindValues(ObjectResponse objectResponse,
-			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback,
-			java.lang.String boardName, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback, java.lang.String boardName,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing subscription 'subscribeToNewPost' with parameters: {} ", boardName);
 		} else if (logger.isDebugEnabled()) {
@@ -562,8 +497,7 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("subscriptionSubscribeToNewPostBoardName", boardName);
 
-		return graphQLConfiguration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
-				org.forum.generated.Subscription.class,
+		return objectResponse.exec(parameters, subscriptionCallback, org.forum.generated.Subscription.class,
 				org.forum.generated.Post.class);
 	}
 
@@ -624,8 +558,8 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	public SubscriptionClient subscribeToNewPost(ObjectResponse objectResponse,
-			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback,
-			java.lang.String boardName, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+			SubscriptionCallback<org.forum.generated.Post> subscriptionCallback, java.lang.String boardName,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing subscription 'subscribeToNewPost' with bind variables: ");
@@ -646,8 +580,7 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("subscriptionSubscribeToNewPostBoardName", boardName);
 
-		return graphQLConfiguration.getQueryExecutor().execute(objectResponse, parameters, subscriptionCallback,
-				org.forum.generated.Subscription.class,
+		return objectResponse.exec(parameters, subscriptionCallback, org.forum.generated.Subscription.class,
 				org.forum.generated.Post.class);
 	}
 
@@ -660,8 +593,8 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getSubscribeToNewPostResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "subscribeToNewPost",
-				RequestType.subscription,
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class,
+				"subscribeToNewPost", RequestType.subscription,
 				InputParameter.newBindParameter("", "boardName", "subscriptionSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
@@ -678,11 +611,9 @@ public class SubscriptionExecutor implements GraphQLSubscriptionExecutor {
 	 */
 	public GraphQLRequest getSubscribeToNewPostGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeToNewPost",
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "subscribeToNewPost",
 				InputParameter.newBindParameter("", "boardName", "subscriptionSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
-		ret.setInstanceConfiguration(graphQLConfiguration);
-		return ret;
 	}
 
 }

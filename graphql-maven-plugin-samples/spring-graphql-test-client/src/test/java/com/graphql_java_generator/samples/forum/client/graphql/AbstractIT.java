@@ -13,13 +13,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.samples.forum.client.Queries;
 import org.forum.generated.Board;
 import org.forum.generated.Member;
 import org.forum.generated.MemberInput;
@@ -29,10 +22,17 @@ import org.forum.generated.PostInput;
 import org.forum.generated.Topic;
 import org.forum.generated.TopicInput;
 import org.forum.generated.TopicPostInput;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.client.Queries;
 
 /**
- * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL Forum server, see
- * the pom.xml file for details.
+ * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL Forum server, see the
+ * pom.xml file for details.
  * 
  * @author etienne-sf
  */
@@ -170,8 +170,7 @@ abstract class AbstractIT {
 		Board board = queries.createBoard(name, publiclyAvailable);
 
 		// Verification
-		assertEquals(name + " (Overriden DataFetcher)", board.getName(),
-				"The DataFetcher for this mutation should have been overriden. See the CustomGraphQLDataFetchers class in the Forum server sample.");
+		assertEquals(name, board.getName());
 		//
 		List<Board> after = queries.boardsAndTopicsWithFieldParameter(cal.getTime());
 		assertEquals(before.size() + 1, after.size());
@@ -238,7 +237,8 @@ abstract class AbstractIT {
 				() -> queries.createPosts(list));
 
 		// Verification
-		assertTrue(e.getMessage().contains("Spamming is forbidden"));
+		assertTrue(e.getMessage().contains("Spamming is forbidden"),
+				"The exception message should contain 'Spamming is forbidden', but is: " + e.getMessage());
 	}
 
 	@Test
@@ -300,7 +300,8 @@ abstract class AbstractIT {
 				() -> queries.createPosts(list));
 
 		// Verification
-		assertTrue(e.getMessage().contains("Spamming is forbidden"));
+		assertTrue(e.getMessage().contains("Spamming is forbidden"),
+				"The exception message should contain 'Spamming is forbidden', but is: " + e.getMessage());
 	}
 
 	private TopicPostInput getTopicPostInput(Member author, String content, Date date, boolean publiclyAvailable,

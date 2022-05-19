@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
@@ -124,10 +123,6 @@ class SubscriptionNewTestIT {
 		logger.debug("Creating the post, for which we should receive the notification");
 		createdPost = mutationType.createPost(createPostRequest, postInput1);
 
-		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
-		callback1.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
-		callback2.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
-
 		// Verification
 		logger.trace("postInput1: {}", postInput1);
 		logger.trace("createdPost: {}", createdPost);
@@ -151,11 +146,6 @@ class SubscriptionNewTestIT {
 		callback2.lastReceivedMessage = null;
 
 		createdPost = mutationType.createPost(createPostRequest, postInput2);
-
-		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
-		callback1.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
-		callback2.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
-		callback3.latchNewMessage.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 
 		// Verification
 		logger.trace("Checking callback1");

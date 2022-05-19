@@ -3,8 +3,6 @@
  */
 package com.graphql_java_generator.samples.forum.client.subscription;
 
-import java.util.concurrent.CountDownLatch;
-
 import org.forum.generated.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,22 +27,18 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 	String lastReceivedClose = null;
 	Throwable lastReceivedError = null;
 
-	CountDownLatch latchNewMessage = new CountDownLatch(1);
-
 	@Override
 	public void onConnect() {
 		this.connected = true;
-		logger.debug("The 'subscribeToNewPostWithBindValues' subscription is now active (the web socket is connected)");
+		logger.debug("'onConnect' received for the 'subscribeToNewPost' subscription");
 	}
 
 	@Override
 	public void onMessage(Post t) {
-		logger.debug(
-				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post {} ",
-				t);
+		logger.debug("Received a notification from the 'subscribeToNewPost' subscription, for this post {} ", t);
 		nbReceivedMessages += 1;
 		lastReceivedMessage = t;
-		latchNewMessage.countDown();
+
 		// Do something useful with it
 	}
 

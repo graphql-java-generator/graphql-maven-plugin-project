@@ -5,20 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphQLQueryExecutor;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.request.InputParameter;
@@ -27,7 +22,6 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * This class contains the methods that allows the execution of the queries or mutations that are defined in the Query
@@ -55,82 +49,16 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(QueryExecutor.class);
 
-	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
-	GraphqlUtils graphqlUtils = new GraphqlUtils();
+	@Autowired
+	GraphqlClientUtils graphqlClientUtils;
 
 	@Autowired
-	@Qualifier("graphQLConfiguration")
-	GraphQLConfiguration graphQLConfiguration;
+	GraphQlClient graphQlClient;
 
 	/**
 	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
 	 */
-	@Autowired
 	public QueryExecutor() {
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects a GraphQLConfiguration instance. This is useful for non-Spring frameworks like
-	 * Micronaut.
-	 *
-	 * @param configuration
-	 *            an already built GraphQLConfiguration instance
-	 */
-	public QueryExecutor(GraphQLConfiguration configuration) {
-		this.graphQLConfiguration = configuration;
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: http://my.server.com/graphql
-	 * 
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 */
-	public QueryExecutor(String graphqlEndpoint) {
-		this(new GraphQLConfiguration(graphqlEndpoint));
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
-	 * http ones.<BR/>
-	 * For example: https://my.server.com/graphql<BR/>
-	 * <BR/>
-	 * {@link SSLContext} and {@link HostnameVerifier} are regular Java stuff. You'll find lots of documentation on the
-	 * web. The StarWars sample is based on the <A HREF=
-	 * "http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https">http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https</A>
-	 * blog. But this sample implements a noHostVerification, which of course, is the simplest but the safest way to go.
-	 * 
-	 * @param graphqlEndpoint
-	 *            the https URI for the GraphQL endpoint
-	 * @param sslContext
-	 * @param hostnameVerifier
-	 */
-	@SuppressWarnings("deprecation")
-	public QueryExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.graphQLConfiguration = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client that gives the opportunity
-	 * to customize the REST request<BR/>
-	 * For example: http://my.server.com/graphql
-	 *
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 * @param client
-	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 */
-	@SuppressWarnings("deprecation")
-	public QueryExecutor(String graphqlEndpoint, Client client) {
-		this.graphQLConfiguration = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -170,8 +98,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public org.forum.generated.Query execWithBindValues(String queryResponseDef,
-			Map<String, Object> parameters)
+	public org.forum.generated.Query execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query {} ", queryResponseDef);
 		ObjectResponse objectResponse = getResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -251,8 +178,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public org.forum.generated.Query execWithBindValues(ObjectResponse objectResponse,
-			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public org.forum.generated.Query execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			if (parameters == null) {
 				logger.trace("Executing query without parameters");
@@ -274,8 +201,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return graphQLConfiguration.getQueryExecutor().execute(objectResponse, parameters,
-				org.forum.generated.Query.class);
+		return objectResponse.exec(org.forum.generated.Query.class, parameters);
 	}
 
 	/**
@@ -314,8 +240,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public org.forum.generated.Query exec(ObjectResponse objectResponse,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public org.forum.generated.Query exec(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		return execWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
 
@@ -328,7 +254,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class);
 	}
 
 	/**
@@ -344,9 +270,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(graphQLConfiguration);
-		return ret;
+		return new GraphQLRequest(graphQlClient, fullRequest);
 	}
 
 	/**
@@ -384,8 +308,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "boards", graphQLTypeSimpleName = "Board", javaClass = org.forum.generated.Board.class)
-	public List<org.forum.generated.Board> boardsWithBindValues(String queryResponseDef,
-			Map<String, Object> parameters)
+	public List<org.forum.generated.Board> boardsWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query 'boards': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -424,8 +347,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "boards", graphQLTypeSimpleName = "Board", javaClass = org.forum.generated.Board.class)
-	public List<org.forum.generated.Board> boards(String queryResponseDef,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public List<org.forum.generated.Board> boards(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query 'boards': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getBoardsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return boardsWithBindValues(objectResponse, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
@@ -477,8 +400,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getBoards();
 	}
@@ -519,8 +441,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "boards", graphQLTypeSimpleName = "Board", javaClass = org.forum.generated.Board.class)
-	public List<org.forum.generated.Board> boards(ObjectResponse objectResponse,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public List<org.forum.generated.Board> boards(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing query 'boards' with bind variables: ");
@@ -540,8 +462,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getBoards();
 	}
@@ -554,7 +475,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getBoardsResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "boards", RequestType.query);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "boards",
+				RequestType.query);
 	}
 
 	/**
@@ -568,7 +490,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getBoardsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "boards");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "boards");
 	}
 
 	/**
@@ -698,8 +620,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getNbBoards();
 	}
@@ -761,8 +682,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getNbBoards();
 	}
@@ -776,7 +696,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getNbBoardsResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "nbBoards",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "nbBoards",
 				RequestType.query);
 	}
 
@@ -791,7 +711,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getNbBoardsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "nbBoards");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "nbBoards");
 	}
 
 	/**
@@ -831,8 +751,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "topics", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public List<org.forum.generated.Topic> topicsWithBindValues(String queryResponseDef,
-			java.lang.String boardName, Map<String, Object> parameters)
+	public List<org.forum.generated.Topic> topicsWithBindValues(String queryResponseDef, java.lang.String boardName,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query 'topics': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getTopicsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -873,9 +793,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "topics", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public List<org.forum.generated.Topic> topics(String queryResponseDef,
-			java.lang.String boardName, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public List<org.forum.generated.Topic> topics(String queryResponseDef, java.lang.String boardName,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query 'topics': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getTopicsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return topicsWithBindValues(objectResponse, boardName,
@@ -931,8 +850,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("queryTopicsBoardName", boardName);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getTopics();
 	}
@@ -975,8 +893,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "topics", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public List<org.forum.generated.Topic> topics(ObjectResponse objectResponse,
-			java.lang.String boardName, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public List<org.forum.generated.Topic> topics(ObjectResponse objectResponse, java.lang.String boardName,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing query 'topics' with bind variables: ");
@@ -997,8 +915,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("queryTopicsBoardName", boardName);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getTopics();
 	}
@@ -1011,9 +928,9 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getTopicsResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "topics", RequestType.query,
-				InputParameter.newBindParameter("", "boardName", "queryTopicsBoardName", InputParameterType.MANDATORY,
-						"String", true, 0, false));
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "topics",
+				RequestType.query, InputParameter.newBindParameter("", "boardName", "queryTopicsBoardName",
+						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
 	/**
@@ -1027,8 +944,9 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "topics", InputParameter.newBindParameter("",
-				"boardName", "queryTopicsBoardName", InputParameterType.MANDATORY, "String", true, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "topics",
+				InputParameter.newBindParameter("", "boardName", "queryTopicsBoardName", InputParameterType.MANDATORY,
+						"String", true, 0, false));
 	}
 
 	/**
@@ -1070,8 +988,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "findTopics", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public List<org.forum.generated.Topic> findTopicsWithBindValues(String queryResponseDef,
-			java.lang.String boardName, List<java.lang.String> keyword, Map<String, Object> parameters)
+	public List<org.forum.generated.Topic> findTopicsWithBindValues(String queryResponseDef, java.lang.String boardName,
+			List<java.lang.String> keyword, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query 'findTopics': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getFindTopicsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -1114,8 +1032,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "findTopics", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public List<org.forum.generated.Topic> findTopics(String queryResponseDef,
-			java.lang.String boardName, List<java.lang.String> keyword, Object... paramsAndValues)
+	public List<org.forum.generated.Topic> findTopics(String queryResponseDef, java.lang.String boardName,
+			List<java.lang.String> keyword, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query 'findTopics': {} ", queryResponseDef);
 		ObjectResponse objectResponse = getFindTopicsResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -1162,9 +1080,9 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "findTopics", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public List<org.forum.generated.Topic> findTopicsWithBindValues(
-			ObjectResponse objectResponse, java.lang.String boardName, List<java.lang.String> keyword,
-			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public List<org.forum.generated.Topic> findTopicsWithBindValues(ObjectResponse objectResponse,
+			java.lang.String boardName, List<java.lang.String> keyword, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing query 'findTopics' with parameters: {}, {} ", boardName, keyword);
 		} else if (logger.isDebugEnabled()) {
@@ -1176,8 +1094,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		parameters.put("queryFindTopicsBoardName", boardName);
 		parameters.put("queryFindTopicsKeyword", keyword);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getFindTopics();
 	}
@@ -1222,9 +1139,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "findTopics", graphQLTypeSimpleName = "Topic", javaClass = org.forum.generated.Topic.class)
-	public List<org.forum.generated.Topic> findTopics(ObjectResponse objectResponse,
-			java.lang.String boardName, List<java.lang.String> keyword, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
+	public List<org.forum.generated.Topic> findTopics(ObjectResponse objectResponse, java.lang.String boardName,
+			List<java.lang.String> keyword, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing query 'findTopics' with bind variables: ");
@@ -1246,8 +1162,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		parameters.put("queryFindTopicsBoardName", boardName);
 		parameters.put("queryFindTopicsKeyword", keyword);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.getFindTopics();
 	}
@@ -1261,7 +1176,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder getFindTopicsResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "findTopics",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "findTopics",
 				RequestType.query,
 				InputParameter.newBindParameter("", "boardName", "queryFindTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
@@ -1280,7 +1195,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getFindTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "findTopics",
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "findTopics",
 				InputParameter.newBindParameter("", "boardName", "queryFindTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
 				InputParameter.newBindParameter("", "keyword", "queryFindTopicsKeyword", InputParameterType.OPTIONAL,
@@ -1322,8 +1237,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = org.forum.generated.__Schema.class)
-	public org.forum.generated.__Schema __schemaWithBindValues(String queryResponseDef,
-			Map<String, Object> parameters)
+	public org.forum.generated.__Schema __schemaWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query '__schema': {} ", queryResponseDef);
 		ObjectResponse objectResponse = get__schemaResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -1362,8 +1276,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = org.forum.generated.__Schema.class)
-	public org.forum.generated.__Schema __schema(String queryResponseDef,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public org.forum.generated.__Schema __schema(String queryResponseDef, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query '__schema': {} ", queryResponseDef);
 		ObjectResponse objectResponse = get__schemaResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return __schemaWithBindValues(objectResponse,
@@ -1416,8 +1330,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.get__schema();
 	}
@@ -1458,8 +1371,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "__schema", graphQLTypeSimpleName = "__Schema", javaClass = org.forum.generated.__Schema.class)
-	public org.forum.generated.__Schema __schema(ObjectResponse objectResponse,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public org.forum.generated.__Schema __schema(ObjectResponse objectResponse, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing query '__schema' with bind variables: ");
@@ -1479,8 +1392,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.get__schema();
 	}
@@ -1494,7 +1406,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder get__schemaResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "__schema",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "__schema",
 				RequestType.query);
 	}
 
@@ -1509,7 +1421,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__schemaGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__schema");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__schema");
 	}
 
 	/**
@@ -1549,8 +1461,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = org.forum.generated.__Type.class)
-	public org.forum.generated.__Type __typeWithBindValues(String queryResponseDef,
-			java.lang.String name, Map<String, Object> parameters)
+	public org.forum.generated.__Type __typeWithBindValues(String queryResponseDef, java.lang.String name,
+			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query '__type': {} ", queryResponseDef);
 		ObjectResponse objectResponse = get__typeResponseBuilder().withQueryResponseDef(queryResponseDef).build();
@@ -1591,8 +1503,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = org.forum.generated.__Type.class)
-	public org.forum.generated.__Type __type(String queryResponseDef, java.lang.String name,
-			Object... paramsAndValues) throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	public org.forum.generated.__Type __type(String queryResponseDef, java.lang.String name, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		logger.debug("Executing query '__type': {} ", queryResponseDef);
 		ObjectResponse objectResponse = get__typeResponseBuilder().withQueryResponseDef(queryResponseDef).build();
 		return __typeWithBindValues(objectResponse, name,
@@ -1636,8 +1548,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = org.forum.generated.__Type.class)
-	public org.forum.generated.__Type __typeWithBindValues(ObjectResponse objectResponse,
-			java.lang.String name, Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+	public org.forum.generated.__Type __typeWithBindValues(ObjectResponse objectResponse, java.lang.String name,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Executing query '__type' with parameters: {} ", name);
 		} else if (logger.isDebugEnabled()) {
@@ -1648,8 +1560,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("query__typeName", name);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.get__type();
 	}
@@ -1692,8 +1603,8 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 *             GraphQL server or if the server response can't be parsed
 	 */
 	@GraphQLNonScalar(fieldName = "__type", graphQLTypeSimpleName = "__Type", javaClass = org.forum.generated.__Type.class)
-	public org.forum.generated.__Type __type(ObjectResponse objectResponse,
-			java.lang.String name, Object... paramsAndValues) throws GraphQLRequestExecutionException {
+	public org.forum.generated.__Type __type(ObjectResponse objectResponse, java.lang.String name,
+			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
 			StringBuffer sb = new StringBuffer();
 			sb.append("Executing query '__type' with bind variables: ");
@@ -1714,8 +1625,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("query__typeName", name);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.get__type();
 	}
@@ -1729,9 +1639,9 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder get__typeResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "__type", RequestType.query,
-				InputParameter.newBindParameter("", "name", "query__typeName", InputParameterType.MANDATORY, "String",
-						true, 0, false));
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "__type",
+				RequestType.query, InputParameter.newBindParameter("", "name", "query__typeName",
+						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
 	/**
@@ -1745,8 +1655,9 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__type", InputParameter.newBindParameter("",
-				"name", "query__typeName", InputParameterType.MANDATORY, "String", true, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__type",
+				InputParameter.newBindParameter("", "name", "query__typeName", InputParameterType.MANDATORY, "String",
+						true, 0, false));
 	}
 
 	/**
@@ -1877,8 +1788,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.get__typename();
 	}
@@ -1940,8 +1850,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		org.forum.generated.Query ret = graphQLConfiguration.getQueryExecutor()
-				.execute(objectResponse, parameters, org.forum.generated.Query.class);
+		org.forum.generated.Query ret = objectResponse.exec(org.forum.generated.Query.class, parameters);
 
 		return ret.get__typename();
 	}
@@ -1955,7 +1864,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 */
 	public com.graphql_java_generator.client.request.Builder get__typenameResponseBuilder()
 			throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "__typename",
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "__typename",
 				RequestType.query);
 	}
 
@@ -1970,7 +1879,7 @@ public class QueryExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__typename");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__typename");
 	}
 
 }

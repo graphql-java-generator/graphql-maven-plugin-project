@@ -1,0 +1,112 @@
+This files describes the changes that have been brought to the generated code, and their possible impacts on existing project that uses ths graphql-generator plugin
+
+# TODO
+
+List of things that must or should be done before the first release:
+* Manage DataLoader
+* Choose between Servlet and WebFlux application (WebFlux seems more modern)
+* Remove the spring-mvc sub-project
+* Change the way the `CustomBeans` bean is done: it adds a Human instance into the extensions response map, associated to the key "aValueToTestTheExtensionsField"
+* Remove WebSocket management from the plugin (everything is managed by spring)
+* Remove the spring milestones maven repositories
+* Allows not to use the generated DataFetchers. But the, what's the use of the plugin ? How to map the GraphQL requests to the POJO ?
+* What should be done with DataLoaders?
+* Remove the `GraphQLDataFetchers` class (and its template and template declaration)
+
+# To Document
+
+* The default location for the graphql schemas is now the src/main/resources/graphql/ folder
+* The default endpoint is /graphql (like before). The way to change it is now the spring.graphql.path property (in application.properties or application.yml)
+* To allow web socket support (mandatory for subscription) a line like this must be added in the `application.properties` file: `spring.graphql.websocket.path=/graphql`
+* The support for WebSocket is off by default.
+    * If Servlet application: the spring-boot-starter-websocket must be added, as a dependency
+    * For WebFlux: not additional dependency
+    * For both: the endpoint must be defined in the spring.graphql.websocket.path
+* RSocket is also supported (see the spring-graphql doc for more information on how to do this)
+* It's no more possible to override the `GraphQLDataFetchers` spring component.
+    * If the default data fetchers doesn't respect your needs, check the Spring Controllers
+* Exception may be managed by one or more `DataFetcherExceptionResolver` in a list of `graphqlGraphQLError`
+    * See sample: `CustomExceptionHandling` and its registration in `CustomExceptionHandlingRegistring`
+* `GraphiQL` is active by default in spring-graphql, at /graphiql. It can be turned off with the `spring.graphql.graphiql.enabled` property
+* The `spring.graphql.schema.printer.enabled` property allows to expose the schema file in text format at `/graphql/schema`
+* Removed these dependencies :
+    * For server mode:
+        * activation and spring-boot-starter: they are no more directly needd.
+        * graphql-java-spring-mvc (the applications are now web flux apps)
+        * spring-boot-starter-websocket (the Web Socket protocol is managed directly by `spring-boot-starter-graphql`)
+    * For client mode:
+        * TODO: document it
+
+
+# Step to remove the DataFetchers
+
+If you created a GraphQL server, based on 1.x versions of the plugin, the only link with the plugin's generated code is the `DataFetcherDelegate` implementations. You can keep it as it was with 1.x versions of the plugin: it will still work as before.
+
+You can also broke this link, and change your `DataFetcherDelegate` implementations to Spring controllers. This allows to use more powerful functionalties.
+
+The steps to do this are:
+* TODO: plugin parameter to not generate the dataFetcherDelegate
+* There is a work for each of your `DataFetcherDelegate` classes:
+    * You should rename it, as the naming convention in spring-graphql is XxxController, where Xxx is the name of the relevant GraphQL type (as defined in your GraphQL schema)
+    * Mark it with the `@Controller` Spring annotation (otherwise, it is just ignored by Spring)
+    * For `DataFetcherDelegate` classes that are not the Query, Mutation or Subscription one: mark it with either 
+        * `@SchemaMapping` (in which case the XxxController naming convention should be obeyed, but you also need to check the `@SchemaMapping` on the methods)
+        * `@SchemaMapping(typeName = "Xxx")` where Xxxx is the GraphQL type's name
+    * For classes that contain a `batchLoader` or a `unorderedReturnBatchLoader`, you must register a DataLoader
+        * TODO : Document howto register a DataLoader (or to use the `@BatchMapping` Spring annotation)
+    * 
+    * TODO finish here
+* Mark all your 
+
+# Current step
+
+TODO: §4.1.1: find schema files
+
+# GraphQLServerMain
+
+No more bean declaration. 
+This class now only contains the main method.
+
+# CustomGraphQLController
+
+This class is no longer used (along with all the graphql-java-spring modules)
+
+# RuntimeWiring
+
+The existing code generates a `GraphQLWiring` class, with various method that could be overriden to change the default runtime wiring.
+
+spring-graphql introduces a new notion: `RuntimeWiringConfigurer`. Spring Boot will find all Spring bean that implements the `RuntimeWiringConfigurer` interface, and call their `configure()` method.
+
+The main update are:
+* The `GraphQLWiring` class implements the `RuntimeWiringConfigurer` class.
+* The only use of this class is to declare the scalar implementations.
+* DataFetchers are now found by Spring Boot, by scanning the `@Controller` annotation
+* TODO : and TypeResolvers?
+
+
+TODO: Check if `GraphQLWiring` can be overriden Probably not. So how can one override the default type resolving stuff. (first step: check what was ask on this subject, that is: the reason why this has been structured this way. And does a test exist for this). See CustomGraphQLWiring
+
+TODO explain CustomGraphQLWiring
+
+
+# DataLoader
+
+TODO: finish the job
+* Use the @BatchMapping on a `default` interface method
+* "By default, the field name defaults to the method name, while the type name defaults to the simple class name of the input List element type. Both can be customized through annotation attributes."
+    * To manage cases where the method name is not the field name (when a field name doesn't respect the java naming convention), then the actual field's name should be written in the @BatchMapping annotation
+
+# TypeResolver
+
+The `ClassNameTypeResolver` is the default `TypeResolver` for interfaces and unions. It tries to match the simple class name of the value to a GraphQL Object Type and if it is not successful, it also navigates its super types including base classes and interfaces, looking for a match.
+
+In the 1.x release, the `TypeResolver`s are defined in the `GraphQLWiring` generated class. This allows to manage GraphQL Object Type names that dosn't match Java naming convention (for instance, when using Java keywords). But this would be quite unlikey to happen.
+It works well when the `DataFether`s signatures are generated by the code: their return is directly managed by the plugin's code.
+
+On the other side, with spring-graphql, it is possible to creates one's own DataFetcher that may return java datatype that are not match as well with GraphQL Object Type's name. In this case, the Spring Boot implementation would be better.
+
+TODO: one of the above solutions. 2 seems the best one.
+TODO: 1) add a parameter to generate them ??
+TODO: 2) no more definition of `TypeResolver` in the generated code, and add a doc to explain how to do it when it is necessary. 
+TODO:       This allows to entirely remove the `GraphQLWiring` class, and so let's the developper free to do what he/she wants there.
+TODO: 3) possibly just generate it when the java name is different from the GraphQL Object Type's name (but how to allow the developper to override it?).

@@ -3,10 +3,6 @@
  */
 package com.graphql_java_generator.client;
 
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-
 /**
  * This interface will receive the notification for each message that comes from a subscription. The message sent by the
  * server is mapped on the T class.
@@ -25,7 +21,10 @@ public interface SubscriptionCallback<T> {
 
 	/**
 	 * This method is called once the subscription has been submitted to the GraphQL server. It's an information call:
-	 * no special action is expected.
+	 * no special action is expected.<br/>
+	 * Please note that, since 2.x version, the plugin has no access to the Web Socket connection information. So it is
+	 * not possible to know, when the subscription is really active (that is: from when the event will actually be sent
+	 * to the client)
 	 */
 	public void onConnect();
 
@@ -43,7 +42,9 @@ public interface SubscriptionCallback<T> {
 	 * action is expected.
 	 * 
 	 * @param statusCode
+	 *            since 2.0 release, this parameter is always 0
 	 * @param reason
+	 *            since 2.0 release, this parameter is always null
 	 * @see {@link OnWebSocketClose}
 	 */
 	public void onClose(int statusCode, String reason);

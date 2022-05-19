@@ -16,26 +16,15 @@
 	<dependencies>
 		<!-- Dependencies for GraphQL -->
 		<dependency>
-			<groupId>com.graphql-java-generator</groupId>
-			<artifactId>graphql-java-spring-mvc</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-graphql</artifactId>
 		</dependency>
+
 
 		<!-- Other dependencies -->
 		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 
 		<!-- When building from the gradle plugin, this next dependency is mandatory for code execution -->

@@ -26,25 +26,6 @@ public class SubscriptionRequests {
 	@Autowired
 	SubscriptionExecutor subscriptionTypeExecutor;
 
-	/** The constructor used, when this class is loaded as a Spring bean (useless if there is no other constructor) */
-	@Autowired
-	public SubscriptionRequests() {
-		// No action.
-	}
-
-	/**
-	 * The constructor to use, when not in a Spring context. To remove, when in a Spring app
-	 * 
-	 * @param url
-	 *            The url for the GraphQL endpoint
-	 * @param urlSubscription
-	 *            The url for the GraphQL subscription endpoint (may be different, when the server is under java)
-	 */
-	public SubscriptionRequests(String url) {
-		mutationTypeExecutor = new MutationExecutor(url);
-		subscriptionTypeExecutor = new SubscriptionExecutor(url);
-	}
-
 	public void execSubscription()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, IOException {
 		// Preparation
@@ -66,29 +47,6 @@ public class SubscriptionRequests {
 		SubscriptionClient subscriptionClient = subscriptionTypeExecutor.subscribeToNewPost(subscriptionRequest,
 				postSubscriptionCallback, "Board name 1");
 
-		// For this test, we need to be sure that the subscription is active, before creating the post (that we will
-		// receive a notification about). 3s: that's long, but my PC is so slow from time to time... :(
-		final int TIMEOUT1 = 3000;
-		for (int i = 0; i < TIMEOUT1 / 10; i += 1) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e.getMessage(), e);
-			}
-			if (postSubscriptionCallback.connected) {
-				break;
-			}
-		}
-
-		// Let's check that everything is ready
-		if (!postSubscriptionCallback.connected) {
-			throw new RuntimeException("The subscription should be active");
-		}
-
-		System.out.println(
-				"Creating a post (for which we expect a notification) from this postInput: " + postInput.toString());
-		mutationTypeExecutor.createPost(createPostRequest, postInput);
-
 		//////////////////////////////////////////////////////////////////////////////////////
 		// Let's check that we've received the expected notification, for this post creation
 
@@ -97,10 +55,15 @@ public class SubscriptionRequests {
 		// (see the callback implementation in the PostSubscriptionCallback class)
 		Post notifiedPost = null;
 		// Let's wait 10s max, until the connection is active
-		final int TIMEOUT2 = 10;
-		for (int i = 0; i < TIMEOUT2 * 1000 / 10; i += 1) {
+		final int TIMEOUT2 = 10;// In seconds
+		final int STEP = 50;// In ms
+		for (int i = 0; i < TIMEOUT2 * 1000 / STEP; i += 1) {
 			try {
-				Thread.sleep(10);
+				Thread.sleep(STEP);
+
+				// Let's create a post, and store it in a map: we'll display the created post that matches the first
+				// received notification (as we can't guess when the subscription is really active on server side)
+				mutationTypeExecutor.createPost(createPostRequest, postInput);
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}

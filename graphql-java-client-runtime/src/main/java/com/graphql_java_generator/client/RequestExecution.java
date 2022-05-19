@@ -6,9 +6,9 @@ package com.graphql_java_generator.client;
 import java.io.IOException;
 import java.util.Map;
 
-import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -21,6 +21,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  * 
  * @author etienne-sf
  */
+@Deprecated
 public interface RequestExecution {
 
 	Marker GRAPHQL_MARKER = MarkerFactory.getMarker("GRAPHQL");
