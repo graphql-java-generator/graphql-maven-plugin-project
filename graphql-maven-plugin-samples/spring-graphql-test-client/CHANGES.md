@@ -1,5 +1,15 @@
 This files describes the changes that have been brought to the generated code, and their possible impacts on existing project that uses ths graphql-generator plugin
 
+# Done
+
+* Report update on these templates:
+    * GraphQLRequest.java
+    * client_query_mutation_executor.vm.java
+    * client_query_mutation_subscription_rootResponse.vm.java
+    * client_subscription_executor.vm.java
+    * GraphQLJavaGeneratorAutoConfiguration
+
+
 # TODO
 
 List of things that must or should be done before the first release:
@@ -21,10 +31,16 @@ List of things that must or should be done before the first release:
     * list
     * object
 * Optimize the `GraphQLObjectMapper.treeToValue(Map, class)` and `GraphQLObjectMapper.treeToValue(List, class)`
+* Remove the `GraphQLRepositoryInvocationHandlerFirstTest` class, as soon as this use case (GraphQLRepository in non spring app) is confirmed to be useless.<BR/>
+    * Then merge `AbstractGraphQLRepositoryInvocationHandlerTest` and `GraphQLRepositoryInvocationHandlerSecondTest`
 
 # To Document
 
-* nothing ??
+* `WebClient` is now the minimal one. It must be overriden, to manage:
+    * `CodecCustomizer`
+    * `HttpClient`
+    * `ServerOAuth2AuthorizedClientExchangeFilterFunction`
+    * _(or make it no more minimal, like before?)
 
 
 # Query and Mutation

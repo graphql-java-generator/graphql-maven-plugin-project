@@ -27,7 +27,6 @@ import com.graphql_java_generator.domain.client.starwars.QueryType;
 public class ManualTest_StarWars {
 
 	String graphqlEndpoint = "https://localhost:8443/graphql";
-	RequestExecution executor;
 	QueryType queryType;
 
 	public static void main(String[] args) throws Exception {
@@ -35,7 +34,6 @@ public class ManualTest_StarWars {
 	}
 
 	public void exec() throws Exception {
-		executor = new RequestExecutionImpl(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier());
 		queryType = new QueryType(graphqlEndpoint, getSslContext(), new NoOpHostnameVerifier());
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////

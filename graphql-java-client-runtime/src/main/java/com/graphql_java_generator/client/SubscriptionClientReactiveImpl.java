@@ -17,7 +17,7 @@ import reactor.core.publisher.Flux;
  * 
  * @author etienne-sf
  */
-public class SubscriptionClientReactiveImpl<T> implements SubscriptionClient {
+public class SubscriptionClientReactiveImpl implements SubscriptionClient {
 
 	/** The {@link Disposable} obtained when subscribing to the {@link #flux} */
 	final Disposable disposable;

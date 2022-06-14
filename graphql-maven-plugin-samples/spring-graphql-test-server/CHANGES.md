@@ -1,5 +1,14 @@
 This files describes the changes that have been brought to the generated code, and their possible impacts on existing project that uses ths graphql-generator plugin
 
+# Done
+
+* Report update on these templates:
+    * (to be finished) Remove BatchLoaderDelegateXxxxImpl (server_BatchLoaderDelegateImpl.vm.java)
+    * (to be finished) server_EntityController.vm.java
+        * Needs generateCodeDocumentParser.batchLoaders
+    * (to be finished) No more GraphQLDataFetchers, and impact on the code parsing and generation
+
+
 # TODO
 
 List of things that must or should be done before the first release:

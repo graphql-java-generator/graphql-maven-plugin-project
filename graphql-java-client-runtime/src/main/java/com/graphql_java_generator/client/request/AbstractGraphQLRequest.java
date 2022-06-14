@@ -573,8 +573,8 @@ public abstract class AbstractGraphQLRequest {
 									subscriptionCallback.onMessage(null);
 								} else if (o instanceof List<?>) {
 									try {
-										subscriptionCallback
-												.onMessage(getGraphQLObjectMapper().treeToValue((List<?>) o, messageType));
+										subscriptionCallback.onMessage(
+												getGraphQLObjectMapper().treeToValue((List<?>) o, messageType));
 									} catch (JsonProcessingException e) {
 										throw new RuntimeException(e.getMessage(), e);
 									}
@@ -603,7 +603,7 @@ public abstract class AbstractGraphQLRequest {
 				.doOnComplete(() -> subscriptionCallback.onClose(0, null)) //
 		;
 
-		return new SubscriptionClientReactiveImpl<T>(flux.subscribe());
+		return new SubscriptionClientReactiveImpl(flux.subscribe());
 	}
 
 	/**

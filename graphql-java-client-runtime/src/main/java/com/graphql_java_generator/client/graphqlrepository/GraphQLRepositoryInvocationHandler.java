@@ -118,36 +118,9 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 	Map<Method, RegisteredMethod> registeredMethods = new HashMap<>();
 
 	/**
-	 * This constructor builds the instance from the given Spring ApplicationContext provides the query, mutation and
-	 * subscription that have been defined in the GraphQL schema. The mutation and subscription are optional in the
-	 * GraphQL schema, so these two executors may be null.
-	 * 
-	 * @param repositoryInterface
-	 *            The {@link GraphQLRepository} interface, that this {@link InvocationHandler} has to manage. It is
-	 *            mandatory.
-	 * @param ctx
-	 *            The Spring {@link ApplicationContext} that allows to retrieve the query, mutation and subscription
-	 *            executors
-	 * @throws GraphQLRequestPreparationException
-	 */
-	public GraphQLRepositoryInvocationHandler(Class<T> repositoryInterface, GraphQLQueryExecutor queryExecutor,
-			GraphQLMutationExecutor mutationExecutor, GraphQLSubscriptionExecutor subscriptionExecutor)
-			throws GraphQLRequestPreparationException {
-		this.repositoryInterface = repositoryInterface;
-		this.queryExecutor = queryExecutor;
-		this.mutationExecutor = mutationExecutor;
-		this.subscriptionExecutor = subscriptionExecutor;
-		// There is no check at this point, that the executors are the good one. It will be checked just after, in the
-		// createProxyInstance(): if the executors are not the good ones, then it will not be possible to match the
-		// repository methods to the executor methods
-
-		this.proxyInstance = createProxyInstance();
-	}
-
-	/**
-	 * This constructor builds the instance from the given Spring {@link ApplicationContext}: it extracts the query,
-	 * mutation and subscription executors that have been generated from the GraphQL schema. The mutation and
-	 * subscription are optional in the GraphQL schema, so these two executors may be null. <BR/>
+	 * Builds the instance from the given Spring {@link ApplicationContext}: it extracts the query, mutation and
+	 * subscription executors that have been generated from the GraphQL schema. The mutation and subscription are
+	 * optional in the GraphQL schema, so these two executors may be null. <BR/>
 	 * Note: when more than one GraphQL schema are used, a GraphQL Repository requests may be relative to only one
 	 * GraphQL schema. The {@link GraphQLRepository}s annotation must provide the queryExecutor of this GraphQL
 	 * schema.<BR/>
@@ -235,7 +208,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 		// All basic tests are Ok. Let's go
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// CREATION IF THE PROXY INSTANCE
+		// CREATION OF THE PROXY INSTANCE
 		@SuppressWarnings("unchecked")
 		Class<T>[] classes = (Class<T>[]) new Class<?>[] { repositoryInterface };
 		@SuppressWarnings("unchecked")

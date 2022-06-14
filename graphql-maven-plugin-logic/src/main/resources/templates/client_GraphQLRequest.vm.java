@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.graphql.client.GraphQlClient;
 
 import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.annotation.RequestType;
@@ -20,6 +21,7 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.request.QueryField;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 ## When seperateUtilityClasses is set to true, the current class is generated in the util subpackage.
 ## So we need to import the object.classSimpleName
@@ -46,7 +48,7 @@ public class GraphQLRequest extends ObjectResponse {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(GraphQLRequest.class);
 
-	final com.graphql_java_generator.util.GraphqlUtils graphqlUtils = new GraphqlUtils();
+	final GraphqlUtils graphqlUtils = new GraphqlUtils();
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	// This initialization must occur before the execution of the constructors, in order to properly parse the GraphQL request
@@ -55,13 +57,13 @@ public class GraphQLRequest extends ObjectResponse {
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
-	public GraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
-		super("$springBeanSuffix", graphQLRequest);
+	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest) throws GraphQLRequestPreparationException {
+		super(graphQlClient, "$springBeanSuffix", graphQLRequest);
 	}
 	
-	public GraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
+	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
-		super("$springBeanSuffix", graphQLRequest, requestType, queryName, inputParams);
+		super(graphQlClient, "$springBeanSuffix", graphQLRequest, requestType, queryName, inputParams);
 	}
 
 #if ($query)
@@ -372,6 +374,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 * 
 	 * @return
 	 */
+	@Override
 	protected String getGraphQLClassesPackageName() {
 		return "${configuration.packageName}";
 	}

@@ -1,12 +1,13 @@
 package com.graphql_java_generator.client;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -59,13 +60,13 @@ public class ManualTest_StarWars_GraphQLJava {
 	}
 
 	private String readSchema(org.springframework.core.io.Resource resource) {
-		StringWriter writer = new StringWriter();
 		try (InputStream inputStream = resource.getInputStream()) {
-			IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8);
+			return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))//
+					.lines()//
+					.collect(Collectors.joining("\n"));
 		} catch (IOException e) {
 			throw new IllegalStateException("Cannot read graphql schema from resource " + resource, e);
 		}
-		return writer.toString();
 	}
 
 	@SuppressWarnings("unused")

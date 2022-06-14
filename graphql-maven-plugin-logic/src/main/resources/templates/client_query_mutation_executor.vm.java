@@ -45,7 +45,7 @@ import javax.ws.rs.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,22 +53,20 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
 import com.graphql_java_generator.annotation.GraphQLScalar; 
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
-import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphQLQueryExecutor;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 #foreach($import in ${object.importsForUtilityClasses})
 import $import;
 #end
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
-import com.graphql_java_generator.client.GraphqlClientUtils;
-import com.graphql_java_generator.util.GraphqlUtils;
 
 
 /**
@@ -100,17 +98,11 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
 
-	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
-	GraphqlUtils graphqlUtils = new GraphqlUtils();
-
 	@Autowired
-	@Qualifier("graphQLConfiguration${springBeanSuffix}")
-	GraphQLConfiguration graphQLConfiguration${springBeanSuffix};
-
-	/**
-	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
-	 */
+	GraphQlClient graphQlClient;
 	@Autowired
+	GraphqlClientUtils graphqlClientUtils;
+
 	public ${object.classSimpleName}Executor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
 		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
@@ -118,73 +110,6 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 					+ graphqlUtils.getRuntimeVersion() 
 					+ "' whereas the GraphQL plugin version is '@project.version@'");
 		}
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects a GraphQLConfiguration instance.  This is useful for non-Spring frameworks like Micronaut.
-	 *
-	 * @param configuration
-	 *            an already built GraphQLConfiguration instance
-	 */
-	public ${object.classSimpleName}Executor${springBeanSuffix}(GraphQLConfiguration configuration) {
-## The @..@ is the placeholder for the maven resource filtering
-		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
-			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
-					+ graphqlUtils.getRuntimeVersion()
-					+ "' whereas the GraphQL plugin version is '@project.version@'");
-		}
-		this.graphQLConfiguration${springBeanSuffix} = configuration;
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: http://my.server.com/graphql
-	 * 
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 */
-	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint) {
-		this(new GraphQLConfiguration(graphqlEndpoint));
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
-	 * http ones.<BR/>
-	 * For example: https://my.server.com/graphql<BR/><BR/>
-	 * {@link SSLContext} and {@link HostnameVerifier} are regular Java stuff. You'll find lots of documentation on the web. 
-	 * The StarWars sample is based on the <A HREF="http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https">http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https</A> blog.
-	 * But this sample implements a noHostVerification, which of course, is the simplest but the safest way to go.
-	 * 
-	 * @param graphqlEndpoint
-	 *            the https URI for the GraphQL endpoint
-	 * @param sslContext
-	 * @param hostnameVerifier
-	 */
-	@SuppressWarnings("deprecation")
-	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
-	 * that gives the opportunity to customize the REST request<BR/>
-	 * For example: http://my.server.com/graphql
-	 *
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 * @param client
-	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 */
-	@SuppressWarnings("deprecation")
-	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, Client client) {
-		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -327,7 +252,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters, ${executionResponse}.class);
+		return objectResponse.exec(${executionResponse}.class, parameters);
 	}
 
 	/**
@@ -379,7 +304,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class);
 	}
 
 	/**
@@ -393,9 +318,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(graphQLConfiguration${springBeanSuffix});
-		return ret;
+		return new GraphQLRequest(graphQlClient, fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -583,9 +506,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 
 #if(${configuration.separateUtilityClasses})
 		${configuration.packageName}.${field.owningType.classSimpleName} ret 
-			= graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters, #if(${configuration.separateUtilityClasses})${configuration.packageName}.#end${field.owningType.classSimpleName}.class);
+			= objectResponse.exec(#if(${configuration.separateUtilityClasses})${configuration.packageName}.#end${field.owningType.classSimpleName}.class, parameters);
 #else
-		${field.owningType.classSimpleName} ret = graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters, ${field.owningType.classSimpleName}.class);
+		${field.owningType.classSimpleName} ret = objectResponse.exec(${field.owningType.classSimpleName}.class, parameters);
 #end
 		
 		return ret.get${field.pascalCaseName}();
@@ -692,7 +615,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "${field.name}", RequestType.${object.requestType}
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class, "${field.name}", RequestType.${object.requestType}
 #foreach ($inputParameter in $field.inputParameters)
 			, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
@@ -716,7 +639,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.${object.requestType}, "${field.name}"
 #foreach ($inputParameter in $field.inputParameters)  ## Here, inputParameter is an instance of Field
 		, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end

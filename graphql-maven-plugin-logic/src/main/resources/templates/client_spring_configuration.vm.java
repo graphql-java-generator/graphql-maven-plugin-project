@@ -16,22 +16,8 @@ import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
-import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
-import org.springframework.web.reactive.socket.client.WebSocketClient;
-
-import com.graphql_java_generator.client.GraphQLConfiguration;
-import com.graphql_java_generator.client.OAuthTokenExtractor;
-import com.graphql_java_generator.client.RequestExecution;
-import com.graphql_java_generator.client.RequestExecutionSpringReactiveImpl;
-
-import reactor.netty.http.client.HttpClient;
 
 /**
  * This Spring {@link Configuration} class defines the Spring Bean for this GraphQL schema.
@@ -41,14 +27,10 @@ import reactor.netty.http.client.HttpClient;
 @Configuration("springConfiguration${springBeanSuffix}") // The name of this bean will be springConfiguration${springBeanSuffix}
 @ComponentScan("${packageUtilName}")
 @SuppressWarnings("unused")
-public class SpringConfiguration${springBeanSuffix} {
+public class GraphQLJavaGeneratorAutoConfiguration${springBeanSuffix} {
 
 	@Value(value = "${D}{graphql.endpoint${springBeanSuffix}.url}")
 	private String graphqlEndpoint${springBeanSuffix}Url;
-
-	@Value("${D}{graphql.endpoint${springBeanSuffix}.subscriptionUrl:${D}{graphql.endpoint${springBeanSuffix}.url}}")
-	@Deprecated
-	private String graphqlEndpoint${springBeanSuffix}SubscriptionUrl;
 
 	/**
 	 * This beans defines the GraphQL endpoint for the current GraphQL schema, as a {@link String}. The <I>application.properties</I> 
@@ -84,74 +66,18 @@ public class SpringConfiguration${springBeanSuffix} {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "webClient${springBeanSuffix}")
-	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix},
-			@Autowired(required = false) CodecCustomizer defaultCodecCustomizer,
-			@Autowired(required = false) @Qualifier("httpClient${springBeanSuffix}") HttpClient httpClient${springBeanSuffix},
-			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}) {
-		return GraphQLConfiguration.getWebClient(graphqlEndpoint${springBeanSuffix}, defaultCodecCustomizer,
-				httpClient${springBeanSuffix}, serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix});
-	}
-
-
-
-	/**
-	 * The Spring reactive {@link WebSocketClient} web socket client for the ${springBeanSuffix} GraphQL schema, that will
-	 * execute HTTP requests to build the web sockets, for GraphQL subscriptions.<BR/>
-	 * This is mandatory if the application latter calls subscription. It may be null otherwise.
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "webSocketClient${springBeanSuffix}")
-	public WebSocketClient webSocketClient${springBeanSuffix}(
-			@Autowired(required = false) @Qualifier("httpClient${springBeanSuffix}") HttpClient httpClient${springBeanSuffix}) {
-		return GraphQLConfiguration.getWebSocketClient(httpClient${springBeanSuffix});
+	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}) {
+		return webClientBuilder = WebClient.builder()//
+				.baseUrl(graphqlEndpoint)//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) //
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint)) //
+				.build();
 	}
 
 	@Bean
-	@ConditionalOnMissingBean
-	OAuthTokenExtractor oAuthTokenExtractor${springBeanSuffix}(
-			@Autowired(required = false)
-			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") 
-				ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}) {
-		if (serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix} == null) 
-			return null;
-		else
-			return new OAuthTokenExtractor(serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix});
+	@ConditionalOnMissingBean(name = "graphQlClient")
+	GraphQlClient graphQlClient(WebClient webClient) {
+		return HttpGraphQlClient.builder(webClient).build();
 	}
 
-	/**
-	 * Creates the {@link RequestExecution} for this schema.
-	 * 
-	 * @param graphqlEndpoint${springBeanSuffix}
-	 * @param graphqlSubscriptionEndpoint${springBeanSuffix}
-	 * @param webClient${springBeanSuffix}
-	 * @param webSocketClient${springBeanSuffix}
-	 * @param serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}
-	 * @param oAuthTokenExtractor${springBeanSuffix}
-	 * @return
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "requestExecution${springBeanSuffix}")
-	public RequestExecution requestExecution${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}, //
-			@Autowired(required = false) @Qualifier("graphqlSubscriptionEndpoint${springBeanSuffix}") String graphqlSubscriptionEndpoint${springBeanSuffix}, //
-			@Autowired(required = false) @Qualifier("webClient${springBeanSuffix}") WebClient webClient${springBeanSuffix}, //
-			@Autowired(required = false) @Qualifier("webSocketClient${springBeanSuffix}") WebSocketClient webSocketClient${springBeanSuffix},
-			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix}") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix},
-			@Autowired(required = false) @Qualifier("oAuthTokenExtractor${springBeanSuffix}") OAuthTokenExtractor oAuthTokenExtractor${springBeanSuffix})
-	{
-		return new RequestExecutionSpringReactiveImpl(graphqlEndpoint${springBeanSuffix}, graphqlSubscriptionEndpoint${springBeanSuffix},
-				webClient${springBeanSuffix}, webSocketClient${springBeanSuffix}, serverOAuth2AuthorizedClientExchangeFilterFunction${springBeanSuffix},
-				oAuthTokenExtractor${springBeanSuffix});
-	}
-
-	/**
-	 * Creates the {@link GraphQLConfiguration} for this GraphQL schema
-	 * 
-	 * @param queryExecutor${springBeanSuffix}
-	 * @return
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "graphQLConfiguration${springBeanSuffix}")
-	GraphQLConfiguration graphQLConfiguration${springBeanSuffix}(RequestExecution requestExecution${springBeanSuffix}) {
-		return new GraphQLConfiguration(requestExecution${springBeanSuffix});
-	}
 }

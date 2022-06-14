@@ -13,8 +13,6 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.graphql.execution.BatchLoaderRegistry;
 import org.springframework.stereotype.Controller;
 
-import com.graphql_java_generator.server.util.GraphQLServerUtils;
-
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -28,9 +26,6 @@ public class BoardController {
 
 	@Autowired
 	DataFetchersDelegateBoard dataFetchersDelegateBoard;
-
-	@Autowired
-	GraphQLServerUtils graphQLServerUtils;
 
 	public BoardController(BatchLoaderRegistry registry) {
 

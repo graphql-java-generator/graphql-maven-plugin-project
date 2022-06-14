@@ -45,6 +45,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// We need that the package of our spy is the package of the GraphQLQueryExecutor interface
 		// when(spyQueryExecutor.getClass()).thenReturn(GraphQLQueryExecutor.class);
 
+		// The invocationHandler is created, based on the given context
 		invocationHandler = new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCase>(
 				GraphQLRepositoryTestCase.class, ctx);
 		graphQLRepository = invocationHandler.getProxyInstance();

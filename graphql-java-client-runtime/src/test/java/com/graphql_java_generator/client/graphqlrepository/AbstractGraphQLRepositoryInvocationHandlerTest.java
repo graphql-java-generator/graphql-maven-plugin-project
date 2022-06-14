@@ -292,7 +292,7 @@ public abstract class AbstractGraphQLRepositoryInvocationHandlerTest {
 			}
 		};
 		Episode episode = Episode.JEDI;
-		SubscriptionClient subscriptionClient = new SubscriptionClientReactiveImpl(null, null);
+		SubscriptionClient subscriptionClient = new SubscriptionClientReactiveImpl(null);
 		doReturn(subscriptionClient).when(spySubscriptionExecutor).subscribeNewHumanForEpisodeWithBindValues(
 				any(ObjectResponse.class), any(SubscriptionCallback.class), any(Episode.class), any(Map.class));
 
@@ -408,7 +408,7 @@ public abstract class AbstractGraphQLRepositoryInvocationHandlerTest {
 		// Preparation
 		Date date = new Calendar.Builder().setDate(2021, 6 - 1, 18).build().getTime();
 		SubscriptionCallback<Date> callback = null;// This would be invalid in real use. Null is just for this test
-		SubscriptionClient client = new SubscriptionClientReactiveImpl(null, null);
+		SubscriptionClient client = new SubscriptionClientReactiveImpl(null);
 		doReturn(client).when(spySubscriptionExecutor).execWithBindValues(any(ObjectResponse.class),
 				any(SubscriptionCallback.class), any(Map.class));
 

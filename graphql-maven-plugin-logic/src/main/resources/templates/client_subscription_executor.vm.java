@@ -38,21 +38,21 @@ package ${packageUtilName};
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
+import com.graphql_java_generator.client.SubscriptionCallback;
+import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.request.InputParameter;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.client.request.ObjectResponse;
@@ -60,13 +60,6 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 #foreach($import in ${object.importsForUtilityClasses})
 import $import;
 #end
-
-import com.graphql_java_generator.client.GraphQLConfiguration;
-import com.graphql_java_generator.client.GraphqlClientUtils;
-import com.graphql_java_generator.util.GraphqlUtils;
-import com.graphql_java_generator.client.SubscriptionCallback;
-import com.graphql_java_generator.client.SubscriptionClient;
-
 
 /**
 #foreach ($comment in $object.comments)
@@ -94,17 +87,12 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
 
-	GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
-	GraphqlUtils graphqlUtils = new GraphqlUtils();
+	@Autowired
+	GraphqlClientUtils graphqlClientUtils;
 
 	@Autowired
-	@Qualifier("graphQLConfiguration${springBeanSuffix}")
-	GraphQLConfiguration graphQLConfiguration${springBeanSuffix};
+	GraphQlClient graphQlClient;
 
-	/**
-	 * This default constructor is used by Spring, when building the component, and by the Jackson deserializer.
-	 */
-	@Autowired
 	public ${object.classSimpleName}Executor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
 		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
@@ -112,63 +100,6 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 					+ graphqlUtils.getRuntimeVersion() 
 					+ "' whereas the GraphQL plugin version is '@project.version@'");
 		}
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for http servers, not for
-	 * https ones.<BR/>
-	 * For example: http://my.server.com/graphql
-	 * 
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 */
-	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint) {
-## The @..@ is the placeholder for the maven resource filtering
-		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
-			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
-					+ graphqlUtils.getRuntimeVersion() 
-					+ "' whereas the GraphQL plugin version is '@project.version@'");
-		}
-		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server. This constructor works only for https servers, not for
-	 * http ones.<BR/>
-	 * For example: https://my.server.com/graphql<BR/><BR/>
-	 * {@link SSLContext} and {@link HostnameVerifier} are regular Java stuff. You'll find lots of documentation on the web. 
-	 * The StarWars sample is based on the <A HREF="http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https">http://www.thinkcode.se/blog/2019/01/27/a-jersey-client-supporting-https</A> blog.
-	 * But this sample implements a noHostVerification, which of course, is the simplest but the safest way to go.
-	 * 
-	 * @param graphqlEndpoint
-	 *            the https URI for the GraphQL endpoint
-	 * @param sslContext
-	 * @param hostnameVerifier
-	 */
-	@SuppressWarnings("deprecation")
-	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-	}
-
-	/**
-	 * This constructor expects the URI of the GraphQL server and a configured JAX-RS client
-	 * that gives the opportunity to customise the REST request<BR/>
-	 * For example: http://my.server.com/graphql
-	 *
-	 * @param graphqlEndpoint
-	 *            the http URI for the GraphQL endpoint
-	 * @param client
-	 *            {@link Client} javax.ws.rs.client.Client to support customization of the rest request
-	 */
-	@SuppressWarnings("deprecation")
-	public ${object.classSimpleName}Executor${springBeanSuffix}(String graphqlEndpoint, Client client) {
-		this.graphQLConfiguration${springBeanSuffix} = new GraphQLConfiguration(graphqlEndpoint, client);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -300,7 +231,6 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public SubscriptionClient execWithBindValues(
 			ObjectResponse objectResponse, 
 			SubscriptionCallback<?> subscriptionCallback,
@@ -353,7 +283,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 #foreach ($field in $object.fields)
 #if ($field.name != "__typename")
 		case "${field.name}":
-			return graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters,
+			return return objectResponse.exec(parameters,
 					 (SubscriptionCallback<#if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end>) subscriptionCallback, 
 					 ${executionResponse}.class, 
 					 #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
@@ -418,7 +348,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class);
 	}
 
 	/**
@@ -432,9 +362,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(fullRequest);
-		ret.setInstanceConfiguration(graphQLConfiguration${springBeanSuffix});
-		return ret;
+		return new GraphQLRequest(graphQlClient, fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -670,7 +598,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 #if($field.fieldTypeAST.listDepth>0)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
-		return graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+		return return objectResponse.exec(parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
 	}
 
 	/**
