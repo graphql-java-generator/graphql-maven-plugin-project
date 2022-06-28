@@ -27,16 +27,16 @@ public interface CommonConfiguration {
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 	public final String DEFAULT_ADD_RELAY_CONNECTIONS = "false";
-	public final String DEFAULT_MAX_TOKENS = "15000";
+	public final String DEFAULT_MAX_TOKENS = "2147483647"; // Integer.MAX_VALUE
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
 	public final String DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED = "true";
 
 	/**
-	 * Defines the options that maximum number of tokens that the GraphQL schema parser may read. The default value is
-	 * 15000. If the schema contains more than <I>maxTokens</I>, the build will fail with an error. For bigger GraphQL
-	 * schemas, you must define the <I>maxTokens</I> to the needed value.
+	 * <I>(Useless, since 1.18.7)</I>Defines the options that maximum number of tokens that the GraphQL schema parser
+	 * may read. The default value is Integer.MAX_VALUE (=2147483647). If the schema contains more than
+	 * <I>maxTokens</I>, the build will fail with an error.
 	 * 
 	 * @return
 	 */

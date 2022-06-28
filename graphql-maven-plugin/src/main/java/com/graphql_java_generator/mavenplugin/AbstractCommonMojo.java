@@ -61,9 +61,9 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	boolean addRelayConnections;
 
 	/**
-	 * Defines the options that maximum number of tokens that the GraphQL schema parser may read. The default value is
-	 * 15000. If the schema contains more than <I>maxTokens</I>, the build will fail with an error. For bigger GraphQL
-	 * schemas, you must define the <I>maxTokens</I> to the needed value.
+	 * <I>(Useless, since 1.18.7)</I>Defines the options that maximum number of tokens that the GraphQL schema parser
+	 * may read. The default value is Integer.MAX_VALUE (=2147483647). If the schema contains more than
+	 * <I>maxTokens</I>, the build will fail with an error.
 	 */
 	@Parameter(property = "com.graphql_java_generator.mavenplugin.maxTokens", defaultValue = CommonConfiguration.DEFAULT_MAX_TOKENS)
 	public Integer maxTokens;
