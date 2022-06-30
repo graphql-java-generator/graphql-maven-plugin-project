@@ -67,7 +67,8 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 		checkConfiguration();
 		if (skipGenerationIfSchemaHasNotChanged()) {
 			logger.info(
-					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped.");
+					"The GraphQL schema file(s) is(are) older than the generated code. The code generation is skipped for target folder "
+							+ configuration.getTargetSourceFolder());
 		} else {
 			// Let's do the job
 			documentParser.parseGraphQLSchemas();
@@ -124,9 +125,10 @@ public class GenerateCodePluginExecutor implements PluginExecutor {
 		}
 		long schemaLastModified = optSchemaLastModification.getAsLong();
 
-		// Then, we get the minimum last modification date for all the generated sources (this insure that the code is
-		// regenerated as needed, even if a file has been manually updated.
-		Long targetSourcesLastModified = graphqlUtils.getLastModified(configuration.getTargetSourceFolder(), false);
+		// Then, we get the maximum last modification date for all the generated sources. This makes sure that the code
+		// is generated if the schema is newer, and that it is not renegerated even if an old file remains for instance
+		// if a type has been removed from the schema (in which case a clean must be done)
+		Long targetSourcesLastModified = graphqlUtils.getLastModified(configuration.getTargetSourceFolder(), true);
 		if (targetSourcesLastModified == null) {
 			logger.debug("No source folder: we need to generate the sources");
 			return false;

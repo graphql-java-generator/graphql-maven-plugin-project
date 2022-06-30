@@ -17,6 +17,7 @@ Dependency upgrade :
 
 All modes:
 * Issue #136: most usages of the `extend` GraphQL keyword where not managed
+* Prevent endless compilation from an IDE (eclipse...) when a type is removed from the GraphQL schema
 * Issue Gradle#11: maxTokens is not set by default to Integer.MAX_VALUE (=2147483647). This prevent errors on big GraphQL schemas
 
 

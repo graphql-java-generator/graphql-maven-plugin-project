@@ -942,9 +942,7 @@ public class GraphqlUtils {
 			return null;
 		} else if (fileOrFolder.isFile()) {
 			return fileOrFolder.lastModified();
-		} else if (!fileOrFolder.isDirectory()) {
-			throw new RuntimeException("Unknown file type for " + fileOrFolder.getAbsolutePath());
-		} else {
+		} else if (fileOrFolder.isDirectory()) {
 			// We have a folder. Let's recurse into its content.
 			Long lastModifed = null;
 			for (File f : fileOrFolder.listFiles()) {
@@ -960,6 +958,8 @@ public class GraphqlUtils {
 				}
 			} // for
 			return lastModifed;
+		} else {
+			throw new RuntimeException("Non managed file type for " + fileOrFolder.getAbsolutePath());
 		}
 	}
 
