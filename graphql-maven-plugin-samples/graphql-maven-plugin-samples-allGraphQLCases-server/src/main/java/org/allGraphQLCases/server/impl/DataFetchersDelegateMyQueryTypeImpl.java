@@ -17,6 +17,7 @@ import org.allGraphQLCases.server.Client;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.DroidInput;
 import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.Foo140;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanConnection;
 import org.allGraphQLCases.server.HumanInput;
@@ -330,6 +331,11 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public Client issue128(DataFetchingEnvironment dataFetchingEnvironment) {
 		return null;
+	}
+
+	@Override
+	public Foo140 foo140(DataFetchingEnvironment dataFetchingEnvironment) {
+		return new Foo140();
 	}
 
 }

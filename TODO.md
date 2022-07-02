@@ -3,33 +3,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the current version
 * Respond to issue 140:
-type Query {
-    foo: Foo
-}
 
-interface IBar {
-    name: String
-}
-
-interface I2Bar implements IBar {
-    name: String
-}
-
-type Bar implements I2Bar & IBar {
-    name: String
-}
-
-interface IFoo {
-    bar: IBar
-}
-
-interface I2Foo implements IFoo {
-    bar: I2Bar
-}
-
-type Foo implements I2Foo & IFoo {
-    bar: Bar
-}
 
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Tutorial: add the documentation about the application.yml file

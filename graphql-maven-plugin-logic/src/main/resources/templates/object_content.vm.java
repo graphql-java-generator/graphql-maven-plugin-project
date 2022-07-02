@@ -1,3 +1,4 @@
+
 ##
 ## When in client mode, we add the capability to receive unknown JSON attributes, which includes returned values for GraphQL aliases
 ##
@@ -68,7 +69,7 @@
 		
 #else
 ####################################################################################################################################################
-###########  Case 2: the field's type is implements an interface defined in the GraphQL schema  ####################################################
+###########  Case 2: the field's type implements an interface defined in the GraphQL schema  #######################################################
 ####################################################################################################################################################
 ##
 #foreach ($type in $field.fieldJavaFullClassnamesFromImplementedInterface)
@@ -84,6 +85,9 @@
 	@Override
 #if ($field.javaType.startsWith("List<"))
 	@SuppressWarnings("unchecked")
+#end
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonIgnore
 #end
 	public void set${field.pascalCaseName}($type ${field.javaName}) {
 #if ($field.javaType.startsWith("List<"))
@@ -124,6 +128,9 @@
 	 * $comment
 #end
 	 */
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonIgnore
+#end
 	public void set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #else
 	 * 
@@ -132,6 +139,9 @@
 	 * $comment
 #end
 	 */
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonIgnore
+#end
 	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #end
 		this.${field.javaName} = ${field.javaName};

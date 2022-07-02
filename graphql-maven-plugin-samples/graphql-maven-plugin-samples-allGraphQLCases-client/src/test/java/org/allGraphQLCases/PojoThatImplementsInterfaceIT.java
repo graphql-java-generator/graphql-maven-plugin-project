@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.allGraphQLCases.client.Foo140;
 import org.allGraphQLCases.client.IBar1;
 import org.allGraphQLCases.client.IBar12;
 import org.allGraphQLCases.client.IBar2;
@@ -17,7 +18,15 @@ import org.allGraphQLCases.client.TBar12;
 import org.allGraphQLCases.client.TBar2;
 import org.allGraphQLCases.client.TFoo1;
 import org.allGraphQLCases.client.TFoo12;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 /**
  * This JUnit test class execute tests on the generated code. It should be in the graphql-maven-plugin-project, but this
@@ -26,7 +35,15 @@ import org.junit.jupiter.api.Test;
  * 
  * @author etienne-sf
  */
-public class PojoThatImplementsInterfaceTest {
+// Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+// "No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+// More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Execution(ExecutionMode.CONCURRENT)
+public class PojoThatImplementsInterfaceIT {
+
+	@Autowired
+	MyQueryTypeExecutorAllGraphQLCases queryType;
 
 	@Test
 	void testSetterForTypeThatImplementsOneInterface() {
@@ -179,6 +196,12 @@ public class PojoThatImplementsInterfaceTest {
 		// Check of issue #124 correction: setting a field to null should not raise an exception
 		tfoo12.setBar(null);
 		assertNull(tfoo12.getBar());
+	}
+
+	@Test
+	void testIssue140() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		Foo140 foo = queryType.foo140("{bar}");
+		assertEquals("Bar140's name for a Foo140", foo.getBar().getName());
 	}
 
 }

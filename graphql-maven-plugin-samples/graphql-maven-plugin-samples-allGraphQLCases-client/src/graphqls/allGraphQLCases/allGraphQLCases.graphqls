@@ -94,6 +94,9 @@ type MyQueryType {
 
 	# test for issue #128 (compilation error when a Query returns a type 'Client')
 	issue128: Client
+	
+	# test for issue #140 (error for type that implements multiple interfaces)
+    foo140: Foo140
 }
 
 type AnotherMutationType {
@@ -547,7 +550,33 @@ type TList implements IList {
 	list: [TFoo1]
 }
 
+#############################
+# test for issue #140
 
+
+interface IBar140 {
+    name: String
+}
+
+interface I2Bar140 implements IBar140 {
+    name: String
+}
+
+type Bar140 implements I2Bar140 & IBar140 {
+    name: String
+}
+
+interface IFoo140 {
+    bar: IBar140
+}
+
+interface I2Foo140 implements IFoo140 {
+    bar: I2Bar140
+}
+
+type Foo140 implements I2Foo140 & IFoo140 {
+    bar: Bar140
+}
 #############################
 # test for issue #128
 
