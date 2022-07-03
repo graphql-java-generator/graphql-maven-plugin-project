@@ -480,6 +480,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * 	client.unsubscribe();
 	 * }
 	 * </PRE>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the subscription, in the native GraphQL format (see here above)
@@ -499,7 +502,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public SubscriptionClient ${field.name}WithBindValues(
+	public SubscriptionClient ${field.javaName}WithBindValues(
 			String queryResponseDef, 
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 #inputParams()
@@ -549,6 +552,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * 	client.unsubscribe();
 	 * }
 	 * </PRE>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the subscription, in the native GraphQL format (see here above)
@@ -568,7 +574,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
-	public SubscriptionClient ${field.name}(String queryResponseDef, 
+	public SubscriptionClient ${field.javaName}(String queryResponseDef, 
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 #inputParams()
 			Object... paramsAndValues)
@@ -622,6 +628,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * 	client.unsubscribe();
 	 * }
 	 * </PRE>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
@@ -641,7 +650,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 #if($field.fieldTypeAST.listDepth>0)
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 #end 
-	public SubscriptionClient ${field.name}WithBindValues(ObjectResponse objectResponse,
+	public SubscriptionClient ${field.javaName}WithBindValues(ObjectResponse objectResponse,
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 #inputParams() 
 			Map<String, Object> parameters)
@@ -708,6 +717,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * 	client.unsubscribe();
 	 * }
 	 * </PRE>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return

@@ -711,7 +711,6 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	@Deprecated
 	public String getStringContentForGraphqlQuery(boolean writingGraphQLVariables, Map<String, Object> bindVariables)
 			throws GraphQLRequestExecutionException {
 		if (this.bindParameterName == null) {
@@ -755,7 +754,6 @@ public class InputParameter {
 	 * @return
 	 * @throws GraphQLRequestExecutionException
 	 */
-	@Deprecated
 	String getStringContentForGraphqlQuery(boolean writingGraphQLVariables, Object val, String graphQLTypeNameParam,
 			GraphQLScalarType graphQLScalarTypeParam, boolean graphQLVariable) throws GraphQLRequestExecutionException {
 		if (val == null) {
@@ -791,6 +789,8 @@ public class InputParameter {
 			return getStringValue(((UUID) val).toString());
 		} else if (val.getClass().getAnnotation(GraphQLInputType.class) != null) {
 			return getStringContentForAnInputTypeValue(writingGraphQLVariables, val, graphQLVariable);
+		} else if (val.getClass().isEnum()) {
+			return (String) graphqlUtils.invokeMethod("graphQlValue", val);
 		} else {
 			return val.toString();
 		}

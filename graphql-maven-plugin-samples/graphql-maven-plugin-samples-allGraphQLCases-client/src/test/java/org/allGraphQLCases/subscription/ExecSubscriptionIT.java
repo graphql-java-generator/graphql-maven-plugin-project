@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
+import org.allGraphQLCases.client.EnumWithReservedJavaKeywordAsValues;
 import org.allGraphQLCases.client.SubscriptionTestParam;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.TheSubscriptionTypeExecutorAllGraphQLCases2;
@@ -405,6 +406,58 @@ public class ExecSubscriptionIT {
 		assertTrue(callback.lastExceptionReceived.getMessage().endsWith(
 				"Oups, the subscriber asked that the web socket get disconnected before the first notification"),
 				"The received error message is: " + callback.lastExceptionReceived.getMessage());
+
+		// Let's unsubscribe from this subscription
+		sub.unsubscribe();
+	}
+
+	@Test // Issue 139
+	void test_subscribeToAEnumWithReservedJavaKeywordAsValues()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
+		logger.info("------------------------------------------------------------------------------------------------");
+		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
+
+		SubscriptionCallbackEnumWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackEnumWithReservedJavaKeywordAsValues(
+				"test_subscribeToAEnumWithReservedJavaKeywordAsValues");
+		SubscriptionClient sub = subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback);
+		// Let's wait a max of 20 second, until we receive an exception
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's test this exception
+		assertNull(callback.lastExceptionReceived, "we must have received no exception");
+		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
+		assertEquals(EnumWithReservedJavaKeywordAsValues._instanceof, callback.lastReceivedMessage,
+				"All messages are the 'if' value of the enum");
+
+		// Let's unsubscribe from this subscription
+		sub.unsubscribe();
+	}
+
+	@Test // Issue 139
+	void test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
+		logger.info("------------------------------------------------------------------------------------------------");
+		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
+
+		SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues(
+				"test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues");
+		SubscriptionClient sub = subscriptionExecutor.listOfEnumWithReservedJavaKeywordAsValues("", callback);
+		// Let's wait a max of 20 second, until we receive an exception
+		// (20s will never occur... unless using the debugger to undebug some stuff)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+
+		// Let's test this exception
+		assertNull(callback.lastExceptionReceived, "we must have received no exception");
+		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
+		assertEquals(3, callback.lastReceivedMessage.size(),
+				"each received notifiation should contain a list of 3 items");
+		assertEquals(EnumWithReservedJavaKeywordAsValues._int, callback.lastReceivedMessage.get(0),
+				"First item should be the 'int' value of the enum");
+		assertEquals(EnumWithReservedJavaKeywordAsValues._interface, callback.lastReceivedMessage.get(1),
+				"Second item should be the 'interface' value of the enum");
+		assertEquals(EnumWithReservedJavaKeywordAsValues._long, callback.lastReceivedMessage.get(2),
+				"Third item should be the 'long' value of the enum");
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();

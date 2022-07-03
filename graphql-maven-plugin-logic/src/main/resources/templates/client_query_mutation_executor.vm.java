@@ -424,7 +424,10 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
 	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
@@ -445,7 +448,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 
 #if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.name}WithBindValues(
+	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
 			String queryResponseDef,
 #inputParams()
 			Map<String, Object> parameters)
@@ -477,7 +480,10 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
 	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
 	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
-	 * <I>parameters</I> argument to pass the list of values.
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
@@ -498,7 +504,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.name}(
+	public ${field.javaTypeFullClassname} ${field.javaName}(
 			String queryResponseDef,
 #inputParams()
 			Object... paramsAndValues)
@@ -538,6 +544,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * ...
 	 * }
 	 * </PRE>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
@@ -555,7 +564,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #if(${field.type.scalar}) @GraphQLScalar #else @GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.name}WithBindValues(
+	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
 			ObjectResponse objectResponse,
 #inputParams()
 			Map<String, Object> parameters)
@@ -610,6 +619,9 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	 * ...
 	 * }
 	 * </PRE>
+#if($graphqlUtils.isJavaReservedWords(${field.name}))
+	 * This method name is prefixed by ${underscore}, as ${field.name} is a java reserved keyword. 
+#end
 	 * 
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return

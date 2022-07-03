@@ -223,12 +223,12 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 
 #if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.name}WithBindValues(
+	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
 			String queryResponseDef,
 #inputParams()
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.${field.name}WithBindValues(queryResponseDef#inputValues(), parameters);
+		return super.${field.javaName}WithBindValues(queryResponseDef#inputValues(), parameters);
 	}
 
 	/**
@@ -240,12 +240,12 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.name}(
+	public ${field.javaTypeFullClassname} ${field.javaName}(
 			String queryResponseDef,
 #inputParams()
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.${field.name}(queryResponseDef#inputValues(), paramsAndValues);
+		return super.${field.javaName}(queryResponseDef#inputValues(), paramsAndValues);
 	}
 
 	/**
@@ -257,12 +257,12 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 #if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.name}WithBindValues(
+	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
 			ObjectResponse objectResponse,
 #inputParams()
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
-		return super.${field.name}WithBindValues(objectResponse#inputValues(), parameters);
+		return super.${field.javaName}WithBindValues(objectResponse#inputValues(), parameters);
 	}
 
 	/**

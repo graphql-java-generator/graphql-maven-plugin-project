@@ -169,13 +169,13 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public SubscriptionClient ${field.name}WithBindValues(
+	public SubscriptionClient ${field.javaName}WithBindValues(
 			String queryResponseDef, 
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 #inputParams() 
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.${field.name}WithBindValues(queryResponseDef, subscriptionCallback #inputValues(), parameters);
+		return super.${field.javaName}WithBindValues(queryResponseDef, subscriptionCallback #inputValues(), parameters);
 	}
 
 	/**
@@ -183,12 +183,12 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public SubscriptionClient ${field.name}(String queryResponseDef, 
+	public SubscriptionClient ${field.javaName}(String queryResponseDef, 
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 			#inputParams() 
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.${field.name}(queryResponseDef, subscriptionCallback #inputValues(), paramsAndValues);
+		return super.${field.javaName}(queryResponseDef, subscriptionCallback #inputValues(), paramsAndValues);
 	}
 
 	/**
@@ -196,12 +196,12 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public SubscriptionClient ${field.name}WithBindValues(ObjectResponse objectResponse,
+	public SubscriptionClient ${field.javaName}WithBindValues(ObjectResponse objectResponse,
 			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
 			#inputParams() 
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
-		return super.${field.name}WithBindValues(objectResponse, subscriptionCallback #inputValues(), parameters);
+		return super.${field.javaName}WithBindValues(objectResponse, subscriptionCallback #inputValues(), parameters);
 	}
 
 	/**

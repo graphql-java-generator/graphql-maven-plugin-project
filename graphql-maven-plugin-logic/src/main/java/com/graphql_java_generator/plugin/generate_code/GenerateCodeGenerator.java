@@ -789,10 +789,13 @@ public class GenerateCodeGenerator implements Generator {
 	 */
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
-		context.put("sharp", "#");
-		context.put("dollar", "$");
 		context.put("configuration", configuration);
+		context.put("dollar", "$");
 		context.put("exceptionThrower", new ExceptionThrower());
+		context.put("graphqlUtils", graphqlUtils);
+		context.put("javaKeywordPrefix", GraphqlUtils.JAVA_KEYWORD_PREFIX);
+		context.put("sharp", "#");
+
 		// Velocity can't access to enum values. So we add it into the context
 		context.put("isPluginModeClient", configuration.getMode() == PluginMode.client);
 

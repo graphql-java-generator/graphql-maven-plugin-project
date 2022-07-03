@@ -77,12 +77,12 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals(54, i, "Nb java files are generated");
+		assertEquals(57, i, "Nb java files are generated");
 		assertEquals(10, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(32, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(34, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(5, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(19, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
-		assertEquals(3, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
+		assertEquals(4, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
 		assertNotNull(generateCodeDocumentParser.getMutationType(), "One mutation");
 		assertNotNull(generateCodeDocumentParser.getSubscriptionType(),
@@ -680,7 +680,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(22, type.getFields().size());
+		assertEquals(52, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -773,7 +773,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(3, type.getFields().size());
+		assertEquals(5, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
@@ -816,7 +816,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(8, type.getFields().size());
+		assertEquals(12, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :

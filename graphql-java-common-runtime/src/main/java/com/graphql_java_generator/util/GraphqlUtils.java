@@ -412,8 +412,8 @@ public class GraphqlUtils {
 						+ jsonParsedValue + "' which should be a String, to be mapped to the relevant enum value");
 			}
 			// This object is a String, that we must map to its enum value
-			Method valueOf = graphqlUtils.getMethod("valueOf", clazz, String.class);
-			return graphqlUtils.invokeMethod(valueOf, null, (String) jsonParsedValue);
+			Method fromGraphQlValue = graphqlUtils.getMethod("fromGraphQlValue", clazz, String.class);
+			return graphqlUtils.invokeMethod(fromGraphQlValue, null, (String) jsonParsedValue);
 		} else if (graphQLTypeName.equals("ID")) {
 			// ID is particular animal: it's by default managed as a UUID (we're on server side). And this can be
 			// overridden by the javaTypeForIDType plugin parameter.
@@ -696,7 +696,7 @@ public class GraphqlUtils {
 	 * @param methodName
 	 *            The name of the method. This method should have no parameter
 	 * @param object
-	 *            The given node, on which the 'methodName' method is to be called
+	 *            The given object, on which the 'methodName' method is to be called
 	 * @return
 	 */
 	public Object invokeMethod(String methodName, Object object, Object... args) {
@@ -737,6 +737,26 @@ public class GraphqlUtils {
 			msg.append(o.getClass().getName());
 			msg.append(" class");
 			throw new RuntimeException(msg.toString(), e);
+		}
+	}
+
+	/**
+	 * Calls the 'methodName' method on the given class.
+	 * 
+	 * @param methodName
+	 *            The name of the method. This method should have no parameter
+	 * @param clazz
+	 *            The given class, on which the 'methodName' method is to be called
+	 * @return
+	 */
+	public Object invokeStaticMethod(String methodName, Class<?> clazz) {
+		try {
+			Method method = clazz.getDeclaredMethod(methodName);
+			return method.invoke(method);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			throw new RuntimeException("Error when trying to execute the static method '" + methodName + "' on '"
+					+ clazz.getName() + "': " + e.getMessage(), e);
 		}
 	}
 

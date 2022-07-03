@@ -16,6 +16,7 @@ import org.allGraphQLCases.server.CharacterInput;
 import org.allGraphQLCases.server.Client;
 import org.allGraphQLCases.server.Droid;
 import org.allGraphQLCases.server.DroidInput;
+import org.allGraphQLCases.server.EnumWithReservedJavaKeywordAsValues;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Foo140;
 import org.allGraphQLCases.server.Human;
@@ -336,6 +337,167 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public Foo140 foo140(DataFetchingEnvironment dataFetchingEnvironment) {
 		return new Foo140();
+	}
+
+	@Override
+	public EnumWithReservedJavaKeywordAsValues enumWithReservedJavaKeywordAsValues(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return EnumWithReservedJavaKeywordAsValues._if;
+	}
+
+	@Override
+	public List<EnumWithReservedJavaKeywordAsValues> listOfEnumWithReservedJavaKeywordAsValues(
+			DataFetchingEnvironment dataFetchingEnvironment, EnumWithReservedJavaKeywordAsValues param1,
+			List<EnumWithReservedJavaKeywordAsValues> param2) {
+		List<EnumWithReservedJavaKeywordAsValues> ret = new ArrayList<>();
+
+		if (param1 != null)
+			ret.add(param1);
+		if (param2 != null)
+			for (EnumWithReservedJavaKeywordAsValues e : param2)
+				ret.add(e);
+
+		return ret;
+	}
+
+	@Override
+	public String _if(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _if";
+	}
+
+	@Override
+	public String _implements(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _implements";
+	}
+
+	@Override
+	public String _import(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _import";
+	}
+
+	@Override
+	public String _instanceof(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _instanceof";
+	}
+
+	@Override
+	public String _int(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _int";
+	}
+
+	@Override
+	public String _interface(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _interface";
+	}
+
+	@Override
+	public String _long(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _long";
+	}
+
+	@Override
+	public String _native(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _native";
+	}
+
+	@Override
+	public String _new(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _new";
+	}
+
+	@Override
+	public String _package(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _package";
+	}
+
+	@Override
+	public String _private(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _private";
+	}
+
+	@Override
+	public String _protected(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _protected";
+	}
+
+	@Override
+	public String _public(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _public";
+	}
+
+	@Override
+	public String _return(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _return";
+	}
+
+	@Override
+	public String _short(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _short";
+	}
+
+	@Override
+	public String _static(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _static";
+	}
+
+	@Override
+	public String _strictfp(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _strictfp";
+	}
+
+	@Override
+	public String _super(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _super";
+	}
+
+	@Override
+	public String _switch(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _switch";
+	}
+
+	@Override
+	public String _synchronized(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _synchronized";
+	}
+
+	@Override
+	public String _this(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _this";
+	}
+
+	@Override
+	public String _throw(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _throw";
+	}
+
+	@Override
+	public String _throws(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _throws";
+	}
+
+	@Override
+	public String _transient(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _transient";
+	}
+
+	@Override
+	public String _try(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _try";
+	}
+
+	@Override
+	public String _void(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _void";
+	}
+
+	@Override
+	public String _volatile(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _volatile";
+	}
+
+	@Override
+	public String _while(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _while";
 	}
 
 }

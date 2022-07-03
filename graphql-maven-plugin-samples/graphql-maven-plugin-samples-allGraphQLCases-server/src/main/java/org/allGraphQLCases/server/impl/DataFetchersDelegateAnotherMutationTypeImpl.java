@@ -124,4 +124,14 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 			return false;
 		}
 	}
+
+	@Override
+	public String _if(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _if";
+	}
+
+	@Override
+	public String _implements(DataFetchingEnvironment dataFetchingEnvironment) {
+		return "a value for _implements";
+	}
 }

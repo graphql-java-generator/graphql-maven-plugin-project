@@ -15,6 +15,7 @@ import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtypeInput;
+import org.allGraphQLCases.server.EnumWithReservedJavaKeywordAsValues;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.SubscriptionTestParam;
@@ -175,6 +176,37 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> Optional.ofNullable(dataGenerator.generateInstanceList(Date.class, 2)));
+	}
+
+	@Override
+	public Publisher<Optional<String>> _if(DataFetchingEnvironment dataFetchingEnvironment) {
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> Optional.ofNullable("a value for _if"));
+	}
+
+	@Override
+	public Publisher<Optional<String>> _implements(DataFetchingEnvironment dataFetchingEnvironment) {
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> Optional.ofNullable("a value for _implements"));
+	}
+
+	@Override
+	public Publisher<Optional<EnumWithReservedJavaKeywordAsValues>> enumWithReservedJavaKeywordAsValues(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> Optional.ofNullable(EnumWithReservedJavaKeywordAsValues._instanceof));
+	}
+
+	@Override
+	public Publisher<Optional<List<EnumWithReservedJavaKeywordAsValues>>> listOfEnumWithReservedJavaKeywordAsValues(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Flux//
+				.interval(Duration.ofMillis(100))// A message every 0.1 second
+				.map((l) -> Optional.ofNullable(Arrays.asList(EnumWithReservedJavaKeywordAsValues._int,
+						EnumWithReservedJavaKeywordAsValues._interface, EnumWithReservedJavaKeywordAsValues._long)));
 	}
 
 }

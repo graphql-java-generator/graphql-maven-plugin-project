@@ -95,6 +95,41 @@ type MyQueryType {
 	# test for issue #128 (compilation error when a Query returns a type 'Client')
 	issue128: Client
 	
+	# test for issue #139 (use of java reserved keyword)
+	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues
+	listOfEnumWithReservedJavaKeywordAsValues(
+		param1: EnumWithReservedJavaKeywordAsValues=abstract,
+		param2: [EnumWithReservedJavaKeywordAsValues]=[assert,boolean]
+		): [EnumWithReservedJavaKeywordAsValues]
+    if: String
+    implements: String
+    import: String
+    instanceof: String
+    int: String
+    interface: String
+    long: String
+    native: String
+    new: String
+    package: String
+    private: String
+    protected: String
+    public: String
+    return: String
+    short: String
+    static: String
+    strictfp: String
+    super: String
+    switch: String
+    synchronized: String
+    this: String
+    throw: String
+    throws: String
+    transient: String
+    try: String
+    void: String
+    volatile: String
+    while: String
+	
 	# test for issue #140 (error for type that implements multiple interfaces)
     foo140: Foo140
 }
@@ -105,6 +140,10 @@ type AnotherMutationType {
 	
 	# Tests for issue 51
 	deleteSnacks(id: [ID]) : Boolean
+
+	# test for issue #139 (use of java reserved keyword)
+    if: String
+    implements: String
 }
 
 type TheSubscriptionType {
@@ -128,6 +167,12 @@ type TheSubscriptionType {
     
     # Issue 122: Check Subscription behavior when notification response is null
     subscriptionWithNullResponse: String
+
+	# test for issue #139 (use of java reserved keyword)
+	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues
+	listOfEnumWithReservedJavaKeywordAsValues: [EnumWithReservedJavaKeywordAsValues]
+    if: String
+    implements: String
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
@@ -638,3 +683,76 @@ extend type AllFieldCases implements interfaceToTestExtendKeyword @testExtendKey
 
 extend union AnyCharacter @testExtendKeyword
 = Pet
+
+#############################
+# test for issue #139:
+
+
+enum EnumWithReservedJavaKeywordAsValues {
+	abstract, assert, boolean, break, byte, case, catch, char, class, const, continue, default, do, double, else, enum, extends, final, 
+	finally, float, for, goto, if, implements, import, instanceof, int, interface, long, native, new, package, private, protected, public, 
+	return, short, static, strictfp, super, switch, synchronized, this, throw, throws, transient, try, void, volatile, while
+}
+
+type ReservedJavaKeywordAsScalar {
+    if: String
+    implements: String
+    import: String
+    instanceof: String
+    int: String
+    interface: String
+    long: String
+    native: String
+    new: String
+    package: String
+    private: String
+    protected: String
+    public: String
+    return: String
+    short: String
+    static: String
+    strictfp: String
+    super: String
+    switch: String
+    synchronized: String
+    this: String
+    throw: String
+    throws: String
+    transient: String
+    try: String
+    void: String
+    volatile: String
+    while: String
+}
+
+type ReservedJavaKeywordAsObjectField {
+	# Parameters should also be protected
+    if(new: String, package: String, private: String): Human
+    implements: Human
+    import: Human
+    instanceof: Human
+    int: Human
+    interface: Human
+    long: Human
+    native: Human
+    new: Human
+    package: Human
+    private: Human
+    protected: Human
+    public: Human
+    return: Human
+    short: Human
+    static: Human
+    strictfp: Human
+    super: Human
+    switch: Human
+    synchronized: Human
+    this: Human
+    throw: Human
+    throws: Human
+    transient: Human
+    try: Human
+    void: Human
+    volatile: Human
+    while: Human
+}

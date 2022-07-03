@@ -9,11 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.EnumWithReservedJavaKeywordAsValues;
 import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
@@ -149,4 +151,53 @@ public class PartialQueryIT {
 		// Verification
 		assertEquals(2, ret);
 	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue139_EnumValueIf() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Go, go, go
+		EnumWithReservedJavaKeywordAsValues response = queryType.enumWithReservedJavaKeywordAsValues("");
+
+		// Verification
+		assertEquals(EnumWithReservedJavaKeywordAsValues._if, response);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue139_EnumValueListOfJavaReservedKeywords_withNullParams()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Go, go, go
+		List<EnumWithReservedJavaKeywordAsValues> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("",
+				null, null);
+		// the two parameters are null. Their default values are:
+		// param1: EnumWithReservedJavaKeywordAsValues=abstract,
+		// param2: [EnumWithReservedJavaKeywordAsValues]=[assert,boolean]
+		// Let's check that.
+
+		// Verification
+		assertNotNull(response);
+		assertEquals(3, response.size());
+		assertEquals(EnumWithReservedJavaKeywordAsValues._abstract, response.get(0));
+		assertEquals(EnumWithReservedJavaKeywordAsValues._assert, response.get(1));
+		assertEquals(EnumWithReservedJavaKeywordAsValues._boolean, response.get(2));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue139_EnumValueListOfJavaReservedKeywords()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Go, go, go
+		List<EnumWithReservedJavaKeywordAsValues> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("", //
+				/* param1 */EnumWithReservedJavaKeywordAsValues._return, //
+				/* param2 */ Arrays.asList(EnumWithReservedJavaKeywordAsValues._byte,
+						EnumWithReservedJavaKeywordAsValues._const));
+
+		// Verification
+		assertNotNull(response);
+		assertEquals(3, response.size());
+		assertEquals(EnumWithReservedJavaKeywordAsValues._return, response.get(0));
+		assertEquals(EnumWithReservedJavaKeywordAsValues._byte, response.get(1));
+		assertEquals(EnumWithReservedJavaKeywordAsValues._const, response.get(2));
+	}
+
 }

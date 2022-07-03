@@ -3,6 +3,7 @@ package org.allGraphQLCases.server.impl;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -52,12 +53,14 @@ public class DataFetchersDelegateHumanImpl implements DataFetchersDelegateHuman 
 	@Override
 	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Human source) {
 		//////////////////////////////////////////////////////////////////////////////////////////
-		// If a GraphQL variable of name "appearsIn" exists, we use it.
+		// If a GraphQL variable of name "appearsIn" exists, we use it. It's stored as a list of Strings
 		@SuppressWarnings("unchecked")
-		List<Episode> appearsIn = (List<Episode>) dataFetchingEnvironment.getVariables().get("appearsIn");
+		List<String> appearsIn = (List<String>) dataFetchingEnvironment.getVariables().get("appearsIn");
 
 		if (appearsIn != null)
-			return appearsIn;
+			return appearsIn.stream()//
+					.map(s -> Episode.fromGraphQlValue(s))//
+					.collect(Collectors.toList());
 		else
 			return generator.generateInstanceList(Episode.class, 2);
 	}

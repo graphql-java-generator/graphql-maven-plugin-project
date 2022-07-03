@@ -2,9 +2,6 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
-* Respond to issue 140:
-
-
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`
