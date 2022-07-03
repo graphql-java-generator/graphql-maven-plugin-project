@@ -225,7 +225,7 @@ public abstract class DocumentParser {
 	@PostConstruct
 	public void postConstruct() {
 
-		logger.debug("Starting DocumentParser's PostConstrut intialization");
+		logger.debug("Starting DocumentParser's PostConstruct intialization");
 
 		//////////////////////////////////////////////////////////////////////////////////////////
 		// Add of all GraphQL scalars: standard and customs depending on the use case
@@ -283,7 +283,7 @@ public abstract class DocumentParser {
 		deprecated.setStandard(true);
 		directives.add(deprecated);
 
-		logger.debug("Finished DocumentParser's PostConstrut intialization");
+		logger.debug("Finished DocumentParser's PostConstruct intialization");
 
 	}
 

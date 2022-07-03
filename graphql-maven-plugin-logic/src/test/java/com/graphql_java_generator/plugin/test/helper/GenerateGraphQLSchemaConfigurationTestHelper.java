@@ -7,17 +7,16 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 
  * @author etienne-sf
  */
 @Getter
-@Setter
 public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGraphQLSchemaConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
@@ -25,7 +24,7 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 
 	public boolean addRelayConnections = false;
 	public String packageName = "my.test.package";
-	public Integer maxTokens = 15000;
+	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	public File projectDir = new File("./graphql-maven-plugin-logic");
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;

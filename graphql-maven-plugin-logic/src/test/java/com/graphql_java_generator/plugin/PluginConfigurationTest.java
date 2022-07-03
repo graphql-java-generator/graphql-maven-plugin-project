@@ -16,22 +16,22 @@ class PluginConfigurationTest {
 	void testGetQuotedScanBasePackages() {
 		GraphQLConfigurationTestHelper pluginConfiguration = new GraphQLConfigurationTestHelper(this);
 
-		pluginConfiguration.setScanBasePackages(null);
+		pluginConfiguration.scanBasePackages = null;
 		assertEquals("", pluginConfiguration.getQuotedScanBasePackages());
 
-		pluginConfiguration.setScanBasePackages("");
+		pluginConfiguration.scanBasePackages = "";
 		assertEquals("", pluginConfiguration.getQuotedScanBasePackages());
 
-		pluginConfiguration.setScanBasePackages("null");
+		pluginConfiguration.scanBasePackages = "null";
 		assertEquals("", pluginConfiguration.getQuotedScanBasePackages());
 
-		pluginConfiguration.setScanBasePackages(" a. b . c");
+		pluginConfiguration.scanBasePackages = " a. b . c";
 		assertEquals(",\"a.b.c\"", pluginConfiguration.getQuotedScanBasePackages());
 
-		pluginConfiguration.setScanBasePackages("a.b.c");
+		pluginConfiguration.scanBasePackages = "a.b.c";
 		assertEquals(",\"a.b.c\"", pluginConfiguration.getQuotedScanBasePackages());
 
-		pluginConfiguration.setScanBasePackages("  a.b.c    ,    d.e.f  ");
+		pluginConfiguration.scanBasePackages = "  a.b.c    ,    d.e.f  ";
 		assertEquals(",\"a.b.c\",\"d.e.f\"", pluginConfiguration.getQuotedScanBasePackages());
 	}
 

@@ -247,15 +247,15 @@ class DocumentParser_Forum_Client_Test {
 	void check_GraphQLJavaRuntimeProperties() throws IOException {
 		// Preparation
 		// We need to activate the copy of the runtime sources
-		configuration.setCopyRuntimeSources(true);
+		configuration.copyRuntimeSources = true;
 		// Let's copy these file in a dedicated folder
 		File parentFile = new File(configuration.targetSourceFolder.getParentFile().getParentFile(),
 				"DocumentParser_Forum_Client_Test");
 		File targetParentFolder = new File(parentFile, "autoconfiguration_test");
 		File targetSourceFolder = new File(targetParentFolder, "java");
-		configuration.setTargetSourceFolder(targetSourceFolder);
+		configuration.targetSourceFolder = targetSourceFolder;
 		File targetResourceFolder = new File(targetParentFolder, "resources");
-		configuration.setTargetResourceFolder(targetResourceFolder);
+		configuration.targetResourceFolder = targetResourceFolder;
 
 		// Go, go, go
 		codeGenerator.copyRuntimeSources();

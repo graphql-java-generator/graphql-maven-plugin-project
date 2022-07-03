@@ -10,6 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -17,14 +18,12 @@ import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 
  * @author etienne-sf
  */
 @Getter
-@Setter
 public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 
 	// All getters are generated thanks to Lombok, see the '@Getter' class annotation
@@ -47,7 +46,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public String javaTypeForIDType = GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE;
 	public PluginMode mode = null;
 	public String packageName = "org.my.test.package";
-	public Integer maxTokens;
+	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	public Packaging packaging = null;
 	public File projectDir;// Initialized in the constructor
 	public String scanBasePackages = "null";
@@ -70,8 +69,6 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	 */
 	public GraphQLConfigurationTestHelper(Object caller) {
 		logger = LoggerFactory.getLogger(caller.getClass());
-
-		maxTokens = 200000; // Necessary for github and shopify schemas.
 
 		try {
 			projectDir = new File(".").getCanonicalPath().endsWith("graphql-maven-plugin-logic") ? //
