@@ -1,5 +1,5 @@
 -classpath
-'C:/APPLIRTE64/maven.repository/org/springframework/spring-core/5.3.5/spring-core-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-jcl/5.3.5/spring-jcl-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-beans/5.3.5/spring-beans-5.3.5.jar;C:/APPLIRTE64/maven.repository/com/graphql-java/graphql-java/17.3/graphql-java-17.3.jar;C:/APPLIRTE64/maven.repository/com/graphql-java/java-dataloader/3.1.2/java-dataloader-3.1.2.jar;C:/APPLIRTE64/maven.repository/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-context/5.3.5/spring-context-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-aop/5.3.5/spring-aop-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-expression/5.3.5/spring-expression-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar'
+'C:/APPLIRTE64/maven.repository/com/graphql-java/graphql-java/18.0/graphql-java-18.0.jar;C:/APPLIRTE64/maven.repository/com/graphql-java/java-dataloader/3.1.2/java-dataloader-3.1.2.jar;C:/APPLIRTE64/maven.repository/org/reactivestreams/reactive-streams/1.0.3/reactive-streams-1.0.3.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-context/5.3.5/spring-context-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-aop/5.3.5/spring-aop-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-beans/5.3.5/spring-beans-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-core/5.3.5/spring-core-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-jcl/5.3.5/spring-jcl-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/springframework/spring-expression/5.3.5/spring-expression-5.3.5.jar;C:/APPLIRTE64/maven.repository/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar'
 -encoding
 'UTF-8'
 -protected
@@ -16,10 +16,10 @@
 'UTF-8'
 -Xdoclint:none
 -doctitle
-'graphql-java-common-runtime 1.18.4 API'
+'graphql-java-common-runtime 1.18.7 API'
 -linkoffline
 'https://docs.oracle.com/javase/8/docs/api' 'Z:/target/checkout/graphql-java-common-runtime/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'graphql-java-common-runtime 1.18.4 API'
+'graphql-java-common-runtime 1.18.7 API'
