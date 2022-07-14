@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = { "org.forum.generated", "com.graphql_java_generator", "org.forum.server.jpa",
 		"org.forum.server.specific_code" })
 @EnableConfigurationProperties
+@Configuration(proxyBeanMethods = false)
 @SuppressWarnings("unused")
 public class GraphQLServerMain {
 

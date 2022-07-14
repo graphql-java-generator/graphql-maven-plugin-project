@@ -5,9 +5,9 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.HttpGraphQlClient;
@@ -21,9 +21,7 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
  * 
  * @author etienne-sf
  */
-@Configuration("graphQLJavaGeneratorAutoConfiguration") // The name of this bean will be springConfiguration
-@ComponentScan("org.forum.generated.util")
-@SuppressWarnings("unused")
+@AutoConfiguration
 public class GraphQLJavaGeneratorAutoConfiguration {
 
 	@Value(value = "${graphql.endpoint.url}")

@@ -3,10 +3,14 @@ This files describes the changes that have been brought to the generated code, a
 # Done
 
 * Report update on these templates:
-    * (to be finished) Remove BatchLoaderDelegateXxxxImpl (server_BatchLoaderDelegateImpl.vm.java)
-    * (to be finished) server_EntityController.vm.java
+    * (removed) Remove BatchLoaderDelegateXxxxImpl (server_BatchLoaderDelegateImpl.vm.java)
+    * (to be tested) server_EntityController.vm.java
         * Needs generateCodeDocumentParser.batchLoaders
+        * ?? Needs generateCodeDocumentParser.dataFetchers ??
     * (to be finished) No more GraphQLDataFetchers, and impact on the code parsing and generation
+    * (to be tested) Updated GraphQLServerMain
+    * (updated) GraphQLWiring
+    * (removed) server_WebSocketConfig.vm.java
 
 
 # TODO
@@ -21,6 +25,7 @@ List of things that must or should be done before the first release:
 * Allows not to use the generated DataFetchers. But the, what's the use of the plugin ? How to map the GraphQL requests to the POJO ?
 * What should be done with DataLoaders?
 * Remove the `GraphQLDataFetchers` class (and its template and template declaration)
+* When addRelayConnections is true, the GraphQLServerMain class would use the generated schema instead of the source one
 
 # To Document
 
