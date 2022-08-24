@@ -23,7 +23,6 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.WithID;
 import com.graphql_java_generator.domain.client.allGraphQLCases._break;
 import com.graphql_java_generator.domain.client.forum.Board;
 import com.graphql_java_generator.domain.client.forum.Post;
-import com.graphql_java_generator.domain.client.starwars.MutationTypeRootResponse;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Execution(ExecutionMode.CONCURRENT)
@@ -118,7 +117,7 @@ class QueryFieldTest {
 	@Test
 	void testIsScalar() throws GraphQLRequestPreparationException {
 		assertFalse(new QueryField(MyQueryTypeRootResponse.class, "query").isScalar());
-		assertFalse(new QueryField(MutationTypeRootResponse.class, "mutation").isScalar());
+		assertFalse(new QueryField(AnotherMutationTypeRootResponse.class, "mutation").isScalar());
 
 		assertFalse(new QueryField(MyQueryTypeResponse.class, "aBreak").isScalar());
 		assertFalse(new QueryField(Post.class, "author").isScalar());

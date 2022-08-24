@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.domain.client.forum.Board;
-import com.graphql_java_generator.domain.client.forum.MutationType;
-import com.graphql_java_generator.domain.client.forum.QueryType;
+import com.graphql_java_generator.domain.client.forum.Mutation;
+import com.graphql_java_generator.domain.client.forum.Query;
 import com.graphql_java_generator.domain.client.forum.Topic;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -21,8 +21,8 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ManualTest_Forum {
 
 	static String graphqlEndpoint = "http://localhost:8180/graphql";
-	static QueryType queryType = new QueryType(graphqlEndpoint);
-	static MutationType mutationType = new MutationType(graphqlEndpoint);
+	static Query queryType = new Query();
+	static Mutation mutationType = new Mutation();
 
 	public static void main(String[] args)
 			throws GraphQLRequestExecutionException, IOException, GraphQLRequestPreparationException {

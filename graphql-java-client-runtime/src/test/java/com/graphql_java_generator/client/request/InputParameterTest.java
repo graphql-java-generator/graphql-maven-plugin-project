@@ -26,10 +26,10 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.PostInput;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
-import com.graphql_java_generator.domain.client.starwars.Episode;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 import graphql.scalars.ExtendedScalars;
@@ -48,7 +48,7 @@ class InputParameterTest {
 	void test_InputParameter() {
 		String name = "aName";
 		String value = "a Value";
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "String", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
 	}
@@ -58,7 +58,7 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_str() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String value = "This is a string with two \"\", a 🎉 and some \r \t \\ to be escaped";
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "String", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
@@ -75,7 +75,7 @@ class InputParameterTest {
 			throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String value = "A double quote after an escaped antislash: \\\" (it's not the end of string)";
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "String", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
@@ -91,7 +91,7 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_oneTrailingAntiSlash() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String value = "One trailing antislash: \\";
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "String", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
@@ -107,7 +107,7 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_twoTrailingAntiSlahes() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String value = "One trailing antislash: \\\\";
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "String", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
@@ -123,7 +123,8 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_enum() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		Episode value = Episode.EMPIRE;
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "Episode", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "Episode", false, 0,
+				false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
@@ -135,7 +136,7 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_int() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		Integer value = 666;
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "Int", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "Int", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
@@ -147,7 +148,7 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_Float() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		Float value = (float) 666.666;
-		InputParameter param = InputParameter.newHardCodedParameter("",name, value, "Float", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "Float", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
@@ -159,7 +160,7 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_UUID() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		UUID id = UUID.fromString("00000000-0000-0000-0000-000000000012");
-		InputParameter param = InputParameter.newHardCodedParameter("",name, id, "ID", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, id, "ID", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(id, param.getValue(), "value");
@@ -183,7 +184,8 @@ class InputParameterTest {
 		postInput.setInput(topicPostInput);
 
 		String name = "anotherName";
-		InputParameter param = InputParameter.newHardCodedParameter("",name, postInput, "PostInput", false, 0, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, postInput, "PostInput", false, 0,
+				false);
 
 		// Verification
 		assertEquals(
@@ -196,7 +198,8 @@ class InputParameterTest {
 	void test_getValueForGraphqlQuery_ListEmptyString() throws GraphQLRequestExecutionException {
 		String name = "anotherName";
 		List<String> values = new ArrayList<>();
-		InputParameter param = InputParameter.newHardCodedParameter("",name, values, "String", false, 1, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, values, "String", false, 1,
+				false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
@@ -214,7 +217,8 @@ class InputParameterTest {
 		values.add(value1);
 		values.add(value2);
 		values.add(value3);
-		InputParameter param = InputParameter.newHardCodedParameter("",name, values, "String", false, 1, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, values, "String", false, 1,
+				false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
@@ -233,7 +237,8 @@ class InputParameterTest {
 		values.add(value1);
 		values.add(value2);
 		values.add(value3);
-		InputParameter param = InputParameter.newHardCodedParameter("",name, values, "Episode", false, 1, false);
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, values, "Episode", false, 1,
+				false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
@@ -245,7 +250,7 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_MandatoryBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter("", name, bindParameterName,
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter("MySchema", name, bindParameterName,
 				InputParameterType.MANDATORY, "Int", false, 0, false);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
@@ -269,7 +274,7 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_OptionalBindVariable_OK() throws GraphQLRequestExecutionException {
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter mandatoryBindParam = InputParameter.newBindParameter("", name, bindParameterName,
+		InputParameter mandatoryBindParam = InputParameter.newBindParameter("MySchema", name, bindParameterName,
 				InputParameterType.OPTIONAL, "Int", false, 0, false);
 
 		assertEquals(name, mandatoryBindParam.getName(), "name");
@@ -292,7 +297,7 @@ class InputParameterTest {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter customScalarInputParameter = InputParameter.newBindParameter("", name, bindParameterName,
+		InputParameter customScalarInputParameter = InputParameter.newBindParameter("MySchema", name, bindParameterName,
 				InputParameterType.OPTIONAL, GraphQLScalarTypeDate.Date.getName(), false, 0, false);
 
 		Map<String, Object> badValues = new HashMap<>();
@@ -314,13 +319,13 @@ class InputParameterTest {
 	void getValueForGraphqlQuery_BindParameter_CustomScalar_Long_OK() throws GraphQLRequestExecutionException {
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		// We add a specific custom scalar for this test, as this test is about the Long custom scalar
-		CustomScalarRegistryImpl.getCustomScalarRegistry("").registerGraphQLScalarType(ExtendedScalars.GraphQLLong,
-				Long.class);
+		CustomScalarRegistryImpl.getCustomScalarRegistry("MySchema")
+				.registerGraphQLScalarType(ExtendedScalars.GraphQLLong, Long.class);
 
 		GraphQLScalarType graphQLScalarTypeLong = ExtendedScalars.GraphQLLong;
 		String name = "aName";
 		String bindParameterName = "variableName";
-		InputParameter customScalarInputParameter = InputParameter.newBindParameter("", name, bindParameterName,
+		InputParameter customScalarInputParameter = InputParameter.newBindParameter("MySchema", name, bindParameterName,
 				InputParameterType.OPTIONAL, graphQLScalarTypeLong.getName(), false, 0, false);
 
 		Map<String, Object> badValues = new HashMap<>();
@@ -351,7 +356,7 @@ class InputParameterTest {
 		postInput.setFrom(getDateFromDifferentFormat("01-01-2020"));
 		postInput.setIn(asList(getDateFromDifferentFormat("01-02-2020"), getDateFromDifferentFormat("01-03-2020")));
 
-		InputParameter inputTypeInputParameter = InputParameter.newBindParameter("", name, bindParameterName,
+		InputParameter inputTypeInputParameter = InputParameter.newBindParameter("MySchema", name, bindParameterName,
 				InputParameterType.OPTIONAL, "PostInput", false, 0, false);
 
 		Map<String, Object> parameters = new HashMap<>();
@@ -372,8 +377,8 @@ class InputParameterTest {
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
 				.withTitle("a title").withContent("some content").build();
 		PostInput inputPost = PostInput.builder().withTopicId("22").withInput(topicPostInput).build();
-		InputParameter inputTypeInputParameter = InputParameter.newBindParameter("", "name", "bindParameterName",
-				InputParameterType.GRAPHQL_VARIABLE, "PostInput", false, 0, false);
+		InputParameter inputTypeInputParameter = InputParameter.newBindParameter("MySchema", "name",
+				"bindParameterName", InputParameterType.GRAPHQL_VARIABLE, "PostInput", false, 0, false);
 		Map<String, Object> params = new HashMap<>();
 		params.put("bindParameterName", inputPost);
 

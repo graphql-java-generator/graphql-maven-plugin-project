@@ -15,12 +15,11 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.MemberType;
 import com.graphql_java_generator.domain.client.forum.PostInput;
-import com.graphql_java_generator.domain.client.forum.QueryType;
+import com.graphql_java_generator.domain.client.forum.Query;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -28,12 +27,12 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_GraphQLVariables {
 
-	QueryType queryType;
+	Query queryType;
 	Map<String, Object> params;
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-		queryType = new QueryType("http://localhost:graphql");
+		queryType = new Query();
 
 		params = new HashMap<>();
 		params.put("memberName", "a member Name");
@@ -46,7 +45,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"mutation crPst  ($post: PostInput!, $anIntParam: Int){createPost(post: $post){id date author{id}}}");
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
@@ -60,17 +59,9 @@ class AbstractGraphQLRequest_GraphQLVariables {
 
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
-		assertEquals("{" //
-				+ "\"variables\":"//
-				+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
-				+ "\"anIntParam\":666}," //
-				+ "\"query\":\"mutation crPst($post:PostInput!,$anIntParam:Int){createPost(post:$post){id date author{id __typename} __typename}}\""
-				+ "}", graphQLRequest.buildRequestAsString(params));
-
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation crPst($post:PostInput!,$anIntParam:Int){createPost(post:$post){id date author{id __typename} __typename}}",
-				"{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a \\\"title\\\"\",\"content\":\"some content with an antislash: \\\\\"}},"
-						+ "\"anIntParam\":666}", //
+				params, //
 				null);
 	}
 
@@ -80,7 +71,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType, $aDate: Date!) {boards{topics{id}}}");
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
@@ -105,16 +96,9 @@ class AbstractGraphQLRequest_GraphQLVariables {
 
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
-		assertEquals("{" + //
-				"\"variables\":"//
-				+ "{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
-				+ "\"aCustomScalar\":[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]],\"aDate\":\"2021-10-11\",\"anEnum\":\"ADMIN\",\"anIntParam\":666},"
-				+ "\"query\":\"query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType,$aDate:Date!){boards{topics{id __typename} __typename}}\""//
-				+ "}", graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType,$aDate:Date!){boards{topics{id __typename} __typename}}",
-				"{\"post\":{\"topicId\":\"22\",\"input\":{\"authorId\":\"12\",\"date\":\"2021-03-13\",\"publiclyAvailable\":true,\"title\":\"a title\",\"content\":\"some content\"}},"
-						+ "\"aCustomScalar\":[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]],\"aDate\":\"2021-10-11\",\"anEnum\":\"ADMIN\",\"anIntParam\":666}", //
+				params, //
 				null);
 	}
 }

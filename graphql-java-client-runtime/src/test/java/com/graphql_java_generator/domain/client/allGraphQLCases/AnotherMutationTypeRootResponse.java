@@ -7,11 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
-import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.client.response.Error;
 
 
+@SuppressWarnings("unused")
 public class AnotherMutationTypeRootResponse {
 
 	@JsonProperty("data")

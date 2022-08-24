@@ -10,22 +10,30 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationContext;
 
+import com.graphql_java_generator.client.GraphQLMutationExecutor;
+import com.graphql_java_generator.client.GraphQLQueryExecutor;
+import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.SubscriptionClientReactiveImpl;
@@ -33,7 +41,7 @@ import com.graphql_java_generator.client.request.ObjectResponse;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCases;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCasesInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutorMySchema;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeResponse;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
 import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
@@ -42,9 +50,9 @@ import com.graphql_java_generator.domain.client.allGraphQLCases.FieldParameterIn
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeResponse;
-import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutorMySchema;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -66,12 +74,34 @@ public abstract class AbstractGraphQLRepositoryInvocationHandlerTest {
 	// java reflection
 	// So we use @Spy here, instead of @Mock
 	// CAUTION: the changes the way to stub method. Use doReturn().when(spy).methodToStub() syntax
+	@Mock
+	ApplicationContext applicationContext;
 	@Spy
-	protected MyQueryTypeExecutor spyQueryExecutor;
+	protected MyQueryTypeExecutorMySchema spyQueryExecutor;
 	@Spy
-	protected AnotherMutationTypeExecutor spyMutationExecutor;
+	protected AnotherMutationTypeExecutorMySchema spyMutationExecutor;
 	@Spy
-	protected TheSubscriptionTypeExecutor spySubscriptionExecutor;
+	protected TheSubscriptionTypeExecutorMySchema spySubscriptionExecutor;
+
+	@BeforeEach
+	void beforeEach() throws GraphQLRequestPreparationException {
+		// The invocationHandler is created, based on the given executors
+		Map<String, GraphQLQueryExecutor> queryExecutors = new HashMap<>();
+		queryExecutors.put("name1", spyQueryExecutor);
+		when(applicationContext.getBeansOfType(GraphQLQueryExecutor.class)).thenReturn(queryExecutors);
+
+		Map<String, GraphQLMutationExecutor> mutationExecutors = new HashMap<>();
+		mutationExecutors.put("name1", spyMutationExecutor);
+		when(applicationContext.getBeansOfType(GraphQLMutationExecutor.class)).thenReturn(mutationExecutors);
+
+		Map<String, GraphQLSubscriptionExecutor> subscriptionExecutors = new HashMap<>();
+		subscriptionExecutors.put("name1", spySubscriptionExecutor);
+		when(applicationContext.getBeansOfType(GraphQLSubscriptionExecutor.class)).thenReturn(subscriptionExecutors);
+
+		invocationHandler = new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCase>(
+				GraphQLRepositoryTestCase.class, applicationContext);
+		graphQLRepository = invocationHandler.getProxyInstance();
+	}
 
 	/** no requestName: the method name is the field name of the query type in the GraphQL schema */
 	@SuppressWarnings("unchecked")

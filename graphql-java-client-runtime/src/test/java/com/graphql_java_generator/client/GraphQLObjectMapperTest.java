@@ -119,9 +119,8 @@ class GraphQLObjectMapperTest {
 				AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("commentsAlias") instanceof List);
-		assertEquals(0, ((List<?>) test.aliasValues.get("commentsAlias")).size());
+		assertTrue(test.getAliasValue("commentsAlias") instanceof List);
+		assertEquals(0, ((List<?>) test.getAliasValue("commentsAlias")).size());
 	}
 
 	@Test
@@ -135,11 +134,10 @@ class GraphQLObjectMapperTest {
 				.readValue("{\"commentsAlias\":[\"my str\"], \"__typename\":\"AllFieldCases\"}", AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("commentsAlias") instanceof List);
-		assertEquals(1, ((List<?>) test.aliasValues.get("commentsAlias")).size());
-		assertTrue(((List<?>) test.aliasValues.get("commentsAlias")).get(0) instanceof String);
-		assertEquals("my str", ((List<?>) test.aliasValues.get("commentsAlias")).get(0));
+		assertTrue(test.getAliasValue("commentsAlias") instanceof List);
+		assertEquals(1, ((List<?>) test.getAliasValue("commentsAlias")).size());
+		assertTrue(((List<?>) test.getAliasValue("commentsAlias")).get(0) instanceof String);
+		assertEquals("my str", ((List<?>) test.getAliasValue("commentsAlias")).get(0));
 	}
 
 	@Test
@@ -156,11 +154,10 @@ class GraphQLObjectMapperTest {
 				+ "}", AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("friendsAlias") instanceof List);
-		assertEquals(1, ((List<?>) test.aliasValues.get("friendsAlias")).size());
-		assertTrue(((List<?>) test.aliasValues.get("friendsAlias")).get(0) instanceof Human);
-		Human verif = (Human) ((List<?>) test.aliasValues.get("friendsAlias")).get(0);
+		assertTrue(test.getAliasValue("friendsAlias") instanceof List);
+		assertEquals(1, ((List<?>) test.getAliasValue("friendsAlias")).size());
+		assertTrue(((List<?>) test.getAliasValue("friendsAlias")).get(0) instanceof Human);
+		Human verif = (Human) ((List<?>) test.getAliasValue("friendsAlias")).get(0);
 		assertEquals("the name", verif.getName());
 	}
 
@@ -178,11 +175,10 @@ class GraphQLObjectMapperTest {
 				+ "}", Human.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("appearsInAlias") instanceof List);
-		assertEquals(2, ((List<?>) test.aliasValues.get("appearsInAlias")).size());
+		assertTrue(test.getAliasValue("appearsInAlias") instanceof List);
+		assertEquals(2, ((List<?>) test.getAliasValue("appearsInAlias")).size());
 		assertEquals(Episode.NEWHOPE, ((List<?>) test.getAliasValue("appearsInAlias")).get(0));
-		assertEquals(Episode.JEDI, ((List<?>) test.aliasValues.get("appearsInAlias")).get(1));
+		assertEquals(Episode.JEDI, ((List<?>) test.getAliasValue("appearsInAlias")).get(1));
 	}
 
 	@Test
@@ -200,11 +196,10 @@ class GraphQLObjectMapperTest {
 				+ "}", AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("datesAlias") instanceof List);
-		assertEquals(2, ((List<?>) test.aliasValues.get("datesAlias")).size());
-		assertEquals(date1, ((List<?>) test.aliasValues.get("datesAlias")).get(0));
-		assertEquals(date2, ((List<?>) test.aliasValues.get("datesAlias")).get(1));
+		assertTrue(test.getAliasValue("datesAlias") instanceof List);
+		assertEquals(2, ((List<?>) test.getAliasValue("datesAlias")).size());
+		assertEquals(date1, ((List<?>) test.getAliasValue("datesAlias")).get(0));
+		assertEquals(date2, ((List<?>) test.getAliasValue("datesAlias")).get(1));
 	}
 
 	@Test
@@ -219,16 +214,15 @@ class GraphQLObjectMapperTest {
 				AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("commentsAlias") instanceof List);
+		assertTrue(test.getAliasValue("commentsAlias") instanceof List);
 		//
-		assertEquals(2, ((List<?>) test.aliasValues.get("commentsAlias")).size());
+		assertEquals(2, ((List<?>) test.getAliasValue("commentsAlias")).size());
 		//
-		assertTrue(((List<?>) test.aliasValues.get("commentsAlias")).get(0) instanceof String);
-		assertEquals("my str1", ((List<?>) test.aliasValues.get("commentsAlias")).get(0));
+		assertTrue(((List<?>) test.getAliasValue("commentsAlias")).get(0) instanceof String);
+		assertEquals("my str1", ((List<?>) test.getAliasValue("commentsAlias")).get(0));
 		//
-		assertTrue(((List<?>) test.aliasValues.get("commentsAlias")).get(1) instanceof String);
-		assertEquals("my str2", ((List<?>) test.aliasValues.get("commentsAlias")).get(1));
+		assertTrue(((List<?>) test.getAliasValue("commentsAlias")).get(1) instanceof String);
+		assertEquals("my str2", ((List<?>) test.getAliasValue("commentsAlias")).get(1));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -244,9 +238,8 @@ class GraphQLObjectMapperTest {
 				AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("matrixAlias") instanceof List);
-		List<?> mainList = (List<?>) test.aliasValues.get("matrixAlias");
+		assertTrue(test.getAliasValue("matrixAlias") instanceof List);
+		List<?> mainList = (List<?>) test.getAliasValue("matrixAlias");
 		//
 		assertEquals(3, mainList.size(), "3 subsublists");
 		//
@@ -279,10 +272,8 @@ class GraphQLObjectMapperTest {
 
 		// Verification
 		assertEquals("the root str value", test.getForname());
-
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertTrue(test.aliasValues.get("oneWithIdSubTypeAlias") instanceof AllFieldCasesWithIdSubtype);
-		AllFieldCasesWithIdSubtype verif = (AllFieldCasesWithIdSubtype) test.aliasValues.get("oneWithIdSubTypeAlias");
+		assertTrue(test.getAliasValue("oneWithIdSubTypeAlias") instanceof AllFieldCasesWithIdSubtype);
+		AllFieldCasesWithIdSubtype verif = (AllFieldCasesWithIdSubtype) test.getAliasValue("oneWithIdSubTypeAlias");
 		assertEquals("the alias's str value", verif.getName());
 	}
 
@@ -298,8 +289,7 @@ class GraphQLObjectMapperTest {
 				AllFieldCases.class);
 
 		// Verification
-		assertEquals(1, test.aliasValues.keySet().size());
-		assertEquals("a String", test.aliasValues.get("nameAlias"));
+		assertEquals("a String", test.getAliasValue("nameAlias"));
 		assertEquals("a String", test.getAliasValue("nameAlias"));
 	}
 

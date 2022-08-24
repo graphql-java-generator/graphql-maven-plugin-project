@@ -15,23 +15,22 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.domain.client.forum.Board;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
-import com.graphql_java_generator.domain.client.forum.QueryType;
+import com.graphql_java_generator.domain.client.forum.Query;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class AbstractGraphQLRequest_ForumTest {
 
-	QueryType queryType;
+	Query queryType;
 	Map<String, Object> params;
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-		queryType = new QueryType("http://localhost:graphql");
+		queryType = new Query();
 
 		params = new HashMap<>();
 		params.put("memberName", "a member Name");
@@ -73,14 +72,7 @@ class AbstractGraphQLRequest_ForumTest {
 		assertEquals("sinceParam", posts.inputParameters.get(i).bindParameterName);
 		assertEquals(InputParameterType.OPTIONAL, posts.inputParameters.get(i).type);
 		//
-		assertEquals("{\"query\":\"query{boards" //
-				+ "{id name publiclyAvailable"//
-				+ " topics{id date author{id name email type __typename} nbPosts"
-				+ " posts(memberName:\\\"Me!\\\",since:\\\"1900-10-24\\\"){date author{name email type __typename} __typename} __typename} __typename}" //
-				+ "}\"}", //
-				graphQLRequest.buildRequestAsString(params));
-
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "query{boards" //
 				+ "{id name publiclyAvailable"//
 				+ " topics{id date author{id name email type __typename} nbPosts"
@@ -154,12 +146,7 @@ class AbstractGraphQLRequest_ForumTest {
 		assertEquals(InputParameterType.MANDATORY, postsInputParameters.get(i).type);
 
 		// Check of the built request
-		assertEquals("{\"query\":\"query{boards"//
-				+ "{id name publiclyAvailable topics{id date author{id name email type __typename} nbPosts "
-				+ "posts(memberName:\\\"a member Name\\\",since:\\\"1900-10-24\\\"){date author{name email type __typename} __typename} __typename} __typename}"
-				+ "}\"}", //
-				graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "query{boards"//
 				+ "{id name publiclyAvailable topics{id date author{id name email type __typename} nbPosts "
 				+ "posts(memberName:\"a member Name\",since:\"1900-10-24\"){date author{name email type __typename} __typename} __typename} __typename}}", //
@@ -200,14 +187,12 @@ class AbstractGraphQLRequest_ForumTest {
 	void testBuild_fullQueryWithQueryName()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest("query aQueryName {boards{topics{id}}}");
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null, "query aQueryName {boards{topics{id}}}");
 		Map<String, Object> params = new HashMap<>();
 
 		// Verification
 		assertEquals("aQueryName", graphQLRequest.getRequestName());
-		assertEquals("{\"query\":\"query aQueryName{boards{topics{id __typename} __typename}}\"}",
-				graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "query aQueryName{boards{topics{id __typename} __typename}}", //
 				null, null);
 	}

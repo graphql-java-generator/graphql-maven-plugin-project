@@ -13,7 +13,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
@@ -47,7 +46,7 @@ class AliasesTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_scalarInputParameters() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		MyQueryType queryType = new MyQueryType("http://localhost");
+		MyQueryType queryType = new MyQueryType();
 		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getABreakResponseBuilder()
 				.withQueryResponseDef("{myAlias     :   \ncase(test: DOUBLE)}").build();
@@ -72,7 +71,7 @@ class AliasesTest {
 	void testBuild_Partial_createHuman()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
-		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		AnotherMutationType mutationType = new AnotherMutationType();
 		params = new HashMap<>();
 		params.put("anotherMutationTypeCreateHumanHuman", input);
 		params.put("value", "the mutation value");
@@ -85,13 +84,7 @@ class AliasesTest {
 				.build();
 
 		// Verification
-		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
-				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn aliasFriends:friends{aliasId2:id aliasName2:name __typename} __typename}}" //
-				+ "\"}", //
-				graphQLRequest.buildRequestAsString(params));
-
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
 				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn aliasFriends:friends{aliasId2:id aliasName2:name __typename} __typename}}", //
@@ -103,7 +96,7 @@ class AliasesTest {
 	void testBuild_Full_createHuman_withBuilder()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
-		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		AnotherMutationType mutationType = new AnotherMutationType();
 
 		// Go, go, go
 		@SuppressWarnings("deprecation")
@@ -115,14 +108,7 @@ class AliasesTest {
 		).build();
 
 		// Verification
-		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
-				+ "{id name appearsIn friends{id name __typename} __typename} " //
-				+ "createHuman2:createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
-				+ "{a1:id a2:name a3:appearsIn a4:friends{a5:id a6:name __typename} __typename}}" //
-				+ "\"}", //
-				graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
 				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename} " //

@@ -13,16 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
+import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
+import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.domain.client.allGraphQLCases._break;
 import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.Post;
 import com.graphql_java_generator.domain.client.forum.PostInput;
-import com.graphql_java_generator.domain.client.starwars.Character;
-import com.graphql_java_generator.domain.client.starwars.Droid;
-import com.graphql_java_generator.domain.client.starwars.Episode;
-import com.graphql_java_generator.domain.client.starwars.Human;
-import com.graphql_java_generator.domain.client.starwars.QueryType;
 import com.graphql_java_generator.domain.client.starwars.scalar.ScalarTest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -214,33 +214,35 @@ class GraphqlClientUtilsTest {
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Wrong field name, for interface and classes (shouldBeScalar : null, true, false)
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", null, QueryType.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", null, MyQueryType.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", true, QueryType.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", true, MyQueryType.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", false, QueryType.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("wrong", false, MyQueryType.class));
 		assertTrue(e.getMessage().contains("wrong"), "wrong");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Correct field name, for interface and classes (shouldBeScalar : null, true, false)
 		e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> graphqlClientUtils.checkFieldOfGraphQLType("hero", true, QueryType.class));
+				() -> graphqlClientUtils.checkFieldOfGraphQLType("hero", true, MyQueryType.class));
 		assertTrue(e.getMessage().contains("hero"), "hero");
 
-		assertEquals(Character.class, graphqlClientUtils.checkFieldOfGraphQLType("hero", null, QueryType.class),
-				"hero : scalar OK");
-		assertEquals(Character.class, graphqlClientUtils.checkFieldOfGraphQLType("hero", false, QueryType.class),
-				"hero : scalar OK");
+		assertEquals(Character.class,
+				graphqlClientUtils.checkFieldOfGraphQLType("withOneMandatoryParam", null, MyQueryType.class),
+				"withOneMandatoryParam : scalar null");
+		assertEquals(Character.class,
+				graphqlClientUtils.checkFieldOfGraphQLType("withOneMandatoryParam", false, MyQueryType.class),
+				"withOneMandatoryParam : scalar false");
 
 		// With a query that returns a scalar
-		assertEquals(Integer.class, graphqlClientUtils.checkFieldOfGraphQLType("nbBoards", null,
-				com.graphql_java_generator.domain.client.forum.QueryType.class), "nbBoards : scalar OK");
-		assertEquals(Integer.class, graphqlClientUtils.checkFieldOfGraphQLType("nbBoards", true,
-				com.graphql_java_generator.domain.client.forum.QueryType.class), "nbBoards : scalar OK");
+		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("instanceof", null, MyQueryType.class),
+				"instanceof: scalar OK");
+		assertEquals(String.class, graphqlClientUtils.checkFieldOfGraphQLType("instanceof", true, MyQueryType.class),
+				"instanceof: scalar OK");
 
 	}
 
@@ -280,7 +282,7 @@ class GraphqlClientUtilsTest {
 		// When
 		Field field = Post.class.getDeclaredField("date");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "");
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "MySchema");
 
 		// Then
 		assertNotNull(graphQlScalarType);
@@ -294,7 +296,7 @@ class GraphqlClientUtilsTest {
 		// When
 		Field field = PostInput.class.getDeclaredField("from");
 
-		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "");
+		GraphQLScalarType graphQlScalarType = graphqlClientUtils.getGraphQLCustomScalarType(field, "MySchema");
 
 		// Then
 		assertNotNull(graphQlScalarType);
@@ -322,9 +324,9 @@ class GraphqlClientUtilsTest {
 	public void test_getClass() {
 		String packageName = "com.graphql_java_generator.domain.client.allGraphQLCases";
 
-		assertEquals("java.lang.Integer", graphqlClientUtils.getClass(packageName, "Integer", "").getName());
+		assertEquals("java.lang.Integer", graphqlClientUtils.getClass(packageName, "Integer", "MySchema").getName());
 		assertEquals("com.graphql_java_generator.domain.client.allGraphQLCases.Human",
-				graphqlClientUtils.getClass(packageName, "Human", "").getName());
-		assertEquals("java.util.Date", graphqlClientUtils.getClass(packageName, "Date", "").getName());
+				graphqlClientUtils.getClass(packageName, "Human", "MySchema").getName());
+		assertEquals("java.util.Date", graphqlClientUtils.getClass(packageName, "Date", "MySchema").getName());
 	}
 }

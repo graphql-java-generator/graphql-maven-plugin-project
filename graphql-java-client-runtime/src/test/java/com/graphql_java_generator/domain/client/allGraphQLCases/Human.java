@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.graphql_java_generator.annotation.GraphQLInputParameters;
@@ -12,7 +15,6 @@ import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
-import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 
 /**
  *
@@ -21,29 +23,31 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @GraphQLObjectType("Human")
+@JsonInclude(Include.NON_NULL)
+@SuppressWarnings("unused")
 public class Human implements Character, Commented, WithID, AnyCharacter {
 
 	/**
-	 * This map contains the deserialiazed values for the alias, as parsed from the json response from the GraphQL
+	 * This map contains the deserialized values for the alias, as parsed from the json response from the GraphQL
 	 * server. The key is the alias name, the value is the deserialiazed value (taking into account custom scalars,
 	 * lists, ...)
 	 */
 	@com.graphql_java_generator.annotation.GraphQLIgnore
-	public Map<String, Object> aliasValues = new HashMap<>();
+	Map<String, Object> aliasValues = new HashMap<>();
 
 	public Human() {
 		// No action
 	}
 
 	@JsonProperty("id")
-	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = String.class)
-	String id;
+	@GraphQLScalar(fieldName = "id", graphQLTypeSimpleName = "ID", javaClass = java.lang.String.class)
+	java.lang.String id;
 
 	@JsonProperty("name")
 	@GraphQLInputParameters(names = { "uppercase" }, types = { "Boolean" }, mandatories = { false }, listDepths = {
 			0 }, itemsMandatory = { false })
-	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String", javaClass = String.class)
-	String name;
+	@GraphQLScalar(fieldName = "name", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
+	java.lang.String name;
 
 	@JsonProperty("bestFriend")
 	@GraphQLNonScalar(fieldName = "bestFriend", graphQLTypeSimpleName = "Character", javaClass = Character.class)
@@ -55,13 +59,13 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	List<Character> friends;
 
 	@JsonProperty("nbComments")
-	@GraphQLScalar(fieldName = "nbComments", graphQLTypeSimpleName = "Int", javaClass = Integer.class)
-	Integer nbComments;
+	@GraphQLScalar(fieldName = "nbComments", graphQLTypeSimpleName = "Int", javaClass = java.lang.Integer.class)
+	java.lang.Integer nbComments;
 
 	@JsonProperty("comments")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListString.class)
-	@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String", javaClass = String.class)
-	List<String> comments;
+	@GraphQLScalar(fieldName = "comments", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
+	List<java.lang.String> comments;
 
 	@JsonProperty("appearsIn")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListEpisode.class)
@@ -69,30 +73,52 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	List<Episode> appearsIn;
 
 	@JsonProperty("homePlanet")
-	@GraphQLScalar(fieldName = "homePlanet", graphQLTypeSimpleName = "String", javaClass = String.class)
-	String homePlanet;
+	@GraphQLScalar(fieldName = "homePlanet", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
+	java.lang.String homePlanet;
 
 	@JsonProperty("__typename")
-	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = String.class)
-	String __typename;
+	@GraphQLScalar(fieldName = "__typename", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class)
+	java.lang.String __typename;
 
+	/**
+	 */
 	@Override
-	public void setId(String id) {
-		this.id = id;
+	@JsonIgnore
+	public void setId(java.lang.String id) {
+		if (id == null || id instanceof java.lang.String) {
+			this.id = id;
+		} else {
+			throw new IllegalArgumentException(
+					"The given id should be an instance of java.lang.String, but is an instance of "
+							+ id.getClass().getName());
+		}
 	}
 
+	/**
+	 */
 	@Override
-	public String getId() {
+	public java.lang.String getId() {
 		return id;
 	}
 
+	/**
+	 */
 	@Override
-	public void setName(String name) {
-		this.name = name;
+	@JsonIgnore
+	public void setName(java.lang.String name) {
+		if (name == null || name instanceof java.lang.String) {
+			this.name = name;
+		} else {
+			throw new IllegalArgumentException(
+					"The given name should be an instance of java.lang.String, but is an instance of "
+							+ name.getClass().getName());
+		}
 	}
 
+	/**
+	 */
 	@Override
-	public String getName() {
+	public java.lang.String getName() {
 		return name;
 	}
 
@@ -104,61 +130,142 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 		return bestFriend;
 	}
 
+	/**
+	 */
 	@Override
+	@SuppressWarnings("unchecked")
+	@JsonIgnore
 	public void setFriends(List<Character> friends) {
-		this.friends = friends;
+		if (friends == null || friends instanceof List) {
+			this.friends = friends;
+		} else {
+			throw new IllegalArgumentException(
+					"The given friends should be an instance of List<Character>, but is an instance of "
+							+ friends.getClass().getName());
+		}
 	}
 
+	/**
+	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Character> getFriends() {
 		return friends;
 	}
 
-	@Override
-	public void setNbComments(Integer nbComments) {
-		this.nbComments = nbComments;
+	/**
+	 */
+	@JsonIgnore
+	public List<Character> getFriendsCharacter() {
+		return friends;
 	}
 
+	/**
+	 */
 	@Override
-	public Integer getNbComments() {
+	@JsonIgnore
+	public void setNbComments(java.lang.Integer nbComments) {
+		if (nbComments == null || nbComments instanceof java.lang.Integer) {
+			this.nbComments = nbComments;
+		} else {
+			throw new IllegalArgumentException(
+					"The given nbComments should be an instance of java.lang.Integer, but is an instance of "
+							+ nbComments.getClass().getName());
+		}
+	}
+
+	/**
+	 */
+	@Override
+	public java.lang.Integer getNbComments() {
 		return nbComments;
 	}
 
+	/**
+	 */
 	@Override
-	public void setComments(List<String> comments) {
-		this.comments = comments;
+	@SuppressWarnings("unchecked")
+	@JsonIgnore
+	public void setComments(List<java.lang.String> comments) {
+		if (comments == null || comments instanceof List) {
+			this.comments = comments;
+		} else {
+			throw new IllegalArgumentException(
+					"The given comments should be an instance of List<java.lang.String>, but is an instance of "
+							+ comments.getClass().getName());
+		}
 	}
 
+	/**
+	 */
 	@Override
-	public List<String> getComments() {
+	@SuppressWarnings("unchecked")
+	public List<java.lang.String> getComments() {
 		return comments;
 	}
 
-	@Override
-	public void setAppearsIn(List<Episode> appearsIn) {
-		this.appearsIn = appearsIn;
+	/**
+	 */
+	public List<java.lang.String> getCommentsString() {
+		return comments;
 	}
 
+	/**
+	 */
 	@Override
+	@SuppressWarnings("unchecked")
+	@JsonIgnore
+	public void setAppearsIn(List<Episode> appearsIn) {
+		if (appearsIn == null || appearsIn instanceof List) {
+			this.appearsIn = appearsIn;
+		} else {
+			throw new IllegalArgumentException(
+					"The given appearsIn should be an instance of List<Episode>, but is an instance of "
+							+ appearsIn.getClass().getName());
+		}
+	}
+
+	/**
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
 	public List<Episode> getAppearsIn() {
 		return appearsIn;
 	}
 
-	public void setHomePlanet(String homePlanet) {
+	/**
+	 */
+	@JsonIgnore
+	public List<Episode> getAppearsInEpisode() {
+		return appearsIn;
+	}
+
+	public void setHomePlanet(java.lang.String homePlanet) {
 		this.homePlanet = homePlanet;
 	}
 
-	public String getHomePlanet() {
+	public java.lang.String getHomePlanet() {
 		return homePlanet;
 	}
 
+	/**
+	 */
 	@Override
-	public void set__typename(String __typename) {
-		this.__typename = __typename;
+	@JsonIgnore
+	public void set__typename(java.lang.String __typename) {
+		if (__typename == null || __typename instanceof java.lang.String) {
+			this.__typename = __typename;
+		} else {
+			throw new IllegalArgumentException(
+					"The given __typename should be an instance of java.lang.String, but is an instance of "
+							+ __typename.getClass().getName());
+		}
 	}
 
+	/**
+	 */
 	@Override
-	public String get__typename() {
+	public java.lang.String get__typename() {
 		return __typename;
 	}
 
@@ -182,16 +289,10 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	 * 
 	 * @param alias
 	 * @return
-	 * @throws GraphQLRequestExecutionException
-	 *             If the value can not be parsed
 	 */
 	@Override
-	public Object getAliasValue(String alias) throws GraphQLRequestExecutionException {
-		Object value = aliasValues.get(alias);
-		if (value instanceof GraphQLRequestExecutionException)
-			throw (GraphQLRequestExecutionException) value;
-		else
-			return value;
+	public Object getAliasValue(String alias) {
+		return aliasValues.get(alias);
 	}
 
 	@Override
@@ -207,24 +308,25 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 	}
 
 	/**
-	 * Builder
+	 * The Builder that helps building instance of this POJO. You can get an instance of this class, by calling the
+	 * {@link #builder()}
 	 */
 	public static class Builder {
-		private String id;
-		private String name;
+		private java.lang.String id;
+		private java.lang.String name;
 		private Character bestFriend;
 		private List<Character> friends;
-		private Integer nbComments;
-		private List<String> comments;
+		private java.lang.Integer nbComments;
+		private List<java.lang.String> comments;
 		private List<Episode> appearsIn;
-		private String homePlanet;
+		private java.lang.String homePlanet;
 
-		public Builder withId(String id) {
+		public Builder withId(java.lang.String id) {
 			this.id = id;
 			return this;
 		}
 
-		public Builder withName(String name) {
+		public Builder withName(java.lang.String name) {
 			this.name = name;
 			return this;
 		}
@@ -239,12 +341,12 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 			return this;
 		}
 
-		public Builder withNbComments(Integer nbComments) {
+		public Builder withNbComments(java.lang.Integer nbComments) {
 			this.nbComments = nbComments;
 			return this;
 		}
 
-		public Builder withComments(List<String> comments) {
+		public Builder withComments(List<java.lang.String> comments) {
 			this.comments = comments;
 			return this;
 		}
@@ -254,7 +356,7 @@ public class Human implements Character, Commented, WithID, AnyCharacter {
 			return this;
 		}
 
-		public Builder withHomePlanet(String homePlanet) {
+		public Builder withHomePlanet(java.lang.String homePlanet) {
 			this.homePlanet = homePlanet;
 			return this;
 		}

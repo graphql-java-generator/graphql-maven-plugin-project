@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.graphql.client.GraphQlClient;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
@@ -22,12 +23,13 @@ import com.graphql_java_generator.util.GraphqlUtils;
  * @see <a href=
  *      "https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
+@SuppressWarnings("unused")
 public class GraphQLRequest extends ObjectResponse {
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(GraphQLRequest.class);
 
-	final com.graphql_java_generator.util.GraphqlUtils graphqlUtils = new GraphqlUtils();
+	final GraphqlUtils graphqlUtils = new GraphqlUtils();
 	final GraphqlClientUtils graphqlClientUtils = new GraphqlClientUtils();
 
 	// This initialization must occur before the execution of the constructors, in order to properly parse the GraphQL
@@ -37,13 +39,14 @@ public class GraphQLRequest extends ObjectResponse {
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
-	public GraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
-		super("", graphQLRequest);
+	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest)
+			throws GraphQLRequestPreparationException {
+		super(graphQlClient, "MySchema", graphQLRequest);
 	}
 
-	public GraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
+	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
-		super("", graphQLRequest, requestType, queryName, inputParams);
+		super(graphQlClient, "MySchema", graphQLRequest, requestType, queryName, inputParams);
 	}
 
 	/**
@@ -81,6 +84,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MyQueryTypeResponse execQuery(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
 		logExecution(RequestType.mutation, parameters);
 		return exec(MyQueryTypeResponse.class, parameters);
@@ -120,6 +124,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public MyQueryTypeResponse execQuery(Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return exec(MyQueryTypeResponse.class, graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
 	}
@@ -159,6 +164,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public AnotherMutationTypeResponse execMutation(Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		logExecution(RequestType.mutation, parameters);
@@ -199,6 +205,7 @@ public class GraphQLRequest extends ObjectResponse {
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings("deprecation")
 	public AnotherMutationTypeResponse execMutation(Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		return exec(AnotherMutationTypeResponse.class,
 				graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));

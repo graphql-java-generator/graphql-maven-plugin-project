@@ -6,6 +6,7 @@ package com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Proxy;
 import java.util.Map;
@@ -15,27 +16,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.graphql.client.GraphQlClient;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryInvocationHandler;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryTestHelper;
 import com.graphql_java_generator.client.request.ObjectResponse;
-import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutorMySchema;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
 import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
-import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutor;
-import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutor;
+import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema;
+import com.graphql_java_generator.domain.client.allGraphQLCases.TheSubscriptionTypeExecutorMySchema;
 import com.graphql_java_generator.domain.client.forum.Member;
-import com.graphql_java_generator.domain.client.forum.MutationTypeExecutor;
-import com.graphql_java_generator.domain.client.forum.QueryTypeExecutor;
+import com.graphql_java_generator.domain.client.forum.MutationExecutorMySchema;
+import com.graphql_java_generator.domain.client.forum.QueryExecutorMySchema;
 import com.graphql_java_generator.domain.client.forum.Topic;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -56,11 +60,15 @@ public class GraphQLTwoRepositoriesSpringIntegrationTest {
 
 	@Configuration
 	@PropertySource("classpath:/application_two_graphql_servers.properties")
-	@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutor.class,
-			QueryTypeExecutor.class })
+	@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorMySchema.class,
+			QueryExecutorMySchema.class })
 	@EnableGraphQLRepositories({ "com.graphql_java_generator.it_tests.spring_graphql_two_graphql_repos.ok" })
 	public static class SpringConfigTwoServers {
-
+		@Bean
+		@Qualifier("MySchema")
+		GraphQlClient graphQlClient() {
+			return mock(GraphQlClient.class);
+		}
 	}
 
 	@Autowired
@@ -77,13 +85,13 @@ public class GraphQLTwoRepositoriesSpringIntegrationTest {
 	// So we use @Spy here, instead of @Mock
 	// CAUTION: the changes the way to stub method. Use doReturn().when(spy).methodToStub() syntax
 	@SpyBean
-	MyQueryTypeExecutor spyQueryExecutor; // allGraphQLCases
+	MyQueryTypeExecutorMySchema spyQueryExecutor; // allGraphQLCases
 	@SpyBean
-	AnotherMutationTypeExecutor spyMutationExecutor;// allGraphQLCases
+	AnotherMutationTypeExecutorMySchema spyMutationExecutor;// allGraphQLCases
 	@SpyBean
-	TheSubscriptionTypeExecutor spySubscriptionExecutor;// allGraphQLCases
+	TheSubscriptionTypeExecutorMySchema spySubscriptionExecutor;// allGraphQLCases
 	@SpyBean
-	MutationTypeExecutor spyForumMutationExecutor;// Forum
+	MutationExecutorMySchema spyForumMutationExecutor;// Forum
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach

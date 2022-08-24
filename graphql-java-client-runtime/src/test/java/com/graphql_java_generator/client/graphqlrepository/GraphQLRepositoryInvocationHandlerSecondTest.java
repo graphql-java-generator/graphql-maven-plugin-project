@@ -123,7 +123,9 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 				e.getMessage().contains(
 						"com.graphql_java_generator.client.graphqlrepository.GraphQLRepositoryTestCaseBadExecutor"),
 				e.getMessage());
-		assertTrue(e.getMessage().contains("com.graphql_java_generator.domain.client.starwars.QueryTypeExecutor"),
+		assertTrue(
+				e.getMessage().contains(
+						"com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryTypeExecutorMySchema"),
 				e.getMessage());
 	}
 

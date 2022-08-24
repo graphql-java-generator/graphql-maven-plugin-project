@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +18,10 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graphql_java_generator.client.request.AbstractGraphQLRequest.Payload;
+import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
-import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
@@ -35,6 +37,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 	HumanInput input;
 	Map<String, Object> params = new HashMap<>();
+	static ObjectMapper objectMapper = new ObjectMapper();
 
 	@BeforeEach
 	void setup() {
@@ -55,7 +58,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_scalarInputParameters() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		MyQueryType queryType = new MyQueryType("http://localhost");
+		MyQueryType queryType = new MyQueryType();
 		@SuppressWarnings("deprecation")
 		AbstractGraphQLRequest graphQLRequest = queryType.getABreakResponseBuilder()
 				.withQueryResponseDef("{case(test: DOUBLE)}").build();
@@ -81,7 +84,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	void testBuild_Partial_createHuman()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
-		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		AnotherMutationType mutationType = new AnotherMutationType();
 		params = new HashMap<>();
 		params.put("anotherMutationTypeCreateHumanHuman", input);
 		params.put("value", "the mutation value");
@@ -94,24 +97,19 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
-		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
-				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\"}", //
-				graphQLRequest.buildRequestAsString(params));
-
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
 				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}", null, null);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void testBuild_Partial_createHuman_Alias_Errors()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		AnotherMutationTypeExecutor mutationType = new AnotherMutationType("http://localhost/graphql");
+		AnotherMutationType mutationType = new AnotherMutationType();
 		GraphQLRequestPreparationException e;
 
 		e = assertThrows(GraphQLRequestPreparationException.class,
@@ -131,7 +129,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		Class<?> humanClass;
 
 		// Preparation
-		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		AnotherMutationType mutationType = new AnotherMutationType();
 		params = new HashMap<>();
 		params.put("anotherMutationTypeCreateHumanHuman", input);
 		params.put("value", "the mutation value");
@@ -170,12 +168,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals("id", graphQLRequest.aliasFields.get(droidClass).get("aliasId").getName());
 		assertEquals("name", graphQLRequest.aliasFields.get(droidClass).get("aliasName2").getName());
 		//
-		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
-				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn friendsAlias:friends{aliasId:id aliasName2:name __typename} __typename}}" //
-				+ "\"}", //
-				graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
 				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
 				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn friendsAlias:friends{aliasId:id aliasName2:name __typename} __typename}}", //
@@ -187,7 +180,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	void testBuild_Full_createHuman_withBuilder()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Preparation
-		AnotherMutationType mutationType = new AnotherMutationType("http://localhost/graphql");
+		AnotherMutationType mutationType = new AnotherMutationType();
 
 		// Go, go, go
 		@SuppressWarnings("deprecation")
@@ -198,12 +191,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
-		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
-				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\"}", //
-				graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
 				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}", //
@@ -217,19 +205,14 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Preparation
 
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+		GraphQLRequest graphQLRequest = new GraphQLRequest(null, //
 				"mutation {createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
 		);
 
 		// Verification
 		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
-		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
-				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\"}", //
-				graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
 				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}", //
@@ -250,19 +233,11 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
 				+ "@testDirective(value:?value, anotherValue:?anotherValue, anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"
 				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})   {id name appearsIn friends {id name}}}";
-		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
+		GraphQLRequest graphQLRequest = new GraphQLRequest(null, request);
 
 		// Verification
 		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
-		assertEquals("{\"query\":\"mutation mut1" //
-				+ "{createHuman(human:{name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]})"
-				+ " @testDirective(value:\\\"the directive value\\\",anotherValue:\\\"the other directive value\\\","
-				+ "anArray:[  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ],"
-				+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})"//
-				+ "{id name appearsIn friends{id name __typename} __typename}}" //
-				+ "\"}", //
-				graphQLRequest.buildRequestAsString(params));
-		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+		checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation mut1" //
 				+ "{createHuman(human:{name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]})"
 				+ " @testDirective(value:\"the directive value\",anotherValue:\"the other directive value\","
@@ -283,7 +258,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(//
+				() -> new GraphQLRequest(null, //
 						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\")"
 								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\" ] , \r\n"
 								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//
@@ -303,7 +278,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(//
+				() -> new GraphQLRequest(null, //
 						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\"})"
 								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\"  , \r\n"
 								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//
@@ -315,4 +290,53 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				"check of this error message: " + e.getMessage());
 	}
 
+	public static void checkPayload(Payload payload, String query, Map<String, Object> variables, String operationName)
+			throws JsonProcessingException {
+		assertEquals(query, payload.getQuery());
+
+		if (variables != null) {
+			assertTrue(payload.getVariables() instanceof Map,
+					"variables is an instance of " + variables.getClass().getName());
+			// For the
+			// We want to compare the json generated from this map
+			//
+			// In this, test, we must manually manage the custom scalars (to check that the automated process works Ok)
+			Map<String, Object> rewritedVariables = new HashMap<>();
+			for (String key : variables.keySet()) {
+				rewritedVariables.put(key, convertToWritableValue(variables.get(key)));
+			}
+			String variablesJson = objectMapper.writeValueAsString(rewritedVariables);
+			//
+			String payloadJson = objectMapper.writeValueAsString(payload.getVariables());
+			assertEquals(variablesJson, payloadJson);
+		}
+
+		assertEquals(operationName, payload.getOperationName());
+	}
+
+	/**
+	 * Get an object and simulate the work of custom scalars for known types (currently: only java.util.Date), and
+	 * return the value to use in the target json. This method is called by
+	 * {@link #checkPayload(Payload, String, Map, String)} only. It's a separated method, to be able to work recursively
+	 * for lists, lists of lists...
+	 * 
+	 * @param o
+	 * @return The value that can be used in a standard {@link ObjectMapper}, when generated a json from a map of
+	 *         values.
+	 */
+	private static Object convertToWritableValue(Object o) {
+		if (o instanceof List<?>) {
+			List<Object> ret = new ArrayList<>();
+			for (Object item : (List<?>) o) {
+				ret.add(convertToWritableValue(item));
+			}
+			return ret;
+		} else if (o instanceof Date) {
+			return GraphQLScalarTypeDate.Date.getCoercing().serialize(o);
+		} else {
+			// The given value can be used as is
+			return o;
+		}
+
+	}
 }
