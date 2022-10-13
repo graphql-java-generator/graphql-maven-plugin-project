@@ -18,7 +18,7 @@ import $import;
  */
 ${object.annotation}
 @SuppressWarnings("unused")
-public interface ${object.javaName} #if($object.implementz.size()>0)extends #foreach($impl in $object.implementz)$impl#if($foreach.hasNext), #end#end#end {
+public interface ${object.javaName} #if($object.implementz.size()>0)extends #foreach($impl in $object.implementedTypes)$impl.javaName#if($foreach.hasNext), #end#end#end {
 #foreach ($field in $object.fields)
 
 #if ($field.comments.size() > 0)
