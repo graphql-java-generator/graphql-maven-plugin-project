@@ -63,6 +63,17 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	public File targetSourceFolder = null;
 	public Map<String, String> templates = new HashMap<String, String>();
 
+	public String typePrefix = "";
+	public String typeSuffix = "";
+	public String unionPrefix = "";
+	public String unionSuffix = "";
+	public String enumPrefix = "";
+	public String enumSuffix = "";
+	public String interfacePrefix = "";
+	public String interfaceSuffix = "";
+	public String inputPrefix = "";
+	public String inputSuffix = "";
+
 	/**
 	 * @param caller
 	 *            Used to retrieve the appropriate Log4j logger
