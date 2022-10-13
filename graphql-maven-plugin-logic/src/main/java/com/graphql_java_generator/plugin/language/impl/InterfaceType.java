@@ -80,7 +80,7 @@ public class InterfaceType extends ObjectType {
 
 	@Override
 	protected String getSuffix() {
-		return configuration.getInterfacerSuffix();
+		return configuration.getInterfaceSuffix();
 	}
 
 	@Override
