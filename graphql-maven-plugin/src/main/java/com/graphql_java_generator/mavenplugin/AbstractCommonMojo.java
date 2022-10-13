@@ -130,6 +130,66 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	Map<String, String> templates;
 
 	/**
+	 *  An optional prefix for the generated java classes for GraphQL types.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.typePrefix", defaultValue = "")
+	public String typePrefix;
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL types.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.typeSuffix", defaultValue = "")
+	public String typeSuffix;
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL unions.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.unionPrefix", defaultValue = "")
+	public String unionPrefix;
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL unions.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.unionSuffix", defaultValue = "")
+	public String unionSuffix;
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL enums.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.enumPrefix", defaultValue = "")
+	public String enumPrefix;
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL enums.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.enumSuffix", defaultValue = "")
+	public String enumSuffix;
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL interfaces.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.interfacePrefix", defaultValue = "")
+	public String interfacePrefix;
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL interfaces.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.interfaceSuffix", defaultValue = "")
+	public String interfaceSuffix;
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL input objects.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.inputPrefix", defaultValue = "")
+	public String inputPrefix;
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL input objects.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.javaClassSuffix", defaultValue = "")
+	public String inputSuffix;
+
+	/**
 	 * This class contains the Spring configuration for the actual instance of this Mojo. It's set by subclasses,
 	 * through the constructor
 	 */
@@ -163,7 +223,47 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 		return templates;
 	}
 
-	@Override
+    public String getTypePrefix() {
+        return typePrefix;
+    }
+
+    public String getTypeSuffix() {
+        return typeSuffix;
+    }
+
+    public String getInputPrefix() {
+        return inputPrefix;
+    }
+
+    public String getInputSuffix() {
+        return inputSuffix;
+    }
+
+    public String getUnionPrefix() {
+        return unionPrefix;
+    }
+
+    public String getUnionSuffix() {
+        return unionSuffix;
+    }
+
+    public String getInterfacePrefix() {
+        return interfacePrefix;
+    }
+
+    public String getInterfaceSuffix() {
+        return interfaceSuffix;
+    }
+
+    public String getEnumPrefix() {
+        return enumPrefix;
+    }
+
+    public String getEnumSuffix() {
+        return enumSuffix;
+    }
+
+    @Override
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
 		return skipGenerationIfSchemaHasNotChanged;
 	}

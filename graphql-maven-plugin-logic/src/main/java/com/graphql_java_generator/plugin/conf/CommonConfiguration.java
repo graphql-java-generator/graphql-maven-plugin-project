@@ -115,6 +115,55 @@ public interface CommonConfiguration {
 	public boolean isAddRelayConnections();
 
 	/**
+	 *  An optional prefix for the generated java classes for GraphQL types.
+	 */
+	public String getTypePrefix();
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL types.
+	 */
+	public String getTypeSuffix();
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL input objects.
+	 */
+	public String getInputPrefix();
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL input objects.
+	 */
+	public String getInputSuffix();
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL unions.
+	 */
+	public String getUnionPrefix();
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL unions.
+	 */
+	public String getUnionSuffix();
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL interfaces.
+	 */
+	public String getInterfacePrefix();
+
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL interfaces.
+	 */
+	public String getInterfaceSuffix();
+	/**
+	 *  An optional prefix for the generated java classes for GraphQL enums.
+	 */
+	public String getEnumPrefix();
+
+	/**
+	 *  An optional suffix for the generated java classes for GraphQL enums.
+	 */
+	public String getEnumSuffix();
+
+	/**
 	 * This method is used only in {@link GeneratePojoConfiguration}.
 	 * 
 	 * @return The {@link GeneratePojoConfiguration} implementation of this method always returns true
@@ -164,6 +213,16 @@ public interface CommonConfiguration {
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
 							: ""));
+			logger.debug("    typePrefix: " + getTypePrefix());
+			logger.debug("    typeSuffix: " + getTypeSuffix());
+			logger.debug("    inputPrefix: " + getInputPrefix());
+			logger.debug("    inputSuffix: " + getInputSuffix());
+			logger.debug("    enumPrefix: " + getEnumPrefix());
+			logger.debug("    enumSuffix: " + getEnumSuffix());
+			logger.debug("    interfacePrefix: " + getInterfacePrefix());
+			logger.debug("    interfaceSuffix: " + getInterfaceSuffix());
+			logger.debug("    unionPrefix: " + getUnionPrefix());
+			logger.debug("    unionSuffix: " + getUnionSuffix());
 		}
 	}
 

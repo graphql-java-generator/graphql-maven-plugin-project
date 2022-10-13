@@ -13,7 +13,7 @@ import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration
 import lombok.Getter;
 
 /**
- * 
+ *
  * @author etienne-sf
  */
 @Getter
@@ -34,6 +34,17 @@ public class GenerateGraphQLSchemaConfigurationTestHelper implements GenerateGra
 	public File targetFolder = null;
 	public String targetSchemaFileName = null;
 	public Map<String, String> templates = new HashMap<String, String>();
+
+	public String typePrefix = "";
+	public String typeSuffix = "";
+	public String unionPrefix = "";
+	public String unionSuffix = "";
+	public String enumPrefix = "";
+	public String enumSuffix = "";
+	public String interfacePrefix = "";
+	public String interfaceSuffix = "";
+	public String inputPrefix = "";
+	public String inputSuffix = "";
 
 	/**
 	 * @param caller
