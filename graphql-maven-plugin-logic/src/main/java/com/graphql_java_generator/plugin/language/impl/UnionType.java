@@ -42,6 +42,16 @@ public class UnionType extends ObjectType {
 	}
 
 	@Override
+	protected String getPrefix() {
+		return configuration.getUnionPrefix();
+	}
+
+	@Override
+	protected String getSuffix() {
+		return configuration.getUnionSuffix();
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UnionType {name=" + getName() + ", members=[");

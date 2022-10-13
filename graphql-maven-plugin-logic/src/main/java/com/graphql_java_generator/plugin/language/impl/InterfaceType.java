@@ -74,6 +74,16 @@ public class InterfaceType extends ObjectType {
 	}
 
 	@Override
+	protected String getPrefix() {
+		return configuration.getUnionPrefix();
+	}
+
+	@Override
+	protected String getSuffix() {
+		return configuration.getUnionSuffix();
+	}
+
+	@Override
 	public String toString() {
 		return super.toString();
 	}

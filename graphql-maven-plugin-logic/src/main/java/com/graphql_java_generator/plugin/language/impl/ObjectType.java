@@ -123,6 +123,16 @@ public class ObjectType extends AbstractType {
 	}
 
 	@Override
+	protected String getPrefix() {
+		return isInputType() ? getConfiguration().getInputPrefix() : getConfiguration().getTypePrefix();
+	}
+
+	@Override
+	protected String getSuffix() {
+		return isInputType() ? getConfiguration().getInputSuffix() : getConfiguration().getTypeSuffix();
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		boolean addSeparator;
