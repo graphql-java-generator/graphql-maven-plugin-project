@@ -13,7 +13,7 @@ import com.graphql_java_generator.plugin.test.helper.GraphQLConfigurationTestHel
 
 class AbstractTypeTest {
 
-	GraphQLConfiguration pluginConfiguration = new GraphQLConfigurationTestHelper(this);
+	GraphQLConfigurationTestHelper pluginConfiguration = new GraphQLConfigurationTestHelper(this);
 
 	@Test
 	void testAddImportClassOfQ() {
@@ -90,4 +90,34 @@ class AbstractTypeTest {
 		assertTrue(type.getImports().contains("com.fasterxml.jackson.annotation.JsonTypeInfo.Id2"));
 	}
 
+	@Test
+	void testGetJavaNamePrefixAndSuffix() {
+
+		ObjectType typeObject = new ObjectType("MyType", pluginConfiguration, null);
+		pluginConfiguration.typePrefix = "TypePrefix";
+		pluginConfiguration.typeSuffix = "TypeSuffix";
+		assertEquals("TypePrefixMyTypeTypeSuffix", typeObject.getJavaName());
+
+		ObjectType inputObject = new ObjectType("MyInput", pluginConfiguration, null);
+		inputObject.setInputType(true);
+		pluginConfiguration.inputPrefix = "InputPrefix";
+		pluginConfiguration.inputSuffix = "InputSuffix";
+		assertEquals("InputPrefixMyInputInputSuffix", inputObject.getJavaName());
+
+		InterfaceType interfaceObject = new InterfaceType("MyInterface", pluginConfiguration, null);
+		pluginConfiguration.interfacePrefix = "InterfacePrefix";
+		pluginConfiguration.interfaceSuffix = "InterfaceSuffix";
+		assertEquals("InterfacePrefixMyInterfaceInterfaceSuffix", interfaceObject.getJavaName());
+
+		UnionType unionObject = new UnionType("MyUnion", pluginConfiguration, null);
+		pluginConfiguration.unionPrefix = "UnionPrefix";
+		pluginConfiguration.unionSuffix = "UnionSuffix";
+		assertEquals("UnionPrefixMyUnionUnionSuffix", unionObject.getJavaName());
+
+		EnumType enumObject = new EnumType("MyEnum", pluginConfiguration, null);
+		pluginConfiguration.enumPrefix = "EnumPrefix";
+		pluginConfiguration.enumSuffix = "EnumSuffix";
+		assertEquals("EnumPrefixMyEnumEnumSuffix", enumObject.getJavaName());
+
+	}
 }
