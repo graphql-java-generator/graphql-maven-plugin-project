@@ -615,6 +615,56 @@ public class GenerateCodeGenerator implements Generator {
 					}
 
 					@Override
+					public String getTypePrefix() {
+						return configuration.getTypePrefix();
+					}
+
+					@Override
+					public String getTypeSuffix() {
+						return configuration.getTypeSuffix();
+					}
+
+					@Override
+					public String getInputPrefix() {
+						return configuration.getInputPrefix();
+					}
+
+					@Override
+					public String getInputSuffix() {
+						return configuration.getInputSuffix();
+					}
+
+					@Override
+					public String getUnionPrefix() {
+						return configuration.getUnionPrefix();
+					}
+
+					@Override
+					public String getUnionSuffix() {
+						return configuration.getUnionSuffix();
+					}
+
+					@Override
+					public String getInterfacePrefix() {
+						return configuration.getInterfacePrefix();
+					}
+
+					@Override
+					public String getInterfaceSuffix() {
+						return configuration.getInterfaceSuffix();
+					}
+
+					@Override
+					public String getEnumPrefix() {
+						return configuration.getEnumPrefix();
+					}
+
+					@Override
+					public String getEnumSuffix() {
+						return configuration.getEnumSuffix();
+					}
+
+					@Override
 					public String getResourceEncoding() {
 						return "UTF-8";
 					}
