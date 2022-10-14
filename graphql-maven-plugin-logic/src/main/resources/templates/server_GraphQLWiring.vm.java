@@ -81,7 +81,7 @@ public class GraphQLWiring {
 			//
 			// Wiring every GraphQL type
 #foreach ($dataFetchersDelegate in $dataFetchersDelegates)
-			.type("${dataFetchersDelegate.type.javaName}", typeWiring -> addWiringFor${dataFetchersDelegate.type.javaName}(typeWiring))
+			.type("${dataFetchersDelegate.type.name}", typeWiring -> addWiringFor${dataFetchersDelegate.type.javaName}(typeWiring))
 #end
 ##
 ## Step 3: wiring every interface
@@ -91,7 +91,7 @@ public class GraphQLWiring {
 			// Let's link the interface types to the concrete types
 #end
 #foreach ($interface in $interfaces)
-			.type("${interface.javaName}", typeWiring -> typeWiring.typeResolver(getResolverFor${interface.javaName}()))
+			.type("${interface.name}", typeWiring -> typeWiring.typeResolver(getResolverFor${interface.javaName}()))
 #end
 ##
 ## Step 4: wiring every union 
@@ -101,7 +101,7 @@ public class GraphQLWiring {
 			// Let's link the union types to the concrete types
 #end
 #foreach ($union in $unions)
-			.type("${union.javaName}", typeWiring -> typeWiring.typeResolver(getResolverFor${union.javaName}()))
+			.type("${union.name}", typeWiring -> typeWiring.typeResolver(getResolverFor${union.javaName}()))
 #end
 			//
 			// Let's finish the job
