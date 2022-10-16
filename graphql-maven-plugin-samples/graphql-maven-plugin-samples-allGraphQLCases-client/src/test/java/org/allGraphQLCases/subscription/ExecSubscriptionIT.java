@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.graphql_java_generator.client.GraphQLReactiveWebSocketHandler;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -40,7 +39,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ExecSubscriptionIT {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(GraphQLReactiveWebSocketHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(ExecSubscriptionIT.class);
 
 	@Autowired
 	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;

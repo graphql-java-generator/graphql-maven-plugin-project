@@ -26,6 +26,7 @@ import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphQLRequestObject;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.SubscriptionClientReactiveImpl;
@@ -155,16 +156,15 @@ public abstract class AbstractGraphQLRequest {
 	 *            The list of input parameters for this query/mutation/subscription
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(GraphQlClient graphQlClient, String schema, String graphQLRequest,
-			RequestType requestType, String fieldName, InputParameter... inputParams)
-			throws GraphQLRequestPreparationException {
+	public AbstractGraphQLRequest(String schema, String graphQLRequest, RequestType requestType, String fieldName,
+			InputParameter... inputParams) throws GraphQLRequestPreparationException {
 		if (requestType == null) {
 			throw new NullPointerException("requestType is mandatory, but a null value has been provided");
 		}
 		if (fieldName == null) {
 			throw new NullPointerException("fieldName is mandatory, but a null value has been provided");
 		}
-		this.graphQlClient = graphQlClient;
+		this.graphQlClient = SpringContextBean.getGraphQlClient(schema);
 		this.requestType = requestType;
 		this.requestName = null;
 		this.graphQLRequest = graphQLRequest;
@@ -229,8 +229,6 @@ public abstract class AbstractGraphQLRequest {
 	 * necessary to allow proper deserialization of interfaces and unions.</LI>
 	 * </UL>
 	 * 
-	 * @param requestExecution
-	 *            The class that will do the actual exe
 	 * @param schema
 	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
 	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
@@ -242,9 +240,8 @@ public abstract class AbstractGraphQLRequest {
 	 * 
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public AbstractGraphQLRequest(GraphQlClient graphQlClient, String schema, String graphQLRequest)
-			throws GraphQLRequestPreparationException {
-		this.graphQlClient = graphQlClient;
+	public AbstractGraphQLRequest(String schema, String graphQLRequest) throws GraphQLRequestPreparationException {
+		this.graphQlClient = SpringContextBean.getGraphQlClient(schema);
 		String localQueryName = null;
 		this.graphQLRequest = graphQLRequest;
 		this.packageName = getGraphQLClassesPackageName();

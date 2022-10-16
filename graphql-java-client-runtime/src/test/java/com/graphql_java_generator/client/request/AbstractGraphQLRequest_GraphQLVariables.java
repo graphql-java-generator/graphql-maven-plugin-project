@@ -1,6 +1,10 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -13,8 +17,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.MemberType;
@@ -30,6 +36,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 	Query queryType;
 	Map<String, Object> params;
 
+	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
 		queryType = new Query();
@@ -37,6 +44,10 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		params = new HashMap<>();
 		params.put("memberName", "a member Name");
 		params.put("sinceParam", new GregorianCalendar(1900, 10 - 1, 24).getTime());
+
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBean(anyString(), any(Class.class))).thenReturn(null);
+		SpringContextBean.setApplicationContext(applicationContext);
 	}
 
 	@Test
@@ -45,7 +56,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
 				"mutation crPst  ($post: PostInput!, $anIntParam: Int){createPost(post: $post){id date author{id}}}");
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
@@ -71,7 +82,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
 				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType, $aDate: Date!) {boards{topics{id}}}");
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")

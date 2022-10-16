@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +19,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest.Payload;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
 import com.graphql_java_generator.domain.client.allGraphQLCases.CharacterInput;
@@ -34,6 +40,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	CharacterInput characterInput;
 	Map<String, Object> paramsWithOneMandatoryParam;
 
+	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
 		queryType = new MyQueryTypeExecutorMySchema();
@@ -46,12 +53,16 @@ class AbstractGraphQLRequest_StarWarsTest {
 		paramsWithOneMandatoryParam = new HashMap<>();
 		paramsWithOneMandatoryParam.put("character", characterInput);
 		paramsWithOneMandatoryParam.put("myQueryTypeWithOneMandatoryParamCharacter", characterInput);
+
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBean(anyString(), any(Class.class))).thenReturn(null);
+		SpringContextBean.setApplicationContext(applicationContext);
 	}
 
 	@Test
 	void testWithField_Simple_OK() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null,
+		GraphQLRequest graphQLRequest = new GraphQLRequest(
 				"{withOneMandatoryParam(character:{name:\"another name\",appearsIn:[]}) {name}}");
 
 		// Verification
@@ -86,8 +97,8 @@ class AbstractGraphQLRequest_StarWarsTest {
 		String expected = "query{withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[EMPIRE,JEDI]}){id name friends{name appearsIn __typename} __typename}}";
 
 		// Go, go, go
-		Payload payload1 = new GraphQLRequest(null, query1).getPayload(null);
-		Payload payload2 = new GraphQLRequest(null, query2).getPayload(paramsWithOneMandatoryParam);
+		Payload payload1 = new GraphQLRequest(query1).getPayload(null);
+		Payload payload2 = new GraphQLRequest(query2).getPayload(paramsWithOneMandatoryParam);
 
 		// Verification
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(payload1, expected, null, null);
@@ -104,8 +115,8 @@ class AbstractGraphQLRequest_StarWarsTest {
 		String expected = "query{__schema{types{kind name __typename} __typename}}";
 
 		// Go, go, go
-		Payload payload1 = new GraphQLRequest(null, query1).getPayload(null);
-		Payload payload2 = new GraphQLRequest(null, query2).getPayload(null);
+		Payload payload1 = new GraphQLRequest(query1).getPayload(null);
+		Payload payload2 = new GraphQLRequest(query2).getPayload(null);
 
 		// Verification
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(payload1, expected, null, null);
@@ -117,12 +128,12 @@ class AbstractGraphQLRequest_StarWarsTest {
 		GraphQLRequestPreparationException e;
 
 		// Go, go go
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name name}}"));
 		assertTrue(e.getMessage().contains("'name'"), "The received message is: " + e.getMessage());
 
 		e = assertThrows(GraphQLRequestPreparationException.class, //
-				() -> new GraphQLRequest(null,
+				() -> new GraphQLRequest(
 						"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name name:name}}"));
 		assertTrue(e.getMessage().contains("'name'"));
 	}
@@ -133,12 +144,12 @@ class AbstractGraphQLRequest_StarWarsTest {
 
 		// Go, go go
 		e = assertThrows(GraphQLRequestPreparationException.class, //
-				() -> new GraphQLRequest(null,
+				() -> new GraphQLRequest(
 						"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name itDoesntExist}}"));
 		assertTrue(e.getMessage().contains("'itDoesntExist'"));
 
 		e = assertThrows(GraphQLRequestPreparationException.class, //
-				() -> new GraphQLRequest(null,
+				() -> new GraphQLRequest(
 						"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name validAlias:itDoesntExist}}"));
 		assertTrue(e.getMessage().contains("'itDoesntExist'"));
 	}
@@ -148,28 +159,28 @@ class AbstractGraphQLRequest_StarWarsTest {
 		GraphQLRequestPreparationException e;
 
 		// Most important check: only attribute of the clazz class may be added.
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name fieldNotInThisClass}}"));
 		assertTrue(e.getMessage().contains("fieldNotInThisClass"));
 
 		// Various types of checks, for invalid identifiers
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name qdqd'qdsq}}"));
 		assertTrue(e.getMessage().contains("qdqd'qdsq"));
 
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name qdqd.qdsq}}"));
 		assertTrue(e.getMessage().contains("qdqd.qdsq"));
 
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name qdqdqdsq.}}"));
 		assertTrue(e.getMessage().contains("qdqdqdsq."));
 
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name .qdqdqdsq}}"));
 		assertTrue(e.getMessage().contains(".qdqdqdsq"));
 
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {id name qdqdqdsq*}}"));
 		assertTrue(e.getMessage().contains("qdqdqdsq*"));
 	}
@@ -177,7 +188,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	@Test
 	void testWithFieldWithAlias_OK() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null,
+		GraphQLRequest graphQLRequest = new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {alias:name}}");
 
 		// Verification
@@ -205,12 +216,12 @@ class AbstractGraphQLRequest_StarWarsTest {
 	void testWithFieldWithAlias_KO() throws GraphQLRequestPreparationException {
 		// KO on the name
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(null,
+				() -> new GraphQLRequest(
 						"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {validAlias:notAnExistingAttribute}}"));
 		assertTrue(e.getMessage().contains("notAnExistingAttribute"));
 
 		// KO on the alias
-		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(null,
+		e = assertThrows(GraphQLRequestPreparationException.class, () -> new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) {qdqd/qdsq:id}}"));
 		assertTrue(e.getMessage().contains("qdqd/qdsq"));
 	}
@@ -218,7 +229,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	@Test
 	void testWithSubObject_OK() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null,
+		GraphQLRequest graphQLRequest = new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}) \n\r\t   {\n\r\t  friends  \n\r\t  {  \n\r\t  id \n\r\t  name\n\r\t  } \n\r\t }  \n\r\t } \n\r\t ");
 
 		// Verification
@@ -249,7 +260,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	void testWithSubObject_KO_fieldPresentTwoTimes() throws GraphQLRequestPreparationException {
 		// Preparation
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(null,
+				() -> new GraphQLRequest(
 						"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}){friends{name} friends{id}}"));
 		assertTrue(e.getMessage().contains("'friends'"));
 	}
@@ -257,7 +268,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 	@Test
 	void testWithSubObject_withAlias_OK() throws GraphQLRequestPreparationException {
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null,
+		GraphQLRequest graphQLRequest = new GraphQLRequest(
 				"{withOneOptionalParam(character:{name:\"another name\",appearsIn:[]}){aValidAlias:friends{name id}}}");
 
 		// Verification

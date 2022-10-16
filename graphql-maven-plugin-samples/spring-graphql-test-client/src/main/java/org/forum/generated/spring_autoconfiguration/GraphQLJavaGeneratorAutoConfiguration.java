@@ -16,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 
+import com.graphql_java_generator.client.SpringContextBean;
+
 /**
  * This Spring {@link Configuration} class defines the Spring Bean for this GraphQL schema.
  * 
@@ -23,6 +25,11 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
  */
 @AutoConfiguration
 public class GraphQLJavaGeneratorAutoConfiguration {
+
+	// Creating this bean makes sure that its static field is set. This is mandatory for some part of the code that must
+	// be kept, to allow compliance with existing projects.
+	@Autowired
+	SpringContextBean springContextBean;
 
 	@Value(value = "${graphql.endpoint.url}")
 	private String graphqlEndpointUrl;

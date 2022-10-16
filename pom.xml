@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.0</version>
+		<version>2.7.4</version>
 		<relativePath />
 	</parent>
 
@@ -83,14 +83,15 @@
 	<modules>
 		<!-- Below are the module that are always in the build -->
 		<!-- The samples (within graphql-maven-plugin-samples module) are activated only when not in release mode (see profiles) -->
-		<module>graphql-java-client-dependencies</module>
-		<module>graphql-java-server-dependencies</module>
+		<module>graphql-java-common-dependencies</module>
 		<module>graphql-java-common-runtime</module>
+		<module>graphql-java-client-dependencies</module>
 		<module>graphql-java-client-runtime</module>
 		<module>graphql-java-server-runtime</module>
-		<module>graphql-java-spring-mvc</module>
+		<module>graphql-java-server-dependencies</module>
 		<module>graphql-maven-plugin-logic</module>
 		<module>graphql-maven-plugin</module>
+		<module>graphql-maven-plugin-samples</module>
 	</modules>
 
 	<properties>
@@ -349,6 +350,12 @@
 			<dependency>
 				<groupId>com.graphql-java-generator</groupId>
 				<artifactId>graphql-java-server-dependencies</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>com.graphql-java-generator</groupId>
+				<artifactId>graphql-java-common-dependencies</artifactId>
 				<version>${project.version}</version>
 				<type>pom</type>
 			</dependency>

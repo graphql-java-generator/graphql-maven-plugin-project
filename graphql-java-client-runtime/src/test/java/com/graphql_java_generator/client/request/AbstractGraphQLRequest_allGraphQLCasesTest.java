@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,9 +20,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest.Payload;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
@@ -39,6 +45,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 	Map<String, Object> params = new HashMap<>();
 	static ObjectMapper objectMapper = new ObjectMapper();
 
+	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {
 		input = new HumanInput();
@@ -52,6 +59,10 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		params.put("humanInput", input);
 		params.put("value", "the mutation value");
 		params.put("anotherValue", "the other mutation value");
+
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBean(anyString(), any(Class.class))).thenReturn(null);
+		SpringContextBean.setApplicationContext(applicationContext);
 	}
 
 	@Test
@@ -205,7 +216,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Preparation
 
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null, //
+		GraphQLRequest graphQLRequest = new GraphQLRequest(//
 				"mutation {createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
 		);
@@ -233,7 +244,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
 				+ "@testDirective(value:?value, anotherValue:?anotherValue, anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"
 				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})   {id name appearsIn friends {id name}}}";
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null, request);
+		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
 
 		// Verification
 		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
@@ -258,7 +269,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(null, //
+				() -> new GraphQLRequest(//
 						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\")"
 								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\" ] , \r\n"
 								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//
@@ -278,7 +289,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(null, //
+				() -> new GraphQLRequest(//
 						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\"})"
 								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\"  , \r\n"
 								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//

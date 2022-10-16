@@ -14,19 +14,23 @@
 	&lt;/dependency&gt;</description>
 
 	<dependencies>
-		<!-- Dependencies for GraphQL -->
+		<!-- Dependencies within this project -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-graphql</artifactId>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-common-dependencies</artifactId>
+			<type>pom</type>
 		</dependency>
 
-
-		<!-- Other dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
-
+		<dependency>
+			<!-- Mandatory to avoid ClassNotFound errors on javax.servlet.filter -->
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		
 		<!-- When building from the gradle plugin, this next dependency is mandatory for code execution -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
@@ -38,15 +42,6 @@
 			<artifactId>jsr305</artifactId>
 		</dependency>
 
-		<dependency>
-			<!-- You need to provide in your pom the fact the this dependency is provided. This is to ensure that the embedded servlet 
-				container does not interfere with the servlet container to which the war file is deployed -->
-			<!-- If you just import the graphql-java-servlet-dependencies pom in your own pom, this dependency is imported as compile 
-				scope -->
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 
 </project>

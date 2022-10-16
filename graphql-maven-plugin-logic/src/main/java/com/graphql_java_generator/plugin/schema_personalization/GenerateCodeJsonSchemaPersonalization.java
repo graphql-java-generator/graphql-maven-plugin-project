@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 import java.util.stream.Collectors;
 
 import javax.json.JsonReader;
-import javax.ws.rs.ProcessingException;
 
 import org.leadpony.justify.api.JsonSchema;
 import org.leadpony.justify.api.JsonValidationService;

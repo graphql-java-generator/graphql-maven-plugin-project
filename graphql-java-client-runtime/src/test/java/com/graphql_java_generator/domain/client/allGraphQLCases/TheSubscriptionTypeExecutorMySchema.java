@@ -345,7 +345,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, fullRequest);
+		return new GraphQLRequest(fullRequest);
 	}
 
 	/**
@@ -662,8 +662,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getSubscribeNewHumanForEpisodeGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription,
-				"subscribeNewHumanForEpisode",
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeNewHumanForEpisode",
 				InputParameter.newBindParameter("MySchema", "episode",
 						"theSubscriptionTypeSubscribeNewHumanForEpisodeEpisode", InputParameterType.MANDATORY,
 						"Episode", true, 0, false));
@@ -970,7 +969,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getSubscribeToAListGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "subscribeToAList");
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeToAList");
 	}
 
 	/**
@@ -1269,7 +1268,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getSubscribeToAListOfScalarsGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "subscribeToAListOfScalars");
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeToAListOfScalars");
 	}
 
 	/**
@@ -1576,7 +1575,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "issue53",
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "issue53",
 				InputParameter.newBindParameter("MySchema", "date", "theSubscriptionTypeIssue53Date",
 						InputParameterType.MANDATORY, "Date", true, 0, false));
 	}
@@ -1889,7 +1888,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getAllGraphQLCasesInputGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "allGraphQLCasesInput",
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "allGraphQLCasesInput",
 				InputParameter.newBindParameter("MySchema", "input", "theSubscriptionTypeAllGraphQLCasesInputInput",
 						InputParameterType.MANDATORY, "AllFieldCasesInput", true, 0, false));
 	}
@@ -2309,7 +2308,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getAllGraphQLCasesParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "allGraphQLCasesParam",
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "allGraphQLCasesParam",
 				InputParameter.newBindParameter("MySchema", "id", "theSubscriptionTypeAllGraphQLCasesParamId",
 						InputParameterType.MANDATORY, "String", true, 0, false),
 				InputParameter.newBindParameter("MySchema", "name", "theSubscriptionTypeAllGraphQLCasesParamName",
@@ -2640,7 +2639,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getSubscriptionTestGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "subscriptionTest",
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "subscriptionTest",
 				InputParameter.newBindParameter("MySchema", "param", "theSubscriptionTypeSubscriptionTestParam",
 						InputParameterType.MANDATORY, "SubscriptionTestParam", true, 0, false));
 	}
@@ -2942,8 +2941,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getSubscriptionWithNullResponseGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription,
-				"subscriptionWithNullResponse");
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "subscriptionWithNullResponse");
 	}
 
 	/**
@@ -3250,8 +3248,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getEnumWithReservedJavaKeywordAsValuesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription,
-				"enumWithReservedJavaKeywordAsValues");
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "enumWithReservedJavaKeywordAsValues");
 	}
 
 	/**
@@ -3556,7 +3553,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 */
 	public GraphQLRequest getListOfEnumWithReservedJavaKeywordAsValuesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription,
+		return new GraphQLRequest(partialRequest, RequestType.subscription,
 				"listOfEnumWithReservedJavaKeywordAsValues");
 	}
 
@@ -3853,7 +3850,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIfGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "if");
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "if");
 	}
 
 	/**
@@ -4150,7 +4147,7 @@ public class TheSubscriptionTypeExecutorMySchema implements GraphQLSubscriptionE
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getImplementsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "implements");
+		return new GraphQLRequest(partialRequest, RequestType.subscription, "implements");
 	}
 
 }

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.allGraphQLCases.GraphQLTransportWSIT.GraphQLTransportWSSpringConfiguration;
 import org.allGraphQLCases.client.AllFieldCases;
@@ -27,18 +28,21 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+import org.springframework.graphql.client.GraphQlClient;
+import org.springframework.graphql.client.WebSocketGraphQlClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.graphql_java_generator.client.OAuthTokenExtractor;
-import com.graphql_java_generator.client.RequestExecution;
-import com.graphql_java_generator.client.RequestExecutionGraphQLTransportWSImpl;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -57,32 +61,51 @@ public class GraphQLTransportWSIT {
 	@Autowired
 	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
 	@Autowired
-	RequestExecution requestExecutor;
+	GraphQlClient graphQlClientAllGraphQlCases;
+
+	@Bean
+	@ConditionalOnMissingBean
+	OAuthTokenExtractor oAuthTokenExtractor(
+			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction) {
+		if (serverOAuth2AuthorizedClientExchangeFilterFunction == null)
+			return null;
+		else
+			return new OAuthTokenExtractor(serverOAuth2AuthorizedClientExchangeFilterFunction);
+	}
 
 	@Configuration
 	@Import(SpringTestConfig.class)
 	public static class GraphQLTransportWSSpringConfiguration {
 		@Bean
 		@Primary
-		public RequestExecution requestExecutionAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
+		public GraphQlClient requestExecutionAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
 				@Autowired(required = false) @Qualifier("graphqlSubscriptionEndpointAllGraphQLCases") String graphqlSubscriptionEndpointAllGraphQLCases, //
 				@Autowired(required = false) @Qualifier("webClientAllGraphQLCases") WebClient webClientAllGraphQLCases, //
 				@Autowired(required = false) @Qualifier("webSocketClientAllGraphQLCases") WebSocketClient webSocketClientAllGraphQLCases,
-				@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases,
-				@Autowired(required = false) @Qualifier("oAuthTokenExtractorAllGraphQLCases") OAuthTokenExtractor oAuthTokenExtractorAllGraphQLCases) {
-			// Returns the Request executor that can execute queries, mutations and subscriptions according to the
-			// graphql-transport-ws protocol
-			return new RequestExecutionGraphQLTransportWSImpl(graphqlEndpointAllGraphQLCases,
-					graphqlSubscriptionEndpointAllGraphQLCases, webClientAllGraphQLCases,
-					webSocketClientAllGraphQLCases, serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases,
-					oAuthTokenExtractorAllGraphQLCases);
+				@Autowired(required = false) @Qualifier("OAuthTokenExtractor") OAuthTokenExtractor oAuthTokenExtractorAllGraphQLCases) {
+
+			Consumer<HttpHeaders> oAuthHeadersConsumer = null;
+			if (oAuthTokenExtractorAllGraphQLCases != null) {
+				oAuthHeadersConsumer = new Consumer<HttpHeaders>() {
+					@Override
+					public void accept(HttpHeaders t) {
+						// TODO Auto-generated method stub
+					}
+				};
+			}
+
+			// Returns the Spring GraphQL client that executes the request according to the graphql-transport-ws
+			// protocol
+			return WebSocketGraphQlClient
+					.builder(graphqlSubscriptionEndpointAllGraphQLCases, new ReactorNettyWebSocketClient())
+					.headers(oAuthHeadersConsumer).build();
 		}
 	}
 
 	@BeforeEach
 	void setup() {
-		assertTrue(requestExecutor instanceof RequestExecutionGraphQLTransportWSImpl,
-				"requestExecutor should be an instance of RequestExecutionGraphQLTransportWSImpl");
+		assertTrue(graphQlClientAllGraphQlCases instanceof WebSocketGraphQlClient,
+				"The graphQlClient should be an instance of WebSocketGraphQlClient");
 	}
 
 	@Test

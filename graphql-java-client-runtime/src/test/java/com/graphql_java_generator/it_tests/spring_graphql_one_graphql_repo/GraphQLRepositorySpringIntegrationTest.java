@@ -61,7 +61,7 @@ public class GraphQLRepositorySpringIntegrationTest {
 	public static class SpringConfig {
 		@Bean
 		@Qualifier("MySchema")
-		GraphQlClient graphQlClient() {
+		GraphQlClient graphQlClientMySchema() {
 			return mock(GraphQlClient.class);
 		}
 	}

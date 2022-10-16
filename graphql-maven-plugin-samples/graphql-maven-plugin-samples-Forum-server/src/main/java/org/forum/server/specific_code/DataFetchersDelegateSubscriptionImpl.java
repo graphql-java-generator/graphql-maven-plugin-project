@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
-import io.reactivex.subjects.Subject;
 
 /**
  * @author etienne-sf

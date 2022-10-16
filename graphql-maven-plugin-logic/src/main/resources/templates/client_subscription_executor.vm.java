@@ -42,12 +42,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLScalar;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.GraphQLObjectMapper;
 import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
@@ -88,10 +90,12 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
 
 	@Autowired
-	GraphqlClientUtils graphqlClientUtils;
+	GraphQlClient graphQlClient${springBeanSuffix};
 
+	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils; // must be set that way, to be used in the constructor
+	
 	@Autowired
-	GraphQlClient graphQlClient;
+	GraphqlClientUtils graphqlClientUtils;
 
 	public ${object.classSimpleName}Executor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
@@ -141,6 +145,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 *             When an error occurs during the request execution, typically a network error, an error from the
 	 *             GraphQL server or if the server response can't be parsed
 	 */
+	@SuppressWarnings({ "deprecation", "unchecked", "rawtypes" })
 	public SubscriptionClient execWithBindValues(
 			String queryResponseDef, 
 			SubscriptionCallback<?> subscriptionCallback,
@@ -283,7 +288,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 #foreach ($field in $object.fields)
 #if ($field.name != "__typename")
 		case "${field.name}":
-			return return objectResponse.exec(parameters,
+			return objectResponse.exec(parameters,
 					 (SubscriptionCallback<#if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end>) subscriptionCallback, 
 					 ${executionResponse}.class, 
 					 #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
@@ -348,7 +353,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest.class);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient${springBeanSuffix}, GraphQLRequest.class);
 	}
 
 	/**
@@ -362,7 +367,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, fullRequest);
+		return new GraphQLRequest(fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -598,7 +603,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 #if($field.fieldTypeAST.listDepth>0)
 		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
 #end 
-		return return objectResponse.exec(parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+		return objectResponse.exec(parameters,#if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
 	}
 
 	/**
@@ -697,10 +702,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 		parameters.put("${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}", ${inputParameter.javaName});
 #end
 		
-#if($field.fieldTypeAST.listDepth>0)
-		// This ugly double casting is necessary to make the code compile. If anyone has a better idea... please raise an issue
-#end 
-		return graphQLConfiguration${springBeanSuffix}.getQueryExecutor().execute(objectResponse, parameters, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
+		return objectResponse.exec(parameters, #if($field.fieldTypeAST.listDepth>0) (SubscriptionCallback<List>) (Object)#end subscriptionCallback, ${object.classFullName}.class, #if($field.fieldTypeAST.listDepth>0)List#else${field.javaTypeFullClassname}#end.class);
 	}
 
 	/**
@@ -716,7 +718,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "${field.name}", RequestType.${object.requestType}
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient${springBeanSuffix}, GraphQLRequest.class, "${field.name}", RequestType.${object.requestType}
 #foreach ($inputParameter in $field.inputParameters)
 			, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
@@ -740,13 +742,11 @@ public class ${object.classSimpleName}Executor${springBeanSuffix}  implements Gr
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
+		return new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
 #foreach ($inputParameter in $field.inputParameters)
 		, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
 		);
-		ret.setInstanceConfiguration(graphQLConfiguration${springBeanSuffix});
-		return ret;
 	}
 	
 #end

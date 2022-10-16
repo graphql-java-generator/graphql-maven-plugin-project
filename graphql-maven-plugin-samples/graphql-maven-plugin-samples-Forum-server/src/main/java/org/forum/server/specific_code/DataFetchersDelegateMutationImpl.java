@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Resource;
+import javax.security.auth.Subject;
 
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.DataFetchersDelegateMutation;
@@ -22,7 +23,6 @@ import org.forum.server.jpa.TopicRepository;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
-import io.reactivex.subjects.Subject;
 
 /**
  * @author etienne-sf

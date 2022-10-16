@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.graphql-java-generator</groupId>
+		<artifactId>graphql-maven-plugin-project</artifactId>
+		<version>local-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>graphql-java-common-dependencies</artifactId>
+	<packaging>pom</packaging>
+	<description>
+		Dependencies for the graphql-java-common-runtime module. It contains all the dependencies for this module, 
+		so that they can be used both from the client or server runtime, of from the generated code when the runtime 
+		code is copied into the project's target folder
+	</description>
+
+	<dependencies>
+		<!-- GraphQL dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-graphql</artifactId>
+		</dependency>
+		<!--
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		-->
+	</dependencies>
+</project>

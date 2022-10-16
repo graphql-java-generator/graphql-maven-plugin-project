@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -34,6 +35,7 @@ import org.springframework.context.ApplicationContext;
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
 import com.graphql_java_generator.client.GraphQLQueryExecutor;
 import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.client.SubscriptionClientReactiveImpl;
@@ -83,8 +85,13 @@ public abstract class AbstractGraphQLRepositoryInvocationHandlerTest {
 	@Spy
 	protected TheSubscriptionTypeExecutorMySchema spySubscriptionExecutor;
 
+	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void beforeEach() throws GraphQLRequestPreparationException {
+
+		SpringContextBean.setApplicationContext(applicationContext);
+		when(applicationContext.getBean(anyString(), any(Class.class))).thenReturn(null);
+
 		// The invocationHandler is created, based on the given executors
 		Map<String, GraphQLQueryExecutor> queryExecutors = new HashMap<>();
 		queryExecutors.put("name1", spyQueryExecutor);

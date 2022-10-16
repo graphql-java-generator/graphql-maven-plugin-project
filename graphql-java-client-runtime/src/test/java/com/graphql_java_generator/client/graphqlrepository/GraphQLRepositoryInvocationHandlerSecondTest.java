@@ -3,8 +3,7 @@ package com.graphql_java_generator.client.graphqlrepository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-// import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,7 +12,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.context.ApplicationContext;
 
 import com.graphql_java_generator.client.GraphQLMutationExecutor;
@@ -24,30 +22,28 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLRepositoryInvocationHandlerTest {
 
-	@Mock
-	ApplicationContext ctx;
-
+	@Override
 	@BeforeEach
 	void beforeEach() throws GraphQLRequestPreparationException {
 
 		Map<String, GraphQLQueryExecutor> queries = new HashMap<>();
 		queries.put("a bean name", spyQueryExecutor);
-		when(ctx.getBeansOfType(GraphQLQueryExecutor.class)).thenReturn(queries);
+		when(applicationContext.getBeansOfType(GraphQLQueryExecutor.class)).thenReturn(queries);
 
 		Map<String, GraphQLMutationExecutor> mutations = new HashMap<>();
 		mutations.put("a bean name", spyMutationExecutor);
-		when(ctx.getBeansOfType(GraphQLMutationExecutor.class)).thenReturn(mutations);
+		when(applicationContext.getBeansOfType(GraphQLMutationExecutor.class)).thenReturn(mutations);
 
 		Map<String, GraphQLSubscriptionExecutor> subscriptions = new HashMap<>();
 		subscriptions.put("a bean name", spySubscriptionExecutor);
-		when(ctx.getBeansOfType(GraphQLSubscriptionExecutor.class)).thenReturn(subscriptions);
+		when(applicationContext.getBeansOfType(GraphQLSubscriptionExecutor.class)).thenReturn(subscriptions);
 
 		// We need that the package of our spy is the package of the GraphQLQueryExecutor interface
 		// when(spyQueryExecutor.getClass()).thenReturn(GraphQLQueryExecutor.class);
 
 		// The invocationHandler is created, based on the given context
 		invocationHandler = new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCase>(
-				GraphQLRepositoryTestCase.class, ctx);
+				GraphQLRepositoryTestCase.class, applicationContext);
 		graphQLRepository = invocationHandler.getProxyInstance();
 	}
 
@@ -67,7 +63,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseMissingInterfaceAnnotation>(
-						GraphQLRepositoryTestCaseMissingInterfaceAnnotation.class, ctx));
+						GraphQLRepositoryTestCaseMissingInterfaceAnnotation.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains(GraphQLRepository.class.getName() + "' annotation"), e.getMessage());
@@ -79,7 +75,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseMissingMethodAnnotation>(
-						GraphQLRepositoryTestCaseMissingMethodAnnotation.class, ctx));
+						GraphQLRepositoryTestCaseMissingMethodAnnotation.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("@PartialRequest or @FullRequest"), e.getMessage());
@@ -91,7 +87,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseBadReturnType>(
-						GraphQLRepositoryTestCaseBadReturnType.class, ctx));
+						GraphQLRepositoryTestCaseBadReturnType.class, applicationContext));
 
 		// Verification
 		assertTrue(
@@ -107,13 +103,13 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Preparation
 		Map<String, Object> values = new HashMap<>(); // an emtpy map is enough for this test, like if no bean where
 														// registered
-		ApplicationContext ctx = mock(ApplicationContext.class);
-		when(ctx.getBeansOfType(anyObject())).thenReturn(values);
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBeansOfType(any())).thenReturn(values);
 
 		// Go, go, go
 		IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseBadExecutor>(
-						GraphQLRepositoryTestCaseBadExecutor.class, ctx));
+						GraphQLRepositoryTestCaseBadExecutor.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains(
@@ -139,7 +135,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseMissingException>(
-						GraphQLRepositoryTestCaseMissingException.class, ctx));
+						GraphQLRepositoryTestCaseMissingException.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("'com.graphql_java_generator.exception.GraphQLRequestExecutionException'"),
@@ -156,7 +152,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithMap>(
-						GraphQLRepositoryTestCaseParameterWithMap.class, ctx));
+						GraphQLRepositoryTestCaseParameterWithMap.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("Map and vararg (Object[]) are not allowed."), e.getMessage());
@@ -172,7 +168,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithVararg>(
-						GraphQLRepositoryTestCaseParameterWithVararg.class, ctx));
+						GraphQLRepositoryTestCaseParameterWithVararg.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains("Map and vararg (Object[]) are not allowed."), e.getMessage());
@@ -184,7 +180,7 @@ class GraphQLRepositoryInvocationHandlerSecondTest extends AbstractGraphQLReposi
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
 				() -> new GraphQLRepositoryInvocationHandler<GraphQLRepositoryTestCaseParameterWithFloatParam>(
-						GraphQLRepositoryTestCaseParameterWithFloatParam.class, ctx));
+						GraphQLRepositoryTestCaseParameterWithFloatParam.class, applicationContext));
 
 		// Verification
 		assertTrue(e.getMessage().contains(

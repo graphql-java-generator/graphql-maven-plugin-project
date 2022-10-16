@@ -25,6 +25,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.graphql.client.GraphQlClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -41,6 +42,8 @@ class FullQueriesIT {
 	MyQueryTypeExecutorAllGraphQLCases myQuery;
 	@Autowired
 	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
+	@Autowired
+	GraphQlClient graphQlClientAllGraphQLCases;
 
 	GraphQLRequest mutationWithDirectiveRequest;
 	GraphQLRequest mutationWithoutDirectiveRequest;

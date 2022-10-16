@@ -16,6 +16,7 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
  */
 @Configuration
 public class SpringConfiguration {
+
 	/**
 	 * As we have subscriptions in this sample, we must create a {@link GraphQlClient} that is a
 	 * {@link WebSocketGraphQlClient}

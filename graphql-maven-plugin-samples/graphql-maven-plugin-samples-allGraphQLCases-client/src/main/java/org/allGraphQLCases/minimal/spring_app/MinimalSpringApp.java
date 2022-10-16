@@ -18,21 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
-import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
+import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * @author etienne-sf
  */
-@SuppressWarnings("deprecation")
-@SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphQLConfiguration.class,
-		MyQueryTypeExecutorAllGraphQLCases.class })
-@EnableGraphQLRepositories("org.allGraphQLCases.minimal.spring_app")
+@SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, MyQueryTypeExecutorAllGraphQLCases.class })
 public class MinimalSpringApp implements CommandLineRunner {
 
 	/** The logger for this class */
@@ -40,8 +35,6 @@ public class MinimalSpringApp implements CommandLineRunner {
 
 	@Autowired
 	GraphQLRequests graphQLRequests;
-	@Autowired
-	String graphqlEndpoint2;
 
 	public static void main(String[] args) {
 		SpringApplication.run(MinimalSpringApp.class, args);
@@ -87,16 +80,15 @@ public class MinimalSpringApp implements CommandLineRunner {
 		logger.info("Normal end of execution");
 	}
 
-	/**
-	 * This beans is all that is needed to wire OAuth into the application, thanks to Spring Boot and some configuration
-	 * lines in the resources/application.properties file
-	 */
 	@Bean
-	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction(
-			ReactiveClientRegistrationRepository clientRegistrations) {
-		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
-				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
-		oauth.setDefaultClientRegistrationId("provider_test");
-		return oauth;
+	@ConditionalOnMissingBean(name = "graphqlUtils")
+	GraphqlUtils graphqlUtils() {
+		return GraphqlUtils.graphqlUtils;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(name = "graphqlClientUtils")
+	GraphqlClientUtils graphqlClientUtils() {
+		return GraphqlClientUtils.graphqlClientUtils;
 	}
 }

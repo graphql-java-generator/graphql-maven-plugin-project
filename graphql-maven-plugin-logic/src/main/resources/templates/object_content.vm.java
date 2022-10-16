@@ -222,7 +222,10 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #if (!$field.javaType.startsWith("List<"))
 	@Override
 #end
-	public ${field.javaTypeFullClassname} get${field.pascalCaseName}#if ($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonIgnore
+#end
+	public ${field.javaTypeFullClassname} get${field.pascalCaseName}#if($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
 		return ${field.javaName};
 	}
 #end

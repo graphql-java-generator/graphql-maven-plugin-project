@@ -3,6 +3,10 @@ package com.graphql_java_generator.client.request;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -13,8 +17,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
 import com.graphql_java_generator.domain.client.forum.Board;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
@@ -28,6 +34,7 @@ class AbstractGraphQLRequest_ForumTest {
 	Query queryType;
 	Map<String, Object> params;
 
+	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
 		queryType = new Query();
@@ -35,6 +42,10 @@ class AbstractGraphQLRequest_ForumTest {
 		params = new HashMap<>();
 		params.put("memberName", "a member Name");
 		params.put("sinceParam", new GregorianCalendar(1900, 10 - 1, 24).getTime());
+
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBean(anyString(), any(Class.class))).thenReturn(null);
+		SpringContextBean.setApplicationContext(applicationContext);
 	}
 
 	@Test
@@ -187,7 +198,7 @@ class AbstractGraphQLRequest_ForumTest {
 	void testBuild_fullQueryWithQueryName()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null, "query aQueryName {boards{topics{id}}}");
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest("query aQueryName {boards{topics{id}}}");
 		Map<String, Object> params = new HashMap<>();
 
 		// Verification

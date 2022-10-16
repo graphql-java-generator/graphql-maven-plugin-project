@@ -57,13 +57,13 @@ public class GraphQLRequest extends ObjectResponse {
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
-	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest) throws GraphQLRequestPreparationException {
-		super(graphQlClient, "$springBeanSuffix", graphQLRequest);
+	public GraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
+		super("$springBeanSuffix", graphQLRequest);
 	}
 	
-	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest, RequestType requestType, String queryName,
+	public GraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
-		super(graphQlClient, "$springBeanSuffix", graphQLRequest, requestType, queryName, inputParams);
+		super("$springBeanSuffix", graphQLRequest, requestType, queryName, inputParams);
 	}
 
 #if ($query)

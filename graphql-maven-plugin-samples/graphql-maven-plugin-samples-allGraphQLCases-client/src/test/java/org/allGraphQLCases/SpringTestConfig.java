@@ -1,5 +1,7 @@
 package org.allGraphQLCases;
 
+import java.util.Collections;
+
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
@@ -13,19 +15,21 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 
 import reactor.netty.http.client.HttpClient;
 
 @Configuration
 @SpringBootApplication
-@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutorAllGraphQLCases.class,
+@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorAllGraphQLCases.class,
 		MyQueryTypeExecutorAllGraphQLCases2.class, QueryExecutorForum.class, PartialDirectQueries.class })
 @PropertySource("classpath:/application.properties")
 @EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository",
@@ -56,7 +60,11 @@ public class SpringTestConfig {
 			CodecCustomizer defaultCodecCustomizer, //
 			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
 			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
-		return GraphQLConfiguration.getWebClient(graphqlEndpointAllGraphQLCases, defaultCodecCustomizer,
-				httpClientAllGraphQLCases, serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases);
+		return WebClient.builder()//
+				.baseUrl(graphqlEndpointAllGraphQLCases)//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpointAllGraphQLCases))
+				.filter(serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases)//
+				.build();
 	}
 }

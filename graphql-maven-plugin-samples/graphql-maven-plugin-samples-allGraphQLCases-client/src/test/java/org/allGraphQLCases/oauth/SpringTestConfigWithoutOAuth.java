@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 
 /**
  * A Spring configuration without OAuth, to check that the OAuth authentication is active on server side
@@ -17,7 +17,7 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 @EnableAutoConfiguration
 @PropertySource("classpath:/application.properties")
 // No OAuth configuration from the Main class @Import(Main.class)
-@ComponentScan(basePackageClasses = { GraphQLConfiguration.class, MyQueryTypeExecutorAllGraphQLCases.class })
+@ComponentScan(basePackageClasses = { GraphqlClientUtils.class, MyQueryTypeExecutorAllGraphQLCases.class })
 public class SpringTestConfigWithoutOAuth {
 
 }

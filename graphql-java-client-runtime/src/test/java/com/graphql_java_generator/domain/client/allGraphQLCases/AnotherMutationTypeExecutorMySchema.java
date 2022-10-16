@@ -280,7 +280,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, fullRequest);
+		return new GraphQLRequest(fullRequest);
 	}
 
 	/**
@@ -515,7 +515,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	 */
 	public GraphQLRequest getCreateHumanGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createHuman",
+		return new GraphQLRequest(partialRequest, RequestType.mutation, "createHuman",
 				InputParameter.newBindParameter("MySchema", "human", "anotherMutationTypeCreateHumanHuman",
 						InputParameterType.MANDATORY, "HumanInput", true, 0, false));
 	}
@@ -755,7 +755,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	 */
 	public GraphQLRequest getCreateAllFieldCasesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createAllFieldCases",
+		return new GraphQLRequest(partialRequest, RequestType.mutation, "createAllFieldCases",
 				InputParameter.newBindParameter("MySchema", "input", "anotherMutationTypeCreateAllFieldCasesInput",
 						InputParameterType.MANDATORY, "AllFieldCasesInput", true, 0, false));
 	}
@@ -998,7 +998,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	 */
 	public GraphQLRequest getDeleteSnacksGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "deleteSnacks",
+		return new GraphQLRequest(partialRequest, RequestType.mutation, "deleteSnacks",
 				InputParameter.newBindParameter("MySchema", "id", "anotherMutationTypeDeleteSnacksId",
 						InputParameterType.OPTIONAL, "ID", false, 1, false));
 	}
@@ -1230,7 +1230,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIfGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "if");
+		return new GraphQLRequest(partialRequest, RequestType.mutation, "if");
 	}
 
 	/**
@@ -1457,7 +1457,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getImplementsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "implements");
+		return new GraphQLRequest(partialRequest, RequestType.mutation, "implements");
 	}
 
 	/**
@@ -1679,7 +1679,7 @@ public class AnotherMutationTypeExecutorMySchema implements GraphQLMutationExecu
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "__typename");
+		return new GraphQLRequest(partialRequest, RequestType.mutation, "__typename");
 	}
 
 }

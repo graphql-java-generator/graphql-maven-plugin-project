@@ -1,3 +1,4 @@
+##
 #set( $D = '$' )
 ##
 ## Maven ignores the default value for springBeanSuffix, and replaces it by a null value. In this case, we replace the value by an empty String 
@@ -11,23 +12,32 @@ import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.graphql.client.GraphQlClient;
+import org.springframework.graphql.client.HttpGraphQlClient;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 
+import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.client.SpringContextBean;
+import com.graphql_java_generator.util.GraphqlUtils;
+
 /**
- * This Spring {@link Configuration} class defines the Spring Bean for this GraphQL schema.
+ * This Spring {@link AutoConfiguration} class defines the default Spring Beans for this GraphQL schema.
  * 
  * @author etienne-sf
  */
-@Configuration("springConfiguration${springBeanSuffix}") // The name of this bean will be springConfiguration${springBeanSuffix}
-@ComponentScan("${packageUtilName}")
-@SuppressWarnings("unused")
-public class GraphQLJavaGeneratorAutoConfiguration${springBeanSuffix} {
+@AutoConfiguration
+public class GraphQLSpringAutoConfiguration${springBeanSuffix} {
+
+	// Creating this bean makes sure that its static field is set. This is mandatory for some part of the code that must
+	// be kept, to allow compliance with existing projects.
+	@Autowired
+	SpringContextBean springContextBean;
 
 	@Value(value = "${D}{graphql.endpoint${springBeanSuffix}.url}")
 	private String graphqlEndpoint${springBeanSuffix}Url;
@@ -47,37 +57,35 @@ public class GraphQLJavaGeneratorAutoConfiguration${springBeanSuffix} {
 	}
 
 	/**
-	 * This beans defines the GraphQL endpoint for subscriptions for the ${springBeanSuffix} server, as a {@link String}. If
-	 * null, then the {@link #graphqlEndpoint()} url is used, which is the default.
-	 * 
-	 * @return Returns the value of the <I>graphql.endpoint.subscriptionUrl</I> application property.
-	 * @see https://docs.spring.io/spring-boot/docs/2.3.3.RELEASE/reference/html/spring-boot-features.html#boot-features-external-config
-	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "graphqlSubscriptionEndpoint${springBeanSuffix}")
-	@Deprecated
-	String graphqlSubscriptionEndpoint${springBeanSuffix}() {
-		return graphqlEndpoint${springBeanSuffix}SubscriptionUrl;
-	}
-
-	/**
 	 * The Spring reactive {@link WebClient} that will execute the HTTP requests for GraphQL queries and mutations.<BR/>
 	 * This bean is only created if no such bean already exists
 	 */
 	@Bean
 	@ConditionalOnMissingBean(name = "webClient${springBeanSuffix}")
 	public WebClient webClient${springBeanSuffix}(String graphqlEndpoint${springBeanSuffix}) {
-		return webClientBuilder = WebClient.builder()//
-				.baseUrl(graphqlEndpoint)//
-				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) //
-				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint)) //
+		return WebClient.builder()//
+				.baseUrl(graphqlEndpoint${springBeanSuffix})//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint${springBeanSuffix}))
 				.build();
 	}
 
 	@Bean
-	@ConditionalOnMissingBean(name = "graphQlClient")
-	GraphQlClient graphQlClient(WebClient webClient) {
-		return HttpGraphQlClient.builder(webClient).build();
+	@Qualifier("${springBeanSuffix}")
+	@ConditionalOnMissingBean(name = "graphQlClient${springBeanSuffix}")
+	GraphQlClient graphQlClient${springBeanSuffix}(WebClient webClient${springBeanSuffix}) {
+		return HttpGraphQlClient.builder(webClient${springBeanSuffix}).build();
 	}
 
+	@Bean
+	@ConditionalOnMissingBean(name = "graphqlClientUtils")
+	GraphqlUtils graphqlClientUtils() {
+		return GraphqlClientUtils.graphqlClientUtils;
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(name = "graphqlUtils")
+	GraphqlUtils graphqlUtils() {
+		return GraphqlUtils.graphqlUtils;
+	}
 }

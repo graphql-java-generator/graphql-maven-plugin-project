@@ -280,7 +280,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, fullRequest);
+		return new GraphQLRequest(fullRequest);
 	}
 
 	/**
@@ -505,7 +505,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getWithoutParametersGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withoutParameters");
+		return new GraphQLRequest(partialRequest, RequestType.query, "withoutParameters");
 	}
 
 	/**
@@ -743,7 +743,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getWithOneOptionalParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withOneOptionalParam",
+		return new GraphQLRequest(partialRequest, RequestType.query, "withOneOptionalParam",
 				InputParameter.newBindParameter("MySchema", "character", "myQueryTypeWithOneOptionalParamCharacter",
 						InputParameterType.OPTIONAL, "CharacterInput", false, 0, false));
 	}
@@ -983,7 +983,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getWithOneMandatoryParamGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withOneMandatoryParam",
+		return new GraphQLRequest(partialRequest, RequestType.query, "withOneMandatoryParam",
 				InputParameter.newBindParameter("MySchema", "character", "myQueryTypeWithOneMandatoryParamCharacter",
 						InputParameterType.MANDATORY, "CharacterInput", true, 0, false));
 	}
@@ -1229,7 +1229,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getWithOneMandatoryParamDefaultValueGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withOneMandatoryParamDefaultValue",
+		return new GraphQLRequest(partialRequest, RequestType.query, "withOneMandatoryParamDefaultValue",
 				InputParameter.newBindParameter("MySchema", "intParam",
 						"myQueryTypeWithOneMandatoryParamDefaultValueIntParam", InputParameterType.MANDATORY, "Int",
 						true, 0, false));
@@ -1492,7 +1492,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getWithTwoMandatoryParamDefaultValGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withTwoMandatoryParamDefaultVal",
+		return new GraphQLRequest(partialRequest, RequestType.query, "withTwoMandatoryParamDefaultVal",
 				InputParameter.newBindParameter("MySchema", "theHero",
 						"myQueryTypeWithTwoMandatoryParamDefaultValTheHero", InputParameterType.MANDATORY, "DroidInput",
 						true, 0, false),
@@ -1730,7 +1730,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getWithEnumGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withEnum",
+		return new GraphQLRequest(partialRequest, RequestType.query, "withEnum",
 				InputParameter.newBindParameter("MySchema", "episode", "myQueryTypeWithEnumEpisode",
 						InputParameterType.MANDATORY, "Episode", true, 0, false));
 	}
@@ -1970,7 +1970,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getWithListOfListGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withListOfList",
+		return new GraphQLRequest(partialRequest, RequestType.query, "withListOfList",
 				InputParameter.newBindParameter("MySchema", "matrix", "myQueryTypeWithListOfListMatrix",
 						InputParameterType.MANDATORY, "Float", true, 2, false));
 	}
@@ -2226,7 +2226,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getWithListGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "withList",
+		return new GraphQLRequest(partialRequest, RequestType.query, "withList",
 				InputParameter.newBindParameter("MySchema", "firstName", "myQueryTypeWithListFirstName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
 				InputParameter.newBindParameter("MySchema", "characters", "myQueryTypeWithListCharacters",
@@ -2474,7 +2474,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getAllFieldCasesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "allFieldCases",
+		return new GraphQLRequest(partialRequest, RequestType.query, "allFieldCases",
 				InputParameter.newBindParameter("MySchema", "input", "myQueryTypeAllFieldCasesInput",
 						InputParameterType.OPTIONAL, "AllFieldCasesInput", false, 0, false));
 	}
@@ -2756,7 +2756,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getUnionTestGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "unionTest",
+		return new GraphQLRequest(partialRequest, RequestType.query, "unionTest",
 				InputParameter.newBindParameter("MySchema", "human1", "myQueryTypeUnionTestHuman1",
 						InputParameterType.OPTIONAL, "HumanInput", false, 0, false),
 				InputParameter.newBindParameter("MySchema", "human2", "myQueryTypeUnionTestHuman2",
@@ -3004,7 +3004,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getErrorGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "error",
+		return new GraphQLRequest(partialRequest, RequestType.query, "error",
 				InputParameter.newBindParameter("MySchema", "errorLabel", "myQueryTypeErrorErrorLabel",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
@@ -3231,7 +3231,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getABreakGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "aBreak");
+		return new GraphQLRequest(partialRequest, RequestType.query, "aBreak");
 	}
 
 	/**
@@ -3475,7 +3475,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getDirectiveOnQueryGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "directiveOnQuery",
+		return new GraphQLRequest(partialRequest, RequestType.query, "directiveOnQuery",
 				InputParameter.newBindParameter("MySchema", "uppercase", "myQueryTypeDirectiveOnQueryUppercase",
 						InputParameterType.OPTIONAL, "Boolean", false, 0, false));
 	}
@@ -3708,7 +3708,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getDirectiveOnFieldGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "directiveOnField");
+		return new GraphQLRequest(partialRequest, RequestType.query, "directiveOnField");
 	}
 
 	/**
@@ -3941,7 +3941,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getConnectionWithoutParametersGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "connectionWithoutParameters");
+		return new GraphQLRequest(partialRequest, RequestType.query, "connectionWithoutParameters");
 	}
 
 	/**
@@ -4191,7 +4191,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getConnectionOnHumanGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "connectionOnHuman",
+		return new GraphQLRequest(partialRequest, RequestType.query, "connectionOnHuman",
 				InputParameter.newBindParameter("MySchema", "planet", "myQueryTypeConnectionOnHumanPlanet",
 						InputParameterType.OPTIONAL, "String", false, 0, false),
 				InputParameter.newBindParameter("MySchema", "episode", "myQueryTypeConnectionOnHumanEpisode",
@@ -4434,9 +4434,8 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "issue53",
-				InputParameter.newBindParameter("MySchema", "date", "myQueryTypeIssue53Date",
-						InputParameterType.MANDATORY, "Date", true, 0, false));
+		return new GraphQLRequest(partialRequest, RequestType.query, "issue53", InputParameter.newBindParameter(
+				"MySchema", "date", "myQueryTypeIssue53Date", InputParameterType.MANDATORY, "Date", true, 0, false));
 	}
 
 	/**
@@ -4677,7 +4676,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getIssue82FloatGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "issue82Float",
+		return new GraphQLRequest(partialRequest, RequestType.query, "issue82Float",
 				InputParameter.newBindParameter("MySchema", "aFloat", "myQueryTypeIssue82FloatAFloat",
 						InputParameterType.MANDATORY, "Float", true, 0, false));
 	}
@@ -4913,9 +4912,8 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIssue82IDGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "issue82ID",
-				InputParameter.newBindParameter("MySchema", "aID", "myQueryTypeIssue82IDAID",
-						InputParameterType.MANDATORY, "ID", true, 0, false));
+		return new GraphQLRequest(partialRequest, RequestType.query, "issue82ID", InputParameter.newBindParameter(
+				"MySchema", "aID", "myQueryTypeIssue82IDAID", InputParameterType.MANDATORY, "ID", true, 0, false));
 	}
 
 	/**
@@ -5141,7 +5139,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIssue128GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "issue128");
+		return new GraphQLRequest(partialRequest, RequestType.query, "issue128");
 	}
 
 	/**
@@ -5374,8 +5372,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getEnumWithReservedJavaKeywordAsValuesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query,
-				"enumWithReservedJavaKeywordAsValues");
+		return new GraphQLRequest(partialRequest, RequestType.query, "enumWithReservedJavaKeywordAsValues");
 	}
 
 	/**
@@ -5644,8 +5641,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getListOfEnumWithReservedJavaKeywordAsValuesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query,
-				"listOfEnumWithReservedJavaKeywordAsValues",
+		return new GraphQLRequest(partialRequest, RequestType.query, "listOfEnumWithReservedJavaKeywordAsValues",
 				InputParameter.newBindParameter("MySchema", "param1",
 						"myQueryTypeListOfEnumWithReservedJavaKeywordAsValuesParam1", InputParameterType.OPTIONAL,
 						"EnumWithReservedJavaKeywordAsValues", false, 0, false),
@@ -5875,7 +5871,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIfGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "if");
+		return new GraphQLRequest(partialRequest, RequestType.query, "if");
 	}
 
 	/**
@@ -6102,7 +6098,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getImplementsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "implements");
+		return new GraphQLRequest(partialRequest, RequestType.query, "implements");
 	}
 
 	/**
@@ -6328,7 +6324,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getImportGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "import");
+		return new GraphQLRequest(partialRequest, RequestType.query, "import");
 	}
 
 	/**
@@ -6555,7 +6551,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getInstanceofGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "instanceof");
+		return new GraphQLRequest(partialRequest, RequestType.query, "instanceof");
 	}
 
 	/**
@@ -6779,7 +6775,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIntGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "int");
+		return new GraphQLRequest(partialRequest, RequestType.query, "int");
 	}
 
 	/**
@@ -7005,7 +7001,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getInterfaceGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "interface");
+		return new GraphQLRequest(partialRequest, RequestType.query, "interface");
 	}
 
 	/**
@@ -7229,7 +7225,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getLongGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "long");
+		return new GraphQLRequest(partialRequest, RequestType.query, "long");
 	}
 
 	/**
@@ -7455,7 +7451,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getNativeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "native");
+		return new GraphQLRequest(partialRequest, RequestType.query, "native");
 	}
 
 	/**
@@ -7679,7 +7675,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getNewGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "new");
+		return new GraphQLRequest(partialRequest, RequestType.query, "new");
 	}
 
 	/**
@@ -7905,7 +7901,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getPackageGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "package");
+		return new GraphQLRequest(partialRequest, RequestType.query, "package");
 	}
 
 	/**
@@ -8131,7 +8127,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getPrivateGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "private");
+		return new GraphQLRequest(partialRequest, RequestType.query, "private");
 	}
 
 	/**
@@ -8357,7 +8353,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getProtectedGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "protected");
+		return new GraphQLRequest(partialRequest, RequestType.query, "protected");
 	}
 
 	/**
@@ -8583,7 +8579,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getPublicGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "public");
+		return new GraphQLRequest(partialRequest, RequestType.query, "public");
 	}
 
 	/**
@@ -8809,7 +8805,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getReturnGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "return");
+		return new GraphQLRequest(partialRequest, RequestType.query, "return");
 	}
 
 	/**
@@ -9033,7 +9029,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getShortGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "short");
+		return new GraphQLRequest(partialRequest, RequestType.query, "short");
 	}
 
 	/**
@@ -9259,7 +9255,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getStaticGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "static");
+		return new GraphQLRequest(partialRequest, RequestType.query, "static");
 	}
 
 	/**
@@ -9485,7 +9481,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getStrictfpGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "strictfp");
+		return new GraphQLRequest(partialRequest, RequestType.query, "strictfp");
 	}
 
 	/**
@@ -9709,7 +9705,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getSuperGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "super");
+		return new GraphQLRequest(partialRequest, RequestType.query, "super");
 	}
 
 	/**
@@ -9935,7 +9931,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getSwitchGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "switch");
+		return new GraphQLRequest(partialRequest, RequestType.query, "switch");
 	}
 
 	/**
@@ -10163,7 +10159,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getSynchronizedGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "synchronized");
+		return new GraphQLRequest(partialRequest, RequestType.query, "synchronized");
 	}
 
 	/**
@@ -10387,7 +10383,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getThisGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "this");
+		return new GraphQLRequest(partialRequest, RequestType.query, "this");
 	}
 
 	/**
@@ -10611,7 +10607,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getThrowGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "throw");
+		return new GraphQLRequest(partialRequest, RequestType.query, "throw");
 	}
 
 	/**
@@ -10837,7 +10833,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getThrowsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "throws");
+		return new GraphQLRequest(partialRequest, RequestType.query, "throws");
 	}
 
 	/**
@@ -11063,7 +11059,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getTransientGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "transient");
+		return new GraphQLRequest(partialRequest, RequestType.query, "transient");
 	}
 
 	/**
@@ -11287,7 +11283,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getTryGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "try");
+		return new GraphQLRequest(partialRequest, RequestType.query, "try");
 	}
 
 	/**
@@ -11511,7 +11507,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getVoidGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "void");
+		return new GraphQLRequest(partialRequest, RequestType.query, "void");
 	}
 
 	/**
@@ -11737,7 +11733,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getVolatileGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "volatile");
+		return new GraphQLRequest(partialRequest, RequestType.query, "volatile");
 	}
 
 	/**
@@ -11961,7 +11957,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getWhileGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "while");
+		return new GraphQLRequest(partialRequest, RequestType.query, "while");
 	}
 
 	/**
@@ -12186,7 +12182,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getFoo140GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "foo140");
+		return new GraphQLRequest(partialRequest, RequestType.query, "foo140");
 	}
 
 	/**
@@ -12413,7 +12409,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getRelayGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "relay");
+		return new GraphQLRequest(partialRequest, RequestType.query, "relay");
 	}
 
 	/**
@@ -12635,7 +12631,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__schemaGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__schema");
+		return new GraphQLRequest(partialRequest, RequestType.query, "__schema");
 	}
 
 	/**
@@ -12868,9 +12864,8 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__type",
-				InputParameter.newBindParameter("MySchema", "name", "myQueryType__typeName",
-						InputParameterType.MANDATORY, "String", true, 0, false));
+		return new GraphQLRequest(partialRequest, RequestType.query, "__type", InputParameter.newBindParameter(
+				"MySchema", "name", "myQueryType__typeName", InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
 	/**
@@ -13092,7 +13087,7 @@ public class MyQueryTypeExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__typename");
+		return new GraphQLRequest(partialRequest, RequestType.query, "__typename");
 	}
 
 }

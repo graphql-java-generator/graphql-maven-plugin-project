@@ -22,9 +22,9 @@ import org.dataloader.BatchLoaderEnvironment;
  * @see <a href="https://github.com/graphql-java-generator/graphql-java-generator">https://github.com/graphql-java-generator/graphql-java-generator</a>
  */
 @SuppressWarnings("unused")
-public interface ${dataFetcherDelegate.pascalCaseName} {
+public interface ${dataFetchersDelegate.pascalCaseName} {
 	
-#foreach ($dataFetcher in $dataFetcherDelegate.dataFetchers)
+#foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
 ##
 ##
 ##
@@ -100,7 +100,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	 *     by the calling method, and the return is consider as null. This allows to use the {@link Optional#get()} method directly, without caring of 
 	 *     whether or not there is a value. The generated code will take care of the {@link NoSuchElementException} exception. 
 	 */
-#if ($dataFetcherDelegate.type.requestType == "subscription")
+#if ($dataFetchersDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
 	public Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
 #else
@@ -119,7 +119,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 ##
 
 #end
-#foreach ($batchLoader in $dataFetcherDelegate.batchLoaders)
+#foreach ($batchLoader in $dataFetchersDelegate.batchLoaders)
 	/**
 	 * This method loads a list of ${dataFetcher.field.name}, based on the list of id to be fetched. This method is used by
 	 * <A HREF="https://github.com/graphql-java/java-dataloader">graphql-java java-dataloader</A> to highly optimize the
@@ -148,7 +148,7 @@ public interface ${dataFetcherDelegate.pascalCaseName} {
 	default public List<${batchLoader.type.classFullName}> batchLoader(List<${batchLoader.type.identifier.javaTypeFullClassname}> keys#if($configuration.generateBatchLoaderEnvironment), BatchLoaderEnvironment environment#end) {
 		List<${batchLoader.type.classFullName}> ret = unorderedReturnBatchLoader(keys#if($configuration.generateBatchLoaderEnvironment), environment#end);
 		if (ret == null)
-			throw new NullPointerException("Either batchLoader or unorderedReturnBatchLoader must be overriden in ${dataFetcherDelegate.pascalCaseName} implementation. And unorderedReturnBatchLoader must return a list.");
+			throw new NullPointerException("Either batchLoader or unorderedReturnBatchLoader must be overriden in ${dataFetchersDelegate.pascalCaseName} implementation. And unorderedReturnBatchLoader must return a list.");
 		return GraphqlUtils.graphqlUtils.orderList(keys, ret, "${batchLoader.type.identifier.javaName}");
 	}
 

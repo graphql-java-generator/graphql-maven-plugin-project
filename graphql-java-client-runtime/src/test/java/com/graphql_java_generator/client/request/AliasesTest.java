@@ -1,6 +1,10 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.HumanInput;
@@ -27,6 +33,7 @@ class AliasesTest {
 	HumanInput input;
 	Map<String, Object> params = new HashMap<>();
 
+	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {
 		input = new HumanInput();
@@ -40,6 +47,10 @@ class AliasesTest {
 		params.put("humanInput", input);
 		params.put("value", "the mutation value");
 		params.put("anotherValue", "the other mutation value");
+
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBean(anyString(), any(Class.class))).thenReturn(null);
+		SpringContextBean.setApplicationContext(applicationContext);
 	}
 
 	@Test

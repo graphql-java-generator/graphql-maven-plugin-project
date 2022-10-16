@@ -25,9 +25,7 @@ package ${packageUtilName};
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.ws.rs.client.Client;
+
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -48,7 +46,6 @@ import $import;
 #end
 #end
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 
 /**
@@ -89,21 +86,6 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 #end
 #parse ("templates/object_content.vm.java")
 #end
-
-	/** {@inheritDoc} */
-	public ${object.classSimpleName}(String graphqlEndpoint) {
-		super(graphqlEndpoint);
-	}
-
-	/** {@inheritDoc} */
-	public ${object.classSimpleName}(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		super(graphqlEndpoint, sslContext, hostnameVerifier);
-	}
-
-	/** {@inheritDoc} */
-	public ${object.classSimpleName}(String graphqlEndpoint, Client client) {
-		super(graphqlEndpoint, client);
-	}
 
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field

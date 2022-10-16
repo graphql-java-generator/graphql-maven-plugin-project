@@ -3,11 +3,11 @@
  */
 package com.graphql_java_generator.plugin.generate_code;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -15,10 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -49,7 +49,6 @@ import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration
 import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
-import com.graphql_java_generator.plugin.language.BatchLoader;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -70,6 +69,8 @@ public class GenerateCodeGenerator implements Generator {
 	private final static String COMMON_RUNTIME_SOURCE_FILENAME = "/graphql-java-common-runtime-sources.jar";
 	private final static String CLIENT_RUNTIME_SOURCE_FILENAME = "/graphql-java-client-runtime-sources.jar";
 	private final static String SERVER_RUNTIME_SOURCE_FILENAME = "/graphql-java-server-runtime-sources.jar";
+
+	private final static String CLIENT_SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLSpringAutoConfiguration";
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;
@@ -230,11 +231,11 @@ public class GenerateCodeGenerator implements Generator {
 			// Generation of the Spring Configuration class, that is specific to this GraphQL schema
 			logger.debug("Generating SpringConfig");
 			i += generateOneFile(
-					getJavaFile("SpringConfiguration"
+					getJavaFile(CLIENT_SPRING_AUTO_CONFIGURATION_CLASS
 							+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix()),
 							true),
 					"generating SpringConfiguration", context,
-					resolveTemplate(CodeTemplate.SPRING_CONFIGURATION_CLASS));
+					resolveTemplate(CodeTemplate.SPRING_AUTO_CONFIGURATION_CLASS));
 
 			// Files for Custom Scalars
 			logger.debug("Generating CustomScalarRegistryInitializer");
@@ -263,30 +264,31 @@ public class GenerateCodeGenerator implements Generator {
 	 * @throws IOException
 	 */
 	private int generateSpringAutoConfigurationDeclaration() throws IOException {
-		File springFactories = new File(configuration.getTargetResourceFolder(), "META-INF/spring.factories");
-		String autoConfClass = configuration.getSpringAutoConfigurationPackage() + "." + "SpringConfiguration"
+		String springAutoConfigurationPath = "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports";
+		File springFactories = new File(configuration.getTargetResourceFolder(), springAutoConfigurationPath);
+		String autoConfClass = configuration.getSpringAutoConfigurationPackage() + "."
+				+ CLIENT_SPRING_AUTO_CONFIGURATION_CLASS
 				+ (configuration.getSpringBeanSuffix() == null ? "" : configuration.getSpringBeanSuffix());
+		Set<String> autoConfClasses = new TreeSet<>();
+		autoConfClasses.add(autoConfClass);
 		if (springFactories.exists()) {
-			// The file already exists. Let's check if the spring auto configuration file that we've just generated is
-			// already declared (happens when the code generation had already been executed before)
-			Properties props = new Properties();
-			try (InputStream is = new FileInputStream(springFactories)) {
-				props.load(is);
+			String line;
+			springFactories.getParentFile().mkdirs();
+			try (BufferedReader br = new BufferedReader(new FileReader(springFactories))) {
+				while ((line = br.readLine()) != null) {
+					if (line.equals(autoConfClass)) {
+						// The auto configuration class is already defined there. There is nothing to do
+						return 0;
+					}
+					autoConfClasses.add(line);
+				}
 			}
-			String[] classes = ((String) props.get("org.springframework.boot.autoconfigure.EnableAutoConfiguration"))
-					.split("[, ]");
-			if (Arrays.binarySearch(classes, autoConfClass) >= 0) {
-				// The auto configuration class is already defined there. There is nothing to do
-				return 0;
-			}
-			autoConfClass = autoConfClass + ","
-					+ (String) props.get("org.springframework.boot.autoconfigure.EnableAutoConfiguration");
 		}
 
 		VelocityContext context = getVelocityContext();
-		context.put("springAutoConfigurationClasses", autoConfClass);
-		generateOneFile(getResourceFile("META-INF/spring.factories"), "Generating META-INF/spring.factories", context,
-				resolveTemplate(CodeTemplate.SPRING_AUTOCONFIGURATION_DEFINITION_FILE));
+		context.put("springAutoConfigurationClasses", String.join("\n", autoConfClasses));
+		generateOneFile(getResourceFile(springAutoConfigurationPath), "Generating " + springAutoConfigurationPath,
+				context, resolveTemplate(CodeTemplate.SPRING_AUTOCONFIGURATION_DEFINITION_FILE));
 
 		return 1;
 	}
@@ -552,29 +554,21 @@ public class GenerateCodeGenerator implements Generator {
 			ret += generateOneFile(getJavaFile("GraphQLWiring", true), "generating GraphQLWiring", context,
 					resolveTemplate(CodeTemplate.WIRING));
 
-			logger.debug("Generating GraphQLDataFetchers");
-			ret += generateOneFile(getJavaFile("GraphQLDataFetchers", true), "generating GraphQLDataFetchers", context,
-					resolveTemplate(CodeTemplate.DATA_FETCHER));
-
 			for (DataFetchersDelegate dataFetcherDelegate : generateCodeDocumentParser.dataFetchersDelegates) {
-				context.put("dataFetcherDelegate", dataFetcherDelegate);
+				context.put("dataFetchersDelegate", dataFetcherDelegate);
+				context.put("dataFetchersDelegates", generateCodeDocumentParser.getDataFetchersDelegates());
+				context.put("batchLoaders", generateCodeDocumentParser.getBatchLoaders());
+
+				String entityControllerName = dataFetcherDelegate.getType().getJavaName() + "Controller";
+				logger.debug("Generating " + entityControllerName);
+				ret += generateOneFile(getJavaFile(entityControllerName, true), "generating " + entityControllerName,
+						context, resolveTemplate(CodeTemplate.ENTITY_CONTROLLER));
+
 				logger.debug("Generating " + dataFetcherDelegate.getPascalCaseName());
 				ret += generateOneFile(getJavaFile(dataFetcherDelegate.getPascalCaseName(), true),
 						"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 						resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
 			}
-
-			for (BatchLoader batchLoader : generateCodeDocumentParser.batchLoaders) {
-				String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
-				context.put("batchLoader", batchLoader);
-				logger.debug("Generating " + name);
-				ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,
-						resolveTemplate(CodeTemplate.BATCH_LOADER_DELEGATE_IMPL));
-			}
-
-			logger.debug("Generating WebSocketConfig");
-			ret += generateOneFile(getJavaFile("WebSocketConfig", true), "generating WebSocketConfig", context,
-					resolveTemplate(CodeTemplate.WEB_SOCKET_CONFIG));
 
 			// When the addRelayConnections parameter is true, and we're in server mode, we must generate the resulting
 			// GraphQL schema, so that the graphql-java can access it at runtime.
@@ -710,7 +704,7 @@ public class GenerateCodeGenerator implements Generator {
 	File getJavaFile(String simpleClassname, boolean utilityClass) {
 		String packageName;
 
-		if (simpleClassname.startsWith("SpringConfiguration")) {
+		if (simpleClassname.startsWith(CLIENT_SPRING_AUTO_CONFIGURATION_CLASS)) {
 			packageName = configuration.getSpringAutoConfigurationPackage();
 		} else {
 			packageName = (utilityClass && configuration.isSeparateUtilityClasses())

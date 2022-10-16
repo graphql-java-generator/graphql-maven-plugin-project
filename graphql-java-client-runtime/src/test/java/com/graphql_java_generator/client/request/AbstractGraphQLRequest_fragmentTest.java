@@ -1,6 +1,10 @@
 package com.graphql_java_generator.client.request;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,8 +15,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.GraphQLRequest;
@@ -26,6 +32,7 @@ class AbstractGraphQLRequest_fragmentTest {
 	HumanInput input;
 	Map<String, Object> params = new HashMap<>();
 
+	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {
 
@@ -43,6 +50,10 @@ class AbstractGraphQLRequest_fragmentTest {
 		params.put("anotherValue", "the other mutation value");
 		params.put("uppercaseFalse", false);
 		params.put("uppercaseTrue", true);
+
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
+		when(applicationContext.getBean(anyString(), any(Class.class))).thenReturn(null);
+		SpringContextBean.setApplicationContext(applicationContext);
 	}
 
 	@Test
@@ -310,7 +321,7 @@ class AbstractGraphQLRequest_fragmentTest {
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null, //
+		GraphQLRequest graphQLRequest = new GraphQLRequest(//
 				"   fragment character \n \r \t on \n \r \t  Character { id name appearsIn friends {id name} }"
 						+ "mutation {createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{    ...character       }}"//
@@ -363,7 +374,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		params.put("expandedInfo", true);
 
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(null, ""//
+		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
 				+ "fragment humanFrag on Human  {friends {id name} appearsIn @testDirective(value:&value,anotherValue:?anotherValue)}"
 				+ "mutation{createHuman (human : &humanInput ) { id name ...humanFrag @include(if: &expandedInfo)}}");
 
