@@ -142,7 +142,7 @@ public class GraphQLWiring {
 				String ret = null;
 #foreach ($implementingType in ${interface.implementingTypes})
 				if (javaObject instanceof ${implementingType.classFullName}) {
-					ret = "${implementingType.javaName}";
+					ret = "${implementingType.name}";
 				} else
 #end
 				{
@@ -166,7 +166,7 @@ public class GraphQLWiring {
 
 #foreach ($memberType in ${union.memberTypes})
 				if (javaObject instanceof ${memberType.classFullName}) {
-					ret = "${memberType.javaName}";
+					ret = "${memberType.name}";
 				} else
 #end
 				{
