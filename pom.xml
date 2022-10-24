@@ -408,11 +408,6 @@
 
 			<!-- dependencies for graphql -->
 			<dependency>
-				<groupId>com.graphql-java</groupId>
-				<artifactId>graphql-java</artifactId>
-				<version>18.0</version>
-			</dependency>
-			<dependency>
 				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
 				<groupId>com.graphql-java-kickstart</groupId>
 				<artifactId>graphiql-spring-boot-starter</artifactId>
