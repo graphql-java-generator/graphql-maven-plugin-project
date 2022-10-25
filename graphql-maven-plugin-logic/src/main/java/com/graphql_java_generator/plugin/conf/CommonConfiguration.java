@@ -115,51 +115,72 @@ public interface CommonConfiguration {
 	public boolean isAddRelayConnections();
 
 	/**
-	 *  An optional prefix for the generated java classes for GraphQL types.
+	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL types.
+	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
+	 *  (no space, dot, comma, etc.)
 	 */
 	public String getTypePrefix();
 
 	/**
-	 *  An optional suffix for the generated java classes for GraphQL types.
+	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL types.
+	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
+	 *  dot, comma, etc.)
 	 */
 	public String getTypeSuffix();
 
 	/**
-	 *  An optional prefix for the generated java classes for GraphQL input objects.
+	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL input objects.
+	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
+	 *  (no space, dot, comma, etc.)
 	 */
 	public String getInputPrefix();
 
 	/**
-	 *  An optional suffix for the generated java classes for GraphQL input objects.
+	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL input objects.
+	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
+	 *  dot, comma, etc.)
 	 */
 	public String getInputSuffix();
 
 	/**
-	 *  An optional prefix for the generated java classes for GraphQL unions.
+	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL unions.
+	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
+	 *  (no space, dot, comma, etc.)
 	 */
 	public String getUnionPrefix();
 
 	/**
-	 *  An optional suffix for the generated java classes for GraphQL unions.
+	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL unions.
+	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
+	 *  dot, comma, etc.)
 	 */
 	public String getUnionSuffix();
 
 	/**
-	 *  An optional prefix for the generated java classes for GraphQL interfaces.
+	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces.
+	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
+	 *  (no space, dot, comma, etc.)
 	 */
 	public String getInterfacePrefix();
 
 	/**
-	 *  An optional prefix for the generated java classes for GraphQL interfaces.
+	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces.
+	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
+	 *  dot, comma, etc.)
 	 */
 	public String getInterfaceSuffix();
+
 	/**
-	 *  An optional prefix for the generated java classes for GraphQL enums.
+	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL enums.
+	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
+	 *  (no space, dot, comma, etc.)
 	 */
 	public String getEnumPrefix();
 
 	/**
-	 *  An optional suffix for the generated java classes for GraphQL enums.
+	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL enums.
+	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
+	 *  dot, comma, etc.)
 	 */
 	public String getEnumSuffix();
 
