@@ -1,9 +1,8 @@
 package org.allGraphQLCases.client.prefixsuffix;
 
-import org.allGraphQLCases.prefixsuffix.*;
-import org.allGraphQLCases.prefixsuffix.util.MyQueryTypeExecutor;
-import org.allGraphQLCases.prefixsuffix.util.MyQueryTypeResponse;
-import org.allGraphQLCases.prefixsuffix.util.MyQueryTypeRootResponse;
+import org.allGraphQLCases.client.prefixsuffix.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.client.prefixsuffix.util.MyQueryTypeResponse;
+import org.allGraphQLCases.client.prefixsuffix.util.MyQueryTypeRootResponse;
 
 /**
  * Verifies that that prefixes and suffix are used correctly in client code generation.
