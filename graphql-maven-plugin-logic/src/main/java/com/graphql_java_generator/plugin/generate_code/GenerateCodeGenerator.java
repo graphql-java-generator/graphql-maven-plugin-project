@@ -568,7 +568,7 @@ public class GenerateCodeGenerator implements Generator {
 			}
 
 			for (BatchLoader batchLoader : generateCodeDocumentParser.batchLoaders) {
-				String name = "BatchLoaderDelegate" + batchLoader.getType().getClassSimpleName() + "Impl";
+				String name = "BatchLoaderDelegate" + batchLoader.getType().getName() + "Impl";
 				context.put("batchLoader", batchLoader);
 				logger.debug("Generating " + name);
 				ret += generateOneFile(getJavaFile(name, true), "generating " + name, context,

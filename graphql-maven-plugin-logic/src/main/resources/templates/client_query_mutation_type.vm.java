@@ -75,7 +75,7 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
 #end
 ${object.annotation}
 @SuppressWarnings("unused")
-public class ${object.classSimpleName} extends ${object.classSimpleName}Executor${springBeanSuffix} #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.GraphQLRequestObject #end{
+public class ${object.classSimpleName} extends ${object.name}Executor${springBeanSuffix} #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.GraphQLRequestObject #end{
 
 #if(!${configuration.separateUtilityClasses})
 ##
@@ -160,7 +160,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
+	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.exec(queryResponseDef, parameters);
 	}
@@ -170,7 +170,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end exec(String queryResponseDef, Object... paramsAndValues)
+	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end exec(String queryResponseDef, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		return super.exec(queryResponseDef, paramsAndValues);
 	}
@@ -180,7 +180,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
+	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException {
 		return super.execWithBindValues(objectResponse, parameters);
 	}
@@ -190,7 +190,7 @@ public class ${object.classSimpleName} extends ${object.classSimpleName}Executor
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public ${object.classSimpleName}#if(${configuration.generateDeprecatedRequestResponse})Response#end exec(ObjectResponse objectResponse, Object... paramsAndValues)
+	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end exec(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		return super.exec(objectResponse, paramsAndValues);
 	}

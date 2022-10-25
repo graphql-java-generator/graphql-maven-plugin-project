@@ -49,11 +49,11 @@ public interface Type {
 	default public String getTargetFileName(String fileType) {
 		switch (fileType) {
 		case "executor":
-			return getJavaName() + "Executor";
+			return getName() + "Executor";
 		case "response":
-			return getJavaName() + "Response";
+			return getName() + "Response";
 		case "root response":
-			return getJavaName() + "RootResponse";
+			return getName() + "RootResponse";
 		default:
 			return getJavaName();
 		}
