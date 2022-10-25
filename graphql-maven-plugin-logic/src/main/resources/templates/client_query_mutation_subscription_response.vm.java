@@ -21,6 +21,6 @@ import com.graphql_java_generator.annotation.RequestType;
 @Deprecated
 ${object.annotation}
 @SuppressWarnings("unused")
-public class ${object.javaName}Response extends ${object.javaName} {
+public class ${object.name}Response extends ${object.javaName} {
 
 }

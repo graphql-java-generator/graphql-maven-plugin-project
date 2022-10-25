@@ -18,7 +18,7 @@ import ${configuration.packageName}.${object.classSimpleName};
 #end
 
 @SuppressWarnings("unused")
-public class ${object.classSimpleName}RootResponse {
+public class ${object.name}RootResponse {
 
 #if($configuration.isGenerateJacksonAnnotations())
 	@JsonProperty("data")

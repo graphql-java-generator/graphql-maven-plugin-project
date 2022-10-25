@@ -42,7 +42,7 @@ import com.graphql_java_generator.server.util.BatchLoaderDelegate#if($configurat
  */
 @Component
 @SuppressWarnings("unused")
-public class BatchLoaderDelegate${batchLoader.type.classSimpleName}Impl implements BatchLoaderDelegate#if($configuration.generateBatchLoaderEnvironment)WithContext#end<${batchLoader.type.identifier.type.classFullName}, ${batchLoader.type.classFullName}> {
+public class BatchLoaderDelegate${batchLoader.type.name}Impl implements BatchLoaderDelegate#if($configuration.generateBatchLoaderEnvironment)WithContext#end<${batchLoader.type.identifier.type.classFullName}, ${batchLoader.type.classFullName}> {
 
 	/** The DataFetcherDelegates contain the requests to the data */
 	@Resource
