@@ -2,6 +2,9 @@
 server:
   port: 8180
 
+security:
+  enable:
+    csrf: false # This should probably not be done in production
 
 spring:
   # Changing the server path
@@ -16,6 +19,10 @@ spring:
     oauth2:
       resourceserver:
         opaque-token:
-          introspection-uri: http://localhost:8181/tokenIntrospection
-          client-id: clientId
+#          introspection-uri: http://localhost:8181/tokenIntrospection
+#          client-id: clientId
+#          client-secret: secret
+          introspection-uri: http://localhost:8181/oauth2/introspect
+          # Should be different than the client login and password !  (this configuration is basic: ok for tests, KO for production)
+          client-id: messaging-client
           client-secret: secret
