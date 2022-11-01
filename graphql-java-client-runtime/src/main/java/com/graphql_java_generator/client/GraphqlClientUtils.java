@@ -5,6 +5,7 @@ package com.graphql_java_generator.client;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -188,7 +189,7 @@ public class GraphqlClientUtils {
 
 	/**
 	 * Retrieves a class for a given classname. For standard GraphQL types (Int, Boolean...) the good package is used
-	 * (java.lang, java.lang, java.util...). For others, the class is searched in the given package name.
+	 * (java.lang, java.lang, java.util...). For others, the class is retrieved from the generated GraphQLTypeMapping.
 	 * 
 	 * @param packageName
 	 *            The name of the package, where the code has been generated.
@@ -212,20 +213,34 @@ public class GraphqlClientUtils {
 			return Double.class;
 
 		// Then custom scalars
-		CustomScalar customScalar = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
-				.getCustomScalar(graphQLTypeName);
-		if (customScalar != null) {
-			return customScalar.getValueClazz();
+		if (schema != null) {
+			CustomScalar customScalar = CustomScalarRegistryImpl.getCustomScalarRegistry(schema)
+					.getCustomScalar(graphQLTypeName);
+			if (customScalar != null) {
+				return customScalar.getValueClazz();
+			}
 		}
 
 		// Then other GraphQL types. This types should be linked to a generated java class. So we search for a class of
 		// this name in the given package.
-		String parameterClassname = packageName + "." + graphqlUtils.getJavaName(graphQLTypeName);
 		try {
-			return Class.forName(parameterClassname);
+			// lookup the java class corresponding to the graphql type from the generated GraphQLTypeMapping
+			return (Class<?>) getClass().getClassLoader()
+					.loadClass(packageName + ".GraphQLTypeMapping")
+					.getMethod("getJavaClass", String.class)
+					.invoke(null, graphQLTypeName);
 		} catch (ClassNotFoundException e) {
+			// If GraphqlTypeMapping does not exist (in some tests), fallback to using the type name.
+			final String className = packageName + "." + GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName);
+			try {
+				return getClass().getClassLoader().loadClass(className);
+			} catch (ClassNotFoundException ex) {
+				throw new RuntimeException(
+						"Could not load class '" + className + "' for type '" + graphQLTypeName + "'", e);
+			}
+		} catch (ClassCastException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 			throw new RuntimeException(
-					"Couldn't find the class (" + parameterClassname + ") of the type '" + graphQLTypeName + "'", e);
+					"Could not get the class for type '" + graphQLTypeName + "' from '" + (packageName + ".GraphQLTypeMapping") + "'" , e);
 		}
 	}
 
