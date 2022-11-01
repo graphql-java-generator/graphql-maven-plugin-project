@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.EnumWithReservedJavaKeywordAsValues;
-import org.allGraphQLCases.client.SubscriptionTestParam;
+import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
+import org.allGraphQLCases.client.CINP_SubscriptionTestParam_CINS;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.TheSubscriptionTypeExecutorAllGraphQLCases2;
 import org.junit.jupiter.api.Disabled;
@@ -242,7 +242,7 @@ public class ExecSubscriptionIT {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_serverComplete");
 
-		SubscriptionTestParam param = getSubscriptionTestParam();
+		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setCompleteAfterFirstNotification(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_serverComplete");
 		subscriptionExecutor.subscriptionTest("", callback, param);
@@ -276,7 +276,7 @@ public class ExecSubscriptionIT {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_clientComplete");
 
-		SubscriptionTestParam param = getSubscriptionTestParam();
+		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_clientComplete");
 		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
 		// Let's wait a max of 20 second, until we receive some notifications
@@ -324,7 +324,7 @@ public class ExecSubscriptionIT {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_subscriptionError");
 
-		SubscriptionTestParam param = getSubscriptionTestParam();
+		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setErrorOnSubscription(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_subscriptionError");
 		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
@@ -358,7 +358,7 @@ public class ExecSubscriptionIT {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_nextError");
 
-		SubscriptionTestParam param = getSubscriptionTestParam();
+		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setErrorOnNext(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString("test_subscribeToADate_nextError");
 		SubscriptionClient sub = subscriptionExecutor.subscriptionTest("", callback, param);
@@ -392,7 +392,7 @@ public class ExecSubscriptionIT {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_webSocketCloseError");
 
-		SubscriptionTestParam param = getSubscriptionTestParam();
+		CINP_SubscriptionTestParam_CINS param = getSubscriptionTestParam();
 		param.setCloseWebSocketBeforeFirstNotification(true);
 		SubscriptionCallbackString callback = new SubscriptionCallbackString(
 				"test_subscribeToADate_webSocketCloseError");
@@ -427,7 +427,7 @@ public class ExecSubscriptionIT {
 		// Let's test this exception
 		assertNull(callback.lastExceptionReceived, "we must have received no exception");
 		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
-		assertEquals(EnumWithReservedJavaKeywordAsValues._instanceof, callback.lastReceivedMessage,
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._instanceof, callback.lastReceivedMessage,
 				"All messages are the 'if' value of the enum");
 
 		// Let's unsubscribe from this subscription
@@ -452,19 +452,19 @@ public class ExecSubscriptionIT {
 		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
 		assertEquals(3, callback.lastReceivedMessage.size(),
 				"each received notifiation should contain a list of 3 items");
-		assertEquals(EnumWithReservedJavaKeywordAsValues._int, callback.lastReceivedMessage.get(0),
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._int, callback.lastReceivedMessage.get(0),
 				"First item should be the 'int' value of the enum");
-		assertEquals(EnumWithReservedJavaKeywordAsValues._interface, callback.lastReceivedMessage.get(1),
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._interface, callback.lastReceivedMessage.get(1),
 				"Second item should be the 'interface' value of the enum");
-		assertEquals(EnumWithReservedJavaKeywordAsValues._long, callback.lastReceivedMessage.get(2),
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._long, callback.lastReceivedMessage.get(2),
 				"Third item should be the 'long' value of the enum");
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();
 	}
 
-	private SubscriptionTestParam getSubscriptionTestParam() {
-		SubscriptionTestParam param = new SubscriptionTestParam();
+	private CINP_SubscriptionTestParam_CINS getSubscriptionTestParam() {
+		CINP_SubscriptionTestParam_CINS param = new CINP_SubscriptionTestParam_CINS();
 		param.setCloseWebSocketBeforeFirstNotification(false);
 		param.setCompleteAfterFirstNotification(false);
 		param.setErrorOnNext(false);

@@ -7,11 +7,11 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
@@ -39,26 +39,26 @@ public class App {
 		GraphQLRequests graphQLRequests = (GraphQLRequests) Proxy.newProxyInstance(App.class.getClassLoader(),
 				new Class[] { GraphQLRequests.class }, invocationHandler);
 
-		CharacterInput characterInput = CharacterInput.builder().withName("the name")
-				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).withType("Human").build();
-		HumanInput humanInput = HumanInput.builder().withName("the name")
-				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).build();
+		CINP_CharacterInput_CINS characterInput = CINP_CharacterInput_CINS.builder().withName("the name")
+				.withAppearsIn(Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.NEWHOPE)).withType("Human").build();
+		CINP_HumanInput_CINS humanInput = CINP_HumanInput_CINS.builder().withName("the name")
+				.withAppearsIn(Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.NEWHOPE)).build();
 
 		//
 		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
-		List<Character> response1 = graphQLRequests.withoutParameters();
+		List<CIP_Character_CIS> response1 = graphQLRequests.withoutParameters();
 
 		System.out.println(response1.toString());
 
 		//
 		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
-		Character response2 = graphQLRequests.withOneOptionalParam(characterInput);
+		CIP_Character_CIS response2 = graphQLRequests.withOneOptionalParam(characterInput);
 
 		System.out.println("The query result is: " + response2.toString());
 
 		//
 		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
-		Human human = graphQLRequests.createHuman(humanInput).getCreateHuman();
+		CTP_Human_CTS human = graphQLRequests.createHuman(humanInput).getCreateHuman();
 
 		System.out.println("The mutation result is: " + human.toString());
 	}

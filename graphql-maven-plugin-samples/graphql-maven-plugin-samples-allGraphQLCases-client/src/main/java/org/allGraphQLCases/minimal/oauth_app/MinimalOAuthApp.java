@@ -5,7 +5,7 @@ package org.allGraphQLCases.minimal.oauth_app;
 
 import java.util.List;
 
-import org.allGraphQLCases.client.Character;
+import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class MinimalOAuthApp implements CommandLineRunner {
 	 */
 	@Override
 	public void run(String... args) throws Exception {
-		List<Character> response;
+		List<CIP_Character_CIS> response;
 		String query = "{appearsIn name }";
 
 		logger.info("Executing this query: '" + query

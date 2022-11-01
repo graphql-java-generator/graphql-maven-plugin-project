@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.allGraphQLCases.client.AllFieldCases;
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.__Field;
-import org.allGraphQLCases.client.__Schema;
-import org.allGraphQLCases.client.__Type;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP___Field_CTS;
+import org.allGraphQLCases.client.CTP___Schema_CTS;
+import org.allGraphQLCases.client.CTP___Type_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -51,7 +51,7 @@ public class IntrospectionIT {
 	void testSchema() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		__Schema schema = myQuery.__schema("{types {name fields(includeDeprecated:true) {name type {name}}}}");
+		CTP___Schema_CTS schema = myQuery.__schema("{types {name fields(includeDeprecated:true) {name type {name}}}}");
 
 		// Verification
 		assertEquals(82, schema.getTypes().size());
@@ -59,7 +59,7 @@ public class IntrospectionIT {
 		// As the order of fields seems to depend on the way this is compile, let's use a rough method to check the
 		// field names
 		assertEquals(AllFieldCases_FIELDS.length, schema.getTypes().get(0).getFields().size());
-		for (__Field f : schema.getTypes().get(0).getFields()) {
+		for (CTP___Field_CTS f : schema.getTypes().get(0).getFields()) {
 			assertTrue(AllFieldCases_FIELDNAMES.contains(f.getName()));
 		}
 	}
@@ -69,7 +69,7 @@ public class IntrospectionIT {
 	void testType() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		__Type type = myQuery.__type("{name fields(includeDeprecated:true) {name type {name}}}", "AllFieldCases");
+		CTP___Type_CTS type = myQuery.__type("{name fields(includeDeprecated:true) {name type {name}}}", "AllFieldCases");
 
 		// Verification
 
@@ -77,7 +77,7 @@ public class IntrospectionIT {
 		// As the order of fields seems to depend on the way this is compile, let's use a rough method to check the
 		// field names
 		assertEquals(AllFieldCases_FIELDS.length, type.getFields().size());
-		for (__Field f : type.getFields()) {
+		for (CTP___Field_CTS f : type.getFields()) {
 			assertTrue(AllFieldCases_FIELDNAMES.contains(f.getName()));
 		}
 	}
@@ -87,8 +87,8 @@ public class IntrospectionIT {
 	void test__datatype_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		// AllFieldCases ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
-		AllFieldCases ret = myQuery.allFieldCases("{id __typename}", null);
+		// CTP_AllFieldCases_CTS ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
+		CTP_AllFieldCases_CTS ret = myQuery.allFieldCases("{id __typename}", null);
 
 		// Verification
 		assertEquals("AllFieldCases", ret.get__typename());
@@ -100,7 +100,7 @@ public class IntrospectionIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		List<Character> ret = myQuery.withoutParameters(" {id __typename}");
+		List<CIP_Character_CIS> ret = myQuery.withoutParameters(" {id __typename}");
 
 		// Verification
 		assertTrue(ret.size() >= 10);

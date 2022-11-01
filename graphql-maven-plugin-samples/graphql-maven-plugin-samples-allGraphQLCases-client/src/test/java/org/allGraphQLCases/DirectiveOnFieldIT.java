@@ -3,8 +3,8 @@ package org.allGraphQLCases;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -30,13 +30,13 @@ class DirectiveOnFieldIT {
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryType resp = queryType.exec(
+		CTP_MyQueryType_CTS resp = queryType.exec(
 				"{directiveOnField {id name @testDirective(value: &value) @anotherTestDirective}}", //
 				"value", "this is a value");
 
 		// Verifications
 		assertNotNull(resp);
-		Character ret = resp.getDirectiveOnField();
+		CIP_Character_CIS ret = resp.getDirectiveOnField();
 		assertNotNull(ret);
 		assertEquals("this is a value", ret.getName());
 	}
@@ -46,13 +46,13 @@ class DirectiveOnFieldIT {
 	void testsIssue35() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryType resp = queryType.exec(
+		CTP_MyQueryType_CTS resp = queryType.exec(
 				"{directiveOnField {id name @testDirective(value: &value)  @anotherTestDirective}}", //
 				"value", "this is a value");
 
 		// Verifications
 		assertNotNull(resp);
-		Character ret = resp.getDirectiveOnField();
+		CIP_Character_CIS ret = resp.getDirectiveOnField();
 		assertNotNull(ret);
 		assertEquals("this is a value", ret.getName());
 	}

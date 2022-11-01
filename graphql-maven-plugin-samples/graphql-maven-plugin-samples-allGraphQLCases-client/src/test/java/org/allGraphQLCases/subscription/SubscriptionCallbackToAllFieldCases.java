@@ -5,7 +5,7 @@ package org.allGraphQLCases.subscription;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.allGraphQLCases.client.AllFieldCases;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,14 +16,14 @@ import com.graphql_java_generator.client.SubscriptionCallback;
  * 
  * @author etienne-sf
  */
-public class SubscriptionCallbackToAllFieldCases implements SubscriptionCallback<AllFieldCases> {
+public class SubscriptionCallbackToAllFieldCases implements SubscriptionCallback<CTP_AllFieldCases_CTS> {
 
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackToAllFieldCases.class);
 
 	final String clientName;
 	public String closureReason = null;
-	public AllFieldCases lastReceivedMessage = null;
+	public CTP_AllFieldCases_CTS lastReceivedMessage = null;
 	public Throwable lastReceivedError = null;
 
 	/** A latch that will be freed when a the first notification arrives for this subscription */
@@ -40,7 +40,7 @@ public class SubscriptionCallbackToAllFieldCases implements SubscriptionCallback
 	}
 
 	@Override
-	public void onMessage(AllFieldCases t) {
+	public void onMessage(CTP_AllFieldCases_CTS t) {
 		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
 		latchForMessageReception.countDown();

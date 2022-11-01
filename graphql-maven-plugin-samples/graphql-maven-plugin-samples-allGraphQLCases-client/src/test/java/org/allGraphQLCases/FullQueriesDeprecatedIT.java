@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.allGraphQLCases.client.AnotherMutationType;
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +78,7 @@ class FullQueriesDeprecatedIT {
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
 																// simple cases
 
 		// Verifications
@@ -93,7 +93,7 @@ class FullQueriesDeprecatedIT {
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
+		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
 				"value", "the value", "skip", Boolean.FALSE);
 
 		// Verifications
@@ -110,7 +110,7 @@ class FullQueriesDeprecatedIT {
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec(withDirectiveTwoParametersResponse, //
+		CTP_MyQueryType_CTS resp = myQuery.exec(withDirectiveTwoParametersResponse, //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -127,23 +127,23 @@ class FullQueriesDeprecatedIT {
 	@Test
 	void mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		HumanInput input = new HumanInput();
+		CINP_HumanInput_CINS input = new CINP_HumanInput_CINS();
 		input.setName("a new name");
-		List<Episode> episodes = new ArrayList<>();
-		episodes.add(Episode.JEDI);
-		episodes.add(Episode.EMPIRE);
-		episodes.add(Episode.NEWHOPE);
+		List<CEP_Episode_CES> episodes = new ArrayList<>();
+		episodes.add(CEP_Episode_CES.JEDI);
+		episodes.add(CEP_Episode_CES.EMPIRE);
+		episodes.add(CEP_Episode_CES.NEWHOPE);
 		input.setAppearsIn(episodes);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		AnotherMutationType resp = mutationType.exec(mutationWithoutDirectiveResponse, "humanInput", input);
+		CTP_AnotherMutationType_CTS resp = mutationType.exec(mutationWithoutDirectiveResponse, "humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
-		Human ret = resp.getCreateHuman();
+		CTP_Human_CTS ret = resp.getCreateHuman();
 		assertNotNull(ret);
 		assertEquals("a new name", ret.getName());
 
@@ -189,7 +189,7 @@ class FullQueriesDeprecatedIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec(multipleQueriesResponse, //
+		CTP_MyQueryType_CTS resp = myQuery.exec(multipleQueriesResponse, //
 				"value", "An expected returned string", //
 				"skipAppearsIn", true, //
 				"skipName", false);
@@ -201,10 +201,10 @@ class FullQueriesDeprecatedIT {
 		assertEquals(1, directiveOnQuery.size());
 		assertEquals("An expected returned string", directiveOnQuery.get(0));
 		//
-		Character withOneOptionalParam = resp.getWithOneOptionalParam();
+		CIP_Character_CIS withOneOptionalParam = resp.getWithOneOptionalParam();
 		assertNotNull(withOneOptionalParam.getFriends());
 		//
-		List<Character> withoutParameters = resp.getWithoutParameters();
+		List<CIP_Character_CIS> withoutParameters = resp.getWithoutParameters();
 		assertNotNull(withoutParameters);
 		assertTrue(withoutParameters.size() > 0);
 		assertNull(withoutParameters.get(0).getAppearsIn());

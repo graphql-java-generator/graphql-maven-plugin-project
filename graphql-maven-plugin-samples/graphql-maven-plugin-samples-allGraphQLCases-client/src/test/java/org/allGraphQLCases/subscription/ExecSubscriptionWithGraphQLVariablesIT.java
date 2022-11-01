@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.AllFieldCases;
-import org.allGraphQLCases.client.AllFieldCasesInput;
-import org.allGraphQLCases.client.AllFieldCasesWithoutIdSubtypeInput;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CINP_AllFieldCasesWithoutIdSubtypeInput_CINS;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.assertj.core.util.Arrays;
@@ -60,8 +60,8 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 	Double[] list2 = { 22.22, 333.333 };
 	List<List<Double>> matrix = new ArrayList<>();
 
-	AllFieldCasesWithoutIdSubtypeInput oneWithoutIdSubtype = new AllFieldCasesWithoutIdSubtypeInput();
-	List<AllFieldCasesWithoutIdSubtypeInput> listWithoutIdSubtype = new ArrayList<>();
+	CINP_AllFieldCasesWithoutIdSubtypeInput_CINS oneWithoutIdSubtype = new CINP_AllFieldCasesWithoutIdSubtypeInput_CINS();
+	List<CINP_AllFieldCasesWithoutIdSubtypeInput_CINS> listWithoutIdSubtype = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
@@ -75,8 +75,8 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		oneWithoutIdSubtype.setName("the name");
 
 		// listWithoutIdSubtype
-		listWithoutIdSubtype.add(AllFieldCasesWithoutIdSubtypeInput.builder().withName("name0").build());
-		listWithoutIdSubtype.add(AllFieldCasesWithoutIdSubtypeInput.builder().withName("name1").build());
+		listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name0").build());
+		listWithoutIdSubtype.add(CINP_AllFieldCasesWithoutIdSubtypeInput_CINS.builder().withName("name1").build());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		SubscriptionCallbackToAllFieldCases callback = new SubscriptionCallbackToAllFieldCases(
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
-		AllFieldCasesInput input = new AllFieldCasesInput();
+		CINP_AllFieldCasesInput_CINS input = new CINP_AllFieldCasesInput_CINS();
 		input.setId(id);
 		input.setAge(age);
 		input.setDate(date);
@@ -105,7 +105,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 
 		// Go, go, go
 		@SuppressWarnings("unused")
-		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, AllFieldCases.class, //
+		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, CTP_AllFieldCases_CTS.class, //
 				"input", input, //
 				"nbItems", nbItems);
 
@@ -228,7 +228,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 
 		// Go, go, go
 		@SuppressWarnings("unused")
-		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, AllFieldCases.class, //
+		SubscriptionClient sub = subscriptionRequest.execSubscription(callback, CTP_AllFieldCases_CTS.class, //
 				"nbItems", nbItems, //
 				"id", id, //
 				"name", name, //
