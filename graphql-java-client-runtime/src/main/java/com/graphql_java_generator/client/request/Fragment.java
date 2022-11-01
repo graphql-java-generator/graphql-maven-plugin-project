@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.directive.Directive;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
-import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * @author etienne-sf
@@ -97,14 +97,12 @@ public class Fragment {
 
 		// Ok, we're ready to read the fragment content
 		if (typeName != null) {
-			// If the typeName was provided in the fragment definition, then we load the clas that represents the
+			// If the typeName was provided in the fragment definition, then we load the class that represents the
 			// GraphQL type on which the fragment applies. This allows to check the input parameters, and their type
-			String classname = packageName + "." + GraphqlUtils.graphqlUtils.getJavaName(typeName);
 			try {
-				clazz = getClass().getClassLoader().loadClass(classname);
-			} catch (ClassNotFoundException e) {
-				throw new GraphQLRequestPreparationException(
-						"Could not load class '" + classname + "' for type '" + typeName + "'", e);
+				clazz = GraphqlClientUtils.graphqlClientUtils.getClass(packageName, typeName, schema);
+			} catch (RuntimeException e) {
+				throw new GraphQLRequestPreparationException(e.getMessage(), e);
 			}
 		}
 
