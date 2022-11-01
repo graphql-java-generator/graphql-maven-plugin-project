@@ -6,11 +6,11 @@ package org.allGraphQLCases.minimal.spring_app;
 import java.util.Arrays;
 import java.util.List;
 
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,10 +53,10 @@ public class MinimalSpringApp implements CommandLineRunner {
 	 */
 	@Override
 	public void run(String... args) throws Exception {
-		CharacterInput characterInput = CharacterInput.builder().withName("the name")
-				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).withType("Human").build();
-		HumanInput humanInput = HumanInput.builder().withName("the name")
-				.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).build();
+		CINP_CharacterInput_CINS characterInput = CINP_CharacterInput_CINS.builder().withName("the name")
+				.withAppearsIn(Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.NEWHOPE)).withType("Human").build();
+		CINP_HumanInput_CINS humanInput = CINP_HumanInput_CINS.builder().withName("the name")
+				.withAppearsIn(Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.NEWHOPE)).build();
 
 		logger.info("");
 		logger.info("Executing this query: 'graphQLRequests.withoutParameters()' ");
@@ -64,7 +64,7 @@ public class MinimalSpringApp implements CommandLineRunner {
 				"Note: the first GraphQL request execution is longer, as the OAuth token must be acquired, and Reactive code must be started");
 		//
 		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
-		List<Character> response1 = graphQLRequests.withoutParameters();
+		List<CIP_Character_CIS> response1 = graphQLRequests.withoutParameters();
 		//
 		logger.info(response1.toString());
 
@@ -72,7 +72,7 @@ public class MinimalSpringApp implements CommandLineRunner {
 		logger.info("Executing this query: 'graphQLRequests.withOneOptionalParam(input)'");
 		//
 		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
-		Character response2 = graphQLRequests.withOneOptionalParam(characterInput);
+		CIP_Character_CIS response2 = graphQLRequests.withOneOptionalParam(characterInput);
 		//
 		logger.info("The query result is: " + response2.toString());
 
@@ -80,7 +80,7 @@ public class MinimalSpringApp implements CommandLineRunner {
 		logger.info("Executing this mutation: 'graphQLRequests.createHuman(input)'");
 		//
 		// Below is all you need to execute the GraphQL Request defined in the GraphQL Repository: graphQLRequests
-		Human human = graphQLRequests.createHuman(humanInput).getCreateHuman();
+		CTP_Human_CTS human = graphQLRequests.createHuman(humanInput).getCreateHuman();
 		//
 		logger.info("The mutation result is: " + human.toString());
 

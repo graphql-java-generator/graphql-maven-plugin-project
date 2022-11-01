@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.Character;
+import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.subscription.SubscriptionCallbackListInteger;
 import org.forum.client.Board;
@@ -69,11 +69,11 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_allGraphQLCasesServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		List<Character> list = queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
+		List<CIP_Character_CIS> list = queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
 
 		assertNotNull(list);
 		assertEquals(10, list.size());
-		for (Character c : list) {
+		for (CIP_Character_CIS c : list) {
 			checkCharacter(c, "withoutParameters", true, "Random String (", 0, 0);
 		}
 	}
@@ -218,7 +218,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		assertEquals(null, author12bis.getType());
 	}
 
-	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
+	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
 			int nbFriends, int nbAppearsIn) {
 
 		if (idShouldBeNull)
@@ -237,7 +237,7 @@ public class RequestsAgainstTwoGraphQLServersIT {
 			}
 		} else {
 			assertTrue(c.getFriends().size() >= nbFriends, testDecription + " (friends)");
-			for (Character friend : c.getFriends()) {
+			for (CIP_Character_CIS friend : c.getFriends()) {
 				// Expected fields: id and name
 				assertNotNull(friend.getId());
 				assertNotNull(friend.getName());

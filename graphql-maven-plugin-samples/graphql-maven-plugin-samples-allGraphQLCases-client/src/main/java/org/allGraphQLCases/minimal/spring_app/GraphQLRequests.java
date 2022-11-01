@@ -5,10 +5,10 @@ package org.allGraphQLCases.minimal.spring_app;
 
 import java.util.List;
 
-import org.allGraphQLCases.client.AnotherMutationType;
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.graphqlrepository.BindParameter;
@@ -29,12 +29,12 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 public interface GraphQLRequests {
 
 	@PartialRequest(request = "{appearsIn name }")
-	public List<Character> withoutParameters() throws GraphQLRequestExecutionException;
+	public List<CIP_Character_CIS> withoutParameters() throws GraphQLRequestExecutionException;
 
 	@PartialRequest(request = "{id appearsIn name}")
-	public Character withOneOptionalParam(CharacterInput character) throws GraphQLRequestExecutionException;
+	public CIP_Character_CIS withOneOptionalParam(CINP_CharacterInput_CINS character) throws GraphQLRequestExecutionException;
 
 	@FullRequest(request = "mutation {createHuman (human: &input) {id name} }", requestType = RequestType.mutation)
-	public AnotherMutationType createHuman(@BindParameter(name = "input") HumanInput input)
+	public CTP_AnotherMutationType_CTS createHuman(@BindParameter(name = "input") CINP_HumanInput_CINS input)
 			throws GraphQLRequestExecutionException;
 }

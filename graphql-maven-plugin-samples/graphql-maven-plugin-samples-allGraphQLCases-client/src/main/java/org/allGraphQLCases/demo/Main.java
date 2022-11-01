@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.Episode;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
@@ -129,20 +129,20 @@ public class Main implements CommandLineRunner {
 			System.out.println(client.withoutParameters());
 
 			System.out.println("---------------- withOneOptionalParam -------------------------------------------");
-			CharacterInput ci1 = CharacterInput.builder().withName("my name")
-					.withAppearsIn(Arrays.asList(Episode.JEDI, Episode.NEWHOPE)).withType("Droid").build();
+			CINP_CharacterInput_CINS ci1 = CINP_CharacterInput_CINS.builder().withName("my name")
+					.withAppearsIn(Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.NEWHOPE)).withType("Droid").build();
 			System.out.println(client.withOneOptionalParam(ci1));
 
 			System.out.println("---------------- withOneMandatoryParam ------------------------------------------");
-			CharacterInput ci2 = CharacterInput.builder().withName("my other name").withAppearsIn(Arrays.asList())
+			CINP_CharacterInput_CINS ci2 = CINP_CharacterInput_CINS.builder().withName("my other name").withAppearsIn(Arrays.asList())
 					.withType("Human").build();
 			System.out.println(client.withOneMandatoryParam(ci2));
 
 			System.out.println("---------------- withEnum -------------------------------------------------------");
-			System.out.println(client.withEnum(Episode.NEWHOPE));
+			System.out.println(client.withEnum(CEP_Episode_CES.NEWHOPE));
 
 			System.out.println("---------------- withList -------------------------------------------------------");
-			List<CharacterInput> chars = Arrays.asList(ci1, ci2);
+			List<CINP_CharacterInput_CINS> chars = Arrays.asList(ci1, ci2);
 			System.out.println(client.withList("The name", chars));
 
 		} catch (javax.ws.rs.ProcessingException e) {

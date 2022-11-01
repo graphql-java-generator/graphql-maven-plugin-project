@@ -10,12 +10,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.AnotherMutationType;
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
@@ -80,7 +80,7 @@ class FullQueriesIT {
 	void test_noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
 																// simple cases
 
 		// Verifications
@@ -96,11 +96,11 @@ class FullQueriesIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
 																// simple cases
 
 		// Verifications
-		// The extensions field contains a Human instance, for the key "aValueToTestTheExtensionsField".
+		// The extensions field contains a CTP_Human_CTS instance, for the key "aValueToTestTheExtensionsField".
 		// Check the org.allGraphQLCases.server.extensions.CustomBeans (creation of the customGraphQL Spring bean)
 		assertNotNull(resp);
 		assertNotNull(resp.getExtensions());
@@ -118,7 +118,7 @@ class FullQueriesIT {
 		// Go, go, go
 
 		// Direct queries should be used only for very simple cases, but you can do what you want... :)
-		MyQueryType resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
+		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
 				"value", "the value", "skip", Boolean.FALSE);
 
 		// Verifications
@@ -135,7 +135,7 @@ class FullQueriesIT {
 	void test_withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryType resp = withDirectiveTwoParametersRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = withDirectiveTwoParametersRequest.execQuery( //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -152,23 +152,23 @@ class FullQueriesIT {
 	@Test
 	void test_mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		HumanInput input = new HumanInput();
+		CINP_HumanInput_CINS input = new CINP_HumanInput_CINS();
 		input.setName("a new name");
-		List<Episode> episodes = new ArrayList<>();
-		episodes.add(Episode.JEDI);
-		episodes.add(Episode.EMPIRE);
-		episodes.add(Episode.NEWHOPE);
+		List<CEP_Episode_CES> episodes = new ArrayList<>();
+		episodes.add(CEP_Episode_CES.JEDI);
+		episodes.add(CEP_Episode_CES.EMPIRE);
+		episodes.add(CEP_Episode_CES.NEWHOPE);
 		input.setAppearsIn(episodes);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		AnotherMutationType resp = mutationWithoutDirectiveRequest.execMutation("humanInput", input);
+		CTP_AnotherMutationType_CTS resp = mutationWithoutDirectiveRequest.execMutation("humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
-		Human ret = resp.getCreateHuman();
+		CTP_Human_CTS ret = resp.getCreateHuman();
 		assertNotNull(ret);
 		assertEquals("a new name", ret.getName());
 
@@ -214,7 +214,7 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		MyQueryType resp = multipleQueriesRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = multipleQueriesRequest.execQuery( //
 				"value", "An expected returned string", //
 				"skipAppearsIn", true, //
 				"skipName", false);
@@ -226,10 +226,10 @@ class FullQueriesIT {
 		assertEquals(1, directiveOnQuery.size());
 		assertEquals("An expected returned string", directiveOnQuery.get(0));
 		//
-		Character withOneOptionalParam = resp.getWithOneOptionalParam();
+		CIP_Character_CIS withOneOptionalParam = resp.getWithOneOptionalParam();
 		assertNotNull(withOneOptionalParam.getFriends());
 		//
-		List<Character> withoutParameters = resp.getWithoutParameters();
+		List<CIP_Character_CIS> withoutParameters = resp.getWithoutParameters();
 		assertNotNull(withoutParameters);
 		assertTrue(withoutParameters.size() > 0);
 		assertNull(withoutParameters.get(0).getAppearsIn());
@@ -262,7 +262,7 @@ class FullQueriesIT {
 		Date date = cal.getTime();
 		//
 		// Go, go, go
-		MyQueryType resp = myQuery.exec("{issue53(date: &date)}", "date", date);
+		CTP_MyQueryType_CTS resp = myQuery.exec("{issue53(date: &date)}", "date", date);
 
 		// Verifications
 		assertNotNull(resp);
@@ -281,7 +281,7 @@ class FullQueriesIT {
 		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
 
 		// Go, go, go
-		Human human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
+		CTP_Human_CTS human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
 
 		// Verifications
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());

@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.allGraphQLCases.client.AnyCharacter;
-import org.allGraphQLCases.client.Droid;
-import org.allGraphQLCases.client.DroidInput;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.HumanInput;
+import org.allGraphQLCases.client.CUP_AnyCharacter_CUS;
+import org.allGraphQLCases.client.CTP_Droid_CTS;
+import org.allGraphQLCases.client.CINP_DroidInput_CINS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,42 +38,42 @@ class UnionIT {
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases myQuery;
 
-	HumanInput humanInput1;
-	HumanInput humanInput2;
-	DroidInput droidInput1;
-	DroidInput droidInput2;
+	CINP_HumanInput_CINS humanInput1;
+	CINP_HumanInput_CINS humanInput2;
+	CINP_DroidInput_CINS droidInput1;
+	CINP_DroidInput_CINS droidInput2;
 	Map<String, Object> params = new HashMap<>();
 
 	@BeforeEach
 	void setup() {
 		// A useful init for some tests
-		humanInput1 = new HumanInput();
+		humanInput1 = new CINP_HumanInput_CINS();
 		humanInput1.setName("name human1");
-		List<Episode> episodes = new ArrayList<>();
-		episodes.add(Episode.JEDI);
+		List<CEP_Episode_CES> episodes = new ArrayList<>();
+		episodes.add(CEP_Episode_CES.JEDI);
 		humanInput1.setAppearsIn(episodes);
 		humanInput1.setHomePlanet("planet1");
 
-		humanInput2 = new HumanInput();
+		humanInput2 = new CINP_HumanInput_CINS();
 		humanInput2.setName("name human2");
 		episodes = new ArrayList<>();
-		episodes.add(Episode.JEDI);
-		episodes.add(Episode.EMPIRE);
+		episodes.add(CEP_Episode_CES.JEDI);
+		episodes.add(CEP_Episode_CES.EMPIRE);
 		humanInput2.setAppearsIn(episodes);
 		humanInput2.setHomePlanet("planet2");
 
-		droidInput1 = new DroidInput();
+		droidInput1 = new CINP_DroidInput_CINS();
 		droidInput1.setName("name droid1");
 		episodes = new ArrayList<>();
-		episodes.add(Episode.NEWHOPE);
+		episodes.add(CEP_Episode_CES.NEWHOPE);
 		droidInput1.setAppearsIn(episodes);
 		droidInput1.setPrimaryFunction("primary function 1");
 
-		droidInput2 = new DroidInput();
+		droidInput2 = new CINP_DroidInput_CINS();
 		droidInput2.setName("name droid2");
 		episodes = new ArrayList<>();
-		episodes.add(Episode.EMPIRE);
-		episodes.add(Episode.NEWHOPE);
+		episodes.add(CEP_Episode_CES.EMPIRE);
+		episodes.add(CEP_Episode_CES.NEWHOPE);
 		droidInput2.setAppearsIn(episodes);
 		droidInput2.setPrimaryFunction("primary function 2");
 
@@ -101,14 +101,14 @@ class UnionIT {
 		);
 
 		// Go, go, go
-		List<AnyCharacter> unionTest = graphQLRequest.execQuery(params).getUnionTest();
+		List<CUP_AnyCharacter_CUS> unionTest = graphQLRequest.execQuery(params).getUnionTest();
 
 		// Verification
 		assertNotNull(unionTest);
 		assertTrue(unionTest.size() == 4);
 		// humanInput1
-		assertTrue(unionTest.get(0) instanceof Human);
-		Human human1 = (Human) unionTest.get(0);
+		assertTrue(unionTest.get(0) instanceof CTP_Human_CTS);
+		CTP_Human_CTS human1 = (CTP_Human_CTS) unionTest.get(0);
 		assertNotNull(human1.getId());
 		assertNotNull(human1.getAppearsIn());
 		// assertEquals(1, human1.getAppearsIn().size()); The subobjects are randomly completed on server side. No
@@ -117,8 +117,8 @@ class UnionIT {
 		assertNotNull(human1.getHomePlanet());
 		assertEquals("name human1", human1.getName(), "to uppercase field parameter set to true");
 		// Human2
-		assertTrue(unionTest.get(2) instanceof Human);
-		Human human2 = (Human) unionTest.get(2);
+		assertTrue(unionTest.get(2) instanceof CTP_Human_CTS);
+		CTP_Human_CTS human2 = (CTP_Human_CTS) unionTest.get(2);
 		assertNotNull(human2.getId());
 		assertNotNull(human2.getAppearsIn());
 		// assertEquals(2, human2.getAppearsIn().size());The subobjects are randomly completed on server side. No
@@ -127,8 +127,8 @@ class UnionIT {
 		assertNotNull(human2.getHomePlanet());
 		assertEquals("name human2", human2.getName(), "to uppercase field parameter set to true");
 		// droidInput1
-		assertTrue(unionTest.get(1) instanceof Droid);
-		Droid droid1 = (Droid) unionTest.get(1);
+		assertTrue(unionTest.get(1) instanceof CTP_Droid_CTS);
+		CTP_Droid_CTS droid1 = (CTP_Droid_CTS) unionTest.get(1);
 		assertNotNull(droid1.getId());
 		assertNotNull(droid1.getAppearsIn());
 		// assertEquals(1, droid1.getAppearsIn().size());The subobjects are randomly completed on server side. No
@@ -137,8 +137,8 @@ class UnionIT {
 		assertNotNull(droid1.getPrimaryFunction());
 		assertEquals("name droid1", droid1.getName(), "to uppercase field parameter set to false");
 		// droidInput2
-		assertTrue(unionTest.get(3) instanceof Droid);
-		Droid droid2 = (Droid) unionTest.get(3);
+		assertTrue(unionTest.get(3) instanceof CTP_Droid_CTS);
+		CTP_Droid_CTS droid2 = (CTP_Droid_CTS) unionTest.get(3);
 		assertNotNull(droid2.getId());
 		assertNotNull(droid2.getAppearsIn());
 		// assertEquals(2, droid2.getAppearsIn().size());The subobjects are randomly completed on server side. No
@@ -161,15 +161,15 @@ class UnionIT {
 		);
 
 		// Go, go, go
-		List<AnyCharacter> unionTest = graphQLRequest_withoutFragmentForHuman.execQuery(params).getUnionTest();
+		List<CUP_AnyCharacter_CUS> unionTest = graphQLRequest_withoutFragmentForHuman.execQuery(params).getUnionTest();
 
 		// Verification
 		assertNotNull(unionTest);
 		assertTrue(unionTest.size() == 4);
 		//
 		// humanInput1 ==> Only the__typename is filled (for proper JSON deserialization)
-		assertTrue(unionTest.get(0) instanceof Human);
-		Human human1 = (Human) unionTest.get(0);
+		assertTrue(unionTest.get(0) instanceof CTP_Human_CTS);
+		CTP_Human_CTS human1 = (CTP_Human_CTS) unionTest.get(0);
 		assertNull(human1.getId());
 		assertNull(human1.getAppearsIn());
 		assertNull(human1.getFriends());
@@ -177,8 +177,8 @@ class UnionIT {
 		assertNull(human1.getName());
 		//
 		// Human2
-		assertTrue(unionTest.get(2) instanceof Human);
-		Human human2 = (Human) unionTest.get(2);
+		assertTrue(unionTest.get(2) instanceof CTP_Human_CTS);
+		CTP_Human_CTS human2 = (CTP_Human_CTS) unionTest.get(2);
 		assertNull(human2.getId());
 		assertNull(human2.getAppearsIn());
 		assertNull(human2.getFriends(), "no friends requested for humans");
@@ -186,8 +186,8 @@ class UnionIT {
 		assertNull(human2.getName(), "to uppercase field parameter set to true");
 		//
 		// droidInput1
-		assertTrue(unionTest.get(1) instanceof Droid);
-		Droid droid1 = (Droid) unionTest.get(1);
+		assertTrue(unionTest.get(1) instanceof CTP_Droid_CTS);
+		CTP_Droid_CTS droid1 = (CTP_Droid_CTS) unionTest.get(1);
 		assertNotNull(droid1.getId());
 		assertNull(droid1.getAppearsIn());
 		assertNotNull(droid1.getFriends(), "friends are requested for humans");
@@ -195,8 +195,8 @@ class UnionIT {
 		assertEquals("name droid1", droid1.getName(), "to uppercase field parameter set to false");
 		//
 		// droidInput2
-		assertTrue(unionTest.get(3) instanceof Droid);
-		Droid droid2 = (Droid) unionTest.get(3);
+		assertTrue(unionTest.get(3) instanceof CTP_Droid_CTS);
+		CTP_Droid_CTS droid2 = (CTP_Droid_CTS) unionTest.get(3);
 		assertNotNull(droid2.getId());
 		assertNull(droid2.getAppearsIn());
 		assertNotNull(droid2.getFriends(), "friends are requested for humans");

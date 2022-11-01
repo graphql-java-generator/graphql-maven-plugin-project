@@ -14,9 +14,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.AllFieldCases;
-import org.allGraphQLCases.client.EnumWithReservedJavaKeywordAsValues;
-import org.allGraphQLCases.client.FieldParameterInput;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
@@ -66,7 +66,7 @@ public class PartialQueryIT {
 		} // for
 
 		// Go, go, go
-		AllFieldCases allFieldCases = queryType.withListOfList(graphQLRequest, matrixSrc);
+		CTP_AllFieldCases_CTS allFieldCases = queryType.withListOfList(graphQLRequest, matrixSrc);
 
 		// Verification
 		assertNotNull(allFieldCases);
@@ -104,14 +104,14 @@ public class PartialQueryIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue65_ListID() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		List<FieldParameterInput> inputs = new ArrayList<>();
-		inputs.add(FieldParameterInput.builder().withUppercase(true).build());
-		inputs.add(FieldParameterInput.builder().withUppercase(false).build());
+		List<CINP_FieldParameterInput_CINS> inputs = new ArrayList<>();
+		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
+		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
 		GraphQLRequest graphQLRequest = queryType.getAllFieldCasesGraphQLRequest("{issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		AllFieldCases ret = queryType.allFieldCases(graphQLRequest, null, "inputs", inputs);
+		CTP_AllFieldCases_CTS ret = queryType.allFieldCases(graphQLRequest, null, "inputs", inputs);
 
 		// Verification
 		assertEquals(inputs.size(), ret.getIssue65().size());
@@ -156,10 +156,10 @@ public class PartialQueryIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue139_EnumValueIf() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		EnumWithReservedJavaKeywordAsValues response = queryType.enumWithReservedJavaKeywordAsValues("");
+		CEP_EnumWithReservedJavaKeywordAsValues_CES response = queryType.enumWithReservedJavaKeywordAsValues("");
 
 		// Verification
-		assertEquals(EnumWithReservedJavaKeywordAsValues._if, response);
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._if, response);
 	}
 
 	@Test
@@ -167,19 +167,19 @@ public class PartialQueryIT {
 	void test_Issue139_EnumValueListOfJavaReservedKeywords_withNullParams()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		List<EnumWithReservedJavaKeywordAsValues> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("",
+		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("",
 				null, null);
 		// the two parameters are null. Their default values are:
-		// param1: EnumWithReservedJavaKeywordAsValues=abstract,
-		// param2: [EnumWithReservedJavaKeywordAsValues]=[assert,boolean]
+		// param1: CEP_EnumWithReservedJavaKeywordAsValues_CES=abstract,
+		// param2: [CEP_EnumWithReservedJavaKeywordAsValues_CES]=[assert,boolean]
 		// Let's check that.
 
 		// Verification
 		assertNotNull(response);
 		assertEquals(3, response.size());
-		assertEquals(EnumWithReservedJavaKeywordAsValues._abstract, response.get(0));
-		assertEquals(EnumWithReservedJavaKeywordAsValues._assert, response.get(1));
-		assertEquals(EnumWithReservedJavaKeywordAsValues._boolean, response.get(2));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._abstract, response.get(0));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._assert, response.get(1));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._boolean, response.get(2));
 	}
 
 	@Test
@@ -187,17 +187,17 @@ public class PartialQueryIT {
 	void test_Issue139_EnumValueListOfJavaReservedKeywords()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		List<EnumWithReservedJavaKeywordAsValues> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("", //
-				/* param1 */EnumWithReservedJavaKeywordAsValues._return, //
-				/* param2 */ Arrays.asList(EnumWithReservedJavaKeywordAsValues._byte,
-						EnumWithReservedJavaKeywordAsValues._const));
+		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("", //
+				/* param1 */CEP_EnumWithReservedJavaKeywordAsValues_CES._return, //
+				/* param2 */ Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte,
+						CEP_EnumWithReservedJavaKeywordAsValues_CES._const));
 
 		// Verification
 		assertNotNull(response);
 		assertEquals(3, response.size());
-		assertEquals(EnumWithReservedJavaKeywordAsValues._return, response.get(0));
-		assertEquals(EnumWithReservedJavaKeywordAsValues._byte, response.get(1));
-		assertEquals(EnumWithReservedJavaKeywordAsValues._const, response.get(2));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._return, response.get(0));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte, response.get(1));
+		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._const, response.get(2));
 	}
 
 }

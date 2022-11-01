@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.allGraphQLCases.GraphQLTransportWSIT.GraphQLTransportWSSpringConfiguration;
-import org.allGraphQLCases.client.AllFieldCases;
-import org.allGraphQLCases.client.FieldParameterInput;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
@@ -101,14 +101,14 @@ public class GraphQLTransportWSIT {
 	void testQueryWithoutGraphQLVariables()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		List<FieldParameterInput> inputs = new ArrayList<>();
-		inputs.add(FieldParameterInput.builder().withUppercase(true).build());
-		inputs.add(FieldParameterInput.builder().withUppercase(false).build());
+		List<CINP_FieldParameterInput_CINS> inputs = new ArrayList<>();
+		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
+		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
 		GraphQLRequest graphQLRequest = myQuery.getAllFieldCasesGraphQLRequest("{issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		AllFieldCases ret = myQuery.allFieldCases(graphQLRequest, null, "inputs", inputs);
+		CTP_AllFieldCases_CTS ret = myQuery.allFieldCases(graphQLRequest, null, "inputs", inputs);
 
 		// Verification
 		assertEquals(inputs.size(), ret.getIssue65().size());
@@ -129,7 +129,7 @@ public class GraphQLTransportWSIT {
 		);
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec(
+		CTP_MyQueryType_CTS resp = myQuery.exec(
 				"query queryWithAMatrix($matrixParam: [[Float]]!) {withListOfList(matrix:$matrixParam){matrix}}", //
 				"matrixParam", matrix);
 
@@ -169,7 +169,7 @@ public class GraphQLTransportWSIT {
 		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
 
 		// Go, go, go
-		Human human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
+		CTP_Human_CTS human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
 
 		// Verifications
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
@@ -188,7 +188,7 @@ public class GraphQLTransportWSIT {
 		params.put("Value", "a first \"value\"");
 
 		// Go, go, go
-		MyQueryType resp = directiveOnQuery.execQuery(params);
+		CTP_MyQueryType_CTS resp = directiveOnQuery.execQuery(params);
 
 		// Verifications
 		assertNotNull(resp);

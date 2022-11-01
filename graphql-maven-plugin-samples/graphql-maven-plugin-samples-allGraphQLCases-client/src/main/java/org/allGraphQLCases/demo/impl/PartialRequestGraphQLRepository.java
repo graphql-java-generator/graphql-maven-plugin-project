@@ -7,16 +7,16 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.AllFieldCases;
-import org.allGraphQLCases.client.AllFieldCasesInput;
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.FieldParameterInput;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client._break;
-import org.allGraphQLCases.client._extends;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CTP_break_CTS;
+import org.allGraphQLCases.client.CEP_extends_CES;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 
@@ -46,27 +46,27 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 	// First part: partialQueries (based on the Star Wars use case)
 	@Override
 	@PartialRequest(request = "{appearsIn name}")
-	List<Character> withoutParameters() throws GraphQLRequestExecutionException;
+	List<CIP_Character_CIS> withoutParameters() throws GraphQLRequestExecutionException;
 
 	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character withOneOptionalParam(CharacterInput character) throws GraphQLRequestExecutionException;
+	CIP_Character_CIS withOneOptionalParam(CINP_CharacterInput_CINS character) throws GraphQLRequestExecutionException;
 
 	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character withOneMandatoryParam(CharacterInput character) throws GraphQLRequestExecutionException;
+	CIP_Character_CIS withOneMandatoryParam(CINP_CharacterInput_CINS character) throws GraphQLRequestExecutionException;
 
 	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character withEnum(Episode episode) throws GraphQLRequestExecutionException;
+	CIP_Character_CIS withEnum(CEP_Episode_CES episode) throws GraphQLRequestExecutionException;
 
 	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	List<Character> withList(String name, List<CharacterInput> friends) throws GraphQLRequestExecutionException;
+	List<CIP_Character_CIS> withList(String name, List<CINP_CharacterInput_CINS> friends) throws GraphQLRequestExecutionException;
 
 	@Override
 	@PartialRequest(request = "{id name appearsIn friends {id name}}")
-	Character error(String errorLabel) throws GraphQLRequestExecutionException;
+	CIP_Character_CIS error(String errorLabel) throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////
 	// Second part: partialQueries (based on the allGraphQLCases use case)
@@ -80,7 +80,7 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 			+ " oneWithoutIdSubType(input: ?input) {name}"//
 			+ " listWithoutIdSubTypes(nbItems: ?nbItemsWithoutId, input: ?inputList, textToAppendToTheForname: ?textToAppendToTheFornameWithoutId) {name}" //
 			+ "}")
-	public AllFieldCases allFieldCases(AllFieldCasesInput allFieldCasesInput,
+	public CTP_AllFieldCases_CTS allFieldCases(CINP_AllFieldCasesInput_CINS allFieldCasesInput,
 			@BindParameter(name = "uppercase") Boolean uppercase,
 			@BindParameter(name = "textToAppendToTheForname") String textToAppendToTheForname,
 			@BindParameter(name = "nbItemsWithId") long nbItemsWithId, //
@@ -89,9 +89,9 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 			@BindParameter(name = "dates") List<Date> dates,
 			@BindParameter(name = "uppercaseNameList") Boolean uppercaseNameList,
 			@BindParameter(name = "textToAppendToTheFornameWithId") String textToAppendToTheFornameWithId,
-			@BindParameter(name = "input") FieldParameterInput input,
+			@BindParameter(name = "input") CINP_FieldParameterInput_CINS input,
 			@BindParameter(name = "nbItemsWithoutId") int nbItemsWithoutId,
-			@BindParameter(name = "inputList") FieldParameterInput inputList,
+			@BindParameter(name = "inputList") CINP_FieldParameterInput_CINS inputList,
 			@BindParameter(name = "textToAppendToTheFornameWithoutId") String textToAppendToTheFornameWithoutId)
 			throws GraphQLRequestExecutionException;
 
@@ -100,7 +100,7 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 
 	@Override
 	@PartialRequest(request = "{case(test: &test, if: ?if)}")
-	public _break aBreak(@BindParameter(name = "test") _extends test, @BindParameter(name = "if") String _if)
+	public CTP_break_CTS aBreak(@BindParameter(name = "test") CEP_extends_CES test, @BindParameter(name = "if") String _if)
 			throws GraphQLRequestExecutionException;
 
 	////////////////////////////////////////////////////////////////////////////
@@ -108,6 +108,6 @@ public interface PartialRequestGraphQLRepository extends PartialQueries {
 
 	@Override
 	@PartialRequest(request = "{id name}", requestType = RequestType.mutation)
-	Human createHuman(HumanInput human) throws GraphQLRequestExecutionException;
+	CTP_Human_CTS createHuman(CINP_HumanInput_CINS human) throws GraphQLRequestExecutionException;
 
 }
