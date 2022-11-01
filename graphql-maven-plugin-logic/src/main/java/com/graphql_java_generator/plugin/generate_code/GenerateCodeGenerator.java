@@ -252,7 +252,27 @@ public class GenerateCodeGenerator implements Generator {
 			logger.debug("Generating Spring auto-configuration generation");
 			i += generateSpringAutoConfigurationDeclaration();
 		}
+
+
+		logger.debug("Generating client side mapping from graphql type to java type");
+		i += generateClientTypeMapping();
+
 		return i;
+	}
+
+	/**
+	 * Generate a class for mapping from graphql types to client java classes.
+	 *
+	 * @return
+	 */
+	private int generateClientTypeMapping() {
+		VelocityContext context = getVelocityContext();
+		context.put("types", generateCodeDocumentParser.getTypes());
+
+		generateOneFile(getJavaFile("GraphQLTypeMapping", false), "generating GraphQLTypeMapping", context,
+				resolveTemplate(CodeTemplate.TYPE_MAPPING));
+
+		return 1;
 	}
 
 	/**

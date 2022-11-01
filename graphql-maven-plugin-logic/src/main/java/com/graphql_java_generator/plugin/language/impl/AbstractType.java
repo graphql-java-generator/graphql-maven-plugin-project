@@ -108,7 +108,7 @@ public abstract class AbstractType implements Type {
 	/** {@inheritDoc} */
 	@Override
 	public String getCamelCaseName() {
-		return GraphqlUtils.graphqlUtils.getCamelCase(getClassSimpleName());
+		return GraphqlUtils.graphqlUtils.getCamelCase(getName());
 	}
 
 	@Override
