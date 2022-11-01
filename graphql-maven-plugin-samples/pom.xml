@@ -33,8 +33,6 @@
 		<!-- Custom template -->
 		<module>graphql-maven-plugin-samples-CustomTemplates-resttemplate</module>
 		<module>graphql-maven-plugin-samples-CustomTemplates-client</module>
-        <!-- Code generation with prefixes and suffixes -->
-        <module>graphql-maven-plugin-samples-allGraphQLCases-prefixsuffix</module>
 	</modules>
 
 	<build>
