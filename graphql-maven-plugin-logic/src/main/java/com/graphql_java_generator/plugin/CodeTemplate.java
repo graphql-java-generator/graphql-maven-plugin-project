@@ -37,6 +37,7 @@ public enum CodeTemplate {
 	SPRING_CONFIGURATION_CLASS(CodeTemplateScope.CLIENT, "templates/client_spring_configuration.vm.java"), //
 	SUBSCRIPTION(CodeTemplateScope.CLIENT, "templates/client_subscription_type.vm.java"), //
 	SUBSCRIPTION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_subscription_executor.vm.java"), //
+	TYPE_MAPPING(CodeTemplateScope.CLIENT, "templates/client_type_mapping.vm.java"), //
 
 	// Server files (alphabetic order)
 	BATCH_LOADER_DELEGATE_IMPL(CodeTemplateScope.SERVER, "templates/server_BatchLoaderDelegateImpl.vm.java"), //
