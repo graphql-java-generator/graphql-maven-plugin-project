@@ -8,8 +8,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.SIP_Character_SIS;
+import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.util.DataFetchersDelegateCharacter;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
@@ -27,18 +27,18 @@ public class DataFetchersDelegateCharacterImpl implements DataFetchersDelegateCh
 	DataGenerator generator;
 
 	@Override
-	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Character source) {
-		return generator.generateInstanceList(Character.class, 4);
+	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, SIP_Character_SIS source) {
+		return generator.generateInstanceList(SIP_Character_SIS.class, 4);
 	}
 
 	@Override
-	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Character source) {
-		return generator.generateInstanceList(Episode.class, 2);
+	public List<SEP_Episode_SES> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, SIP_Character_SIS source) {
+		return generator.generateInstanceList(SEP_Episode_SES.class, 2);
 	}
 
 	@Override
-	public List<Character> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return generator.generateInstanceList(Character.class, keys.size());
+	public List<SIP_Character_SIS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
+		return generator.generateInstanceList(SIP_Character_SIS.class, keys.size());
 	}
 
 }

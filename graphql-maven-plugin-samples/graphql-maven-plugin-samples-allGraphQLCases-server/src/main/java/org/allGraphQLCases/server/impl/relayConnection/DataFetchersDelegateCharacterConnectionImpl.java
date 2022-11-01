@@ -2,9 +2,9 @@ package org.allGraphQLCases.server.impl.relayConnection;
 
 import java.util.List;
 
-import org.allGraphQLCases.server.CharacterConnection;
-import org.allGraphQLCases.server.CharacterEdge;
-import org.allGraphQLCases.server.PageInfo;
+import org.allGraphQLCases.server.SIP_CharacterConnection_SIS;
+import org.allGraphQLCases.server.SIP_CharacterEdge_SIS;
+import org.allGraphQLCases.server.STP_PageInfo_STS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateCharacterConnection;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +14,12 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateCharacterConnectionImpl implements DataFetchersDelegateCharacterConnection {
 
 	@Override
-	public List<CharacterEdge> edges(DataFetchingEnvironment dataFetchingEnvironment, CharacterConnection origin) {
+	public List<SIP_CharacterEdge_SIS> edges(DataFetchingEnvironment dataFetchingEnvironment, SIP_CharacterConnection_SIS origin) {
 		return origin.getEdges();
 	}
 
 	@Override
-	public PageInfo pageInfo(DataFetchingEnvironment dataFetchingEnvironment, CharacterConnection origin) {
+	public STP_PageInfo_STS pageInfo(DataFetchingEnvironment dataFetchingEnvironment, SIP_CharacterConnection_SIS origin) {
 		return origin.getPageInfo();
 	}
 

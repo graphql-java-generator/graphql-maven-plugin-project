@@ -7,24 +7,15 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.AllFieldCases;
-import org.allGraphQLCases.server.AllFieldCasesInput;
-import org.allGraphQLCases.server.AnyCharacter;
-import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.CharacterConnection;
-import org.allGraphQLCases.server.CharacterInput;
-import org.allGraphQLCases.server.Client;
-import org.allGraphQLCases.server.Droid;
-import org.allGraphQLCases.server.DroidInput;
-import org.allGraphQLCases.server.EnumWithReservedJavaKeywordAsValues;
-import org.allGraphQLCases.server.Episode;
-import org.allGraphQLCases.server.Foo140;
-import org.allGraphQLCases.server.Human;
-import org.allGraphQLCases.server.HumanConnection;
-import org.allGraphQLCases.server.HumanInput;
-import org.allGraphQLCases.server.MyQueryType;
-import org.allGraphQLCases.server._break;
-import org.allGraphQLCases.server._extends;
+import org.allGraphQLCases.server.*;
+import org.allGraphQLCases.server.STP_AllFieldCases_STS;
+import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
+import org.allGraphQLCases.server.SINP_CharacterInput_SINS;
+import org.allGraphQLCases.server.SINP_DroidInput_SINS;
+import org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES;
+import org.allGraphQLCases.server.STP_Foo140_STS;
+import org.allGraphQLCases.server.SINP_HumanInput_SINS;
+import org.allGraphQLCases.server.STP_MyQueryType_STS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateMyQueryType;
 import org.springframework.stereotype.Component;
 
@@ -52,23 +43,23 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	static Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
 	@Override
-	public List<Character> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
-		return generator.generateInstanceList(Character.class, 10);
+	public List<SIP_Character_SIS> withoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
+		return generator.generateInstanceList(SIP_Character_SIS.class, 10);
 	}
 
 	@Override
-	public Character withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
+	public SIP_Character_SIS withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment, SINP_CharacterInput_SINS character) {
 		if (character == null) {
-			return generator.generateInstance(Human.class);
+			return generator.generateInstance(STP_Human_STS.class);
 		} else {
-			Character c = mapper.map(character, getClassFromName(Character.class, character.getType()));
+			SIP_Character_SIS c = mapper.map(character, getClassFromName(SIP_Character_SIS.class, character.getType()));
 			c.setId(UUID.randomUUID());
 
 			// Let's fill in the class specific to each class, to test fragments
-			if (c instanceof Droid) {
-				((Droid) c).setPrimaryFunction("a primary function");
-			} else if (c instanceof Human) {
-				((Human) c).setHomePlanet("a home planet");
+			if (c instanceof STP_Droid_STS) {
+				((STP_Droid_STS) c).setPrimaryFunction("a primary function");
+			} else if (c instanceof STP_Human_STS) {
+				((STP_Human_STS) c).setHomePlanet("a home planet");
 			}
 
 			return c;
@@ -76,51 +67,51 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Character withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment, CharacterInput character) {
-		Character c = mapper.map(character, getClassFromName(Character.class, character.getType()));
+	public SIP_Character_SIS withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment, SINP_CharacterInput_SINS character) {
+		SIP_Character_SIS c = mapper.map(character, getClassFromName(SIP_Character_SIS.class, character.getType()));
 		c.setId(UUID.randomUUID());
 		return c;
 	}
 
 	@Override
-	public Character withEnum(DataFetchingEnvironment dataFetchingEnvironment, Episode episode) {
-		Character c = generator.generateInstance(Droid.class);
+	public SIP_Character_SIS withEnum(DataFetchingEnvironment dataFetchingEnvironment, SEP_Episode_SES SEP_Episode_SES) {
+		SIP_Character_SIS c = generator.generateInstance(STP_Droid_STS.class);
 
-		// The episode list (appearsIn) will be filled by another call (the graphql manages the joins).
-		// To check the given parameter, we put the episode name in the returned character's name
-		c.setName(episode.name());
+		// The SEP_Episode_SES list (appearsIn) will be filled by another call (the graphql manages the joins).
+		// To check the given parameter, we put the SEP_Episode_SES name in the returned character's name
+		c.setName(SEP_Episode_SES.name());
 
 		return c;
 	}
 
 	@Override
-	public AllFieldCases withListOfList(DataFetchingEnvironment dataFetchingEnvironment, List<List<Double>> matrix) {
-		AllFieldCases ret = new AllFieldCases();
+	public STP_AllFieldCases_STS withListOfList(DataFetchingEnvironment dataFetchingEnvironment, List<List<Double>> matrix) {
+		STP_AllFieldCases_STS ret = new STP_AllFieldCases_STS();
 		ret.setMatrix(matrix);
 		return ret;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Character> withList(DataFetchingEnvironment dataFetchingEnvironment, String name,
-			List<CharacterInput> characters) {
-		List<Character> list = new ArrayList<Character>(characters.size());
-		for (CharacterInput input : characters) {
-			Class<? extends Character> characterClass;
+	public List<SIP_Character_SIS> withList(DataFetchingEnvironment dataFetchingEnvironment, String name,
+			List<SINP_CharacterInput_SINS> characters) {
+		List<SIP_Character_SIS> list = new ArrayList<SIP_Character_SIS>(characters.size());
+		for (SINP_CharacterInput_SINS input : characters) {
+			Class<? extends SIP_Character_SIS> characterClass;
 			try {
-				characterClass = (Class<? extends Character>) getClass().getClassLoader()
-						.loadClass(Character.class.getPackage().getName() + "." + input.getType());
+				characterClass = (Class<? extends SIP_Character_SIS>) getClass().getClassLoader()
+						.loadClass(SIP_Character_SIS.class.getPackage().getName() + ".STP_" + input.getType() + "_STS");
 			} catch (RuntimeException | ClassNotFoundException e) {
 				throw new RuntimeException(e.getClass().getSimpleName() + ": " + e.getMessage(), e);
 			}
-			Character c = mapper.map(input, characterClass);
+			SIP_Character_SIS c = mapper.map(input, characterClass);
 			c.setId(UUID.randomUUID());
 
 			// Let's fill in the class specific to each class, to test fragments
-			if (c instanceof Droid) {
-				((Droid) c).setPrimaryFunction("a primary function");
-			} else if (c instanceof Human) {
-				((Human) c).setHomePlanet("a home planet");
+			if (c instanceof STP_Droid_STS) {
+				((STP_Droid_STS) c).setPrimaryFunction("a primary function");
+			} else if (c instanceof STP_Human_STS) {
+				((STP_Human_STS) c).setHomePlanet("a home planet");
 			}
 			list.add(c);
 		}
@@ -131,32 +122,32 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Character error(DataFetchingEnvironment dataFetchingEnvironment, String errorLabel) {
+	public SIP_Character_SIS error(DataFetchingEnvironment dataFetchingEnvironment, String errorLabel) {
 		// This method is here only to test the error behavior.
 		throw new RuntimeException("This is an error: " + errorLabel);
 	}
 
 	@Override
-	public AllFieldCases allFieldCases(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInput input) {
-		AllFieldCases ret;
+	public STP_AllFieldCases_STS allFieldCases(DataFetchingEnvironment dataFetchingEnvironment, SINP_AllFieldCasesInput_SINS input) {
+		STP_AllFieldCases_STS ret;
 		if (input != null) {
-			ret = mapper.map(input, AllFieldCases.class);
+			ret = mapper.map(input, STP_AllFieldCases_STS.class);
 		} else {
-			ret = generator.generateInstance(AllFieldCases.class);
+			ret = generator.generateInstance(STP_AllFieldCases_STS.class);
 		}
 		return ret;
 	}
 
 	@Override
-	public _break aBreak(DataFetchingEnvironment dataFetchingEnvironment) {
-		_break ret = new _break();
+	public STP_break_STS aBreak(DataFetchingEnvironment dataFetchingEnvironment) {
+		STP_break_STS ret = new STP_break_STS();
 
 		// Let's retrieve the input parameter test, that contains the expected value to return
 		Field aBreak = (Field) dataFetchingEnvironment.getOperationDefinition().getSelectionSet().getSelections()
 				.get(0);
 		Field aCase = (Field) aBreak.getSelectionSet().getSelections().get(0);
 		EnumValue enumValue = (EnumValue) aCase.getArguments().get(0).getValue();
-		_extends value = _extends.valueOf(enumValue.getName());
+		SEP_extends_SES value = SEP_extends_SES.valueOf(enumValue.getName());
 
 		ret.setCase(value);
 		return ret;
@@ -167,7 +158,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		Class<? extends T> clazz;
 		try {
 			clazz = (Class<? extends T>) getClass().getClassLoader()
-					.loadClass(t.getPackage().getName() + "." + simpleClassname);
+					.loadClass(t.getPackage().getName() + ".STP_" + simpleClassname + "_STS");
 		} catch (RuntimeException | ClassNotFoundException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
@@ -220,8 +211,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Character directiveOnField(DataFetchingEnvironment dataFetchingEnvironment) {
-		Human ret = generator.generateInstance(Human.class);
+	public SIP_Character_SIS directiveOnField(DataFetchingEnvironment dataFetchingEnvironment) {
+		STP_Human_STS ret = generator.generateInstance(STP_Human_STS.class);
 		Field field = (Field) dataFetchingEnvironment.getMergedField().getFields().get(0).getSelectionSet()
 				.getSelections().get(1);
 
@@ -246,9 +237,9 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public List<AnyCharacter> unionTest(DataFetchingEnvironment dataFetchingEnvironment, HumanInput human1,
-			HumanInput human2, DroidInput droid1, DroidInput droid2) {
-		List<AnyCharacter> ret = new ArrayList<>();
+	public List<SUP_AnyCharacter_SUS> unionTest(DataFetchingEnvironment dataFetchingEnvironment, SINP_HumanInput_SINS human1,
+			SINP_HumanInput_SINS human2, SINP_DroidInput_SINS droid1, SINP_DroidInput_SINS droid2) {
+		List<SUP_AnyCharacter_SUS> ret = new ArrayList<>();
 
 		if (human1 != null) {
 			ret.add(mapFromHumanInput(human1));
@@ -266,15 +257,15 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return ret;
 	}
 
-	private Human mapFromHumanInput(HumanInput input) {
-		Human human = mapper.map(input, Human.class);
-		human.setId(UUID.randomUUID());
-		human.setHomePlanet("a home planet");
-		return human;
+	private STP_Human_STS mapFromHumanInput(SINP_HumanInput_SINS input) {
+		STP_Human_STS STP_Human_STS = mapper.map(input, STP_Human_STS.class);
+		STP_Human_STS.setId(UUID.randomUUID());
+		STP_Human_STS.setHomePlanet("a home planet");
+		return STP_Human_STS;
 	}
 
-	private Droid mapFromDroidInput(DroidInput input) {
-		Droid droid = mapper.map(input, Droid.class);
+	private STP_Droid_STS mapFromDroidInput(SINP_DroidInput_SINS input) {
+		STP_Droid_STS droid = mapper.map(input, STP_Droid_STS.class);
 		droid.setId(UUID.randomUUID());
 		droid.setPrimaryFunction("a primary function");
 		return droid;
@@ -286,27 +277,27 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Droid withTwoMandatoryParamDefaultVal(DataFetchingEnvironment dataFetchingEnvironment, DroidInput theHero,
+	public STP_Droid_STS withTwoMandatoryParamDefaultVal(DataFetchingEnvironment dataFetchingEnvironment, SINP_DroidInput_SINS theHero,
 			Integer num) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public MyQueryType relay(DataFetchingEnvironment dataFetchingEnvironment) {
+	public STP_MyQueryType_STS relay(DataFetchingEnvironment dataFetchingEnvironment) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public CharacterConnection connectionWithoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
+	public SIP_CharacterConnection_SIS connectionWithoutParameters(DataFetchingEnvironment dataFetchingEnvironment) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public HumanConnection connectionOnHuman(DataFetchingEnvironment dataFetchingEnvironment, String planet,
-			Episode episode) {
+	public STP_HumanConnection_STS connectionOnHuman(DataFetchingEnvironment dataFetchingEnvironment, String planet,
+			SEP_Episode_SES SEP_Episode_SES) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -330,31 +321,31 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public Client issue128(DataFetchingEnvironment dataFetchingEnvironment) {
+	public SIP_Client_SIS issue128(DataFetchingEnvironment dataFetchingEnvironment) {
 		return null;
 	}
 
 	@Override
-	public Foo140 foo140(DataFetchingEnvironment dataFetchingEnvironment) {
-		return new Foo140();
+	public STP_Foo140_STS foo140(DataFetchingEnvironment dataFetchingEnvironment) {
+		return new STP_Foo140_STS();
 	}
 
 	@Override
-	public EnumWithReservedJavaKeywordAsValues enumWithReservedJavaKeywordAsValues(
+	public SEP_EnumWithReservedJavaKeywordAsValues_SES enumWithReservedJavaKeywordAsValues(
 			DataFetchingEnvironment dataFetchingEnvironment) {
-		return EnumWithReservedJavaKeywordAsValues._if;
+		return SEP_EnumWithReservedJavaKeywordAsValues_SES._if;
 	}
 
 	@Override
-	public List<EnumWithReservedJavaKeywordAsValues> listOfEnumWithReservedJavaKeywordAsValues(
-			DataFetchingEnvironment dataFetchingEnvironment, EnumWithReservedJavaKeywordAsValues param1,
-			List<EnumWithReservedJavaKeywordAsValues> param2) {
-		List<EnumWithReservedJavaKeywordAsValues> ret = new ArrayList<>();
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> listOfEnumWithReservedJavaKeywordAsValues(
+			DataFetchingEnvironment dataFetchingEnvironment, SEP_EnumWithReservedJavaKeywordAsValues_SES param1,
+			List<SEP_EnumWithReservedJavaKeywordAsValues_SES> param2) {
+		List<SEP_EnumWithReservedJavaKeywordAsValues_SES> ret = new ArrayList<>();
 
 		if (param1 != null)
 			ret.add(param1);
 		if (param2 != null)
-			for (EnumWithReservedJavaKeywordAsValues e : param2)
+			for (SEP_EnumWithReservedJavaKeywordAsValues_SES e : param2)
 				ret.add(e);
 
 		return ret;

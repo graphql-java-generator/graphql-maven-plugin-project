@@ -1,8 +1,8 @@
 package org.allGraphQLCases.server.impl;
 
-import org.allGraphQLCases.server.Bar140;
-import org.allGraphQLCases.server.I2Bar140;
-import org.allGraphQLCases.server.I2Foo140;
+import org.allGraphQLCases.server.STP_Bar140_STS;
+import org.allGraphQLCases.server.SIP_I2Bar140_SIS;
+import org.allGraphQLCases.server.SIP_I2Foo140_SIS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateI2Foo140;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +12,8 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateI2Foo140Impl implements DataFetchersDelegateI2Foo140 {
 
 	@Override
-	public I2Bar140 bar(DataFetchingEnvironment dataFetchingEnvironment, I2Foo140 origin) {
-		return Bar140.builder().withName("Bar140's name for an I2Bar140").build();
+	public SIP_I2Bar140_SIS bar(DataFetchingEnvironment dataFetchingEnvironment, SIP_I2Foo140_SIS origin) {
+		return STP_Bar140_STS.builder().withName("STP_Bar140_STS's name for an SIP_I2Bar140_SIS").build();
 	}
 
 }
