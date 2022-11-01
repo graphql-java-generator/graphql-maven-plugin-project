@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.Droid;
-import org.allGraphQLCases.server.Episode;
+import org.allGraphQLCases.server.SIP_Character_SIS;
+import org.allGraphQLCases.server.STP_Droid_STS;
+import org.allGraphQLCases.server.SEP_Episode_SES;
 import org.allGraphQLCases.server.util.DataFetchersDelegateDroid;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
@@ -28,18 +28,18 @@ public class DataFetchersDelegateDroidImpl implements DataFetchersDelegateDroid 
 	DataGenerator generator;
 
 	@Override
-	public List<Character> friends(DataFetchingEnvironment dataFetchingEnvironment, Droid source) {
-		return generator.generateInstanceList(Character.class, 5);
+	public List<SIP_Character_SIS> friends(DataFetchingEnvironment dataFetchingEnvironment, STP_Droid_STS source) {
+		return generator.generateInstanceList(SIP_Character_SIS.class, 5);
 	}
 
 	@Override
-	public List<Episode> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, Droid source) {
-		return generator.generateInstanceList(Episode.class, 2);
+	public List<SEP_Episode_SES> appearsIn(DataFetchingEnvironment dataFetchingEnvironment, STP_Droid_STS source) {
+		return generator.generateInstanceList(SEP_Episode_SES.class, 2);
 	}
 
 	@Override
-	public List<Droid> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return generator.generateInstanceList(Droid.class, keys.size());
+	public List<STP_Droid_STS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
+		return generator.generateInstanceList(STP_Droid_STS.class, keys.size());
 	}
 
 }

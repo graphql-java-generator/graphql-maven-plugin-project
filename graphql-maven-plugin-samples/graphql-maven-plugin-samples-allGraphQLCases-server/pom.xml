@@ -59,6 +59,20 @@
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
+                            <!-- ServerINputPrefix -->
+                            <inputPrefix>SINP_</inputPrefix>
+                            <!-- ServerINputSuffix -->
+                            <inputSuffix>_SINS</inputSuffix>
+                            <!-- ServerTypePrefix -->
+                            <typePrefix>STP_</typePrefix>
+                            <!-- ServerTypeSuffix etc. -->
+                            <typeSuffix>_STS</typeSuffix>
+                            <interfacePrefix>SIP_</interfacePrefix>
+                            <interfaceSuffix>_SIS</interfaceSuffix>
+                            <unionPrefix>SUP_</unionPrefix>
+                            <unionSuffix>_SUS</unionSuffix>
+                            <enumPrefix>SEP_</enumPrefix>
+                            <enumSuffix>_SES</enumSuffix>
 						</configuration>
 					</execution>
 				</executions>

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
+import org.allGraphQLCases.server.STP_AllFieldCasesWithIdSubtype_STS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesWithIdSubtype;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl
 
 	/**
 	 * This class contains the context that allows to precise what should be done on the returned
-	 * AllFieldCasesWithIdSubtype instance
+	 * STP_AllFieldCasesWithIdSubtype_STS instance
 	 */
 	public static class KeyContext {
 		public Boolean uppercase;
@@ -28,11 +28,11 @@ public class DataFetchersDelegateAllFieldCasesWithIdSubtypeImpl
 	}
 
 	@Override
-	public List<AllFieldCasesWithIdSubtype> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		List<AllFieldCasesWithIdSubtype> list = new ArrayList<>(keys.size());
+	public List<STP_AllFieldCasesWithIdSubtype_STS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
+		List<STP_AllFieldCasesWithIdSubtype_STS> list = new ArrayList<>(keys.size());
 
 		for (UUID id : keys) {
-			AllFieldCasesWithIdSubtype item = generator.generateInstance(AllFieldCasesWithIdSubtype.class);
+			STP_AllFieldCasesWithIdSubtype_STS item = generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class);
 			item.setId(id);
 
 			Object context = environment.getKeyContexts().get(id);
