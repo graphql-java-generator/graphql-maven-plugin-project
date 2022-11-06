@@ -36,6 +36,47 @@ public interface CommonConfiguration {
 	public final String DEFAULT_SUFFIX = "";
 
 	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL enums. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getEnumPrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL enums. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	public String getEnumSuffix();
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL input objects. The prefix
+	 * is added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	public String getInputPrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL input objects. The suffix
+	 * is added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getInputSuffix();
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces. The prefix is
+	 * added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	public String getInterfacePrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces. The suffix is
+	 * added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getInterfaceSuffix();
+
+	/**
 	 * <I>(Useless, since 1.18.7)</I>Defines the options that maximum number of tokens that the GraphQL schema parser
 	 * may read. The default value is Integer.MAX_VALUE (=2147483647). If the schema contains more than
 	 * <I>maxTokens</I>, the build will fail with an error.
@@ -130,20 +171,6 @@ public interface CommonConfiguration {
 	public String getTypeSuffix();
 
 	/**
-	 * An optional prefix to add to the classnames of the generated java classes for GraphQL input objects. The prefix
-	 * is added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
-	 * comma, etc.)
-	 */
-	public String getInputPrefix();
-
-	/**
-	 * An optional suffix to add to the classnames of the generated java classes for GraphQL input objects. The suffix
-	 * is added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
-	 * etc.)
-	 */
-	public String getInputSuffix();
-
-	/**
 	 * An optional prefix to add to the classnames of the generated java classes for GraphQL unions. The prefix is added
 	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
 	 * etc.)
@@ -155,33 +182,6 @@ public interface CommonConfiguration {
 	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
 	 */
 	public String getUnionSuffix();
-
-	/**
-	 * An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces. The prefix is
-	 * added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
-	 * comma, etc.)
-	 */
-	public String getInterfacePrefix();
-
-	/**
-	 * An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces. The suffix is
-	 * added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
-	 * etc.)
-	 */
-	public String getInterfaceSuffix();
-
-	/**
-	 * An optional prefix to add to the classnames of the generated java classes for GraphQL enums. The prefix is added
-	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
-	 * etc.)
-	 */
-	public String getEnumPrefix();
-
-	/**
-	 * An optional suffix to add to the classnames of the generated java classes for GraphQL enums. The suffix is added
-	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
-	 */
-	public String getEnumSuffix();
 
 	/**
 	 * This method is used only in {@link GeneratePojoConfiguration}.
