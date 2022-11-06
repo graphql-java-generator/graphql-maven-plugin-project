@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,15 +15,15 @@ import java.util.List;
 import java.util.UUID;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
-import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
-import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
-import org.allGraphQLCases.client.CTP_Droid_CTS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
-import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CEP_extends_CES;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_Droid_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 import org.assertj.core.util.Arrays;
@@ -193,7 +194,6 @@ abstract class AbstractIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		OffsetDateTime now = OffsetDateTime.now();
 		String uuid = UUID.randomUUID().toString();
 		Date date1 = new Calendar.Builder().setDate(2022, 4 - 1, 1).build().getTime();
 		Date date2 = new Calendar.Builder().setDate(2022, 4 - 1, 2).build().getTime();
@@ -201,13 +201,15 @@ abstract class AbstractIT {
 		Date date4 = new Calendar.Builder().setDate(2022, 4 - 1, 4).build().getTime();
 		Date date5 = new Calendar.Builder().setDate(2022, 4 - 1, 5).build().getTime();
 		Date date6 = new Calendar.Builder().setDate(2022, 4 - 1, 6).build().getTime();
+		OffsetDateTime dateTime = OffsetDateTime.of(2022, 4 - 1, 6, 13, 58, 59, 0, ZoneOffset.UTC);
 
 		// Preparation
 		@SuppressWarnings("unchecked")
 		CINP_AllFieldCasesInput_CINS allFieldCasesInput = CINP_AllFieldCasesInput_CINS.builder()//
 				.withId(uuid)//
 				.withName("a name")//
-				.withAge((long) 666).withDateTime(now)//
+				.withAge((long) 666)//
+				.withDateTime(dateTime)//
 				.withAliases(new ArrayList<String>())//
 				.withDate(date1)//
 				.withDates((List<Date>) (Object) Arrays.asList(Arrays.array(date2, date3)))
@@ -230,7 +232,7 @@ abstract class AbstractIT {
 
 		// Go, go, go
 		CTP_AllFieldCases_CTS allFieldCases = partialQueries.allFieldCases(allFieldCasesInput, uppercase,
-				textToAppendToTheForname, nbItemsWithId, date6, now, dates, uppercaseNameList,
+				textToAppendToTheForname, nbItemsWithId, date6, dateTime, dates, uppercaseNameList,
 				textToAppendToTheFornameWithId, input, nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
 
 		// Verification
@@ -260,7 +262,7 @@ abstract class AbstractIT {
 		// assertEquals("planet1", allFieldCases.getPlanets().get(0));
 		// assertEquals("planet2", allFieldCases.getPlanets().get(1));
 		//
-		assertEquals(now, allFieldCases.getDateTime());
+		assertEquals(dateTime, allFieldCases.getDateTime());
 
 		// listWithIdSubTypes
 		assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());
@@ -288,8 +290,8 @@ abstract class AbstractIT {
 		assertEquals(CEP_extends_CES.DOUBLE, partialQueries.aBreak(CEP_extends_CES.DOUBLE, null).getCase());
 	}
 
-	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
-			int nbFriends, int nbAppearsIn) {
+	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
+			String nameStartsWith, int nbFriends, int nbAppearsIn) {
 
 		if (idShouldBeNull)
 			assertNull(c.getId(), testDecription + " (id)");

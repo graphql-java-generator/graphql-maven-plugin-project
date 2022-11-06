@@ -3,8 +3,7 @@ package com.graphql_java_generator.client.graphqlrepository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-// import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -88,7 +87,7 @@ class GraphQLRepositoryInvocationHandlerFirstTest extends AbstractGraphQLReposit
 		Map<String, Object> values = new HashMap<>(); // an emtpy map is enough for this test, like if no bean where
 														// registered
 		ApplicationContext ctx = mock(ApplicationContext.class);
-		when(ctx.getBeansOfType(anyObject())).thenReturn(values);
+		when(ctx.getBeansOfType(any())).thenReturn(values);
 
 		// Go, go, go
 		IllegalArgumentException e = assertThrows(IllegalArgumentException.class,

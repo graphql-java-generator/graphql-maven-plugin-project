@@ -82,7 +82,9 @@
 						</goals>
 						<configuration>
 							<resources>
-								<resource><directory>${project.build.directory}/generated-resources/runtime_sources</directory></resource>
+								<resource>
+									<directory>${project.build.directory}/generated-resources/runtime_sources</directory>
+								</resource>
 							</resources>
 						</configuration>
 					</execution>

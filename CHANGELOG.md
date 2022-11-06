@@ -9,6 +9,18 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+Dependency upgrade: 
+* Upgrade from graphql-java 17.3 to graphql-java 18.0
+* Upgrade from graphql-java-extended-scalars 17.0 to 18.0
+* Upgrade from lombok 1.18.12 to 1.18.24 (to solve compatibility issues with JDK >= 15)
+
+All modes:
+* Prefix and Suffix management for POJO generated from the GraphQL schema.
+    * Please [check these new plugin parameters](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/plugin-info.html): typePrefix, typeSuffix, unionPrefix, unionSuffix, enumPrefix, enumSuffix, interfacePrefix, interfaceSuffix, inputPrefix, inputSuffix
+
+
 # 1.18.7
 
 Dependency upgrade :
