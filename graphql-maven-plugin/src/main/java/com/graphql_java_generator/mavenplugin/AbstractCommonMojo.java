@@ -130,83 +130,80 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 	Map<String, String> templates;
 
 	/**
-	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL types.
-	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
-	 *  (no space, dot, comma, etc.)
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL types. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.typePrefix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.typePrefix", defaultValue = CommonConfiguration.DEFAULT_PREFIX)
 	public String typePrefix;
 
 	/**
-	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL types.
-	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
-	 *  dot, comma, etc.)
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL types. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.typeSuffix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.typeSuffix", defaultValue = CommonConfiguration.DEFAULT_SUFFIX)
 	public String typeSuffix;
 
 	/**
-	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL unions.
-	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
-	 *  (no space, dot, comma, etc.)
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL unions. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.unionPrefix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.unionPrefix", defaultValue = CommonConfiguration.DEFAULT_PREFIX)
 	public String unionPrefix;
 
 	/**
-	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL unions.
-	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
-	 *  dot, comma, etc.)
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL unions. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.unionSuffix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.unionSuffix", defaultValue = CommonConfiguration.DEFAULT_SUFFIX)
 	public String unionSuffix;
 
 	/**
-	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL enums.
-	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
-	 *  (no space, dot, comma, etc.)
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL enums. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.enumPrefix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.enumPrefix", defaultValue = CommonConfiguration.DEFAULT_PREFIX)
 	public String enumPrefix;
 
 	/**
-	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL enums.
-	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
-	 *  dot, comma, etc.)
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL enums. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.enumSuffix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.enumSuffix", defaultValue = CommonConfiguration.DEFAULT_SUFFIX)
 	public String enumSuffix;
 
 	/**
-	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces.
-	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
-	 *  (no space, dot, comma, etc.)
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces. The prefix is
+	 * added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.interfacePrefix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.interfacePrefix", defaultValue = CommonConfiguration.DEFAULT_PREFIX)
 	public String interfacePrefix;
 
 	/**
-	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces.
-	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
-	 *  dot, comma, etc.)
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces. The suffix is
+	 * added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.interfaceSuffix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.interfaceSuffix", defaultValue = CommonConfiguration.DEFAULT_SUFFIX)
 	public String interfaceSuffix;
 
 	/**
-	 *  An optional prefix to add to the classnames of the generated java classes for GraphQL input objects.
-	 *  The prefix is added at the beginning of the java classname, and must be compatible with java naming rules
-	 *  (no space, dot, comma, etc.)
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL input objects. The prefix
+	 * is added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.inputPrefix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.inputPrefix", defaultValue = CommonConfiguration.DEFAULT_PREFIX)
 	public String inputPrefix;
 
 	/**
-	 *  An optional suffix to add to the classnames of the generated java classes for GraphQL input objects.
-	 *  The suffix is added at the end of the java classname, and must be compatible with java naming rules (no space,
-	 *  dot, comma, etc.)
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL input objects. The suffix
+	 * is added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
 	 */
-	@Parameter(property = "com.graphql_java_generator.mavenplugin.javaClassSuffix")
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.javaClassSuffix", defaultValue = CommonConfiguration.DEFAULT_SUFFIX)
 	public String inputSuffix;
 
 	/**
@@ -243,47 +240,57 @@ public abstract class AbstractCommonMojo extends AbstractMojo implements CommonC
 		return templates;
 	}
 
-    public String getTypePrefix() {
-        return typePrefix;
-    }
+	@Override
+	public String getTypePrefix() {
+		return typePrefix;
+	}
 
-    public String getTypeSuffix() {
-        return typeSuffix;
-    }
+	@Override
+	public String getTypeSuffix() {
+		return typeSuffix;
+	}
 
-    public String getInputPrefix() {
-        return inputPrefix;
-    }
+	@Override
+	public String getInputPrefix() {
+		return inputPrefix;
+	}
 
-    public String getInputSuffix() {
-        return inputSuffix;
-    }
+	@Override
+	public String getInputSuffix() {
+		return inputSuffix;
+	}
 
-    public String getUnionPrefix() {
-        return unionPrefix;
-    }
+	@Override
+	public String getUnionPrefix() {
+		return unionPrefix;
+	}
 
-    public String getUnionSuffix() {
-        return unionSuffix;
-    }
+	@Override
+	public String getUnionSuffix() {
+		return unionSuffix;
+	}
 
-    public String getInterfacePrefix() {
-        return interfacePrefix;
-    }
+	@Override
+	public String getInterfacePrefix() {
+		return interfacePrefix;
+	}
 
-    public String getInterfaceSuffix() {
-        return interfaceSuffix;
-    }
+	@Override
+	public String getInterfaceSuffix() {
+		return interfaceSuffix;
+	}
 
-    public String getEnumPrefix() {
-        return enumPrefix;
-    }
+	@Override
+	public String getEnumPrefix() {
+		return enumPrefix;
+	}
 
-    public String getEnumSuffix() {
-        return enumSuffix;
-    }
+	@Override
+	public String getEnumSuffix() {
+		return enumSuffix;
+	}
 
-    @Override
+	@Override
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
 		return skipGenerationIfSchemaHasNotChanged;
 	}
