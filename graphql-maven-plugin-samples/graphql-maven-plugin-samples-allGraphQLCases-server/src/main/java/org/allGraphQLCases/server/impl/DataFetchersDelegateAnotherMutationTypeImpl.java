@@ -8,10 +8,10 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.AllFieldCases;
-import org.allGraphQLCases.server.AllFieldCasesInput;
-import org.allGraphQLCases.server.Human;
-import org.allGraphQLCases.server.HumanInput;
+import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
+import org.allGraphQLCases.server.SINP_HumanInput_SINS;
+import org.allGraphQLCases.server.STP_AllFieldCases_STS;
+import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAnotherMutationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +43,10 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 	DataGenerator generator;
 
 	@Override
-	public Human createHuman(DataFetchingEnvironment dataFetchingEnvironment, HumanInput human) {
+	public STP_Human_STS createHuman(DataFetchingEnvironment dataFetchingEnvironment, SINP_HumanInput_SINS human) {
 		logger.trace("createHuman: received this list of appearsIn: {}", human.getAppearsIn());
 
-		Human ret = generator.generateInstance(Human.class);
+		STP_Human_STS ret = generator.generateInstance(STP_Human_STS.class);
 		ret.setName(human.getName());
 		ret.setAppearsIn(human.getAppearsIn());
 
@@ -91,9 +91,9 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 	}
 
 	@Override
-	public AllFieldCases createAllFieldCases(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCasesInput input) {
-		return mapper.map(input, AllFieldCases.class);
+	public STP_AllFieldCases_STS createAllFieldCases(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_AllFieldCasesInput_SINS input) {
+		return mapper.map(input, STP_AllFieldCases_STS.class);
 	}
 
 	private Directive getTestDirective(List<Directive> directives) {

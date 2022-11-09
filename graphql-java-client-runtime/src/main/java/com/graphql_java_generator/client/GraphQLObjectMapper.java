@@ -175,8 +175,8 @@ public class GraphQLObjectMapper {
 			String typename = ((TextNode) value.get("__typename")).asText();
 			Class<?> clazz;
 			try {
-				clazz = Class.forName(graphQLObjectsPackage + '.' + typename);
-			} catch (ClassNotFoundException e) {
+				clazz = GraphqlClientUtils.graphqlClientUtils.getClass(graphQLObjectsPackage, typename, null);
+			} catch (RuntimeException e) {
 				throw new JsonMappingException(parser, e.getMessage(), e);
 			}
 			return objectMapper.treeToValue(value, clazz);

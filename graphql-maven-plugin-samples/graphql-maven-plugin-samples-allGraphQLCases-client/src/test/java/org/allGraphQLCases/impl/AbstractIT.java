@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,15 +15,15 @@ import java.util.List;
 import java.util.UUID;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.AllFieldCases;
-import org.allGraphQLCases.client.AllFieldCasesInput;
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.Droid;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.FieldParameterInput;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client._extends;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CEP_extends_CES;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_Droid_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.demo.PartialQueries;
 import org.assertj.core.util.Arrays;
@@ -70,11 +71,11 @@ abstract class AbstractIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		List<Character> list = partialQueries.withoutParameters();
+		List<CIP_Character_CIS> list = partialQueries.withoutParameters();
 
 		assertNotNull(list);
 		assertEquals(10, list.size());
-		for (Character c : list) {
+		for (CIP_Character_CIS c : list) {
 			checkCharacter(c, "withoutParameters", true, "Random String (", 0, 0);
 		}
 	}
@@ -84,13 +85,13 @@ abstract class AbstractIT {
 	void test_withOneOptionalParam() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Without parameter
-		Character c = partialQueries.withOneOptionalParam(null);
+		CIP_Character_CIS c = partialQueries.withOneOptionalParam(null);
 		checkCharacter(c, "test_withOneOptionalParam(null)", false, "Random String (", 0, 0);
 
 		// With a parameter
-		CharacterInput input = new CharacterInput();
+		CINP_CharacterInput_CINS input = new CINP_CharacterInput_CINS();
 		input.setName("A name");
-		input.setAppearsIn(new ArrayList<Episode>());
+		input.setAppearsIn(new ArrayList<CEP_Episode_CES>());
 		input.setType("Human");
 
 		// Go, go, go
@@ -120,16 +121,16 @@ abstract class AbstractIT {
 	@Test
 	void test_withOneMandatoryParam_OK() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// With a non null parameter
-		CharacterInput input = new CharacterInput();
+		CINP_CharacterInput_CINS input = new CINP_CharacterInput_CINS();
 		input.setName("A name");
-		input.setAppearsIn(new ArrayList<Episode>());
+		input.setAppearsIn(new ArrayList<CEP_Episode_CES>());
 		input.setType("Droid");
 
 		// Go, go, go
-		Character c = partialQueries.withOneMandatoryParam(input);
+		CIP_Character_CIS c = partialQueries.withOneMandatoryParam(input);
 
 		// Verification
-		assertEquals("Droid", c.getClass().getSimpleName());
+		assertTrue(c instanceof CTP_Droid_CTS);
 		assertNotNull(c.getId());
 		assertEquals("A name", c.getName());
 
@@ -145,36 +146,36 @@ abstract class AbstractIT {
 	void test_withEnum() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// With null parameter: NEWHOPE is the default value
-		Character c = partialQueries.withEnum(null);
-		assertEquals(Episode.NEWHOPE.name(), c.getName());// See server code for more info
+		CIP_Character_CIS c = partialQueries.withEnum(null);
+		assertEquals(CEP_Episode_CES.NEWHOPE.name(), c.getName());// See server code for more info
 
 		// With a non null parameter
-		c = partialQueries.withEnum(Episode.JEDI);
-		assertEquals(Episode.JEDI.name(), c.getName()); // See server code for more info
+		c = partialQueries.withEnum(CEP_Episode_CES.JEDI);
+		assertEquals(CEP_Episode_CES.JEDI.name(), c.getName()); // See server code for more info
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withList() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		CharacterInput ci1 = new CharacterInput();
+		CINP_CharacterInput_CINS ci1 = new CINP_CharacterInput_CINS();
 		ci1.setName("A name");
-		ci1.setAppearsIn(new ArrayList<Episode>());
+		ci1.setAppearsIn(new ArrayList<CEP_Episode_CES>());
 		ci1.setType("Droid");
 		//
-		CharacterInput ci2 = new CharacterInput();
+		CINP_CharacterInput_CINS ci2 = new CINP_CharacterInput_CINS();
 		ci2.setName("Another name");
-		ci2.setAppearsIn(new ArrayList<Episode>());
+		ci2.setAppearsIn(new ArrayList<CEP_Episode_CES>());
 		ci2.setType("Human");
 		//
-		List<CharacterInput> list = new ArrayList<CharacterInput>();
+		List<CINP_CharacterInput_CINS> list = new ArrayList<CINP_CharacterInput_CINS>();
 		list.add(ci1);
 		list.add(ci2);
 		//
 		String firstName = "A first name";
 
 		// Go, go, go
-		List<Character> ret = partialQueries.withList(firstName, list);
+		List<CIP_Character_CIS> ret = partialQueries.withList(firstName, list);
 
 		// Verification
 		assertEquals(2, ret.size());
@@ -182,18 +183,17 @@ abstract class AbstractIT {
 		int i = 0;
 		assertNotNull(ret.get(i).getId());
 		assertEquals(firstName, ret.get(i).getName());
-		assertTrue(ret.get(i) instanceof Droid);
+		assertTrue(ret.get(i) instanceof CTP_Droid_CTS);
 		//
 		i += 1;
 		assertNotNull(ret.get(i).getId());
 		assertEquals("Another name", ret.get(i).getName());
-		assertTrue(ret.get(i) instanceof Human);
+		assertTrue(ret.get(i) instanceof CTP_Human_CTS);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		OffsetDateTime now = OffsetDateTime.now();
 		String uuid = UUID.randomUUID().toString();
 		Date date1 = new Calendar.Builder().setDate(2022, 4 - 1, 1).build().getTime();
 		Date date2 = new Calendar.Builder().setDate(2022, 4 - 1, 2).build().getTime();
@@ -201,13 +201,15 @@ abstract class AbstractIT {
 		Date date4 = new Calendar.Builder().setDate(2022, 4 - 1, 4).build().getTime();
 		Date date5 = new Calendar.Builder().setDate(2022, 4 - 1, 5).build().getTime();
 		Date date6 = new Calendar.Builder().setDate(2022, 4 - 1, 6).build().getTime();
+		OffsetDateTime dateTime = OffsetDateTime.of(2022, 4 - 1, 6, 13, 58, 59, 0, ZoneOffset.UTC);
 
 		// Preparation
 		@SuppressWarnings("unchecked")
-		AllFieldCasesInput allFieldCasesInput = AllFieldCasesInput.builder()//
+		CINP_AllFieldCasesInput_CINS allFieldCasesInput = CINP_AllFieldCasesInput_CINS.builder()//
 				.withId(uuid)//
 				.withName("a name")//
-				.withAge((long) 666).withDateTime(now)//
+				.withAge((long) 666)//
+				.withDateTime(dateTime)//
 				.withAliases(new ArrayList<String>())//
 				.withDate(date1)//
 				.withDates((List<Date>) (Object) Arrays.asList(Arrays.array(date2, date3)))
@@ -222,15 +224,15 @@ abstract class AbstractIT {
 		dates.add(date5);
 		Boolean uppercaseNameList = null;
 		String textToAppendToTheFornameWithId = "textToAppendToTheFornameWithId";
-		FieldParameterInput input = new FieldParameterInput();
+		CINP_FieldParameterInput_CINS input = new CINP_FieldParameterInput_CINS();
 		input.setUppercase(true);
 		int nbItemsWithoutId = 6;
-		FieldParameterInput inputList = null;
+		CINP_FieldParameterInput_CINS inputList = null;
 		String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
 
 		// Go, go, go
-		AllFieldCases allFieldCases = partialQueries.allFieldCases(allFieldCasesInput, uppercase,
-				textToAppendToTheForname, nbItemsWithId, date6, now, dates, uppercaseNameList,
+		CTP_AllFieldCases_CTS allFieldCases = partialQueries.allFieldCases(allFieldCasesInput, uppercase,
+				textToAppendToTheForname, nbItemsWithId, date6, dateTime, dates, uppercaseNameList,
 				textToAppendToTheFornameWithId, input, nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
 
 		// Verification
@@ -260,7 +262,7 @@ abstract class AbstractIT {
 		// assertEquals("planet1", allFieldCases.getPlanets().get(0));
 		// assertEquals("planet2", allFieldCases.getPlanets().get(1));
 		//
-		assertEquals(now, allFieldCases.getDateTime());
+		assertEquals(dateTime, allFieldCases.getDateTime());
 
 		// listWithIdSubTypes
 		assertEquals(nbItemsWithId, allFieldCases.getListWithIdSubTypes().size());
@@ -284,12 +286,12 @@ abstract class AbstractIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals(_extends.FLOAT, partialQueries.aBreak(_extends.FLOAT, null).getCase());
-		assertEquals(_extends.DOUBLE, partialQueries.aBreak(_extends.DOUBLE, null).getCase());
+		assertEquals(CEP_extends_CES.FLOAT, partialQueries.aBreak(CEP_extends_CES.FLOAT, null).getCase());
+		assertEquals(CEP_extends_CES.DOUBLE, partialQueries.aBreak(CEP_extends_CES.DOUBLE, null).getCase());
 	}
 
-	private void checkCharacter(Character c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
-			int nbFriends, int nbAppearsIn) {
+	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
+			String nameStartsWith, int nbFriends, int nbAppearsIn) {
 
 		if (idShouldBeNull)
 			assertNull(c.getId(), testDecription + " (id)");
@@ -307,7 +309,7 @@ abstract class AbstractIT {
 			}
 		} else {
 			assertTrue(c.getFriends().size() >= nbFriends, testDecription + " (friends)");
-			for (Character friend : c.getFriends()) {
+			for (CIP_Character_CIS friend : c.getFriends()) {
 				// Expected fields: id and name
 				assertNotNull(friend.getId());
 				assertNotNull(friend.getName());

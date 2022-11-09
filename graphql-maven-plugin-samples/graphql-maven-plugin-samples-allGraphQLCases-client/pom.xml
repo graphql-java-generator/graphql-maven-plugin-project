@@ -79,7 +79,21 @@
 									<graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.NonNegativeInt</graphQLScalarTypeStaticField>
 								</customScalar>
 							</customScalars>
-						</configuration>
+                            <!-- ClientINputPrefix -->
+                            <inputPrefix>CINP_</inputPrefix>
+                            <!-- ClientINputSuffix -->
+                            <inputSuffix>_CINS</inputSuffix>
+                            <!-- ClientTypePrefix -->
+                            <typePrefix>CTP_</typePrefix>
+                            <!-- ClientTypeSuffix etc. -->
+                            <typeSuffix>_CTS</typeSuffix>
+                            <interfacePrefix>CIP_</interfacePrefix>
+                            <interfaceSuffix>_CIS</interfaceSuffix>
+                            <unionPrefix>CUP_</unionPrefix>
+                            <unionSuffix>_CUS</unionSuffix>
+                            <enumPrefix>CEP_</enumPrefix>
+                            <enumSuffix>_CES</enumSuffix>
+                        </configuration>
 					</execution>
 					<execution>
 						<!-- This second generation of the client code for the same -->

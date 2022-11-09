@@ -30,7 +30,7 @@ package ${packageUtilName};
 ##
 ##
 #if($configuration.generateDeprecatedRequestResponse)
-#set ($executionResponse = "${object.classSimpleName}Response")
+#set ($executionResponse = "${object.name}Response")
 #else
 #set ($executionResponse = "${configuration.packageName}.${object.classSimpleName}")
 #end
@@ -92,7 +92,7 @@ import $import;
  */
 @Component
 @SuppressWarnings("unused")
-public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if($object.requestType=="mutation") GraphQLMutationExecutor #else GraphQLQueryExecutor #end{
+public class ${object.name}Executor${springBeanSuffix} implements#if($object.requestType=="mutation") GraphQLMutationExecutor #else GraphQLQueryExecutor #end{
 
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
@@ -104,8 +104,7 @@ public class ${object.classSimpleName}Executor${springBeanSuffix} implements#if(
 	
 	@Autowired
 	GraphqlClientUtils graphqlClientUtils;
-
-	public ${object.classSimpleName}Executor${springBeanSuffix}() {
+	public ${object.name}Executor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
 		if (!"@project.version@".equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"

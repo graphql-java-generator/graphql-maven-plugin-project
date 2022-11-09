@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.WithID;
+import org.allGraphQLCases.server.SIP_WithID_SIS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateWithID;
 import org.dataloader.BatchLoaderEnvironment;
 import org.springframework.stereotype.Component;
@@ -24,8 +24,8 @@ public class DataFetchersDelegateWithIDImpl implements DataFetchersDelegateWithI
 	DataGenerator generator;
 
 	@Override
-	public List<WithID> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-		return generator.generateInstanceList(WithID.class, keys.size());
+	public List<SIP_WithID_SIS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
+		return generator.generateInstanceList(SIP_WithID_SIS.class, keys.size());
 	}
 
 }

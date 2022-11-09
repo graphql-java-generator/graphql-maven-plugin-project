@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.allGraphQLCases.server.IBar1;
-import org.allGraphQLCases.server.IFoo1;
+import org.allGraphQLCases.server.SIP_IBar1_SIS;
+import org.allGraphQLCases.server.SIP_IFoo1_SIS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateIFoo1;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
@@ -17,20 +17,20 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateIFoo1Impl implements DataFetchersDelegateIFoo1 {
 
 	@Override
-	public CompletableFuture<IBar1> bar(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<UUID, IBar1> dataLoader, IFoo1 origin) {
+	public CompletableFuture<SIP_IBar1_SIS> bar(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, SIP_IBar1_SIS> dataLoader, SIP_IFoo1_SIS origin) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IBar1 bar(DataFetchingEnvironment dataFetchingEnvironment, IFoo1 origin) {
+	public SIP_IBar1_SIS bar(DataFetchingEnvironment dataFetchingEnvironment, SIP_IFoo1_SIS origin) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<IFoo1> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
+	public List<SIP_IFoo1_SIS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		// TODO Auto-generated method stub
 		return null;
 	}

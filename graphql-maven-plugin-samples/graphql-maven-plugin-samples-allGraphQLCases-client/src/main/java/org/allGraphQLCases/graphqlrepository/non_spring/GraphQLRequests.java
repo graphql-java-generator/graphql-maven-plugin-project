@@ -1,11 +1,10 @@
 /**
  * 
  */
-package org.allGraphQLCases.minimal.spring_app;
+package org.allGraphQLCases.graphqlrepository.non_spring;
 
 import java.util.List;
 
-import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
@@ -16,16 +15,15 @@ import com.graphql_java_generator.client.graphqlrepository.FullRequest;
 import com.graphql_java_generator.client.graphqlrepository.GraphQLRepository;
 import com.graphql_java_generator.client.graphqlrepository.PartialRequest;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 
 /**
  * This is a demo of the use of a {@link GraphQLRepository}. It contains the definition of GraphQL requests. Doing this
- * hides all the wiring to prepare and execute the GraphQL requests (query/mutation/subscription). Just declare a
- * {@link GraphQLRequests} autowired bean in your Spring component, and you can execute GraphQL requests. Take a look at
- * the {@link MinimalSpringApp} main class for that.
+ * hides all the wiring to prepare and execute the GraphQL requests (query/mutation/subscription).
  * 
  * @author etienne-sf
  */
-@GraphQLRepository
+@GraphQLRepository // Useless for non-Spring app. But you can consider using it for 'documentation'
 public interface GraphQLRequests {
 
 	@PartialRequest(request = "{appearsIn name }")

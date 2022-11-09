@@ -2,8 +2,8 @@ package org.allGraphQLCases.server.impl;
 
 import java.util.List;
 
-import org.allGraphQLCases.server.IFoo1;
-import org.allGraphQLCases.server.IList;
+import org.allGraphQLCases.server.SIP_IFoo1_SIS;
+import org.allGraphQLCases.server.SIP_IList_SIS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateIList;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateIListImpl implements DataFetchersDelegateIList {
 
 	@Override
-	public List<IFoo1> list(DataFetchingEnvironment dataFetchingEnvironment, IList origin) {
+	public List<SIP_IFoo1_SIS> list(DataFetchingEnvironment dataFetchingEnvironment, SIP_IList_SIS origin) {
 		// TODO Auto-generated method stub
 		return null;
 	}

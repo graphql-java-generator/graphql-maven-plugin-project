@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.allGraphQLCases.server.TBar1;
-import org.allGraphQLCases.server.TFoo1;
+import org.allGraphQLCases.server.STP_TBar1_STS;
+import org.allGraphQLCases.server.STP_TFoo1_STS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateTFoo1;
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
@@ -17,20 +17,20 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateTFoo1Impl implements DataFetchersDelegateTFoo1 {
 
 	@Override
-	public CompletableFuture<TBar1> bar(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<UUID, TBar1> dataLoader, TFoo1 origin) {
+	public CompletableFuture<STP_TBar1_STS> bar(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, STP_TBar1_STS> dataLoader, STP_TFoo1_STS origin) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public TBar1 bar(DataFetchingEnvironment dataFetchingEnvironment, TFoo1 origin) {
+	public STP_TBar1_STS bar(DataFetchingEnvironment dataFetchingEnvironment, STP_TFoo1_STS origin) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<TFoo1> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
+	public List<STP_TFoo1_STS> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -8,16 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.allGraphQLCases.client.Foo140;
-import org.allGraphQLCases.client.IBar1;
-import org.allGraphQLCases.client.IBar12;
-import org.allGraphQLCases.client.IBar2;
-import org.allGraphQLCases.client.IFoo1;
-import org.allGraphQLCases.client.TBar1;
-import org.allGraphQLCases.client.TBar12;
-import org.allGraphQLCases.client.TBar2;
-import org.allGraphQLCases.client.TFoo1;
-import org.allGraphQLCases.client.TFoo12;
+import org.allGraphQLCases.client.CTP_Foo140_CTS;
+import org.allGraphQLCases.client.CIP_IBar1_CIS;
+import org.allGraphQLCases.client.CIP_IBar12_CIS;
+import org.allGraphQLCases.client.CIP_IBar2_CIS;
+import org.allGraphQLCases.client.CIP_IFoo1_CIS;
+import org.allGraphQLCases.client.CTP_TBar1_CTS;
+import org.allGraphQLCases.client.CTP_TBar12_CTS;
+import org.allGraphQLCases.client.CTP_TBar2_CTS;
+import org.allGraphQLCases.client.CTP_TFoo1_CTS;
+import org.allGraphQLCases.client.CTP_TFoo12_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -47,10 +47,10 @@ public class PojoThatImplementsInterfaceIT {
 
 	@Test
 	void testSetterForTypeThatImplementsOneInterface() {
-		IFoo1 ifoo1 = new TFoo1();
-		TFoo1 tfoo1 = new TFoo1();
-		TBar1 tbar1 = new TBar1();
-		IBar1 ibar1 = new TBar1();
+		CIP_IFoo1_CIS ifoo1 = new CTP_TFoo1_CTS();
+		CTP_TFoo1_CTS tfoo1 = new CTP_TFoo1_CTS();
+		CTP_TBar1_CTS tbar1 = new CTP_TBar1_CTS();
+		CIP_IBar1_CIS ibar1 = new CTP_TBar1_CTS();
 
 		//////////////////////////////////////////////////////////////////////
 		// Setter for IFoo1
@@ -89,17 +89,17 @@ public class PojoThatImplementsInterfaceIT {
 	void testSetterForTypeThatImplementsTwoInterfaces() {
 		IllegalArgumentException e;
 
-		IFoo1 ifoo1 = new TFoo1();
-		TFoo1 tfoo1 = new TFoo1();
-		TFoo12 ifoo12 = new TFoo12();
-		TFoo12 tfoo12 = new TFoo12();
+		CIP_IFoo1_CIS ifoo1 = new CTP_TFoo1_CTS();
+		CTP_TFoo1_CTS tfoo1 = new CTP_TFoo1_CTS();
+		CTP_TFoo12_CTS ifoo12 = new CTP_TFoo12_CTS();
+		CTP_TFoo12_CTS tfoo12 = new CTP_TFoo12_CTS();
 
-		TBar1 tbar1 = new TBar1();
-		IBar1 ibar1 = new TBar1();
-		TBar2 tbar2 = new TBar2();
-		IBar2 ibar2 = new TBar2();
-		TBar12 tbar12 = new TBar12();
-		IBar12 ibar12 = new TBar12();
+		CTP_TBar1_CTS tbar1 = new CTP_TBar1_CTS();
+		CIP_IBar1_CIS ibar1 = new CTP_TBar1_CTS();
+		CTP_TBar2_CTS tbar2 = new CTP_TBar2_CTS();
+		CIP_IBar2_CIS ibar2 = new CTP_TBar2_CTS();
+		CTP_TBar12_CTS tbar12 = new CTP_TBar12_CTS();
+		CIP_IBar12_CIS ibar12 = new CTP_TBar12_CTS();
 
 		//////////////////////////////////////////////////////////////////////
 		// Setter for IFoo1
@@ -200,7 +200,7 @@ public class PojoThatImplementsInterfaceIT {
 
 	@Test
 	void testIssue140() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		Foo140 foo = queryType.foo140("{bar}");
+		CTP_Foo140_CTS foo = queryType.foo140("{bar}");
 		assertEquals("Bar140's name for a Foo140", foo.getBar().getName());
 	}
 

@@ -6,7 +6,7 @@ package org.allGraphQLCases.subscription;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.allGraphQLCases.client.EnumWithReservedJavaKeywordAsValues;
+import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +18,14 @@ import com.graphql_java_generator.client.SubscriptionCallback;
  * @author etienne-sf
  */
 public class SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues
-		implements SubscriptionCallback<List<EnumWithReservedJavaKeywordAsValues>> {
+		implements SubscriptionCallback<List<CEP_EnumWithReservedJavaKeywordAsValues_CES>> {
 
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory
 			.getLogger(SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues.class);
 
 	final String clientName;
-	public List<EnumWithReservedJavaKeywordAsValues> lastReceivedMessage = null;
+	public List<CEP_EnumWithReservedJavaKeywordAsValues_CES> lastReceivedMessage = null;
 	public Throwable lastExceptionReceived = null;
 	public boolean closedHasBeenReceived = false;
 
@@ -44,7 +44,7 @@ public class SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues
 	}
 
 	@Override
-	public void onMessage(List<EnumWithReservedJavaKeywordAsValues> t) {
+	public void onMessage(List<CEP_EnumWithReservedJavaKeywordAsValues_CES> t) {
 		logger.debug("Received this message from the 'subscriptionTest' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
 		latchForMessageReception.countDown();

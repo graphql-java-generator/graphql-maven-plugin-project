@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.allGraphQLCases.client.AnotherMutationType;
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
@@ -65,7 +65,7 @@ class GraphQLVariablesIT {
 		);
 
 		// Go, go, go
-		MyQueryType resp = myQuery.exec(
+		CTP_MyQueryType_CTS resp = myQuery.exec(
 				"query queryWithAMatrix($matrixParam: [[Float]]!) {withListOfList(matrix:$matrixParam){matrix}}", //
 				"matrixParam", matrix);
 
@@ -107,7 +107,7 @@ class GraphQLVariablesIT {
 		params.put("Value", "a first \"value\"");
 
 		// Go, go, go
-		MyQueryType resp = directiveOnQuery.execQuery(params);
+		CTP_MyQueryType_CTS resp = directiveOnQuery.execQuery(params);
 
 		// Verifications
 		assertNotNull(resp);
@@ -129,25 +129,25 @@ class GraphQLVariablesIT {
 				+ "{id name(uppercase: $uppercaseName) appearsIn friends {id friends appearsIn name}}}"//
 		);
 
-		CharacterInput friendsParam = CharacterInput.builder().withName("a friend's name")
-				.withAppearsIn(Arrays.asList(Episode.NEWHOPE)).withType("Human").build();
+		CINP_CharacterInput_CINS friendsParam = CINP_CharacterInput_CINS.builder().withName("a friend's name")
+				.withAppearsIn(Arrays.asList(CEP_Episode_CES.NEWHOPE)).withType("Human").build();
 
 		// Go, go, go
-		AnotherMutationType resp = mutationWithDirectiveRequest.execMutation(//
+		CTP_AnotherMutationType_CTS resp = mutationWithDirectiveRequest.execMutation(//
 				"name", "a new name", //
-				"appearsIn", Arrays.asList(Episode.JEDI, Episode.EMPIRE, Episode.NEWHOPE), //
+				"appearsIn", Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.EMPIRE, CEP_Episode_CES.NEWHOPE), //
 				"uppercaseName", true, //
 				"friends", friendsParam);
 
 		// Verifications
 		assertNotNull(resp);
-		Human human = resp.getCreateHuman();
+		CTP_Human_CTS human = resp.getCreateHuman();
 		assertNotNull(human);
 		assertEquals("A NEW NAME", human.getName());
 		assertEquals(3, human.getAppearsIn().size());
-		assertEquals(Episode.JEDI, human.getAppearsIn().get(0));
-		assertEquals(Episode.EMPIRE, human.getAppearsIn().get(1));
-		assertEquals(Episode.NEWHOPE, human.getAppearsIn().get(2));
+		assertEquals(CEP_Episode_CES.JEDI, human.getAppearsIn().get(0));
+		assertEquals(CEP_Episode_CES.EMPIRE, human.getAppearsIn().get(1));
+		assertEquals(CEP_Episode_CES.NEWHOPE, human.getAppearsIn().get(2));
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -161,22 +161,22 @@ class GraphQLVariablesIT {
 				+ "{id name(uppercase: $uppercaseName) appearsIn friends {id friends appearsIn name}}}"//
 		);
 
-		CharacterInput friendParam = CharacterInput.builder().withName("a friend's name")
-				.withAppearsIn(Arrays.asList(Episode.NEWHOPE)).withType("Human").build();
+		CINP_CharacterInput_CINS friendParam = CINP_CharacterInput_CINS.builder().withName("a friend's name")
+				.withAppearsIn(Arrays.asList(CEP_Episode_CES.NEWHOPE)).withType("Human").build();
 		//
-		HumanInput input = new HumanInput();
+		CINP_HumanInput_CINS input = new CINP_HumanInput_CINS();
 		input.setName("a new name");
-		input.setAppearsIn(Arrays.asList(Episode.JEDI, Episode.EMPIRE, Episode.NEWHOPE));
+		input.setAppearsIn(Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.EMPIRE, CEP_Episode_CES.NEWHOPE));
 		input.setFriends(Arrays.asList(friendParam));
 
 		// Go, go, go
-		AnotherMutationType resp = mutation.execMutation(//
+		CTP_AnotherMutationType_CTS resp = mutation.execMutation(//
 				"human", input, //
 				"uppercaseName", true);
 
 		// Verifications
 		assertNotNull(resp);
-		Human human = resp.getCreateHuman();
+		CTP_Human_CTS human = resp.getCreateHuman();
 		assertNotNull(human);
 		assertEquals("A NEW NAME", human.getName());
 	}

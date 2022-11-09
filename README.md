@@ -26,7 +26,7 @@ That is: graphql-java-generator generates the boilerplate code, and lets you con
     * graphql-java-generator generates the __main method__ (in a jar project) or the __main servlet__ class (in a war project), and all the Spring wiring, based on [graphql-java-spring](https://github.com/graphql-java/graphql-java-spring), itself being build on top of [graphql-java](https://www.graphql-java.com/).
     * It generates the __POJOs__ for the provided GraphQL schema file(s). 
     * It supports the full GraphQL specification (relay cursors, query/mutation/subscription, custom scalars, fragment, directive, aliases...)
-    * The generated code is a __Spring boot app (or servlet)__. You can __override every default component__, to personalize your server: GraphQL components (add instrumentation, type wiring, field wiring...), HTTP stuff (Spring Security, OAuth, OpenID Connect...) and much more. See the [[server FAQ|server_faq]] for more information on this.
+    * The generated code is a __Spring boot app (or servlet)__. You can __override every default component__, to personalize your server: GraphQL components (add instrumentation, type wiring, field wiring...), HTTP stuff (Spring Security, OAuth, OpenID Connect...) and much more. See the [server FAQ](../../wiki/server_faq) for more information on this.
     * Various options allows to personalize the generated code (standard JPA annotations, Java type for ID fields, custom scalars, specific annotations...). See the [plugin parameters page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/plugin-info.html) for all the goal/tasks and their plugin parameters
     * The developer just has to __implement each DataFetchersDelegate__, based on the provided interfaces, and __the GraphQL server is ready to go!__
 
@@ -51,8 +51,7 @@ This plugin contains these goals (Maven) / tasks (Gradle):
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateClientCode-mojo.html)
 * __`generateServerCode`__ : this goal generates the server code from the Graphql schema file(s)
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateServerCode-mojo.html)
-* __`generatePojo`__ : this goal generates only the java objects that match the provided GraphQL schema. It allows to work
- * in Java with graphQL, in a schema first approach.
+* __`generatePojo`__ : this goal generates only the java objects that match the provided GraphQL schema. It allows to work in Java with graphQL, in a schema first approach.
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generatePojo-mojo.html)
 * __`graphql`__ was the previous main goal. It's now __deprecated__. It can generate both the client and the server code, thanks to its <mode> parameter. 
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/graphql-mojo.html) 

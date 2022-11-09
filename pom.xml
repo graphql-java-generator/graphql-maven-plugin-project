@@ -45,8 +45,8 @@
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
 		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<distributionManagement>
 		<repository>
@@ -251,19 +251,19 @@
 			<dependency>
 				<groupId>org.awaitility</groupId>
 				<artifactId>awaitility</artifactId>
-				<version>4.0.3</version>
+				<version>4.2.0</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
-				<version>3.9.0</version>
+				<version>4.8.1</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-junit-jupiter</artifactId>
-				<version>3.9.0</version>
+				<version>4.8.1</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -309,7 +309,7 @@
 			<dependency>
 				<groupId>org.apache.maven.plugin-tools</groupId>
 				<artifactId>maven-plugin-annotations</artifactId>
-				<version>3.6.0</version>
+				<version>3.6.4</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -326,7 +326,7 @@
 			<dependency>
 				<groupId>org.apache.maven.shared</groupId>
 				<artifactId>maven-verifier</artifactId>
-				<version>1.7.2</version>
+				<version>1.8.0</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -411,18 +411,18 @@
 				<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
 				<groupId>com.graphql-java-kickstart</groupId>
 				<artifactId>graphiql-spring-boot-starter</artifactId>
-				<version>11.0.0</version>
+				<version>11.1.0</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>java-dataloader</artifactId>
-				<version>3.1.2</version>
+				<version>3.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.graphql-java</groupId>
 				<artifactId>graphql-java-extended-scalars</artifactId>
-				<version>18.0</version>
+				<version>19.0</version>
 			</dependency>
 
 			<!-- Other dependencies -->
@@ -432,6 +432,12 @@
 				<version>1.1.1</version>
 			</dependency>
 			<dependency>
+				<!-- This dependency is here to solve an issue with Mockito that loads a wring version of byte-buddy -->
+				<groupId>net.bytebuddy</groupId>
+				<artifactId>byte-buddy</artifactId>
+				<version>1.12.18</version>
+			</dependency>
+			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>2.11.0</version>
@@ -439,7 +445,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-text</artifactId>
-				<version>1.9</version>
+				<version>1.10.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.github.dozermapper</groupId>
@@ -447,14 +453,9 @@
 				<version>6.5.2</version>
 			</dependency>
 			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>30.1.1-jre</version>
-			</dependency>
-			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>2.1.210</version>
+				<version>2.1.214</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.persistence</groupId>
@@ -475,7 +476,7 @@
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
-				<version>1.18.12</version>
+				<version>1.18.24</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>

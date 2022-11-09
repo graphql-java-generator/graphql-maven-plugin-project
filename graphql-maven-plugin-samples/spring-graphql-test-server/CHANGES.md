@@ -17,6 +17,7 @@ This files describes the changes that have been brought to the generated code, a
 
 List of things that must or should be done before the first release:
 * Manage DataLoader
+* Check the server_BatchLoaderDelegateImpl.vm.java template: it may have come back since the 1.18.8 release merge
 * Remove the BatchLoader.getDataFetchersDelegate() method
 * Stop generating the GraphQLWiring class. Generate the XxxxController classes instead
 * Choose between Servlet and WebFlux application (WebFlux seems more modern)

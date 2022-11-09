@@ -2,8 +2,11 @@ package com.graphql_java_generator.plugin.language.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
@@ -86,10 +89,26 @@ public abstract class AbstractType implements Type {
 		return getJavaName();
 	}
 
+    @Override
+    public String getJavaName() {
+        // Optionally add a prefix and/or suffix to the name
+		String name = Stream.of(getPrefix(), getName(), getSuffix())
+				.filter(Objects::nonNull).collect(Collectors.joining());
+
+		return GraphqlUtils.graphqlUtils.getJavaName(name);
+    }
+
+	protected String getPrefix() {
+		return "";
+	}
+	protected String getSuffix() {
+		return "";
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String getCamelCaseName() {
-		return GraphqlUtils.graphqlUtils.getCamelCase(getClassSimpleName());
+		return GraphqlUtils.graphqlUtils.getCamelCase(getName());
 	}
 
 	@Override

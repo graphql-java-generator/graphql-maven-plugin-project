@@ -253,7 +253,26 @@ public class GenerateCodeGenerator implements Generator {
 			logger.debug("Generating Spring auto-configuration generation");
 			i += generateSpringAutoConfigurationDeclaration();
 		}
+
+		logger.debug("Generating client side mapping from graphql type to java type");
+		i += generateClientTypeMapping();
+
 		return i;
+	}
+
+	/**
+	 * Generate a class for mapping from graphql types to client java classes.
+	 *
+	 * @return
+	 */
+	private int generateClientTypeMapping() {
+		VelocityContext context = getVelocityContext();
+		context.put("types", generateCodeDocumentParser.getTypes());
+
+		generateOneFile(getJavaFile("GraphQLTypeMapping", false), "generating GraphQLTypeMapping", context,
+				resolveTemplate(CodeTemplate.TYPE_MAPPING));
+
+		return 1;
 	}
 
 	/**
@@ -603,6 +622,56 @@ public class GenerateCodeGenerator implements Generator {
 					@Override
 					public boolean isAddRelayConnections() {
 						return configuration.isAddRelayConnections();
+					}
+
+					@Override
+					public String getTypePrefix() {
+						return configuration.getTypePrefix();
+					}
+
+					@Override
+					public String getTypeSuffix() {
+						return configuration.getTypeSuffix();
+					}
+
+					@Override
+					public String getInputPrefix() {
+						return configuration.getInputPrefix();
+					}
+
+					@Override
+					public String getInputSuffix() {
+						return configuration.getInputSuffix();
+					}
+
+					@Override
+					public String getUnionPrefix() {
+						return configuration.getUnionPrefix();
+					}
+
+					@Override
+					public String getUnionSuffix() {
+						return configuration.getUnionSuffix();
+					}
+
+					@Override
+					public String getInterfacePrefix() {
+						return configuration.getInterfacePrefix();
+					}
+
+					@Override
+					public String getInterfaceSuffix() {
+						return configuration.getInterfaceSuffix();
+					}
+
+					@Override
+					public String getEnumPrefix() {
+						return configuration.getEnumPrefix();
+					}
+
+					@Override
+					public String getEnumSuffix() {
+						return configuration.getEnumSuffix();
 					}
 
 					@Override

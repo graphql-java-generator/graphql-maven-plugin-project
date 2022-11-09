@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -37,6 +39,11 @@ import graphql.scalars.ExtendedScalars;
 
 @Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {
+
+	@BeforeAll
+	public static void initCustomScalarRegistry() {
+		CustomScalarRegistryInitializer.initCustomScalarRegistry();
+	}
 
 	GraphqlUtils graphqlUtils = new GraphqlUtils();
 

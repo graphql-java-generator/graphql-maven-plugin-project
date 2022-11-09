@@ -358,7 +358,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 						jsonSubTypes.append(",");
 					else
 						addSeparator = true;
-					jsonSubTypes.append(" @Type(value = ").append(t.getName()).append(".class, name = \"")
+					jsonSubTypes.append(" @Type(value = ").append(t.getJavaName()).append(".class, name = \"")
 							.append(t.getName()).append("\")");
 				}
 				jsonSubTypes.append(" })");

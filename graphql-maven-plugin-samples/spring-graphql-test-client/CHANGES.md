@@ -14,6 +14,7 @@ This files describes the changes that have been brought to the generated code, a
 
 List of things that must or should be done before the first release:
 * Check the tests in allGraphQlCases client
+* In the allGraphQLCases sample: update the non-spring app, to demonstrate how to use the plugin to embed a non-spring app
 * Simplify the component scan paths (by using the auto configuration class)
 * Move the code that is not user-specific from GraphQLTransportWSIT to the relevant class (the auto-configuration ?)
 * Remove ObjectResponse
@@ -39,6 +40,7 @@ List of things that must or should be done before the first release:
 * Optimize the `GraphQLObjectMapper.treeToValue(Map, class)` and `GraphQLObjectMapper.treeToValue(List, class)`
 * Remove the `GraphQLRepositoryInvocationHandlerFirstTest` class, as soon as this use case (GraphQLRepository in non spring app) is confirmed to be useless.<BR/>
     * Then merge `AbstractGraphQLRepositoryInvocationHandlerTest` and `GraphQLRepositoryInvocationHandlerSecondTest`
+* Try to remove the byte-buddy and commons-text dependencies
 
 # To Document
 

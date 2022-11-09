@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.graphql_java_generator.plugin.language.impl;
 
@@ -70,6 +70,16 @@ public class EnumType extends AbstractType {
 	@Override
 	public boolean isScalar() {
 		return true;
+	}
+
+	@Override
+	protected String getPrefix() {
+		return configuration.getEnumPrefix();
+	}
+
+	@Override
+	protected String getSuffix() {
+		return configuration.getEnumSuffix();
 	}
 
 }

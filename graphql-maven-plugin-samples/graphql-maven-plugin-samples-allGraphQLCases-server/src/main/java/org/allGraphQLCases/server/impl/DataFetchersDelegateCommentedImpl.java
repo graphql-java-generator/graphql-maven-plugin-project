@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.Commented;
+import org.allGraphQLCases.server.SIP_Commented_SIS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateCommented;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public class DataFetchersDelegateCommentedImpl implements DataFetchersDelegateCo
 	DataGenerator generator;
 
 	@Override
-	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, Commented source) {
+	public List<String> comments(DataFetchingEnvironment dataFetchingEnvironment, SIP_Commented_SIS source) {
 		return generator.generateInstanceList(String.class, 10);
 	}
 

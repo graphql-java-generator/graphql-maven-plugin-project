@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.CharacterInput;
-import org.allGraphQLCases.client.Droid;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.Human;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CTP_Droid_CTS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,18 +37,18 @@ class FragmentIT {
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases myQuery;
 
-	CharacterInput input;
+	CINP_CharacterInput_CINS input;
 	Map<String, Object> params = new HashMap<>();
 
 	@BeforeEach
 	void setup() {
 		// A useful init for some tests
-		input = new CharacterInput();
+		input = new CINP_CharacterInput_CINS();
 		input.setName("a new name");
-		List<Episode> episodes = new ArrayList<>();
-		episodes.add(Episode.JEDI);
-		episodes.add(Episode.EMPIRE);
-		episodes.add(Episode.NEWHOPE);
+		List<CEP_Episode_CES> episodes = new ArrayList<>();
+		episodes.add(CEP_Episode_CES.JEDI);
+		episodes.add(CEP_Episode_CES.EMPIRE);
+		episodes.add(CEP_Episode_CES.NEWHOPE);
 		input.setAppearsIn(episodes);
 		input.setType("Droid");
 
@@ -71,18 +71,18 @@ class FragmentIT {
 		);
 
 		// Go, go, go
-		List<Character> withoutParameters = graphQLRequest.execQuery(params).getWithoutParameters();
+		List<CIP_Character_CIS> withoutParameters = graphQLRequest.execQuery(params).getWithoutParameters();
 
 		// Verification
 		assertNotNull(withoutParameters);
 		assertTrue(withoutParameters.size() > 0);
-		assertTrue(withoutParameters.get(0) instanceof Droid || withoutParameters.get(0) instanceof Human);
+		assertTrue(withoutParameters.get(0) instanceof CTP_Droid_CTS || withoutParameters.get(0) instanceof CTP_Human_CTS);
 		assertNotNull(withoutParameters.get(0).get__typename());
 		assertNotNull(withoutParameters.get(0).getAppearsIn());
 		assertNotNull(withoutParameters.get(0).getFriends());
 		assertNull(withoutParameters.get(0).getName(), "name has not been requested");
 
-		Character firstFriend = withoutParameters.get(0).getFriends().get(0);
+		CIP_Character_CIS firstFriend = withoutParameters.get(0).getFriends().get(0);
 		assertNotNull(firstFriend.getId());
 		assertNotNull(firstFriend.getName());
 		assertNotNull(firstFriend.getAppearsIn());
@@ -107,21 +107,21 @@ class FragmentIT {
 		);
 
 		// Go, go, go
-		List<Character> withoutParameters = graphQLRequest.execQuery(params).getWithoutParameters();
+		List<CIP_Character_CIS> withoutParameters = graphQLRequest.execQuery(params).getWithoutParameters();
 
 		// Verification
 		assertNotNull(withoutParameters);
 		assertTrue(withoutParameters.size() > 0);
-		assertTrue(withoutParameters.get(0) instanceof Droid, "Hope the order of the result won't change");
+		assertTrue(withoutParameters.get(0) instanceof CTP_Droid_CTS, "Hope the order of the result won't change");
 		assertEquals("Droid", withoutParameters.get(0).get__typename());
 		assertNotNull(withoutParameters.get(0).getAppearsIn());
 		assertNotNull(withoutParameters.get(0).getId());
 		assertNotNull(withoutParameters.get(0).getFriends());
 		assertNotNull(withoutParameters.get(0).getName(), "name is requested in inline fragment");
-		assertNotNull(((Droid) withoutParameters.get(0)).getPrimaryFunction(),
+		assertNotNull(((CTP_Droid_CTS) withoutParameters.get(0)).getPrimaryFunction(),
 				"primaryFunction is requested for droids");
 
-		Character firstFriend = withoutParameters.get(0).getFriends().get(0);
+		CIP_Character_CIS firstFriend = withoutParameters.get(0).getFriends().get(0);
 		assertNotNull(firstFriend.getId());
 		assertNotNull(firstFriend.getName(), "Requested for Droids");
 		assertNull(firstFriend.getAppearsIn());
@@ -147,18 +147,18 @@ class FragmentIT {
 		);
 
 		// Go, go, go
-		Character withOneOptionalParam = graphQLRequest.execQuery(params).getWithOneOptionalParam();
+		CIP_Character_CIS withOneOptionalParam = graphQLRequest.execQuery(params).getWithOneOptionalParam();
 
 		// Verification
 		assertNotNull(withOneOptionalParam);
-		assertTrue(withOneOptionalParam instanceof Droid, "we've ask for thas in input's type");
+		assertTrue(withOneOptionalParam instanceof CTP_Droid_CTS, "we've ask for thas in input's type");
 		assertEquals("Droid", withOneOptionalParam.get__typename());
-		assertTrue(withOneOptionalParam instanceof Droid);
+		assertTrue(withOneOptionalParam instanceof CTP_Droid_CTS);
 		assertNotNull(withOneOptionalParam.getAppearsIn());
 		assertNotNull(withOneOptionalParam.getId());
 		assertNotNull(withOneOptionalParam.getFriends(), "friends have been requested onyl for droids");
 		assertNotNull(withOneOptionalParam.getName(), "name has been requested in inline fragment");
-		assertNotNull(((Droid) withOneOptionalParam).getPrimaryFunction(), "primaryFunction is requested for droids");
+		assertNotNull(((CTP_Droid_CTS) withOneOptionalParam).getPrimaryFunction(), "primaryFunction is requested for droids");
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -181,17 +181,17 @@ class FragmentIT {
 		input.setType("Human");
 
 		// Go, go, go
-		Character withOneOptionalParam = graphQLRequest.execQuery(params).getWithOneOptionalParam();
+		CIP_Character_CIS withOneOptionalParam = graphQLRequest.execQuery(params).getWithOneOptionalParam();
 
 		// Verification
 		assertNotNull(withOneOptionalParam);
-		assertTrue(withOneOptionalParam instanceof Human, "we've ask for thas in input's type");
+		assertTrue(withOneOptionalParam instanceof CTP_Human_CTS, "we've ask for thas in input's type");
 		assertEquals("Human", withOneOptionalParam.get__typename());
-		assertTrue(withOneOptionalParam instanceof Human);
+		assertTrue(withOneOptionalParam instanceof CTP_Human_CTS);
 		assertNotNull(withOneOptionalParam.getAppearsIn());
 		assertNotNull(withOneOptionalParam.getId());
 		assertNull(withOneOptionalParam.getFriends(), "friends have been requested onyl for droids");
 		assertNotNull(withOneOptionalParam.getName(), "name has been requested in inline fragment for human");
-		assertNotNull(((Human) withOneOptionalParam).getHomePlanet(), "homePlanet is requested for humans");
+		assertNotNull(((CTP_Human_CTS) withOneOptionalParam).getHomePlanet(), "homePlanet is requested for humans");
 	}
 }

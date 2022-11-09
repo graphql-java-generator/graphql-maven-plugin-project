@@ -48,6 +48,6 @@ public class DataFetchersDelegateImpl implements DataFetchersDelegate {
 
 	@Override
 	public String getName() {
-		return "DataFetchersDelegate" + type.getClassSimpleName();
+		return "DataFetchersDelegate" + type.getName();
 	}
 }

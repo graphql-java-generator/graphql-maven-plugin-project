@@ -11,14 +11,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.allGraphQLCases.server.AllFieldCases;
-import org.allGraphQLCases.server.AllFieldCasesInput;
-import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
-import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtypeInput;
-import org.allGraphQLCases.server.EnumWithReservedJavaKeywordAsValues;
-import org.allGraphQLCases.server.Episode;
-import org.allGraphQLCases.server.Human;
-import org.allGraphQLCases.server.SubscriptionTestParam;
+import org.allGraphQLCases.server.*;
+import org.allGraphQLCases.server.SINP_AllFieldCasesWithoutIdSubtypeInput_SINS;
+import org.allGraphQLCases.server.SINP_SubscriptionTestParam_SINS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateTheSubscriptionType;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,16 +38,16 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	static Mapper mapper = DozerBeanMapperBuilder.buildDefault();
 
 	@Override
-	public Publisher<Human> subscribeNewHumanForEpisode(DataFetchingEnvironment dataFetchingEnvironment,
-			Episode episode) {
+	public Publisher<STP_Human_STS> subscribeNewHumanForEpisode(DataFetchingEnvironment dataFetchingEnvironment,
+			SEP_Episode_SES SEP_Episode_SES) {
 		// The Flux class, from Spring reactive, implements the Publisher interface.
-		// Let's return one Human, every 0.1 second
+		// Let's return one STP_Human_STS, every 0.1 second
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> {
-					Human h = dataGenerator.generateInstance(Human.class);
-					if (!h.getAppearsIn().contains(episode)) {
-						h.getAppearsIn().add(episode);
+					STP_Human_STS h = dataGenerator.generateInstance(STP_Human_STS.class);
+					if (!h.getAppearsIn().contains(SEP_Episode_SES)) {
+						h.getAppearsIn().add(SEP_Episode_SES);
 					}
 					h.setId(new UUID(0, l));
 					return h;
@@ -85,7 +80,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Publisher<String> subscriptionTest(DataFetchingEnvironment dataFetchingEnvironment,
-			SubscriptionTestParam param) {
+			SINP_SubscriptionTestParam_SINS param) {
 		if (param.getErrorOnSubscription()) {
 			// The client asked that an exception is thrown now
 			throw new RuntimeException("Oups, the subscriber asked for an error during the subscription");
@@ -122,13 +117,13 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
-	public Publisher<AllFieldCases> allGraphQLCasesInput(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCasesInput input) {
-		AllFieldCases ret = mapper.map(input, AllFieldCases.class);
+	public Publisher<STP_AllFieldCases_STS> allGraphQLCasesInput(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_AllFieldCasesInput_SINS input) {
+		STP_AllFieldCases_STS ret = mapper.map(input, STP_AllFieldCases_STS.class);
 
-		List<AllFieldCasesWithoutIdSubtype> list = new ArrayList<>(input.getWithoutIdSubtype().size());
-		for (AllFieldCasesWithoutIdSubtypeInput item : input.getWithoutIdSubtype()) {
-			list.add(mapper.map(item, AllFieldCasesWithoutIdSubtype.class));
+		List<STP_AllFieldCasesWithoutIdSubtype_STS> list = new ArrayList<>(input.getWithoutIdSubtype().size());
+		for (SINP_AllFieldCasesWithoutIdSubtypeInput_SINS item : input.getWithoutIdSubtype()) {
+			list.add(mapper.map(item, STP_AllFieldCasesWithoutIdSubtype_STS.class));
 		}
 		ret.setListWithoutIdSubTypes(list);
 
@@ -136,11 +131,11 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
-	public Publisher<AllFieldCases> allGraphQLCasesParam(DataFetchingEnvironment dataFetchingEnvironment, String id,
+	public Publisher<STP_AllFieldCases_STS> allGraphQLCasesParam(DataFetchingEnvironment dataFetchingEnvironment, String id,
 			String name, Long age, Integer integer, Date date, List<Date> dates, List<List<Double>> matrix,
-			AllFieldCasesWithoutIdSubtypeInput onewithoutIdSubtype,
-			List<AllFieldCasesWithoutIdSubtypeInput> listwithoutIdSubtype) {
-		AllFieldCases ret = new AllFieldCases();
+			SINP_AllFieldCasesWithoutIdSubtypeInput_SINS onewithoutIdSubtype,
+			List<SINP_AllFieldCasesWithoutIdSubtypeInput_SINS> listwithoutIdSubtype) {
+		STP_AllFieldCases_STS ret = new STP_AllFieldCases_STS();
 		ret.setId(UUID.fromString(id));
 		ret.setName(name);
 		ret.setAge(age);
@@ -150,11 +145,11 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 		ret.setAliases(Arrays.asList("an alias"));
 		ret.setPlanets(Arrays.asList("planet 1", "planet 2"));
 
-		ret.setOneWithoutIdSubType(mapper.map(onewithoutIdSubtype, AllFieldCasesWithoutIdSubtype.class));
+		ret.setOneWithoutIdSubType(mapper.map(onewithoutIdSubtype, STP_AllFieldCasesWithoutIdSubtype_STS.class));
 
-		List<AllFieldCasesWithoutIdSubtype> list = new ArrayList<>(listwithoutIdSubtype.size());
-		for (AllFieldCasesWithoutIdSubtypeInput item : listwithoutIdSubtype) {
-			list.add(mapper.map(item, AllFieldCasesWithoutIdSubtype.class));
+		List<STP_AllFieldCasesWithoutIdSubtype_STS> list = new ArrayList<>(listwithoutIdSubtype.size());
+		for (SINP_AllFieldCasesWithoutIdSubtypeInput_SINS item : listwithoutIdSubtype) {
+			list.add(mapper.map(item, STP_AllFieldCasesWithoutIdSubtype_STS.class));
 		}
 		ret.setListWithoutIdSubTypes(list);
 
@@ -193,20 +188,20 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	}
 
 	@Override
-	public Publisher<Optional<EnumWithReservedJavaKeywordAsValues>> enumWithReservedJavaKeywordAsValues(
+	public Publisher<Optional<SEP_EnumWithReservedJavaKeywordAsValues_SES>> enumWithReservedJavaKeywordAsValues(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> Optional.ofNullable(EnumWithReservedJavaKeywordAsValues._instanceof));
+				.map((l) -> Optional.ofNullable(SEP_EnumWithReservedJavaKeywordAsValues_SES._instanceof));
 	}
 
 	@Override
-	public Publisher<Optional<List<EnumWithReservedJavaKeywordAsValues>>> listOfEnumWithReservedJavaKeywordAsValues(
+	public Publisher<Optional<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>>> listOfEnumWithReservedJavaKeywordAsValues(
 			DataFetchingEnvironment dataFetchingEnvironment) {
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
-				.map((l) -> Optional.ofNullable(Arrays.asList(EnumWithReservedJavaKeywordAsValues._int,
-						EnumWithReservedJavaKeywordAsValues._interface, EnumWithReservedJavaKeywordAsValues._long)));
+				.map((l) -> Optional.ofNullable(Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._int,
+						SEP_EnumWithReservedJavaKeywordAsValues_SES._interface, SEP_EnumWithReservedJavaKeywordAsValues_SES._long)));
 	}
 
 }

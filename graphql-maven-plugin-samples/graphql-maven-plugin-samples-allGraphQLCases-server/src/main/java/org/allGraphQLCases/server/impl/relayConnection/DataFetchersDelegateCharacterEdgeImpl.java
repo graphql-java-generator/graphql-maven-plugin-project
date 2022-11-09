@@ -3,8 +3,8 @@ package org.allGraphQLCases.server.impl.relayConnection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.allGraphQLCases.server.Character;
-import org.allGraphQLCases.server.CharacterEdge;
+import org.allGraphQLCases.server.SIP_CharacterEdge_SIS;
+import org.allGraphQLCases.server.SIP_Character_SIS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateCharacterEdge;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,13 @@ import graphql.schema.DataFetchingEnvironment;
 public class DataFetchersDelegateCharacterEdgeImpl implements DataFetchersDelegateCharacterEdge {
 
 	@Override
-	public Character node(DataFetchingEnvironment dataFetchingEnvironment, CharacterEdge origin) {
+	public SIP_Character_SIS node(DataFetchingEnvironment dataFetchingEnvironment, SIP_CharacterEdge_SIS origin) {
 		return origin.getNode();
 	}
 
 	@Override
-	public CompletableFuture<Character> node(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<UUID, Character> dataLoader, CharacterEdge origin) {
+	public CompletableFuture<SIP_Character_SIS> node(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, SIP_Character_SIS> dataLoader, SIP_CharacterEdge_SIS origin) {
 		return CompletableFuture.completedFuture(origin.getNode());
 	}
 

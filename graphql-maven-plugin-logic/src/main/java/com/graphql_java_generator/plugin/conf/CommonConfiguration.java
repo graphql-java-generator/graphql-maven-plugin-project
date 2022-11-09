@@ -29,9 +29,52 @@ public interface CommonConfiguration {
 	public final String DEFAULT_ADD_RELAY_CONNECTIONS = "false";
 	public final String DEFAULT_MAX_TOKENS = "2147483647"; // Integer.MAX_VALUE
 	public final String DEFAULT_PACKAGE_NAME = "com.generated.graphql";
+	public final String DEFAULT_PREFIX = "";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
 	public final String DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED = "true";
+	public final String DEFAULT_SUFFIX = "";
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL enums. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getEnumPrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL enums. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	public String getEnumSuffix();
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL input objects. The prefix
+	 * is added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	public String getInputPrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL input objects. The suffix
+	 * is added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getInputSuffix();
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces. The prefix is
+	 * added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	public String getInterfacePrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces. The suffix is
+	 * added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getInterfaceSuffix();
 
 	/**
 	 * <I>(Useless, since 1.18.7)</I>Defines the options that maximum number of tokens that the GraphQL schema parser
@@ -115,6 +158,32 @@ public interface CommonConfiguration {
 	public boolean isAddRelayConnections();
 
 	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL types. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getTypePrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL types. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	public String getTypeSuffix();
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL unions. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	public String getUnionPrefix();
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL unions. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	public String getUnionSuffix();
+
+	/**
 	 * This method is used only in {@link GeneratePojoConfiguration}.
 	 * 
 	 * @return The {@link GeneratePojoConfiguration} implementation of this method always returns true
@@ -164,6 +233,16 @@ public interface CommonConfiguration {
 									.map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
 									.collect(Collectors.joining(", "))
 							: ""));
+			logger.debug("    typePrefix: " + getTypePrefix());
+			logger.debug("    typeSuffix: " + getTypeSuffix());
+			logger.debug("    inputPrefix: " + getInputPrefix());
+			logger.debug("    inputSuffix: " + getInputSuffix());
+			logger.debug("    enumPrefix: " + getEnumPrefix());
+			logger.debug("    enumSuffix: " + getEnumSuffix());
+			logger.debug("    interfacePrefix: " + getInterfacePrefix());
+			logger.debug("    interfaceSuffix: " + getInterfaceSuffix());
+			logger.debug("    unionPrefix: " + getUnionPrefix());
+			logger.debug("    unionSuffix: " + getUnionSuffix());
 		}
 	}
 

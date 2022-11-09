@@ -19,15 +19,15 @@ import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-import org.allGraphQLCases.client.AllFieldCases;
-import org.allGraphQLCases.client.AllFieldCasesInput;
-import org.allGraphQLCases.client.AllFieldCasesWithoutIdSubtype;
-import org.allGraphQLCases.client.AnotherMutationType;
-import org.allGraphQLCases.client.Character;
-import org.allGraphQLCases.client.Episode;
-import org.allGraphQLCases.client.FieldParameterInput;
-import org.allGraphQLCases.client.Human;
-import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
+import org.allGraphQLCases.client.CTP_AllFieldCasesWithoutIdSubtype_CTS;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
@@ -100,7 +100,7 @@ public class AliasesIT {
 		};
 
 		// Go, go, go
-		AllFieldCases allFieldCases = queryType.withListOfList(graphQLRequest, matrixSrc);
+		CTP_AllFieldCases_CTS allFieldCases = queryType.withListOfList(graphQLRequest, matrixSrc);
 
 		// Verification
 
@@ -116,18 +116,18 @@ public class AliasesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue65_ListID() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		List<FieldParameterInput> inputs = new ArrayList<>();
-		inputs.add(FieldParameterInput.builder().withUppercase(true).build());
-		inputs.add(FieldParameterInput.builder().withUppercase(false).build());
+		List<CINP_FieldParameterInput_CINS> inputs = new ArrayList<>();
+		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
+		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
 		GraphQLRequest graphQLRequest = queryType
 				.getAllFieldCasesGraphQLRequest("{alias65:issue65(inputs: &inputs) issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		AllFieldCases ret = queryType.allFieldCases(graphQLRequest, null, "inputs", inputs);
+		CTP_AllFieldCases_CTS ret = queryType.allFieldCases(graphQLRequest, null, "inputs", inputs);
 
 		// Verification
-		List<AllFieldCasesWithoutIdSubtype> issue65 = ret.getIssue65();
+		List<CTP_AllFieldCasesWithoutIdSubtype_CTS> issue65 = ret.getIssue65();
 		assertEquals(inputs.size(), issue65.size());
 		assertEquals(issue65.get(0).getName().toUpperCase(), issue65.get(0).getName(),
 				"The first name should be in uppercase");
@@ -135,7 +135,7 @@ public class AliasesIT {
 				"The second name should NOT be in uppercase");
 
 		@SuppressWarnings("unchecked")
-		List<AllFieldCasesWithoutIdSubtype> alias65 = (List<AllFieldCasesWithoutIdSubtype>) ret
+		List<CTP_AllFieldCasesWithoutIdSubtype_CTS> alias65 = (List<CTP_AllFieldCasesWithoutIdSubtype_CTS>) ret
 				.getAliasValue("alias65");
 		assertEquals(inputs.size(), alias65.size());
 		assertEquals(alias65.get(0).getName().toUpperCase(), alias65.get(0).getName(),
@@ -156,7 +156,7 @@ public class AliasesIT {
 				+ "}");
 
 		// Go, go, go
-		MyQueryType resp = multipleQueriesRequest.execQuery( //
+		CTP_MyQueryType_CTS resp = multipleQueriesRequest.execQuery( //
 				"value", "An expected returned string", //
 				"skipAppearsIn", true, //
 				"skipName", false);
@@ -167,7 +167,7 @@ public class AliasesIT {
 		assertNotNull(resp.getWithoutParameters());
 		//
 		// withOneOptionalParam
-		Character withOneOptionalParam = resp.getWithOneOptionalParam();
+		CIP_Character_CIS withOneOptionalParam = resp.getWithOneOptionalParam();
 		//
 		assertNotNull(withOneOptionalParam.getAliasValue("aliasId"));
 		assertTrue(withOneOptionalParam.getAliasValue("aliasId") instanceof String);
@@ -181,21 +181,21 @@ public class AliasesIT {
 		assertNull(withOneOptionalParam.getAliasValue("aliasAppearsIn2"));
 		assertTrue(withOneOptionalParam.getAliasValue("aliasAppearsIn") instanceof List);
 		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasAppearsIn")).size() > 0);
-		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasAppearsIn")).get(0) instanceof Episode);
+		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasAppearsIn")).get(0) instanceof CEP_Episode_CES);
 		//
 		assertNotNull(withOneOptionalParam.getAppearsIn());
 		//
 		assertNotNull(withOneOptionalParam.getAliasValue("aliasFriends"));
 		assertTrue(withOneOptionalParam.getAliasValue("aliasFriends") instanceof List);
 		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).size() > 0);
-		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).get(0) instanceof Character);
-		Character ch = (Character) ((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).get(0);
+		assertTrue(((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).get(0) instanceof CIP_Character_CIS);
+		CIP_Character_CIS ch = (CIP_Character_CIS) ((List<?>) withOneOptionalParam.getAliasValue("aliasFriends")).get(0);
 		assertNotNull(ch.getId());
 		assertNotNull(ch.getName());
 		//
 		assertNotNull(withOneOptionalParam.getFriends());
 		assertTrue(withOneOptionalParam.getFriends().size() > 0);
-		Character charLevel1 = withOneOptionalParam.getFriends().get(0);
+		CIP_Character_CIS charLevel1 = withOneOptionalParam.getFriends().get(0);
 		assertNotNull(charLevel1.getAliasValue("aliasId"));
 		assertNull(charLevel1.getAliasValue("aliasId2"));
 		assertNotNull(charLevel1.getId());
@@ -206,7 +206,7 @@ public class AliasesIT {
 		assertNotNull(charLevel1.getAliasValue("aliasFriends"));
 		assertNotNull(charLevel1.getFriends());
 		assertTrue(charLevel1.getFriends().size() > 0);
-		Character charLevel2 = charLevel1.getFriends().get(0);
+		CIP_Character_CIS charLevel2 = charLevel1.getFriends().get(0);
 		assertNotNull(charLevel2.getAliasValue("aliasId"));
 		assertNull(charLevel2.getAliasValue("aliasId2"));
 		assertNotNull(charLevel2.getId());
@@ -218,7 +218,7 @@ public class AliasesIT {
 		assertNull(charLevel2.getAliasValue("aliasFriends"));
 		//
 		// Let's check the content of queryAlias (everything is the same out of the deepest level of friends)
-		Character queryAlias = (Character) resp.getAliasValue("queryAlias");
+		CIP_Character_CIS queryAlias = (CIP_Character_CIS) resp.getAliasValue("queryAlias");
 		//
 		assertNotNull(queryAlias.getAliasValue("aliasId"));
 		assertTrue(queryAlias.getAliasValue("aliasId") instanceof String);
@@ -232,15 +232,15 @@ public class AliasesIT {
 		assertNotNull(queryAlias.getAliasValue("aliasAppearsIn2"));
 		assertTrue(queryAlias.getAliasValue("aliasAppearsIn2") instanceof List);
 		assertTrue(((List<?>) queryAlias.getAliasValue("aliasAppearsIn2")).size() > 0);
-		assertTrue(((List<?>) queryAlias.getAliasValue("aliasAppearsIn2")).get(0) instanceof Episode);
+		assertTrue(((List<?>) queryAlias.getAliasValue("aliasAppearsIn2")).get(0) instanceof CEP_Episode_CES);
 		//
 		assertNotNull(queryAlias.getAppearsIn());
 		//
 		assertNotNull(queryAlias.getAliasValue("aliasFriends"));
 		assertTrue(queryAlias.getAliasValue("aliasFriends") instanceof List);
 		assertTrue(((List<?>) queryAlias.getAliasValue("aliasFriends")).size() > 0);
-		assertTrue(((List<?>) queryAlias.getAliasValue("aliasFriends")).get(0) instanceof Character);
-		ch = (Character) ((List<?>) queryAlias.getAliasValue("aliasFriends")).get(0);
+		assertTrue(((List<?>) queryAlias.getAliasValue("aliasFriends")).get(0) instanceof CIP_Character_CIS);
+		ch = (CIP_Character_CIS) ((List<?>) queryAlias.getAliasValue("aliasFriends")).get(0);
 		assertNotNull(ch.getId());
 		assertNotNull(ch.getName());
 		//
@@ -278,7 +278,7 @@ public class AliasesIT {
 		// Preparation
 		Date date1 = new Calendar.Builder().setDate(2021, 5 - 1, 15).build().getTime();
 		Date date2 = new Calendar.Builder().setDate(2021, 5 - 1, 16).build().getTime();
-		AllFieldCasesInput inputType = AllFieldCasesInput.builder().withId(UUID.randomUUID().toString())
+		CINP_AllFieldCasesInput_CINS inputType = CINP_AllFieldCasesInput_CINS.builder().withId(UUID.randomUUID().toString())
 				.withName("the name").withAge((long) 666).withDate(date1).withDates(Arrays.asList(date1, date2))
 				.withComments(Arrays.asList("Comment 1", "Comment 2")).withBooleans(Arrays.asList(false, true, false))
 				.withAliases(new ArrayList<String>()).withPlanets(Arrays.asList("a planet"))
@@ -292,12 +292,12 @@ public class AliasesIT {
 				+ "}}");
 
 		// Go, go, go
-		AnotherMutationType resp = createHuman.execMutation("inputType", inputType);
+		CTP_AnotherMutationType_CTS resp = createHuman.execMutation("inputType", inputType);
 
 		// Verification
 		assertNotNull(resp.getAliasValue("mutationAlias"));
-		assertTrue(resp.getAliasValue("mutationAlias") instanceof AllFieldCases);
-		AllFieldCases verif = (AllFieldCases) resp.getAliasValue("mutationAlias");
+		assertTrue(resp.getAliasValue("mutationAlias") instanceof CTP_AllFieldCases_CTS);
+		CTP_AllFieldCases_CTS verif = (CTP_AllFieldCases_CTS) resp.getAliasValue("mutationAlias");
 		//
 		assertEquals(inputType.getId(), verif.getId());
 		assertEquals(inputType.getId(), verif.getAliasValue("aliasId"));
@@ -351,9 +351,9 @@ public class AliasesIT {
 		assertEquals(3.0, ((List<List<Double>>) verif.getAliasValue("aliasMatrix")).get(1).get(0));
 	}
 
-	public static class HumanSubscriptionCallback implements SubscriptionCallback<Human> {
+	public static class HumanSubscriptionCallback implements SubscriptionCallback<CTP_Human_CTS> {
 		public boolean connected = false;
-		public Human lastReceivedMessage;
+		public CTP_Human_CTS lastReceivedMessage;
 		public Throwable lastError;
 
 		@Override
@@ -362,7 +362,7 @@ public class AliasesIT {
 		}
 
 		@Override
-		public void onMessage(Human t) {
+		public void onMessage(CTP_Human_CTS t) {
 			lastReceivedMessage = t;
 		}
 
@@ -387,7 +387,7 @@ public class AliasesIT {
 		// Go, go, go
 		SubscriptionClient sub = subscriptionExecutor.subscribeNewHumanForEpisode(
 				"{aliasId:id id aliasName:name name aliasHomePlanet:homePlanet homePlanet}", //
-				callback, Episode.JEDI);
+				callback, CEP_Episode_CES.JEDI);
 
 		// Let's wait a max of 10 second, until we receive some notifications
 		waitForEvent(100, () -> {
@@ -402,8 +402,8 @@ public class AliasesIT {
 			fail("The subsccription raised this error: " + callback.lastError);
 		}
 		assertNotNull(callback.lastReceivedMessage);
-		assertTrue(callback.lastReceivedMessage instanceof Human);
-		Human verif = callback.lastReceivedMessage;
+		assertTrue(callback.lastReceivedMessage instanceof CTP_Human_CTS);
+		CTP_Human_CTS verif = callback.lastReceivedMessage;
 		assertEquals(verif.getId(), verif.getAliasValue("aliasId"));
 		assertEquals(verif.getName(), verif.getAliasValue("aliasName"));
 		assertEquals(verif.getHomePlanet(), verif.getAliasValue("aliasHomePlanet"));

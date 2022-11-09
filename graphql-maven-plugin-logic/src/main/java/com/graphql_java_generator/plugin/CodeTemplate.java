@@ -37,6 +37,7 @@ public enum CodeTemplate {
 	SPRING_AUTO_CONFIGURATION_CLASS(CodeTemplateScope.CLIENT, "templates/client_spring_auto_configuration.vm.java"), //
 	SUBSCRIPTION(CodeTemplateScope.CLIENT, "templates/client_subscription_type.vm.java"), //
 	SUBSCRIPTION_EXECUTOR(CodeTemplateScope.CLIENT, "templates/client_subscription_executor.vm.java"), //
+	TYPE_MAPPING(CodeTemplateScope.CLIENT, "templates/client_type_mapping.vm.java"), //
 
 	// Server files (alphabetic order)
 	DATA_FETCHER_DELEGATE(CodeTemplateScope.SERVER, "templates/server_GraphQLDataFetchersDelegate.vm.java"), //
