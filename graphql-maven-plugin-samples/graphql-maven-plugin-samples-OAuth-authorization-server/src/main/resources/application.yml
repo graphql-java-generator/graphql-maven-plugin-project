@@ -1,7 +1,22 @@
 server:
   port: 8181
 
-spring:
-  jackson:
-    serialization:
-      INDENT_OUTPUT: true
+#spring:
+#  security:
+#    oauth2:
+#      resourceserver:
+#        opaquetoken:
+#          introspection-uri: /tokenIntrospection
+#          client-id: clientId
+#          client-secret: secret
+
+oauth2:
+  clientId: clientId 
+  clientSecret: secret
+
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: TRACE
