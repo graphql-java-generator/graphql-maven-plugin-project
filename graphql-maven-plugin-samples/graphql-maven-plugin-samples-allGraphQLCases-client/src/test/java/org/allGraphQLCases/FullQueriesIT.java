@@ -10,11 +10,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
-import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
@@ -25,7 +25,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.graphql.client.GraphQlClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -42,8 +41,6 @@ class FullQueriesIT {
 	MyQueryTypeExecutorAllGraphQLCases myQuery;
 	@Autowired
 	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
-	@Autowired
-	GraphQlClient graphQlClientAllGraphQLCases;
 
 	GraphQLRequest mutationWithDirectiveRequest;
 	GraphQLRequest mutationWithoutDirectiveRequest;
@@ -84,7 +81,7 @@ class FullQueriesIT {
 
 		// Go, go, go
 		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-																// simple cases
+		// simple cases
 
 		// Verifications
 		assertNotNull(resp);
@@ -100,7 +97,7 @@ class FullQueriesIT {
 
 		// Go, go, go
 		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-																// simple cases
+		// simple cases
 
 		// Verifications
 		// The extensions field contains a CTP_Human_CTS instance, for the key "aValueToTestTheExtensionsField".

@@ -61,7 +61,7 @@ public class GraphQLTransportWSIT {
 	@Autowired
 	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
 	@Autowired
-	GraphQlClient graphQlClientAllGraphQlCases;
+	GraphQlClient graphQlHttpClientAllGraphQLCases;
 
 	@Bean
 	@ConditionalOnMissingBean
@@ -104,7 +104,7 @@ public class GraphQLTransportWSIT {
 
 	@BeforeEach
 	void setup() {
-		assertTrue(graphQlClientAllGraphQlCases instanceof WebSocketGraphQlClient,
+		assertTrue(graphQlHttpClientAllGraphQLCases instanceof WebSocketGraphQlClient,
 				"The graphQlClient should be an instance of WebSocketGraphQlClient");
 	}
 

@@ -18,11 +18,11 @@ spring:
   security:
     oauth2:
       resourceserver:
-        opaque-token:
-#          introspection-uri: http://localhost:8181/tokenIntrospection
-#          client-id: clientId
-#          client-secret: secret
-          introspection-uri: http://localhost:8181/oauth2/introspect
-          # Should be different than the client login and password !  (this configuration is basic: ok for tests, KO for production)
-          client-id: messaging-client
-          client-secret: secret
+        jwt:
+          issuer-uri: http://localhost:8181
+          #issuer-uri: http://auth-server:9000
+        #opaque-token:
+          #introspection-uri: http://localhost:8181/oauth2/introspect
+          ## Should be different than the client login and password !  (this configuration is basic: ok for tests, KO for production)
+          #client-id: messaging-client
+          #client-secret: secret

@@ -128,22 +128,28 @@
 		</dependency>
 
 		<!-- Dependencies for the generated code -->
-		<!--dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-security</artifactId>
-		</dependency-->
 		<dependency>
 			<groupId>com.graphql-java-generator</groupId>
 			<artifactId>graphql-java-server-runtime</artifactId>
 		</dependency>
+
+		<!-- Dependencies for the generated code -->
 		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!--dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-config</artifactId>
-		</dependency>		
+		</dependency -->		
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<!--dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-oauth2-client</artifactId>
-		</dependency>		
+		</dependency -->		
 
 		<!-- Dependencies for the custom scalars -->
 		<dependency>
@@ -155,10 +161,6 @@
 		<!--dependency>
 		    <groupId>org.springframework.security.oauth.boot</groupId>
 		    <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-		</dependency-->
-		<!--dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency-->
 		<!--dependency>
 			<groupId>org.springframework.security.oauth.boot</groupId>
