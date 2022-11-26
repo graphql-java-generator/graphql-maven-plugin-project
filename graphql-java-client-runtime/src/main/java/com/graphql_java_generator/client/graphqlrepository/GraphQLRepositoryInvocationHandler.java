@@ -391,7 +391,7 @@ public class GraphQLRepositoryInvocationHandler<T> implements InvocationHandler 
 			registeredMethod.executorMethod = registeredMethod.executor.getClass()
 					.getMethod(registeredMethod.executorMethodName, registeredMethod.executorParameterTypes);
 		} catch (NoSuchMethodException | SecurityException e) {
-			StringBuffer parameters = new StringBuffer();
+			StringBuilder parameters = new StringBuilder();
 			String separator = "";
 			for (Class<?> clazz : registeredMethod.executorParameterTypes) {
 				parameters.append(separator);

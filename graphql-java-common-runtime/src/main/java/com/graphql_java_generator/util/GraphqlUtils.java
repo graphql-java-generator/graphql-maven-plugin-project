@@ -724,7 +724,7 @@ public class GraphqlUtils {
 		try {
 			return method.invoke(o, args);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			StringBuffer msg = new StringBuffer("Error when executing the method '");
+			StringBuilder msg = new StringBuilder("Error when executing the method '");
 			msg.append(method.getName());
 			msg.append("(");
 			String separator = "";
@@ -1042,7 +1042,7 @@ public class GraphqlUtils {
 	// * @return
 	// */
 	// public String graphqlDeencodeString(String str) {
-	// StringBuffer sb = new StringBuffer();
+	// StringBuilder sb = new StringBuilder();
 	// for (int i = 0; i < str.length(); i += 1) {
 	// char c = str.charAt(i);
 	// if (c == '\\') {

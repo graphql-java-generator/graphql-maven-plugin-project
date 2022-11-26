@@ -310,7 +310,7 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 			if (parameters == null) {
 				logger.trace("Executing ${object.requestType} without parameters");
 			} else {
-				StringBuffer sb = new StringBuffer("Executing root ${object.requestType} with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing root ${object.requestType} with parameters: ");
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
@@ -648,7 +648,7 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing ${object.requestType} '${field.name}' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {

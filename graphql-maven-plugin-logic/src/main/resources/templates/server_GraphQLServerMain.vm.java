@@ -96,7 +96,7 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 	@Bean
 	protected GraphQLSchema graphQLSchema() throws IOException {
 		Resource res;
-		StringBuffer sdl = new StringBuffer();
+		StringBuilder sdl = new StringBuilder();
 
 #if($configuration.addRelayConnections)
 ## When addRelayConnections is true, then graphql-java should use the Generated schema, instead of the source schema

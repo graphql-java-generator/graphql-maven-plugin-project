@@ -55,7 +55,7 @@ public class Error {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		if (validationErrorType != null) {
 			sb.append("[{").append(validationErrorType).append("}]");

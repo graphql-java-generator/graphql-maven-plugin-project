@@ -256,7 +256,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 			if (parameters == null) {
 				logger.trace("Executing subscription without parameters");
 			} else {
-				StringBuffer sb = new StringBuffer("Executing root subscription with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing root subscription with parameters: ");
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
@@ -646,7 +646,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 			SubscriptionCallback<Human> subscriptionCallback, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing subscription 'subscribeNewHumanForEpisode' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -956,7 +956,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 			SubscriptionCallback<List<Integer>> subscriptionCallback, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing subscription 'subscribeToAList' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1266,7 +1266,7 @@ public class TheSubscriptionTypeExecutor implements GraphQLSubscriptionExecutor 
 	public SubscriptionClient issue53(ObjectResponse objectResponse, SubscriptionCallback<Date> subscriptionCallback,
 			Date date, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing subscription 'issue53' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {

@@ -263,7 +263,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 			logger.debug(GRAPHQL_MARKER, "Executing GraphQL web socket connection");
 			if (logger.isTraceEnabled()) {
 				// Let's log the sent headers
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				sb.append("The Subscription GET request will be sent with these headers:\n");
 				if (headers.entrySet().size() == 0) {
 					sb.append("    ").append("<No headers!>");

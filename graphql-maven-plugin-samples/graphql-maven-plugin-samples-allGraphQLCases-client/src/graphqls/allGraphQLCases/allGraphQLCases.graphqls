@@ -188,6 +188,39 @@ interface UnusedInterface {
 	aNonUSedField: String
 }
 
+# This class contains fields that are Java reserved words. A query allows to check that mapping properly occurs on both client and server side.
+#type JavaReservedWords {
+#    if: String
+#    implements: String
+#    import: String
+#    instanceof: String
+#    int: String
+#    interface: String
+#    long: String
+#    native: String
+#    new: String
+#    package: String
+#    private: String
+#    protected: String
+#    public: String
+#    return: String
+#    short: String
+#    static: String
+#    strictfp: String
+#    super: String
+#    switch: String
+#    synchronized: String
+#    this: String
+#    throw: String
+#    throws: String
+#    transient: String
+#    try: String
+#    void: String
+#    volatile: String
+#    while: String
+#}
+
+
 ##############################################################################################################
 ################  ALL GRAPHQL CASES TEST CASES################################################################
 ##############################################################################################################

@@ -327,7 +327,7 @@ public class GraphQLRequest extends ObjectResponse {
 			if (parameters == null) {
 				logger.trace("Executing of " + requestType.toString() + " without parameters");
 			} else {
-				StringBuffer sb = new StringBuffer("Executing of root mutation with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing of root mutation with parameters: ");
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));

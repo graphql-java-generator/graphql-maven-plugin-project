@@ -253,7 +253,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 			if (parameters == null) {
 				logger.trace("Executing query without parameters");
 			} else {
-				StringBuffer sb = new StringBuffer("Executing root query with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing root query with parameters: ");
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
@@ -518,7 +518,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public List<Character> withoutParameters(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withoutParameters' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -753,7 +753,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Character withOneOptionalParam(ObjectResponse objectResponse, CharacterInput character,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withOneOptionalParam' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -993,7 +993,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Character withOneMandatoryParam(ObjectResponse objectResponse, CharacterInput character,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withOneMandatoryParam' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1237,7 +1237,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Integer withOneMandatoryParamDefaultValue(ObjectResponse objectResponse, Integer intParam,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withOneMandatoryParamDefaultValue' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1495,7 +1495,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Droid withTwoMandatoryParamDefaultVal(ObjectResponse objectResponse, DroidInput theHero, Integer num,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withTwoMandatoryParamDefaultVal' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1738,7 +1738,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Character withEnum(ObjectResponse objectResponse, Episode episode, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withEnum' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1975,7 +1975,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public AllFieldCases withListOfList(ObjectResponse objectResponse, List<List<Double>> matrix,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withListOfList' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -2224,7 +2224,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public List<Character> withList(ObjectResponse objectResponse, String firstName, List<CharacterInput> characters,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'withList' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -2474,7 +2474,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public AllFieldCases allFieldCases(ObjectResponse objectResponse, AllFieldCasesInput input,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'allFieldCases' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -2747,7 +2747,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public List<AnyCharacter> unionTest(ObjectResponse objectResponse, HumanInput human1, HumanInput human2,
 			DroidInput droid1, DroidInput droid2, Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'unionTest' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -3004,7 +3004,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Character error(ObjectResponse objectResponse, String errorLabel, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'error' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -3232,7 +3232,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public _break aBreak(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'aBreak' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -3471,7 +3471,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public List<String> directiveOnQuery(ObjectResponse objectResponse, Boolean uppercase, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'directiveOnQuery' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -3706,7 +3706,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Character directiveOnField(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'directiveOnField' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -3938,7 +3938,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public List<Character> connectionWithoutParameters(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'connectionWithoutParameters' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -4185,7 +4185,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public List<Human> connectionOnHuman(ObjectResponse objectResponse, String planet, Episode episode,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'connectionOnHuman' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -4431,7 +4431,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Date issue53(ObjectResponse objectResponse, Date date, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'issue53' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -4670,7 +4670,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public Double issue82Float(ObjectResponse objectResponse, Double aFloat, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'issue82Float' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -4907,7 +4907,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public String issue82ID(ObjectResponse objectResponse, String aID, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'issue82ID' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -5135,7 +5135,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public MyQueryType relay(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query 'relay' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -5358,7 +5358,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public __Schema __schema(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query '__schema' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -5589,7 +5589,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public __Type __type(ObjectResponse objectResponse, String name, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query '__type' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -5814,7 +5814,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public String __typename(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing query '__typename' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {

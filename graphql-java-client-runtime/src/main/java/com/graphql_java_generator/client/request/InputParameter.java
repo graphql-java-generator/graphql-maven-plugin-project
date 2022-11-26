@@ -455,7 +455,7 @@ public class InputParameter {
 						// We've found the start of a JSON list or JSON object. Let's read this object.
 						// We'll store it as a String, and write it back in the request toward the GraphQL server
 						// request
-						StringBuffer sb = new StringBuffer(token);
+						StringBuilder sb = new StringBuilder(token);
 						String previousToken;
 						boolean list = token.startsWith("[");
 						int listDepth = 0;
@@ -499,7 +499,7 @@ public class InputParameter {
 								InputParameterType.GRAPHQL_VALUE, null, false, listDepth, false));
 					} else if (token.equals("\"")) {
 						// We've found a String value: let's read the string content
-						StringBuffer sb = new StringBuffer("\"");
+						StringBuilder sb = new StringBuilder("\"");
 						boolean nextCharIsEscaped = false;
 						while (true) {
 							if (!qt.hasMoreTokens(true)) {

@@ -252,7 +252,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 			if (parameters == null) {
 				logger.trace("Executing mutation without parameters");
 			} else {
-				StringBuffer sb = new StringBuffer("Executing root mutation with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing root mutation with parameters: ");
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
@@ -534,7 +534,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	public Board createBoard(ObjectResponse objectResponse, String name, Boolean publiclyAvailable,
 			Object... paramsAndValues) throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing mutation 'createBoard' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -776,7 +776,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	public Topic createTopic(ObjectResponse objectResponse, TopicInput topic, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing mutation 'createTopic' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1011,7 +1011,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	public Post createPost(ObjectResponse objectResponse, PostInput post, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing mutation 'createPost' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1246,7 +1246,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	public List<Post> createPosts(ObjectResponse objectResponse, List<PostInput> spam, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing mutation 'createPosts' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1481,7 +1481,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	public Member createMember(ObjectResponse objectResponse, MemberInput input, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing mutation 'createMember' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
@@ -1707,7 +1707,7 @@ public class MutationTypeExecutor implements GraphQLMutationExecutor {
 	public String __typename(ObjectResponse objectResponse, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing mutation '__typename' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {

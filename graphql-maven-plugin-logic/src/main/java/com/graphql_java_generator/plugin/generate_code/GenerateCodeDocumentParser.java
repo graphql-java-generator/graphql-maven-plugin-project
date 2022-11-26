@@ -340,7 +340,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 				// jsonSubTypes annotation looks like this:
 				// @JsonSubTypes({ @Type(value = Droid.class, name = "Droid"), @Type(value = Human.class, name =
 				// "Human") })
-				StringBuffer jsonSubTypes = new StringBuffer();
+				StringBuilder jsonSubTypes = new StringBuilder();
 				type.addImport(configuration.getPackageName(), JsonSubTypes.class.getName());
 				type.addImport(configuration.getPackageName(), JsonSubTypes.Type.class.getName());
 				jsonSubTypes.append("@JsonSubTypes({");
@@ -689,7 +689,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @return annotation string
 	 */
 	private String buildJsonDeserializeAnnotation(String contentAs, String using) {
-		StringBuffer annotationBuf = new StringBuffer();
+		StringBuilder annotationBuf = new StringBuilder();
 		annotationBuf.append("@JsonDeserialize(");
 		boolean addComma = false;
 		if (contentAs != null) {
@@ -716,7 +716,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 	 * @return annotation string
 	 */
 	private String buildJsonSerializeAnnotation(String using) {
-		StringBuffer annotationBuf = new StringBuffer();
+		StringBuilder annotationBuf = new StringBuilder();
 		annotationBuf.append("@JsonSerialize(");
 		boolean addComma = false;
 

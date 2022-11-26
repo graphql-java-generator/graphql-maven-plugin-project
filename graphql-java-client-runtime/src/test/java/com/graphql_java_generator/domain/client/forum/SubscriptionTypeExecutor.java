@@ -253,7 +253,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 			if (parameters == null) {
 				logger.trace("Executing subscription without parameters");
 			} else {
-				StringBuffer sb = new StringBuffer("Executing root subscription with parameters: ");
+				StringBuilder sb = new StringBuilder("Executing root subscription with parameters: ");
 				boolean addComma = false;
 				for (String key : parameters.keySet()) {
 					sb.append(key).append(":").append(parameters.get(key));
@@ -628,7 +628,7 @@ public class SubscriptionTypeExecutor implements GraphQLSubscriptionExecutor {
 			SubscriptionCallback<Post> subscriptionCallback, String boardName, Object... paramsAndValues)
 			throws GraphQLRequestExecutionException {
 		if (logger.isTraceEnabled()) {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append("Executing subscription 'subscribeToNewPost' with bind variables: ");
 			boolean addComma = false;
 			for (Object o : paramsAndValues) {
