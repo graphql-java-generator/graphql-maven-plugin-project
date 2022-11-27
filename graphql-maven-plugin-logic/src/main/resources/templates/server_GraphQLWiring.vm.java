@@ -122,7 +122,7 @@ public class GraphQLWiring {
 	 */
 	protected TypeRuntimeWiring.Builder addWiringFor${dataFetchersDelegate.type.javaName}(TypeRuntimeWiring.Builder typeWiring) {
 #foreach ($dataFetcher in $dataFetchersDelegate.dataFetchers)
-		typeWiring.dataFetcher("${dataFetcher.field.javaName}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}#if(${dataFetcher.completableFuture})WithDataLoader#end());
+		typeWiring.dataFetcher("${dataFetcher.field.name}", graphQLDataFetchers.${dataFetchersDelegate.camelCaseName}${dataFetcher.pascalCaseName}#if(${dataFetcher.completableFuture})WithDataLoader#end());
 #end
 		return typeWiring;
 	}

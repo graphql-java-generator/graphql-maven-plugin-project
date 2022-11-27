@@ -24,8 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.annotation.GraphQLEnumType;
+import com.graphql_java_generator.annotation.GraphQLInterfaceType;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
+import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLScalar;
+import com.graphql_java_generator.annotation.GraphQLUnionType;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 import graphql.language.ArrayValue;
@@ -55,16 +59,17 @@ public class GraphqlUtils {
 	Pattern graphqlNamePattern = Pattern.compile("^[_A-Za-z][_0-9A-Za-z]*$");
 
 	/**
-	 * The list of Java keywords. This keyword may not be used as java identifier, within java code (for instance for
-	 * class name, field name...).<BR/>
-	 * If a GraphQL identifier is one of these keyword, it will be prefixed by {@link #JAVA_KEYWORD_PREFIX} in the
-	 * generated code.
+	 * The list of Java keywords. This keyword may not be used as java identifier,
+	 * within java code (for instance for class name, field name...).<BR/>
+	 * If a GraphQL identifier is one of these keyword, it will be prefixed by
+	 * {@link #JAVA_KEYWORD_PREFIX} in the generated code.
 	 */
 	private List<String> javaKeywords = new ArrayList<>();
 
 	/**
-	 * The runtime properties, as they are in the graphql-java-runtime.properties file. This includes the version of the
-	 * runtime, that is used to check that the runtime's version is the same as the Maven or Gradle plugin's version
+	 * The runtime properties, as they are in the graphql-java-runtime.properties
+	 * file. This includes the version of the runtime, that is used to check that
+	 * the runtime's version is the same as the Maven or Gradle plugin's version
 	 */
 	private Properties properties;
 	final static String PROPERTIES_FILE = "graphql-java-runtime.properties";
@@ -127,14 +132,17 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Returns the version of the runtime, that is used to check that the runtime's version is the same as the Maven or
-	 * Gradle plugin's version.
+	 * Returns the version of the runtime, that is used to check that the runtime's
+	 * version is the same as the Maven or Gradle plugin's version.
 	 */
 	public String getRuntimeVersion() {
 		return getProperties().getProperty(PROP_RUNTIME_VERSION);
 	}
 
-	/** Loads the runtime properties file, from the graphql-java-runtime.properties file. */
+	/**
+	 * Loads the runtime properties file, from the graphql-java-runtime.properties
+	 * file.
+	 */
 	private Properties getProperties() {
 		if (properties == null) {
 			properties = new Properties();
@@ -150,7 +158,8 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Convert the given name, to a camel case name. Currently very simple : it puts the first character in lower case.
+	 * Convert the given name, to a camel case name. Currently very simple : it puts
+	 * the first character in lower case.
 	 * 
 	 * @return
 	 */
@@ -159,8 +168,8 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Convert the given name, which is supposed to be in camel case (for instance: thisIsCamelCase) to a pascal case
-	 * string (for instance: ThisIsCamelCase).
+	 * Convert the given name, which is supposed to be in camel case (for instance:
+	 * thisIsCamelCase) to a pascal case string (for instance: ThisIsCamelCase).
 	 * 
 	 * @return
 	 */
@@ -169,9 +178,10 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Transform an {@link Iterable} (which can be a {@link List}), into a {@link List} of items of the same type. It's
-	 * usefull to transform the native type from Spring Data repositories (which needs concrete class to map into) into
-	 * the list of relevant GraphQL interface
+	 * Transform an {@link Iterable} (which can be a {@link List}), into a
+	 * {@link List} of items of the same type. It's usefull to transform the native
+	 * type from Spring Data repositories (which needs concrete class to map into)
+	 * into the list of relevant GraphQL interface
 	 * 
 	 * @param <I>
 	 * @param iterable
@@ -186,9 +196,10 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Transform an {@link Iterable} (which can be a {@link List}) of a concrete class, into a {@link List} of the I
-	 * interface or superclass. It's usefull to transform the native type from Spring Data repositories (which needs
-	 * concrete class to map into) into the list of relevant GraphQL interface
+	 * Transform an {@link Iterable} (which can be a {@link List}) of a concrete
+	 * class, into a {@link List} of the I interface or superclass. It's usefull to
+	 * transform the native type from Spring Data repositories (which needs concrete
+	 * class to map into) into the list of relevant GraphQL interface
 	 * 
 	 * @param <I>
 	 * @param iterable
@@ -203,8 +214,8 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Transform an {@link Optional}, as returned by Spring Data repositories, into a standard Java, which is null if
-	 * there is no value.
+	 * Transform an {@link Optional}, as returned by Spring Data repositories, into
+	 * a standard Java, which is null if there is no value.
 	 * 
 	 * @param optional
 	 * @return
@@ -214,24 +225,24 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Reads a non ordered list, and return the same content sorted according the <i>keys</i> list. This method is used
-	 * for batch loader method: they must return their result in the exact same order as the provided keys, so that the
+	 * Reads a non ordered list, and return the same content sorted according the
+	 * <i>keys</i> list. This method is used for batch loader method: they must
+	 * return their result in the exact same order as the provided keys, so that the
 	 * returned values are properly dispatched in the server's response.
 	 * 
-	 * @param <T>
-	 *            The type of items in these list
-	 * @param keys
-	 *            The list which ordered must be respected.
-	 * @param unorderedList
-	 *            A list of items in any order. Each item in this list must have a key which is in the <i>keys</i>
-	 *            list.<br/>
-	 *            There may be missing values (for instance if a key doesn't match an item in the database). In this
-	 *            case, this value is replaced by a null value.
-	 * @param keyFieldName
-	 *            The name of the field, that contain the key, that is: the T's attribute the can be matched against the
-	 *            <i>keys</i> list. For instance: "id"
-	 * @return A list of T instances coming from the <i>unorderedList</i>, where the key (retrieved by the <i>getter</i>
-	 *         method) of these instances is in the exact same order as the <i>keys</i> list. Missing values in the
+	 * @param <T>           The type of items in these list
+	 * @param keys          The list which ordered must be respected.
+	 * @param unorderedList A list of items in any order. Each item in this list
+	 *                      must have a key which is in the <i>keys</i> list.<br/>
+	 *                      There may be missing values (for instance if a key
+	 *                      doesn't match an item in the database). In this case,
+	 *                      this value is replaced by a null value.
+	 * @param keyFieldName  The name of the field, that contain the key, that is:
+	 *                      the T's attribute the can be matched against the
+	 *                      <i>keys</i> list. For instance: "id"
+	 * @return A list of T instances coming from the <i>unorderedList</i>, where the
+	 *         key (retrieved by the <i>getter</i> method) of these instances is in
+	 *         the exact same order as the <i>keys</i> list. Missing values in the
 	 *         <i>unorderedList</i> list are replaced by null.
 	 */
 	public <T> List<T> orderList(List<?> keys, List<T> unorderedList, String keyFieldName) {
@@ -255,9 +266,11 @@ public class GraphqlUtils {
 	 * 
 	 * @param owningClass
 	 * @param fieldName
-	 * @param returnIsMandatory
-	 *            If true, a {@link GraphQLRequestPreparationException} is thrown if the field is not found.
-	 * @return The class of the field. Or null of the field doesn't exist, and returnIdMandatory is false
+	 * @param returnIsMandatory If true, a
+	 *                          {@link GraphQLRequestPreparationException} is thrown
+	 *                          if the field is not found.
+	 * @return The class of the field. Or null of the field doesn't exist, and
+	 *         returnIdMandatory is false
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public Class<?> getFieldType(Class<?> owningClass, String fieldName, boolean returnIsMandatory)
@@ -267,7 +280,8 @@ public class GraphqlUtils {
 			try {
 				Method method = owningClass.getDeclaredMethod("get" + graphqlUtils.getPascalCase(fieldName));
 
-				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
+				// We must manage the type erasure for list. So we use the GraphQL annotations
+				// to retrieve types.
 				GraphQLNonScalar graphQLNonScalar = method.getAnnotation(GraphQLNonScalar.class);
 				GraphQLScalar graphQLScalar = method.getAnnotation(GraphQLScalar.class);
 
@@ -295,7 +309,8 @@ public class GraphqlUtils {
 			try {
 				Field field = owningClass.getDeclaredField(graphqlUtils.getJavaName(fieldName));
 
-				// We must manage the type erasure for list. So we use the GraphQL annotations to retrieve types.
+				// We must manage the type erasure for list. So we use the GraphQL annotations
+				// to retrieve types.
 				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
 				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
 
@@ -322,33 +337,42 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * This method returns a GraphQL argument into the relevant Java object, within a data fetcher, from what has been
-	 * parsed by the graphql-java engine from the incoming JSON request
+	 * This method returns a GraphQL argument into the relevant Java object, within
+	 * a data fetcher, from what has been parsed by the graphql-java engine from the
+	 * incoming JSON request
 	 * 
-	 * @param <T>
-	 *            The class expected to be returned
-	 * @param jsonParsedValue
-	 *            The value, read from the JSON in the GraphQL request. Only the part of the JSON map, related to the
-	 *            expected class is sent. It can be:
-	 *            <UL>
-	 *            <LI>A {@link Map}. This map will be transformed into an input object, as defined in the GraphQL
-	 *            schema, from the Map that has been read from the JSON object sent to the server.</LI>
-	 *            <LI>A {@link List}. In this case, returns a list of instances of the given clazz type.</LI>
-	 *            <LI>Otherwise, the value is a scalar. At this stage, Custom Scalars have already been transformed into
-	 *            the relevant Java Type. So it must be a standard scalar. It is then mapped to the asked java type</LI>
-	 *            </UL>
-	 * @param graphQLTypeName
-	 *            The name of the GraphQL type, as defined in the GraphQL schema. This can be guessed from the given
-	 *            class for input types and objects, but not for scalars. So it must be provided.
-	 * @param javaTypeForIDType
-	 *            Value of the plugin parameter of the same name. This is necessary to properly manage fields of the ID
-	 *            GraphQL type, which must be transformed to this java type. This is useful only when mapping into input
-	 *            types.
-	 * @param clazz
-	 *            The class of the expected type. A new instance of this type will be returned, with its fields having
-	 *            been set by this method from the value in the map
-	 * @return An instance of the expected class. If the map is null, null is returned. Of the map is empty, anew
-	 *         instance is returned, with all its fields are left empty
+	 * @param <T>               The class expected to be returned
+	 * @param jsonParsedValue   The value, read from the JSON in the GraphQL
+	 *                          request. Only the part of the JSON map, related to
+	 *                          the expected class is sent. It can be:
+	 *                          <UL>
+	 *                          <LI>A {@link Map}. This map will be transformed into
+	 *                          an input object, as defined in the GraphQL schema,
+	 *                          from the Map that has been read from the JSON object
+	 *                          sent to the server.</LI>
+	 *                          <LI>A {@link List}. In this case, returns a list of
+	 *                          instances of the given clazz type.</LI>
+	 *                          <LI>Otherwise, the value is a scalar. At this stage,
+	 *                          Custom Scalars have already been transformed into
+	 *                          the relevant Java Type. So it must be a standard
+	 *                          scalar. It is then mapped to the asked java
+	 *                          type</LI>
+	 *                          </UL>
+	 * @param graphQLTypeName   The name of the GraphQL type, as defined in the
+	 *                          GraphQL schema. This can be guessed from the given
+	 *                          class for input types and objects, but not for
+	 *                          scalars. So it must be provided.
+	 * @param javaTypeForIDType Value of the plugin parameter of the same name. This
+	 *                          is necessary to properly manage fields of the ID
+	 *                          GraphQL type, which must be transformed to this java
+	 *                          type. This is useful only when mapping into input
+	 *                          types.
+	 * @param clazz             The class of the expected type. A new instance of
+	 *                          this type will be returned, with its fields having
+	 *                          been set by this method from the value in the map
+	 * @return An instance of the expected class. If the map is null, null is
+	 *         returned. Of the map is empty, anew instance is returned, with all
+	 *         its fields are left empty
 	 */
 	@SuppressWarnings("unchecked")
 	public Object getArgument(Object jsonParsedValue, String graphQLTypeName, String javaTypeForIDType,
@@ -415,7 +439,8 @@ public class GraphqlUtils {
 			Method fromGraphQlValue = graphqlUtils.getMethod("fromGraphQlValue", clazz, String.class);
 			return graphqlUtils.invokeMethod(fromGraphQlValue, null, (String) jsonParsedValue);
 		} else if (graphQLTypeName.equals("ID")) {
-			// ID is particular animal: it's by default managed as a UUID (we're on server side). And this can be
+			// ID is particular animal: it's by default managed as a UUID (we're on server
+			// side). And this can be
 			// overridden by the javaTypeForIDType plugin parameter.
 			// If the type is unknown, the String value is returned.
 			if (javaTypeForIDType == null || javaTypeForIDType.equals("")) {
@@ -460,15 +485,17 @@ public class GraphqlUtils {
 	/**
 	 * Returns a {@link Field} from the given class.
 	 * 
-	 * @param owningClass
-	 *            The class that should contain this field. If the class's name finishes by Response, as an empty
-	 *            XxxResponse class is created for each Query/Mutation/Subscription (to be compatible with previsous
-	 *            version), then this method also looks in the owningClass's superclass.
-	 * @param fieldName
-	 *            The name of the searched field
-	 * @param mustFindField
-	 *            If true and the field is not found, a {@link GraphQLRequestPreparationException} is thrown.<BR/>
-	 *            If false an the field is not found, the method returns null
+	 * @param owningClass   The class that should contain this field. If the class's
+	 *                      name finishes by Response, as an empty XxxResponse class
+	 *                      is created for each Query/Mutation/Subscription (to be
+	 *                      compatible with previsous version), then this method
+	 *                      also looks in the owningClass's superclass.
+	 * @param fieldName     The name of the searched field
+	 * @param mustFindField If true and the field is not found, a
+	 *                      {@link GraphQLRequestPreparationException} is
+	 *                      thrown.<BR/>
+	 *                      If false an the field is not found, the method returns
+	 *                      null
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
@@ -478,7 +505,8 @@ public class GraphqlUtils {
 		try {
 			return owningClass.getDeclaredField(fieldName);
 		} catch (NoSuchFieldException | SecurityException e1) {
-			// If the classname finishes by "Response", we take a look at the superclass, as the XxxResponse classes are
+			// If the classname finishes by "Response", we take a look at the superclass, as
+			// the XxxResponse classes are
 			// built as just inheriting from the query/mutation/subscription class
 			if (owningClass.getSimpleName().endsWith("Response")) {
 				try {
@@ -506,7 +534,23 @@ public class GraphqlUtils {
 	 * @return
 	 */
 	public <T> Method getSetter(Class<T> clazz, Field field) {
-		String setterMethodName = "set" + getPascalCase(field.getName());
+		// The default setter's name is based on the field's name.
+		// But for GraphQL fields that are actual java reserved keyword, the field's
+		// name is not the one that was defined in the GraphQL schema (whereas the
+		// setter uses the original name).
+		String setterMethodName;
+
+		// Is this field a GraphQL scalar?
+		GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+		GraphQLNonScalar graphQLUnionType = field.getAnnotation(GraphQLNonScalar.class);
+		if (graphQLUnionType != null) {
+			setterMethodName = "set" + getPascalCase(graphQLUnionType.fieldName());
+		} else if (graphQLScalar != null) {
+			setterMethodName = "set" + getPascalCase(graphQLScalar.fieldName());
+		} else {
+			setterMethodName = "set" + getPascalCase(field.getName());
+		}
+
 		try {
 			return clazz.getDeclaredMethod(setterMethodName, field.getType());
 		} catch (NoSuchMethodException e) {
@@ -560,14 +604,13 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Invoke the getter for the given field name, on the given object. All check exceptions are hidden in a
-	 * {@link RuntimeException}
+	 * Invoke the getter for the given field name, on the given object. All check
+	 * exceptions are hidden in a {@link RuntimeException}
 	 * 
 	 * @param object
 	 * @param fieldName
 	 * @return the field's value for the given object
-	 * @throws RuntimeException
-	 *             If any exception occurs
+	 * @throws RuntimeException If any exception occurs
 	 */
 	public Object invokeGetter(Object object, String fieldName) {
 		try {
@@ -581,8 +624,8 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Returns the field of the given name, in the objet's class, whether if it's in the object's class, or in one of
-	 * its superclass.
+	 * Returns the field of the given name, in the objet's class, whether if it's in
+	 * the object's class, or in one of its superclass.
 	 * 
 	 * @param object
 	 * @param fieldName
@@ -603,14 +646,13 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Invoke the setter for the given field, on the given object. All check exceptions are hidden in a
-	 * {@link RuntimeException}
+	 * Invoke the setter for the given field, on the given object. All check
+	 * exceptions are hidden in a {@link RuntimeException}
 	 *
 	 * @param object
 	 * @param field
 	 * @param value
-	 * @throws RuntimeException
-	 *             If any exception occurs
+	 * @throws RuntimeException If any exception occurs
 	 */
 	public void invokeSetter(Object object, Field field, Object value) {
 		try {
@@ -623,14 +665,13 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Invoke the setter for the {@link Field} of the given name, on the given object. All check exceptions are hidden
-	 * in a {@link RuntimeException}
+	 * Invoke the setter for the {@link Field} of the given name, on the given
+	 * object. All check exceptions are hidden in a {@link RuntimeException}
 	 *
 	 * @param object
 	 * @param fieldName
 	 * @param value
-	 * @throws RuntimeException
-	 *             If any exception occurs
+	 * @throws RuntimeException If any exception occurs
 	 */
 	public void invokeSetter(Object object, String fieldName, Object value) {
 		try {
@@ -643,19 +684,20 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Adds, if necessary the import calculated from the given parameters, into the given set of imports.
+	 * Adds, if necessary the import calculated from the given parameters, into the
+	 * given set of imports.
 	 * 
-	 * @param imports
-	 *            The set of import, in which the import for the given parameters is to be added
-	 * @param targetPackageName
-	 *            The package in which is the class that will contain this import
-	 * @param classname
-	 *            the full classname of the class to import
+	 * @param imports           The set of import, in which the import for the given
+	 *                          parameters is to be added
+	 * @param targetPackageName The package in which is the class that will contain
+	 *                          this import
+	 * @param classname         the full classname of the class to import
 	 * @return
 	 */
 	public void addImport(Set<String> imports, String targetPackageName, String classname) {
 
-		// For inner class, the classname is "MainClassname$InnerClassname". And the inner class must be imported, even
+		// For inner class, the classname is "MainClassname$InnerClassname". And the
+		// inner class must be imported, even
 		// if we are in the same package. So, we replace all $ by dot
 		String fullClassname = classname.replace('$', '.');
 
@@ -671,15 +713,14 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Retrieves the asked method, from its name, class and parameters. This method hides the exception that could be
-	 * thrown, into a {@link RuntimeException}
+	 * Retrieves the asked method, from its name, class and parameters. This method
+	 * hides the exception that could be thrown, into a {@link RuntimeException}
 	 * 
 	 * @param <T>
 	 * @param t
 	 * @param field
 	 * @return
-	 * @throws RuntimeException
-	 *             When an exception occurs while getting the method
+	 * @throws RuntimeException When an exception occurs while getting the method
 	 */
 	public Method getMethod(String methodName, Class<?> clazz, Class<?>... parameterTypes) {
 		try {
@@ -693,10 +734,10 @@ public class GraphqlUtils {
 	/**
 	 * Calls the 'methodName' method on the given object.
 	 * 
-	 * @param methodName
-	 *            The name of the method. This method should have no parameter
-	 * @param object
-	 *            The given object, on which the 'methodName' method is to be called
+	 * @param methodName The name of the method. This method should have no
+	 *                   parameter
+	 * @param object     The given object, on which the 'methodName' method is to be
+	 *                   called
 	 * @return
 	 */
 	public Object invokeMethod(String methodName, Object object, Object... args) {
@@ -711,14 +752,14 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Invoke the given setter on the given object, with the given value. This method hides the exception that could be
-	 * thrown, into a {@link RuntimeException}
+	 * Invoke the given setter on the given object, with the given value. This
+	 * method hides the exception that could be thrown, into a
+	 * {@link RuntimeException}
 	 * 
 	 * @param method
 	 * @param o
 	 * @param value
-	 * @throws RuntimeException
-	 *             When an exception occurs while accessing the setter
+	 * @throws RuntimeException When an exception occurs while accessing the setter
 	 */
 	public Object invokeMethod(Method method, Object o, Object... args) {
 		try {
@@ -743,10 +784,10 @@ public class GraphqlUtils {
 	/**
 	 * Calls the 'methodName' method on the given class.
 	 * 
-	 * @param methodName
-	 *            The name of the method. This method should have no parameter
-	 * @param clazz
-	 *            The given class, on which the 'methodName' method is to be called
+	 * @param methodName The name of the method. This method should have no
+	 *                   parameter
+	 * @param clazz      The given class, on which the 'methodName' method is to be
+	 *                   called
 	 * @return
 	 */
 	public Object invokeStaticMethod(String methodName, Class<?> clazz) {
@@ -764,9 +805,10 @@ public class GraphqlUtils {
 	 * Returns a valid java identifier for the given name.
 	 * 
 	 * @param name
-	 * @return If name is a default java keyword (so it is not a valid java identifier), then the return prefixed by a
-	 *         {@link #JAVA_KEYWORD_PREFIX}. Otherwise (which is generally the case), the name is valid, and returned as
-	 *         is the given name
+	 * @return If name is a default java keyword (so it is not a valid java
+	 *         identifier), then the return prefixed by a
+	 *         {@link #JAVA_KEYWORD_PREFIX}. Otherwise (which is generally the
+	 *         case), the name is valid, and returned as is the given name
 	 */
 	public String getJavaName(String name) {
 		return isJavaReservedWords(name) ? JAVA_KEYWORD_PREFIX + name : name;
@@ -783,10 +825,10 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Extract the simple name for a class (without the package name), from its full class name (with the package name)
+	 * Extract the simple name for a class (without the package name), from its full
+	 * class name (with the package name)
 	 * 
-	 * @param classFullName
-	 *            The full class name, for instance java.util.Date
+	 * @param classFullName The full class name, for instance java.util.Date
 	 * @return The simple class name (in the above sample: Date)
 	 */
 	public String getClassSimpleName(String classFullName) {
@@ -795,10 +837,10 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Extract the package name for a class, from its full class name (with the package name)
+	 * Extract the package name for a class, from its full class name (with the
+	 * package name)
 	 * 
-	 * @param classFullName
-	 *            The full class name, for instance java.util.Date
+	 * @param classFullName The full class name, for instance java.util.Date
 	 * @return The simple class name (in the above sample: java.util)
 	 */
 	public String getPackageName(String classFullName) {
@@ -810,16 +852,14 @@ public class GraphqlUtils {
 	 * Concatenate a non limited number of lists into a stream.
 	 * 
 	 * @param <T>
-	 * @param clazz
-	 *            The T class
-	 * @param parallelStreams
-	 *            true if the returned stream should be a parallel one
-	 * @param t1
-	 *            An optional item, that'll be added to the returned stream (if not null)
-	 * @param t2
-	 *            An optional item, that'll be added to the returned stream (if not null)
-	 * @param t3
-	 *            An optional item, that'll be added to the returned stream (if not null)
+	 * @param clazz           The T class
+	 * @param parallelStreams true if the returned stream should be a parallel one
+	 * @param t1              An optional item, that'll be added to the returned
+	 *                        stream (if not null)
+	 * @param t2              An optional item, that'll be added to the returned
+	 *                        stream (if not null)
+	 * @param t3              An optional item, that'll be added to the returned
+	 *                        stream (if not null)
 	 * @param lists
 	 * @return
 	 */
@@ -849,14 +889,14 @@ public class GraphqlUtils {
 	/**
 	 * Get the internal value for a {@link Value} stored in the graphql-java AST.
 	 * 
-	 * @param value
-	 *            The value for which we need to extract the real value
-	 * @param graphqlTypeName
-	 *            The type name for this value, as defined in the GraphQL schema. This is used when it's an object
-	 *            value, to create an instance of the correct java class.
-	 * @param action
-	 *            The action that is executing, to generated an explicit error message. It can be for instance "Reading
-	 *            directive directiveName".
+	 * @param value           The value for which we need to extract the real value
+	 * @param graphqlTypeName The type name for this value, as defined in the
+	 *                        GraphQL schema. This is used when it's an object
+	 *                        value, to create an instance of the correct java
+	 *                        class.
+	 * @param action          The action that is executing, to generated an explicit
+	 *                        error message. It can be for instance "Reading
+	 *                        directive directiveName".
 	 * @return
 	 */
 	Object getValue(Value<?> value, String graphqlTypeName, String action) {
@@ -869,7 +909,8 @@ public class GraphqlUtils {
 		} else if (value instanceof FloatValue) {
 			return ((FloatValue) value).getValue();
 		} else if (value instanceof graphql.language.EnumValue) {
-			// For enums, we can't retrieve an instance of the enum value, as the enum class has not been created yet.
+			// For enums, we can't retrieve an instance of the enum value, as the enum class
+			// has not been created yet.
 			// So we just return the label of the enum, as a String.
 			return ((graphql.language.EnumValue) value).getName();
 		} else if (value instanceof NullValue) {
@@ -891,9 +932,10 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Returns the given value, as text, as it can be written into a generated GraphQL schema.<BR/>
-	 * A <I>str</I> string default value will be returned as <I>"str"</I>,a <I>JEDI</I> enum value will be returned as
-	 * <I>JEDI</I>, ...
+	 * Returns the given value, as text, as it can be written into a generated
+	 * GraphQL schema.<BR/>
+	 * A <I>str</I> string default value will be returned as <I>"str"</I>,a
+	 * <I>JEDI</I> enum value will be returned as <I>JEDI</I>, ...
 	 * 
 	 * @return
 	 */
@@ -909,7 +951,8 @@ public class GraphqlUtils {
 		} else if (value instanceof FloatValue) {
 			return ((FloatValue) value).getValue().toString();
 		} else if (value instanceof graphql.language.EnumValue) {
-			// For enums, we can't retrieve an instance of the enum value, as the enum class has not been created yet.
+			// For enums, we can't retrieve an instance of the enum value, as the enum class
+			// has not been created yet.
 			// So we just return the label of the enum, as a String.
 			return ((graphql.language.EnumValue) value).getName();
 		} else if (value instanceof ObjectValue) {
@@ -944,18 +987,20 @@ public class GraphqlUtils {
 	}
 
 	/**
-	 * Returns the maximum or minimum value for the lastModified of the given file, or of all the files (not folders)
-	 * contained into this folder.
+	 * Returns the maximum or minimum value for the lastModified of the given file,
+	 * or of all the files (not folders) contained into this folder.
 	 * 
-	 * @param fileOrFolder
-	 *            A file or a folder
-	 * @param maxValue
-	 *            If true and fileOrFolder is a folder, then this method returns the maximum {@link File#lastModified()}
-	 *            found for all its files. If false, then the minimum value is returned.
-	 * @return if fileOrFolder doesn't exist, then returns null. If fileOrFolder is a file, then returns its
-	 *         {@link File#lastModified()} value. Otherwise its a folder. Then it loops into this folder, its subfolders
-	 *         (and so on), and returns the maximum or the minimum (depending on the value of maxValue) lastModified
-	 *         date found for the files found. The date of the directories are ignored.
+	 * @param fileOrFolder A file or a folder
+	 * @param maxValue     If true and fileOrFolder is a folder, then this method
+	 *                     returns the maximum {@link File#lastModified()} found for
+	 *                     all its files. If false, then the minimum value is
+	 *                     returned.
+	 * @return if fileOrFolder doesn't exist, then returns null. If fileOrFolder is
+	 *         a file, then returns its {@link File#lastModified()} value. Otherwise
+	 *         its a folder. Then it loops into this folder, its subfolders (and so
+	 *         on), and returns the maximum or the minimum (depending on the value
+	 *         of maxValue) lastModified date found for the files found. The date of
+	 *         the directories are ignored.
 	 */
 	public Long getLastModified(File fileOrFolder, boolean maxValue) {
 		if (fileOrFolder == null || !fileOrFolder.exists()) {
@@ -989,7 +1034,8 @@ public class GraphqlUtils {
 			return "";
 		}
 
-		// Let's remove all spaces. It will be easier to insert the good double quotes, afterwards.
+		// Let's remove all spaces. It will be easier to insert the good double quotes,
+		// afterwards.
 		// Let's say scanBasePackages is: a, b, c,d
 		scanBasePackages = scanBasePackages.replace(" ", "");// scanBasePackages is now a,b,c,d
 		scanBasePackages = scanBasePackages.replace(",", "\",\"");// scanBasePackages is now a","b","c","d
@@ -1030,12 +1076,14 @@ public class GraphqlUtils {
 	// * @return
 	// */
 	// public String graphqlEncodeString(String str) {
-	// return str.replace("\\", "\\\\").replace("\"", "\\\"").replace("\b", "\\b").replace("\f", "\\f")
+	// return str.replace("\\", "\\\\").replace("\"", "\\\"").replace("\b",
+	// "\\b").replace("\f", "\\f")
 	// .replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
 	// }
 	//
 	// /**
-	// * De-encode a string according to GraphQL specification rules. See {@link #graphqlEncodeString(String)} for the
+	// * De-encode a string according to GraphQL specification rules. See {@link
+	// #graphqlEncodeString(String)} for the
 	// * GraphQL rules.
 	// *
 	// * @param str
@@ -1054,7 +1102,8 @@ public class GraphqlUtils {
 	// sb.append(c);
 	// }
 	// }
-	// return str.replace("\\\\", "\\").replace("\\\"", "\"").replace("\b", "\\b").replace("\f", "\\f")
+	// return str.replace("\\\\", "\\").replace("\\\"", "\"").replace("\b",
+	// "\\b").replace("\f", "\\f")
 	// .replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
 	// }
 }

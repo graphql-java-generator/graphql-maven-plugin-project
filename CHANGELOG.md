@@ -9,6 +9,14 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+
+# Not released yet
+
+
+Both modes:
+* Issue #166 : Corrected an issue that prevents to request data when GraphQL field's name are java reserved keywords
+
+
 # 1.18.8
 
 Dependency upgrade: 

@@ -101,6 +101,7 @@ type MyQueryType {
 		param1: EnumWithReservedJavaKeywordAsValues=abstract,
 		param2: [EnumWithReservedJavaKeywordAsValues]=[assert,boolean]
 		): [EnumWithReservedJavaKeywordAsValues]
+	reservedJavaKeywordAllFieldCases: ReservedJavaKeywordAllFieldCases
     if: String
     implements: String
     import: String
@@ -187,39 +188,6 @@ interface Commented {
 interface UnusedInterface {
 	aNonUSedField: String
 }
-
-# This class contains fields that are Java reserved words. A query allows to check that mapping properly occurs on both client and server side.
-#type JavaReservedWords {
-#    if: String
-#    implements: String
-#    import: String
-#    instanceof: String
-#    int: String
-#    interface: String
-#    long: String
-#    native: String
-#    new: String
-#    package: String
-#    private: String
-#    protected: String
-#    public: String
-#    return: String
-#    short: String
-#    static: String
-#    strictfp: String
-#    super: String
-#    switch: String
-#    synchronized: String
-#    this: String
-#    throw: String
-#    throws: String
-#    transient: String
-#    try: String
-#    void: String
-#    volatile: String
-#    while: String
-#}
-
 
 ##############################################################################################################
 ################  ALL GRAPHQL CASES TEST CASES################################################################
@@ -413,7 +381,7 @@ interface Character @testDirective(value:"on Character interface") @anotherTestD
 }
 
 union AnyCharacter @testDirective(value:"on Union")
-= Human | Droid
+= Human | Droid 
 
 
 
@@ -788,4 +756,24 @@ type ReservedJavaKeywordAsObjectField {
     void: Human
     volatile: Human
     while: Human
+}
+
+#############################
+# test for issue #166:
+# This class contains fields that are Java reserved words. A query allows to check that mapping properly occurs on both client and server side.
+type ReservedJavaKeywordAllFieldCases {
+	# A field with a java reserved name which is an enum 
+    if: Unit
+    # A field with a _non_ java reserved name which is an interface (to check standard behavior)
+    nonJavaKeywordField: WithID
+	# A field with a java reserved name which is an interface
+    implements: WithID
+	# A field with a java reserved name which is a scalar (standard)
+    import: String
+	# A field with a java reserved name which is a scalar (custom)
+    instanceof: Date
+	# A field with a java reserved name which is an object type
+    int: Human
+	# A field with a java reserved name which is a union
+    interface: AnyCharacter
 }

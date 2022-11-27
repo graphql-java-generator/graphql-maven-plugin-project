@@ -7,15 +7,25 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.*;
-import org.allGraphQLCases.server.STP_AllFieldCases_STS;
-import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
+import org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES;
+import org.allGraphQLCases.server.SEP_Episode_SES;
+import org.allGraphQLCases.server.SEP_extends_SES;
+import org.allGraphQLCases.server.SINP_AllFieldCasesInput_SINS;
 import org.allGraphQLCases.server.SINP_CharacterInput_SINS;
 import org.allGraphQLCases.server.SINP_DroidInput_SINS;
-import org.allGraphQLCases.server.SEP_EnumWithReservedJavaKeywordAsValues_SES;
-import org.allGraphQLCases.server.STP_Foo140_STS;
 import org.allGraphQLCases.server.SINP_HumanInput_SINS;
+import org.allGraphQLCases.server.SIP_CharacterConnection_SIS;
+import org.allGraphQLCases.server.SIP_Character_SIS;
+import org.allGraphQLCases.server.SIP_Client_SIS;
+import org.allGraphQLCases.server.STP_AllFieldCases_STS;
+import org.allGraphQLCases.server.STP_Droid_STS;
+import org.allGraphQLCases.server.STP_Foo140_STS;
+import org.allGraphQLCases.server.STP_HumanConnection_STS;
+import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_MyQueryType_STS;
+import org.allGraphQLCases.server.STP_ReservedJavaKeywordAllFieldCases_STS;
+import org.allGraphQLCases.server.STP_break_STS;
+import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.allGraphQLCases.server.util.DataFetchersDelegateMyQueryType;
 import org.springframework.stereotype.Component;
 
@@ -48,7 +58,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public SIP_Character_SIS withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment, SINP_CharacterInput_SINS character) {
+	public SIP_Character_SIS withOneOptionalParam(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_CharacterInput_SINS character) {
 		if (character == null) {
 			return generator.generateInstance(STP_Human_STS.class);
 		} else {
@@ -67,25 +78,30 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public SIP_Character_SIS withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment, SINP_CharacterInput_SINS character) {
+	public SIP_Character_SIS withOneMandatoryParam(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_CharacterInput_SINS character) {
 		SIP_Character_SIS c = mapper.map(character, getClassFromName(SIP_Character_SIS.class, character.getType()));
 		c.setId(UUID.randomUUID());
 		return c;
 	}
 
 	@Override
-	public SIP_Character_SIS withEnum(DataFetchingEnvironment dataFetchingEnvironment, SEP_Episode_SES SEP_Episode_SES) {
+	public SIP_Character_SIS withEnum(DataFetchingEnvironment dataFetchingEnvironment,
+			SEP_Episode_SES SEP_Episode_SES) {
 		SIP_Character_SIS c = generator.generateInstance(STP_Droid_STS.class);
 
-		// The SEP_Episode_SES list (appearsIn) will be filled by another call (the graphql manages the joins).
-		// To check the given parameter, we put the SEP_Episode_SES name in the returned character's name
+		// The SEP_Episode_SES list (appearsIn) will be filled by another call (the
+		// graphql manages the joins).
+		// To check the given parameter, we put the SEP_Episode_SES name in the returned
+		// character's name
 		c.setName(SEP_Episode_SES.name());
 
 		return c;
 	}
 
 	@Override
-	public STP_AllFieldCases_STS withListOfList(DataFetchingEnvironment dataFetchingEnvironment, List<List<Double>> matrix) {
+	public STP_AllFieldCases_STS withListOfList(DataFetchingEnvironment dataFetchingEnvironment,
+			List<List<Double>> matrix) {
 		STP_AllFieldCases_STS ret = new STP_AllFieldCases_STS();
 		ret.setMatrix(matrix);
 		return ret;
@@ -128,7 +144,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public STP_AllFieldCases_STS allFieldCases(DataFetchingEnvironment dataFetchingEnvironment, SINP_AllFieldCasesInput_SINS input) {
+	public STP_AllFieldCases_STS allFieldCases(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_AllFieldCasesInput_SINS input) {
 		STP_AllFieldCases_STS ret;
 		if (input != null) {
 			ret = mapper.map(input, STP_AllFieldCases_STS.class);
@@ -142,7 +159,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	public STP_break_STS aBreak(DataFetchingEnvironment dataFetchingEnvironment) {
 		STP_break_STS ret = new STP_break_STS();
 
-		// Let's retrieve the input parameter test, that contains the expected value to return
+		// Let's retrieve the input parameter test, that contains the expected value to
+		// return
 		Field aBreak = (Field) dataFetchingEnvironment.getOperationDefinition().getSelectionSet().getSelections()
 				.get(0);
 		Field aCase = (Field) aBreak.getSelectionSet().getSelections().get(0);
@@ -237,8 +255,9 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public List<SUP_AnyCharacter_SUS> unionTest(DataFetchingEnvironment dataFetchingEnvironment, SINP_HumanInput_SINS human1,
-			SINP_HumanInput_SINS human2, SINP_DroidInput_SINS droid1, SINP_DroidInput_SINS droid2) {
+	public List<SUP_AnyCharacter_SUS> unionTest(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_HumanInput_SINS human1, SINP_HumanInput_SINS human2, SINP_DroidInput_SINS droid1,
+			SINP_DroidInput_SINS droid2) {
 		List<SUP_AnyCharacter_SUS> ret = new ArrayList<>();
 
 		if (human1 != null) {
@@ -277,8 +296,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public STP_Droid_STS withTwoMandatoryParamDefaultVal(DataFetchingEnvironment dataFetchingEnvironment, SINP_DroidInput_SINS theHero,
-			Integer num) {
+	public STP_Droid_STS withTwoMandatoryParamDefaultVal(DataFetchingEnvironment dataFetchingEnvironment,
+			SINP_DroidInput_SINS theHero, Integer num) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -489,6 +508,12 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public String _while(DataFetchingEnvironment dataFetchingEnvironment) {
 		return "a value for _while";
+	}
+
+	@Override
+	public STP_ReservedJavaKeywordAllFieldCases_STS reservedJavaKeywordAllFieldCases(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return generator.generateInstance(STP_ReservedJavaKeywordAllFieldCases_STS.class);
 	}
 
 }

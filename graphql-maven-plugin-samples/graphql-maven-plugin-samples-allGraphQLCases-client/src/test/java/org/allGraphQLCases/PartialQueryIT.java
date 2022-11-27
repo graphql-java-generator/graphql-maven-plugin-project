@@ -9,14 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_ReservedJavaKeywordAllFieldCases_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
@@ -167,8 +167,8 @@ public class PartialQueryIT {
 	void test_Issue139_EnumValueListOfJavaReservedKeywords_withNullParams()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("",
-				null, null);
+		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = queryType
+				.listOfEnumWithReservedJavaKeywordAsValues("", null, null);
 		// the two parameters are null. Their default values are:
 		// param1: CEP_EnumWithReservedJavaKeywordAsValues_CES=abstract,
 		// param2: [CEP_EnumWithReservedJavaKeywordAsValues_CES]=[assert,boolean]
@@ -184,20 +184,34 @@ public class PartialQueryIT {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	void test_Issue139_EnumValueListOfJavaReservedKeywords()
+	void test_Issue166_FieldAsJavaReservedKeywords()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Go, go, go
-		List<CEP_EnumWithReservedJavaKeywordAsValues_CES> response = queryType.listOfEnumWithReservedJavaKeywordAsValues("", //
-				/* param1 */CEP_EnumWithReservedJavaKeywordAsValues_CES._return, //
-				/* param2 */ Arrays.asList(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte,
-						CEP_EnumWithReservedJavaKeywordAsValues_CES._const));
+		CTP_ReservedJavaKeywordAllFieldCases_CTS response = queryType.reservedJavaKeywordAllFieldCases(""//
+				+ "{" //
+				+ "  if "// the if type is an enum (Unit)
+				+ "  nonJavaKeywordField {id} " // The nonJavaKeywordField field is an interface (WithID)
+				+ "  implements {id} " // The implements field is an interface (WithID)
+				+ "  import "// The import field is a scalar (String)
+				+ "  instanceof "// The instanceof field is custom scalar (Date)
+				+ "  int {id name} "// The int field is an object type (Human)
+				+ "  interface {"// The interface field is an union (AnyCharacter). Queries on union must specify what
+									// field should be returned, depending on the returned type.
+				+ "      ... on Human {id name}" //
+				+ "      ... on Droid {id name}" //
+				+ "  }" //
+				+ "}");
 
 		// Verification
 		assertNotNull(response);
-		assertEquals(3, response.size());
-		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._return, response.get(0));
-		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte, response.get(1));
-		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._const, response.get(2));
+		assertNotNull(response.get__typename());
+		assertNotNull(response.getIf());
+		assertNotNull(response.getNonJavaKeywordField());
+		assertNotNull(response.getImplements());
+		assertNotNull(response.getImport());
+		assertNotNull(response.getInstanceof());
+		assertNotNull(response.getInt());
+		assertNotNull(response.getInterface());
 	}
 
 }
