@@ -9,6 +9,7 @@ import java.util.List;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
+import com.graphql_java_generator.plugin.language.Description;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.FieldTypeAST;
 import com.graphql_java_generator.plugin.language.Relation;
@@ -84,9 +85,12 @@ public class FieldImpl implements Field {
 	@Builder.Default
 	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
 
-	/** The comments that have been found for this field, in the provided GraphQL schema */
+	/** The comments that have been found before this field, in the provided GraphQL schema */
 	@Builder.Default
 	private List<String> comments = new ArrayList<>();
+
+	/** The description of this field, in the provided GraphQL schema */
+	private Description description;
 
 	@Override
 	public Type getType() {

@@ -52,8 +52,10 @@ import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.client.GraphqlClientUtils;
 
 /**
-#foreach ($comment in $object.comments)
- * $comment
+#if ($object.description)
+#foreach ($line in $object.description.lines)
+ * ${line}
+#end
 #end
 #if ($object.comments.size() > 0)
  * <BR/>
@@ -214,7 +216,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	}
 
 #foreach ($field in $object.fields)
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -231,7 +240,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}WithBindValues(queryResponseDef#inputValues(), parameters);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -248,7 +264,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}(queryResponseDef#inputValues(), paramsAndValues);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -265,7 +288,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}WithBindValues(objectResponse#inputValues(), parameters);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -282,7 +312,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}(objectResponse#inputValues(), paramsAndValues);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -291,8 +328,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.get${field.pascalCaseName}ResponseBuilder();
 	}
 
-
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */

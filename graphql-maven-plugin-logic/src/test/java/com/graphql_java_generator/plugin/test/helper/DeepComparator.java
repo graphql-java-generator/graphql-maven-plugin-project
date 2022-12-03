@@ -491,14 +491,40 @@ public class DeepComparator implements Cloneable {
 		// Let's look for all items in o1 that doesn't exist in o2
 		if (nbMaxDifferences > 0) {
 			for (Object item1 : o1) {
-				// Each item of o1 must exist in o2.
 				boolean found = false;
+				String idField = idFields.get(item1.getClass());
+
+				// Each item of o1 must exist in o2.
 				for (Object item2 : o2) {
+
+					// o1 and o2 are of the same class, and this class is identified by an id field. If the value of
+					// their id fields is the same, then we consider that they are the same object.
+					if (item2.getClass() == item1.getClass() && idField != null) {
+						Object id1 = graphqlUtils.invokeGetter(item1, idField);
+						Object id2 = graphqlUtils.invokeGetter(item2, idField);
+						if (compare(id1, id2)) {
+							// The two id fields are identical. These object are "the same", but may differ on secondary
+							// attributes. Let's check that (doing this allows to have a specific difference's message,
+							// which is important to understand which differences have been found)
+							List<Difference> diffs = differences(item1, item2, nbMaxDifferences,
+									path + "[" + id1 + "]");
+							if (diffs.size() > 0) {
+								differences.addAll(diffs);
+							}
+
+							found = true;
+							break;
+						}
+					}
+
+					// Otherwise, we just compare them to check if they are identical
 					if (compare(item1, item2)) {
 						found = true;
 						break;
 					}
 				}
+
+				// Once here, the o1 object has been found in the second list ... or not
 
 				if (!found) {
 					// Too bad, item1 was not found in o2.
@@ -517,8 +543,17 @@ public class DeepComparator implements Cloneable {
 		if (nbMaxDifferences > 0) {
 			for (Object item2 : o2) {
 				boolean found = false;
+				String idField = idFields.get(item2.getClass());
+
 				for (Object item1 : o1) {
-					if (compare(item1, item2)) {
+					// o1 and o2 are of the same class, and this class is identified by an id field. If the value of
+					// their id fields is the same, then we consider that they are the same object.
+					if (item2.getClass() == item1.getClass() && idField != null) {
+						// It is the same object. The comparison has already been done in the previous loop. So we're
+						// done for item1.
+						found = true;
+						break;
+					} else if (compare(item1, item2)) {
 						found = true;
 						break;
 					}

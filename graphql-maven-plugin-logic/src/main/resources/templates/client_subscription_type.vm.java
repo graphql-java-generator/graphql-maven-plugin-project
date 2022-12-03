@@ -59,13 +59,12 @@ import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
 
 /**
-#foreach ($comment in $object.comments)
- * $comment
+#if ($object.description)
+#foreach ($line in $object.description.lines)
+ * ${line}
 #end
-#if ($object.comments.size() > 0)
- * <BR/>
- * <BR/>
 #end
+ * <br/>
  * This class contains the response for a full request. See the 
  * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client_subscription.html">plugin web site</A> 
  * for more information on full and partial requests.<BR/>
@@ -164,7 +163,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 
 #foreach ($field in $object.fields)
 #if ($field.name != "__typename")
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -178,7 +184,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}WithBindValues(queryResponseDef, subscriptionCallback #inputValues(), parameters);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -191,7 +204,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}(queryResponseDef, subscriptionCallback #inputValues(), paramsAndValues);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -204,7 +224,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}WithBindValues(objectResponse, subscriptionCallback #inputValues(), parameters);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -217,7 +244,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.${field.javaName}(objectResponse, subscriptionCallback #inputValues(), paramsAndValues);
 	}
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
@@ -227,7 +261,14 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	}
 
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 *
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */

@@ -12,6 +12,7 @@ import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
+import com.graphql_java_generator.plugin.language.Description;
 import com.graphql_java_generator.plugin.language.Field;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
@@ -53,8 +54,11 @@ public abstract class AbstractType implements Type {
 	/** All directives that have been defined in the GraphQL schema for this type */
 	private List<AppliedDirective> appliedDirectives = new ArrayList<>();
 
-	/** The comments that have been found for this object, in the provided GraphQL schema */
+	/** The comments that have been found before this type, in the provided GraphQL schema */
 	private List<String> comments = new ArrayList<>();
+
+	/** The description of this type, in the provided GraphQL schema */
+	private Description description = null;
 
 	/** The GraphQL type for this type */
 	final private GraphQlType graphQlType;
@@ -89,18 +93,19 @@ public abstract class AbstractType implements Type {
 		return getJavaName();
 	}
 
-    @Override
-    public String getJavaName() {
-        // Optionally add a prefix and/or suffix to the name
-		String name = Stream.of(getPrefix(), getName(), getSuffix())
-				.filter(Objects::nonNull).collect(Collectors.joining());
+	@Override
+	public String getJavaName() {
+		// Optionally add a prefix and/or suffix to the name
+		String name = Stream.of(getPrefix(), getName(), getSuffix()).filter(Objects::nonNull)
+				.collect(Collectors.joining());
 
 		return GraphqlUtils.graphqlUtils.getJavaName(name);
-    }
+	}
 
 	protected String getPrefix() {
 		return "";
 	}
+
 	protected String getSuffix() {
 		return "";
 	}

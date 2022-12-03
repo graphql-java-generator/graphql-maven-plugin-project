@@ -3,7 +3,7 @@ scalar Date
 	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
 	# (see issue 2055)
 
-# The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars)
+""" The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars) """
 scalar DateTime
 
 scalar Long
@@ -11,7 +11,7 @@ scalar Long
 directive @IDScalarDirective
 on SCALAR
 
-# A comment, to check that comments are properly managed when writing the generated schema
+# No description is allowed here (only a comment)
 extend scalar ID @IDScalarDirective
 
 directive @RelayConnection
@@ -29,13 +29,21 @@ on
 
 
 schema @testDirective(value:"on Schema") {
-	#A comment on the query
+	""" A description on the query """
     query: MyQueryType
     mutation: AnotherMutationType
     # The subscription is defined in the 'extend schema', here below
 }
 
+"""
+This is a description to describe the type MyQueryType
+on two lines
+"""
 type MyQueryType {
+	"""
+	This is a description to describe the field withoutParameters
+	on two lines
+	"""
 	withoutParameters: [Character]!
     withOneOptionalParam(character: CharacterInput): Character
     withOneMandatoryParam(character: CharacterInput!): Character
@@ -44,36 +52,48 @@ type MyQueryType {
     withEnum(episode: Episode! = NEWHOPE): Character
     withListOfList(matrix: [[Float]]!): AllFieldCases
     
+    """
     ################################################################################
     # withList return a list of Characters, matching the given list of CharacterInput.
     # The name of the first Character returned is replaced by the given firstName.
-    # All ids are generated  
+    # All ids are generated
+    """  
     withList(firstName: String!, characters: [CharacterInput!]!): [Character]
 
+    """
     ################################################################################
    	# Complementary tests with the AllFieldCases Object
+   	"""
 	allFieldCases(input: AllFieldCasesInput): AllFieldCases  
 	  
+    """
     ################################################################################
    	# Test for unions
+   	"""
 	unionTest(human1: HumanInput, human2: HumanInput, droid1: DroidInput, droid2: DroidInput): [AnyCharacter!]!    
         
+    """
     ################################################################################
     # error always returns an error!  (used to check the error management)
+    """
     error(errorLabel: String!): Character!
     
-    # Check for GraphQL identifier that are java keywords
+    """ Check for GraphQL identifier that are java keywords """
     aBreak: break
     
     ################################################################################
     # queries to check directive behavior
     
+    """
     # Returns the value, and potentially the anotherValue of the @testDirective directive set on the directiveOnQuery query. 
     # List is null if the directive is not present.
+    """
     directiveOnQuery(uppercase: Boolean): [String]!
 
+    """
     # Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
     # List is null if the directive is not present.
+    """
     directiveOnField: Character!
 
     
@@ -85,17 +105,23 @@ type MyQueryType {
     ################################################################################
     # queries created to test some issues
     
-    #issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+    """
+    #issue53 is about custom scalars as parameter for a query/mutation/subscription, 
+    that was not properly serialized/deserialized
+    """
     issue53(date: Date!): Date!
     
-    #issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no method with a simple float parameter
+    """
+    #issue82 is about hard coded values as parameters. Other types are tests with other queries, 
+    but there was no method with a simple float parameter
+    """
     issue82Float(aFloat: Float!): Float!
     issue82ID(aID: ID!): ID!
 
-	# test for issue #128 (compilation error when a Query returns a type 'Client')
+	""" test for issue #128 (compilation error when a Query returns a type 'Client') """
 	issue128: Client
 	
-	# test for issue #139 (use of java reserved keyword)
+	""" test for issue #139 (use of java reserved keyword) """
 	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues
 	listOfEnumWithReservedJavaKeywordAsValues(
 		param1: EnumWithReservedJavaKeywordAsValues=abstract,
@@ -131,45 +157,49 @@ type MyQueryType {
     volatile: String
     while: String
 	
-	# test for issue #140 (error for type that implements multiple interfaces)
+	""" test for issue #140 (error for type that implements multiple interfaces) """
     foo140: Foo140
 }
 
+" A mono line description for AnotherMutationType " 
 type AnotherMutationType {
 	createHuman(human: HumanInput!): Human!
 	createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
 	
-	# Tests for issue 51
+	" Tests for issue 51 "
 	deleteSnacks(id: [ID]) : Boolean
 
-	# test for issue #139 (use of java reserved keyword)
+	""" test for issue #139 (use of java reserved keyword) """
     if: String
     implements: String
 }
 
+"A mono line description for TheSubscriptionType" 
 type TheSubscriptionType {
 	
-	# Will be notified for each Human added to this Episode 
+	""" Will be notified for each Human added to this Episode """
 	subscribeNewHumanForEpisode(episode: Episode!): Human!
 	
-	# Issue 54
+	""" Issue 54 """
 	subscribeToAList: [Int]!
 	subscribeToAListOfScalars: [Date]
 	
-    # issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+    """ issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized """
     issue53(date: Date!): Date!
     
-    # Some subscriptions to test all kind of input parameters (to check proper serialization and deserialization)
+    """ Some subscriptions to test all kind of input parameters (to check proper serialization and deserialization) """
     allGraphQLCasesInput(input: AllFieldCasesInput!): AllFieldCases!
     allGraphQLCasesParam(id: String!, name: String!, age: Long!, integer: Int!, date: Date!, dates: [Date]!, matrix: [[Float]]!, oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!): AllFieldCases!
     
-    # A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
+    """
+    A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
+    """
     subscriptionTest(param: SubscriptionTestParam!): String!
     
-    # Issue 122: Check Subscription behavior when notification response is null
+    """ Issue 122: Check Subscription behavior when notification response is null """
     subscriptionWithNullResponse: String
 
-	# test for issue #139 (use of java reserved keyword)
+	""" test for issue #139 (use of java reserved keyword) """
 	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues
 	listOfEnumWithReservedJavaKeywordAsValues: [EnumWithReservedJavaKeywordAsValues]
     if: String
@@ -233,8 +263,10 @@ enum Unit {
 }
 
 
-# This type is a clone of the InterfaceAllFieldCases interface. 
-# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
+This type is a clone of the InterfaceAllFieldCases interface. 
+Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
 type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherTestDirective {
     id: ID! @testDirective(value:"on Field")
     name: String!
@@ -287,8 +319,10 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     	]): AllFieldCases!
 }
 
-# This interface is a clone of the AllFieldCases type. 
-# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
+This interface is a clone of the AllFieldCases type. 
+Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
 interface AllFieldCasesInterface  {
     id: ID!
     name: String!
@@ -306,7 +340,7 @@ interface AllFieldCasesInterface  {
     listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
 }
 
-# A concrete class that just implements the above interface
+""" A concrete class that just implements the above interface """
 type AllFieldCasesInterfaceType implements AllFieldCasesInterface & WithID {
     id: ID!
     name: String!
@@ -416,7 +450,7 @@ input DroidInput {
 ##############################################################################################################
 
 
-# A test directive, that can be added anywhere
+""" A test directive, that can be added anywhere """
 directive @testDirective(
   value: String! = "A value to test default values"
   anotherValue: String = null
@@ -435,7 +469,7 @@ directive @testDirective(
 # TypeSystemDirectiveLocation
 	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
 
-# Another test directive, to check that two directives can be added
+""" Another test directive, to check that two directives can be added """
 directive @anotherTestDirective
 on
 # ExecutableDirectiveLocation
@@ -559,21 +593,26 @@ type TBar2 implements IBar2 & IBar1 {
     id: ID
 }
 
-# TFoo1 is the basic test case, for issue #114
+""" TFoo1 is the basic test case, for issue #114 """
 type TFoo1 implements IFoo1 {
     id: ID
-    # The 'bar' field is a valid GraphQL field. 
-    # But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
-    # (and not IBar itself as declared in IFoo)
+    
+    """
+    The 'bar' field is a valid GraphQL field. 
+    But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
+    (and not IBar itself as declared in IFoo)
+    """
     bar: TBar1 
 }
 
-# TFoo12 is a more complex one, with more than one interface implemented
+""" TFoo12 is a more complex one, with more than one interface implemented """
 type TFoo12 implements IFoo1 & IFoo2 {
     id: ID
-    # The 'bar' field is a valid GraphQL field. 
-    # But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
-    # (and not IBar itself as declared in IFoo)
+    """
+     The 'bar' field is a valid GraphQL field. 
+     But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
+     (and not IBar itself as declared in IFoo)
+    """
     bar: TBar12
 }
 
@@ -758,22 +797,30 @@ type ReservedJavaKeywordAsObjectField {
     while: Human
 }
 
+"""
 #############################
-# test for issue #166:
-# This class contains fields that are Java reserved words. A query allows to check that mapping properly occurs on both client and server side.
+test for issue #166:
+This class contains fields that are Java reserved words. A query allows to check that mapping properly occurs on both client and server side.
+"""
 type ReservedJavaKeywordAllFieldCases {
-	# A field with a java reserved name which is an enum 
+	""" A field with a java reserved name which is an enum """ 
     if: Unit
-    # A field with a _non_ java reserved name which is an interface (to check standard behavior)
+    
+    """ A field with a _non_ java reserved name which is an interface (to check standard behavior) """
     nonJavaKeywordField: WithID
-	# A field with a java reserved name which is an interface
+	
+	""" A field with a java reserved name which is an interface """
     implements: WithID
-	# A field with a java reserved name which is a scalar (standard)
+    
+	""" A field with a java reserved name which is a scalar (standard) """
     import: String
-	# A field with a java reserved name which is a scalar (custom)
+	
+	""" A field with a java reserved name which is a scalar (custom) """
     instanceof: Date
-	# A field with a java reserved name which is an object type
+    
+	""" A field with a java reserved name which is an object type """
     int: Human
-	# A field with a java reserved name which is a union
+    
+	""" A field with a java reserved name which is a union """
     interface: AnyCharacter
 }

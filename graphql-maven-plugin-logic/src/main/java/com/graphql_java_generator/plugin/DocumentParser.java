@@ -25,6 +25,7 @@ import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.language.AppliedDirective;
+import com.graphql_java_generator.plugin.language.Description;
 import com.graphql_java_generator.plugin.language.Directive;
 import com.graphql_java_generator.plugin.language.DirectiveLocation;
 import com.graphql_java_generator.plugin.language.EnumValue;
@@ -482,8 +483,13 @@ public abstract class DocumentParser {
 		directive.setArguments(node.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
 				.collect(Collectors.toList()));
 
-		// Let's store its comments
+		// Let's store its comments,
 		directive.setComments(node.getComments());
+
+		// its description,
+		if (node.getDescription() != null) {
+			directive.setDescription(getDescription(node.getDescription()));
+		}
 
 		// and all its locations
 		for (graphql.language.DirectiveLocation dl : node.getDirectiveLocations()) {
@@ -676,6 +682,11 @@ public abstract class DocumentParser {
 		objectType.getComments()
 				.addAll(node.getComments().stream().map(c -> c.getContent()).collect(Collectors.toList()));
 
+		// and its description,
+		if (node.getDescription() != null) {
+			objectType.setDescription(getDescription(node.getDescription()));
+		}
+
 		// Let's read all the interfaces this object implements
 		for (graphql.language.Type type : node.getImplements()) {
 			if (type instanceof TypeName) {
@@ -710,6 +721,11 @@ public abstract class DocumentParser {
 		objectType.getComments()
 				.addAll(node.getComments().stream().map(c -> c.getContent()).collect(Collectors.toList()));
 
+		// and its description,
+		if (node.getDescription() != null) {
+			objectType.setDescription(getDescription(node.getDescription()));
+		}
+
 		// Let's read all its fields
 		for (InputValueDefinition def : node.getInputValueDefinitions()) {
 			FieldImpl field = readFieldTypeDefinition(def);
@@ -742,6 +758,11 @@ public abstract class DocumentParser {
 		// Let's store its comments
 		interfaceType.setComments(node.getComments());
 
+		// and its description,
+		if (node.getDescription() != null) {
+			interfaceType.setDescription(getDescription(node.getDescription()));
+		}
+
 		// Let's read all its fields
 		interfaceType.setFields(node.getFieldDefinitions().stream().map(def -> readField(def, interfaceType))
 				.collect(Collectors.toList()));
@@ -772,6 +793,11 @@ public abstract class DocumentParser {
 		// Let's store its comments
 		unionType.getComments()
 				.addAll(node.getComments().stream().map(c -> c.getContent()).collect(Collectors.toList()));
+
+		// and its description,
+		if (node.getDescription() != null) {
+			unionType.setDescription(getDescription(node.getDescription()));
+		}
 
 		for (graphql.language.Type<?> memberType : node.getMemberTypes()) {
 			String memberTypeName = (String) graphqlUtils.invokeMethod("getName", memberType);
@@ -834,6 +860,11 @@ public abstract class DocumentParser {
 		// Let's store its comments
 		customScalarType.setComments(node.getComments());
 
+		// and its description,
+		if (node.getDescription() != null) {
+			customScalarType.setDescription(getDescription(node.getDescription()));
+		}
+
 		return customScalarType;
 	}
 
@@ -852,6 +883,11 @@ public abstract class DocumentParser {
 		// Let's store its comments
 		enumType.getComments()
 				.addAll(node.getComments().stream().map(c -> c.getContent()).collect(Collectors.toList()));
+
+		// and its description,
+		if (node.getDescription() != null) {
+			enumType.setDescription(getDescription(node.getDescription()));
+		}
 
 		for (EnumValueDefinition enumValDef : node.getEnumValueDefinitions()) {
 			EnumValue val = EnumValueImpl.builder().name(enumValDef.getName())
@@ -882,6 +918,11 @@ public abstract class DocumentParser {
 
 		// Let's store its comments
 		field.setComments(fieldDef.getComments());
+
+		// and its description
+		if (fieldDef.getDescription() != null) {
+			field.setDescription(getDescription(fieldDef.getDescription()));
+		}
 
 		return field;
 	}
@@ -1041,6 +1082,16 @@ public abstract class DocumentParser {
 	 */
 	protected String getUtilPackageName() {
 		return ((GenerateCodeCommonConfiguration) configuration).getPackageName();
+	}
+
+	/**
+	 * Returns an instance of {@link Description} based on the given String, or null of this string is null
+	 * 
+	 * @param description
+	 * @return
+	 */
+	private Description getDescription(graphql.language.Description description) {
+		return (description == null) ? null : new Description(description);
 	}
 
 }

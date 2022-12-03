@@ -18,8 +18,11 @@ public interface Directive {
 	/** A directive may have arguments. An argument is actually a field. */
 	public List<Field> getArguments();
 
-	/** Returns the comments that have been found for this object, in the provided GraphQL schema */
+	/** Returns the comments that have been found before this object, in the provided GraphQL schema */
 	public List<String> getComments();
+
+	/** Returns the description for this object, in the provided GraphQL schema */
+	public Description getDescription();
 
 	/** Returns the list of location that this directive may have */
 	public List<DirectiveLocation> getDirectiveLocations();

@@ -19,8 +19,13 @@ import com.graphql_java_generator.plugin.AddRelayConnections;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.language.Description;
 import com.graphql_java_generator.plugin.language.Type;
+import com.graphql_java_generator.plugin.language.impl.CustomScalarType;
+import com.graphql_java_generator.plugin.language.impl.DirectiveImpl;
+import com.graphql_java_generator.plugin.language.impl.EnumType;
 import com.graphql_java_generator.plugin.language.impl.FieldImpl;
+import com.graphql_java_generator.plugin.language.impl.InterfaceType;
 import com.graphql_java_generator.plugin.language.impl.ObjectType;
 import com.graphql_java_generator.plugin.language.impl.UnionType;
 import com.graphql_java_generator.plugin.test.helper.DeepComparator;
@@ -69,11 +74,18 @@ class GenerateGraphQLSchemaTest {
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Id fields //////////////////////////////////////////////////////////////////////////
+		deepComparator.addIdField(CustomScalarType.class, "name");
+		deepComparator.addIdField(DirectiveImpl.class, "name");
+		deepComparator.addIdField(EnumType.class, "name");
+		deepComparator.addIdField(InterfaceType.class, "name");
 		deepComparator.addIdField(ObjectType.class, "name");
+		deepComparator.addIdField(UnionType.class, "name");
+		deepComparator.addIdField(FieldImpl.class, "name");
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		/////////////// Ignored fields //////////////////////////////////////////////////////////////////////////
 		deepComparator.addIgnoredFields(FieldImpl.class, "documentParser");
+		deepComparator.addIgnoredFields(Description.class, "content");
 		deepComparator.addIgnoredFields(DocumentParser.class, "schemaDirectives");
 		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "configuration");
 		deepComparator.addIgnoredFields(GenerateGraphQLSchemaDocumentParser.class, "graphqlUtils");
@@ -152,8 +164,8 @@ class GenerateGraphQLSchemaTest {
 	 * <LI>Load the generated schema in a target {@link DocumentParser}</LI>
 	 * <LI>Deep compare the source and the target {@link DocumentParser} with a generic tool</LI>
 	 * </UL>
-	 * Doing this insure that the code is stable even if the {@link DocumentParser} implementation changes. And as this
-	 * implementation is heavily tested, we an consider that it is complete, out of some known and documented
+	 * Doing this insures that the code is stable even if the {@link DocumentParser} implementation changes. And as this
+	 * implementation is heavily tested, we can consider that it is complete, out of some known and documented
 	 * limitations
 	 * 
 	 * @param sourceSpringConfClass

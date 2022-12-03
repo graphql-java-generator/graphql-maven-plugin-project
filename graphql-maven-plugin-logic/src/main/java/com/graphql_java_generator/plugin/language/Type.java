@@ -129,8 +129,11 @@ public interface Type {
 	 */
 	public void addAnnotation(String annotationToAdd, boolean replace);
 
-	/** Returns the comments that have been found for this object, in the provided GraphQL schema */
+	/** Returns the comments that have been found before this object, in the provided GraphQL schema */
 	public List<String> getComments();
+
+	/** Returns the description for this object, in the provided GraphQL schema */
+	public Description getDescription();
 
 	/**
 	 * The GraphQlType for this type
