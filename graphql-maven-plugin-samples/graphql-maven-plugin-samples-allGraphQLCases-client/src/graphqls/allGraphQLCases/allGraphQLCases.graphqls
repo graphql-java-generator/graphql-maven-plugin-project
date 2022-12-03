@@ -20,7 +20,7 @@ on FIELD_DEFINITION
 directive @generateDataLoaderForLists
 on FIELD_DEFINITION
 
-directive @testExtendKeyword
+directive @testExtendKeyword(msg: String)
 on 
 # ExecutableDirectiveLocation
 	QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
@@ -45,7 +45,7 @@ type MyQueryType {
 	on two lines
 	"""
 	withoutParameters: [Character]!
-    withOneOptionalParam(character: CharacterInput): Character
+    withOneOptionalParam(character: CharacterInput @testExtendKeyword(msg:"test for issue 162")): Character
     withOneMandatoryParam(character: CharacterInput!): Character
     withOneMandatoryParamDefaultValue(intParam: Int! = 13): Int!
     withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num: Int = 45): Droid!

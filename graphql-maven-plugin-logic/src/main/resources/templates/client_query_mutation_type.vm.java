@@ -231,7 +231,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+#if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
 			String queryResponseDef,
 #inputParams()
@@ -255,7 +255,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+#if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 	public ${field.javaTypeFullClassname} ${field.javaName}(
 			String queryResponseDef,
 #inputParams()
@@ -279,7 +279,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+#if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
 			ObjectResponse objectResponse,
 #inputParams()
@@ -303,7 +303,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 ## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
 ## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
 ## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
+#if(${field.type.scalar})	@GraphQLScalar#else	@GraphQLNonScalar#end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
 	public ${field.javaTypeFullClassname} ${field.javaName}(
 			ObjectResponse objectResponse,
 #inputParams()
