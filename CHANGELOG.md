@@ -12,6 +12,10 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
+Dependency upgrade: 
+* Upgrade from Spring Boot 2.7.4 to 2.7.6
+
+
 Both modes:
 * Issue #166: Corrected an issue that prevents to request data when GraphQL field's name are java reserved keywords
 * Issue #164: the descriptions from the GraphQL schema is now included in the java comments for objects, fields, union...
