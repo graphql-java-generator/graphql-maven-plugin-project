@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.graphql-java-generator</groupId>
 		<artifactId>graphql-maven-plugin-samples</artifactId>
-		<version>1.18.9</version>
+		<version>local-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>graphql-maven-plugin-samples-StarWars-client</artifactId>
