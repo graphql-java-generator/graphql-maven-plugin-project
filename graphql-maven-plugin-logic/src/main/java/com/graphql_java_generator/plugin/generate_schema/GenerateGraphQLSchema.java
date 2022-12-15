@@ -111,7 +111,8 @@ public class GenerateGraphQLSchema {
 			logger.debug(msg);
 
 			VelocityContext context = new VelocityContext();
-			context.put("newline", "\n");
+			context.put("carriageReturn", "\r");
+			context.put("lineFeed", "\n");
 			context.put("space", " ");
 			context.put("documentParser", documentParser);
 			context.put("graphqlUtils", graphqlUtils);

@@ -19,6 +19,8 @@ Dependency upgrade:
 Both modes:
 * Issue #166: Corrected an issue that prevents to request data when GraphQL field's name are java reserved keywords
 * Issue #164: the descriptions from the GraphQL schema is now included in the java comments for objects, fields, union...
+* GraphQLDirectives are now written as Java annotation in the generate code
+    * Note: this doesn't work yet for schema, scalar (that may receive a Directive when extended) and custom scalars
 
 
 # 1.18.8

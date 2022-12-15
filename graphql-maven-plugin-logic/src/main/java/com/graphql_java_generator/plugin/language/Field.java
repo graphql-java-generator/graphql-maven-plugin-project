@@ -186,6 +186,17 @@ public interface Field {
 	public Value<?> getDefaultValue();
 
 	/**
+	 * Returns the default value, as text, as it can be written into a generated GraphQL schema.<BR/>
+	 * A <I>str</I> string default value will be returned as <I>"str"</I>,a <I>JEDI</I> enum value will be returned as
+	 * <I>JEDI</I>, ...
+	 * 
+	 * @return
+	 */
+	default public String getDefaultValueAsText() {
+		return GraphqlUtils.graphqlUtils.getValueAsText(getDefaultValue());
+	}
+
+	/**
 	 * Returns the {@link Relation} description for this field.
 	 * 
 	 * @return null if this field is not a relation to another Entity

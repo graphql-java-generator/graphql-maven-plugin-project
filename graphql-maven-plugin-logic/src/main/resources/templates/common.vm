@@ -1,0 +1,42 @@
+##
+## Common velocity macros and definitions for all other templates
+##
+##
+#################################################################################################################
+## Maven ignores the default value for springBeanSuffix, and replaces it by a null value. In this case, we replace the value by an empty String 
+#################################################################################################################
+#if (!$configuration.springBeanSuffix) #set($springBeanSuffix="") #else #set($springBeanSuffix = ${configuration.springBeanSuffix}) #end
+##
+#################################################################################################################
+## appliedDirectives: write the GraphQLDirective annotations for the given directives
+## 
+## Parameters:
+## - $appliedDirectives: the directives that should be written
+## - $prefix: the prefix to write before the GraphQLDirective java annotation (to have proper text alignement)
+#################################################################################################################
+#macro(appliedDirectives $appliedDirectives $prefix)
+#foreach ($appliedDirective in $appliedDirectives)
+##
+## Loop on the parameters to write the parameterNames, parameterTypes and parameterValues values
+#set ($sep='')
+#set ($parameterNames  = "")
+#set ($parameterTypes  = "")
+#set ($parameterValues = "")
+##
+#foreach ($argumentName in ${appliedDirective.argumentValues.keySet()})
+#set ($parameterNames  = "$parameterNames$sep""${argumentName}""")
+#set ($parameterTypes  = "$parameterTypes$sep""${appliedDirective.directive.getArgument($argumentName).graphQLType}""")
+#set ($v = $graphqlUtils.getValueAsString($appliedDirective.argumentValues.get($argumentName)))
+#set ($parameterValues = "$parameterValues$sep$v")
+#set ($sep=', ')
+#end
+##
+## Actual rendering of the annotation
+#if ($appliedDirective.directive.arguments.size() > 0)
+$prefix@GraphQLDirective(name = "@${appliedDirective.directive.name}", parameterNames = {$parameterNames}, parameterTypes = {$parameterTypes}, parameterValues = {$parameterValues})
+#else
+$prefix@GraphQLDirective(name = "@${appliedDirective.directive.name}")
+#end
+##
+#end
+#end

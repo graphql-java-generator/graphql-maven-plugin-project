@@ -1,3 +1,9 @@
+#################################################################################################################
+## Import of common.vm  (commons Velocity macro and definitions)
+#################################################################################################################
+#parse ("templates/common.vm")
+##
+##
 
 ##
 ## When in client mode, we add the capability to receive unknown JSON attributes, which includes returned values for GraphQL aliases
@@ -30,6 +36,7 @@
 	 */
 #end
 	${field.annotation}
+#appliedDirectives(${field.appliedDirectives}, "	")
 	${field.javaTypeFullClassname} ${field.javaName};
 
 
@@ -52,6 +59,7 @@
 #end
  	 */
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
@@ -66,6 +74,7 @@
 #end
 	 */
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public ${field.javaTypeFullClassname} get${field.pascalCaseName}() {
 		return ${field.javaName};
 	}
@@ -97,6 +106,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}($type ${field.javaName}) {
 #if ($field.javaType.startsWith("List<"))
 		if (${field.javaName} == null || ${field.javaName} instanceof List) {
@@ -146,6 +156,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #else
 	 * 
@@ -157,6 +168,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #end
 		this.${field.javaName} = ${field.javaName};
@@ -222,6 +234,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #end
 	 */
 	@Override
+#appliedDirectives(${field.appliedDirectives}, "	")
 	@SuppressWarnings("unchecked")
 	public $supertype get${field.pascalCaseName}() {
 		return ($supertype) (Object) ${field.javaName};
@@ -242,6 +255,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #if (!$field.javaType.startsWith("List<"))
 	@Override
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public ${field.javaTypeFullClassname} get${field.pascalCaseName}#if ($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
 		return ${field.javaName};
 	}

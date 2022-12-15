@@ -2,6 +2,7 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Test requests with string that contains special characters (\n, \r, \t, "...)
 * #164: Descriptions from the schema should be included in the generated code if they exist
     * In the generated classes the comments could be included to describe the different fields correctly instead of using "Parameter for the mapsAcqr field of query_root, as defined in the GraphQL schema" description string.
     * All comments are loaded in Description field and no longer in comment (graphql.language.Comment) fields when using java schema parser (graphql/graphql-js#927 and graphql/graphql-spec#420).

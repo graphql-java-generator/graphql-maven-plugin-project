@@ -86,14 +86,15 @@ $implement##
 ##
 ######
 #macro (implementedDirective $appliedDirectives)
-#foreach($appliedDir in $appliedDirectives)
+#foreach($appliedDirective in $appliedDirectives)
 
-        @${appliedDir.directive.name}##
-#if($appliedDir.argumentValues.keySet().size() > 0)(#end
-#foreach($argName in $appliedDir.argumentValues.keySet())##
-$argName: ${graphqlUtils.getValueAsText($appliedDir.argumentValues[$argName])}#if($foreach.hasNext), #end
+        @${appliedDirective.directive.name}##
+#if($appliedDirective.argumentValues.keySet().size() > 0)(#end
+#foreach($argumentName in $appliedDirective.argumentValues.keySet())##
+#set ($v = $graphqlUtils.getValueAsText($appliedDirective.argumentValues.get($argumentName)))
+			$argumentName: $v#if($foreach.hasNext), #end
 #end
-#if($appliedDir.argumentValues.keySet().size() > 0))#end
+#if($appliedDirective.argumentValues.keySet().size() > 0)		)#end
 #end
 #end
 ##
@@ -239,7 +240,9 @@ interface ${interface.name}#implements($interface.implementz)#implementedDirecti
 	#$comment
 #end
 #writeDescription($objectType.description)
-#if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz)#implementedDirective($objectType.appliedDirectives) {
+#if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz)
+#implementedDirective($objectType.appliedDirectives) 
+{
 #objectFields($objectType.fields)
 }
 

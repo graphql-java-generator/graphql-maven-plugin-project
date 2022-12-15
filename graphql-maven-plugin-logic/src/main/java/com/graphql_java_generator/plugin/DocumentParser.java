@@ -901,27 +901,27 @@ public abstract class DocumentParser {
 	/**
 	 * Reads one GraphQL {@link FieldDefinition}, and maps it into a {@link Field}.
 	 * 
-	 * @param fieldDef
+	 * @param node
 	 * @param owningType
 	 *            The type which contains this field
 	 * @return
 	 * @throws MojographqlUtils.executionException
 	 */
-	Field readField(FieldDefinition fieldDef, Type owningType) {
+	Field readField(FieldDefinition node, Type owningType) {
 
-		FieldImpl field = readFieldTypeDefinition(fieldDef);
+		FieldImpl field = readFieldTypeDefinition(node); // includes reading the directives
 		field.setOwningType(owningType);
 
 		// Let's read all its input parameters
-		field.setInputParameters(fieldDef.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
+		field.setInputParameters(node.getInputValueDefinitions().stream().map(this::readFieldTypeDefinition)
 				.collect(Collectors.toList()));
 
 		// Let's store its comments
-		field.setComments(fieldDef.getComments());
+		field.setComments(node.getComments());
 
 		// and its description
-		if (fieldDef.getDescription() != null) {
-			field.setDescription(getDescription(fieldDef.getDescription()));
+		if (node.getDescription() != null) {
+			field.setDescription(getDescription(node.getDescription()));
 		}
 
 		return field;
