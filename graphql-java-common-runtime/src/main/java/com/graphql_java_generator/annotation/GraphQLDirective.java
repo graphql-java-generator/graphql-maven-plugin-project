@@ -17,7 +17,10 @@ import graphql.language.Value;
 
 /**
  * This annotation contains the information for a directive that was applied to a GraphQL item in the GraphQL schema
- * used to generate the code. It allows to retrieve at runtime the directives that were defined in the GraphQL schema.
+ * used to generate the code. It allows to retrieve at runtime the directives that were defined in the GraphQL
+ * schema.<br/>
+ * Note: this annotation is not added to these objects : schema, scalar (that may receive a Directive when extended) and
+ * custom scalars
  * 
  * @author etienne-sf
  */
