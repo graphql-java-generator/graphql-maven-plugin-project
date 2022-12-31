@@ -266,7 +266,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		GraphQLRequest ret = new GraphQLRequest(fullRequest);
+		GraphQLRequest ret = new GraphQLRequest(graphQlClient, fullRequest);
 		return ret;
 	}
 
@@ -517,7 +517,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreateBoardGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createBoard",
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createBoard",
 				InputParameter.newBindParameter("", "name", "mutationCreateBoardName", InputParameterType.MANDATORY,
 						"String", true, 0, false),
 				InputParameter.newBindParameter("", "publiclyAvailable", "mutationCreateBoardPubliclyAvailable",
@@ -757,8 +757,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreateTopicGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createTopic", InputParameter.newBindParameter(
-				"", "topic", "mutationCreateTopicTopic", InputParameterType.OPTIONAL, "TopicInput", false, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createTopic",
+				InputParameter.newBindParameter("", "topic", "mutationCreateTopicTopic", InputParameterType.OPTIONAL,
+						"TopicInput", false, 0, false));
 	}
 
 	/**
@@ -993,8 +994,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getCreatePostGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createPost", InputParameter.newBindParameter(
-				"", "post", "mutationCreatePostPost", InputParameterType.MANDATORY, "PostInput", true, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createPost",
+				InputParameter.newBindParameter("", "post", "mutationCreatePostPost", InputParameterType.MANDATORY,
+						"PostInput", true, 0, false));
 	}
 
 	/**
@@ -1231,8 +1233,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreatePostsGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createPosts", InputParameter.newBindParameter(
-				"", "spam", "mutationCreatePostsSpam", InputParameterType.MANDATORY, "PostInput", true, 1, true));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createPosts",
+				InputParameter.newBindParameter("", "spam", "mutationCreatePostsSpam", InputParameterType.MANDATORY,
+						"PostInput", true, 1, true));
 	}
 
 	/**
@@ -1468,8 +1471,9 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 */
 	public GraphQLRequest getCreateMemberGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "createMember", InputParameter.newBindParameter(
-				"", "input", "mutationCreateMemberInput", InputParameterType.MANDATORY, "MemberInput", true, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "createMember",
+				InputParameter.newBindParameter("", "input", "mutationCreateMemberInput", InputParameterType.MANDATORY,
+						"MemberInput", true, 0, false));
 	}
 
 	/**
@@ -1691,7 +1695,7 @@ public class MutationExecutor implements GraphQLMutationExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.mutation, "__typename");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.mutation, "__typename");
 	}
 
 }

@@ -16,6 +16,7 @@ import com.graphql_java_generator.client.SubscriptionCallback;
 public class SubscriptionCallbackListInteger implements SubscriptionCallback<List<Integer>> {
 
 	CountDownLatch latchFor10Notifications = new CountDownLatch(10);
+	Throwable lastError = null;
 
 	@Override
 	public void onConnect() {
@@ -24,8 +25,8 @@ public class SubscriptionCallbackListInteger implements SubscriptionCallback<Lis
 
 	@Override
 	public void onMessage(List<Integer> t) {
-		latchFor10Notifications.countDown();
 		System.out.println("Received this list from the 'subscribeToAList' subscription: " + t);
+		latchFor10Notifications.countDown();
 	}
 
 	@Override
@@ -36,6 +37,7 @@ public class SubscriptionCallbackListInteger implements SubscriptionCallback<Lis
 	@Override
 	public void onError(Throwable cause) {
 		System.out.println("Oups! An error occurred: " + cause.getMessage());
+		lastError = cause;
 	}
 
 }

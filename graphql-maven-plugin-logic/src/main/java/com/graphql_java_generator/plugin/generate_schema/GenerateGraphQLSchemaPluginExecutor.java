@@ -52,7 +52,7 @@ public class GenerateGraphQLSchemaPluginExecutor implements PluginExecutor {
 	private boolean skipGenerationIfSchemaHasNotChanged() throws IOException {
 
 		// First, we look for the last modification date of all the given schema.
-		OptionalLong optSchemaLastModification = resourceSchemaStringProvider.schemas().stream()//
+		OptionalLong optSchemaLastModification = resourceSchemaStringProvider.schemas(false).stream()//
 				.mapToLong((r) -> {
 					try {
 						return r.lastModified();

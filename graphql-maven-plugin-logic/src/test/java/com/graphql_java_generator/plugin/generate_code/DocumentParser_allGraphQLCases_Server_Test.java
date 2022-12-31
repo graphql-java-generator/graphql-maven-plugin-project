@@ -130,7 +130,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// age: Long!
 		checkField(objectType, j, "age", 0, true, null, "Long", "Long");
 		checkNbInputParameter(objectType, j, 1);
-		checkInputParameter(objectType, j, 0, "unit", 0, false, null, "Unit", "Unit",
+		checkInputParameter(objectType, j, 0, "unit", 0, false, null, "Unit", "SEP_Unit_SES",
 				new graphql.language.EnumValue("YEAR"));
 		j += 1;
 		// aFloat: Float
@@ -170,7 +170,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// friends: [Human!]
-		checkField(objectType, j, "friends", 1, false, true, "Human", "Human");
+		checkField(objectType, j, "friends", 1, false, true, "Human", "STP_Human_STS");
 		checkNbInputParameter(objectType, j, 0);
 		j += 1;
 		// matrix: [[Float]]!
@@ -179,14 +179,14 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		j += 1;
 		// oneWithIdSubType: AllFieldCasesWithIdSubtype
 		checkField(objectType, j, "oneWithIdSubType", 0, false, null, "AllFieldCasesWithIdSubtype",
-				"AllFieldCasesWithIdSubtype");
+				"STP_AllFieldCasesWithIdSubtype_STS");
 		checkNbInputParameter(objectType, j, 1);
 		checkInputParameter(objectType, j, 0, "uppercase", 0, false, null, "Boolean", "Boolean", null);
 		j += 1;
 		// listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean,
 		// textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
 		checkField(objectType, j, "listWithIdSubTypes", 1, false, false, "AllFieldCasesWithIdSubtype",
-				"AllFieldCasesWithIdSubtype");
+				"STP_AllFieldCasesWithIdSubtype_STS");
 		checkNbInputParameter(objectType, j, 5);
 		checkInputParameter(objectType, j, 0, "nbItems", 0, true, null, "Long", "Long", null);
 		checkInputParameter(objectType, j, 1, "date", 0, false, null, "Date", "Date", null);
@@ -196,19 +196,19 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		j += 1;
 		// oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
 		checkField(objectType, j, "oneWithoutIdSubType", 0, false, false, "AllFieldCasesWithoutIdSubtype",
-				"AllFieldCasesWithoutIdSubtype");
+				"STP_AllFieldCasesWithoutIdSubtype_STS");
 		checkNbInputParameter(objectType, j, 1);
-		checkInputParameter(objectType, j, 0, "input", 0, false, null, "FieldParameterInput", "FieldParameterInput",
-				null);
+		checkInputParameter(objectType, j, 0, "input", 0, false, null, "FieldParameterInput",
+				"SINP_FieldParameterInput_SINS", null);
 		j += 1;
 		// listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String):
 		// [AllFieldCasesWithoutIdSubtype]
 		checkField(objectType, j, "listWithoutIdSubTypes", 1, false, false, "AllFieldCasesWithoutIdSubtype",
-				"AllFieldCasesWithoutIdSubtype");
+				"STP_AllFieldCasesWithoutIdSubtype_STS");
 		checkNbInputParameter(objectType, j, 3);
 		checkInputParameter(objectType, j, 0, "nbItems", 0, true, null, "Long", "Long", null);
-		checkInputParameter(objectType, j, 1, "input", 0, false, null, "FieldParameterInput", "FieldParameterInput",
-				null);
+		checkInputParameter(objectType, j, 1, "input", 0, false, null, "FieldParameterInput",
+				"SINP_FieldParameterInput_SINS", null);
 		checkInputParameter(objectType, j, 2, "textToAppendToTheForname", 0, false, null, "String", "String", null);
 		j += 1;
 
@@ -621,15 +621,15 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// name: String!
 		checkField(type, j++, "name", 0, true, null, "String", String.class.getSimpleName());
 		// bestFriend: Character
-		checkField(type, j++, "bestFriend", 0, false, null, "Character", "Character");
+		checkField(type, j++, "bestFriend", 0, false, null, "Character", "SIP_Character_SIS");
 		// friends: [Character]
-		checkField(type, j++, "friends", 1, false, false, "Character", "Character");
+		checkField(type, j++, "friends", 1, false, false, "Character", "SIP_Character_SIS");
 		// nbComments: int
 		checkField(type, j++, "nbComments", 0, false, null, "Int", Integer.class.getSimpleName());
 		// comments: [String]
 		checkField(type, j++, "comments", 1, false, false, "String", String.class.getSimpleName());
 		// appearsIn: [Episode]!
-		checkField(type, j++, "appearsIn", 1, true, false, "Episode", "Episode");
+		checkField(type, j++, "appearsIn", 1, true, false, "Episode", "SEP_Episode_SES");
 		// homePlanet: String
 		checkField(type, j++, "homePlanet", 0, false, null, "String", String.class.getSimpleName());
 	}
@@ -680,7 +680,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(52, type.getFields().size());
+		assertEquals(59, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 
@@ -688,15 +688,16 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// checkField(type, j, name, list, mandatory, itemMandatory, typeName, classname)
 		//
 		// withoutParameters: [Character]!
-		checkField(type, j, "withoutParameters", 1, true, false, "Character", "Character");
+		checkField(type, j, "withoutParameters", 1, true, false, "Character", "SIP_Character_SIS");
 		j += 1;
 		// withOneOptionalParam(character: Character): Character
-		checkField(type, j, "withOneOptionalParam", 0, false, null, "Character", "Character");
-		checkInputParameter(type, j, 0, "character", 0, false, null, "CharacterInput", "CharacterInput", null);
+		checkField(type, j, "withOneOptionalParam", 0, false, null, "Character", "SIP_Character_SIS");
+		checkInputParameter(type, j, 0, "character", 0, false, null, "CharacterInput", "SINP_CharacterInput_SINS",
+				null);
 		j += 1;
 		// withOneMandatoryParam(character: Character!): Character
-		checkField(type, j, "withOneMandatoryParam", 0, false, false, "Character", "Character");
-		checkInputParameter(type, j, 0, "character", 0, true, null, "CharacterInput", "CharacterInput", null);
+		checkField(type, j, "withOneMandatoryParam", 0, false, false, "Character", "SIP_Character_SIS");
+		checkInputParameter(type, j, 0, "character", 0, true, null, "CharacterInput", "SINP_CharacterInput_SINS", null);
 		j += 1;
 		// withOneMandatoryParamDefaultValue(nbResultat: Int! = 13): Character!
 		checkField(type, j, "withOneMandatoryParamDefaultValue", 0, true, false, "Int", "Integer");
@@ -705,23 +706,24 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		j += 1;
 		// withTwoMandatoryParamDefaultVal(theHero: DroidInput! = {name: "droid's name", appearsIn:[JEDI,NEWHOPE]}, num:
 		// Int = 45): Droid!
-		checkField(type, j, "withTwoMandatoryParamDefaultVal", 0, true, null, "Droid", "Droid");
-		checkInputParameter(type, j, 0, "theHero", 0, true, null, "DroidInput", "DroidInput", objectValue);
+		checkField(type, j, "withTwoMandatoryParamDefaultVal", 0, true, null, "Droid", "STP_Droid_STS");
+		checkInputParameter(type, j, 0, "theHero", 0, true, null, "DroidInput", "SINP_DroidInput_SINS", objectValue);
 		checkInputParameter(type, j, 1, "num", 0, false, null, "Int", "Integer", new IntValue(BigInteger.valueOf(45)));
 		j += 1;
 		// withEnum(episode: Episode! = NEWHOPE): Character
-		checkField(type, j, "withEnum", 0, false, null, "Character", "Character");
-		checkInputParameter(type, j, 0, "episode", 0, true, null, "Episode", "Episode",
+		checkField(type, j, "withEnum", 0, false, null, "Character", "SIP_Character_SIS");
+		checkInputParameter(type, j, 0, "episode", 0, true, null, "Episode", "SEP_Episode_SES",
 				new graphql.language.EnumValue("NEWHOPE"));
 		j += 1;
 		// withListOfList(matrix: [[Float]]!): AllFieldCases
-		checkField(type, j, "withListOfList", 0, false, null, "AllFieldCases", "AllFieldCases");
+		checkField(type, j, "withListOfList", 0, false, null, "AllFieldCases", "STP_AllFieldCases_STS");
 		checkInputParameter(type, j, 0, "matrix", 2, true, false, "Float", "Double", null);
 		j += 1;
 		// withList(name: String!, friends: [Character]!): [Characters]
-		checkField(type, j, "withList", 1, false, false, "Character", "Character");
+		checkField(type, j, "withList", 1, false, false, "Character", "SIP_Character_SIS");
 		checkInputParameter(type, j, 0, "firstName", 0, true, null, "String", String.class.getSimpleName(), null);
-		checkInputParameter(type, j, 1, "characters", 1, true, true, "CharacterInput", "CharacterInput", null);
+		checkInputParameter(type, j, 1, "characters", 1, true, true, "CharacterInput", "SINP_CharacterInput_SINS",
+				null);
 
 	}
 
@@ -782,15 +784,16 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// defaultValue)
 		//
 		// createHuman(human: Human!): Human!
-		checkField(type, j, "createHuman", 0, true, null, "Human", "Human");
+		checkField(type, j, "createHuman", 0, true, null, "Human", "STP_Human_STS");
 		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "human", 0, true, null, "HumanInput", "HumanInput", null);
+		checkInputParameter(type, j, 0, "human", 0, true, null, "HumanInput", "SINP_HumanInput_SINS", null);
 		//
 		j += 1;
 		// createAllFieldCases(input: AllFieldCasesInput!): AllFieldCases!
-		checkField(type, j, "createAllFieldCases", 0, true, null, "AllFieldCases", "AllFieldCases");
+		checkField(type, j, "createAllFieldCases", 0, true, null, "AllFieldCases", "STP_AllFieldCases_STS");
 		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "input", 0, true, null, "AllFieldCasesInput", "AllFieldCasesInput", null);
+		checkInputParameter(type, j, 0, "input", 0, true, null, "AllFieldCasesInput", "SINP_AllFieldCasesInput_SINS",
+				null);
 		//
 		j += 1;
 		// deleteSnacks(id: [ID]) : Boolean
@@ -816,7 +819,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals(objectName, type.getName());
-		assertEquals(12, type.getFields().size());
+		assertEquals(19, type.getFields().size());
 
 		int j = 0;
 		// Each mutation is actually a field. So we use :
@@ -825,9 +828,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// defaultValue)
 		//
 		// subscribeNewHumanForEpisode(episode: Episode! = NEWHOPE): Human!
-		checkField(type, j, "subscribeNewHumanForEpisode", 0, true, null, "Human", "Human");
+		checkField(type, j, "subscribeNewHumanForEpisode", 0, true, null, "Human", "STP_Human_STS");
 		checkNbInputParameter(type, j, 1);
-		checkInputParameter(type, j, 0, "episode", 0, true, null, "Episode", "Episode", null);
+		checkInputParameter(type, j, 0, "episode", 0, true, null, "Episode", "SEP_Episode_SES", null);
 		j += 1;
 		// subscribeToAList: [Int]!
 		checkField(type, j, "subscribeToAList", 1, true, false, "Int", "Integer");

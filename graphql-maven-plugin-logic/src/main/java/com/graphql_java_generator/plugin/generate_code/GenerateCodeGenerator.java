@@ -4,9 +4,11 @@
 package com.graphql_java_generator.plugin.generate_code;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -38,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.CodeTemplate;
@@ -539,8 +542,8 @@ public class GenerateCodeGenerator implements Generator {
 		context.put("mutation", generateCodeDocumentParser.getMutationType());
 		context.put("subscription", generateCodeDocumentParser.getSubscriptionType());
 
-		return generateOneFile(getJavaFile("GraphQLRequest", true), "generating GraphQLRequest", context,
-				resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
+		return generateOneFile(getJavaFile("GraphQLRequest" + configuration.getSpringBeanSuffix(), true),
+				"generating GraphQLRequest", context, resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
 	}
 
 	/**
@@ -551,16 +554,16 @@ public class GenerateCodeGenerator implements Generator {
 	 */
 	int generateServerFiles() throws IOException {
 		int ret = 0;
+		logger.debug("Starting server specific code generation");
 
 		if (configuration.isGenerateUtilityClasses()) {
-
-			logger.debug("Starting server specific code generation");
+			logger.debug("Generating server utility classes");
 
 			VelocityContext context = getVelocityServerContext();
 
 			// List of found schemas
 			List<String> schemaFiles = new ArrayList<>();
-			for (org.springframework.core.io.Resource res : resourceSchemaStringProvider.schemas()) {
+			for (org.springframework.core.io.Resource res : resourceSchemaStringProvider.schemas(false)) {
 				schemaFiles.add(res.getFilename());
 			}
 			context.put("schemaFiles", schemaFiles);
@@ -578,7 +581,8 @@ public class GenerateCodeGenerator implements Generator {
 				context.put("dataFetchersDelegates", generateCodeDocumentParser.getDataFetchersDelegates());
 				context.put("batchLoaders", generateCodeDocumentParser.getBatchLoaders());
 
-				String entityControllerName = dataFetcherDelegate.getType().getJavaName() + "Controller";
+				String entityControllerName = graphqlUtils.getJavaName(dataFetcherDelegate.getType().getName())
+						+ "Controller";
 				logger.debug("Generating " + entityControllerName);
 				ret += generateOneFile(getJavaFile(entityControllerName, true), "generating " + entityControllerName,
 						context, resolveTemplate(CodeTemplate.ENTITY_CONTROLLER));
@@ -588,128 +592,163 @@ public class GenerateCodeGenerator implements Generator {
 						"generating " + dataFetcherDelegate.getPascalCaseName(), context,
 						resolveTemplate(CodeTemplate.DATA_FETCHER_DELEGATE));
 			}
+		}
 
-			// When the addRelayConnections parameter is true, and we're in server mode, we must generate the resulting
-			// GraphQL schema, so that the graphql-java can access it at runtime.
-			if (configuration.isAddRelayConnections() && configuration.getMode().equals(PluginMode.server)) {
-				GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
+		// We're in server mode. So, When the addRelayConnections parameter is true, we must generate the resulting
+		// GraphQL schema, so that the graphql-java can access it at runtime.
+		// Otherwise, we just need to copy the schema file to the ./graphql folder, so that spring-graphql can find
+		// them.
+		if (!configuration.isAddRelayConnections()) {
+			copySchemaFilesToGraphqlFolder();
+		} else {
+			GenerateGraphQLSchemaConfiguration generateGraphQLSchemaConf = new GenerateGraphQLSchemaConfiguration() {
 
-					@Override
-					public Integer getMaxTokens() {
-						return configuration.getMaxTokens();
-					}
+				@Override
+				public Integer getMaxTokens() {
+					return configuration.getMaxTokens();
+				}
 
-					@Override
-					public File getProjectDir() {
-						return configuration.getProjectDir();
-					}
+				@Override
+				public File getProjectDir() {
+					return configuration.getProjectDir();
+				}
 
-					@Override
-					public File getSchemaFileFolder() {
-						return configuration.getSchemaFileFolder();
-					}
+				@Override
+				public File getSchemaFileFolder() {
+					return configuration.getSchemaFileFolder();
+				}
 
-					@Override
-					public String getSchemaFilePattern() {
-						return configuration.getSchemaFilePattern();
-					}
+				@Override
+				public String getSchemaFilePattern() {
+					return configuration.getSchemaFilePattern();
+				}
 
-					@Override
-					public Map<String, String> getTemplates() {
-						return configuration.getTemplates();
-					}
+				@Override
+				public Map<String, String> getTemplates() {
+					return configuration.getTemplates();
+				}
 
-					@Override
-					public boolean isAddRelayConnections() {
-						return configuration.isAddRelayConnections();
-					}
+				@Override
+				public boolean isAddRelayConnections() {
+					return configuration.isAddRelayConnections();
+				}
 
-					@Override
-					public String getTypePrefix() {
-						return configuration.getTypePrefix();
-					}
+				@Override
+				public String getTypePrefix() {
+					return configuration.getTypePrefix();
+				}
 
-					@Override
-					public String getTypeSuffix() {
-						return configuration.getTypeSuffix();
-					}
+				@Override
+				public String getTypeSuffix() {
+					return configuration.getTypeSuffix();
+				}
 
-					@Override
-					public String getInputPrefix() {
-						return configuration.getInputPrefix();
-					}
+				@Override
+				public String getInputPrefix() {
+					return configuration.getInputPrefix();
+				}
 
-					@Override
-					public String getInputSuffix() {
-						return configuration.getInputSuffix();
-					}
+				@Override
+				public String getInputSuffix() {
+					return configuration.getInputSuffix();
+				}
 
-					@Override
-					public String getUnionPrefix() {
-						return configuration.getUnionPrefix();
-					}
+				@Override
+				public String getUnionPrefix() {
+					return configuration.getUnionPrefix();
+				}
 
-					@Override
-					public String getUnionSuffix() {
-						return configuration.getUnionSuffix();
-					}
+				@Override
+				public String getUnionSuffix() {
+					return configuration.getUnionSuffix();
+				}
 
-					@Override
-					public String getInterfacePrefix() {
-						return configuration.getInterfacePrefix();
-					}
+				@Override
+				public String getInterfacePrefix() {
+					return configuration.getInterfacePrefix();
+				}
 
-					@Override
-					public String getInterfaceSuffix() {
-						return configuration.getInterfaceSuffix();
-					}
+				@Override
+				public String getInterfaceSuffix() {
+					return configuration.getInterfaceSuffix();
+				}
 
-					@Override
-					public String getEnumPrefix() {
-						return configuration.getEnumPrefix();
-					}
+				@Override
+				public String getEnumPrefix() {
+					return configuration.getEnumPrefix();
+				}
 
-					@Override
-					public String getEnumSuffix() {
-						return configuration.getEnumSuffix();
-					}
+				@Override
+				public String getEnumSuffix() {
+					return configuration.getEnumSuffix();
+				}
 
-					@Override
-					public String getResourceEncoding() {
-						return "UTF-8";
-					}
+				@Override
+				public String getResourceEncoding() {
+					return "UTF-8";
+				}
 
-					@Override
-					public File getTargetFolder() {
-						return configuration.getTargetClassFolder();
-					}
+				@Override
+				public File getTargetFolder() {
+					return new File(configuration.getTargetResourceFolder(), configuration.getTargetSchemaSubFolder());
+				}
 
-					@Override
-					public String getTargetSchemaFileName() {
-						return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
-					}
+				@Override
+				public String getTargetSchemaFileName() {
+					return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+				}
 
-					@Override
-					public String getDefaultTargetSchemaFileName() {
-						return DEFAULT_TARGET_SCHEMA_FILE_NAME;
-					}
+				@Override
+				public String getDefaultTargetSchemaFileName() {
+					return DEFAULT_TARGET_SCHEMA_FILE_NAME;
+				}
 
-					@Override
-					public boolean isSkipGenerationIfSchemaHasNotChanged() {
-						// If we're here, it means the the code generation is done. So the addRelayConnection schema
-						// must be
-						// always created. We won't skip it.
-						return false;
-					}
-				};
-				GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
-						graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
-				generateGraphQLSchema.generateGraphQLSchema();
-			}
+				@Override
+				public boolean isSkipGenerationIfSchemaHasNotChanged() {
+					// If we're here, it means the the code generation is done. So the addRelayConnection schema
+					// must be
+					// always created. We won't skip it.
+					return false;
+				}
+			};
+			GenerateGraphQLSchema generateGraphQLSchema = new GenerateGraphQLSchema(generateCodeDocumentParser,
+					graphqlUtils, generateGraphQLSchemaConf, resourceSchemaStringProvider);
+			generateGraphQLSchema.generateGraphQLSchema();
 		}
 
 		return ret;
 
+	}
+
+	/**
+	 * This method makes sure that the schema files are available to spring-graphql at runtime. So either the schema
+	 * files are in the src/main/resources/graphql folder of the current project, or they will be copied into the
+	 * {generatesResource}/graphql folder. <br/>
+	 * This is useful only for the server mode.
+	 * 
+	 * @throws IOException
+	 */
+	private void copySchemaFilesToGraphqlFolder() throws IOException {
+		String standardSpringGraphqlSchemaPath = new File(configuration.getProjectDir(), "src/main/resources/graphql")
+				.getCanonicalPath();
+		if (!configuration.getSchemaFileFolder().getCanonicalPath().equals(standardSpringGraphqlSchemaPath)) {
+			// The schema file(s) is(are) not where spring-graphql expects it (that is in the graphql of the
+			// classpath).
+			// So we copy it/them in the correct location
+			for (Resource r : resourceSchemaStringProvider.schemas(false)) {
+				File folder = new File(configuration.getTargetResourceFolder(),
+						configuration.getTargetSchemaSubFolder());
+				File f = new File(folder, r.getFilename());
+
+				logger.debug("Copying {} from  {} to {}", r.getFilename(), r.getFile().getAbsolutePath(),
+						f.getAbsolutePath());
+
+				f.getParentFile().mkdirs();
+				try (BufferedWriter writer = new BufferedWriter(new FileWriter(f, true))) {
+					writer.append(resourceSchemaStringProvider.readSchema(r));
+				}
+			}
+		}
 	}
 
 	/**

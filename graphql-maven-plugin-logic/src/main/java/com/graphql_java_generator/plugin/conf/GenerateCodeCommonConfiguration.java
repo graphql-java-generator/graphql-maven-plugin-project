@@ -22,6 +22,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 	// The String constant must be a constant expression, for use in the GraphqlMavenPlugin class.
 	// So all these are String, including Boolean and Enum. Boolean are either "true" or "false"
 	public final String DEFAULT_COPY_RUNTIME_SOURCES = "true";
+	public final String DEFAULT_QUERY_MUTATION_EXECUTION_PROTOCOL = "http";
 	public final String DEFAULT_SEPARATE_UTIL_CLASSES = "false";
 	public final String DEFAULT_SOURCE_ENCODING = "UTF-8";
 	public final String DEFAULT_SPRING_BEAN_SUFFIX = "";
@@ -98,6 +99,13 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 
 	/** The packageName in which the generated classes will be created */
 	public String getPackageName();
+
+	/**
+	 * The {@link QueryMutationExecutionProtocol} to use for GraphQL queries and mutations (not subscriptions). The
+	 * allowed values are: http and webSocket.<br/>
+	 * The default value is http.
+	 */
+	public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol();
 
 	/** The encoding for the generated source files */
 	public String getSourceEncoding();
@@ -199,6 +207,7 @@ public interface GenerateCodeCommonConfiguration extends CommonConfiguration {
 		logger.debug("    generateUtilityClasses: " + isGenerateUtilityClasses());
 		logger.debug("    mode: " + getMode());
 		logger.debug("    packageName: " + getPackageName());
+		logger.debug("    queryMutationExecutionProtocol: " + getQueryMutationExecutionProtocol());
 		logger.debug("    separateUtilityClasses: " + isSeparateUtilityClasses());
 		logger.debug("    sourceEncoding: " + getSourceEncoding());
 		logger.debug("    springBeanSuffix: " + getSpringBeanSuffix());

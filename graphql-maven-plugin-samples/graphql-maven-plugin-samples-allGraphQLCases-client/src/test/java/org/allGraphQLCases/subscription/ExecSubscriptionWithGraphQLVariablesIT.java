@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
 import org.allGraphQLCases.client.CINP_AllFieldCasesWithoutIdSubtypeInput_CINS;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
@@ -99,7 +99,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		input.setAliases((List<String>) (Object) Arrays.asList(aliases));
 		input.setWithoutIdSubtype(listWithoutIdSubtype);
 
-		GraphQLRequest subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $input: AllFieldCasesInput!){allGraphQLCasesInput(input: $input){id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
 
 		// Go, go, go
@@ -220,7 +220,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		SubscriptionCallbackToAllFieldCases callback = new SubscriptionCallbackToAllFieldCases(
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
-		GraphQLRequest subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $id: String!, $name: String!, $age: Long!, $i: Int!, $date: Date!, $dates: [Date!]!, $matrix: [[Float]!]!, $oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, $listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!)"
 						+ "{allGraphQLCasesParam(id: $id, name: $name, age: $age, integer: $i, date: $date, dates: $dates, matrix: $matrix, oneWithoutIdSubtype: $oneWithoutIdSubtype, listWithoutIdSubtype: $listWithoutIdSubtype)"
 						+ "{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");

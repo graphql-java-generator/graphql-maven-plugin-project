@@ -53,5 +53,16 @@ public class AllGraphQLCases_Client_SpringConfiguration extends AbstractSpringCo
 		configuration.schemaPersonalizationFile = null;
 		configuration.customScalars = customScalars;
 		configuration.separateUtilityClasses = false;
+
+		configuration.inputPrefix = "CINP_";
+		configuration.inputSuffix = "_CINS";
+		configuration.typePrefix = "CTP_";
+		configuration.typeSuffix = "_CTS";
+		configuration.interfacePrefix = "CIP_";
+		configuration.interfaceSuffix = "_CIS";
+		configuration.unionPrefix = "CUP_";
+		configuration.unionSuffix = "_CUS";
+		configuration.enumPrefix = "CEP_";
+		configuration.enumSuffix = "_CES";
 	}
 }

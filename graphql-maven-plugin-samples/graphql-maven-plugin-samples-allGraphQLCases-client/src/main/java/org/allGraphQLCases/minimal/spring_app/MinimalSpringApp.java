@@ -6,11 +6,11 @@ package org.allGraphQLCases.minimal.spring_app;
 import java.util.Arrays;
 import java.util.List;
 
-import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +22,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 /**
  * @author etienne-sf
  */
-@SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, MyQueryTypeExecutorAllGraphQLCases.class })
+@SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphqlClientUtils.class,
+		MyQueryTypeExecutorAllGraphQLCases.class })
+@EnableGraphQLRepositories({ "org.allGraphQLCases.minimal.spring_app" })
 public class MinimalSpringApp implements CommandLineRunner {
 
 	/** The logger for this class */

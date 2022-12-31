@@ -2,6 +2,13 @@ package com.graphql_java_generator.non_spring_app;
 
 import java.util.Date;
 
+/**
+ * This class is the old Main class, that is the Main class for the non-spring app that we want to execute with the
+ * plugin.
+ * 
+ * @author etienne-sf
+ *
+ */
 public class OldMain {
 
 	public static void main(String[] args) throws Exception {

@@ -15,17 +15,19 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.allGraphQLCases.GraphQLTransportWSIT.GraphQLTransportWSSpringConfiguration;
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -36,6 +38,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
+import org.springframework.graphql.client.WebSocketGraphQlClient.Builder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -56,11 +59,17 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 public class GraphQLTransportWSIT {
 
+	/** Logger for this class */
+	private static Logger logger = LoggerFactory.getLogger(GraphQLTransportWSIT.class);
+
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases myQuery;
+
 	@Autowired
 	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
+
 	@Autowired
+	@Qualifier("graphQlHttpClientAllGraphQLCases")
 	GraphQlClient graphQlHttpClientAllGraphQLCases;
 
 	@Bean
@@ -78,27 +87,30 @@ public class GraphQLTransportWSIT {
 	public static class GraphQLTransportWSSpringConfiguration {
 		@Bean
 		@Primary
-		public GraphQlClient requestExecutionAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
+		public GraphQlClient graphQlHttpClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases, //
 				@Autowired(required = false) @Qualifier("graphqlSubscriptionEndpointAllGraphQLCases") String graphqlSubscriptionEndpointAllGraphQLCases, //
 				@Autowired(required = false) @Qualifier("webClientAllGraphQLCases") WebClient webClientAllGraphQLCases, //
 				@Autowired(required = false) @Qualifier("webSocketClientAllGraphQLCases") WebSocketClient webSocketClientAllGraphQLCases,
 				@Autowired(required = false) @Qualifier("OAuthTokenExtractor") OAuthTokenExtractor oAuthTokenExtractorAllGraphQLCases) {
 
-			Consumer<HttpHeaders> oAuthHeadersConsumer = null;
+			Builder<?> ret = WebSocketGraphQlClient//
+					.builder(graphqlSubscriptionEndpointAllGraphQLCases, new ReactorNettyWebSocketClient());
+
 			if (oAuthTokenExtractorAllGraphQLCases != null) {
-				oAuthHeadersConsumer = new Consumer<HttpHeaders>() {
+				ret.headers(new Consumer<HttpHeaders>() {
 					@Override
-					public void accept(HttpHeaders t) {
-						// TODO Auto-generated method stub
+					public void accept(HttpHeaders headers) {
+						String authorizationHeaderValue = oAuthTokenExtractorAllGraphQLCases
+								.getAuthorizationHeaderValue();
+						logger.debug("Got this OAuth token (authorization header value): {}", authorizationHeaderValue);
+						headers.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
 					}
-				};
+				});
 			}
 
 			// Returns the Spring GraphQL client that executes the request according to the graphql-transport-ws
 			// protocol
-			return WebSocketGraphQlClient
-					.builder(graphqlSubscriptionEndpointAllGraphQLCases, new ReactorNettyWebSocketClient())
-					.headers(oAuthHeadersConsumer).build();
+			return ret.build();
 		}
 	}
 
@@ -128,10 +140,11 @@ public class GraphQLTransportWSIT {
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(true).build());
 		inputs.add(CINP_FieldParameterInput_CINS.builder().withUppercase(false).build());
 		//
-		GraphQLRequest graphQLRequest = myQuery.getAllFieldCasesGraphQLRequest("{issue65(inputs: &inputs)}");
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = myQuery
+				.getAllFieldCasesGraphQLRequest("{issue65(inputs: &inputs)}");
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS ret = myQuery.allFieldCases(graphQLRequest, null, "inputs", inputs);
+		CTP_AllFieldCases_CTS ret = myQuery.allFieldCases(GraphQLRequestAllGraphQLCases, null, "inputs", inputs);
 
 		// Verification
 		assertEquals(inputs.size(), ret.getIssue65().size());
@@ -189,10 +202,10 @@ public class GraphQLTransportWSIT {
 				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
 				+ "@testDirective(value:?value, anotherValue:?anotherValue, anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"
 				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})   {id name appearsIn friends {id name}}}";
-		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = new GraphQLRequestAllGraphQLCases(request);
 
 		// Go, go, go
-		CTP_Human_CTS human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
+		CTP_Human_CTS human = mutationType.execWithBindValues(GraphQLRequestAllGraphQLCases, null).getCreateHuman();
 
 		// Verifications
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
@@ -202,9 +215,10 @@ public class GraphQLTransportWSIT {
 	void testMutationWithGraphQLVariables()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest directiveOnQuery = mutationType.getGraphQLRequest("query namedQuery($uppercase :\n" //
-				+ "Boolean, \n\r"//
-				+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
+		GraphQLRequestAllGraphQLCases directiveOnQuery = mutationType
+				.getGraphQLRequest("query namedQuery($uppercase :\n" //
+						+ "Boolean, \n\r"//
+						+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
 		Map<String, Object> params = new HashMap<>();
 		params.put("uppercase", true);
 		params.put("anotherValue", "another value with an antislash: \\");

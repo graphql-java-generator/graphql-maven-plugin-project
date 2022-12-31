@@ -4,15 +4,16 @@
 package org.forum.server.specific_code;
 
 import javax.annotation.Resource;
+import javax.security.auth.Subject;
 
 import org.forum.server.graphql.DataFetchersDelegateSubscription;
 import org.forum.server.graphql.Post;
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import reactor.core.publisher.Flux;
 
 /**
  * @author etienne-sf
@@ -31,9 +32,9 @@ public class DataFetchersDelegateSubscriptionImpl implements DataFetchersDelegat
 	PostPublisher postPublisher;
 
 	@Override
-	public Publisher<Post> subscribeToNewPost(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
+	public Flux<Post> subscribeToNewPost(DataFetchingEnvironment dataFetchingEnvironment, String boardName) {
 		logger.debug("Received a Subscription for {}", boardName);
-		Publisher<Post> publisher = postPublisher.getPublisher(boardName);
+		Flux<Post> publisher = postPublisher.getPublisher(boardName);
 		logger.trace("The publisher has been acquired for the Subscription for {}", boardName);
 		return publisher;
 	}

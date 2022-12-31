@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
@@ -16,18 +19,14 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * @author etienne-sf
  *
  */
+@Component
 public class DirectQueriesWithFieldInputParameters {
 
-	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
-
+	@Autowired
 	QueryExecutor query;
 
 	final String DATE_FORMAT = "yyyy-MM-dd";
 	final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-
-	public DirectQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {
-		query = new QueryExecutor(GRAPHQL_ENDPOINT_URL);
-	}
 
 	public List<Topic> topics_since(String boardName, Date since)
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {

@@ -171,7 +171,7 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>add-test-source</id>
+						<id>add-source</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-source</goal>
@@ -222,7 +222,7 @@
 							<processLogFile>${basedir}/target/OAuth-authorization-server.log</processLogFile>
 							<waitAfterLaunch>180</waitAfterLaunch>
 							<waitForInterrupt>false</waitForInterrupt>
-							<healthcheckUrl>http://localhost:8181/helloworld.html</healthcheckUrl>
+							<healthcheckUrl>http://localhost:8181/helloWorld</healthcheckUrl>
 							<arguments>
 								<argument>java</argument>
 								<argument>-jar</argument>
@@ -314,11 +314,11 @@
 			<artifactId>graphql-java-extended-scalars</artifactId>
 		</dependency>
 
-		<!-- Other Spring dependenceies -->
-		<dependency>
+		<!-- Other Spring dependencies -->
+		<!--dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-client</artifactId>

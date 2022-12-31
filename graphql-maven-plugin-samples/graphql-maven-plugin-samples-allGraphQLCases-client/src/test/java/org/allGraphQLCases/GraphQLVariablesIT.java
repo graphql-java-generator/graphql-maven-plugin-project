@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.subscription.SubscriptionCallbackToADate;
@@ -98,9 +98,10 @@ class GraphQLVariablesIT {
 	@Test
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		GraphQLRequest directiveOnQuery = mutationType.getGraphQLRequest("query namedQuery($uppercase :\n" //
-				+ "Boolean, \n\r"//
-				+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
+		GraphQLRequestAllGraphQLCases directiveOnQuery = mutationType
+				.getGraphQLRequest("query namedQuery($uppercase :\n" //
+						+ "Boolean, \n\r"//
+						+ " $Value :   String ! , $anotherValue:String) {directiveOnQuery (uppercase: $uppercase) @testDirective(value:$Value, anotherValue:$anotherValue)}");
 		Map<String, Object> params = new HashMap<>();
 		params.put("uppercase", true);
 		params.put("anotherValue", "another value with an antislash: \\");
@@ -123,7 +124,7 @@ class GraphQLVariablesIT {
 	@Test
 	void mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		GraphQLRequest mutationWithDirectiveRequest = mutationType.getGraphQLRequest("" + //
+		GraphQLRequestAllGraphQLCases mutationWithDirectiveRequest = mutationType.getGraphQLRequest("" + //
 				"mutation creation($name  : String!, $friends : [ CharacterInput\r\n] , $appearsIn: [Episode]!,$uppercaseName:Boolean)\r\n"//
 				+ "{createHuman (human: {name:$name, friends:$friends, appearsIn:$appearsIn}) "//
 				+ "{id name(uppercase: $uppercaseName) appearsIn friends {id friends appearsIn name}}}"//
@@ -155,7 +156,7 @@ class GraphQLVariablesIT {
 	void test_mixBindParameterGraphQLVariable()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
-		GraphQLRequest mutation = mutationType.getGraphQLRequest("" + //
+		GraphQLRequestAllGraphQLCases mutation = mutationType.getGraphQLRequest("" + //
 				"mutation creation($uppercaseName:Boolean)\r\n"//
 				+ "{createHuman (human: &human) "//
 				+ "{id name(uppercase: $uppercaseName) appearsIn friends {id friends appearsIn name}}}"//
@@ -191,7 +192,7 @@ class GraphQLVariablesIT {
 		Date date = new GregorianCalendar(2021, 4 - 1, 15).getTime();
 
 		// Go, go, go
-		GraphQLRequest subscription = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscription = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($aCustomScalarParam: Date!) {issue53(date: $aCustomScalarParam){}}");
 		SubscriptionClient sub = subscription.execSubscription(callback, Date.class, "aCustomScalarParam", date);
 

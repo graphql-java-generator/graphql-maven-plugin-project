@@ -3,8 +3,8 @@ package org.allGraphQLCases.demo;
 import java.util.Arrays;
 import java.util.List;
 
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.MyQueryTypeExecutorAllGraphQLCases2;
 import org.allGraphQLCases.demo.impl.PartialDirectQueries;
@@ -33,19 +33,13 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * A sample query, to get an OAuth token:
  * 
  * <pre>
-curl -u "clientId:secret" -X POST "http://localhost:8181/oauth/token?grant_type=client_credentials" --noproxy "*" -i
+curl -u "clientId:secret" -X POST "http://localhost:8181/oauth2/token?grant_type=client_credentials" --noproxy "*" -i
  * </pre>
  * 
  * Then, reuse the previous token in the next query:
  * 
  * <pre>
 curl -i -X POST "http://localhost:8180/graphql" --noproxy "*" -H "Authorization: Bearer 8c8e4a5b-d903-4ed6-9738-6f7f364b87ec"
- * </pre>
- * 
- * And, to check the token:
- * 
- * <pre>
-curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorization: Bearer 8c8e4a5b-d903-4ed6-9738-6f7f364b87ec"
  * </pre>
  * 
  * @author etienne-sf
@@ -123,8 +117,8 @@ public class Main implements CommandLineRunner {
 		System.out.println(client.withOneOptionalParam(ci1));
 
 		System.out.println("---------------- withOneMandatoryParam ------------------------------------------");
-		CINP_CharacterInput_CINS ci2 = CINP_CharacterInput_CINS.builder().withName("my other name").withAppearsIn(Arrays.asList())
-				.withType("Human").build();
+		CINP_CharacterInput_CINS ci2 = CINP_CharacterInput_CINS.builder().withName("my other name")
+				.withAppearsIn(Arrays.asList()).withType("Human").build();
 		System.out.println(client.withOneMandatoryParam(ci2));
 
 		System.out.println("---------------- withEnum -------------------------------------------------------");

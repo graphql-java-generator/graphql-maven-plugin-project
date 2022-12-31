@@ -13,6 +13,7 @@ This files describes the changes that have been brought to the generated code, a
 # TODO
 
 List of things that must or should be done before the first release:
+* Rename httpGraphQLClient into queryMutationGraphQLClient, and webSocketGraphQLClient into subscriptionGraphQLClient
 * Check the tests in allGraphQlCases client
 * In the allGraphQLCases sample: update the non-spring app, to demonstrate how to use the plugin to embed a non-spring app
 * Simplify the component scan paths (by using the auto configuration class)
@@ -26,7 +27,7 @@ List of things that must or should be done before the first release:
 * Should the `SubscriptionClient` interface and the `SubscriptionClientReactiveImpl` class by kept or removed ?
     * The main parameter would be to be blocking (as now) or non blocking
     * If kept, `SubscriptionClientReactiveImpl` should be renamed to `SubscriptionClientSpringGrapQLImpl`
-* Should the XxxRootResponse classes not be generated any more.
+* Should the XxxRootResponse classes not be generated any more ?   (check generateDeprecatedRequestResponse confif parameter)
     * Then, the `AbstractGraphQLRequest`'s methods `getQueryContext()`, `getMutationContext()` and `getSubscriptionContext()` should also be removed. There may be a big impact on the request generation.
 * Create a new exception (that inherits from GraphQLRequestExecutionException), that indicates that the exception occurred on server side
 * Check to use AutoConfiguration defined by annotation (not by META-INF file)
@@ -78,6 +79,7 @@ For instance:
 	}
 ```
 * `Executors` can now only be retrieved as Spring bean. The `javax.ws.rs.client.Client` is no more accepted.
+* Protocol choice for GraphQL queries and mutations: the new `queryMutationExecutionProtocol` plugin parameter allows to choose between http (default) and webSocket.
 * OAuth: it is now supported by the standard Spring Boot parameters.
     * TODO : update the OAuth document (no more need of the `ServerOAuth2AuthorizedClientExchangeFilterFunction`)
 * The `GraphQLConfiguration` class has been removed. It could have been used to manage GraphQL configuration for non Spring apps, based on the Jersey http client. The support for these apps has been removed, as the generated code is based on Spring
@@ -88,23 +90,7 @@ public class SpringMain implements CommandLineRunner {
 	... Do something that uses GraphQL
 }
 ```
-* The `GraphQLRequest` class is used to execute full requests. It needs the `GraphQlClient` Spring bean to execute GraphQL requests. By default, the `GraphQLRequest` constructor search for a `GraphQlClient` bean in the Spring context. This works well when you attack one GraphQL server. But if your app connects to two or more GraphQL server, then you must provide the relevant `GraphQlClient` to the `GraphQLRequest`, like this:
-```java
-class MyClass {
-	@Autowired
-	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
-
-	@Autowired
-	@Qualifier("AllGraphQLCases")
-	GraphQlClient graphQlClientAllGraphQLCases;
-	
-	void myMethod() {
-		String request = "mutation mut1 {createHuman (...) {...}}";
-		GraphQLRequest graphQLRequest = new GraphQLRequest(graphQlClientAllGraphQLCases, request);
-		Human human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
-	}
-}
-```
+* (must check the doc here: it is quite confuse in this point) The `GraphQLRequest` class is used to execute full requests. It is now suffixed by the schema suffix defined in the `springBeanSuffix` defined in the plugin configuration, which is an empty string by default.
 * In 1.x releases of the plugin the GraphQL endpoint's path is configured by the `graphql.url` entry in the Spring configuration file (application.yml or application.properties)
     * [for servers only] In the 2.x releases, this configuration is manager by spring. So the relevant configuration entry is `spring.graphql.path` in the Spring configuration file. Its default value is `/graphql`
     * [for client only] As there seems to be no way to define two GraphQL server urls in Spring GraphQL yet, the configuration entry remains `graphql.endpointXXXXXX.url`, where XXXXXX is the suffix defined in your pom.xml or gradle.plugin (it may be undefined, and is then empty)

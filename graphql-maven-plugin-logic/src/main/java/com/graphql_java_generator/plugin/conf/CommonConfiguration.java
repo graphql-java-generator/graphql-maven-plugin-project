@@ -32,6 +32,7 @@ public interface CommonConfiguration {
 	public final String DEFAULT_PREFIX = "";
 	public final String DEFAULT_SCHEMA_FILE_FOLDER = "src/main/resources";
 	public final String DEFAULT_SCHEMA_FILE_PATTERN = "*.graphqls";
+	public final String DEFAULT_SCHEMA_SUB_FOLDER = "graphql";
 	public final String DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED = "true";
 	public final String DEFAULT_SUFFIX = "";
 
@@ -112,6 +113,18 @@ public interface CommonConfiguration {
 	 * <P>
 	 */
 	public String getSchemaFilePattern();
+
+	/**
+	 * <p>
+	 * Returns the folder in the classpath that should contain the GraphQL schema. The default is the default for
+	 * spring-graphql, that is: graphql.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	default public String getTargetSchemaSubFolder() {
+		return DEFAULT_SCHEMA_SUB_FOLDER;
+	}
 
 	/**
 	 * <P>

@@ -32,13 +32,14 @@ List of things that must or should be done before the first release:
 * Define where should be `spring-boot-starter-oauth2-resource-server` and `spring-security-oauth2-autoconfigure`
     * To be updated with the last version of the allGraphQLCases server
 * Verify the dependencies for the allGraphQLCases server project
+* Check behavior of `GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER`: should this parameter remain unchanged, or should it move to graphql subfolders (to be compliant with the default graphql spring-graphql folder for schemas?)
 
 # To Document
 
 * Choose between mvc and webflux app
     * This [spring doc page](https://docs.spring.io/spring-boot/docs/2.3.1.RELEASE/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-detecting-web-app-type) describes how to select between these two kinds of application. The main idea is the libraries for both modes are in the classpath, mvc is used by default. To force a webflux app, you just have to add this in the application.properties (or application.yml) file: `spring.main.web-application-type=reactive`
 * Exception management: like stated in the spring-graphql project, you can register a `DataFetcherExceptionHandler` that allows proper `Exception` management in your GraphQL server. There is a sample in the provided `graphql-maven-plugin-samples-allGraphQLCases-server` sample module.
-* The default location for the graphql schemas is now the src/main/resources/graphql/ folder
+* (server only) Document that the schema files are copied to the default spring-graphql folder, that is: the ./graphql folder in the classpath
 * The default endpoint is /graphql (like before). The way to change it is now the spring.graphql.path property (in application.properties or application.yml)
 * To allow web socket support (mandatory for subscription) a line like this must be added in the `application.properties` file: `spring.graphql.websocket.path=/graphql`
 * The support for WebSocket is off by default.

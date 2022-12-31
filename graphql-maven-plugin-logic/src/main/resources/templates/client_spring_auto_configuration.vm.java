@@ -17,10 +17,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.HttpGraphQlClient;
+import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.SpringContextBean;
@@ -70,13 +73,26 @@ public class GraphQLSpringAutoConfiguration${springBeanSuffix} {
 				.build();
 	}
 
+#if ($configuration.queryMutationExecutionProtocol == "http")
 	@Bean
 	@Qualifier("${springBeanSuffix}")
-	@ConditionalOnMissingBean(name = "graphQlClient${springBeanSuffix}")
-	GraphQlClient graphQlClient${springBeanSuffix}(WebClient webClient${springBeanSuffix}) {
+	@ConditionalOnMissingBean(name = "httpGraphQlClient${springBeanSuffix}")
+	GraphQlClient httpGraphQlClient${springBeanSuffix}(WebClient webClient${springBeanSuffix}) {
 		return HttpGraphQlClient.builder(webClient${springBeanSuffix}).build();
 	}
 
+#end
+## If the protocol for queries/mutations is webSocket, or if there are subscription, then the web socket GraphQL client spring bean must be built
+#if ($configuration.queryMutationExecutionProtocol == "webSocket" || ! $documentParser.subscriptionType) ## $documentParser.subscriptionType != null
+	@Bean
+	@Qualifier("${springBeanSuffix}")
+	@ConditionalOnMissingBean(name = "webSocketGraphQlClient${springBeanSuffix}")
+	GraphQlClient webSocketGraphQlClient${springBeanSuffix}() {
+		WebSocketClient client = new ReactorNettyWebSocketClient();
+		return WebSocketGraphQlClient.builder(graphqlEndpoint${springBeanSuffix}Url, client).build();
+	}
+
+#end
 	@Bean
 	@ConditionalOnMissingBean(name = "graphqlClientUtils")
 	GraphqlUtils graphqlClientUtils() {

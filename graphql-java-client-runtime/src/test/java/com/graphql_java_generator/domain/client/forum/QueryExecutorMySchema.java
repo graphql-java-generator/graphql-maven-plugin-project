@@ -276,7 +276,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(fullRequest);
+		return new GraphQLRequest(graphQlClient, fullRequest);
 	}
 
 	/**
@@ -496,7 +496,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getBoardsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "boards");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "boards");
 	}
 
 	/**
@@ -717,7 +717,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getNbBoardsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "nbBoards");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "nbBoards");
 	}
 
 	/**
@@ -950,7 +950,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "topics",
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "topics",
 				InputParameter.newBindParameter("MySchema", "boardName", "queryTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}
@@ -1199,7 +1199,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getFindTopicsGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "findTopics",
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "findTopics",
 				InputParameter.newBindParameter("MySchema", "boardName", "queryFindTopicsBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false),
 				InputParameter.newBindParameter("MySchema", "keyword", "queryFindTopicsKeyword",
@@ -1425,7 +1425,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__schemaGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__schema");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__schema");
 	}
 
 	/**
@@ -1658,8 +1658,9 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__type", InputParameter.newBindParameter(
-				"MySchema", "name", "query__typeName", InputParameterType.MANDATORY, "String", true, 0, false));
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__type",
+				InputParameter.newBindParameter("MySchema", "name", "query__typeName", InputParameterType.MANDATORY,
+						"String", true, 0, false));
 	}
 
 	/**
@@ -1881,7 +1882,7 @@ public class QueryExecutorMySchema implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typenameGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__typename");
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.query, "__typename");
 	}
 
 }

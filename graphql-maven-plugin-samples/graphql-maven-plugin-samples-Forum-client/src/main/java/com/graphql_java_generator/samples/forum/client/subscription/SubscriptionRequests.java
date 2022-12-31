@@ -23,27 +23,9 @@ public class SubscriptionRequests {
 
 	@Autowired
 	MutationExecutor mutationTypeExecutor;
+
 	@Autowired
 	SubscriptionExecutor subscriptionTypeExecutor;
-
-	/** The constructor used, when this class is loaded as a Spring bean (useless if there is no other constructor) */
-	@Autowired
-	public SubscriptionRequests() {
-		// No action.
-	}
-
-	/**
-	 * The constructor to use, when not in a Spring context. To remove, when in a Spring app
-	 * 
-	 * @param url
-	 *            The url for the GraphQL endpoint
-	 * @param urlSubscription
-	 *            The url for the GraphQL subscription endpoint (may be different, when the server is under java)
-	 */
-	public SubscriptionRequests(String url) {
-		mutationTypeExecutor = new MutationExecutor(url);
-		subscriptionTypeExecutor = new SubscriptionExecutor(url);
-	}
 
 	public void execSubscription()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, IOException {

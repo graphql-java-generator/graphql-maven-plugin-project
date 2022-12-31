@@ -321,7 +321,7 @@ class AbstractGraphQLRequest_fragmentTest {
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+		GraphQLRequest graphQLRequest = new GraphQLRequest( //
 				"   fragment character \n \r \t on \n \r \t  Character { id name appearsIn friends {id name} }"
 						+ "mutation {createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{    ...character       }}"//

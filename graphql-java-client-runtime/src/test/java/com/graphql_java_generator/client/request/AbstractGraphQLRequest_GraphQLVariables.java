@@ -56,7 +56,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"mutation crPst  ($post: PostInput!, $anIntParam: Int){createPost(post: $post){id date author{id}}}");
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
@@ -82,7 +82,7 @@ class AbstractGraphQLRequest_GraphQLVariables {
 		// Go, go, go
 		// This query is not a GraphQL valid request, as the $post and $anIntParam are not used. But it's enough for
 		// this unit test
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null,
 				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType, $aDate: Date!) {boards{topics{id}}}");
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")

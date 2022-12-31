@@ -30,7 +30,9 @@ public interface Type {
 
 	/**
 	 * The name of the field, as it can be used in the Java code. If the name is a java keyword (class, default,
-	 * break...), the java name it prefixed by an underscore.
+	 * break...), the java name it prefixed by an underscore.<br/>
+	 * If a prefix or a suffix has been defined in the plugin configuration for this kind of item (object type, union,
+	 * enum...), then the java name contains the prefix and/or the suffix
 	 * 
 	 * @return The name of the type, as it can be used in Java code
 	 */
@@ -219,6 +221,11 @@ public interface Type {
 
 	/** Returns true if this type is a GraphQL Custom Scalar, false otherwise */
 	public boolean isCustomScalar();
+
+	/** Returns true if this type is a GraphQL enum, false otherwise */
+	default public boolean isEnum() {
+		return false;
+	}
 
 	/** Returns the list of directives that have been defined for this type, in the GraphQL schema */
 	public List<AppliedDirective> getAppliedDirectives();

@@ -20,6 +20,8 @@ import org.forum.server.graphql.TopicInput;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.PostRepository;
 import org.forum.server.jpa.TopicRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -29,6 +31,9 @@ import graphql.schema.DataFetchingEnvironment;
  */
 @Component
 public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMutation {
+
+	/** The logger for this class */
+	static protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateMutationImpl.class);
 
 	@Resource
 	BoardRepository boardRepository;
@@ -84,6 +89,7 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 			newPost.setContent(postParam.getInput().getContent());
 		}
 		postRepository.save(newPost);
+		logger.debug("After creation of post, in createPost (id={})", newPost.getId());
 
 		// Let's publish that new post, in case someone subscribed to the subscribeToNewPost GraphQL subscription
 		postPublisher.onNext(newPost);

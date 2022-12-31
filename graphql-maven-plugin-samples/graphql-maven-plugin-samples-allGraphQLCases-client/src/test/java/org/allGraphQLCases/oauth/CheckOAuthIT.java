@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,13 +55,14 @@ public class CheckOAuthIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testThatOAuth2IsActive() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = queryType.getWithListOfListGraphQLRequest("{matrix}");
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryType
+				.getWithListOfListGraphQLRequest("{matrix}");
 		//
 		List<List<Double>> matrixSrc = new ArrayList<>();
 
 		// Go, go, go
 		WebClientResponseException.Unauthorized e = assertThrows(WebClientResponseException.Unauthorized.class,
-				() -> queryType.withListOfList(graphQLRequest, matrixSrc));
+				() -> queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc));
 
 		// Verification
 		assertTrue(e.getMessage().contains("401 Unauthorized"), "The OAuth2 use control must be active on server side");

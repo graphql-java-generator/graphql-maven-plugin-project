@@ -29,8 +29,8 @@ import com.nimbusds.jose.proc.SecurityContext;
  * Below are two commands, that can retrieve an OAuth2 token:
  * 
  * <pre>
-curl -u "messaging-client:secret"  -X POST "http://localhost:8181/oauth2/token" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials" --noproxy "*" -i *
-curl -u "messaging-client:secret" -X POST "http://localhost:8181/oauth2/token?grant_type=client_credentials" --noproxy "*" -i
+curl -u "clientId:secret"  -X POST "http://localhost:8181/oauth2/token" -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials" --noproxy "*" -i
+curl -u "clientId:secret" -X POST "http://localhost:8181/oauth2/token?grant_type=client_credentials" --noproxy "*" -i
  * </pre>
  * 
  * @author Joe Grandja

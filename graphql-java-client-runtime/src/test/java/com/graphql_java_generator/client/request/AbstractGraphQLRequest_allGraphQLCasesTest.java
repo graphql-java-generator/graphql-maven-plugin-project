@@ -216,7 +216,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Preparation
 
 		// Go, go, go
-		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+		GraphQLRequest graphQLRequest = new GraphQLRequest( //
 				"mutation {createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
 		);
@@ -269,7 +269,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(//
+				() -> new GraphQLRequest( //
 						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\")"
 								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\" ] , \r\n"
 								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//
@@ -289,7 +289,7 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 
 		// Go, go, go
 		GraphQLRequestPreparationException e = assertThrows(GraphQLRequestPreparationException.class,
-				() -> new GraphQLRequest(//
+				() -> new GraphQLRequest( //
 						"mutation {createHuman (human:  {name: \"a name\", friends: [], appearsIn: [JEDI,NEWHOPE], type: \"a type\"})"
 								+ "@testDirective(value:&value, anotherValue:?anotherValue, anArray  : [  \"a string\" ,  \"another string\"  , \r\n"
 								+ "anObject:{    name: \"a name\" , [{name=\"subname\"}],type:\"type\"})   "//

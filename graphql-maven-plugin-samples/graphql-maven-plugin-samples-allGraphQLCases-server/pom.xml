@@ -82,7 +82,7 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>add-test-source</id>
+						<id>add-source</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-source</goal>
@@ -91,6 +91,20 @@
 							<sources>
 								<source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
 							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-resource</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>add-resource</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/generated-resources/graphql-maven-plugin</directory>
+								</resource>
+							</resources>
 						</configuration>
 					</execution>
 				</executions>

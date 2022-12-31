@@ -22,14 +22,14 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
 
 	/** Indicates whether the Web Socket is connected or not */
-	boolean connected = false;
+	public boolean connected = false;
 
-	int nbReceivedMessages = 0;
-	Post lastReceivedMessage = null;
-	String lastReceivedClose = null;
-	Throwable lastReceivedError = null;
+	public int nbReceivedMessages = 0;
+	public Post lastReceivedMessage = null;
+	public String lastReceivedClose = null;
+	public Throwable lastReceivedError = null;
 
-	CountDownLatch latchNewMessage = new CountDownLatch(1);
+	public CountDownLatch latchNewMessage = new CountDownLatch(1);
 
 	@Override
 	public void onConnect() {

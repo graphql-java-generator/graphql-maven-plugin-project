@@ -125,10 +125,10 @@ public class Builder {
 				// No, it's a Partial request
 				genericErrorMessage = "Could not create an instance of GraphQLRequest (for a Partial request)";
 
-				Constructor<? extends AbstractGraphQLRequest> constructor = graphQLRequestClass
-						.getConstructor(String.class, RequestType.class, String.class, InputParameter[].class);
-				objectResponse = (ObjectResponse) constructor.newInstance(queryResponseDef, requestType, fieldName,
-						inputParams);
+				Constructor<? extends AbstractGraphQLRequest> constructor = graphQLRequestClass.getConstructor(
+						GraphQlClient.class, String.class, RequestType.class, String.class, InputParameter[].class);
+				objectResponse = (ObjectResponse) constructor.newInstance(graphQlClient, queryResponseDef, requestType,
+						fieldName, inputParams);
 			}
 
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException

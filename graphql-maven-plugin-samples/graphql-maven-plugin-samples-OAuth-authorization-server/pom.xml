@@ -8,13 +8,8 @@
 		<version>local-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>spring-boot-authorization-server</artifactId>
+	<artifactId>graphql-maven-plugin-samples-OAuth-authorization-server</artifactId>
 	<description>Spring Boot Authorization Server</description>
-
-	<properties>
-		<java.version>11</java.version>
-		<spring-security-oauth2-authorization-server.version>0.3.1</spring-security-oauth2-authorization-server.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -28,7 +23,6 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-authorization-server</artifactId>
-			<version>${spring-security-oauth2-authorization-server.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

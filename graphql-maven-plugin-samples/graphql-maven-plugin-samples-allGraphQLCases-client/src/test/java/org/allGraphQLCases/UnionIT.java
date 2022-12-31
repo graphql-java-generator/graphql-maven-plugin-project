@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.allGraphQLCases.client.CUP_AnyCharacter_CUS;
-import org.allGraphQLCases.client.CTP_Droid_CTS;
-import org.allGraphQLCases.client.CINP_DroidInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_DroidInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.CTP_Droid_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CUP_AnyCharacter_CUS;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,7 +90,7 @@ class UnionIT {
 	void test_unionTest_withAFragmentForEachMember()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = myQuery.getGraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
 				+ "    ... on Character { ...id appearsIn } " //
 				+ "    ... on Droid {  primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
@@ -101,7 +101,7 @@ class UnionIT {
 		);
 
 		// Go, go, go
-		List<CUP_AnyCharacter_CUS> unionTest = graphQLRequest.execQuery(params).getUnionTest();
+		List<CUP_AnyCharacter_CUS> unionTest = GraphQLRequestAllGraphQLCases.execQuery(params).getUnionTest();
 
 		// Verification
 		assertNotNull(unionTest);
@@ -153,7 +153,7 @@ class UnionIT {
 	void test_unionTest_withMissingFragments()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest_withoutFragmentForHuman = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases graphQLRequest_withoutFragmentForHuman = myQuery.getGraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
 				+ "    ... on Droid { id primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
 				+ "  } "//

@@ -191,7 +191,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
+	public GraphQLRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
 		return super.getGraphQLRequest(fullRequest);
 	}
 
@@ -279,7 +279,7 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
+	public GraphQLRequest${springBeanSuffix} get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
 		return super.get${field.pascalCaseName}GraphQLRequest(partialRequest);
 	}
 	

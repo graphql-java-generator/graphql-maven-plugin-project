@@ -411,7 +411,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test // Issue 139
-	void test_subscribeToAEnumWithReservedJavaKeywordAsValues()
+	void test_subscribeToAnEnumWithReservedJavaKeywordAsValues()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");

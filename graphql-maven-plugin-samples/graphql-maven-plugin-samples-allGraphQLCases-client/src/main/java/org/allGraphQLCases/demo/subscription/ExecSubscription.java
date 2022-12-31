@@ -34,6 +34,10 @@ public class ExecSubscription {
 		// notifications)
 		callback.latchFor10Notifications.await(10, TimeUnit.SECONDS);
 
+		// Of course, no exception should have been raised.
+		if (callback.lastError != null)
+			throw new RuntimeException(callback.lastError);
+
 		// Let's disconnect from the subscription
 		System.out.println("Let's unsubscribe");
 		sub.unsubscribe();

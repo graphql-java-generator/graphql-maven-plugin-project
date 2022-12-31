@@ -39,6 +39,8 @@ package ${packageUtilName};
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,8 +99,12 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(${object.name}Executor${springBeanSuffix}.class);
 
-	@Autowired
-	GraphQlClient graphQlClient${springBeanSuffix};
+#if ($configuration.queryMutationExecutionProtocol == "http")
+	@Resource(name = "httpGraphQlClient${springBeanSuffix}")
+#else
+	@Resource(name = "webSocketGraphQlClient${springBeanSuffix}")
+#end
+	GraphQlClient graphQlClient;
 	
 	GraphqlUtils graphqlUtils = GraphqlUtils.graphqlUtils; // must be set that way, to be used in the constructor
 	
@@ -305,21 +311,21 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(graphQlClient${springBeanSuffix}, GraphQLRequest.class);
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest${springBeanSuffix}.class);
 	}
 
 	/**
-	 * Get the {@link GraphQLRequest} for <B>full request</B>. For instance:
+	 * Get the {@link GraphQLRequest${springBeanSuffix}} for <B>full request</B>. For instance:
 	 * <PRE>
-	 * GraphQLRequest request = new GraphQLRequest(fullRequest);
+	 * GraphQLRequest${springBeanSuffix} request = new GraphQLRequest(fullRequest);
 	 * </PRE>
 	 * 
-	 * @param fullRequest The full GraphQLRequest, as specified in the GraphQL specification
+	 * @param fullRequest The full GraphQL Request, as specified in the GraphQL specification
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(fullRequest);
+	public GraphQLRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLRequest${springBeanSuffix}(fullRequest);
 	}
 
 #foreach ($field in $object.fields)
@@ -615,7 +621,7 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public com.graphql_java_generator.client.request.Builder get${field.pascalCaseName}ResponseBuilder() throws GraphQLRequestPreparationException {
-		return new com.graphql_java_generator.client.request.Builder(graphQlClient${springBeanSuffix}, GraphQLRequest.class, "${field.name}", RequestType.${object.requestType}
+		return new com.graphql_java_generator.client.request.Builder(graphQlClient, GraphQLRequest${springBeanSuffix}.class, "${field.name}", RequestType.${object.requestType}
 #foreach ($inputParameter in $field.inputParameters)
 			, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end
@@ -630,16 +636,16 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 #if ($field.comments.size() > 0)
 	 * <BR/>
 #end
-	 * Get the {@link GraphQLRequest} for the ${field.name} $type, created with the given Partial request.
+	 * Get the {@link GraphQLRequest${springBeanSuffix}} for the ${field.name} $type, created with the given Partial request.
 	 * 
 	 * @param partialRequest
-	 * 				The Partial GraphQLRequest, as explained in the 
+	 * 				The Partial GraphQL request, as explained in the 
 	 * 				<A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">plugin client documentation</A> 
 	 * @return
 	 * @throws GraphQLRequestPreparationException
 	 */
-	public GraphQLRequest get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.${object.requestType}, "${field.name}"
+	public GraphQLRequest${springBeanSuffix} get${field.pascalCaseName}GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
+		return new GraphQLRequest${springBeanSuffix}(graphQlClient,partialRequest, RequestType.${object.requestType}, "${field.name}"
 #foreach ($inputParameter in $field.inputParameters)  ## Here, inputParameter is an instance of Field
 		, InputParameter.newBindParameter("$springBeanSuffix", "${inputParameter.name}","${object.camelCaseName}${field.pascalCaseName}${inputParameter.pascalCaseName}",#if(${inputParameter.fieldTypeAST.mandatory}) InputParameterType.MANDATORY#else InputParameterType.OPTIONAL#end, "${inputParameter.graphQLTypeSimpleName}", ${inputParameter.fieldTypeAST.mandatory}, ${inputParameter.fieldTypeAST.listDepth}, ${inputParameter.fieldTypeAST.itemMandatory})
 #end

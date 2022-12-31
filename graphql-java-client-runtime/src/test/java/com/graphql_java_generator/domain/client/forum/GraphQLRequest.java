@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.graphql.client.GraphQlClient;
 
 import com.graphql_java_generator.annotation.RequestType;
 import com.graphql_java_generator.client.GraphqlClientUtils;
@@ -38,13 +39,14 @@ public class GraphQLRequest extends ObjectResponse {
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
 
-	public GraphQLRequest(String graphQLRequest) throws GraphQLRequestPreparationException {
-		super("MySchema", graphQLRequest);
+	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest)
+			throws GraphQLRequestPreparationException {
+		super(graphQlClient, "MySchema", graphQLRequest);
 	}
 
-	public GraphQLRequest(String graphQLRequest, RequestType requestType, String queryName,
+	public GraphQLRequest(GraphQlClient graphQlClient, String graphQLRequest, RequestType requestType, String queryName,
 			InputParameter... inputParams) throws GraphQLRequestPreparationException {
-		super("MySchema", graphQLRequest, requestType, queryName, inputParams);
+		super(graphQlClient, "MySchema", graphQLRequest, requestType, queryName, inputParams);
 	}
 
 	/**

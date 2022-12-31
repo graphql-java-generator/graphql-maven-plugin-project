@@ -1,6 +1,10 @@
 package com.graphql_java_generator.util;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,16 +12,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -30,12 +36,16 @@ import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDServer;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
+import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.TopicInput;
 import com.graphql_java_generator.domain.client.forum.TopicPostInput;
+import com.graphql_java_generator.domain.server.allGraphQLCases.EnumWithReservedJavaKeywordAsValues;
 import com.graphql_java_generator.testcases.Isssue49AccountInput;
 import com.graphql_java_generator.testcases.Issue49Title;
 
 import graphql.scalars.ExtendedScalars;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 @Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {
@@ -469,38 +479,110 @@ class GraphqlUtilsTest {
 		assertEquals("The good title (2)", topicInput.getInput().getTitle());
 	}
 
-	// @Test
-	// void test_graphqlEncodeString() {
-	// assertEquals("No escape characters. Some accents: èéàù",
-	// graphqlUtils.graphqlEncodeString("No escape characters. Some accents: èéàù"), "no escape characters");
-	//
-	// assertEquals("Simple escape chars: \\\" \\\\ \\b \\f \\n \\r \\t",
-	// graphqlUtils.graphqlEncodeString("Simple escape chars: \" \\ \b \f \n \r \t"),
-	// "simple escape characters");
-	//
-	// assertEquals("Double escaped chars: \\\\\\\"\\\\ \\\\\\\\ \\\\\\b \\\\\\\"\\f \\n \\r \\t",
-	// graphqlUtils.graphqlEncodeString("Double escaped chars: \\\"\\ \\\\ \\\b \\\"\f \n \r \t"),
-	// "Double escaped characters");
-	//
-	// String test = "Simple escape chars: \" \\ \b \f \n \r \t";
-	// assertEquals(test, graphqlUtils.graphqlDeencodeString(graphqlUtils.graphqlEncodeString(test)), "encode/decode");
-	//
-	// test = "Double escaped chars: \\\"\\ \\\\ \\\b \\\"\f \n \r \t";
-	// assertEquals(test, graphqlUtils.graphqlDeencodeString(graphqlUtils.graphqlEncodeString(test)), "encode/decode");
-	// }
-	//
-	// @Test
-	// void test_graphqlDeencodeString() {
-	// assertEquals("No escape characters. Some accents: èéàù",
-	// graphqlUtils.graphqlDeencodeString("No escape characters. Some accents: èéàù"), "no escape characters");
-	//
-	// assertEquals("Simple escape chars: \" \\ \b \f \n \r \t",
-	// graphqlUtils.graphqlDeencodeString("Simple escape chars: \\\" \\\\ \\b \\f \\n \\r \\t"),
-	// "simple escape characters");
-	//
-	// assertEquals("Double escaped chars: \\\"\\ \\\\ \\\b \\\"\f \n \r \t",
-	// graphqlUtils.graphqlDeencodeString(
-	// "Double escaped chars: \\\\\\\"\\\\ \\\\\\\\ \\\\\\b \\\\\\\"\\f \\n \\r \\t"),
-	// "simple escape characters");
-	// }
+	@SuppressWarnings("unchecked")
+	@Test
+	void test_enumValueToString() {
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// Basic case: not a list
+		assertNull(graphqlUtils.enumValueToString(null));
+		assertEquals("if", graphqlUtils.enumValueToString(EnumWithReservedJavaKeywordAsValues._if));
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// List of enums
+		assertArrayEquals(//
+				ArrayUtils.toArray("assert", null, "break"),
+				((List<String>) graphqlUtils.enumValueToString(Arrays.asList(//
+						EnumWithReservedJavaKeywordAsValues._assert, //
+						null, //
+						EnumWithReservedJavaKeywordAsValues._break))).toArray());
+		assertArrayEquals(//
+				ArrayUtils.toArray(Optional.of("assert"), Optional.empty(), Optional.of("break")), //
+				((List<Optional<String>>) graphqlUtils.enumValueToString(Arrays.asList(//
+						Optional.of(EnumWithReservedJavaKeywordAsValues._assert), //
+						Optional.empty(), //
+						Optional.of(EnumWithReservedJavaKeywordAsValues._break)))).toArray());
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// List of lists
+		List<List<String>> expected1 = Arrays.asList(//
+				Arrays.asList("assert", null, "break"), //
+				null, //
+				Arrays.asList("catch", null, "else"));
+		List<List<String>> actual1 = (List<List<String>>) graphqlUtils.enumValueToString(Arrays.asList(//
+				Arrays.asList(EnumWithReservedJavaKeywordAsValues._assert, null,
+						EnumWithReservedJavaKeywordAsValues._break), //
+				null, //
+				Arrays.asList(EnumWithReservedJavaKeywordAsValues._catch, null,
+						EnumWithReservedJavaKeywordAsValues._else)));
+		assertEquals(expected1.size(), actual1.size());
+		for (int i = 0; i < expected1.size(); i += 1) {
+			assertIterableEquals(expected1.get(i), actual1.get(i), "Comparison of item " + i);
+		} // for
+
+		List<Optional<List<String>>> expected2 = Arrays.asList(//
+				Optional.of(Arrays.asList("assert", null, "break")), //
+				Optional.empty(), //
+				Optional.of(Arrays.asList("catch", null, "else")));
+		List<Optional<List<String>>> actual2 = (List<Optional<List<String>>>) graphqlUtils
+				.enumValueToString(Arrays.asList(//
+						Optional.of(Arrays.asList(EnumWithReservedJavaKeywordAsValues._assert, null,
+								EnumWithReservedJavaKeywordAsValues._break)), //
+						Optional.empty(), //
+						Optional.of(Arrays.asList(EnumWithReservedJavaKeywordAsValues._catch, null,
+								EnumWithReservedJavaKeywordAsValues._else))));
+		assertEquals(expected2.size(), actual2.size());
+		for (int i = 0; i < expected2.size(); i += 1) {
+			Optional<List<String>> o1 = expected2.get(i);
+			Optional<List<String>> o2 = actual2.get(i);
+			if (o1.isPresent()) {
+				assertTrue(o2.isPresent());
+				assertIterableEquals(o1.get(), o2.get(), "Comparison of item " + i);
+			} else {
+				assertFalse(o2.isPresent());
+			}
+		} // for
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////
+		// Flux
+		Object fluxEnum = graphqlUtils.enumValueToString(Flux.just(//
+				EnumWithReservedJavaKeywordAsValues._double, //
+				EnumWithReservedJavaKeywordAsValues._long));
+		assertInstanceOf(Flux.class, fluxEnum);
+		StepVerifier//
+				.create((Flux<String>) fluxEnum)//
+				.expectNext("double")//
+				.expectNext("long")//
+				.expectComplete()//
+				.verify();
+
+		Object fluxOptionalEnum = graphqlUtils.enumValueToString(Flux.just(//
+				Optional.of(EnumWithReservedJavaKeywordAsValues._double), //
+				Optional.empty(), //
+				Optional.of(EnumWithReservedJavaKeywordAsValues._long)));
+		assertInstanceOf(Flux.class, fluxOptionalEnum);
+		StepVerifier//
+				.create((Flux<Optional<String>>) fluxOptionalEnum)//
+				.expectNext(Optional.of("double"))//
+				.expectNext(Optional.empty())//
+				.expectNext(Optional.of("long"))//
+				.expectComplete()//
+				.verify();
+
+		Object fluxListEnum = graphqlUtils.enumValueToString(Flux.just(//
+				Arrays.asList(EnumWithReservedJavaKeywordAsValues._double, //
+						EnumWithReservedJavaKeywordAsValues._long), //
+				Arrays.asList(), //
+				Arrays.asList(EnumWithReservedJavaKeywordAsValues._continue, //
+						EnumWithReservedJavaKeywordAsValues._void)//
+		));
+		assertInstanceOf(Flux.class, fluxListEnum);
+		StepVerifier//
+				.create((Flux<List<String>>) fluxListEnum)//
+				.expectNext(Arrays.asList("double", "long"))//
+				.expectNext(Arrays.asList())//
+				.expectNext(Arrays.asList("continue", "void"))//
+				.expectComplete()//
+				.verify();
+	}
+
 }

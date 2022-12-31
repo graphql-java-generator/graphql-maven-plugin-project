@@ -198,7 +198,7 @@ class AbstractGraphQLRequest_ForumTest {
 	void testBuild_fullQueryWithQueryName()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
 		// Go, go, go
-		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest("query aQueryName {boards{topics{id}}}");
+		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(null, "query aQueryName {boards{topics{id}}}");
 		Map<String, Object> params = new HashMap<>();
 
 		// Verification

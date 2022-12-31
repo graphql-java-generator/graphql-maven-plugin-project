@@ -309,7 +309,7 @@ public class SubscriptionExecutorMySchema implements GraphQLSubscriptionExecutor
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(fullRequest);
+		return new GraphQLRequest(graphQlClient, fullRequest);
 	}
 
 	/**
@@ -613,7 +613,7 @@ public class SubscriptionExecutorMySchema implements GraphQLSubscriptionExecutor
 	 */
 	public GraphQLRequest getSubscribeToNewPostGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.subscription, "subscribeToNewPost",
+		return new GraphQLRequest(graphQlClient, partialRequest, RequestType.subscription, "subscribeToNewPost",
 				InputParameter.newBindParameter("MySchema", "boardName", "subscriptionSubscribeToNewPostBoardName",
 						InputParameterType.MANDATORY, "String", true, 0, false));
 	}

@@ -12,6 +12,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
+import com.graphql_java_generator.plugin.conf.QueryMutationExecutionProtocol;
 
 import graphql.schema.GraphQLScalarType;
 
@@ -97,6 +98,14 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	String packageName;
 
 	/**
+	 * The {@link QueryMutationExecutionProtocol} to use for GraphQL queries and mutations (not subscriptions). The
+	 * allowed values are: http and webSocket.<br/>
+	 * The default value is http.
+	 */
+	@Parameter(property = "com.graphql_java_generator.mavenplugin.queryMutationExecutionProtocol", defaultValue = GenerateCodeCommonConfiguration.DEFAULT_QUERY_MUTATION_EXECUTION_PROTOCOL)
+	QueryMutationExecutionProtocol queryMutationExecutionProtocol;
+
+	/**
 	 * <P>
 	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
 	 * generated in the same package than the classes that matches the GraphQL schema.
@@ -145,6 +154,11 @@ public abstract class AbstractGenerateCodeCommonMojo extends AbstractCommonMojo
 	@Override
 	public String getPackageName() {
 		return packageName;
+	}
+
+	@Override
+	public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
+		return queryMutationExecutionProtocol;
 	}
 
 	@Override

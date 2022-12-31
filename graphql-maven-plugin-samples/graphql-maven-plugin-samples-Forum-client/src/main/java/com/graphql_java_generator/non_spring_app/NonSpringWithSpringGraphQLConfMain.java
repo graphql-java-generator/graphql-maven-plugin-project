@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.minimal_app.MinimalSpringApp;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.MutationExecutor;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.QueryExecutor;
@@ -23,7 +23,7 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Subs
  * 
  * @author etienne-sf
  */
-@SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphQLConfiguration.class,
+@SpringBootApplication(scanBasePackageClasses = { MinimalSpringApp.class, GraphqlClientUtils.class,
 		QueryExecutor.class })
 public class NonSpringWithSpringGraphQLConfMain implements CommandLineRunner {
 

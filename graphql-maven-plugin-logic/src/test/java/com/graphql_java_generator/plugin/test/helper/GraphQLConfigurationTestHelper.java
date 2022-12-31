@@ -16,6 +16,7 @@ import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.conf.QueryMutationExecutionProtocol;
 
 import lombok.Getter;
 
@@ -49,6 +50,7 @@ public class GraphQLConfigurationTestHelper implements GraphQLConfiguration {
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	public Packaging packaging = null;
 	public File projectDir;// Initialized in the constructor
+	public QueryMutationExecutionProtocol queryMutationExecutionProtocol = QueryMutationExecutionProtocol.http;
 	public String scanBasePackages = "null";
 	public File schemaFileFolder = null;
 	public String schemaFilePattern = null;

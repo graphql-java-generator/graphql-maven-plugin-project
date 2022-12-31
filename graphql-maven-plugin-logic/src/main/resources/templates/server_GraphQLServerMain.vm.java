@@ -64,11 +64,6 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 		classNameTypeResolver.setClassNameExtractor((cls) -> {
 			return graphQLServerUtils.classNameExtractor(cls);
 		});
-		return (builder) -> builder
-#if($configuration.addRelayConnections)
-## When addRelayConnections is true, then graphql-java should use the Generated schema, instead of the source schema
-				.schemaResources(new ClassPathResource("/${configuration.defaultTargetSchemaFileName}"))
-#end
-				.defaultTypeResolver(classNameTypeResolver);
+		return (builder) -> builder.defaultTypeResolver(classNameTypeResolver);
 	}
 }

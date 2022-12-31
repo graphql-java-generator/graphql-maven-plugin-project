@@ -2,6 +2,10 @@ Here are the next tasks listed, as a TODO list:
 
 
 ## TODO list for the current version
+* Check all combinations of subscriptions that returns enum (list, optional list)
+* spring-graphql issue, when subscription type name is not `Subscription` 
+    * Check class org.springframework.graphql.execution.ContextDataFetcherDecorator, method createVisitor, check of value handlesSubscription
+* Merge with release 1.18.9
 * Implement the proposal in #145
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Tutorial: add the documentation about the application.yml file

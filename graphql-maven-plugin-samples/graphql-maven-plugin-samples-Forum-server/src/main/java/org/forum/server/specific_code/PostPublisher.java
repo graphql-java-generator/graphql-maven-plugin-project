@@ -10,7 +10,6 @@ import org.forum.server.graphql.Post;
 import org.forum.server.graphql.Topic;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.TopicRepository;
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,8 @@ import reactor.core.publisher.Sinks.Many;
 @Component
 public class PostPublisher {
 
+	static int MESSAGE_BUFFER_SIZE = 100;
+
 	/** The logger for this instance */
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -37,7 +38,10 @@ public class PostPublisher {
 	@Resource
 	BoardRepository boardRepository;
 
-	Many<Post> sink = Sinks.unsafe().many().replay().latest();
+	// onBackpressureBuffer : autoCancel=false, so that the Sink doesn't fully shutdown (not publishing anymore) when
+	// the last subscriber cancels. Otherwise it would not been possible to emit messages once one consumer has
+	// subscribed then unsubscribed.
+	Many<Post> sink = Sinks.unsafe().many().multicast().onBackpressureBuffer(MESSAGE_BUFFER_SIZE, false);
 
 	/**
 	 * Let's emit this new {@link Post}
@@ -59,20 +63,20 @@ public class PostPublisher {
 	 * 
 	 * @return
 	 */
-	Publisher<Post> getPublisher(String boardName) {
+	Flux<Post> getPublisher(String boardName) {
 		logger.debug("Subscribing on skink for {}", boardName);
 
-		Flux<Post> publisher = sink.asFlux();
+		Flux<Post> flux = sink.asFlux();
 
 		if (boardName != null) {
-			publisher.filter((post) -> {
+			flux.filter((post) -> {
 				Topic topic = topicRepository.findById(post.getTopicId()).get();
 				Board board = boardRepository.findById(topic.getBoardId()).get();
 				return board.getName().equals(boardName);
 			});
 		}
 
-		return publisher;
+		return flux;
 	}
 
 }

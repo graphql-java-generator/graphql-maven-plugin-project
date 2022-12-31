@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.allGraphQLCases.client.CIP_Character_CIS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
-import org.allGraphQLCases.client.CTP_Droid_CTS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_Droid_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class FragmentIT {
 	@Test
 	void test_ThreeGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = myQuery.getGraphQLRequest(""//
 				+ "query{withoutParameters{appearsIn ...fragment1}} " //
 				+ "fragment fragment1 on Character {id appearsIn friends{id ...fragment3 ...fragment2 }}"//
 				+ "fragment fragment2 on Character {id name(uppercase: &uppercaseTrue)}"//
@@ -71,12 +71,14 @@ class FragmentIT {
 		);
 
 		// Go, go, go
-		List<CIP_Character_CIS> withoutParameters = graphQLRequest.execQuery(params).getWithoutParameters();
+		List<CIP_Character_CIS> withoutParameters = GraphQLRequestAllGraphQLCases.execQuery(params)
+				.getWithoutParameters();
 
 		// Verification
 		assertNotNull(withoutParameters);
 		assertTrue(withoutParameters.size() > 0);
-		assertTrue(withoutParameters.get(0) instanceof CTP_Droid_CTS || withoutParameters.get(0) instanceof CTP_Human_CTS);
+		assertTrue(
+				withoutParameters.get(0) instanceof CTP_Droid_CTS || withoutParameters.get(0) instanceof CTP_Human_CTS);
 		assertNotNull(withoutParameters.get(0).get__typename());
 		assertNotNull(withoutParameters.get(0).getAppearsIn());
 		assertNotNull(withoutParameters.get(0).getFriends());
@@ -93,7 +95,7 @@ class FragmentIT {
 	@Test
 	void test_InlineAndGlobalFragments() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = myQuery.getGraphQLRequest(""//
 				+ "query{" //
 				+ "  withoutParameters{"//
 				+ "    appearsIn " //
@@ -107,7 +109,8 @@ class FragmentIT {
 		);
 
 		// Go, go, go
-		List<CIP_Character_CIS> withoutParameters = graphQLRequest.execQuery(params).getWithoutParameters();
+		List<CIP_Character_CIS> withoutParameters = GraphQLRequestAllGraphQLCases.execQuery(params)
+				.getWithoutParameters();
 
 		// Verification
 		assertNotNull(withoutParameters);
@@ -133,7 +136,7 @@ class FragmentIT {
 	void test_InlineAndGlobalFragments_withOneOptionalParam_Droid()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = myQuery.getGraphQLRequest(""//
 				+ "query{" //
 				+ "  withOneOptionalParam(character: &input){"//
 				+ "    appearsIn " //
@@ -147,7 +150,8 @@ class FragmentIT {
 		);
 
 		// Go, go, go
-		CIP_Character_CIS withOneOptionalParam = graphQLRequest.execQuery(params).getWithOneOptionalParam();
+		CIP_Character_CIS withOneOptionalParam = GraphQLRequestAllGraphQLCases.execQuery(params)
+				.getWithOneOptionalParam();
 
 		// Verification
 		assertNotNull(withOneOptionalParam);
@@ -158,7 +162,8 @@ class FragmentIT {
 		assertNotNull(withOneOptionalParam.getId());
 		assertNotNull(withOneOptionalParam.getFriends(), "friends have been requested onyl for droids");
 		assertNotNull(withOneOptionalParam.getName(), "name has been requested in inline fragment");
-		assertNotNull(((CTP_Droid_CTS) withOneOptionalParam).getPrimaryFunction(), "primaryFunction is requested for droids");
+		assertNotNull(((CTP_Droid_CTS) withOneOptionalParam).getPrimaryFunction(),
+				"primaryFunction is requested for droids");
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -166,7 +171,7 @@ class FragmentIT {
 	void test_InlineAndGlobalFragments_withOneOptionalParam_Human()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = myQuery.getGraphQLRequest(""//
 				+ "query{" //
 				+ "  withOneOptionalParam(character: &input){"//
 				+ "    appearsIn " //
@@ -181,7 +186,8 @@ class FragmentIT {
 		input.setType("Human");
 
 		// Go, go, go
-		CIP_Character_CIS withOneOptionalParam = graphQLRequest.execQuery(params).getWithOneOptionalParam();
+		CIP_Character_CIS withOneOptionalParam = GraphQLRequestAllGraphQLCases.execQuery(params)
+				.getWithOneOptionalParam();
 
 		// Verification
 		assertNotNull(withOneOptionalParam);

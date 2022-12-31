@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
 import org.allGraphQLCases.client.CIP_Character_CIS;
@@ -17,7 +19,7 @@ import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.graphql.client.GraphQlClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -39,13 +42,17 @@ class FullQueriesIT {
 
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases myQuery;
+
 	@Autowired
 	AnotherMutationTypeExecutorAllGraphQLCases mutationType;
 
-	GraphQLRequest mutationWithDirectiveRequest;
-	GraphQLRequest mutationWithoutDirectiveRequest;
-	GraphQLRequest withDirectiveTwoParametersRequest;
-	GraphQLRequest multipleQueriesRequest;
+	@Resource(name = "httpGraphQlClientAllGraphQLCases")
+	GraphQlClient httpGraphQlClient;
+
+	GraphQLRequestAllGraphQLCases mutationWithDirectiveRequest;
+	GraphQLRequestAllGraphQLCases mutationWithoutDirectiveRequest;
+	GraphQLRequestAllGraphQLCases withDirectiveTwoParametersRequest;
+	GraphQLRequestAllGraphQLCases multipleQueriesRequest;
 
 	public static class ExtensionValue {
 		public String name;
@@ -278,10 +285,10 @@ class FullQueriesIT {
 				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
 				+ "@testDirective(value:?value, anotherValue:?anotherValue, anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"
 				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})   {id name appearsIn friends {id name}}}";
-		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
+		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = new GraphQLRequestAllGraphQLCases(request);
 
 		// Go, go, go
-		CTP_Human_CTS human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
+		CTP_Human_CTS human = mutationType.execWithBindValues(GraphQLRequestAllGraphQLCases, null).getCreateHuman();
 
 		// Verifications
 		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
@@ -291,7 +298,7 @@ class FullQueriesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_Issue82_IntParameter() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest request = myQuery
+		GraphQLRequestAllGraphQLCases request = myQuery
 				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
 
 		// test 1 (with an int bind parameter)
@@ -341,7 +348,7 @@ class FullQueriesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testEscapedStringParameters() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest request = myQuery
+		GraphQLRequestAllGraphQLCases request = myQuery
 				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
 
 		// test 1 (with a hardcoded boolean and string parameter that contains stuff to escape)

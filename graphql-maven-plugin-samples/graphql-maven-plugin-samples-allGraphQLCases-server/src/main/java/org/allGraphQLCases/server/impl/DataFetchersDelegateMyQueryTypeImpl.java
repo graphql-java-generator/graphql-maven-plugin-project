@@ -1,6 +1,7 @@
 package org.allGraphQLCases.server.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -505,6 +506,54 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public String _while(DataFetchingEnvironment dataFetchingEnvironment) {
 		return "a value for _while";
+	}
+
+	@Override
+	public SEP_EnumWithReservedJavaKeywordAsValues_SES returnEnum(DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
+	}
+
+	@Override
+	public SEP_EnumWithReservedJavaKeywordAsValues_SES returnMandatoryEnum(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return SEP_EnumWithReservedJavaKeywordAsValues_SES._assert;
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnListOfEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
+	}
+
+	@Override
+	public List<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnListOfListOfEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Arrays.asList(//
+				Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._boolean, null,
+						SEP_EnumWithReservedJavaKeywordAsValues_SES._break), //
+				null, //
+				Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._default, null,
+						SEP_EnumWithReservedJavaKeywordAsValues_SES._implements));
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnListOfMandatoryEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnMandatoryListOfEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._boolean, null,
+				SEP_EnumWithReservedJavaKeywordAsValues_SES._break);
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnMandatoryListOfMandatoryEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._byte,
+				SEP_EnumWithReservedJavaKeywordAsValues_SES._case);
 	}
 
 }

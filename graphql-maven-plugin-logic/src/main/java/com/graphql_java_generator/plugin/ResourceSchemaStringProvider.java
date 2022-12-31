@@ -49,7 +49,15 @@ public class ResourceSchemaStringProvider {
 	@Autowired
 	CommonConfiguration configuration;
 
-	public List<org.springframework.core.io.Resource> schemas() throws IOException {
+	/**
+	 * 
+	 * @param addIntrospectionSchema
+	 *            true if the introspectionSchema must be added to the list of schemas. (should be true only when
+	 *            generated code, in client mode)
+	 * @return
+	 * @throws IOException
+	 */
+	public List<org.springframework.core.io.Resource> schemas(boolean addIntrospectionSchema) throws IOException {
 		String fullPathPattern;
 		if (configuration.getSchemaFilePattern().startsWith("classpath:")) {
 			// We take the file pattern as is
@@ -90,8 +98,7 @@ public class ResourceSchemaStringProvider {
 		}
 
 		// In client mode, we need to read the introspection schema
-		if (configuration instanceof GenerateCodeCommonConfiguration
-				&& ((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.client)) {
+		if (addIntrospectionSchema) {
 			org.springframework.core.io.Resource introspection = applicationContext.getResource(INTROSPECTION_SCHEMA);
 			if (!introspection.exists()) {
 				throw new IOException("The introspection GraphQL schema doesn't exist (" + INTROSPECTION_SCHEMA + ")");
@@ -118,7 +125,11 @@ public class ResourceSchemaStringProvider {
 	}
 
 	public List<String> schemaStrings() throws IOException {
-		List<org.springframework.core.io.Resource> resources = schemas();
+		// In client mode, we need to read the introspection schema
+		boolean readIntrospectionSchema = configuration instanceof GenerateCodeCommonConfiguration
+				&& ((GenerateCodeCommonConfiguration) configuration).getMode().equals(PluginMode.client);
+
+		List<org.springframework.core.io.Resource> resources = schemas(readIntrospectionSchema);
 		if (resources.size() == 0) {
 			throw new IllegalStateException("No graphql schema files found on classpath with location pattern '"
 					+ configuration.getSchemaFilePattern());
@@ -127,7 +138,7 @@ public class ResourceSchemaStringProvider {
 		return resources.stream().map(this::readSchema).collect(Collectors.toList());
 	}
 
-	private String readSchema(org.springframework.core.io.Resource resource) {
+	public String readSchema(org.springframework.core.io.Resource resource) {
 		StringWriter writer = new StringWriter();
 		try (InputStream inputStream = resource.getInputStream()) {
 			IOUtils.copy(inputStream, writer, StandardCharsets.UTF_8);

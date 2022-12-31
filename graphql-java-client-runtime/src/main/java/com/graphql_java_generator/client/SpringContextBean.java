@@ -8,6 +8,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.annotation.RequestType;
+
 /**
  * This class
  * 
@@ -51,11 +53,15 @@ public class SpringContextBean {
 	 * 
 	 * @param graphQLSchema
 	 *            The GraphQL schema suffix, as defined in the plugin configuration
+	 * @param requestType
+	 *            The type of request is necessary, to retrieve the good {@link GraphQlClient}
 	 * @return
 	 */
-	public static GraphQlClient getGraphQlClient(String graphQLSchema) {
-		return applicationContext.getBean(//
-				"graphQlClient" + ((graphQLSchema == null) ? "" : graphQLSchema), //
+	public static GraphQlClient getGraphQlClient(String graphQLSchema, RequestType requestType) {
+		String beanName = ((requestType == RequestType.subscription) ? "webSocket" : "http")//
+				+ "GraphQlClient" //
+				+ ((graphQLSchema == null) ? "" : graphQLSchema);
+		return applicationContext.getBean(beanName, //
 				GraphQlClient.class);
 	}
 }

@@ -68,6 +68,11 @@ public class EnumType extends AbstractType {
 	}
 
 	@Override
+	public boolean isEnum() {
+		return true;
+	}
+
+	@Override
 	public boolean isScalar() {
 		return true;
 	}
