@@ -881,6 +881,44 @@ public class GraphqlUtils {
 	}
 
 	/**
+	 * Returns the given enumValue given as a String, into the enum value from the generated POJO of the given
+	 * class.<br/>
+	 * This can not be a parameterized method as the return value may be either an enum, a list of enums...
+	 * 
+	 * @param enumValue
+	 *            May be null, a String, a list of String, a list of lists of String...
+	 * @param enumClass
+	 *            The POJO class of the enum
+	 * @return The same kind of list, but all String representations are replaced by the relevant enum value, based on
+	 *         the GraphQL schema.
+	 */
+	public Object stringToEnumValue(Object enumValue, Class<?> enumClass) {
+		if (enumValue == null) {
+			return null;
+		} else if (enumValue instanceof List) {
+			return ((List<?>) enumValue).stream().map(v -> stringToEnumValue(v, enumClass))
+					.collect(Collectors.toList());
+		} else if (enumValue instanceof String) {
+			Method method;
+			try {
+				method = enumClass.getMethod("fromGraphQlValue", String.class);
+			} catch (NoSuchMethodException | SecurityException e) {
+				throw new RuntimeException("Could not find the 'fromGraphQlValue' method to bind the '" + enumValue
+						+ "' value to the " + enumClass.getName() + " class");
+			}
+			try {
+				return method.invoke(null, enumValue);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				throw new RuntimeException("Error when binding the '" + enumValue + "' value to the "
+						+ enumClass.getName() + " class: " + e.getMessage());
+			}
+		} else {
+			throw new RuntimeException("Non managed type when trying to bind the '" + enumValue + "' value to the "
+					+ enumClass.getName() + " class");
+		}
+	}
+
+	/**
 	 * Returns the maximum or minimum value for the lastModified of the given file, or of all the files (not folders)
 	 * contained into this folder.
 	 * 

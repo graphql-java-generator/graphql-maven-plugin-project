@@ -20,6 +20,7 @@ import org.allGraphQLCases.server.SINP_SubscriptionTestParam_SINS;
 import org.allGraphQLCases.server.STP_AllFieldCasesWithoutIdSubtype_STS;
 import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
+import org.allGraphQLCases.server.config.GraphQlException;
 import org.allGraphQLCases.server.util.DataFetchersDelegateTheSubscriptionType;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
@@ -146,14 +147,14 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			SINP_SubscriptionTestParam_SINS param) {
 		if (param.getErrorOnSubscription()) {
 			// The client asked that an exception is thrown now
-			throw new RuntimeException("Oups, the subscriber asked for an error during the subscription");
+			throw new GraphQlException("Oups, the subscriber asked for an error during the subscription");
 		} else if (param.getErrorOnNext()) {
 			return Flux//
 					.interval(Duration.ofMillis(100))// A message every 0.1 second
 					.map((l) -> {
 						boolean b = true;
 						if (b)
-							throw new RuntimeException("Oups, the subscriber asked for an error for each next message");
+							throw new GraphQlException("Oups, the subscriber asked for an error for each next message");
 						// The line below will never get executed. But doing this prevents a compilation error !
 						return "won't go there";
 					});
@@ -165,7 +166,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 					.map((l) -> {
 						boolean b = true;
 						if (b)
-							throw new RuntimeException(
+							throw new GraphQlException(
 									"Oups, the subscriber asked that the web socket get disconnected before the first notification");
 						// The line below will never get executed. But doing this prevents a compilation error !
 						return "won't go there";

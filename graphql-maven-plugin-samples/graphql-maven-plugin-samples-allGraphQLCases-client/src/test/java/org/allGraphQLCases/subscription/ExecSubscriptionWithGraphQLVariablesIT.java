@@ -124,7 +124,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Let's wait for the subscription to close (the server will send back only one item)
 		callback.latchForClosure.await(20, TimeUnit.SECONDS);
 		assertNull(callback.lastReceivedError);
-		assertEquals("Complete", callback.closureReason);
+		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
@@ -183,7 +183,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Let's wait for the subscription to close (the server will send back only one item)
 		callback.latchForClosure.await(20, TimeUnit.SECONDS);
 		assertNull(callback.lastReceivedError);
-		assertEquals("Complete", callback.closureReason);
+		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
@@ -255,7 +255,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Let's wait for the subscription to close (the server will send back only one item)
 		callback.latchForClosure.await(20, TimeUnit.SECONDS);
 		assertNull(callback.lastReceivedError);
-		assertEquals("Complete", callback.closureReason);
+		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);

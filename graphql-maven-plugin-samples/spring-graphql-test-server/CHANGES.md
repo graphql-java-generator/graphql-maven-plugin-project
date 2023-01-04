@@ -38,7 +38,11 @@ List of things that must or should be done before the first release:
 
 * Choose between mvc and webflux app
     * This [spring doc page](https://docs.spring.io/spring-boot/docs/2.3.1.RELEASE/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-detecting-web-app-type) describes how to select between these two kinds of application. The main idea is the libraries for both modes are in the classpath, mvc is used by default. To force a webflux app, you just have to add this in the application.properties (or application.yml) file: `spring.main.web-application-type=reactive`
-* Exception management: like stated in the spring-graphql project, you can register a `DataFetcherExceptionHandler` that allows proper `Exception` management in your GraphQL server. There is a sample in the provided `graphql-maven-plugin-samples-allGraphQLCases-server` sample module.
+        * If the `web-application-type` parameter is not set to _reactive_, then this error occurs: _Web application could not be started as there was no org.springframework.boot.web.servlet.server.ServletWebServerFactory bean defined in the context_
+        * TODO : document it in the FAQ
+* Exception management:
+    * For DataFetcher: like stated in the spring-graphql project, you can register a `DataFetcherExceptionResolverAdapter` that allows proper `Exception` management in your GraphQL server. There is a sample in the provided `graphql-maven-plugin-samples-allGraphQLCases-server` sample module. You just have to create a subclass of `DataFetcherExceptionResolverAdapter`, and override one of the `resolveToSingleError` or `resolveToMultipleErrors` methods. Don't forget to add the __@Component__ annotation, to register it.
+    * For Subscription: it is undocumented, but the same mecanism exists for subscriptions exceptions. The class to override is `SubscriptionExceptionResolverAdapter`
 * (server only) Document that the schema files are copied to the default spring-graphql folder, that is: the ./graphql folder in the classpath
 * The default endpoint is /graphql (like before). The way to change it is now the spring.graphql.path property (in application.properties or application.yml)
 * To allow web socket support (mandatory for subscription) a line like this must be added in the `application.properties` file: `spring.graphql.websocket.path=/graphql`

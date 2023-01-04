@@ -25,7 +25,7 @@ public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 	public Date lastReceivedMessage = null;
 	public Throwable lastReceivedError = null;
 
-	/** A latch that will be freed when a the first notification arrives for this subscription */
+	/** A latch that will be freed when a the first notification or error arrives for this subscription */
 	public CountDownLatch latchForMessageReception = new CountDownLatch(1);
 
 	public SubscriptionCallbackToADate(String clientName) {

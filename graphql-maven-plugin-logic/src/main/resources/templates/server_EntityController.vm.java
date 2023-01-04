@@ -120,11 +120,20 @@ public class ${entity}Controller {
 ## The line above is probably useless. But it's a complex one, and we won"t remove it until beeing sure it's useless
 ##set($return="#if(${dataFetcher.completableFuture})CompletableFuture<#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end#end#if($isEnum)#if($isList)List<#{end}String#if($isList)>#end#else${dataFetcher.field.javaTypeFullClassname}#end#if(${dataFetchersDelegate.type.requestType}==\"subscription\")#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end>#end#if(${dataFetcher.completableFuture})>#end")
 ##
+##
+#macro(argumentType $argument)
+#if($argument.type.isEnum())
+${velocityUtils.repeat("List<",$argument.fieldTypeAST.listDepth)}String${velocityUtils.repeat(">",$argument.fieldTypeAST.listDepth)}##
+#else
+$argument.javaTypeFullClassname##
+#end
+#end
+##
 	public Object ${dataFetcher.field.javaName}(DataFetchingEnvironment dataFetchingEnvironment##
 #if(${dataFetcher.completableFuture})			, DataLoader<${dataFetcher.field.type.identifier.javaTypeFullClassname}, ${dataFetcher.field.type.classFullName}> dataLoader#end
 #if($dataFetcher.graphQLOriginType)			, ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), 
-			@Argument("${argument.name}") ${argument.javaTypeFullClassname} ${argument.javaName}#end) {
-		return #if($isEnum)GraphqlUtils.graphqlUtils.enumValueToString(#end${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.completableFuture}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaName}#end)#if($isEnum))#end;
+			@Argument("${argument.name}") #argumentType($argument) ${argument.javaName}#end) {
+		return #if($isEnum)GraphqlUtils.graphqlUtils.enumValueToString(#end${dataFetchersDelegate.camelCaseName}.${dataFetcher.field.javaName}(dataFetchingEnvironment#if(${dataFetcher.completableFuture}), dataLoader#end#if($dataFetcher.graphQLOriginType), origin#end #foreach($argument in $dataFetcher.field.inputParameters), #if($argument.type.isEnum())(${argument.javaTypeFullClassname})GraphqlUtils.graphqlUtils.stringToEnumValue(${argument.javaName}, ${argument.type.classFullName}.class)#else${argument.javaName}#end#end)#if($isEnum))#end;
 	}
 
 #end

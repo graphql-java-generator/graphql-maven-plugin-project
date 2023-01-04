@@ -95,7 +95,8 @@ public class SpringMain implements CommandLineRunner {
     * [for servers only] In the 2.x releases, this configuration is manager by spring. So the relevant configuration entry is `spring.graphql.path` in the Spring configuration file. Its default value is `/graphql`
     * [for client only] As there seems to be no way to define two GraphQL server urls in Spring GraphQL yet, the configuration entry remains `graphql.endpointXXXXXX.url`, where XXXXXX is the suffix defined in your pom.xml or gradle.plugin (it may be undefined, and is then empty)
     * Note: take care that Spring's properties ends with path, whereas the client is an url.
-
+* Exception management for Subscription
+    * It is slightly different, as connection errors are now received by the callback, as the IO are now non blocking.
 
 # Query and Mutation
 

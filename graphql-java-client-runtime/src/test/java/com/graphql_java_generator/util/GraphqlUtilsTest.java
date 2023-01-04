@@ -585,4 +585,17 @@ class GraphqlUtilsTest {
 				.verify();
 	}
 
+	@Test
+	void test_stringToEnumValue() {
+		assertNull(graphqlUtils.stringToEnumValue(null, EnumWithReservedJavaKeywordAsValues.class));
+		assertEquals(//
+				EnumWithReservedJavaKeywordAsValues._if, //
+				graphqlUtils.stringToEnumValue("if", EnumWithReservedJavaKeywordAsValues.class));
+		assertEquals(//
+				Arrays.asList(EnumWithReservedJavaKeywordAsValues._assert, null,
+						EnumWithReservedJavaKeywordAsValues._break), //
+				graphqlUtils.stringToEnumValue(//
+						Arrays.asList("assert", null, "break"), //
+						EnumWithReservedJavaKeywordAsValues.class));
+	}
 }

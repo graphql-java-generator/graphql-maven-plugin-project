@@ -1,4 +1,4 @@
-package org.allGraphQLCases.server.extensions;
+package org.allGraphQLCases.server.config;
 
 import java.io.IOException;
 

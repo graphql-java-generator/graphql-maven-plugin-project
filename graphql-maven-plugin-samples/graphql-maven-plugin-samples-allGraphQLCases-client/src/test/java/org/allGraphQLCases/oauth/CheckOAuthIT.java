@@ -19,7 +19,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.graphql.client.GraphQlTransportException;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -61,7 +61,7 @@ public class CheckOAuthIT {
 		List<List<Double>> matrixSrc = new ArrayList<>();
 
 		// Go, go, go
-		WebClientResponseException.Unauthorized e = assertThrows(WebClientResponseException.Unauthorized.class,
+		GraphQlTransportException e = assertThrows(GraphQlTransportException.class,
 				() -> queryType.withListOfList(GraphQLRequestAllGraphQLCases, matrixSrc));
 
 		// Verification

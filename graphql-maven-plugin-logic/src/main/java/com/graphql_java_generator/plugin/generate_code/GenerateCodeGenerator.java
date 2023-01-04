@@ -55,6 +55,7 @@ import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.language.DataFetchersDelegate;
 import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
+import com.graphql_java_generator.util.VelocityUtils;
 
 /**
  * This class generates the code for the graphql goals/tasks of the plugin, from the classes coming from the
@@ -894,6 +895,7 @@ public class GenerateCodeGenerator implements Generator {
 		context.put("graphqlUtils", graphqlUtils);
 		context.put("javaKeywordPrefix", GraphqlUtils.JAVA_KEYWORD_PREFIX);
 		context.put("sharp", "#");
+		context.put("velocityUtils", VelocityUtils.velocityUtils);
 
 		// Velocity can't access to enum values. So we add it into the context
 		context.put("isPluginModeClient", configuration.getMode() == PluginMode.client);

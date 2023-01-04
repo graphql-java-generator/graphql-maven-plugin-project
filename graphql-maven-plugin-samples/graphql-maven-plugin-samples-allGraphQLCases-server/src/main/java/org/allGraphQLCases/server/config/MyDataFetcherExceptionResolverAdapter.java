@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.allGraphQLCases.server.extensions;
+package org.allGraphQLCases.server.config;
 
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;

@@ -10,10 +10,10 @@ package ${configuration.springAutoConfigurationPackage};
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.HttpGraphQlClient;
@@ -45,6 +45,9 @@ public class GraphQLSpringAutoConfiguration${springBeanSuffix} {
 	@Value(value = "${D}{graphql.endpoint${springBeanSuffix}.url}")
 	private String graphqlEndpoint${springBeanSuffix}Url;
 
+	@Autowired
+	ApplicationContext applicationContext;
+
 	/**
 	 * This beans defines the GraphQL endpoint for the current GraphQL schema, as a {@link String}. The <I>application.properties</I> 
 	 * must define the GraphQL URL endpoint in the <I>graphql.endpoint${springBeanSuffix}.url</I> property.
@@ -75,17 +78,19 @@ public class GraphQLSpringAutoConfiguration${springBeanSuffix} {
 
 #if ($configuration.queryMutationExecutionProtocol == "http")
 	@Bean
-	@Qualifier("${springBeanSuffix}")
 	@ConditionalOnMissingBean(name = "httpGraphQlClient${springBeanSuffix}")
-	GraphQlClient httpGraphQlClient${springBeanSuffix}(WebClient webClient${springBeanSuffix}) {
-		return HttpGraphQlClient.builder(webClient${springBeanSuffix}).build();
+	GraphQlClient httpGraphQlClient${springBeanSuffix}() {
+		// The usual way to autowire other beans is to define them as parameters of the bean definition methods. But this doesn't
+		// seem to work when several beans of the same type exist, and one is defined as "@Primary". 
+		// So we retrieve "manually" the needed bean from its name:
+		WebClient webClient = (WebClient) applicationContext.getBean("webClient${springBeanSuffix}");
+		return HttpGraphQlClient.builder(webClient).build();
 	}
 
 #end
 ## If the protocol for queries/mutations is webSocket, or if there are subscription, then the web socket GraphQL client spring bean must be built
 #if ($configuration.queryMutationExecutionProtocol == "webSocket" || ! $documentParser.subscriptionType) ## $documentParser.subscriptionType != null
 	@Bean
-	@Qualifier("${springBeanSuffix}")
 	@ConditionalOnMissingBean(name = "webSocketGraphQlClient${springBeanSuffix}")
 	GraphQlClient webSocketGraphQlClient${springBeanSuffix}() {
 		WebSocketClient client = new ReactorNettyWebSocketClient();

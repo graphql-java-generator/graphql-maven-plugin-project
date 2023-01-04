@@ -26,7 +26,7 @@ import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_MyQueryType_STS;
 import org.allGraphQLCases.server.STP_break_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
-import org.allGraphQLCases.server.extensions.GraphQlException;
+import org.allGraphQLCases.server.config.GraphQlException;
 import org.allGraphQLCases.server.util.DataFetchersDelegateMyQueryType;
 import org.springframework.stereotype.Component;
 
