@@ -274,4 +274,9 @@ public class GraphQLObjectMapper {
 	public String writeValueAsString(Object o) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(o);
 	}
+
+	/** @see ObjectMapper#valueToTree(Object) */
+	public JsonNode valueToTree(Object o) {
+		return objectMapper.valueToTree(o);
+	}
 }

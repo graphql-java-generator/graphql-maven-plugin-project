@@ -533,7 +533,10 @@ public abstract class AbstractGraphQLRequest {
 		// No error, let's parse the response data
 		try {
 			// To properly manage aliases, interfaces and unions, we use our own mapper
-			return getGraphQLObjectMapper().treeToValue((Map<?, ?>) response.getData(), t);
+			GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
+			T ret = objectMapper.treeToValue((Map<?, ?>) response.getData(), t);
+			ret.setExtensions(objectMapper.valueToTree(response.getExtensions()));
+			return ret;
 		} catch (JsonProcessingException e) {
 			throw new GraphQLRequestExecutionException(
 					"Error when executing query <" + payload.query + ">: " + e.getMessage(), e);

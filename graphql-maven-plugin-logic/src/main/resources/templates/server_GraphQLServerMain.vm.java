@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.graphql.execution.ClassNameTypeResolver;
+import org.springframework.graphql.execution.GraphQlSource;
 
 #if($configuration.generateJPAAnnotation)
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -58,8 +59,15 @@ public class GraphQLServerMain#if(${configuration.packaging}=="war") extends Spr
 	}
 #end
 
+	/**
+	 * This {@link GraphQlSourceBuilderCustomizer} configures stuff that is mandatory for plugin. Other 
+	 * {@link GraphQlSourceBuilderCustomizer} may be registered to add other customization to the spring 
+	 * {@link GraphQlSource}. The only constraint is that other such beans must have different names.
+	 * 
+	 * @return
+	 */
 	@Bean
-	public GraphQlSourceBuilderCustomizer sourceBuilderCustomizer() {
+	public GraphQlSourceBuilderCustomizer defaultSourceBuilderCustomizer() {
 		ClassNameTypeResolver classNameTypeResolver = new ClassNameTypeResolver();
 		classNameTypeResolver.setClassNameExtractor((cls) -> {
 			return graphQLServerUtils.classNameExtractor(cls);
