@@ -16,8 +16,6 @@ spring:
   jackson:
     serialization:
       INDENT_OUTPUT: true
-  main:
-    web-application-type: reactive
   security:
     oauth2:
       resourceserver:

@@ -36,10 +36,6 @@ List of things that must or should be done before the first release:
 
 # To Document
 
-* Choose between mvc and webflux app
-    * This [spring doc page](https://docs.spring.io/spring-boot/docs/2.3.1.RELEASE/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-detecting-web-app-type) describes how to select between these two kinds of application. The main idea is the libraries for both modes are in the classpath, mvc is used by default. To force a webflux app, you just have to add this in the application.properties (or application.yml) file: `spring.main.web-application-type=reactive`
-        * If the `web-application-type` parameter is not set to _reactive_, then this error occurs: _Web application could not be started as there was no org.springframework.boot.web.servlet.server.ServletWebServerFactory bean defined in the context_
-        * TODO : document it in the FAQ
 * Exception management:
     * For DataFetcher: like stated in the spring-graphql project, you can register a `DataFetcherExceptionResolverAdapter` that allows proper `Exception` management in your GraphQL server. There is a sample in the provided `graphql-maven-plugin-samples-allGraphQLCases-server` sample module. You just have to create a subclass of `DataFetcherExceptionResolverAdapter`, and override one of the `resolveToSingleError` or `resolveToMultipleErrors` methods. Don't forget to add the __@Component__ annotation, to register it.
     * For Subscription: it is undocumented, but the same mecanism exists for subscriptions exceptions. The class to override is `SubscriptionExceptionResolverAdapter`
@@ -145,3 +141,11 @@ TODO: 1) add a parameter to generate them ??
 TODO: 2) no more definition of `TypeResolver` in the generated code, and add a doc to explain how to do it when it is necessary. 
 TODO:       This allows to entirely remove the `GraphQLWiring` class, and so let's the developper free to do what he/she wants there.
 TODO: 3) possibly just generate it when the java name is different from the GraphQL Object Type's name (but how to allow the developper to override it?).
+
+
+# Rollbacked (but kept here for memory)
+
+* Change from mvc to webflux app
+    * This [spring doc page](https://docs.spring.io/spring-boot/docs/2.3.1.RELEASE/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-detecting-web-app-type) describes how to select between these two kinds of application. The main idea is the libraries for both modes are in the classpath, mvc is used by default. To force a webflux app, you just have to add this in the application.properties (or application.yml) file: `spring.main.web-application-type=reactive`
+        * If the `web-application-type` parameter is not set to _reactive_, then this error occurs: _Web application could not be started as there was no org.springframework.boot.web.servlet.server.ServletWebServerFactory bean defined in the context_
+        * TODO : document it in the FAQ
