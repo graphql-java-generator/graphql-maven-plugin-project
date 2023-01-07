@@ -87,8 +87,8 @@ public interface RequestExecution {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
-			throws GraphQLRequestExecutionException;
+	public <R extends GraphQLRequestObject, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest,
+			Map<String, Object> parameters, SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType,
+			Class<T> messageType) throws GraphQLRequestExecutionException;
 
 }

@@ -29,9 +29,9 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 	}
 
 	@Override
-	public <R, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest, Map<String, Object> parameters,
-			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
-			throws GraphQLRequestExecutionException {
+	public <R extends GraphQLRequestObject, T> SubscriptionClient execute(AbstractGraphQLRequest graphQLRequest,
+			Map<String, Object> parameters, SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType,
+			Class<T> messageType) throws GraphQLRequestExecutionException {
 		return graphQLRequest.exec(parameters, subscriptionCallback, subscriptionType, messageType);
 	}
 

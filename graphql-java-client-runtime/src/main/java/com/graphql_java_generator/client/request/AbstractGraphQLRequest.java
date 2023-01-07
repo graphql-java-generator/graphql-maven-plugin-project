@@ -127,7 +127,7 @@ public abstract class AbstractGraphQLRequest {
 
 	}
 
-	private class SubscriptionMessageConsumer<R, T> {
+	private class SubscriptionMessageConsumer<R extends GraphQLRequestObject, T> {
 		final private SubscriptionCallback<T> subscriptionCallback;
 		final private Class<R> subscriptionType;
 		final private Class<T> messageType;
@@ -155,7 +155,9 @@ public abstract class AbstractGraphQLRequest {
 
 			try {
 				// To properly manage aliases, interfaces and unions, we use our own mapper
-				R r = getGraphQLObjectMapper().treeToValue((Map<?, ?>) response.getData(), subscriptionType);
+				GraphQLObjectMapper objectMapper = getGraphQLObjectMapper();
+				R r = objectMapper.treeToValue((Map<?, ?>) response.getData(), subscriptionType);
+				r.setExtensions(objectMapper.valueToTree(response.getExtensions()));
 
 				// It has already been checked that the subscription has only one field: the subscribed field.
 				@SuppressWarnings("unchecked")
@@ -579,8 +581,9 @@ public abstract class AbstractGraphQLRequest {
 	 *             GraphQL server or if the server response can't be parsed
 	 * @throws IOException
 	 */
-	public <R, T> SubscriptionClient exec(Map<String, Object> params, SubscriptionCallback<T> subscriptionCallback,
-			Class<R> subscriptionType, Class<T> messageType) throws GraphQLRequestExecutionException {
+	public <R extends GraphQLRequestObject, T> SubscriptionClient exec(Map<String, Object> params,
+			SubscriptionCallback<T> subscriptionCallback, Class<R> subscriptionType, Class<T> messageType)
+			throws GraphQLRequestExecutionException {
 		// This method accepts only subscription at a time (no query and no mutation)
 		if (!requestType.equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may be called only for subscriptions");
