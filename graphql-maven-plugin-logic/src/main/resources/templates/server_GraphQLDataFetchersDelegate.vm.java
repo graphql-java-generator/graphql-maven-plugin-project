@@ -8,9 +8,9 @@ import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
+import org.reactivestreams.Publisher;
 
 import com.graphql_java_generator.util.GraphqlUtils;
-import reactor.core.publisher.Flux;
 
 import graphql.schema.DataFetchingEnvironment;
 #if($configuration.generateBatchLoaderEnvironment)
@@ -102,7 +102,7 @@ public interface ${dataFetchersDelegate.pascalCaseName} {
 	 */
 #if ($dataFetchersDelegate.type.requestType == "subscription")
 ## The returned type for subscription is embeded in a Publisher 
-	public Flux<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
+	public Publisher<#if($dataFetcher.field.fieldTypeAST.mandatory==false)Optional<#end${dataFetcher.field.javaTypeFullClassname}#if($dataFetcher.field.fieldTypeAST.mandatory==false)>#end> ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
 #else
 	public ${dataFetcher.field.javaTypeFullClassname} ${dataFetcher.javaName}(DataFetchingEnvironment dataFetchingEnvironment#if($dataFetcher.graphQLOriginType), ${dataFetcher.graphQLOriginType.classFullName} origin#end#foreach($argument in $dataFetcher.field.inputParameters), ${argument.javaTypeFullClassname} ${argument.javaName}#end);
 #end 
