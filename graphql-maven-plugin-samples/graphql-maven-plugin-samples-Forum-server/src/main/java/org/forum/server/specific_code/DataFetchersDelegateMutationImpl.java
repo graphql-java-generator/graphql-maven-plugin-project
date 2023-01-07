@@ -101,7 +101,7 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 	public List<Post> createPosts(DataFetchingEnvironment dataFetchingEnvironment, List<PostInput> spam) {
 		// Actually, this mutation is for sample only. We don't want to implement it !
 		// :)
-		throw new RuntimeException("Spamming is forbidden");
+		throw new GraphQlException("Spamming is forbidden");
 	}
 
 	@Override

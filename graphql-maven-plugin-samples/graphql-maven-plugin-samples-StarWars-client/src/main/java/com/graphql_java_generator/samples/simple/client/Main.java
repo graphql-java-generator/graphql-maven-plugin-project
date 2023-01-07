@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 
 import com.generated.graphql.Episode;
 import com.generated.graphql.QueryTypeExecutor;
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.simple.client.graphql.PartialDirectRequests;
@@ -31,7 +31,7 @@ import reactor.netty.tcp.TcpClient;
  * 
  * @author etienne-sf
  */
-@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, QueryTypeExecutor.class })
+@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphqlClientUtils.class, QueryTypeExecutor.class })
 public class Main implements CommandLineRunner {
 
 	/** Logger for this class */
@@ -85,49 +85,41 @@ public class Main implements CommandLineRunner {
 		// A random value, to variabilize mutations
 		int i = (int) (Math.random() * Integer.MAX_VALUE);
 
-		try {
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  heroSimple  ----------------------------------------------");
+		System.out.println(client.heroPartial(Episode.NEWHOPE));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  heroSimple  ----------------------------------------------");
-			System.out.println(client.heroPartial(Episode.NEWHOPE));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  heroFriendsFriendsFriends  -------------------------------");
+		System.out.println(client.heroFriendsFriendsFriends(Episode.NEWHOPE));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  heroFriendsFriendsFriends  -------------------------------");
-			System.out.println(client.heroFriendsFriendsFriends(Episode.NEWHOPE));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  humanSimple  ----------------------------------------------");
+		System.out.println(client.humanPartial("00000000-0000-0000-0000-000000000045"));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  humanSimple  ----------------------------------------------");
-			System.out.println(client.humanPartial("00000000-0000-0000-0000-000000000045"));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  humanFriendsFriendsFriends  ------------------------------");
+		System.out.println(client.humanFriendsFriendsFriends("00000000-0000-0000-0000-000000000180"));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  humanFriendsFriendsFriends  ------------------------------");
-			System.out.println(client.humanFriendsFriendsFriends("00000000-0000-0000-0000-000000000180"));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  droidSimple  ----------------------------------------------");
+		System.out.println(client.droidPartial("00000000-0000-0000-0000-000000000003"));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  droidSimple  ----------------------------------------------");
-			System.out.println(client.droidPartial("00000000-0000-0000-0000-000000000003"));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  droidFriendsFriendsFriends  ------------------------------");
+		System.out.println(client.droidPartial("00000000-0000-0000-0000-000000000003"));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  droidFriendsFriendsFriends  ------------------------------");
-			System.out.println(client.droidPartial("00000000-0000-0000-0000-000000000003"));
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  droidDoesNotExist  ---------------------------------------");
+		System.out.println(client.droidDoesNotExist());
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  droidDoesNotExist  ---------------------------------------");
-			System.out.println(client.droidDoesNotExist());
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  createHuman  ---------------------------------------------");
+		System.out.println(client.createHuman("A new Human (" + i++ + ")", "A random planet"));
 
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  createHuman  ---------------------------------------------");
-			System.out.println(client.createHuman("A new Human (" + i++ + ")", "A random planet"));
-
-			System.out.println("----------------------------------------------------------------------------");
-			System.out.println("----------------  addFriend  -----------------------------------------------");
-			System.out.println(client.droidDoesNotExist());
-
-		} catch (javax.ws.rs.ProcessingException e) {
-			throw new RuntimeException(
-					"Please start the server from the project graphql-maven-plugin-samples-StarWars-server, before executing the client part",
-					e);
-		}
+		System.out.println("----------------------------------------------------------------------------");
+		System.out.println("----------------  addFriend  -----------------------------------------------");
+		System.out.println(client.droidDoesNotExist());
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

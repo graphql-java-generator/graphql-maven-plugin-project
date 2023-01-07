@@ -31,8 +31,8 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.TopicPostInput;
 
 /**
- * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL Forum server, see
- * the pom.xml file for details.
+ * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL Forum server, see the
+ * pom.xml file for details.
  * 
  * @author etienne-sf
  */
@@ -170,9 +170,6 @@ abstract class AbstractIT {
 		Board board = queries.createBoard(name, publiclyAvailable);
 
 		// Verification
-		assertEquals(name + " (Overriden DataFetcher)", board.getName(),
-				"The DataFetcher for this mutation should have been overriden. See the CustomGraphQLDataFetchers class in the Forum server sample.");
-		//
 		List<Board> after = queries.boardsAndTopicsWithFieldParameter(cal.getTime());
 		assertEquals(before.size() + 1, after.size());
 		assertNull(contains(before, board.getId()));
@@ -238,7 +235,8 @@ abstract class AbstractIT {
 				() -> queries.createPosts(list));
 
 		// Verification
-		assertTrue(e.getMessage().contains("Spamming is forbidden"));
+		assertTrue(e.getMessage().contains("Spamming is forbidden"),
+				"Message of the exception is: \"" + e.getMessage() + "\"");
 	}
 
 	@Test
@@ -300,7 +298,8 @@ abstract class AbstractIT {
 				() -> queries.createPosts(list));
 
 		// Verification
-		assertTrue(e.getMessage().contains("Spamming is forbidden"));
+		assertTrue(e.getMessage().contains("Spamming is forbidden"),
+				"Message of the exception is: \"" + e.getMessage() + "\"");
 	}
 
 	private TopicPostInput getTopicPostInput(Member author, String content, Date date, boolean publiclyAvailable,

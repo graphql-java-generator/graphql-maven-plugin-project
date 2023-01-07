@@ -120,7 +120,7 @@ class SubscriptionNewTestIT {
 				"Board name 1");
 
 		// We wait a little, just to be sure that the subscription is active on server side
-		Thread.sleep(200);
+		Thread.sleep(500);
 
 		logger.debug("Creating the post, for which we should receive the notification");
 		createdPost = mutationType.createPost(createPostRequest, postInput1);

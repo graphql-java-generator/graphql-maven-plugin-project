@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
 
 import com.generated.graphql.QueryTypeExecutor;
-import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.samples.simple.client.Main;
 
 import io.netty.handler.ssl.SslContext;
@@ -21,7 +21,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.TcpClient;
 
 @TestConfiguration
-@ComponentScan(basePackageClasses = { Main.class, SpringTestConfig.class, GraphQLConfiguration.class,
+@ComponentScan(basePackageClasses = { Main.class, SpringTestConfig.class, GraphqlClientUtils.class,
 		QueryTypeExecutor.class }, excludeFilters = { @Filter(type = FilterType.REGEX, pattern = "graphql\\..*") })
 public class SpringTestConfig {
 

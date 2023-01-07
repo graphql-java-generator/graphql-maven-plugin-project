@@ -543,8 +543,10 @@ public class GenerateCodeGenerator implements Generator {
 		context.put("mutation", generateCodeDocumentParser.getMutationType());
 		context.put("subscription", generateCodeDocumentParser.getSubscriptionType());
 
-		return generateOneFile(getJavaFile("GraphQLRequest" + configuration.getSpringBeanSuffix(), true),
-				"generating GraphQLRequest", context, resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
+		return generateOneFile(getJavaFile(//
+				(configuration.getSpringBeanSuffix() == null) ? "GraphQLRequest"
+						: "GraphQLRequest" + configuration.getSpringBeanSuffix(), //
+				true), "generating GraphQLRequest", context, resolveTemplate(CodeTemplate.GRAPHQL_REQUEST));
 	}
 
 	/**

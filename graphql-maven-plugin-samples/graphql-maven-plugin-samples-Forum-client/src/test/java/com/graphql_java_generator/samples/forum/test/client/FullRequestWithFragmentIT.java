@@ -9,22 +9,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Board;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Query;
+import com.graphql_java_generator.samples.forum.test.SpringTestConfig;
 
 /**
  * This class is both samples and integration tests for Full GraphQL request, that contains GraphQL fragments.
  * 
  * @author etienne-sf
  */
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfig.class })
+@TestPropertySource("classpath:application.properties")
 @Execution(ExecutionMode.CONCURRENT)
 public class FullRequestWithFragmentIT {
 
@@ -33,8 +41,10 @@ public class FullRequestWithFragmentIT {
 	static GraphQLRequest boardsRequestWithGlobalFragments;
 	static GraphQLRequest boardsRequestWithInlineFragments;
 
-	@BeforeAll
-	static void setupAll() throws GraphQLRequestPreparationException {
+	// This method must be executed once the Spring context is loaded. So it may not be a @BeforeAll (that is a static
+	// method)
+	@BeforeEach
+	void beforeEach() throws GraphQLRequestPreparationException {
 
 		// Let's build once the request, and use it for each further execution
 		boardsRequestWithGlobalFragments = new GraphQLRequest(""//

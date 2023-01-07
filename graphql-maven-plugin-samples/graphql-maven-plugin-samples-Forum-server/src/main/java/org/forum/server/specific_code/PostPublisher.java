@@ -41,7 +41,7 @@ public class PostPublisher {
 	// onBackpressureBuffer : autoCancel=false, so that the Sink doesn't fully shutdown (not publishing anymore) when
 	// the last subscriber cancels. Otherwise it would not been possible to emit messages once one consumer has
 	// subscribed then unsubscribed.
-	Many<Post> sink = Sinks.unsafe().many().multicast().onBackpressureBuffer(MESSAGE_BUFFER_SIZE, false);
+	Many<Post> sink = Sinks.many().multicast().directBestEffort();
 
 	/**
 	 * Let's emit this new {@link Post}
@@ -64,7 +64,7 @@ public class PostPublisher {
 	 * @return
 	 */
 	Flux<Post> getPublisher(String boardName) {
-		logger.debug("Subscribing on skink for {}", boardName);
+		logger.debug("Subscribing on sink for {}", boardName);
 
 		Flux<Post> flux = sink.asFlux();
 
