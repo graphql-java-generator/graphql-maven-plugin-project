@@ -83,6 +83,8 @@ public class SpringConfig {
 	GraphQlClient webSocketGraphQlClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases,
 			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
 
+		logger.debug("Creating SpringConfig webSocketGraphQlClientAllGraphQLCases");
+
 		// Creation of an OAuthTokenExtractor based on this OAuth ExchangeFilterFunction
 		OAuthTokenExtractor oAuthTokenExtractor = new OAuthTokenExtractor(
 				serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases);

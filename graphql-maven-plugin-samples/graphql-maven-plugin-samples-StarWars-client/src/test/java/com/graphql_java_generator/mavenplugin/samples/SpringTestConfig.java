@@ -1,5 +1,7 @@
 package com.graphql_java_generator.mavenplugin.samples;
 
+import java.util.Collections;
+
 import javax.net.ssl.SSLException;
 
 import org.slf4j.Logger;
@@ -9,6 +11,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Primary;
+import org.springframework.graphql.client.GraphQlClient;
+import org.springframework.graphql.client.WebSocketGraphQlClient;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
+import org.springframework.web.reactive.socket.client.WebSocketClient;
 
 import com.generated.graphql.QueryTypeExecutor;
 import com.graphql_java_generator.client.GraphqlClientUtils;
@@ -18,7 +29,6 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.TcpClient;
 
 @TestConfiguration
 @ComponentScan(basePackageClasses = { Main.class, SpringTestConfig.class, GraphqlClientUtils.class,
@@ -37,29 +47,69 @@ public class SpringTestConfig {
 	 * @throws SSLException
 	 */
 	@Bean
-	HttpClient insecureHttpClient() throws SSLException {
-		int method = 2;
+	@Primary
+	public WebClient webClient(String graphqlEndpoint) {
+		return WebClient.builder()//
+				.clientConnector(new ReactorClientHttpConnector(getInsecureHttpClient()))//
+				.baseUrl(graphqlEndpoint)//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint)).build();
+	}
 
-		if (method == 1) {
+	@Bean
+	@Primary
+	GraphQlClient webSocketGraphQlClient(String graphqlEndpoint) {
+		WebSocketClient client = new ReactorNettyWebSocketClient(getInsecureHttpClient());
+		return WebSocketGraphQlClient.builder(graphqlEndpoint, client).build();
+	}
 
-			// logger.debug("Activating Proxy for the Spring WebClient");
-			// tcpClient.proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP).host("127.0.0.1").port(3128));
-
-			logger.debug("Activating INSECURE SSL for the Spring WebClient");
-			SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
-					.build();
-			TcpClient tcpClient = TcpClient.create()
-					.secure(sslProviderBuilder -> sslProviderBuilder.sslContext(sslContext));
-
-			return HttpClient.from(tcpClient);
-		} else if (method == 2) {
+	/**
+	 * @return
+	 * @throws SSLException
+	 */
+	private HttpClient getInsecureHttpClient() {
+		try {
 			SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
 					.build();
 			HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
 			return httpClient;
-		} else {
-			throw new RuntimeException("bad value");
+		} catch (SSLException e) {
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-
+	//
+	// /**
+	// * This sample uses in https, but with a self-signed certificate. So we need to avoid certificate controls. This
+	// * {@link HttpClient} just removes control on the certificate. <BR/>
+	// * This bean is for subscriptions<BR/>
+	// * This is ok for this integration test. But DON'T DO THAT IN PRODUCTION!
+	// *
+	// * @return
+	// * @throws SSLException
+	// */
+	// @Bean
+	// HttpClient insecureHttpClient() throws SSLException {
+	// int method = 2;
+	//
+	// if (method == 1) {
+	//
+	// // logger.debug("Activating Proxy for the Spring WebClient");
+	// // tcpClient.proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP).host("127.0.0.1").port(3128));
+	//
+	// logger.debug("Activating INSECURE SSL for the Spring WebClient");
+	// SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
+	// .build();
+	// TcpClient tcpClient = TcpClient.create()
+	// .secure(sslProviderBuilder -> sslProviderBuilder.sslContext(sslContext));
+	//
+	// return HttpClient.from(tcpClient);
+	// } else if (method == 2) {
+	// SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
+	// .build();
+	// HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
+	// return httpClient;
+	// } else {
+	// throw new RuntimeException("bad value");
+	// }
+	// }
 }

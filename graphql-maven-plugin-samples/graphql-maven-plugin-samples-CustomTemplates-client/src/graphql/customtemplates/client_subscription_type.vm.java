@@ -1,22 +1,20 @@
 ##
-## This template is a copy/paste of the 'client_query_mutation_type.vm.java' template, with this only modification:
+## This template is a copy/paste of the 'client_subscription_type.vm.java' template, with this only modification:
 ##  - Add of a boolean field: thisIsADummyFieldToCheckThatThisTemplateIsUsed. It is checked in the IT test, 
 ##    to check that the custom templates is actually used.
 ##
 ##
-##
-##
-## Velocity template for the Query or Mutation type (client side)
+## Velocity template for the Subscription type (client side). 
 ##
 ## The generated class contains:
 ## - If separateUtilityClasses is false: all the fields (and their getters/setters), as stated in the GraphQL schema 
-## - All the utility classes that allow to prepare and execute the query/mutation
+## - All the utility classes that allow to prepare and execute the subscription
 ##
 ##
 ## This template has these inputs:
 ## packageUtilName 			The package where this class must be generated
 ## configuration		The plugin's configuration
-## object					The query or mutation type, for which this executor is being generated
+## object					The subscription type, for which this executor is being generated
 ##
 ## Maven ignores the default value for springBeanSuffix, and replaces it by a null value. In this case, we replace the value by an empty String 
 #if (!$configuration.springBeanSuffix) #set($springBeanSuffix="") #else #set($springBeanSuffix = ${configuration.springBeanSuffix}) #end
@@ -31,12 +29,16 @@ package ${packageUtilName};
 #macro(inputValues)#foreach ($inputParameter in $field.inputParameters), ${inputParameter.javaName}#end#end
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.graphql_java_generator.annotation.GraphQLNonScalar;
 import com.graphql_java_generator.annotation.GraphQLObjectType;
 import com.graphql_java_generator.annotation.GraphQLQuery;
@@ -54,6 +56,8 @@ import $import;
 #end
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
+import com.graphql_java_generator.client.SubscriptionCallback;
+import com.graphql_java_generator.client.SubscriptionClient;
 
 /**
 #foreach ($comment in $object.comments)
@@ -64,7 +68,7 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
  * <BR/>
 #end
  * This class contains the response for a full request. See the 
- * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/exec_graphql_requests.html">plugin web site</A> 
+ * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client_subscription.html">plugin web site</A> 
  * for more information on full and partial requests.<BR/>
  * It also allows access to the _extensions_ part of the response. Take a look at the 
  * <A HRE="https://spec.graphql.org/June2018/#sec-Response">GraphQL spec</A> for more information on this.
@@ -81,9 +85,12 @@ ${object.annotation}
 @SuppressWarnings("unused")
 public class ${object.classSimpleName} extends ${object.name}Executor${springBeanSuffix} #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.GraphQLRequestObject #end{
 
-	/** The field below is the only change from the original template. It is here only to check that this template is actually used */ 
+	/** 
+	 * The field below is the only change from the original template. It is here only to check that 
+	 * this template is actually used
+	 */ 
 	public boolean thisIsADummyFieldToCheckThatThisTemplateIsUsed = true;
-	
+
 #if(!${configuration.separateUtilityClasses})
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
@@ -92,11 +99,11 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	private GraphQLObjectMapper extensionMapper = null;
 	private JsonNode extensions;
 	private Map<String, JsonNode> extensionsAsMap = null;
-
 #end
+
 #parse ("templates/object_content.vm.java")
 #end
-
+	
 ##
 ## For objects that represent the requests (query, mutation and subscription), we add the capability to decode the GraphQL extensions response field
 ##
@@ -147,80 +154,20 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	}
 #end
 
-	/**
-	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
-	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
-	 */
-	@Deprecated
-	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end execWithBindValues(String queryResponseDef, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.exec(queryResponseDef, parameters);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
-	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
-	 */
-	@Deprecated
-	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end exec(String queryResponseDef, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.exec(queryResponseDef, paramsAndValues);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
-	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
-	 */
-	@Deprecated
-	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end execWithBindValues(ObjectResponse objectResponse, Map<String, Object> parameters)
-			throws GraphQLRequestExecutionException {
-		return super.execWithBindValues(objectResponse, parameters);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
-	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
-	 */
-	@Deprecated
-	public #if(${configuration.generateDeprecatedRequestResponse})${object.name}Response#else${object.classSimpleName}#end exec(ObjectResponse objectResponse, Object... paramsAndValues)
-			throws GraphQLRequestExecutionException {
-		return super.exec(objectResponse, paramsAndValues);
-	}
-
-	/**
-	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
-	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
-	 */
-	@Deprecated
-	public com.graphql_java_generator.client.request.Builder getResponseBuilder() throws GraphQLRequestPreparationException {
-		return super.getResponseBuilder();
-	}
-
-	/**
-	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
-	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
-	 */
-	@Deprecated
-	public GraphQLRequest${springBeanSuffix} getGraphQLRequest(String fullRequest) throws GraphQLRequestPreparationException {
-		return super.getGraphQLRequest(fullRequest);
-	}
-
 #foreach ($field in $object.fields)
+#if ($field.name != "__typename")
 	/**
 	 * This method is deprecated: please use {@link ${object.classSimpleName}Executor} class instead of this class, to execute this method. 
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
-## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
-## the current name and the query type object: they have the same name, but are in different packages 
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
-			String queryResponseDef,
-#inputParams()
+	public SubscriptionClient ${field.javaName}WithBindValues(
+			String queryResponseDef, 
+			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
+#inputParams() 
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.${field.javaName}WithBindValues(queryResponseDef#inputValues(), parameters);
+		return super.${field.javaName}WithBindValues(queryResponseDef, subscriptionCallback #inputValues(), parameters);
 	}
 
 	/**
@@ -228,16 +175,12 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
-## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
-## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.javaName}(
-			String queryResponseDef,
-#inputParams()
+	public SubscriptionClient ${field.javaName}(String queryResponseDef, 
+			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
+			#inputParams() 
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		return super.${field.javaName}(queryResponseDef#inputValues(), paramsAndValues);
+		return super.${field.javaName}(queryResponseDef, subscriptionCallback #inputValues(), paramsAndValues);
 	}
 
 	/**
@@ -245,16 +188,12 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
-## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
-## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.javaName}WithBindValues(
-			ObjectResponse objectResponse,
-#inputParams()
+	public SubscriptionClient ${field.javaName}WithBindValues(ObjectResponse objectResponse,
+			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
+			#inputParams() 
 			Map<String, Object> parameters)
 			throws GraphQLRequestExecutionException  {
-		return super.${field.javaName}WithBindValues(objectResponse#inputValues(), parameters);
+		return super.${field.javaName}WithBindValues(objectResponse, subscriptionCallback #inputValues(), parameters);
 	}
 
 	/**
@@ -262,16 +201,12 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 	 * It is maintained to keep existing code compatible with the generated code. It will be removed in 2.0 version.
 	 */
 	@Deprecated
-## Note: we must use the ${query.type.classSimpleName}, as when the GraphQL schema uses request that return the query type, and 
-## the query type object is in a separate package (plugin parameter separateUtilityClasses), then there is a conflict between 
-## the current name and the query type object: they have the same name, but are in different packages 	#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-#if(${field.type.scalar})	@GraphQLScalar #else	@GraphQLNonScalar #end(fieldName = "${field.name}", graphQLTypeSimpleName = "${field.graphQLTypeSimpleName}", javaClass = ${field.type.classFullName}.class)
-	public ${field.javaTypeFullClassname} ${field.javaName}(
-			ObjectResponse objectResponse,
-#inputParams()
+	public SubscriptionClient ${field.javaName}(ObjectResponse objectResponse,
+			SubscriptionCallback<${field.javaTypeFullClassname}> subscriptionCallback,
+			#inputParams()
 			Object... paramsAndValues)
 			throws GraphQLRequestExecutionException  {
-		return super.${field.javaName}(objectResponse#inputValues(), paramsAndValues);
+		return super.${field.javaName}(objectResponse, subscriptionCallback #inputValues(), paramsAndValues);
 	}
 
 	/**
@@ -293,5 +228,6 @@ public class ${object.classSimpleName} extends ${object.name}Executor${springBea
 		return super.get${field.pascalCaseName}GraphQLRequest(partialRequest);
 	}
 	
+#end
 #end
 }

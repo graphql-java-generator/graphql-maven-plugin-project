@@ -13,11 +13,8 @@ import java.util.List;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.graphql.client.GraphQlTransportException;
 
@@ -27,23 +24,11 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 /**
  * @author etienne-sf
  */
-@Execution(ExecutionMode.CONCURRENT)
+@Order(Integer.MIN_VALUE) // This test must run last, to avoid breaking the Spring context for other tests. See the
+							// src/test/resources/junit-platform.properties file for JUnit class ordering configuration
 public class CheckOAuthIT {
 	MyQueryTypeExecutorAllGraphQLCases queryType;
 	AnotherMutationTypeExecutorAllGraphQLCases mutation;
-
-	ApplicationContext ctx;
-
-	@BeforeEach
-	void setup() {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfigWithoutOAuth.class);
-
-		// For some tests, we need to execute additional partialQueries
-		queryType = ctx.getBean(MyQueryTypeExecutorAllGraphQLCases.class);
-		assertNotNull(queryType);
-		mutation = ctx.getBean(AnotherMutationTypeExecutorAllGraphQLCases.class);
-		assertNotNull(mutation);
-	}
 
 	/**
 	 * Test of list that contain list, when sending request and receiving response
@@ -52,9 +37,18 @@ public class CheckOAuthIT {
 	 * @throws GraphQLRequestExecutionException
 	 */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
 	void testThatOAuth2IsActive() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+
 		// Preparation
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
+				SpringTestConfigWithoutOAuth.class);
+
+		// For some tests, we need to execute additional partialQueries
+		queryType = ctx.getBean(MyQueryTypeExecutorAllGraphQLCases.class);
+		assertNotNull(queryType);
+		mutation = ctx.getBean(AnotherMutationTypeExecutorAllGraphQLCases.class);
+		assertNotNull(mutation);
+
 		GraphQLRequestAllGraphQLCases GraphQLRequestAllGraphQLCases = queryType
 				.getWithListOfListGraphQLRequest("{matrix}");
 		//
@@ -66,5 +60,7 @@ public class CheckOAuthIT {
 
 		// Verification
 		assertTrue(e.getMessage().contains("401 Unauthorized"), "The OAuth2 use control must be active on server side");
+
+		ctx.close();
 	}
 }

@@ -188,6 +188,7 @@
 			</plugin>
 			<plugin>
 				<!-- Execution of the integration tests -->
+				<!-- Direct execution with maven is possible with this command: mvn failsafe:integration-test -pl :graphql-maven-plugin-samples-allGraphQLCases-client -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<executions>
@@ -198,10 +199,10 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
+				<!--configuration>
 					<parallel>methods</parallel>
 					<threadCount>10</threadCount>
-				</configuration>
+				</configuration-->
 			</plugin>
 			<plugin>
 				<!-- This plugin allows to start the SpringBoot server in the background 

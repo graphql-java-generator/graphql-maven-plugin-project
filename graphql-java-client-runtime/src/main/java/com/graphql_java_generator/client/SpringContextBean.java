@@ -3,12 +3,15 @@
  */
 package com.graphql_java_generator.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.RequestType;
+import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 
 /**
  * This class
@@ -18,10 +21,22 @@ import com.graphql_java_generator.annotation.RequestType;
 @Component
 public class SpringContextBean {
 
+	private static Logger logger = LoggerFactory.getLogger(SpringContextBean.class);
+
+	/** A logger used to debug Spring Beans configuration and loading at runtime */
+	private static Logger loggerBeanPostProcessor = LoggerFactory.getLogger("BeanPostProcessor");
+
 	private static ApplicationContext applicationContext;
 
+	/**
+	 * Builds the Bean with the Spring Application Context, which is stored into a static attribute of the class. This
+	 * allows to provide a the Spring IoC container to non-spring classes, like {@link AbstractGraphQLRequest}.
+	 * 
+	 * @return
+	 */
 	@Autowired
 	public SpringContextBean(ApplicationContext applicationContext) {
+		loggerBeanPostProcessor.debug("Setting applicationContext to {}", applicationContext);
 		SpringContextBean.applicationContext = applicationContext;
 	}
 
@@ -37,11 +52,13 @@ public class SpringContextBean {
 
 	/**
 	 * Sets the Spring Application Context. This method allows to provide a the Spring IoC container to non-spring
-	 * classes
+	 * classes.<br/>
+	 * Spring uses the Autowired constructor. This method is used by unit tests.
 	 * 
 	 * @return
 	 */
 	public static void setApplicationContext(ApplicationContext applicationContext) {
+		loggerBeanPostProcessor.debug("Setting applicationContext to {}", applicationContext);
 		SpringContextBean.applicationContext = applicationContext;
 	}
 
@@ -61,7 +78,10 @@ public class SpringContextBean {
 		String beanName = ((requestType == RequestType.subscription) ? "webSocket" : "http")//
 				+ "GraphQlClient" //
 				+ ((graphQLSchema == null) ? "" : graphQLSchema);
-		return applicationContext.getBean(beanName, //
-				GraphQlClient.class);
+		GraphQlClient bean = applicationContext.getBean(beanName, GraphQlClient.class);
+
+		logger.debug("Retrieving the '{}' bean (@{})", beanName, bean);
+		loggerBeanPostProcessor.debug("Retrieving the '{}' bean (@{}) - {}", beanName, bean, applicationContext);
+		return bean;
 	}
 }

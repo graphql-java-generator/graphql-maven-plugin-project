@@ -99,6 +99,10 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
 			<!-- Needed only for this project as a sample: we store the data in a 
 				H2 in-memory database -->
 			<groupId>com.h2database</groupId>

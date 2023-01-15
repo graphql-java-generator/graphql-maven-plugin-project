@@ -36,7 +36,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ExecSubscriptionWithGraphQLVariablesIT {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(ExecSubscriptionIT.class);
+	private static Logger logger = LoggerFactory.getLogger(ExecSubscriptionWithGraphQLVariablesIT.class);
 
 	@Autowired
 	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
@@ -65,6 +65,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {
+
 		// matrix
 		matrix.add((List<Double>) (Object) Arrays.asList(list0));
 		matrix.add((List<Double>) (Object) Arrays.asList(list1));

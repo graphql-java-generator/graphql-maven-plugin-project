@@ -23,13 +23,10 @@ import org.forum.client.util.GraphQLRequestForum;
 import org.forum.client.util.MutationExecutorForum;
 import org.forum.client.util.SubscriptionExecutorForum;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -41,9 +38,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
-@TestPropertySource("classpath:application.properties")
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class SubscriptionIT {
 
 	/** The logger for this class */

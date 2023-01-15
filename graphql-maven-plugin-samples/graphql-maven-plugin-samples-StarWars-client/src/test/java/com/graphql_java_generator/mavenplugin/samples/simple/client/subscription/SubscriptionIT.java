@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
@@ -60,14 +60,13 @@ class SubscriptionIT {
 	GraphQLRequest subscriptionRequest;
 	GraphQLRequest createHumanRequest;
 
-	public static Thread currentThread;
+	SubscriptionClient client;
 
 	@PostConstruct
 	void init() throws GraphQLRequestPreparationException, KeyManagementException, NoSuchAlgorithmException {
 
 		subscriptionRequest = subscriptionType.getNewCharacterGraphQLRequest("{id name ... on Human {homePlanet}}");
 		createHumanRequest = mutationType.getCreateHumanGraphQLRequest("{id name homePlanet}");
-		currentThread = Thread.currentThread();
 
 		// We avoid SSL check in Web Sockets.
 		System.setProperty("com.graphql-java-generator.websocket.nosslcheck", "true");
@@ -79,40 +78,30 @@ class SubscriptionIT {
 		// Preparation
 		CharacterSubscriptionCallback callback = new CharacterSubscriptionCallback();
 
-		// Go, go, go
+		// For this test, we want to check a unique subscription notification that is the result of an action in this
+		// thread. To be sure that everything is ok, we subscribe in another thread, and block this thread one second so
+		// that the subscription is active. We can then create a Human, and check that we properly receive its creation
+		// notification from the server.
 		logger.debug("Subscribing to the GraphQL subscription");
-		SubscriptionClient client = subscriptionType.newCharacter(subscriptionRequest, callback);
-
-		// Let's wait 1 seconds max, that the web socket is properly connected
-		try {
-			Thread.sleep(1000);// Wait 1s
-		} catch (InterruptedException e) {
-			logger.debug("Got interrupted (1)");
-		}
-
-		logger.debug("Creating the post, for which we should receice the notification");
-		CompletableFuture<Character> createdPostASync = CompletableFuture.supplyAsync(() -> {
-			try {
-				// We need to wait a little, to be sure the subscription is done, before creating the post.
-				// But we wait as little as possible
-				for (int i = 0; i < 100; i += 1) {
-					Thread.sleep(10);
-					if (callback.connected)
-						break;
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					client = subscriptionType.newCharacter(subscriptionRequest, callback);
+				} catch (GraphQLRequestExecutionException e) {
+					callback.lastReceivedError = e;
 				}
-				return mutationType.createHuman(createHumanRequest, "new name", "new home planet");
-			} catch (GraphQLRequestExecutionException | InterruptedException e) {
-				throw new RuntimeException(e.getMessage(), e);
 			}
-		});
+		}.start();
 
-		// Let's wait 5 seconds max . We'll get interrupted before, if we receive a notification
-		// (see the callback implementation in the CharacterSubscriptionCallback class)
-		try {
-			Thread.sleep(5 * 1000);
-		} catch (InterruptedException e) {
-			logger.debug("Got interrupted (2)");
-		}
+		// Let's wait 1 seconds max, that the subscription is properly connected
+		Thread.sleep(5000);// Wait 1s
+
+		logger.debug("Creating the human, for which we should receive the notification");
+		Character createdCharacter = mutationType.createHuman(createHumanRequest, "new name", "new home planet");
+
+		// Let's wait for the notifications (my PC is really slow, thanks to a permanently full scanning antivirus)
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);// Time out of 20s: can be useful, when debugging
 
 		// Verification
 		assertNull(callback.lastReceivedClose,
@@ -120,7 +109,6 @@ class SubscriptionIT {
 		assertNull(callback.lastReceivedError, "We should have received no error (" + callback.lastReceivedError + ")");
 		assertNotNull(callback.lastReceivedMessage, "We should have received a post");
 
-		Character createdCharacter = createdPostASync.get();
 		assertTrue(createdCharacter instanceof Human);
 		assertEquals(createdCharacter.getId(), callback.lastReceivedMessage.getId(), "Is it 'our' new Character?");
 		assertEquals("new home planet", ((Human) callback.lastReceivedMessage).getHomePlanet(),

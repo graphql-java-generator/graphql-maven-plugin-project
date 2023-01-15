@@ -35,7 +35,7 @@
 						<!-- The QUERY_MUTATION is found in the graphql-maven-plugin-samples-CustomTemplates-resttemplate dependency -->
 						<QUERY_MUTATION>templates/resttemplate/client_query_mutation_type.vm.java</QUERY_MUTATION>
 						<!-- The SUBSCRIPTION_EXECUTOR is found in this project, int the src/graphql/customtemplates folder -->
-						<SUBSCRIPTION_EXECUTOR>src/graphql/customtemplates/custom_client_subscription_executor.vm.java</SUBSCRIPTION_EXECUTOR>
+						<SUBSCRIPTION>src/graphql/customtemplates/client_subscription_type.vm.java</SUBSCRIPTION>
 					</templates>
 				</configuration>
 				<dependencies>

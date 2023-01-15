@@ -41,7 +41,7 @@ List of things that must or should be done before the first release:
     * For Subscription: it is undocumented, but the same mecanism exists for subscriptions exceptions. The class to override is `SubscriptionExceptionResolverAdapter`
 * (server only) Document that the schema files are copied to the default spring-graphql folder, that is: the ./graphql folder in the classpath
 * The default endpoint is /graphql (like before). The way to change it is now the spring.graphql.path property (in application.properties or application.yml)
-* To allow web socket support (mandatory for subscription) a line like this must be added in the `application.properties` file: `spring.graphql.websocket.path=/graphql`
+* To allow web socket support (mandatory for subscription) a line like this must be added in the `application.properties` (or `application.yml` ) file: `spring.graphql.websocket.path=/graphql`
 * The support for WebSocket is off by default.
     * If Servlet application: the spring-boot-starter-websocket must be added, as a dependency
     * For WebFlux: not additional dependency

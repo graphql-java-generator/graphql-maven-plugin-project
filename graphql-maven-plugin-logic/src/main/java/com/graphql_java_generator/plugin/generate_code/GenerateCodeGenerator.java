@@ -74,7 +74,7 @@ public class GenerateCodeGenerator implements Generator {
 	private final static String CLIENT_RUNTIME_SOURCE_FILENAME = "/graphql-java-client-runtime-sources.jar";
 	private final static String SERVER_RUNTIME_SOURCE_FILENAME = "/graphql-java-server-runtime-sources.jar";
 
-	private final static String CLIENT_SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLSpringAutoConfiguration";
+	private final static String CLIENT_SPRING_AUTO_CONFIGURATION_CLASS = "GraphQLMavenPluginAutoConfiguration";
 
 	@Autowired
 	GenerateCodeDocumentParser generateCodeDocumentParser;

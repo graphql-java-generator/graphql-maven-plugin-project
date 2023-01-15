@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,7 +17,6 @@ import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
 import org.allGraphQLCases.client.CINP_SubscriptionTestParam_CINS;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.TheSubscriptionTypeExecutorAllGraphQLCases2;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -132,13 +130,6 @@ public class ExecSubscriptionIT {
 			assertNull(sub.callback.lastReceivedMessage,
 					"The " + sub.clientName + " should not have received a message after having unsubscribed");
 		}
-	}
-
-	@Disabled
-	@Test
-	@Execution(ExecutionMode.CONCURRENT)
-	public void test_withTwoWebSockets() {
-		fail("not yet implemented");
 	}
 
 	@Test
@@ -420,10 +411,10 @@ public class ExecSubscriptionIT {
 	void test_subscribeToAnEnumWithReservedJavaKeywordAsValues()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
-		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
+		logger.info("Starting test_subscribeToAnEnumWithReservedJavaKeywordAsValues");
 
 		SubscriptionCallbackEnumWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackEnumWithReservedJavaKeywordAsValues(
-				"test_subscribeToAEnumWithReservedJavaKeywordAsValues");
+				"test_subscribeToAnEnumWithReservedJavaKeywordAsValues");
 		SubscriptionClient sub = subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -443,7 +434,7 @@ public class ExecSubscriptionIT {
 	void test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
-		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
+		logger.info("Starting test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues");
 
 		SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues(
 				"test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues");

@@ -13,9 +13,9 @@
 		</encoder>
 	</appender>
 
-	<!--logger name="com.graphql_java_generator" level="trace" additivity="false">
+	<logger name="com.graphql_java_generator" level="trace" additivity="false">
 		<appender-ref ref="File" />
-	</logger-->
+	</logger>
 
 	<root level="warn">
 		<appender-ref ref="Console" />

@@ -9,10 +9,13 @@ import org.allGraphQLCases.demo.impl.PartialDirectQueries;
 import org.forum.client.util.QueryExecutorForum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.codec.CodecCustomizer;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -37,6 +40,7 @@ import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClien
 
 import com.graphql_java_generator.client.GraphqlClientUtils;
 import com.graphql_java_generator.client.OAuthTokenExtractor;
+import com.graphql_java_generator.client.SpringContextBean;
 import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 
 import reactor.core.publisher.Flux;
@@ -56,9 +60,13 @@ import reactor.netty.http.client.HttpClient;
 @SuppressWarnings("deprecation")
 public class SpringTestConfig {
 
-	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(SpringTestConfig.class);
+	private static Logger loggerBeanPostProcessor = LoggerFactory.getLogger("BeanPostProcessor");
 
+	@Autowired
+	ApplicationContext applicationContext;
+
+	/** MyInterceptor allows to check the Subscription data that will be sent back to the client */
 	static class MyInterceptor implements GraphQlClientInterceptor {
 		private static Logger logger = LoggerFactory.getLogger(MyInterceptor.class);
 		final private String beanSuffix;
@@ -83,6 +91,46 @@ public class SpringTestConfig {
 						response.getErrors());
 			}
 		}
+	}
+
+	/**
+	 * Insures that the {@link SpringContextBean} bean stores the right Spring {@link ApplicationContext} in its static
+	 * applicationContext field.<br/>
+	 * These JUnit tests may build more than one Spring {@link ApplicationContext}. The plugin's runtime uses the
+	 * {@link SpringContextBean} that started at initialization, and stores the Spring {@link ApplicationContext} in its
+	 * static applicationContext field.<br/>
+	 * The issue in these JUnit tests that create several application contexts is that is creates a mess, as this static
+	 * field can contain only one Spring {@link ApplicationContext}: the last one to be created.
+	 */
+	@Bean
+	BeanPostProcessor SpringContextSetterBeanPostProcessor() {
+		return new BeanPostProcessor() {
+			@Override
+			public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+				String classname = bean.getClass().getName();
+				if (classname.startsWith("org.allGraphQLCases") || classname.endsWith("IT"))
+					SpringContextBean.setApplicationContext(applicationContext);
+				return bean;
+			}
+		};
+	}
+
+	@Bean
+	BeanPostProcessor logBeanPostProcessor() {
+		return new BeanPostProcessor() {
+			@Override
+			public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+				if (loggerBeanPostProcessor.isDebugEnabled()) {
+					String classname = bean.getClass().getName();
+					if (classname.startsWith("org.allGraphQLCases")
+							|| classname.startsWith("com.graphql_java_generator")
+							|| GraphQlClient.class.isAssignableFrom(bean.getClass()))
+						loggerBeanPostProcessor.debug("Before postProcess init of {} (@{}) - {}", beanName, bean,
+								classname);
+				}
+				return bean;
+			}
+		};
 	}
 
 	@Bean
@@ -132,6 +180,9 @@ public class SpringTestConfig {
 	@Primary
 	GraphQlClient webSocketGraphQlClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases,
 			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
+
+		logger.debug("Creating SpringTestConfig webSocketGraphQlClientAllGraphQLCases");
+		loggerBeanPostProcessor.debug("Creating SpringTestConfig webSocketGraphQlClientAllGraphQLCases");
 
 		// Creation of an OAuthTokenExtractor based on this OAuth ExchangeFilterFunction
 		OAuthTokenExtractor oAuthTokenExtractor = new OAuthTokenExtractor(
