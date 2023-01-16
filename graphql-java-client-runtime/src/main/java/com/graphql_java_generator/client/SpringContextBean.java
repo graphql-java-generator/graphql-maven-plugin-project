@@ -23,9 +23,6 @@ public class SpringContextBean {
 
 	private static Logger logger = LoggerFactory.getLogger(SpringContextBean.class);
 
-	/** A logger used to debug Spring Beans configuration and loading at runtime */
-	private static Logger loggerBeanPostProcessor = LoggerFactory.getLogger("BeanPostProcessor");
-
 	private static ApplicationContext applicationContext;
 
 	/**
@@ -36,7 +33,6 @@ public class SpringContextBean {
 	 */
 	@Autowired
 	public SpringContextBean(ApplicationContext applicationContext) {
-		loggerBeanPostProcessor.debug("Setting applicationContext to {}", applicationContext);
 		SpringContextBean.applicationContext = applicationContext;
 	}
 
@@ -58,7 +54,6 @@ public class SpringContextBean {
 	 * @return
 	 */
 	public static void setApplicationContext(ApplicationContext applicationContext) {
-		loggerBeanPostProcessor.debug("Setting applicationContext to {}", applicationContext);
 		SpringContextBean.applicationContext = applicationContext;
 	}
 
@@ -81,7 +76,7 @@ public class SpringContextBean {
 		GraphQlClient bean = applicationContext.getBean(beanName, GraphQlClient.class);
 
 		logger.debug("Retrieving the '{}' bean (@{})", beanName, bean);
-		loggerBeanPostProcessor.debug("Retrieving the '{}' bean (@{}) - {}", beanName, bean, applicationContext);
+
 		return bean;
 	}
 }
