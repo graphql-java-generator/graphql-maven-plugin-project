@@ -24,6 +24,7 @@ import org.allGraphQLCases.server.STP_Foo140_STS;
 import org.allGraphQLCases.server.STP_HumanConnection_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
 import org.allGraphQLCases.server.STP_MyQueryType_STS;
+import org.allGraphQLCases.server.STP_ReservedJavaKeywordAllFieldCases_STS;
 import org.allGraphQLCases.server.STP_break_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.allGraphQLCases.server.config.GraphQlException;
@@ -91,8 +92,10 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 			SEP_Episode_SES SEP_Episode_SES) {
 		SIP_Character_SIS c = generator.generateInstance(STP_Droid_STS.class);
 
-		// The SEP_Episode_SES list (appearsIn) will be filled by another call (the graphql manages the joins).
-		// To check the given parameter, we put the SEP_Episode_SES name in the returned character's name
+		// The SEP_Episode_SES list (appearsIn) will be filled by another call (the
+		// graphql manages the joins).
+		// To check the given parameter, we put the SEP_Episode_SES name in the returned
+		// character's name
 		c.setName(SEP_Episode_SES.name());
 
 		return c;
@@ -158,7 +161,8 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	public STP_break_STS aBreak(DataFetchingEnvironment dataFetchingEnvironment) {
 		STP_break_STS ret = new STP_break_STS();
 
-		// Let's retrieve the input parameter test, that contains the expected value to return
+		// Let's retrieve the input parameter test, that contains the expected value to
+		// return
 		Field aBreak = (Field) dataFetchingEnvironment.getOperationDefinition().getSelectionSet().getSelections()
 				.get(0);
 		Field aCase = (Field) aBreak.getSelectionSet().getSelections().get(0);
@@ -506,6 +510,12 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public String _while(DataFetchingEnvironment dataFetchingEnvironment) {
 		return "a value for _while";
+	}
+
+	@Override
+	public STP_ReservedJavaKeywordAllFieldCases_STS reservedJavaKeywordAllFieldCases(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return generator.generateInstance(STP_ReservedJavaKeywordAllFieldCases_STS.class);
 	}
 
 	@Override

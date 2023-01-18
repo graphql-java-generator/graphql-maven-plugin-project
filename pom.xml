@@ -45,7 +45,7 @@
 		<connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
 		<developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
 		<url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
-		<tag>HEAD</tag>
+		<tag>graphql-maven-plugin-project-1.18.9</tag>
 	</scm>
 
 	<distributionManagement>
@@ -114,6 +114,10 @@
 			when actually doing a release. It can also be defined on the command line with -DlastReleasedVersion=version when building 
 			the site afterward -->
 		<lastReleasedVersion>${project.version}</lastReleasedVersion>
+
+		<!-- Below are some versions that overrides the one coming from spring-boot-starter -->
+		<!-- snakeyaml priori to 1.31 have various vulnarabilities -->
+		<snakeyaml.version>1.33</snakeyaml.version>
 	</properties>
 
 	<build>
@@ -490,6 +494,11 @@
 				<groupId>com.nimbusds</groupId>
 				<artifactId>oauth2-oidc-sdk</artifactId>
 				<version>9.22.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>${snakeyaml.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.velocity</groupId>

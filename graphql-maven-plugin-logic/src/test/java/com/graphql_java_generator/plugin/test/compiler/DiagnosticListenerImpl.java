@@ -71,7 +71,7 @@ public class DiagnosticListenerImpl implements DiagnosticListener<JavaFileObject
 	 * @param diagnostic
 	 */
 	String getDiagnostic(Diagnostic<? extends JavaFileObject> diagnostic) {
-		StringBuffer msg = new StringBuffer();
+		StringBuilder msg = new StringBuilder();
 		JavaFileObject source = diagnostic.getSource();
 
 		msg.append(diagnostic.getKind().toString());

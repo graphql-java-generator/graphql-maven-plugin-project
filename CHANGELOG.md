@@ -9,6 +9,24 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+
+# 1.18.9
+
+Dependency upgrade: 
+* Upgrade from Spring Boot 2.7.4 to 2.7.6
+
+
+Both modes:
+* Issue #166: Corrected an issue that prevents to request data when GraphQL field's name are java reserved keywords
+* Issue #164: the descriptions from the GraphQL schema is now included in the java comments for objects, fields, union...
+* GraphQLDirectives are now written as Java annotation in the generate code
+    * Note: this doesn't work yet for schema, scalar (that may receive a Directive when extended) and custom scalars
+
+Server mode:
+* Issue #162: Declaring a GraphQL directive applicable to VARIABLE_DEFINITION would prevent the GraphQL server to start
+
+
+
 # 1.18.8
 
 Dependency upgrade: 

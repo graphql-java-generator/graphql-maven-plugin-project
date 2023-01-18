@@ -77,9 +77,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		int i = generateCodeDocumentParser.parseGraphQLSchemas();
 
 		// Verification
-		assertEquals(57, i, "Nb java files are generated");
+		assertEquals(58, i, "Nb java files are generated");
 		assertEquals(10, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
-		assertEquals(34, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
+		assertEquals(35, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
 		assertEquals(5, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(19, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(4, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
@@ -259,29 +259,18 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		// Currently not managed (schema is not stored, and no java classes is generated afterward for the schema)
 
 		// On enum
-		assertEquals(0, generateCodeDocumentParser.getType("Episode").getAppliedDirectives().size(),
+		assertEquals(2, generateCodeDocumentParser.getType("Episode").getAppliedDirectives().size(),
 				"No directive in the schema, as it is adapted for graphql-java v15.0, see below in the junit test code");
-		// The next test is deactivated, because of a bug in graphql-java v15.0. It should be restored, once the issue
-		// 2055 is solved
-		// checkDirectivesOnType(generateCodeDocumentParser.getType("Episode"), true, "on Enum", "69", 666, (float)
-		// 666.666,
-		// true, "00000000-0000-0000-0000-000000000002", null, "2001-02-28", false);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("Episode"), true, "on Enum", "69", 666,
+				(float) 666.666, true, "00000000-0000-0000-0000-000000000002", null, "2001-02-28", false, 1);
 		checkDirectivesOnType(generateCodeDocumentParser.getType("Unit"), false, null, null, null, null, null, null,
 				null, null, false, 1);
 
 		// On enum item
-		// The 3 below tests should be removed, and 3 next be uncommented, once the graphqm-java's issue 2055 is solved
-		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", false, "on Enum",
-				"-1", false);
+		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true,
+				"on Enum values", "-1", true);
 		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "JEDI", false, null, null, false);
-		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "EMPIRE", false, null, null, false);
-		// The next 3 tests are deactivated, because of a bug in graphql-java v15.0. It should be restored, once the
-		// issue 2055 is solved
-		// checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "DOES_NOT_EXIST", true, "on Enum",
-		// "-1",
-		// true);
-		// checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "JEDI", false, null, null, false);
-		// checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "EMPIRE", false, null, null, true);
+		checkDirectivesOnEnumValue(generateCodeDocumentParser.getType("Episode"), "EMPIRE", false, null, null, true);
 
 		// On interface
 		checkDirectivesOnType(generateCodeDocumentParser.getType("WithID"), true, "on Interface", "666", null, null,
@@ -304,8 +293,9 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCasesInput"), "name", false, null, null,
 				false, 0);
 		// On type
-		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCases"), true, "on Object", null, null, null,
-				null, null, null, null, true, 1);
+		checkDirectivesOnType(generateCodeDocumentParser.getType("AllFieldCases"), true,
+				"on Object\n With a line feed\\\n\r and a carriage return.\n It also contains 'strange' characters, to check the plugin behavior: \\'\"}])({[\\",
+				null, null, null, null, null, null, null, true, 1);
 		// On type field
 		checkDirectivesOnField(generateCodeDocumentParser.getType("AllFieldCases"), "id", true, "on Field", null, false,
 				0);
@@ -680,7 +670,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(59, type.getFields().size());
+		assertEquals(60, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 

@@ -17,12 +17,13 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.SIP_Character_SIS;
 import org.allGraphQLCases.server.SIP_Commented_SIS;
+import org.allGraphQLCases.server.SIP_WithID_SIS;
+import org.allGraphQLCases.server.STP_AllFieldCases_STS;
 import org.allGraphQLCases.server.STP_Droid_STS;
 import org.allGraphQLCases.server.STP_Human_STS;
-import org.allGraphQLCases.server.SIP_WithID_SIS;
+import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.annotation.GraphQLScalar;
@@ -46,19 +47,29 @@ public class DataGenerator {
 
 	/**
 	 * Contains for each java interface that has to be instanciate by {@link #generateInstance(Class)}, the concrete
-	 * class the must be instanciated for it. For instance: for the key {@link org.allGraphQLCases.server.SIP_Character_SIS},
-	 * there is the concrete class {@link CharacterImpl}.
+	 * class the must be instanciated for it. For instance: for the key
+	 * {@link org.allGraphQLCases.server.SIP_Character_SIS}, there is the concrete class {@link CharacterImpl}.
 	 */
 	final Map<Class<?>, Class<?>> interfaceImplementations;
 
 	public DataGenerator() {
 		interfaceImplementations = new HashMap<>();
+
+		// Classes for GraphQL interface Character
 		interfaceImplementations.put(SIP_Character_SIS.class, STP_Human_STS.class);
 		interfaceImplementations.put(SIP_Character_SIS.class, STP_Droid_STS.class);
+
+		// Classes for GraphQL interface Commented
 		interfaceImplementations.put(SIP_Commented_SIS.class, STP_Human_STS.class);
+
+		// Classes for GraphQL interface WithID
 		interfaceImplementations.put(SIP_WithID_SIS.class, STP_AllFieldCases_STS.class);
 		interfaceImplementations.put(SIP_WithID_SIS.class, STP_Human_STS.class);
 		interfaceImplementations.put(SIP_WithID_SIS.class, STP_Droid_STS.class);
+
+		// Classes for GraphQL union AnyCharacter
+		interfaceImplementations.put(SUP_AnyCharacter_SUS.class, STP_Droid_STS.class);
+		interfaceImplementations.put(SUP_AnyCharacter_SUS.class, STP_Human_STS.class);
 	}
 
 	/**

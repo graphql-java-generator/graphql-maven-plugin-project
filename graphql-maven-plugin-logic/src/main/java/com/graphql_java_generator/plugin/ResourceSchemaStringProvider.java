@@ -116,7 +116,7 @@ public class ResourceSchemaStringProvider {
 	 * @throws IOException
 	 */
 	public String getConcatenatedSchemaStrings() throws IOException {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (String str : schemaStrings()) {
 			sb.append(str);
 			sb.append('\n');

@@ -64,7 +64,7 @@ public class GeneratedSourceCompilerImpl implements GeneratedSourceCompiler {
 		if (classpath != null) {
 			this.classpath = classpath;
 		} else {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			log.debug("Using current class loader context classpath for compilation");
 			for (URL url : ((URLClassLoader) (Thread.currentThread().getContextClassLoader())).getURLs()) {
 				buffer.append(new File(url.getPath()));

@@ -18,8 +18,31 @@ public interface Directive {
 	/** A directive may have arguments. An argument is actually a field. */
 	public List<Field> getArguments();
 
-	/** Returns the comments that have been found for this object, in the provided GraphQL schema */
+	/**
+	 * Returns the argument that matches the given argument name
+	 * 
+	 * @param argumentName
+	 * @return
+	 * @throws NoSuchFieldException
+	 *             If the directive has no such argument
+	 * @throws NullPointerException
+	 *             If argumentName is null
+	 */
+	default Field getArgument(String argumentName) throws NoSuchFieldException {
+		for (Field f : getArguments()) {
+			if (argumentName.equals(f.getName())) {
+				return f;
+			}
+		}
+		// Not found...
+		throw new NoSuchFieldException("The " + getName() + " directive has no '" + argumentName + "' argument");
+	}
+
+	/** Returns the comments that have been found before this object, in the provided GraphQL schema */
 	public List<String> getComments();
+
+	/** Returns the description for this object, in the provided GraphQL schema */
+	public Description getDescription();
 
 	/** Returns the list of location that this directive may have */
 	public List<DirectiveLocation> getDirectiveLocations();

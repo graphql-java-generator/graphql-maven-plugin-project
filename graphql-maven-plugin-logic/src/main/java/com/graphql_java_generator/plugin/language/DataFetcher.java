@@ -69,7 +69,7 @@ public interface DataFetcher {
 	public DataFetchersDelegate getDataFetcherDelegate();
 
 	/**
-	 * Retrieves the origin of this {@link DataFetcher}, that is: the name of the object which contains the field to
+	 * Retrieves the origin of this {@link DataFetcher}, that is: the name of the object which contains the fields to
 	 * fetch.<BR/>
 	 * There are two kinds of {@link DataFetcher}:
 	 * <UL>

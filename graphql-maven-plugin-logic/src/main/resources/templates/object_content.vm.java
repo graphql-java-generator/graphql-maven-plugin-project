@@ -1,3 +1,9 @@
+#################################################################################################################
+## Import of common.vm  (commons Velocity macro and definitions)
+#################################################################################################################
+#parse ("templates/common.vm")
+##
+##
 
 ##
 ## When in client mode, we add the capability to receive unknown JSON attributes, which includes returned values for GraphQL aliases
@@ -19,16 +25,18 @@
 	}
 
 #foreach ($field in $object.fields)
-#if ($field.comments.size() > 0)
-	/**
-#end	
 #foreach ($comment in $field.comments)
-	 * $comment
+	// $comment
 #end
-#if ($field.comments.size() > 0)
+#if ($field.description)
+	/**
+#foreach ($line in $field.description.lines)
+	 * $line
+#end
 	 */
 #end
 	${field.annotation}
+#appliedDirectives(${field.appliedDirectives}, "	")
 	${field.javaTypeFullClassname} ${field.javaName};
 
 
@@ -41,28 +49,32 @@
 ####################################################################################################################################################
 #if ($field.fieldJavaFullClassnamesFromImplementedInterface.size() == 0)
 ##
-#if ($field.comments.size() > 0)
-	/**
-#end	
 #foreach ($comment in $field.comments)
-	 * $comment
+	// $comment
 #end
-#if ($field.comments.size() > 0)
-	 */
+#if ($field.description)
+	/**
+#foreach ($line in $field.description.lines)
+	  * $line
 #end
+ 	 */
+#end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
 
-#if ($field.comments.size() > 0)
-	/**
-#end	
 #foreach ($comment in $field.comments)
-	 * $comment
+	// $comment
 #end
-#if ($field.comments.size() > 0)
-	*/
+#if ($field.description)
+	/**
+#foreach ($line in $field.description.lines)
+	 * $line
 #end
+	 */
+#end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public ${field.javaTypeFullClassname} get${field.pascalCaseName}() {
 		return ${field.javaName};
 	}
@@ -77,11 +89,16 @@
 ## The field inherited from an interface field, and the field's type has been narrowed (it's not the type defined in the interface, but a subclass or subinterface of it) 
 ## See IFoo and TFoo sample in the allGraphQLCases schema, used to check the #114 issue (search for 114 in allGraphQLCases.graphqls)
 
-	/**
 #foreach ($comment in $field.comments)
-	 * $comment
+	// $comment
 #end
-	 */
+#if ($field.description)
+	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	  */
+#end
 	@Override
 #if ($field.javaType.startsWith("List<"))
 	@SuppressWarnings("unchecked")
@@ -89,6 +106,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}($type ${field.javaName}) {
 #if ($field.javaType.startsWith("List<"))
 		if (${field.javaName} == null || ${field.javaName} instanceof List) {
@@ -114,7 +132,14 @@
 
 #if (!$field.fieldJavaFullClassnamesFromImplementedInterface.contains($field.javaTypeFullClassname))
 
+#foreach ($comment in $field.comments)
+	// $comment
+#end
 	/** 
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	 * <br/>
 	 * As the type declared in the class is not inherited from one of the implemented interfaces, we need a dedicated setter.
 #if ($field.javaType.startsWith("List<"))
 	 * <br/>
@@ -131,6 +156,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}${field.graphQLTypeSimpleName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #else
 	 * 
@@ -142,6 +168,7 @@
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 #end
 		this.${field.javaName} = ${field.javaName};
@@ -207,6 +234,7 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 #end
 	 */
 	@Override
+#appliedDirectives(${field.appliedDirectives}, "	")
 	@SuppressWarnings("unchecked")
 	public $supertype get${field.pascalCaseName}() {
 		return ($supertype) (Object) ${field.javaName};
@@ -214,17 +242,23 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 
 #end
 #end
-	/**
 #foreach ($comment in $field.comments)
-	 * $comment
+	// $comment
 #end
-	 */
+#if ($field.description)
+	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	  */
+#end
 #if (!$field.javaType.startsWith("List<"))
 	@Override
 #end
 #if ($configuration.isGenerateJacksonAnnotations())
 	@JsonIgnore
 #end
+#appliedDirectives(${field.appliedDirectives}, "	")
 	public ${field.javaTypeFullClassname} get${field.pascalCaseName}#if($field.javaType.startsWith("List<"))${field.graphQLTypeSimpleName}#end() {
 		return ${field.javaName};
 	}
@@ -296,11 +330,22 @@ ${exceptionThrower.throwRuntimeException("For fields which type are a list, the 
 
 #foreach ($field in $object.fields)
 #if(${field.javaName} != '__typename')
+#foreach ($comment in $field.comments)
+	// $comment
+#end
+#if ($field.description)
+	/**
+#foreach ($line in $field.description.lines)
+	  * $line
+#end
+	  */
+#end
 		public#if($targetFileName=="Builder") _Builder#else Builder#end with${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 			this.${field.javaName} = ${field.javaName};
 			return this;
 		}
 #end
+
 #end
 
 		public ${targetFileName} build() {

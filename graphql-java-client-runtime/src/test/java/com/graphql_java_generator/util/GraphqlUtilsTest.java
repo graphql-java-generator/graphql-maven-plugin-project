@@ -30,6 +30,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.graphql_java_generator.annotation.GraphQLDirective;
 import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeDate;
 import com.graphql_java_generator.customscalars.GraphQLScalarTypeIDClient;
@@ -49,6 +50,41 @@ import reactor.test.StepVerifier;
 
 @Execution(ExecutionMode.CONCURRENT)
 class GraphqlUtilsTest {
+
+	/**
+	 * A test case, to test the {@link GraphqlUtils#getDirectiveParameters(Object, String, String)} method
+	 */
+	@GraphQLDirective(name = "noParameters")
+	@GraphQLDirective(name = "oneParameter", parameterNames = { "param" }, parameterTypes = {
+			"type" }, parameterValues = { "value" })
+	@GraphQLDirective(name = "twoParameters", parameterNames = { "param1", "param2" }, parameterTypes = { "type1",
+			"type2" }, parameterValues = { "value1", "value2" })
+	public static class GraphQLDirectiveTest_ClassCase {
+		@GraphQLDirective(name = "field's annotation", parameterNames = { "paramField" }, parameterTypes = {
+				"typeField" }, parameterValues = { "valueField" })
+		public int field;
+
+		@GraphQLDirective(name = "method's annotation", parameterNames = { "paramMethod" }, parameterTypes = {
+				"typeMethod" }, parameterValues = { "valueMethod" })
+		public void method(@GraphQLDirective(name = "param's annotation", parameterNames = {
+				"paramParam" }, parameterTypes = { "typeParam" }, parameterValues = { "valueParam" }) int i) {
+			// No action
+		}
+	}
+
+	/**
+	 * A test case, to test the {@link GraphqlUtils#getDirectiveParameters(Object, String, String)} method
+	 */
+	@GraphQLDirective(name = "interface directive", parameterNames = { "paramInterface" }, parameterTypes = {
+			"typeInterface" }, parameterValues = { "valueInterface" })
+	public static interface GraphQLDirectiveTest_InterfaceCase {
+		@GraphQLDirective(name = "interface method's annotation", parameterNames = {
+				"paramInterfaceMethod" }, parameterTypes = {
+						"typeInterfaceMethod" }, parameterValues = { "valueInterfaceMethod" })
+		public void method(@GraphQLDirective(name = "interface param's annotation", parameterNames = {
+				"paramInterfaceParam" }, parameterTypes = {
+						"typeInterfaceParam" }, parameterValues = { "valueInterfaceParam" }) int i);
+	}
 
 	@BeforeAll
 	public static void initCustomScalarRegistry() {
@@ -477,6 +513,87 @@ class GraphqlUtilsTest {
 		assertEquals(new GregorianCalendar(2009, 11 - 1, 25).getTime(), topicInput.getInput().getDate());
 		assertEquals(false, topicInput.getInput().getPubliclyAvailable());
 		assertEquals("The good title (2)", topicInput.getInput().getTitle());
+	}
+	
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_getDirectiveParameters() throws NoSuchFieldException, SecurityException, NoSuchMethodException {
+		Map<String, String> map;
+		RuntimeException e;
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Error checks
+		e = assertThrows(RuntimeException.class, () -> graphqlUtils
+				.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class, null, "does not exist"));
+		assertTrue(e.getMessage().contains("No directive of name \"does not exist\""));
+
+		e = assertThrows(RuntimeException.class, () -> graphqlUtils
+				.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class, "does not exist", "oneParameter"));
+		assertTrue(e.getMessage().contains("must be a Method"));
+
+		e = assertThrows(RuntimeException.class,
+				() -> graphqlUtils.getDirectiveParameters(
+						GraphQLDirectiveTest_ClassCase.class.getMethod("method", int.class), "does not exist",
+						"oneParameter"));
+		assertTrue(e.getMessage().contains("does not exist"));
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Directive on the GraphQLDirectiveTest_ClassCase class
+		assertEquals(0,
+				graphqlUtils.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class, null, "noParameters").size(),
+				"The noParameters directive has no parameters");
+
+		map = graphqlUtils.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class, null, "oneParameter");
+		assertEquals(1, map.size(), "The oneParameter directive has one parameter");
+		assertTrue(map.keySet().contains("param"));
+		assertEquals("value", map.get("param"));
+
+		map = graphqlUtils.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class, null, "twoParameters");
+		assertEquals(2, map.size(), "The oneParameter directive has two parameters");
+		assertTrue(map.keySet().contains("param1"));
+		assertTrue(map.keySet().contains("param2"));
+		assertEquals("value1", map.get("param1"));
+		assertEquals("value2", map.get("param2"));
+
+		map = graphqlUtils.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class.getField("field"), null,
+				"field's annotation");
+		assertEquals(1, map.size());
+		assertTrue(map.keySet().contains("paramField"));
+		assertEquals("valueField", map.get("paramField"));
+
+		map = graphqlUtils.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class.getMethod("method", int.class),
+				null, "method's annotation");
+		assertEquals(1, map.size());
+		assertTrue(map.keySet().contains("paramMethod"));
+		assertEquals("valueMethod", map.get("paramMethod"));
+
+		map = graphqlUtils.getDirectiveParameters(GraphQLDirectiveTest_ClassCase.class.getMethod("method", int.class),
+				"i", "param's annotation");
+		assertEquals(1, map.size());
+		assertTrue(map.keySet().contains("paramParam"));
+		assertEquals("valueParam", map.get("paramParam"));
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Directive on the GraphQLDirectiveTest_InterfaceCase interface
+		map = graphqlUtils.getDirectiveParameters(GraphQLDirectiveTest_InterfaceCase.class, null,
+				"interface directive");
+		assertEquals(1, map.size(), "The 'interface directive' directive has one parameter");
+		assertTrue(map.keySet().contains("paramInterface"));
+		assertEquals("valueInterface", map.get("paramInterface"));
+
+		map = graphqlUtils.getDirectiveParameters(
+				GraphQLDirectiveTest_InterfaceCase.class.getMethod("method", int.class), null,
+				"interface method's annotation");
+		assertEquals(1, map.size());
+		assertTrue(map.keySet().contains("paramInterfaceMethod"));
+		assertEquals("valueInterfaceMethod", map.get("paramInterfaceMethod"));
+
+		map = graphqlUtils.getDirectiveParameters(
+				GraphQLDirectiveTest_InterfaceCase.class.getMethod("method", int.class), null,
+				"interface method's annotation");
+		assertEquals(1, map.size());
+		assertTrue(map.keySet().contains("paramInterfaceMethod"));
+		assertEquals("valueInterfaceMethod", map.get("paramInterfaceMethod"));
 	}
 
 	@SuppressWarnings("unchecked")

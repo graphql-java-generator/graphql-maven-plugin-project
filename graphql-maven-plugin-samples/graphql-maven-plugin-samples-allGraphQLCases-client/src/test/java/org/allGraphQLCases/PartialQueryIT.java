@@ -17,6 +17,7 @@ import java.util.List;
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_ReservedJavaKeywordAllFieldCases_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
@@ -202,6 +203,38 @@ public class PartialQueryIT {
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._return, response.get(0));
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._byte, response.get(1));
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._const, response.get(2));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue166_FieldAsJavaReservedKeywords()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Go, go, go
+		CTP_ReservedJavaKeywordAllFieldCases_CTS response = queryType.reservedJavaKeywordAllFieldCases(""//
+				+ "{" //
+				+ "  if "// the if type is an enum (Unit)
+				+ "  nonJavaKeywordField {id} " // The nonJavaKeywordField field is an interface (WithID)
+				+ "  implements {id} " // The implements field is an interface (WithID)
+				+ "  import "// The import field is a scalar (String)
+				+ "  instanceof "// The instanceof field is custom scalar (Date)
+				+ "  int {id name} "// The int field is an object type (Human)
+				+ "  interface {"// The interface field is an union (AnyCharacter). Queries on union must specify what
+									// field should be returned, depending on the returned type.
+				+ "      ... on Human {id name}" //
+				+ "      ... on Droid {id name}" //
+				+ "  }" //
+				+ "}");
+
+		// Verification
+		assertNotNull(response);
+		assertNotNull(response.get__typename());
+		assertNotNull(response.getIf());
+		assertNotNull(response.getNonJavaKeywordField());
+		assertNotNull(response.getImplements());
+		assertNotNull(response.getImport());
+		assertNotNull(response.getInstanceof());
+		assertNotNull(response.getInt());
+		assertNotNull(response.getInterface());
 	}
 
 }

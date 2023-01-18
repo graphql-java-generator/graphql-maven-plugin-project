@@ -1,3 +1,7 @@
+##
+## There is an issue in the way the description is written for fields. The writing of the field's description lacks the starting tabulation
+#set ($tab="	")
+##
 ######################################################################################################################################################
 ##
 ##  The "objectFields" macro generates the list of fields for an ObjectType or for an InterfaceType
@@ -12,6 +16,18 @@
 ## Let's start by the field's comment (if any)
 #foreach ($comment in $field.comments)
 	#$comment
+#end
+#if ($field.description)
+#if ($field.description.multiLine)
+#set ($appendDoubleQuotes=true)
+#foreach ($line in $field.description.lines)
+$tab#if($appendDoubleQuotes)"""#end${line}
+#set ($appendDoubleQuotes=false)
+#end
+	"""
+#else
+	"${field.description.content}"
+#end
 #end
 ##
 ## To make this template readable, the parameters are written one per line. Which means that the way the field
@@ -70,23 +86,51 @@ $implement##
 ##
 ######
 #macro (implementedDirective $appliedDirectives)
-#foreach($appliedDir in $appliedDirectives)
+#foreach($appliedDirective in $appliedDirectives)
 
-        @${appliedDir.directive.name}##
-#if($appliedDir.argumentValues.keySet().size() > 0)(#end
-#foreach($argName in $appliedDir.argumentValues.keySet())##
-$argName: ${graphqlUtils.getValueAsText($appliedDir.argumentValues[$argName])}#if($foreach.hasNext), #end
+        @${appliedDirective.directive.name}##
+#if($appliedDirective.argumentValues.keySet().size() > 0)(#end
+#foreach($argumentName in $appliedDirective.argumentValues.keySet())##
+#set ($v = $graphqlUtils.getValueAsText($appliedDirective.argumentValues.get($argumentName)))
+			$argumentName: $v#if($foreach.hasNext), #end
 #end
-#if($appliedDir.argumentValues.keySet().size() > 0))#end
+#if($appliedDirective.argumentValues.keySet().size() > 0)		)#end
 #end
 #end
 ##
+######################################################################################################################################################
+##
+##  The "writeDescription" macro generates the given description, in a mono or multine format, or do nothing if it is null.
+##
+## parameters: 
+## 1) description: the description to generate 
+##
+######
+#macro (writeDescription $description)
+##
+#if ($description)
+## Ok, the description is not null. Let's manage it
+## 
+#if ($description.multiLine)
+#set ($appendDoubleQuotes=true)
+#foreach ($line in $description.lines)
+#if($appendDoubleQuotes)"""#end$line
+#set ($appendDoubleQuotes=false)
+#end
+"""
+#else
+"${description.content}"
+#end
+##
+#end
+#end
 ###############################################################################################################
 ################  Scalar Extensions (of standard GraphQL scalars) #############################################
 ###############################################################################################################
 #foreach ($scalar in $scalars)
 #if ($scalar.class.name != "com.graphql_java_generator.plugin.language.impl.CustomScalarType")
 ## This scalar is a standard scalar type. It may have been extended with a directive
+#writeDescription($scalar.description)
 #if ($scalar.appliedDirectives.size() > 0)
 extend scalar ${scalar.name}#implementedDirective($scalar.appliedDirectives)$space
 #end
@@ -101,6 +145,7 @@ extend scalar ${scalar.name}#implementedDirective($scalar.appliedDirectives)$spa
 #foreach ($comment in $customScalar.comments)
 	#$comment
 #end
+#writeDescription($customScalar.description)
 scalar ${customScalar.name}#implementedDirective($customScalar.appliedDirectives)$space
 
 #end
@@ -112,6 +157,7 @@ scalar ${customScalar.name}#implementedDirective($customScalar.appliedDirectives
 #foreach ($comment in $enum.comments)
 	#$comment
 #end
+#writeDescription($enum.description)
 enum ${enum.name}#implementedDirective($enum.appliedDirectives) {
 #foreach ($value in $enum.values)
 	${value.name}#implementedDirective($value.appliedDirectives)$space
@@ -127,6 +173,7 @@ enum ${enum.name}#implementedDirective($enum.appliedDirectives) {
 #foreach ($comment in $directive.comments)
 	#$comment
 #end
+#writeDescription($directive.description)
 #if (! $directive.standard)
 directive @${directive.name} #if ($directive.arguments.size() > 0)(
 #else $space
@@ -165,6 +212,7 @@ schema#implementedDirective($schemaDirectives) {
 #foreach ($comment in $union.comments)
 	#$comment
 #end
+#writeDescription($union.description)
 union ${union.name}#implementedDirective($union.appliedDirectives)$space
 = #foreach ($type in $union.memberTypes)${type.name}#if($foreach.hasNext) | #end#end
 
@@ -177,6 +225,7 @@ union ${union.name}#implementedDirective($union.appliedDirectives)$space
 #foreach ($comment in $interface.comments)
 	#$comment
 #end
+#writeDescription($interface.description)
 interface ${interface.name}#implements($interface.implementz)#implementedDirective($interface.appliedDirectives) {
 #objectFields($interface.fields)
 }
@@ -190,7 +239,10 @@ interface ${interface.name}#implements($interface.implementz)#implementedDirecti
 #foreach ($comment in $objectType.comments)
 	#$comment
 #end
-#if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz)#implementedDirective($objectType.appliedDirectives) {
+#writeDescription($objectType.description)
+#if($objectType.inputType)input#{else}type#end ${objectType.name}#implements($objectType.implementz)
+#implementedDirective($objectType.appliedDirectives) 
+{
 #objectFields($objectType.fields)
 }
 

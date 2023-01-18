@@ -891,8 +891,10 @@ public class GenerateCodeGenerator implements Generator {
 	 */
 	VelocityContext getVelocityContext() {
 		VelocityContext context = new VelocityContext();
+		context.put("carriageReturn", "\r");
 		context.put("configuration", configuration);
 		context.put("dollar", "$");
+		context.put("lineFeed", "\n");
 		context.put("exceptionThrower", new ExceptionThrower());
 		context.put("graphqlUtils", graphqlUtils);
 		context.put("javaKeywordPrefix", GraphqlUtils.JAVA_KEYWORD_PREFIX);

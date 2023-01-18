@@ -75,6 +75,47 @@ class DeepComparatorTest {
 		public String getIgnored() {
 			return ignored;
 		}
+
+		@Override
+		public String toString() {
+			return ComparisonObject.class.getSimpleName() + "(id=" + id + ",name=" + name + ",ignored=" + ignored + ")";
+		}
+	}
+
+	public class ComparisonObjectWithStringId {
+		String id;
+		String name;
+		String description;
+		String ignored;
+
+		public ComparisonObjectWithStringId(String id, String name, String description, String ignored) {
+			this.id = id;
+			this.name = name;
+			this.description = description;
+			this.ignored = ignored;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public String getIgnored() {
+			return ignored;
+		}
+
+		@Override
+		public String toString() {
+			return ComparisonObjectWithStringId.class.getSimpleName() + "(id=" + id + ",name=" + name + ",description="
+					+ description + ",ignored=" + ignored + ")";
+		}
 	}
 
 	public enum TestEnum {
@@ -108,8 +149,11 @@ class DeepComparatorTest {
 	public void beforeEach() {
 		deepComparator = new DeepComparator();
 
-		// deepComparator.addComparedClass(ComparisonObject.class);
+		deepComparator.addIdField(ComparisonObject.class, "id");
+		deepComparator.addIdField(ComparisonObjectWithStringId.class, "id");
+
 		deepComparator.addIgnoredFields(ComparisonObject.class, "ignored");
+		deepComparator.addIgnoredFields(ComparisonObjectWithStringId.class, "ignored");
 
 		// To break the cycle where comparing ComparisonSuperClass.comp cycle with the Comparison class, we define a
 		// specific comparison rule:
@@ -457,7 +501,6 @@ class DeepComparatorTest {
 		int i = 0;
 		// The if field of ComparisonObject is marked as id. So these objects should be matched, and as their attributes
 		// are different, the path for the found differences should be /ComparisonObject(id:1)
-		deepComparator.addIdField(ComparisonObject.class, "id");
 		ComparisonObject o1 = new ComparisonObject(1, "o1", 100L, "ignored 1");
 		ComparisonObject o1bis = new ComparisonObject(1, "o2", 200L, "ignored 2");
 
@@ -478,6 +521,36 @@ class DeepComparatorTest {
 		assertEquals("/ComparisonObject(id:1)/l", d.path);
 		assertEquals(o1.l, d.value1);
 		assertEquals(o1bis.l, d.value2);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_differencesListObjects_withIdField() {
+		// Preparation
+		Difference d;
+		int i = 0;
+		// The if field of ComparisonObject is marked as id. So these objects should be matched, and as their attributes
+		// are different, the path for the found differences should be /ComparisonObject(id:1)
+		ComparisonObjectWithStringId o1 = new ComparisonObjectWithStringId("1", "o1", "description 1", "ignored 1");
+		ComparisonObjectWithStringId o2 = new ComparisonObjectWithStringId("2", "o2", "description 2", "ignored 2");
+		ComparisonObjectWithStringId o1bis = new ComparisonObjectWithStringId("1", "o1", "not description 1",
+				"ignored diff 1");
+		ComparisonObjectWithStringId o2bis = new ComparisonObjectWithStringId("2", "o2", "description 2",
+				"ignored diff 2");
+		List<ComparisonObjectWithStringId> list1 = Arrays.asList(o1, o2);
+		List<ComparisonObjectWithStringId> list2 = Arrays.asList(o2bis, o1bis);
+
+		// Go, go, go
+		List<Difference> differences = deepComparator.differences(list1, list2, Integer.MAX_VALUE);
+
+		// Verification
+		assertEquals(1, differences.size());
+
+		d = differences.get(i++);
+		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
+		assertEquals("[1]/ComparisonObjectWithStringId(id:1)/description", d.path);
+		assertEquals("description 1", d.value1);
+		assertEquals("not description 1", d.value2);
 	}
 
 	@Test
@@ -512,7 +585,7 @@ class DeepComparatorTest {
 		assertEquals(1, differences.size());
 		d = differences.get(i++);
 		assertEquals(DeepComparator.DifferenceType.VALUE, d.type);
-		assertEquals("/comp/id", d.path);
+		assertEquals("/ComparisonObject(id:1)/comp/id", d.path);
 		assertEquals(o1.comp.id, d.value1);
 		assertEquals(o2.comp.id, d.value2);
 	}

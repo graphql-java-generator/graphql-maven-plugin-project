@@ -226,10 +226,8 @@ public class GraphqlClientUtils extends GraphqlUtils {
 		// this name in the given package.
 		try {
 			// lookup the java class corresponding to the graphql type from the generated GraphQLTypeMapping
-			return (Class<?>) getClass().getClassLoader()
-					.loadClass(packageName + ".GraphQLTypeMapping")
-					.getMethod("getJavaClass", String.class)
-					.invoke(null, graphQLTypeName);
+			return (Class<?>) getClass().getClassLoader().loadClass(packageName + ".GraphQLTypeMapping")
+					.getMethod("getJavaClass", String.class).invoke(null, graphQLTypeName);
 		} catch (ClassNotFoundException e) {
 			// If GraphqlTypeMapping does not exist (in some tests), fallback to using the type name.
 			final String className = packageName + "." + GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName);
@@ -240,8 +238,8 @@ public class GraphqlClientUtils extends GraphqlUtils {
 						"Could not load class '" + className + "' for type '" + graphQLTypeName + "'", e);
 			}
 		} catch (ClassCastException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(
-					"Could not get the class for type '" + graphQLTypeName + "' from '" + (packageName + ".GraphQLTypeMapping") + "'" , e);
+			throw new RuntimeException("Could not get the class for type '" + graphQLTypeName + "' from '"
+					+ (packageName + ".GraphQLTypeMapping") + "'", e);
 		}
 	}
 
