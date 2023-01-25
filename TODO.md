@@ -1,12 +1,9 @@
 Here are the next tasks listed, as a TODO list:
 
+## TODO list for the 2.x branch
+* Document it, then release it
 
-## TODO list for the current version
-* Test requests with string that contains special characters (\n, \r, \t, "...), including directives
-* #164: Descriptions from the schema should be included in the generated code if they exist
-    * In the generated classes the comments could be included to describe the different fields correctly instead of using "Parameter for the mapsAcqr field of query_root, as defined in the GraphQL schema" description string.
-    * All comments are loaded in Description field and no longer in comment (graphql.language.Comment) fields when using java schema parser (graphql/graphql-js#927 and graphql/graphql-spec#420).
-    * Update of all call to setComments in DocumentParser to load Descriptions instead of comments. Allow descriptions to be acessible in template files. Add descriptions to InputParameters if exist to be acessible to templaters.
+## TODO list for the 1.x branch
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`

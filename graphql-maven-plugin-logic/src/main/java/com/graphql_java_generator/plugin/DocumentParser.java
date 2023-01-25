@@ -44,6 +44,7 @@ import com.graphql_java_generator.plugin.language.impl.ScalarType;
 import com.graphql_java_generator.plugin.language.impl.UnionType;
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.language.AbstractDescribedNode;
 import graphql.language.AbstractNode;
 import graphql.language.Argument;
 import graphql.language.DirectiveDefinition;
@@ -952,14 +953,14 @@ public abstract class DocumentParser {
 			field.setDefaultValue(((InputValueDefinition) fieldDef).getDefaultValue());
 		}
 
-		//Add description if exists
+		// Add description if exists
 		try {
 			if (((AbstractDescribedNode<InputValueDefinition>) fieldDef).getDescription() != null) {
 				field.setDescription(
 						getDescription(((AbstractDescribedNode<InputValueDefinition>) fieldDef).getDescription()));
 			}
-		}catch (ClassCastException ignored){
-			//Do nothing description remains null
+		} catch (ClassCastException ignored) {
+			// Do nothing description remains null
 		}
 
 		return field;
