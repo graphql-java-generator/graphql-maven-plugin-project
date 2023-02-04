@@ -37,8 +37,8 @@ Server mode:
 Dependency upgrade: 
 * Upgrade from Spring Boot 2.4.4 to 2.7.4
 * Upgrade from Spring Framework 5.3.5 to 5.3.23
-* Upgrade from graphql-java 17.3 to 18.0
-* Upgrade from graphql-java-extended-scalars 17.0 to 18.0
+* Upgrade from graphql-java 18.3 to 19.2
+* Upgrade from graphql-java-extended-scalars 18.0 to 19.0
 * Upgrade from lombok 1.18.12 to 1.18.24 (to solve compatibility issues with JDK >= 15)
 
 All modes:
