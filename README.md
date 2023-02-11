@@ -56,7 +56,7 @@ The 2.x version: _About to be released_  (TODO: update when 2.x is released)
 * Is based on [spring-graphql](https://spring.io/projects/spring-graphql)
 * Is compatible with Spring Boot 3
 * Almost compatible with projects based on the versions 1.x of this plugin
-    * For more information on this, please check [Client migration from 1.x to 2.x](./client_migrate_1-x_to_2-x) or [Server migration from 1.x to 2.x](./server_migrate_1-x_to_2-x) __TODO: check the URL__
+    * For more information on this, please check [Client migration from 1.x to 2.x](../../wiki/client_migrate_1-x_to_2-x) or [Server migration from 1.x to 2.x](../../wiki/server_migrate_1-x_to_2-x)
 
 # Availability: Maven and Gradle
 
@@ -88,7 +88,7 @@ This plugin contains these goals (Maven) / tasks (Gradle):
 
 # The Documentation
 
-The full documentation is available on the [github wiki](./wiki).  __TODO: check the URL__
+The full documentation is available on the [github wiki](../../wiki). 
 
 You can also:
 * Take a look at the tutorials
