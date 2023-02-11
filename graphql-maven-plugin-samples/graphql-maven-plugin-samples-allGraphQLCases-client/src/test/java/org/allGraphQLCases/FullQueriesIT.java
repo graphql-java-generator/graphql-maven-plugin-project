@@ -1,24 +1,27 @@
 package org.allGraphQLCases;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
-import org.allGraphQLCases.client.CIP_Character_CIS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -81,7 +84,7 @@ class FullQueriesIT {
 
 		// Go, go, go
 		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-																// simple cases
+		// simple cases
 
 		// Verifications
 		assertNotNull(resp);
@@ -97,7 +100,7 @@ class FullQueriesIT {
 
 		// Go, go, go
 		CTP_MyQueryType_CTS resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-																// simple cases
+		// simple cases
 
 		// Verifications
 		// The extensions field contains a CTP_Human_CTS instance, for the key "aValueToTestTheExtensionsField".
@@ -146,6 +149,26 @@ class FullQueriesIT {
 		//
 		assertEquals("the value", ret.get(0));
 		assertEquals("the other value", ret.get(1));
+	}
+
+	@Execution(ExecutionMode.CONCURRENT)
+	@Test
+	void test_customScalar_base64()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, UnsupportedEncodingException {
+		// Preparation
+		String str = "This a string with some special characters éàëöô";
+		byte[] bytes = str.getBytes("UTF-8");
+		//
+		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+				"query {testBase64String (input: &input) { }}"//
+		);
+
+		// Go, go, go
+		CTP_MyQueryType_CTS resp = myQuery.exec(graphQLRequest, "input", bytes);
+
+		// Verifications
+		assertNotNull(resp);
+		assertArrayEquals(bytes, resp.getTestBase64String());
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -341,14 +364,13 @@ class FullQueriesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testEscapedStringParameters() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest request = myQuery
-				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
+		GraphQLRequest request;
 
 		// test 1 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		String value = "\\, \"  trailing antislash \\";
-		String graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
-		request = myQuery.getGraphQLRequest(
-				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
+		String query = "{directiveOnQuery(uppercase: true) @testDirective(value:\""
+				+ StringEscapeUtils.escapeJson(value) + "\") {}}";
+		request = myQuery.getGraphQLRequest(query);
 		List<String> strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
@@ -356,9 +378,8 @@ class FullQueriesIT {
 
 		// test 2 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "antislash then escaped double-quote \\\"";
-		graphqlEscapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
-		request = myQuery.getGraphQLRequest(
-				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
+		request = myQuery.getGraphQLRequest("{directiveOnQuery(uppercase: true) @testDirective(value:\""
+				+ StringEscapeUtils.escapeJson(value) + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);
@@ -366,9 +387,8 @@ class FullQueriesIT {
 
 		// test 3 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		value = "escaped values with string read as same bloc (rstuv, tuvw...) \rstuv\tuvw\nopq)";
-		graphqlEscapedValue = value.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
-		request = myQuery.getGraphQLRequest(
-				"{directiveOnQuery(uppercase: true) @testDirective(value:\"" + graphqlEscapedValue + "\") {}}");
+		request = myQuery.getGraphQLRequest("{directiveOnQuery(uppercase: true) @testDirective(value:\""
+				+ StringEscapeUtils.escapeJson(value) + "\") {}}");
 		strings = request.execQuery().getDirectiveOnQuery();
 		assertNotNull(strings);
 		assertTrue(strings.size() == 1);

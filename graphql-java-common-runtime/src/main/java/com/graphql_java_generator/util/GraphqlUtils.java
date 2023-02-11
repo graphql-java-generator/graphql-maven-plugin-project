@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -903,9 +904,27 @@ public class GraphqlUtils {
 	 *            The full class name, for instance java.util.Date
 	 * @return The simple class name (in the above sample: Date)
 	 */
-	public String getClassSimpleName(String classFullName) {
+	public String getClassSimpleName(String classFullNameParam) {
+		String classFullName = (classFullNameParam.endsWith("[]"))
+				? classFullNameParam.substring(0, classFullNameParam.length() - 2)
+				: classFullNameParam;
+
 		int lstPointPosition = classFullName.lastIndexOf('.');
-		return classFullName.substring(lstPointPosition + 1);
+		if (lstPointPosition > 0) {
+			return classFullName.substring(lstPointPosition + 1);
+		} else if (isPrimitiveType(classFullName)) {
+			return classFullName;
+		} else {
+			throw new IllegalArgumentException(
+					"The class full name should contain at least one point, or be a primitive type, but '"
+							+ classFullName + "' doesn't");
+		}
+	}
+
+	boolean isPrimitiveType(String type) {
+		final List<String> primitiveTypes = Arrays.asList("boolean", "byte", "short", "int", "long", "char", "float",
+				"double");
+		return primitiveTypes.contains(type);
 	}
 
 	/**
@@ -915,9 +934,23 @@ public class GraphqlUtils {
 	 *            The full class name, for instance java.util.Date
 	 * @return The simple class name (in the above sample: java.util)
 	 */
-	public String getPackageName(String classFullName) {
-		int lstPointPosition = classFullName.lastIndexOf('.');
-		return classFullName.substring(0, lstPointPosition);
+	public String getPackageName(String classFullNameParam) {
+		String classFullName = (classFullNameParam.endsWith("[]"))
+				? classFullNameParam.substring(0, classFullNameParam.length() - 2)
+				: classFullNameParam;
+
+		if (isPrimitiveType(classFullName)) {
+			return null; // No package for primitive types
+		}
+
+		try {
+			Class<?> cls = Class.forName(classFullName);
+			return cls.getPackage().getName();
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(
+					"Could not find the package for the class '" + classFullNameParam + "', due to: " + e.getMessage(),
+					e);
+		}
 	}
 
 	/**

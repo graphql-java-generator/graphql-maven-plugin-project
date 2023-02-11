@@ -185,4 +185,12 @@ public class CustomJacksonDeserializers {
 		}
 	}
 
+	public static class Base64String extends AbstractCustomJacksonDeserializer<byte[]> {
+		private static final long serialVersionUID = 1L;
+
+		public Base64String() {
+			super(null, false, byte[].class,
+					com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String);
+		}
+	}
 }

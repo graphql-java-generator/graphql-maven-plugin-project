@@ -78,10 +78,19 @@ public class DiagnosticListenerImpl implements DiagnosticListener<JavaFileObject
 		if (className != null) {
 			msg.append(" in the generated class ").append(className);
 		}
-		msg.append(": ");
-		msg.append(diagnostic.getCode()).append(" at line ").append(diagnostic.getLineNumber()).append(", column ")
-				.append(diagnostic.getColumnNumber()).append(": ");
-		msg.append(diagnostic.getMessage(null)).append(" (in ").append((source == null) ? "null" : source.getName());
+		msg//
+				.append(": ")//
+				.append(diagnostic.getCode())//
+				.append(" at line ")//
+				.append(diagnostic.getLineNumber())//
+				.append(", column ")//
+				.append(diagnostic.getColumnNumber())//
+				.append(": ");
+		msg//
+				.append(diagnostic.getMessage(null))//
+				.append(" (in ")//
+				.append((source == null) ? "no source" : source.getName())//
+				.append(")");
 
 		return msg.toString();
 	}

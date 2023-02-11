@@ -72,4 +72,9 @@ public class CustomScalarType extends ScalarType implements CustomScalar {
 		}
 
 	}
+
+	@Override
+	public String getClassFullName() {
+		return customScalarDefinition.getJavaType();
+	}
 }

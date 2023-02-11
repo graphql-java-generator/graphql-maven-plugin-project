@@ -4,6 +4,10 @@ Here are the next tasks listed, as a TODO list:
 * Document it, then release it
 
 ## TODO list for the 1.x branch
+* Add or correct the URL in the README and in the wiki's home.
+* `DirectiveRegistryInitializer`:
+    * separate it from each schema (e.g.: allGraphQlCases client)
+    * initialize it only once (not at each creation of a GraphQLRequest)
 * Document in the Client FAQ how to retrieve the extensions response's values
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`

@@ -50,6 +50,8 @@ public abstract class AbstractCustomTemplatesSpringConfiguration extends Abstrac
 
 	static {
 		customScalars = new ArrayList<>();
+		customScalars.add(new CustomScalarDefinition("Base64String", "byte[]", null,
+				"com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String", null));
 		customScalars.add(new CustomScalarDefinition("Date", "java.util.Date", null,
 				"com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date", null));
 		customScalars.add(new CustomScalarDefinition("DateTime", "java.time.OffsetDateTime", null,

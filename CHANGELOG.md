@@ -9,10 +9,13 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
-# Not release yet
+# Not released yet
 
 Both modes:
 * PR #171: Add descriptions for input parameters if they exist
+
+Client mode:
+* Issue #174: request execution error with Custom scalar that are arrays
 
 
 # 1.18.9

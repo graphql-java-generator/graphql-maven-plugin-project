@@ -477,32 +477,6 @@ public class GraphqlClientUtils {
 	}
 
 	/**
-	 * This method retrieves the {@link GraphQLScalarType} for a custom scalar field or method. {@link GraphQLScalar} is
-	 * used in generated InputType and response type POJOs and {@link GraphQLCustomScalar} is used in some legacy
-	 * generated response type POJOs.
-	 *
-	 * @param fieldOrMethod
-	 *            The field or method of the generated POJO class
-	 * @param schema
-	 *            value of the <i>springBeanSuffix</i> plugin parameter for the searched schema. When there is only one
-	 *            schema, this plugin parameter is usually not set. In this case, its default value ("") is used.
-	 * @return the {@link GraphQLScalarType}
-	 */
-	public GraphQLScalarType getGraphQLCustomScalarType(AccessibleObject fieldOrMethod, String schema) {
-		String graphQLTypeName;
-		if (fieldOrMethod.getAnnotation(GraphQLScalar.class) != null) {
-			graphQLTypeName = fieldOrMethod.getAnnotation(GraphQLScalar.class).graphQLTypeSimpleName();
-		} else {
-			graphQLTypeName = null;
-		}
-		if (graphQLTypeName != null) {
-			return CustomScalarRegistryImpl.getCustomScalarRegistry(schema).getGraphQLCustomScalarType(graphQLTypeName);
-		} else {
-			return null;
-		}
-	}
-
-	/**
 	 * Returns the GraphQL scalar type for the given Standard or Custom Scalar name, as defined in the GraphQL schema.
 	 * The {@link GraphQLScalarType} contains the method that allows to parse a String value, parse an AST value, or
 	 * serialize the value (for instance to write it into a JSON string)

@@ -99,6 +99,16 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	AllFieldCases withListOfList;
 
 	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 */
+	@JsonProperty("testBase64String")
+	@JsonDeserialize(using = CustomJacksonDeserializers.Base64String.class)
+	@GraphQLInputParameters(names = { "input" }, types = { "Base64String" }, mandatories = { true }, listDepths = {
+			0 }, itemsMandatory = { false })
+	@GraphQLScalar(fieldName = "testBase64String", graphQLTypeSimpleName = "Base64String", javaClass = byte[].class)
+	byte[] testBase64String;
+
+	/**
 	 * ############################################################################### withList return a list of
 	 * Characters, matching the given list of CharacterInput. The name of the first Character returned is replaced by
 	 * the given firstName. All ids are generated
@@ -485,6 +495,20 @@ public class MyQueryType extends MyQueryTypeExecutor implements com.graphql_java
 	 */
 	public MyQueryType getRelay() {
 		return relay;
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 */
+	public void setTestBase64String(byte[] testBase64String) {
+		this.testBase64String = testBase64String;
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 */
+	public byte[] getTestBase64String() {
+		return testBase64String;
 	}
 
 	public void set__schema(__Schema __schema) {

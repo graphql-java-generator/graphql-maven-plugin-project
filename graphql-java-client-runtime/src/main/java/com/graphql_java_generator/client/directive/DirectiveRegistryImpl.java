@@ -24,7 +24,7 @@ public class DirectiveRegistryImpl implements DirectiveRegistry {
 	 * As we may have or not have Spring at runtime, we manually manage a singleton. This field is private, and should
 	 * only be accessed through {@link #getDirectiveRegistry()}.
 	 */
-	public static DirectiveRegistry directiveRegistry = new DirectiveRegistryImpl();
+	public static DirectiveRegistry directiveRegistry = null;
 
 	/**
 	 * Map of all registered Custom Scalars. The key is the type name or the Custom Scalar, as defined in the GraphQL

@@ -1,14 +1,14 @@
 
 <!--ts-->
-   * [What is it?](what-is-it)
-   * [Two main versions: 1.x and 2.x](Two-main-versions-1-x-and-2-x)
-   * [Availability: Maven and Gradle](availability-maven-and-gradle)
-   * [The plugin goals/tasks](the-plugin-goals-tasks)
-   * [The Documentation](the-documentation)
-   * [Compatibility with GraphQL](compatibility-with-graphql)
-   * [Change log](change-log)
-   * [Note for contributors](note-for-contributors)
-   * [License](license)
+   * [What is it?](#what-is-it)
+   * [Two main versions: 1.x and 2.x](#Two-main-versions-1-x-and-2-x)
+   * [Availability: Maven and Gradle](#availability-maven-and-gradle)
+   * [The plugin goals/tasks](#the-plugin-goals-tasks)
+   * [The Documentation](#the-documentation)
+   * [Compatibility with GraphQL](#compatibility-with-graphql)
+   * [Change log](#change-log)
+   * [Note for contributors](#note-for-contributors)
+   * [License](#license)
 <!--te-->
 
 
@@ -52,7 +52,7 @@ The 1.x version:
 * Is based directly on [graphql-java](https://www.graphql-java.com/), and a clone of [graphql-java-spring](https://github.com/graphql-java/graphql-java-spring).
 * Is not compatible with Spring Boot 3
 
-The 2.x version: _About to be released_  (TODO: update when 2.x is released)
+The 2.x version: _About to be released_  (TODO: update this when 2.x is released)
 * Is based on [spring-graphql](https://spring.io/projects/spring-graphql)
 * Is compatible with Spring Boot 3
 * Almost compatible with projects based on the versions 1.x of this plugin

@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
-import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CEP_Episode_CES;
-import org.allGraphQLCases.client.CTP_Human_CTS;
+import org.allGraphQLCases.client.CINP_CharacterInput_CINS;
 import org.allGraphQLCases.client.CINP_HumanInput_CINS;
+import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
+import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.util.GraphQLRequest;
@@ -137,7 +137,7 @@ class GraphQLVariablesIT {
 				"name", "a new name", //
 				"appearsIn", Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.EMPIRE, CEP_Episode_CES.NEWHOPE), //
 				"uppercaseName", true, //
-				"friends", friendsParam);
+				"friends", Arrays.asList(friendsParam));
 
 		// Verifications
 		assertNotNull(resp);

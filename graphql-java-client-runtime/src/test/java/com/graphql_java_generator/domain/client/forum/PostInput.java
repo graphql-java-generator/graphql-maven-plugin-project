@@ -50,7 +50,7 @@ public class PostInput {
 	Date from;
 
 	@JsonProperty("in")
-	@GraphQLScalar(fieldName = "in", graphQLTypeSimpleName = "Date", javaClass = Date.class)
+	@GraphQLScalar(fieldName = "in", graphQLTypeSimpleName = "Date", javaClass = Date.class, listDepth = 1)
 	List<Date> in;
 
 	public void setTopicId(String topicId) {

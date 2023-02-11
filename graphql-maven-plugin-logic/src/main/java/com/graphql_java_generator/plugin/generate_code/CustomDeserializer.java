@@ -3,6 +3,7 @@ package com.graphql_java_generator.plugin.generate_code;
 import java.util.List;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.language.Type;
 import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.GraphQLScalarType;
@@ -26,6 +27,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CustomDeserializer {
+
+	/** The {@link Type} that will be deserialized by this custom deserializer */
+	private Type type;
 
 	/** The name of the GraphQL type is used to name the java class for the deserialization */
 	private String graphQLTypeName;
@@ -67,8 +71,7 @@ public class CustomDeserializer {
 	 *         </UL>
 	 */
 	public String getClassSimpleName() {
-		return getCustomDeserializerClassSimpleName(listDepth,
-				GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName));
+		return getCustomDeserializerClassSimpleName(listDepth, GraphqlUtils.graphqlUtils.getJavaName(graphQLTypeName));
 	}
 
 	/**

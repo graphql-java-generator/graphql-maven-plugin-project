@@ -11,11 +11,18 @@ scalar Date
 	#@testDirective(value:"on Scalar") @anotherTestDirective 
 	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
 	# (see issue 2055)
-	# The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars)
-scalar DateTime 
+""" The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars) 
+"""
+scalar DateTime
+        @testDirective(			value: "directive on a custom scalar"
+		) 
 
 scalar Long
         @testExtendKeyword 
+
+""" A scalar to test the issue #174 
+"""
+scalar Base64String 
 
 	##############################################################################################################
 	##################  TEST ON COLLISION WITH JAVA KEYWORDS  ####################################################
@@ -38,11 +45,30 @@ enum Unit
 	##############################################################################################################
 	################  STAR WARS SCHEMA  ##########################################################################
 	##############################################################################################################
-enum Episode {
+enum Episode
+        @testDirective(			aBoolean: true, 
+			aCustomScalarDate: "2001-02-28", 
+			anID: "00000000-0000-0000-0000-000000000002", 
+			anArray: ["str1","str2"], 
+			anInt: 666, 
+			aFloat: 666.666, 
+			anObject: {name:"specific name",appearsIn:[NEWHOPE,EMPIRE],type:"Human"}, 
+			anEnum: NEWHOPE, 
+			value: "on Enum", 
+			anotherValue: "69"
+		)
+        @testExtendKeyword(			msg: "an Episode extension"
+		) {
 	NEWHOPE 
-	EMPIRE 
+	EMPIRE
+        @anotherTestDirective 
 	JEDI 
-	DOES_NOT_EXIST 
+	DOES_NOT_EXIST
+        @testDirective(			value: "on Enum values", 
+			anotherValue: "-1"
+		)
+        @anotherTestDirective 
+	A_NEW_EPISODE 
 }
 
 enum extends {
@@ -120,14 +146,17 @@ directive @generateDataLoaderForLists
 
 on FIELD_DEFINITION  
 
-directive @testExtendKeyword   
+directive @testExtendKeyword (
 
-on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION  
+	msg: String   
+)
+on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | VARIABLE_DEFINITION | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION  
 
 	##############################################################################################################
 	#############  SOME DIRECTIVES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
 	##############################################################################################################
-	# A test directive, that can be added anywhere
+""" A test directive, that can be added anywhere 
+"""
 directive @testDirective (
 
 	value: String! = "A value to test default values"  
@@ -138,11 +167,13 @@ directive @testDirective (
 	aFloat: Float   
 	aBoolean: Boolean   
 	anID: ID   
+	anEnum: Episode = JEDI  
 	aCustomScalarDate: Date = "2000-12-31"  
 )
 on QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION  
 
-	# Another test directive, to check that two directives can be added
+""" Another test directive, to check that two directives can be added 
+"""
 directive @anotherTestDirective   
 
 on QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT | SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION  
@@ -150,8 +181,8 @@ on QUERY | MUTATION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRA
 
 
 schema
-        @testDirective(value: "on Schema"
-)
+        @testDirective(			value: "on Schema"
+		)
         @testExtendKeyword {
 	query: MyQueryType
 	mutation: AnotherMutationType
@@ -159,16 +190,16 @@ schema
 }
 
 union AnyCharacter
-        @testDirective(value: "on Union"
-)
+        @testDirective(			value: "on Union"
+		)
         @testExtendKeyword 
 = Human | Droid | Pet
 
 
 interface WithID
-        @testDirective(value: "on Interface", 
-anotherValue: "666"
-) {
+        @testDirective(			value: "on Interface", 
+			anotherValue: "666"
+		) {
 	id: ID! 
 }
 
@@ -181,12 +212,18 @@ interface UnusedInterface {
 	aNonUSedField: String 
 }
 
-	# This interface is a clone of the AllFieldCases type. 
-	# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
+This interface is a clone of the AllFieldCases type. 
+Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
 interface AllFieldCasesInterface
+        @testDirective(			value: "on Interface"
+		)
         @testExtendKeyword {
 	id: ID! 
-	name: String! 
+	name: String!
+        @testDirective(			value: "on interface field (name)"
+		) 
 	forname (uppercase: Boolean, textToAppendToTheForname: String): String 
 	age: Long! 
 	nbComments: Int 
@@ -204,13 +241,15 @@ interface AllFieldCasesInterface
 }
 
 interface Character implements Node
-        @testDirective(value: "on Character interface"
-)
+        @testDirective(			value: "on Character interface"
+		)
         @anotherTestDirective {
 	id: ID! 
-	name (uppercase: Boolean): String!
-        @testDirective(value: "on interface field"
-)
+	name (uppercase: Boolean
+        @testDirective(			value: "on interface field's parameter"
+		)): String!
+        @testDirective(			value: "on interface field"
+		)
         @anotherTestDirective 
 	friends: [Character] 
 	appearsIn: [Episode]!
@@ -299,37 +338,64 @@ interface CharacterEdge {
 }
 
 
-type MyQueryType {
+"""
+This is a description to describe the type MyQueryType
+on two lines
+"""
+type MyQueryType
+{
+	"""
+	This is a description to describe the field withoutParameters
+	on two lines
+	"""
 	withoutParameters: [Character]! 
-	withOneOptionalParam (character: CharacterInput): Character 
+	withOneOptionalParam (character: CharacterInput
+        @testDirective(			value: "test for issue 162"
+		)): Character
+        @testDirective(			value: "on withOneOptionalParam", 
+			anotherValue: "something else"
+		) 
 	withOneMandatoryParam (character: CharacterInput!): Character 
 	withOneMandatoryParamDefaultValue (intParam: Int!=13): Int! 
 	withTwoMandatoryParamDefaultVal (theHero: DroidInput!={name:"droid's name",appearsIn:[JEDI,NEWHOPE]}, num: Int=45): Droid! 
 	withEnum (episode: Episode!=NEWHOPE): Character 
 	withListOfList (matrix: [[Float]]!): AllFieldCases 
+	"""
 	################################################################################
 	# withList return a list of Characters, matching the given list of CharacterInput.
 	# The name of the first Character returned is replaced by the given firstName.
-	# All ids are generated  
+	# All ids are generated
+	"""
 	withList (firstName: String!, characters: [CharacterInput!]!): [Character] 
+	"""
 	################################################################################
 	# Complementary tests with the AllFieldCases Object
+	"""
 	allFieldCases (input: AllFieldCasesInput): AllFieldCases 
+	"""
 	################################################################################
 	# Test for unions
+	"""
 	unionTest (human1: HumanInput, human2: HumanInput, droid1: DroidInput, droid2: DroidInput): [AnyCharacter!]! 
+	"""
 	################################################################################
 	# error always returns an error!  (used to check the error management)
+	"""
 	error (errorLabel: String!): Character! 
-	# Check for GraphQL identifier that are java keywords
+	""" Check for GraphQL identifier that are java keywords 
+	"""
 	aBreak: break 
 	################################################################################
 	# queries to check directive behavior
+	"""
 	# Returns the value, and potentially the anotherValue of the @testDirective directive set on the directiveOnQuery query. 
 	# List is null if the directive is not present.
+	"""
 	directiveOnQuery (uppercase: Boolean): [String]! 
+	"""
 	# Returns the value, and potentially the anotherValue of the @testDirective directive set on the @directiveOnQuery. 
 	# List is null if the directive is not present.
+	"""
 	directiveOnField: Character! 
 	################################################################################
 	# queries to check the addRelayConnections capability
@@ -339,14 +405,22 @@ type MyQueryType {
         @RelayConnection 
 	################################################################################
 	# queries created to test some issues
-	#issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+	"""
+	#issue53 is about custom scalars as parameter for a query/mutation/subscription, 
+	that was not properly serialized/deserialized
+	"""
 	issue53 (date: Date!): Date! 
-	#issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no method with a simple float parameter
+	"""
+	#issue82 is about hard coded values as parameters. Other types are tests with other queries, 
+	but there was no method with a simple float parameter
+	"""
 	issue82Float (aFloat: Float!): Float! 
 	issue82ID (aID: ID!): ID! 
-	# test for issue #128 (compilation error when a Query returns a type 'Client')
+	""" test for issue #128 (compilation error when a Query returns a type 'Client') 
+	"""
 	issue128: Client 
-	# test for issue #139 (use of java reserved keyword)
+	""" test for issue #139 (use of java reserved keyword) 
+	"""
 	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues 
 	listOfEnumWithReservedJavaKeywordAsValues (param1: EnumWithReservedJavaKeywordAsValues=abstract, param2: [EnumWithReservedJavaKeywordAsValues]=[assert,boolean]): [EnumWithReservedJavaKeywordAsValues] 
 	reservedJavaKeywordAllFieldCases: ReservedJavaKeywordAllFieldCases 
@@ -378,40 +452,57 @@ type MyQueryType {
 	void: String 
 	volatile: String 
 	while: String 
-	# test for issue #140 (error for type that implements multiple interfaces)
+	""" test for issue #140 (error for type that implements multiple interfaces) 
+	"""
 	foo140: Foo140 
+	""" Test for issue #174: a custom scalar which Java type is an array 
+	"""
+	testBase64String (input: Base64String!): Base64String 
 	################################################################################
 	# A particular test, based on the github schema: a query that returns the query object.
 	# It introduces complexity in the code generation, that must be tested    
 	relay: MyQueryType! 
 }
 
-type AnotherMutationType {
+" A mono line description for AnotherMutationType "
+type AnotherMutationType
+{
 	createHuman (human: HumanInput!): Human! 
 	createAllFieldCases (input: AllFieldCasesInput!): AllFieldCases! 
-	# Tests for issue 51
+	" Tests for issue 51 "
 	deleteSnacks (id: [ID]): Boolean 
-	# test for issue #139 (use of java reserved keyword)
+	""" test for issue #139 (use of java reserved keyword) 
+	"""
 	if: String 
 	implements: String 
 }
 
-type TheSubscriptionType {
-	# Will be notified for each Human added to this Episode 
+"A mono line description for TheSubscriptionType"
+type TheSubscriptionType
+{
+	""" Will be notified for each Human added to this Episode 
+	"""
 	subscribeNewHumanForEpisode (episode: Episode!): Human! 
-	# Issue 54
+	""" Issue 54 
+	"""
 	subscribeToAList: [Int]! 
 	subscribeToAListOfScalars: [Date] 
-	# issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
+	""" issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized 
+	"""
 	issue53 (date: Date!): Date! 
-	# Some subscriptions to test all kind of input parameters (to check proper serialization and deserialization)
+	""" Some subscriptions to test all kind of input parameters (to check proper serialization and deserialization) 
+	"""
 	allGraphQLCasesInput (input: AllFieldCasesInput!): AllFieldCases! 
 	allGraphQLCasesParam (id: String!, name: String!, age: Long!, integer: Int!, date: Date!, dates: [Date]!, matrix: [[Float]]!, oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!): AllFieldCases! 
-	# A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
+	"""
+	A dummy subscription, that allows to test errors (and other strange behavior), and their return to the subscription's client
+	"""
 	subscriptionTest (param: SubscriptionTestParam!): String! 
-	# Issue 122: Check Subscription behavior when notification response is null
+	""" Issue 122: Check Subscription behavior when notification response is null 
+	"""
 	subscriptionWithNullResponse: String 
-	# test for issue #139 (use of java reserved keyword)
+	""" test for issue #139 (use of java reserved keyword) 
+	"""
 	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues 
 	listOfEnumWithReservedJavaKeywordAsValues: [EnumWithReservedJavaKeywordAsValues] 
 	if: String 
@@ -422,12 +513,13 @@ type TheSubscriptionType {
 	################  ALL GRAPHQL CASES TEST CASES################################################################
 	##############################################################################################################
 input AllFieldCasesInput
-        @testDirective(value: "on Input Type"
-)
-        @testExtendKeyword {
+
+        @testDirective(			value: "on Input Type"
+		)
+        @testExtendKeyword{
 	id: ID!
-        @testDirective(value: "on Input Field"
-) 
+        @testDirective(			value: "on Input Field"
+		) 
 	name: String! 
 	forname: String 
 	age: Long! 
@@ -445,37 +537,44 @@ input AllFieldCasesInput
 	extendedField: String 
 }
 
-input AllFieldCasesWithIdSubtypeInput {
+input AllFieldCasesWithIdSubtypeInput
+{
 	id: ID! 
 	name: String! 
 }
 
-input FieldParameterInput {
+input FieldParameterInput
+{
 	uppercase: Boolean 
 	date: Date 
 }
 
-input AllFieldCasesWithoutIdSubtypeInput {
+input AllFieldCasesWithoutIdSubtypeInput
+{
 	name: String! 
 }
 
-	# This type is a clone of the InterfaceAllFieldCases interface. 
-	# Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
+This type is a clone of the InterfaceAllFieldCases interface. 
+Both should contains all possible combinations of parameters, data type, list, mandatory field or items...
+"""
 type AllFieldCases implements WithID& interfaceToTestExtendKeyword
-        @testDirective(value: "on Object"
-)
+
+        @testDirective(			value: "on Object\n With a line feed\\\n and a carriage return.\n It also contains 'strange' characters, to check the plugin behavior: \\'\"}])({[\\"
+		)
         @anotherTestDirective
-        @testExtendKeyword {
+        @testExtendKeyword(			msg: "comes from type extension"
+		){
 	id: ID!
-        @testDirective(value: "on Field"
-) 
+        @testDirective(			value: "on Field"
+		) 
 	name: String! 
 	forname (uppercase: Boolean
-        @testDirective(value: "on Argument"
-), textToAppendToTheForname: String): String 
+        @testDirective(			value: "on Argument"
+		), textToAppendToTheForname: String): String 
 	age (unit: Unit=YEAR): Long!
-        @deprecated(reason: "This is a test"
-) 
+        @deprecated(			reason: "This is a test"
+		) 
 	aFloat: Float 
 	date: Date 
 	dateTime: DateTime 
@@ -487,7 +586,9 @@ type AllFieldCases implements WithID& interfaceToTestExtendKeyword
 	planets: [String!]! 
 	friends: [Human!] 
 	matrix: [[Float]]! 
-	oneWithIdSubType (uppercase: Boolean): AllFieldCasesWithIdSubtype 
+	oneWithIdSubType (uppercase: Boolean
+        @testDirective(			value: "on uppercase parameter"
+		)): AllFieldCasesWithIdSubtype 
 	listWithIdSubTypes (nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
         @generateDataLoaderForLists 
 	oneWithoutIdSubType (input: FieldParameterInput): AllFieldCasesWithoutIdSubtype 
@@ -497,9 +598,11 @@ type AllFieldCases implements WithID& interfaceToTestExtendKeyword
 	extendedField: String 
 }
 
-	# A concrete class that just implements the above interface
 	# As we added a field in this interface, we need to add this field into every type that implements it
-type AllFieldCasesInterfaceType implements AllFieldCasesInterface& WithID {
+""" A concrete class that just implements the above interface 
+"""
+type AllFieldCasesInterfaceType implements AllFieldCasesInterface& WithID
+{
 	id: ID! 
 	name: String! 
 	forname (uppercase: Boolean, textToAppendToTheForname: String): String 
@@ -518,16 +621,19 @@ type AllFieldCasesInterfaceType implements AllFieldCasesInterface& WithID {
 	extendedField: String 
 }
 
-type AllFieldCasesWithIdSubtype {
+type AllFieldCasesWithIdSubtype
+{
 	id: ID! 
 	name: String! 
 }
 
-type AllFieldCasesWithoutIdSubtype {
+type AllFieldCasesWithoutIdSubtype
+{
 	name: String! 
 }
 
-input SubscriptionTestParam {
+input SubscriptionTestParam
+{
 	errorOnSubscription: Boolean! 
 	errorOnNext: Boolean! 
 	completeAfterFirstNotification: Boolean! 
@@ -535,9 +641,12 @@ input SubscriptionTestParam {
 	messages: [String!] 
 }
 
-type Human implements Character& Commented& WithID& Node {
+type Human implements Character& Commented& WithID& Node
+{
 	id: ID! 
-	name (uppercase: Boolean): String! 
+	name (uppercase: Boolean
+        @testDirective(			value: "on interface field's parameter"
+		)): String! 
 	bestFriend: Character 
 	friends: [Character] 
 	nbComments: Int 
@@ -546,15 +655,19 @@ type Human implements Character& Commented& WithID& Node {
 	homePlanet: String 
 }
 
-type Droid implements Character& WithID& Node {
+type Droid implements Character& WithID& Node
+{
 	id: ID! 
-	name (uppercase: Boolean): String! 
+	name (uppercase: Boolean
+        @testDirective(			value: "on interface field's parameter"
+		)): String! 
 	friends: [Character] 
 	appearsIn: [Episode]! 
 	primaryFunction: String 
 }
 
-input DroidInput {
+input DroidInput
+{
 	name: String! 
 	friends: [CharacterInput] 
 	appearsIn: [Episode]! 
@@ -564,14 +677,16 @@ input DroidInput {
 	##############################################################################################################
 	############  SOME INPUT TYPES, DEFINED AT THE END TO BE SURE THAT THE ORDER DOESN'T MATTER ##################
 	##############################################################################################################
-input CharacterInput {
+input CharacterInput
+{
 	name: String! 
 	friends: [CharacterInput] 
 	appearsIn: [Episode]! 
 	type: String! 
 }
 
-input HumanInput {
+input HumanInput
+{
 	name: String! 
 	bestFriend: CharacterInput 
 	friends: [CharacterInput] 
@@ -581,11 +696,13 @@ input HumanInput {
 	homePlanet: String 
 }
 
-input class {
+input class
+{
 	default: String 
 }
 
-type break {
+type break
+{
 	case (test: extends!, if: else): extends 
 }
 
@@ -610,75 +727,95 @@ type break {
 	#############################
 	#############################
 	# test for issue #36
-type TestExtScalar {
+type TestExtScalar
+{
 	bad: NonNegativeInt 
 }
 
-type TBar1 implements IBar1 {
+type TBar1 implements IBar1
+{
 	id: ID 
 }
 
-type TBar12 implements IBar12& IBar1& IBar2 {
+type TBar12 implements IBar12& IBar1& IBar2
+{
 	id: ID 
 }
 
-type TBar2 implements IBar2& IBar1 {
+type TBar2 implements IBar2& IBar1
+{
 	id: ID 
 }
 
-	# TFoo1 is the basic test case, for issue #114
-type TFoo1 implements IFoo1 {
+""" TFoo1 is the basic test case, for issue #114 
+"""
+type TFoo1 implements IFoo1
+{
 	id: ID 
-	# The 'bar' field is a valid GraphQL field. 
-	# But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
-	# (and not IBar itself as declared in IFoo)
+	"""
+	The 'bar' field is a valid GraphQL field. 
+	But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
+	(and not IBar itself as declared in IFoo)
+	"""
 	bar: TBar1 
 }
 
-	# TFoo12 is a more complex one, with more than one interface implemented
-type TFoo12 implements IFoo1& IFoo2 {
+""" TFoo12 is a more complex one, with more than one interface implemented 
+"""
+type TFoo12 implements IFoo1& IFoo2
+{
 	id: ID 
-	# The 'bar' field is a valid GraphQL field. 
-	# But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
-	# (and not IBar itself as declared in IFoo)
+	"""
+	The 'bar' field is a valid GraphQL field. 
+	But before correction of the issue #114, the generated Java code would not compile, as the TBar is a concrete class that implements IBar
+	(and not IBar itself as declared in IFoo)
+	"""
 	bar: TBar12 
 }
 
-type TFoo3 implements IFoo3& IFoo1& IFoo2 {
+type TFoo3 implements IFoo3& IFoo1& IFoo2
+{
 	id: ID 
 	bar: TBar12 
 }
 
-type TList implements IList {
+type TList implements IList
+{
 	list: [TFoo1] 
 }
 
-type Bar140 implements I2Bar140& IBar140 {
+type Bar140 implements I2Bar140& IBar140
+{
 	name: String 
 }
 
-type Foo140 implements I2Foo140& IFoo140 {
+type Foo140 implements I2Foo140& IFoo140
+{
 	bar: Bar140 
 }
 
 	#############################
 	# test for issue #130
-type Field {
+type Field
+{
 	# Generates a clash between the java classname, and the enum that contains the list of of fields.
 	someValue: String 
 }
 
-type Builder {
+type Builder
+{
 	# Generates a clash between the java classname, and the Builder class generated in each POJO
 	someValue: String 
 }
 
-type Pet {
+type Pet
+{
 	id: ID! 
 	name: String! 
 }
 
-type ReservedJavaKeywordAsScalar {
+type ReservedJavaKeywordAsScalar
+{
 	if: String 
 	implements: String 
 	import: String 
@@ -709,7 +846,8 @@ type ReservedJavaKeywordAsScalar {
 	while: String 
 }
 
-type ReservedJavaKeywordAsObjectField {
+type ReservedJavaKeywordAsObjectField
+{
 	# Parameters should also be protected
 	if (new: String, package: String, private: String): Human 
 	implements: Human 
@@ -741,39 +879,52 @@ type ReservedJavaKeywordAsObjectField {
 	while: Human 
 }
 
-	#############################
-	# test for issue #166:
-	# This class contains fields that are Java reserved words. A query allows to check that mapping properly occurs on both client and server side.
-type ReservedJavaKeywordAllFieldCases {
-	# A field with a java reserved name which is an enum 
+"""
+#############################
+test for issue #166:
+This class contains fields that are Java reserved words. A query allows to check that mapping properly occurs on both client and server side.
+"""
+type ReservedJavaKeywordAllFieldCases
+{
+	""" A field with a java reserved name which is an enum 
+	"""
 	if: Unit 
-	# A field with a _non_ java reserved name which is an interface (to check standard behavior)
+	""" A field with a _non_ java reserved name which is an interface (to check standard behavior) 
+	"""
 	nonJavaKeywordField: WithID 
-	# A field with a java reserved name which is an interface
+	""" A field with a java reserved name which is an interface 
+	"""
 	implements: WithID 
-	# A field with a java reserved name which is a scalar (standard)
+	""" A field with a java reserved name which is a scalar (standard) 
+	"""
 	import: String 
-	# A field with a java reserved name which is a scalar (custom)
+	""" A field with a java reserved name which is a scalar (custom) 
+	"""
 	instanceof: Date 
-	# A field with a java reserved name which is an object type
+	""" A field with a java reserved name which is an object type 
+	"""
 	int: Human 
-	# A field with a java reserved name which is a union
+	""" A field with a java reserved name which is a union 
+	"""
 	interface: AnyCharacter 
 }
 
-type PageInfo {
+type PageInfo
+{
 	hasNextPage: Boolean! 
 	hasPreviousPage: Boolean! 
 	startCursor: String! 
 	endCursor: String! 
 }
 
-type HumanConnection {
+type HumanConnection
+{
 	edges: [HumanEdge] 
 	pageInfo: PageInfo! 
 }
 
-type HumanEdge {
+type HumanEdge
+{
 	node: Human 
 	cursor: String! 
 }

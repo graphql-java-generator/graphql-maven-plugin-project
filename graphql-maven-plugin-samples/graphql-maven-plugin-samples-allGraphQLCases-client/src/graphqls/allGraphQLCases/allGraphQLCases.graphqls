@@ -9,6 +9,9 @@ scalar DateTime
 
 scalar Long
 
+""" A scalar to test the issue #174 """
+scalar Base64String
+
 directive @IDScalarDirective
 on SCALAR
 
@@ -160,6 +163,9 @@ type MyQueryType {
 	
 	""" test for issue #140 (error for type that implements multiple interfaces) """
     foo140: Foo140
+    
+    """ Test for issue #174: a custom scalar which Java type is an array """
+	testBase64String(input: Base64String!): Base64String    
 }
 
 " A mono line description for AnotherMutationType " 

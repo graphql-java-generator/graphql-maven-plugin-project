@@ -23,6 +23,9 @@ public class CustomScalarRegistryInitializer {
 				com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date, java.util.Date.class);
 		customScalarRegistry.registerGraphQLScalarType(ExtendedScalars.GraphQLLong, java.lang.Long.class);
 		customScalarRegistry.registerGraphQLScalarType(
+				com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String,
+				byte[].class);
+		customScalarRegistry.registerGraphQLScalarType(
 				com.graphql_java_generator.customscalars.GraphQLScalarTypeString.String, java.lang.String.class);
 		customScalarRegistry.registerGraphQLScalarType(graphql.scalars.ExtendedScalars.NonNegativeInt,
 				java.lang.Integer.class);

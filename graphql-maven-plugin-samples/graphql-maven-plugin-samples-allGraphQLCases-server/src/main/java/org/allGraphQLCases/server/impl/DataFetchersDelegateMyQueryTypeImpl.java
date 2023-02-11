@@ -516,4 +516,9 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		return generator.generateInstance(STP_ReservedJavaKeywordAllFieldCases_STS.class);
 	}
 
+	@Override
+	public byte[] testBase64String(DataFetchingEnvironment dataFetchingEnvironment, byte[] input) {
+		return input;
+	}
+
 }

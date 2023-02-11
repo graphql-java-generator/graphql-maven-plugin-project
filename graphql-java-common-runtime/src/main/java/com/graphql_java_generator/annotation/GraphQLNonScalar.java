@@ -36,4 +36,9 @@ public @interface GraphQLNonScalar {
 	/** Contains the java data type that is has used to store the data, on both the client and the server side. */
 	public Class<?> javaClass();
 
+	/**
+	 * The list depth for this field. <br/>
+	 * listDepth is 0 if this field is not be a list, 1 if it is a list, 2 if it is a list of list...
+	 */
+	public int listDepth() default 0;
 }

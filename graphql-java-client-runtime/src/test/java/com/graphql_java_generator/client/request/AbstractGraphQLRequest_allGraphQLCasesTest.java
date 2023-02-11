@@ -5,12 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -95,14 +98,14 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
 				+ "\"}", //
 				graphQLRequest.buildRequestAsString(params));
 
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
 				+ "mutation" //
-				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}", null, null);
 	}
 
@@ -171,13 +174,13 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals("name", graphQLRequest.aliasFields.get(droidClass).get("aliasName2").getName());
 		//
 		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn friendsAlias:friends{aliasId:id aliasName2:name __typename} __typename}}" //
 				+ "\"}", //
 				graphQLRequest.buildRequestAsString(params));
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
 				+ "mutation" //
-				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{aliasId:id aliasName:name aliasAppearsIn:appearsIn friendsAlias:friends{aliasId:id aliasName2:name __typename} __typename}}", //
 				null, null);
 	}
@@ -199,13 +202,13 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Verification
 		assertEquals(0, graphQLRequest.aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
+				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI, EMPIRE, NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
 				+ "\"}", //
 				graphQLRequest.buildRequestAsString(params));
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
 				+ "mutation" //
-				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}", //
 				null, null);
 	}
@@ -225,15 +228,40 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Verification
 		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		assertEquals("{\"query\":\"mutation" //
-				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
+				+ "{createHuman(human:{name:\\\"a new name\\\",appearsIn:[JEDI, EMPIRE, NEWHOPE]}) @testDirective(value:\\\"the mutation value\\\",anotherValue:\\\"the other mutation value\\\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}" //
 				+ "\"}", //
 				graphQLRequest.buildRequestAsString(params));
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
 				+ "mutation" //
-				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}", //
 				null, null);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_Full_base64() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException,
+			JsonProcessingException, UnsupportedEncodingException {
+		// Preparation
+		String str = "This a string with some special characters éàëöô";
+		byte[] bytes = str.getBytes("UTF-8");
+		String base64 = Base64.getEncoder().encodeToString(bytes);
+
+		params = new HashMap<>();
+		params.put("input", bytes);
+
+		// Go, go, go
+		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+				"query {testBase64String (input: &input) { }}"//
+		);
+
+		// Verification
+		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
+		assertEquals("{\"query\":\"query{testBase64String(input:\\\"" + base64 + "\\\")}\"}",
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params),
+				"query{testBase64String(input:\"" + base64 + "\")}", null, null);
 	}
 
 	@Test
@@ -248,8 +276,13 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		// Go, go, go
 		String request = "mutation mut1 {"//
 				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
-				+ "@testDirective(value:?value, anotherValue:?anotherValue, anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"
-				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})   {id name appearsIn friends {id name}}}";
+				+ "@testDirective("//
+				+ "   value:?value, "//
+				+ "   anotherValue:?anotherValue,"//
+				+ "   anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"//
+				+ "   anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"}"
+				+ ")   " //
+				+ "{id name appearsIn friends {id name}}}";
 		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
 
 		// Verification
@@ -270,6 +303,71 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})"//
 				+ "{id name appearsIn friends{id name __typename} __typename}}", //
 				null, null);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_Full_createHuman_WithHardCodedParametersToBeEscaped()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException, JsonProcessingException {
+
+		// Preparation
+		params = new HashMap<>();
+		params.put("value", "the directive value");
+		params.put("anotherValue", "the other directive value");
+
+		// Go, go, go
+		String request = "mutation mut1 {"//
+				+ "createHuman (human:  {name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]} )"//
+				+ "@testDirective("//
+				+ "   value:?value, "//
+				+ "   anotherValue:?anotherValue,"//
+				+ "   anArray  : [  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ] , \r\n"//
+				+ "   anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"}"
+				+ ")   " //
+				+ "{id name appearsIn friends {id name}}}";
+		GraphQLRequest graphQLRequest = new GraphQLRequest(request);
+
+		// Verification
+		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
+		assertEquals("{\"query\":\"mutation mut1" //
+				+ "{createHuman(human:{name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]})"
+				+ " @testDirective(value:\\\"the directive value\\\",anotherValue:\\\"the other directive value\\\","
+				+ "anArray:[  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ],"
+				+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}" //
+				+ "\"}", //
+				graphQLRequest.buildRequestAsString(params));
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "mutation mut1" //
+				+ "{createHuman(human:{name: \"a name with a string that contains a \\\", two { { and a } \", friends: [], appearsIn: [JEDI,NEWHOPE]})"
+				+ " @testDirective(value:\"the directive value\",anotherValue:\"the other directive value\","
+				+ "anArray:[  \"a string that contains [ [ and ] that should be ignored\" ,  \"another string\" ],"
+				+ "anObject:{    name: \"a name\" , appearsIn:[],friends : [{name:\"subname\",appearsIn:[],type:\"\"}],type:\"type\"})"//
+				+ "{id name appearsIn friends{id name __typename} __typename}}", //
+				null, null);
+
+		//////////////////////////////
+
+		String value = "\\, \"  trailing antislash \\";
+		String query = "{directiveOnQuery(uppercase: true) @testDirective(value:\""
+				+ StringEscapeUtils.escapeJson(value) + "\") {}}";
+		assertEquals(
+				"{\"query\":\"query{directiveOnQuery(uppercase:true) @testDirective(value:\\\"\\\\\\\\, \\\\\\\"  trailing antislash \\\\\\\\\\\")}\"}",
+				new GraphQLRequest(query).buildRequestAsString(null));
+
+		value = "antislash then escaped double-quote \\\"";
+		query = "{directiveOnQuery(uppercase: true) @testDirective(value:\"" + StringEscapeUtils.escapeJson(value)
+				+ "\") {}}";
+		assertEquals(
+				"{\"query\":\"query{directiveOnQuery(uppercase:true) @testDirective(value:\\\"antislash then escaped double-quote \\\\\\\\\\\\\\\"\\\")}\"}",
+				new GraphQLRequest(query).buildRequestAsString(null));
+
+		value = "escaped values with string read as same bloc (rstuv, tuvw...) \rstuv\tuvw\nopq)";
+		query = "{directiveOnQuery(uppercase: true) @testDirective(value:\"" + StringEscapeUtils.escapeJson(value)
+				+ "\") {}}";
+		assertEquals(
+				"{\"query\":\"query{directiveOnQuery(uppercase:true) @testDirective(value:\\\"escaped values with string read as same bloc (rstuv, tuvw...) \\\\rstuv\\\\tuvw\\\\nopq)\\\")}\"}",
+				new GraphQLRequest(query).buildRequestAsString(null));
 	}
 
 	@Test

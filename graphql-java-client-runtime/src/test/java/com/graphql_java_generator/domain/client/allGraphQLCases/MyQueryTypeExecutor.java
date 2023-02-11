@@ -68,8 +68,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		if (!graphqlUtils.getRuntimeVersion().equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException(
 					"The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
-							+ graphqlUtils.getRuntimeVersion()
-							+ "' whereas the GraphQL plugin version is '1.17'");
+							+ graphqlUtils.getRuntimeVersion() + "' whereas the GraphQL plugin version is '1.17'");
 		}
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
@@ -87,8 +86,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		if (!graphqlUtils.getRuntimeVersion().equals(graphqlUtils.getRuntimeVersion())) {
 			throw new RuntimeException(
 					"The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '"
-							+ graphqlUtils.getRuntimeVersion()
-							+ "' whereas the GraphQL plugin version is '1.17'");
+							+ graphqlUtils.getRuntimeVersion() + "' whereas the GraphQL plugin version is '1.17'");
 		}
 		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
@@ -111,7 +109,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @param hostnameVerifier
 	 */
 	public MyQueryTypeExecutor(String graphqlEndpoint, SSLContext sslContext, HostnameVerifier hostnameVerifier) {
-		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, sslContext, hostnameVerifier);
+		this.graphQLConfigurationAllGraphQLCases = new GraphQLConfiguration(graphqlEndpoint, sslContext,
+				hostnameVerifier);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		DirectiveRegistryInitializer.initDirectiveRegistry();
 	}
@@ -270,7 +269,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryTypeResponse.class);
+		return graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryTypeResponse.class);
 	}
 
 	/**
@@ -474,7 +474,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithoutParameters();
 	}
@@ -536,7 +537,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithoutParameters();
 	}
@@ -707,7 +709,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneOptionalParamCharacter", character);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithOneOptionalParam();
 	}
@@ -772,7 +775,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithOneOptionalParamCharacter", character);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithOneOptionalParam();
 	}
@@ -947,7 +951,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneMandatoryParamCharacter", character);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithOneMandatoryParam();
 	}
@@ -1012,7 +1017,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithOneMandatoryParamCharacter", character);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithOneMandatoryParam();
 	}
@@ -1190,7 +1196,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithOneMandatoryParamDefaultValueIntParam", intParam);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithOneMandatoryParamDefaultValue();
 	}
@@ -1256,7 +1263,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithOneMandatoryParamDefaultValueIntParam", intParam);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithOneMandatoryParamDefaultValue();
 	}
@@ -1445,7 +1453,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValTheHero", theHero);
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValNum", num);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithTwoMandatoryParamDefaultVal();
 	}
@@ -1515,7 +1524,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValTheHero", theHero);
 		parameters.put("myQueryTypeWithTwoMandatoryParamDefaultValNum", num);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithTwoMandatoryParamDefaultVal();
 	}
@@ -1692,7 +1702,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithEnumEpisode", episode);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithEnum();
 	}
@@ -1757,7 +1768,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithEnumEpisode", episode);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithEnum();
 	}
@@ -1787,7 +1799,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getWithEnumGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "withEnum", InputParameter.newBindParameter("", 
+		return new GraphQLRequest(partialRequest, RequestType.query, "withEnum", InputParameter.newBindParameter("",
 				"episode", "myQueryTypeWithEnumEpisode", InputParameterType.MANDATORY, "Episode", true, 0, false));
 	}
 
@@ -1929,7 +1941,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeWithListOfListMatrix", matrix);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithListOfList();
 	}
@@ -1994,7 +2007,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeWithListOfListMatrix", matrix);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithListOfList();
 	}
@@ -2025,8 +2039,9 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getWithListOfListGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "withListOfList", InputParameter.newBindParameter("", 
-				"matrix", "myQueryTypeWithListOfListMatrix", InputParameterType.MANDATORY, "Float", true, 2, false));
+		return new GraphQLRequest(partialRequest, RequestType.query, "withListOfList",
+				InputParameter.newBindParameter("", "matrix", "myQueryTypeWithListOfListMatrix",
+						InputParameterType.MANDATORY, "Float", true, 2, false));
 	}
 
 	/**
@@ -2175,7 +2190,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithListFirstName", firstName);
 		parameters.put("myQueryTypeWithListCharacters", characters);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithList();
 	}
@@ -2244,7 +2260,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeWithListFirstName", firstName);
 		parameters.put("myQueryTypeWithListCharacters", characters);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getWithList();
 	}
@@ -2427,7 +2444,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeAllFieldCasesInput", input);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getAllFieldCases();
 	}
@@ -2493,7 +2511,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeAllFieldCasesInput", input);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getAllFieldCases();
 	}
@@ -2527,8 +2546,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public GraphQLRequest getAllFieldCasesGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
 		return new GraphQLRequest(partialRequest, RequestType.query, "allFieldCases",
-				InputParameter.newBindParameter("", "input", "myQueryTypeAllFieldCasesInput", InputParameterType.OPTIONAL,
-						"AllFieldCasesInput", false, 0, false));
+				InputParameter.newBindParameter("", "input", "myQueryTypeAllFieldCasesInput",
+						InputParameterType.OPTIONAL, "AllFieldCasesInput", false, 0, false));
 	}
 
 	/**
@@ -2694,7 +2713,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeUnionTestDroid1", droid1);
 		parameters.put("myQueryTypeUnionTestDroid2", droid2);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getUnionTest();
 	}
@@ -2769,7 +2789,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeUnionTestDroid1", droid1);
 		parameters.put("myQueryTypeUnionTestDroid2", droid2);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getUnionTest();
 	}
@@ -2957,7 +2978,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeErrorErrorLabel", errorLabel);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getError();
 	}
@@ -3023,7 +3045,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeErrorErrorLabel", errorLabel);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getError();
 	}
@@ -3055,7 +3078,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getErrorGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "error", InputParameter.newBindParameter("", 
+		return new GraphQLRequest(partialRequest, RequestType.query, "error", InputParameter.newBindParameter("",
 				"errorLabel", "myQueryTypeErrorErrorLabel", InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
@@ -3187,7 +3210,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getABreak();
 	}
@@ -3250,7 +3274,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getABreak();
 	}
@@ -3424,7 +3449,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeDirectiveOnQueryUppercase", uppercase);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getDirectiveOnQuery();
 	}
@@ -3490,7 +3516,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeDirectiveOnQueryUppercase", uppercase);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getDirectiveOnQuery();
 	}
@@ -3506,7 +3533,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public com.graphql_java_generator.client.request.Builder getDirectiveOnQueryResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "directiveOnQuery",
-				RequestType.query, InputParameter.newBindParameter("", "uppercase", "myQueryTypeDirectiveOnQueryUppercase",
+				RequestType.query,
+				InputParameter.newBindParameter("", "uppercase", "myQueryTypeDirectiveOnQueryUppercase",
 						InputParameterType.OPTIONAL, "Boolean", false, 0, false));
 	}
 
@@ -3661,7 +3689,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getDirectiveOnField();
 	}
@@ -3724,7 +3753,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getDirectiveOnField();
 	}
@@ -3893,7 +3923,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getConnectionWithoutParameters();
 	}
@@ -3956,7 +3987,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getConnectionWithoutParameters();
 	}
@@ -4137,7 +4169,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeConnectionOnHumanPlanet", planet);
 		parameters.put("myQueryTypeConnectionOnHumanEpisode", episode);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getConnectionOnHuman();
 	}
@@ -4205,7 +4238,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters.put("myQueryTypeConnectionOnHumanPlanet", planet);
 		parameters.put("myQueryTypeConnectionOnHumanEpisode", episode);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getConnectionOnHuman();
 	}
@@ -4384,7 +4418,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeIssue53Date", date);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getIssue53();
 	}
@@ -4450,7 +4485,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeIssue53Date", date);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getIssue53();
 	}
@@ -4465,8 +4501,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public com.graphql_java_generator.client.request.Builder getIssue53ResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "issue53", RequestType.query,
-				InputParameter.newBindParameter("", "date", "myQueryTypeIssue53Date", InputParameterType.MANDATORY, "Date",
-						true, 0, false));
+				InputParameter.newBindParameter("", "date", "myQueryTypeIssue53Date", InputParameterType.MANDATORY,
+						"Date", true, 0, false));
 	}
 
 	/**
@@ -4481,8 +4517,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIssue53GraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "issue53", InputParameter.newBindParameter("", "date",
-				"myQueryTypeIssue53Date", InputParameterType.MANDATORY, "Date", true, 0, false));
+		return new GraphQLRequest(partialRequest, RequestType.query, "issue53", InputParameter.newBindParameter("",
+				"date", "myQueryTypeIssue53Date", InputParameterType.MANDATORY, "Date", true, 0, false));
 	}
 
 	/**
@@ -4623,7 +4659,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeIssue82FloatAFloat", aFloat);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getIssue82Float();
 	}
@@ -4689,7 +4726,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeIssue82FloatAFloat", aFloat);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getIssue82Float();
 	}
@@ -4722,7 +4760,7 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 */
 	public GraphQLRequest getIssue82FloatGraphQLRequest(String partialRequest)
 			throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "issue82Float", InputParameter.newBindParameter("", 
+		return new GraphQLRequest(partialRequest, RequestType.query, "issue82Float", InputParameter.newBindParameter("",
 				"aFloat", "myQueryTypeIssue82FloatAFloat", InputParameterType.MANDATORY, "Float", true, 0, false));
 	}
 
@@ -4861,7 +4899,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryTypeIssue82IDAID", aID);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getIssue82ID();
 	}
@@ -4926,7 +4965,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryTypeIssue82IDAID", aID);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getIssue82ID();
 	}
@@ -4956,8 +4996,261 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest getIssue82IDGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "issue82ID", InputParameter.newBindParameter("", "aID",
-				"myQueryTypeIssue82IDAID", InputParameterType.MANDATORY, "ID", true, 0, false));
+		return new GraphQLRequest(partialRequest, RequestType.query, "issue82ID", InputParameter.newBindParameter("",
+				"aID", "myQueryTypeIssue82IDAID", InputParameterType.MANDATORY, "ID", true, 0, false));
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 *
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("skip", Boolean.FALSE);
+	 *
+	 * byte c = myQyeryType.testBase64StringWithBindValues("{id name @skip(if: false) appearsIn friends {id name}}",
+	 * 		input, params);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param input
+	 *            Parameter for the testBase64String field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLScalar(fieldName = "testBase64String", graphQLTypeSimpleName = "Base64String", javaClass = byte[].class)
+	public byte[] testBase64StringWithBindValues(String queryResponseDef, byte[] input, Map<String, Object> parameters)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing query 'testBase64String': {} ", queryResponseDef);
+		ObjectResponse objectResponse = getTestBase64StringResponseBuilder().withQueryResponseDef(queryResponseDef)
+				.build();
+		return testBase64String(objectResponse, input, parameters);
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 *
+	 * This method executes a partial query against the GraphQL server. That is, the query that is one of the queries
+	 * defined in the GraphQL query object. The queryResponseDef contains the part of the query that <B><U>is
+	 * after</U></B> the query name.<BR/>
+	 * For instance, if the query hero has one parameter (as defined in the GraphQL schema):
+	 * 
+	 * <PRE>
+	 * byte c = myQyeryType.testBase64String("{id name @skip(if: false) appearsIn friends {id name}}", input, "skip",
+	 * 		Boolean.FALSE);
+	 * </PRE>
+	 * 
+	 * It offers a logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method takes care of writing the query name, and the parameter(s) for the query. The given queryResponseDef
+	 * describes the format of the response of the server response, that is the expected fields of the {@link Character}
+	 * GraphQL type. It can be something like "{ id name }", if you want these fields of this type. Please take a look
+	 * at the StarWars, Forum and other samples for more complex queries.<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * 
+	 * @param queryResponseDef
+	 *            The response definition of the query, in the native GraphQL format (see here above)
+	 * @param input
+	 *            Parameter for the testBase64String field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestPreparationException
+	 *             When an error occurs during the request preparation, typically when building the
+	 *             {@link ObjectResponse}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLScalar(fieldName = "testBase64String", graphQLTypeSimpleName = "Base64String", javaClass = byte[].class)
+	public byte[] testBase64String(String queryResponseDef, byte[] input, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Executing query 'testBase64String': {} ", queryResponseDef);
+		ObjectResponse objectResponse = getTestBase64StringResponseBuilder().withQueryResponseDef(queryResponseDef)
+				.build();
+		return testBase64StringWithBindValues(objectResponse, input,
+				graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues));
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 *
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * Map<String, Object> params = new HashMap<>();
+	 * params.put("sinceParam", sinceValue);
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * byte ret = queryType.testBase64StringWithBindValues(response, input, params);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param input
+	 *            Parameter for the testBase64String field of MyQueryType, as defined in the GraphQL schema
+	 * @param parameters
+	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
+	 *            defined Query, this argument may be null or an empty {@link Map}
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLScalar(fieldName = "testBase64String", graphQLTypeSimpleName = "Base64String", javaClass = byte[].class)
+	public byte[] testBase64StringWithBindValues(ObjectResponse objectResponse, byte[] input,
+			Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+		if (logger.isTraceEnabled()) {
+			logger.trace("Executing query 'testBase64String' with parameters: {} ", input);
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing query 'testBase64String'");
+		}
+
+		// Given values for the BindVariables
+		parameters = (parameters != null) ? parameters : new HashMap<>();
+		parameters.put("myQueryTypeTestBase64StringInput", input);
+
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
+
+		return ret.getTestBase64String();
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 *
+	 * This method is expected by the graphql-java framework. It will be called when this query is called. It offers a
+	 * logging of the call (if in debug mode), or of the call and its parameters (if in trace mode).<BR/>
+	 * This method is valid for queries/mutations/subscriptions which don't have bind variables, as there is no
+	 * <I>parameters</I> argument to pass the list of values.<BR/>
+	 * Here is a sample:
+	 * 
+	 * <PRE>
+	 * ObjectResponse response;
+	 * public void setup() {
+	 * 	// Preparation of the query
+	 * 	response = queryType.getBoardsResponseBuilder()
+	 * 			.withQueryResponseDef("{id name publiclyAvailable topics(since:?sinceParam){id}}").build();
+	 * }
+	 * 
+	 * public void doTheJob() {
+	 * ..
+	 * // This will set the value sinceValue to the sinceParam field parameter
+	 * byte ret = queryType.testBase64String(response, input, "sinceParam", sinceValue);
+	 * ...
+	 * }
+	 * </PRE>
+	 * 
+	 * @param objectResponse
+	 *            The definition of the response format, that describes what the GraphQL server is expected to return
+	 * @param input
+	 *            Parameter for the testBase64String field of MyQueryType, as defined in the GraphQL schema
+	 * @param paramsAndValues
+	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse
+	 *            parameter, that must be sent to the server. Optional parameter may not have a value. They will be
+	 *            ignored and not sent to the server. Mandatory parameter must be provided in this argument.<BR/>
+	 *            This parameter contains an even number of parameters: it must be a series of name and values :
+	 *            (paramName1, paramValue1, paramName2, paramValue2...)
+	 * @throws GraphQLRequestExecutionException
+	 *             When an error occurs during the request execution, typically a network error, an error from the
+	 *             GraphQL server or if the server response can't be parsed
+	 */
+	@GraphQLScalar(fieldName = "testBase64String", graphQLTypeSimpleName = "Base64String", javaClass = byte[].class)
+	public byte[] testBase64String(ObjectResponse objectResponse, byte[] input, Object... paramsAndValues)
+			throws GraphQLRequestExecutionException {
+		if (logger.isTraceEnabled()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Executing query 'testBase64String' with bind variables: ");
+			boolean addComma = false;
+			for (Object o : paramsAndValues) {
+				if (o != null) {
+					sb.append(o.toString());
+					if (addComma)
+						sb.append(", ");
+					addComma = true;
+				}
+			}
+			logger.trace(sb.toString());
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("Executing query 'testBase64String' (with bind variables)");
+		}
+
+		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
+		parameters.put("myQueryTypeTestBase64StringInput", input);
+
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
+
+		return ret.getTestBase64String();
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 *
+	 * Get the {@link com.graphql_java_generator.client.request.Builder} for the byte, as expected by the
+	 * testBase64String query.
+	 * 
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public com.graphql_java_generator.client.request.Builder getTestBase64StringResponseBuilder()
+			throws GraphQLRequestPreparationException {
+		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "testBase64String",
+				RequestType.query,
+				InputParameter.newBindParameter("AllGraphQLCases", "input", "myQueryTypeTestBase64StringInput",
+						InputParameterType.MANDATORY, "Base64String", true, 0, false));
+	}
+
+	/**
+	 * Test for issue #174: a custom scalar which Java type is an array
+	 *
+	 * Get the {@link GraphQLRequest} for the testBase64String executor, created with the given Partial request.
+	 * 
+	 * @param partialRequest
+	 *            The Partial GraphQLRequest, as explained in the
+	 *            <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/client.html">plugin client
+	 *            documentation</A>
+	 * @return
+	 * @throws GraphQLRequestPreparationException
+	 */
+	public GraphQLRequest getTestBase64StringGraphQLRequest(String partialRequest)
+			throws GraphQLRequestPreparationException {
+		return new GraphQLRequest(partialRequest, RequestType.query, "testBase64String",
+				InputParameter.newBindParameter("AllGraphQLCases", "input", "myQueryTypeTestBase64StringInput",
+						InputParameterType.MANDATORY, "Base64String", true, 0, false));
 	}
 
 	/**
@@ -5090,7 +5383,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getRelay();
 	}
@@ -5153,7 +5447,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.getRelay();
 	}
@@ -5314,7 +5609,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.get__schema();
 	}
@@ -5376,7 +5672,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.get__schema();
 	}
@@ -5543,7 +5840,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 		parameters.put("myQueryType__typeName", name);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.get__type();
 	}
@@ -5608,7 +5906,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 		parameters.put("myQueryType__typeName", name);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.get__type();
 	}
@@ -5623,8 +5922,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	public com.graphql_java_generator.client.request.Builder get__typeResponseBuilder()
 			throws GraphQLRequestPreparationException {
 		return new com.graphql_java_generator.client.request.Builder(GraphQLRequest.class, "__type", RequestType.query,
-				InputParameter.newBindParameter("", "name", "myQueryType__typeName", InputParameterType.MANDATORY, "String",
-						true, 0, false));
+				InputParameter.newBindParameter("", "name", "myQueryType__typeName", InputParameterType.MANDATORY,
+						"String", true, 0, false));
 	}
 
 	/**
@@ -5638,8 +5937,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 	 * @throws GraphQLRequestPreparationException
 	 */
 	public GraphQLRequest get__typeGraphQLRequest(String partialRequest) throws GraphQLRequestPreparationException {
-		return new GraphQLRequest(partialRequest, RequestType.query, "__type", InputParameter.newBindParameter("", "name",
-				"myQueryType__typeName", InputParameterType.MANDATORY, "String", true, 0, false));
+		return new GraphQLRequest(partialRequest, RequestType.query, "__type", InputParameter.newBindParameter("",
+				"name", "myQueryType__typeName", InputParameterType.MANDATORY, "String", true, 0, false));
 	}
 
 	/**
@@ -5770,7 +6069,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 		// Given values for the BindVariables
 		parameters = (parameters != null) ? parameters : new HashMap<>();
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.get__typename();
 	}
@@ -5832,7 +6132,8 @@ public class MyQueryTypeExecutor implements GraphQLQueryExecutor {
 
 		Map<String, Object> parameters = graphqlClientUtils.generatesBindVariableValuesMap(paramsAndValues);
 
-		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters, MyQueryType.class);
+		MyQueryType ret = graphQLConfigurationAllGraphQLCases.getQueryExecutor().execute(objectResponse, parameters,
+				MyQueryType.class);
 
 		return ret.get__typename();
 	}

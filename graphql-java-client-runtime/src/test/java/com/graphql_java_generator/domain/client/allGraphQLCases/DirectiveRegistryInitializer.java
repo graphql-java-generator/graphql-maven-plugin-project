@@ -6,11 +6,9 @@ import com.graphql_java_generator.client.directive.DirectiveLocation;
 import com.graphql_java_generator.client.directive.DirectiveRegistry;
 import com.graphql_java_generator.client.directive.DirectiveRegistryImpl;
 import com.graphql_java_generator.client.request.InputParameter;
-import com.graphql_java_generator.client.request.InputParameter.InputParameterType;
-import com.graphql_java_generator.customscalars.CustomScalarRegistryImpl;
 
 public class DirectiveRegistryInitializer {
-	
+
 	/**
 	 * Initialization of the {@link DirectiveRegistry} with all known custom scalars, that is with all custom scalars
 	 * defined in the project pom
@@ -25,9 +23,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("skip");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"if", null, "Boolean", true, 0, false));
+		directive.getArguments().add(InputParameter.newHardCodedParameter("", "if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		directive.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
@@ -39,9 +35,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("include");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"if", null, "Boolean", true, 0, false));
+		directive.getArguments().add(InputParameter.newHardCodedParameter("", "if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directive.getDirectiveLocations().add(DirectiveLocation.FRAGMENT_SPREAD);
 		directive.getDirectiveLocations().add(DirectiveLocation.INLINE_FRAGMENT);
@@ -53,9 +47,7 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("defer");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"if", null, "Boolean", true, 0, false));
+		directive.getArguments().add(InputParameter.newHardCodedParameter("", "if", null, "Boolean", true, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
 		directiveRegistry.registerDirective(directive);
 
@@ -65,9 +57,8 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("deprecated");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"reason", null, "String", false, 0, false));
+		directive.getArguments()
+				.add(InputParameter.newHardCodedParameter("", "reason", null, "String", false, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD_DEFINITION);
 		directive.getDirectiveLocations().add(DirectiveLocation.ENUM_VALUE);
 		directiveRegistry.registerDirective(directive);
@@ -96,33 +87,21 @@ public class DirectiveRegistryInitializer {
 		directive = new Directive();
 		directive.setName("testDirective");
 		directive.setPackageName("com.graphql_java_generator.domain.client.allGraphQLCases");
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"value", null, "String", true, 0, false));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"anotherValue", null, "String", false, 0, false));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"anArray", null, "String", false, 1, true));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"anObject", null, "CharacterInput", false, 0, false));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"anInt", null, "Int", false, 0, false));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"aFloat", null, "Float", false, 0, false));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"aBoolean", null, "Boolean", false, 0, false));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"anID", null, "ID", false, 0, false));
-		directive.getArguments().add(
-			InputParameter.newHardCodedParameter("",
-					"aCustomScalarDate", null, "Date", false, 0, false));
+		directive.getArguments().add(InputParameter.newHardCodedParameter("", "value", null, "String", true, 0, false));
+		directive.getArguments()
+				.add(InputParameter.newHardCodedParameter("", "anotherValue", null, "String", false, 0, false));
+		directive.getArguments()
+				.add(InputParameter.newHardCodedParameter("", "anArray", null, "String", false, 1, true));
+		directive.getArguments()
+				.add(InputParameter.newHardCodedParameter("", "anObject", null, "CharacterInput", false, 0, false));
+		directive.getArguments().add(InputParameter.newHardCodedParameter("", "anInt", null, "Int", false, 0, false));
+		directive.getArguments()
+				.add(InputParameter.newHardCodedParameter("", "aFloat", null, "Float", false, 0, false));
+		directive.getArguments()
+				.add(InputParameter.newHardCodedParameter("", "aBoolean", null, "Boolean", false, 0, false));
+		directive.getArguments().add(InputParameter.newHardCodedParameter("", "anID", null, "ID", false, 0, false));
+		directive.getArguments()
+				.add(InputParameter.newHardCodedParameter("", "aCustomScalarDate", null, "Date", false, 0, false));
 		directive.getDirectiveLocations().add(DirectiveLocation.QUERY);
 		directive.getDirectiveLocations().add(DirectiveLocation.MUTATION);
 		directive.getDirectiveLocations().add(DirectiveLocation.FIELD);
@@ -167,9 +146,8 @@ public class DirectiveRegistryInitializer {
 		directive.getDirectiveLocations().add(DirectiveLocation.INPUT_FIELD_DEFINITION);
 		directiveRegistry.registerDirective(directive);
 
-
 		DirectiveRegistryImpl.directiveRegistry = directiveRegistry;
-		return directiveRegistry;
+		return DirectiveRegistryImpl.directiveRegistry;
 	}
 
 }
