@@ -11,6 +11,10 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 # Not released yet
 
+Dependency upgrade: 
+* Upgrade from graphql-java 19.2 to 20.0
+* Upgrade from graphql-java-extended-scalars 19.0 to 20.0
+
 Both modes:
 * PR #171: Add descriptions for input parameters if they exist
 
