@@ -16,6 +16,7 @@ Both modes:
 
 Client mode:
 * Issue #174: request execution error with Custom scalar that are arrays
+* Issue #176: the `GraphQLRequestExecutionException` class has now a `getError()` method, that allows to retrieve the list of `GraphQLError` returned by the server, including the extension field.
 
 
 # 1.18.9

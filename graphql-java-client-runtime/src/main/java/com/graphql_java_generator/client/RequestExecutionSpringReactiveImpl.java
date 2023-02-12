@@ -336,24 +336,7 @@ public class RequestExecutionSpringReactiveImpl implements RequestExecution {
 			ret.setExtensions(response.extensions);
 			return ret;
 		} else {
-			int nbErrors = 0;
-			String agregatedMessage = null;
-			for (com.graphql_java_generator.client.response.Error error : response.errors) {
-				String msg = error.toString();
-				nbErrors += 1;
-				logger.error(GRAPHQL_MARKER, msg);
-				if (agregatedMessage == null) {
-					agregatedMessage = msg;
-				} else {
-					agregatedMessage += ", ";
-					agregatedMessage += msg;
-				}
-			}
-			if (nbErrors == 0) {
-				throw new GraphQLRequestExecutionException("An unknown error occured");
-			} else {
-				throw new GraphQLRequestExecutionException(nbErrors + " errors occured: " + agregatedMessage);
-			}
+			throw new GraphQLRequestExecutionException(response.errors);
 		}
 	}
 }

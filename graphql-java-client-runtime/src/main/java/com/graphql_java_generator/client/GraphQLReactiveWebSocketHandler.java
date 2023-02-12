@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.graphql_java_generator.client.response.Error;
 import com.graphql_java_generator.client.response.JsonResponseWrapper;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -193,25 +193,31 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 				JsonResponseWrapper response = objectMapper.convertValue(result, JsonResponseWrapper.class);
 
 				if (response.errors != null && response.errors.size() > 0) {
-					List<String> errMessages = null;
+					List<Error> errors;
+					String msg;
+
 					if (response.errors == null) {
-						logger.error(
-								"Unknwon error received from the GraphQL server for subscription " + uniqueIdOperation);
+						errors = null;
+						msg = "Unknown error received from the GraphQL server for subscription " + uniqueIdOperation;
+						logger.error(msg);
 					} else {
+						errors = response.errors;
 						StringBuilder sb = new StringBuilder();
 						sb.append("An error has been received from the GraphQL server for subscription ");
 						sb.append(uniqueIdOperation);
-						sb.append(": ");
-						errMessages = new ArrayList<>();
-						for (Error err : response.errors) {
-							errMessages.add(err.message);
-							if (errMessages.size() > 0)
-								sb.append(" | ");
-							sb.append(err.message);
+						msg = sb.toString();
+
+						if (logger.isErrorEnabled()) {
+							sb.append(": ");
+							for (Error err : errors) {
+								if (errors.size() > 0)
+									sb.append(" | ");
+								sb.append(err.message);
+							}
+							logger.error(sb.toString());
 						}
-						logger.error(sb.toString());
 					}
-					subscriptionCallback.onError(new GraphQLRequestExecutionException(errMessages));
+					subscriptionCallback.onError(new GraphQLRequestExecutionException(msg, errors));
 				} else {
 					R r = objectMapper.convertValue(response.data, subscriptionType);
 
@@ -605,9 +611,11 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 	@SuppressWarnings("unchecked")
 	public void onNext(WebSocketMessage message) {
 
+		JsonNode jsonNode;
 		Map<String, Object> map;
 		try {
-			map = objectMapper.readValue(message.getPayloadAsText(), HashMap.class);
+			jsonNode = objectMapper.readTree(message.getPayloadAsText());
+			map = objectMapper.treeToValue(jsonNode, HashMap.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException("Error while reading '" + message.getPayloadAsText() + "' as a Map", e);
 		}
@@ -681,11 +689,16 @@ public class GraphQLReactiveWebSocketHandler implements WebSocketHandler {
 				String msg = (String) ((Map<?, ?>) map.get("payload")).get("message");
 				subData.onError(new GraphQLRequestExecutionException(msg));
 			} else {
-				// The payload is a list of errors
-				List<Map<String, Object>> errors = (List<Map<String, Object>>) map.get("payload");
-				List<String> errorMessages = errors.stream().map(e -> (String) e.get("message"))
-						.collect(Collectors.toList());
-				subData.onError(new GraphQLRequestExecutionException(errorMessages));
+				// The payload is a list of errors.
+				try {
+					List<Error> errors = new ArrayList<>();
+					for (JsonNode node : jsonNode.get("payload")) {
+						errors.add(objectMapper.treeToValue(node, Error.class));
+					}
+					subData.onError(new GraphQLRequestExecutionException("Error on subscription " + id, errors));
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException("Error while reading the errors from '" + message.getPayloadAsText(), e);
+				}
 			}
 			break;
 		default:

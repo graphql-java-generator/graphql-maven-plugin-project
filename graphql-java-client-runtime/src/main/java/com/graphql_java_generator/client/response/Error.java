@@ -13,16 +13,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import graphql.ErrorClassification;
+import graphql.GraphQLError;
+import graphql.language.SourceLocation;
+
 /**
  * 
  * The error POJO, mapped from the GraphQL server response, when an error occurs
  * 
  * @author etienne-sf
  */
-public class Error {
+public class Error implements GraphQLError {
+
+	private static final long serialVersionUID = 1L;
 
 	public String message;
 
+	// Using SourceLocation in the Location field prevent proper deserialization. So we have to map at runtime, to
+	// implement the GraphQLError interface. Another solution would be to create a custom deserializer.
 	@JsonDeserialize(contentAs = Location.class)
 	public List<Location> locations;
 
@@ -39,12 +47,13 @@ public class Error {
 
 	/**
 	 * The extensions field of errors, stored as is from the incoming GraphQL response. It can be retrieved thanks to
-	 * one of these methods: {@link #getExtensions()}, {@link #getExtensionsAsMap()},
-	 * {@link #getExtensionsField(String, Class)}
+	 * one of these methods: {@link #getExtensions()}, {@link #getExtensionsAsJsonNode()},
+	 * {@link #getExtensionsAsMapOfJsonNode()}, {@link #getExtensionsField(String, Class)}
 	 */
 	public JsonNode extensions;
 
-	private Map<String, JsonNode> extensionsAsMap = null;
+	private Map<String, Object> extensionsAsMapOfObject = null;
+	private Map<String, JsonNode> extensionsAsMapOfJsonNode = null;
 
 	private ObjectMapper localObjectMapper = null;
 
@@ -80,7 +89,7 @@ public class Error {
 		return sb.toString();
 	}
 
-	public JsonNode getExtensions() {
+	public JsonNode getExtensionsAsJsonNode() {
 		return extensions;
 	}
 
@@ -88,17 +97,27 @@ public class Error {
 		this.extensions = extensions;
 	}
 
+	@Override
+	public Map<String, Object> getExtensions() {
+		if (extensionsAsMapOfObject == null) {
+			extensionsAsMapOfObject = getMapper().convertValue(extensions, new TypeReference<Map<String, Object>>() {
+			});
+		}
+		return extensionsAsMapOfObject;
+	}
+
 	/**
 	 * Returns the extensions as a map. The values can't be deserialized, as their type is unknown.
 	 * 
 	 * @return
 	 */
-	public Map<String, JsonNode> getExtensionsAsMap() {
-		if (extensionsAsMap == null) {
-			extensionsAsMap = getMapper().convertValue(extensions, new TypeReference<Map<String, JsonNode>>() {
-			});
+	public Map<String, JsonNode> getExtensionsAsMapOfJsonNode() {
+		if (extensionsAsMapOfJsonNode == null) {
+			extensionsAsMapOfJsonNode = getMapper().convertValue(extensions,
+					new TypeReference<Map<String, JsonNode>>() {
+					});
 		}
-		return extensionsAsMap;
+		return extensionsAsMapOfJsonNode;
 	}
 
 	/**
@@ -107,11 +126,11 @@ public class Error {
 	 * @return
 	 */
 	public Map<String, String> getExtensionsAsMapStringString() {
-		getExtensionsAsMap();
+		getExtensionsAsMapOfJsonNode();
 		Map<String, String> extensionsAsMapStringString = new HashMap<>();
 
-		for (String key : extensionsAsMap.keySet()) {
-			extensionsAsMapStringString.put(key, extensionsAsMap.get(key).toString());
+		for (String key : extensionsAsMapOfJsonNode.keySet()) {
+			extensionsAsMapStringString.put(key, extensionsAsMapOfJsonNode.get(key).toString());
 		}
 		return extensionsAsMapStringString;
 	}
@@ -129,7 +148,7 @@ public class Error {
 	 *             When there is an error when converting the key's value into the _t_ class
 	 */
 	public <T> T getExtensionsField(String key, Class<T> t) throws JsonProcessingException {
-		JsonNode node = getExtensionsAsMap().get(key);
+		JsonNode node = getExtensionsAsMapOfJsonNode().get(key);
 		return (node == null) ? null : getMapper().treeToValue(node, t);
 	}
 
@@ -143,5 +162,29 @@ public class Error {
 			localObjectMapper = new ObjectMapper();
 		}
 		return localObjectMapper;
+	}
+
+	@Override
+	public String getMessage() {
+		return message;
+	}
+
+	@Override
+	public List<SourceLocation> getLocations() {
+		// Using SourceLocation in the Location field prevent proper deserialization. So we have to map at runtime, to
+		// implement the GraphQLError interface. Another solution would be to create a custom deserializer.
+		return (locations == null) ? null
+				: locations.stream().map(l -> new SourceLocation(l.line, l.column, l.sourceName))
+						.collect(Collectors.toList());
+	}
+
+	@Override
+	public ErrorClassification getErrorType() {
+		return new ErrorClassification() {
+			@Override
+			public Object toSpecification(GraphQLError error) {
+				return errorType;
+			}
+		};
 	}
 }
