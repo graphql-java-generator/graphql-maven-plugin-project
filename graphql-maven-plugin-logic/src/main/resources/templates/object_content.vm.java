@@ -60,6 +60,9 @@
  	 */
 #end
 #appliedDirectives(${field.appliedDirectives}, "	")
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonProperty("${field.name}")
+#end
 	public void set${field.pascalCaseName}(${field.javaTypeFullClassname} ${field.javaName}) {
 		this.${field.javaName} = ${field.javaName};
 	}
@@ -75,6 +78,9 @@
 	 */
 #end
 #appliedDirectives(${field.appliedDirectives}, "	")
+#if ($configuration.isGenerateJacksonAnnotations())
+	@JsonProperty("${field.name}")
+#end
 	public ${field.javaTypeFullClassname} get${field.pascalCaseName}() {
 		return ${field.javaName};
 	}
