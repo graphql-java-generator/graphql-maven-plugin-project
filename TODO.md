@@ -8,7 +8,6 @@ Here are the next tasks listed, as a TODO list:
 * `DirectiveRegistryInitializer`:
     * separate it from each schema (e.g.: allGraphQlCases client)
     * initialize it only once (not at each creation of a GraphQLRequest)
-* Document in the Client FAQ how to retrieve the extensions response's values
 * Tutorial: add the documentation about the application.yml file
     * Especially: `spring.main.web-application-type = none`
 * Execute FieldTest.test_Issue1114_checkGenerateCode() (in plugin-locic, com.graphql_java_generator.plugin.language)
@@ -24,20 +23,16 @@ Here are the next tasks listed, as a TODO list:
 * @EnableGraphQLRepositories: replace the string (that contains the package name) by a class (so that when changing a package name, the code is still valid)
 * Check comment of the executor method. The line below is wrong:
     * the request contains the full string that <B><U>follows</U></B> the query/mutation/subscription keyword.<BR/>
-* Use JWT in the OAuth use case, to speed up the tests
 * Add an option to add the Serializable interface for generated POJOs
 * [Done in the plugin, waiting for the graphql PR acceptance] Publish a PR to have a per request cache, in graphql-java-spring 
     * Done. Waiting for the PR to be accepted (and then a new release)
     * In the meantime: the graphql-java-spring is forked within the graphql-maven-plugin project
 * Remove the SubscriptionClientWebSocket class
-* Remove the useless interface  com.graphql_java_generator.client.response.RootResponse (from the runtime)
 * Allow to control the list of schema files, and their order (necessary to properly manage the extend keyword)
 * Add a description of the GraphQL mojo
 * Waiting for [issue 2055](https://github.com/graphql-java/graphql-java/issues/2055) to be solved. Some test cases can then be run again (see the allGraphQLCases.graphqls file)
-* Change the JsonResponseWrapper as an interface, implemented by the XxxRootResponse classes
 * [server side] Check graphql-java correction for issue 1844 (Directive values of type 'EnumValue' are not supported yet), waiting for graphql-java v16 release
 * enum values may currently not be a java keyword (seems to be a graphql-java limitation). issue to raise in the graphql-java project
-* Check compatibility with the schema.public.graphqls (available in the plugin logic test resources folder)
 * Document generateJPAAnnotation 
 
 ## TODO List for 2.0 version:
