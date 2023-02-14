@@ -19,8 +19,9 @@ Both modes:
 * PR #171: Add descriptions for input parameters if they exist
 
 Client mode:
+* Issue #173: introspection query from graphql-java 19.2 would not work (the plugin was using an old introspection schema)
 * Issue #174: request execution error with Custom scalar that are arrays
-* Issue #175: adding the `@JsonProperty("xxx")` annotation on getter would solved some issues when generating an openAPI based on the generated file, with field having case issues
+* Issue #175: adding the `@JsonProperty("xxx")` annotation on getter of the generated POJO would solve some issues when generating an openAPI based on the generated file, with field having case issues
 * Issue #176: the `GraphQLRequestExecutionException` class has now a `getError()` method, that allows to retrieve the list of `GraphQLError` returned by the server, including the extension field.
 
 
