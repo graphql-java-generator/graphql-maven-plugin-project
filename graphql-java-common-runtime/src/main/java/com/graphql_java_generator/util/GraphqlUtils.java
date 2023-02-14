@@ -649,8 +649,15 @@ public class GraphqlUtils {
 				method = clazz.getMethod(getterMethodName);
 			} catch (NoSuchMethodException e) {
 				// For the boolean fields, the getter may be named isProperty. Let's try that:
-				if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
+				if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class) && field.getName()
+								.startsWith("is")) {
 					getterMethodName = "is" + getPascalCase(field.getName());
+					method = clazz.getMethod(getterMethodName);
+				}
+				// For the fields conflicting with reserved keywords and generated with an underscore (_), the getter may be named _Property. Let's try that:
+				else if (field.getName().startsWith("_")) {
+					String sanitizedField = field.getName().substring(1);
+					getterMethodName = "get" + getPascalCase(sanitizedField);
 					method = clazz.getMethod(getterMethodName);
 				} else {
 					throw e;
@@ -659,7 +666,7 @@ public class GraphqlUtils {
 			// The return type must be the same as the field's class
 			if (field.getType() != method.getReturnType()) {
 				throw new RuntimeException("The getter '" + getterMethodName + "' and the field '" + field.getName()
-						+ "' of the class " + clazz.getName() + " should be of the same type");
+								+ "' of the class " + clazz.getName() + " should be of the same type");
 			}
 
 			return method;
