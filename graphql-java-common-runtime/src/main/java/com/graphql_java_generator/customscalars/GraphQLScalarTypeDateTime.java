@@ -6,6 +6,7 @@ package com.graphql_java_generator.customscalars;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import graphql.language.StringValue;
 import graphql.schema.Coercing;
@@ -39,7 +40,7 @@ public class GraphQLScalarTypeDateTime {
 						 * the GrahQL Server
 						 */
 						final static String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-						SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN);
+						SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH);
 
 						/**
 						 * Called to convert a Java object result of a DataFetcher to a valid runtime value for the
