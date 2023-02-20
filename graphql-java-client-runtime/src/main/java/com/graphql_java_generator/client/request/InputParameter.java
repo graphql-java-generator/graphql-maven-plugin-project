@@ -897,6 +897,7 @@ public class InputParameter {
 
 				if (val != null) {
 					int fieldListDepth = 0;
+					String fieldName;
 					String fieldGraphQLTypeName = null;
 					GraphQLScalarType fieldGraphQLType = null;
 
@@ -904,6 +905,7 @@ public class InputParameter {
 					GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
 
 					if (graphQLScalar != null) {
+						fieldName = graphQLScalar.fieldName();
 						fieldListDepth = graphQLScalar.listDepth();
 						fieldGraphQLTypeName = graphQLScalar.graphQLTypeSimpleName();
 						if (fieldGraphQLTypeName != null) {
@@ -911,6 +913,7 @@ public class InputParameter {
 									.getGraphQLCustomScalarType(fieldGraphQLTypeName);
 						}
 					} else if (graphQLNonScalar != null) {
+						fieldName = graphQLNonScalar.fieldName();
 						fieldListDepth = graphQLNonScalar.listDepth();
 					} else {
 						throw new RuntimeException("The field " + object.getClass().getName() + "." + field.getName()
@@ -920,7 +923,7 @@ public class InputParameter {
 					result//
 							.append(separator)//
 							.append(graphQLVariable ? "\"" : "")//
-							.append(field.getName())//
+							.append(fieldName)//
 							.append(graphQLVariable ? "\"" : "")//
 							.append(":")//
 							.append(getStringContentForGraphqlQuery(writingGraphQLVariables, val, fieldListDepth,

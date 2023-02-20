@@ -21,6 +21,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.QueryExecutorImpl_allGraphqlCases_Test;
+import com.graphql_java_generator.domain.client.allGraphQLCases.AllFieldCasesInput;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationType;
 import com.graphql_java_generator.domain.client.allGraphQLCases.AnotherMutationTypeExecutor;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
@@ -77,6 +78,37 @@ class AbstractGraphQLRequest_allGraphQLCasesTest {
 		assertEquals(1, field.inputParameters.size());
 		assertEquals("test", field.inputParameters.get(0).getName());
 		assertEquals(_extends.DOUBLE, field.inputParameters.get(0).getValue());
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void testBuild_scalarInputParameters_withFieldAsJavaKeyword()
+			throws GraphQLRequestPreparationException, JsonProcessingException, GraphQLRequestExecutionException {
+		// Preparation
+		AllFieldCasesInput input = AllFieldCasesInput.builder()//
+				.withId("5035f6d3-9fae-4036-a726-1d0ca3230461")//
+				.withName("name")//
+				.withBreak("A string to check the return")//
+				.withAge(3L)//
+				.withDates(new ArrayList<>())//
+				.withAliases(new ArrayList<>())//
+				.withPlanets(new ArrayList<>())//
+				.withMatrix(new ArrayList<>())//
+				.build();
+		params = new HashMap<>();
+		params.put("myQueryTypeAllFieldCasesInput", input);
+		params.put("if", "if's value");
+
+		// Go, go, go
+		MyQueryType queryType = new MyQueryType("http://localhost");
+		@SuppressWarnings("deprecation")
+		AbstractGraphQLRequest graphQLRequest = queryType.getAllFieldCasesGraphQLRequest("{break(if:&if)}");
+
+		// Verification
+		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(graphQLRequest.buildRequestAsMap(params), ""//
+				+ "query"//
+				+ "{allFieldCases(input:{id:\"5035f6d3-9fae-4036-a726-1d0ca3230461\",name:\"name\",break:\"A string to check the return\",age:3,dates:[],aliases:[],planets:[],matrix:[]})"//
+				+ "{break(if:\"if's value\") __typename}}", null, null);
 	}
 
 	@Test

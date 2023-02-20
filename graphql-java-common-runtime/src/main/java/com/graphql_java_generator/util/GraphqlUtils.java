@@ -462,7 +462,6 @@ public class GraphqlUtils {
 			// We have a Map. Its keys MUST be the attributes for the given class (clazz)
 			Map<String, Object> map = (Map<String, Object>) jsonParsedValue;
 			Object t;
-			Field field;
 
 			try {
 				t = clazz.getConstructor().newInstance();
@@ -472,17 +471,23 @@ public class GraphqlUtils {
 			}
 
 			for (String key : map.keySet()) {
-				try {
-					field = clazz.getDeclaredField(key);
-				} catch (NoSuchFieldException | SecurityException e) {
-					throw new RuntimeException(
-							"Error while reading '" + key + "' field for the " + clazz.getName() + " class", e);
+				GraphQLScalar graphQLScalar = null;
+				GraphQLNonScalar graphQLNonScalar = null;
+				Method setter = null;
+
+				for (Field field : clazz.getDeclaredFields()) {
+					graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+					graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+					if ((graphQLScalar != null && graphQLScalar.fieldName().equals(key))
+							|| (graphQLNonScalar != null && graphQLNonScalar.fieldName().equals(key))) {
+						setter = getSetter(clazz, field);
+						break;
+					}
 				}
-
-				Method setter = getSetter(clazz, field);
-
-				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
-				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+				if (graphQLScalar == null && graphQLNonScalar == null) {
+					throw new RuntimeException(
+							"Found no GraphQL field of name '" + key + "' in class " + clazz.getName());
+				}
 
 				Object value;
 
@@ -642,23 +647,36 @@ public class GraphqlUtils {
 	 * @return
 	 */
 	public Method getGetter(Class<?> clazz, Field field) {
-		String getterMethodName = "get" + getPascalCase(field.getName());
+		String fieldName;
+		GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+		GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+
+		if (graphQLScalar != null)
+			fieldName = graphQLScalar.fieldName();
+		else if (graphQLNonScalar != null)
+			fieldName = graphQLNonScalar.fieldName();
+		else
+			fieldName = field.getName();
+
+		String getterMethodName = "get" + getPascalCase(fieldName);
 		try {
 			Method method = null;
 			try {
 				method = clazz.getMethod(getterMethodName);
 			} catch (NoSuchMethodException e) {
 				// For the boolean fields, the getter may be named isProperty. Let's try that:
-				if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class) && field.getName()
-								.startsWith("is")) {
-					getterMethodName = "is" + getPascalCase(field.getName());
+				if (field.getType().equals(boolean.class)
+						|| field.getType().equals(Boolean.class) /* && fieldName.startsWith("is") */) {
+					getterMethodName = "is" + getPascalCase(fieldName);
 					method = clazz.getMethod(getterMethodName);
-				}
-				// For the fields conflicting with reserved keywords and generated with an underscore (_), the getter may be named _Property. Let's try that:
-				else if (field.getName().startsWith("_")) {
-					String sanitizedField = field.getName().substring(1);
-					getterMethodName = "get" + getPascalCase(sanitizedField);
-					method = clazz.getMethod(getterMethodName);
+					// }
+					// // For the fields conflicting with reserved keywords and generated with an underscore (_), the
+					// getter
+					// // may be named _Property. Let's try that:
+					// else if (field.getName().startsWith("_")) {
+					// String sanitizedField = field.getName().substring(1);
+					// getterMethodName = "get" + getPascalCase(sanitizedField);
+					// method = clazz.getMethod(getterMethodName);
 				} else {
 					throw e;
 				}
@@ -666,7 +684,7 @@ public class GraphqlUtils {
 			// The return type must be the same as the field's class
 			if (field.getType() != method.getReturnType()) {
 				throw new RuntimeException("The getter '" + getterMethodName + "' and the field '" + field.getName()
-								+ "' of the class " + clazz.getName() + " should be of the same type");
+						+ "' of the class " + clazz.getName() + " should be of the same type");
 			}
 
 			return method;

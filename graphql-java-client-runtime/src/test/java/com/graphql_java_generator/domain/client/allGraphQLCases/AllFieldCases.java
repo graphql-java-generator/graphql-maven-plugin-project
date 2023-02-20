@@ -52,6 +52,12 @@ public class AllFieldCases implements WithID {
 	@GraphQLScalar(fieldName = "forname", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String forname;
 
+	@JsonProperty("break")
+	@GraphQLInputParameters(names = { "if" }, types = { "String" }, mandatories = { true }, listDepths = {
+			0 }, itemsMandatory = { false })
+	@GraphQLScalar(fieldName = "break", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class, listDepth = 0)
+	java.lang.String _break;
+
 	@JsonProperty("age")
 	@JsonDeserialize(using = CustomJacksonDeserializers.Long.class)
 	@GraphQLInputParameters(names = { "unit" }, types = { "Unit" }, mandatories = { false }, listDepths = {
@@ -177,6 +183,16 @@ public class AllFieldCases implements WithID {
 
 	public String getForname() {
 		return forname;
+	}
+
+	@JsonProperty("break")
+	public void setBreak(java.lang.String _break) {
+		this._break = _break;
+	}
+
+	@JsonProperty("break")
+	public java.lang.String getBreak() {
+		return _break;
 	}
 
 	public void setAge(Long age) {

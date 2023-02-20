@@ -127,6 +127,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkInputParameter(objectType, j, 0, "uppercase", 0, false, null, "Boolean", "Boolean", null);
 		checkInputParameter(objectType, j, 1, "textToAppendToTheForname", 0, false, null, "String", "String", null);
 		j += 1;
+		// break(if: break!): String
+		checkField(objectType, j, "break", 0, false, null, "String", "String");
+		checkNbInputParameter(objectType, j, 1);
+		checkInputParameter(objectType, j, 0, "if", 0, true, null, "String", "String", null);
+		j += 1;
 		// age: Long!
 		checkField(objectType, j, "age", 0, true, null, "Long", "Long");
 		checkNbInputParameter(objectType, j, 1);

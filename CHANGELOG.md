@@ -17,6 +17,9 @@ Dependency upgrade:
 
 Both modes:
 * PR #171: Add descriptions for input parameters if they exist
+* Field that are java reserved keywords of either GraphQL types or GraphQL input types would cause error during request execution
+    * Subject started thanks to the PR #177 (Modifying the getGetter method to accept reserved keywords)
+
 
 Client mode:
 * Issue #173: introspection query from graphql-java 19.2 would not work (the plugin was using an old introspection schema)

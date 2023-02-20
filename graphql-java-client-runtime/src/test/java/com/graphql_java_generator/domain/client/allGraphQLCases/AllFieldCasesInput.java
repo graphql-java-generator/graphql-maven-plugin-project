@@ -49,6 +49,10 @@ public class AllFieldCasesInput {
 	@GraphQLScalar(fieldName = "forname", graphQLTypeSimpleName = "String", javaClass = String.class)
 	String forname;
 
+	@JsonProperty("break")
+	@GraphQLScalar(fieldName = "break", graphQLTypeSimpleName = "String", javaClass = java.lang.String.class, listDepth = 0)
+	java.lang.String _break;
+
 	@JsonProperty("age")
 	@GraphQLScalar(fieldName = "age", graphQLTypeSimpleName = "Long", javaClass = Long.class)
 	Long age;
@@ -58,7 +62,7 @@ public class AllFieldCasesInput {
 	Date date;
 
 	@JsonProperty("dates")
-	@GraphQLScalar(fieldName = "dates", graphQLTypeSimpleName = "Date", javaClass = Date.class)
+	@GraphQLScalar(fieldName = "dates", graphQLTypeSimpleName = "Date", javaClass = Date.class, listDepth = 1)
 	List<Date> dates;
 
 	@JsonProperty("nbComments")
@@ -74,15 +78,15 @@ public class AllFieldCasesInput {
 	List<Boolean> booleans;
 
 	@JsonProperty("aliases")
-	@GraphQLScalar(fieldName = "aliases", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "aliases", graphQLTypeSimpleName = "String", javaClass = String.class, listDepth = 1)
 	List<String> aliases;
 
 	@JsonProperty("planets")
-	@GraphQLScalar(fieldName = "planets", graphQLTypeSimpleName = "String", javaClass = String.class)
+	@GraphQLScalar(fieldName = "planets", graphQLTypeSimpleName = "String", javaClass = String.class, listDepth = 1)
 	List<String> planets;
 
 	@JsonProperty("matrix")
-	@GraphQLScalar(fieldName = "matrix", graphQLTypeSimpleName = "Float", javaClass = Double.class)
+	@GraphQLScalar(fieldName = "matrix", graphQLTypeSimpleName = "Float", javaClass = Double.class, listDepth = 2)
 	List<List<Double>> matrix;
 
 	@JsonProperty("withIdSubtype")
@@ -115,6 +119,16 @@ public class AllFieldCasesInput {
 
 	public String getForname() {
 		return forname;
+	}
+
+	@JsonProperty("break")
+	public void setBreak(java.lang.String _break) {
+		this._break = _break;
+	}
+
+	@JsonProperty("break")
+	public java.lang.String getBreak() {
+		return _break;
 	}
 
 	public void setAge(Long age) {
@@ -255,6 +269,7 @@ public class AllFieldCasesInput {
 		private String id;
 		private String name;
 		private String forname;
+		private java.lang.String _break;
 		private Long age;
 		private Date date;
 		private List<Date> dates;
@@ -279,6 +294,11 @@ public class AllFieldCasesInput {
 
 		public Builder withForname(String forname) {
 			this.forname = forname;
+			return this;
+		}
+
+		public Builder withBreak(java.lang.String _break) {
+			this._break = _break;
 			return this;
 		}
 
@@ -342,6 +362,7 @@ public class AllFieldCasesInput {
 			_object.setId(id);
 			_object.setName(name);
 			_object.setForname(forname);
+			_object.setBreak(_break);
 			_object.setAge(age);
 			_object.setDate(date);
 			_object.setDates(dates);

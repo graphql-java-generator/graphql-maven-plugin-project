@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
+import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
 import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_ReservedJavaKeywordAllFieldCases_CTS;
@@ -150,6 +152,40 @@ public class PartialQueryIT {
 
 		// Verification
 		assertEquals(2, ret);
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue139_PR177_FieldAsReservedKeyword()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		CINP_AllFieldCasesInput_CINS input = CINP_AllFieldCasesInput_CINS.builder()//
+				.withId(UUID.randomUUID().toString())//
+				.withName("name")//
+				.withBreak("A string to check the return")//
+				.withAge(3L)//
+				.withDates(new ArrayList<>())//
+				.withAliases(new ArrayList<>())//
+				.withPlanets(new ArrayList<>())//
+				.withMatrix(new ArrayList<>())//
+				.build();
+
+		// Go, go, go
+		CTP_AllFieldCases_CTS response = queryType.allFieldCases("{break(if:&if)}", input, "if", "if's value");
+
+		// Verification
+		assertEquals("A string to check the return (if=if's value)", response.getBreak());
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue139_PR177_QueryAsReservedKeyword()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Go, go, go
+		String response = queryType._implements("", "A string to check the return");
+
+		// Verification
+		assertEquals("A string to check the return", response);
 	}
 
 	@Test

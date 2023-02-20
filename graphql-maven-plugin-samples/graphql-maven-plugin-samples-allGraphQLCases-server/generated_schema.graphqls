@@ -425,7 +425,9 @@ type MyQueryType
 	listOfEnumWithReservedJavaKeywordAsValues (param1: EnumWithReservedJavaKeywordAsValues=abstract, param2: [EnumWithReservedJavaKeywordAsValues]=[assert,boolean]): [EnumWithReservedJavaKeywordAsValues] 
 	reservedJavaKeywordAllFieldCases: ReservedJavaKeywordAllFieldCases 
 	if: String 
-	implements: String 
+	""" Test for PR 177 (on server side, the returned value is the content of the if input parameter) 
+	"""
+	implements (if: String!): String 
 	import: String 
 	instanceof: String 
 	int: String 
@@ -510,7 +512,7 @@ type TheSubscriptionType
 }
 
 	##############################################################################################################
-	################  ALL GRAPHQL CASES TEST CASES################################################################
+	################  ALL GRAPHQL CASES TEST CASES ###############################################################
 	##############################################################################################################
 input AllFieldCasesInput
 
@@ -522,6 +524,7 @@ input AllFieldCasesInput
 		) 
 	name: String! 
 	forname: String 
+	break: String 
 	age: Long! 
 	date: Date 
 	dateTime: DateTime 
@@ -572,6 +575,7 @@ type AllFieldCases implements WithID& interfaceToTestExtendKeyword
 	forname (uppercase: Boolean
         @testDirective(			value: "on Argument"
 		), textToAppendToTheForname: String): String 
+	break (if: String!): String 
 	age (unit: Unit=YEAR): Long!
         @deprecated(			reason: "This is a test"
 		) 
