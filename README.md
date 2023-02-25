@@ -1,7 +1,7 @@
 
 <!--ts-->
    * [What is it?](#what-is-it)
-   * [Two main versions: 1.x and 2.x](#Two-main-versions-1-x-and-2-x)
+   * [Two main versions: 1.x and 2.x](#two-main-versions-1-x-and-2-x)
    * [Availability: Maven and Gradle](#availability-maven-and-gradle)
    * [The plugin goals/tasks](#the-plugin-goals-tasks)
    * [The Documentation](#the-documentation)
