@@ -4,13 +4,15 @@
 package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CIP_Character_CIS;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
 import org.allGraphQLCases.client.CTP___Field_CTS;
 import org.allGraphQLCases.client.CTP___Schema_CTS;
 import org.allGraphQLCases.client.CTP___Type_CTS;
@@ -23,6 +25,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+
+import graphql.introspection.IntrospectionQuery;
 
 /**
  * This class contains the Integration tests, that will execute GraphQL introspection querie against the
@@ -37,10 +41,10 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 public class IntrospectionIT {
 
-	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "age", "aFloat", "date", "dateTime", "dates",
-			"nbComments", "comments", "booleans", "aliases", "planets", "friends", "matrix", "oneWithIdSubType",
-			"listWithIdSubTypes", "oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65", "issue66",
-			"extendedField" };
+	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "break", "age", "aFloat", "date", "dateTime",
+			"dates", "nbComments", "comments", "booleans", "aliases", "planets", "friends", "matrix",
+			"oneWithIdSubType", "listWithIdSubTypes", "oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65",
+			"issue66", "extendedField" };
 	static List<String> AllFieldCases_FIELDNAMES = Arrays.asList(AllFieldCases_FIELDS);
 
 	@Autowired
@@ -68,7 +72,8 @@ public class IntrospectionIT {
 	void testType() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		CTP___Type_CTS type = myQuery.__type("{name fields(includeDeprecated:true) {name type {name}}}", "AllFieldCases");
+		CTP___Type_CTS type = myQuery.__type("{name fields(includeDeprecated:true) {name type {name}}}",
+				"AllFieldCases");
 
 		// Verification
 
@@ -104,6 +109,28 @@ public class IntrospectionIT {
 		// Verification
 		assertTrue(ret.size() >= 10);
 		assertEquals("Droid", ret.get(0).get__typename());
+	}
+
+	@Execution(ExecutionMode.CONCURRENT)
+	@Test
+	void test_IntrospectionQuery() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		// Go, go, go
+
+		// Note: in order to properly get the return of this query, the max buffer size of spring boot must be
+		// increased.
+		// See the 'spring.codec.max-in-memory-size' parameter in the application.properties file.
+		// See https://github.com/spring-projects/spring-framework/issues/23961
+		String query = IntrospectionQuery.INTROSPECTION_QUERY;
+		CTP_MyQueryType_CTS response = myQuery.exec(query);
+
+		assertNotNull(response.get__schema());
+		assertEquals("AnotherMutationType", response.get__schema().getMutationType().getName());
+		assertNotNull("MyQueryType", response.get__schema().getQueryType().getName());
+		assertNotNull("TheSubscriptionType", response.get__schema().getSubscriptionType().getName());
+		assertTrue(response.get__schema().getDirectives().size() > 0);
+		assertTrue(response.get__schema().getTypes().size() > 0);
+
+		// No tests on the schema itself, as out GraphQL schema changes from time to time
 	}
 
 }

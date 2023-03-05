@@ -3,12 +3,17 @@
  */
 package org.allGraphQLCases.server.config;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.stereotype.Component;
 
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
+import graphql.language.SourceLocation;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
@@ -24,15 +29,32 @@ public class MyDataFetcherExceptionResolverAdapter extends DataFetcherExceptionR
 
 	@Override
 	protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
-		if (ex.getClass().equals(GraphQlException.class) && ex.getMessage().contains("This is an expected error")) {
+
+		if (!ex.getClass().equals(GraphQlException.class)) {
+			return null;
+		} else if (ex.getMessage().contains("add an extension")) {
+			Map<String, Object> extensions = new HashMap<>();
+			extensions.put("An error extension", "An error extension's value (MyInstrumentation)");
+			extensions.put("Another error extension", "Another error extension's value (MyInstrumentation)");
+
 			return GraphqlErrorBuilder.newError()//
 					.errorType(ErrorType.INTERNAL_ERROR)//
 					.message(ex.getMessage())//
+					.extensions(extensions)//
 					.build();
-		}
 
-		// Otherwise, it's not a know error. Let's stick to the default behavior
-		return null;
+		} else if (ex.getMessage().contains("add a SourceLocation")) {
+			return GraphqlErrorBuilder.newError()//
+					.errorType(ErrorType.INTERNAL_ERROR)//
+					.message(ex.getMessage())//
+					.locations(Arrays.asList(//
+							new SourceLocation(11, 111, "A source name"), // The sourceName will be cleared somewhere
+							new SourceLocation(22, 222, "Another source name")))// The sourceName will be cleared
+																				// somewhere
+					.build();
+		} else {
+			return (GraphQlException) ex;
+		}
 	}
 
 }

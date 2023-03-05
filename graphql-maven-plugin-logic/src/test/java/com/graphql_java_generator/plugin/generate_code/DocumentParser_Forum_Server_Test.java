@@ -101,21 +101,21 @@ class DocumentParser_Forum_Server_Test {
 		// For the test below, the String class is expected, as there is this config update in the setup, here above:
 		// pluginConfiguration.setJavaTypeForIDType("java.lang.String");
 		checkFieldAnnotation(topic.getFields().get(i++), "id",
-				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar(fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = java.lang.String.class)");
+				"@Id\n\t@GeneratedValue\n\t@GraphQLScalar( fieldName = \"id\", graphQLTypeSimpleName = \"ID\", javaClass = java.lang.String.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "date",
-				"@GraphQLScalar(fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = java.util.Date.class)");
+				"@GraphQLScalar( fieldName = \"date\", graphQLTypeSimpleName = \"Date\", javaClass = java.util.Date.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "author",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = org.graphql.mavenplugin.junittest.forum_server_springconfiguration.Member.class)");
+				"@Transient\n\t@GraphQLNonScalar( fieldName = \"author\", graphQLTypeSimpleName = \"Member\", javaClass = org.graphql.mavenplugin.junittest.forum_server_springconfiguration.Member.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "publiclyAvailable",
-				"@GraphQLScalar(fieldName = \"publiclyAvailable\", graphQLTypeSimpleName = \"Boolean\", javaClass = java.lang.Boolean.class)");
+				"@GraphQLScalar( fieldName = \"publiclyAvailable\", graphQLTypeSimpleName = \"Boolean\", javaClass = java.lang.Boolean.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "nbPosts",
-				"@GraphQLScalar(fieldName = \"nbPosts\", graphQLTypeSimpleName = \"Int\", javaClass = java.lang.Integer.class)");
+				"@GraphQLScalar( fieldName = \"nbPosts\", graphQLTypeSimpleName = \"Int\", javaClass = java.lang.Integer.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "title",
-				"@GraphQLScalar(fieldName = \"title\", graphQLTypeSimpleName = \"String\", javaClass = java.lang.String.class)");
+				"@GraphQLScalar( fieldName = \"title\", graphQLTypeSimpleName = \"String\", javaClass = java.lang.String.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "content",
-				"@GraphQLScalar(fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = java.lang.String.class)");
+				"@GraphQLScalar( fieldName = \"content\", graphQLTypeSimpleName = \"String\", javaClass = java.lang.String.class, listDepth = 0)");
 		checkFieldAnnotation(topic.getFields().get(i++), "posts",
-				"@Transient\n\t@GraphQLNonScalar(fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = org.graphql.mavenplugin.junittest.forum_server_springconfiguration.Post.class)");
+				"@Transient\n\t@GraphQLNonScalar( fieldName = \"posts\", graphQLTypeSimpleName = \"Post\", javaClass = org.graphql.mavenplugin.junittest.forum_server_springconfiguration.Post.class, listDepth = 1)");
 	}
 
 	private void checkFieldAnnotation(Field field, String name, String annotation) {

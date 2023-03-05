@@ -5,15 +5,13 @@ package org.allGraphQLCases.server.config;
 
 import java.util.List;
 
-import org.springframework.graphql.execution.ErrorType;
-
 import graphql.ErrorClassification;
+import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
 
 /**
  * @author etienne-sf
- *
  */
 public class GraphQlException extends RuntimeException implements GraphQLError {
 
@@ -30,7 +28,7 @@ public class GraphQlException extends RuntimeException implements GraphQLError {
 
 	@Override
 	public ErrorClassification getErrorType() {
-		return ErrorType.BAD_REQUEST;
+		return ErrorType.ExecutionAborted;
 	}
 
 }

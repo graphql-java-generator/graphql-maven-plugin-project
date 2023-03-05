@@ -56,7 +56,8 @@ class GraphQLObjectMapperTest {
 
 		// Verification
 		assertEquals(1, test.aliasValues.keySet().size());
-		assertEquals(date, test.aliasValues.get("dateAlias"), "The date is a regular json String");
+		assertTrue(test.aliasValues.get("dateAlias") instanceof Date);
+		assertEquals(date, test.aliasValues.get("dateAlias"));
 	}
 
 	@Test

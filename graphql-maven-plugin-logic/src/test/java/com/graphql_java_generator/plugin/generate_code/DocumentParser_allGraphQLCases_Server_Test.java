@@ -80,7 +80,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		assertEquals(58, i, "Nb java files are generated");
 		assertEquals(10, generateCodeDocumentParser.getDirectives().size(), "Nb directives");
 		assertEquals(35, generateCodeDocumentParser.getObjectTypes().size(), "Nb objects");
-		assertEquals(5, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
+		assertEquals(6, generateCodeDocumentParser.getCustomScalars().size(), "Nb custom scalars");
 		assertEquals(19, generateCodeDocumentParser.getInterfaceTypes().size(), "Nb interfaces");
 		assertEquals(4, generateCodeDocumentParser.getEnumTypes().size(), "Nb enums");
 		assertNotNull(generateCodeDocumentParser.getQueryType(), "One query");
@@ -126,6 +126,11 @@ class DocumentParser_allGraphQLCases_Server_Test {
 		checkNbInputParameter(objectType, j, 2);
 		checkInputParameter(objectType, j, 0, "uppercase", 0, false, null, "Boolean", "Boolean", null);
 		checkInputParameter(objectType, j, 1, "textToAppendToTheForname", 0, false, null, "String", "String", null);
+		j += 1;
+		// break(if: break!): String
+		checkField(objectType, j, "break", 0, false, null, "String", "String");
+		checkNbInputParameter(objectType, j, 1);
+		checkInputParameter(objectType, j, 0, "if", 0, true, null, "String", "String", null);
 		j += 1;
 		// age: Long!
 		checkField(objectType, j, "age", 0, true, null, "Long", "Long");
@@ -670,7 +675,7 @@ class DocumentParser_allGraphQLCases_Server_Test {
 
 		// Verification
 		assertEquals("MyQueryType", type.getName());
-		assertEquals(60, type.getFields().size());
+		assertEquals(61, type.getFields().size());
 
 		int j = 0; // The first query is 0, see ++j below
 

@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -57,14 +59,15 @@ class InputParameterTest {
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_getValueForGraphqlQuery_str() throws GraphQLRequestExecutionException {
 		String name = "aName";
-		String value = "This is a string with two \"\", a 🎉 and some \r \t \\ to be escaped";
+		String value = "This is a string with two \"\", a 🎉 and some \r \t \\ to be escaped (and a literal tab here: '	')";
 		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, value, "String", false, 0, false);
 
 		assertEquals(name, param.getName(), "name");
 		assertEquals(value, param.getValue(), "value");
-		assertEquals("\"This is a string with two \\\"\\\", a \\uD83C\\uDF89 and some \\r \\t \\\\ to be escaped\"",
+		assertEquals(
+				"\"This is a string with two \\\"\\\", a \\uD83C\\uDF89 and some \\r \\t \\\\ to be escaped (and a literal tab here: '\\t')\"",
 				param.getStringContentForGraphqlQuery(false, null), "escaped value");
-		assertEquals('"' + value + '"',
+		assertEquals('"' + value.replace("	", "\t") + '"',
 				StringEscapeUtils.unescapeJson(param.getStringContentForGraphqlQuery(false, null)),
 				"roundtripped value");
 	}
@@ -170,6 +173,29 @@ class InputParameterTest {
 
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
+	void test_getValueForGraphqlQuery_byteArray()
+			throws GraphQLRequestExecutionException, UnsupportedEncodingException {
+		// Preparation
+		com.graphql_java_generator.domain.client.allGraphQLCases.CustomScalarRegistryInitializer
+				.initCustomScalarRegistry();
+		//
+		String name = "aName";
+		String str = "This a string with some special characters éàëöô";
+		byte[] bytes = str.getBytes("UTF-8");
+
+		// Go, go, go
+		InputParameter param = InputParameter.newHardCodedParameter("MySchema", name, bytes, "Base64String", false, 0,
+				false);
+
+		// Verification
+		assertEquals(name, param.getName(), "name");
+		assertEquals(bytes, param.getValue(), "value");
+		assertEquals("\"" + Base64.getEncoder().encodeToString(bytes) + "\"",
+				param.getStringContentForGraphqlQuery(false, new HashMap<>()), "base 64");
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
 	void test_getValueForGraphqlQuery_recursive_InputType() throws GraphQLRequestExecutionException {
 		// Preparation
 		TopicPostInput topicPostInput = new TopicPostInput();
@@ -190,7 +216,7 @@ class InputParameterTest {
 		// Verification
 		assertEquals(
 				"{topicId:\"00000000-0000-0000-0000-000000000022\",input:{authorId:\"00000000-0000-0000-0000-000000000012\",date:\"2009-11-21\",publiclyAvailable:false,title:\"The good title for a post\",content:\"Some other content\"}}",
-				param.getStringContentForGraphqlQuery(false, postInput, "PostInput", null, false));
+				param.getStringContentForGraphqlQuery(false, postInput, 0, "PostInput", null, false));
 	}
 
 	@Test
@@ -204,6 +230,20 @@ class InputParameterTest {
 		assertEquals(name, param.getName(), "name");
 		assertEquals(values, param.getValue(), "value");
 		assertEquals("[]", param.getStringContentForGraphqlQuery(false, new HashMap<>()));
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_getValueForGraphqlQuery_ListEmptyStringKO() throws GraphQLRequestExecutionException {
+		String name = "anotherName";
+		String values = "A string, but should be a list";
+		InputParameter inputParameter = InputParameter.newHardCodedParameter("", name, values, "String", false, 1,
+				false);
+		GraphQLRequestExecutionException ex = assertThrows(GraphQLRequestExecutionException.class,
+				() -> inputParameter.getStringContentForGraphqlQuery(false, null));
+		assertTrue(ex.getMessage().contains("parameter  '" + name + "'"), "The error message is: " + ex.getMessage());
+		assertTrue(ex.getMessage().contains("it should be either a java.lang.List or an Array"),
+				"The error message is: " + ex.getMessage());
 	}
 
 	@Test

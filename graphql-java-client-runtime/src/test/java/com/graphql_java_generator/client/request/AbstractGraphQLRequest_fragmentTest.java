@@ -311,7 +311,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(0, graphQLRequest.aliasFields.size());
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
-				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
 				+ "{...character}}", //
 				null, null);
 	}
@@ -331,7 +331,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "fragment character on Character{id name appearsIn friends{id name __typename} __typename}"
-				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
+				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]}) @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\")"//
 				+ "{...character}}", //
 				null, null);
 	}
@@ -357,7 +357,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(0, graphQLRequest.aliasFields.size());
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
-				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{id name ... on Human{friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}}}", //
 				null, null);
 	}
@@ -382,7 +382,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(0, ((AbstractGraphQLRequest) graphQLRequest).aliasFields.size());
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "fragment humanFrag on Human{friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}"
-				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "mutation{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{id name ...humanFrag @include(if:true)}}", //
 				null, null);
 	}
@@ -409,7 +409,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(0, graphQLRequest.aliasFields.size());
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
-				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{id name ... on Human @include(if:true){friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}}}", //
 				null, null);
 	}
@@ -436,7 +436,7 @@ class AbstractGraphQLRequest_fragmentTest {
 		assertEquals(0, graphQLRequest.aliasFields.size());
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(graphQLRequest.getPayload(params), ""//
 				+ "mutation" //
-				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI,EMPIRE,NEWHOPE]})"//
+				+ "{createHuman(human:{name:\"a new name\",appearsIn:[JEDI, EMPIRE, NEWHOPE]})"//
 				+ "{id name ... @include(if:false){friends{id name __typename} appearsIn @testDirective(value:\"the mutation value\",anotherValue:\"the other mutation value\") __typename}}}", //
 				null, null);
 	}

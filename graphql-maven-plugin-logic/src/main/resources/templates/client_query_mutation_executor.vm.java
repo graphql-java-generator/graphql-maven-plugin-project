@@ -376,7 +376,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
@@ -434,7 +438,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @param queryResponseDef
 	 *            The response definition of the query, in the native GraphQL format (see here above)
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
@@ -499,7 +507,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the query. If there is no bind variable in the
@@ -576,7 +588,11 @@ public class ${object.name}Executor${springBeanSuffix} implements#if($object.req
 	 * @param objectResponse
 	 *            The definition of the response format, that describes what the GraphQL server is expected to return
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param paramsAndValues
 	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse

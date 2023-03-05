@@ -1,6 +1,7 @@
 package com.graphql_java_generator.client.response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -173,8 +174,11 @@ class AbstractCustomJacksonDeserializerTest {
 
 		// Verification
 		assertEquals(3, verify.dates.size());
+		assertTrue(verify.dates.get(0) instanceof Date);
 		assertEquals(new GregorianCalendar(2020, 12 - 1, 21).getTime(), verify.dates.get(0));
+		assertTrue(verify.dates.get(1) instanceof Date);
 		assertEquals(new GregorianCalendar(2020, 12 - 1, 22).getTime(), verify.dates.get(1));
+		assertTrue(verify.dates.get(2) instanceof Date);
 		assertEquals(new GregorianCalendar(2020, 12 - 1, 23).getTime(), verify.dates.get(2));
 		//
 		assertEquals(2, verify.comments.size());

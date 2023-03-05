@@ -34,6 +34,11 @@
 							<skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
 							<customScalars>
 								<customScalar>
+									<graphQLTypeName>Base64String</graphQLTypeName>
+									<javaType>byte[]</javaType>
+									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String</graphQLScalarTypeStaticField>
+								</customScalar>
+								<customScalar>
 									<graphQLTypeName>Date</graphQLTypeName>
 									<javaType>java.util.Date</javaType>
 									<graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>

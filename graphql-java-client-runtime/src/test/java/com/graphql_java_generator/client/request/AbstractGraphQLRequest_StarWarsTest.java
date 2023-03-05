@@ -94,15 +94,16 @@ class AbstractGraphQLRequest_StarWarsTest {
 		String query1 = "  \n\r\t  {withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[EMPIRE,JEDI]}) {id name friends {name appearsIn}}}  \n\r\t ";
 		String query2 = "  \n\r\t query \n\r\t  {withOneMandatoryParam(character:&character) {id name friends {name appearsIn}}}  \n\r\t ";
 
-		String expected = "query{withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[EMPIRE,JEDI]}){id name friends{name appearsIn __typename} __typename}}";
+		String expected1 = "query{withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[EMPIRE,JEDI]}){id name friends{name appearsIn __typename} __typename}}";
+		String expected2 = "query{withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[EMPIRE, JEDI]}){id name friends{name appearsIn __typename} __typename}}";
 
 		// Go, go, go
 		Payload payload1 = new GraphQLRequest(query1).getPayload(null);
 		Payload payload2 = new GraphQLRequest(query2).getPayload(paramsWithOneMandatoryParam);
 
 		// Verification
-		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(payload1, expected, null, null);
-		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(payload2, expected, null, null);
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(payload1, expected1, null, null);
+		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(payload2, expected2, null, null);
 	}
 
 	@Test
@@ -404,7 +405,7 @@ class AbstractGraphQLRequest_StarWarsTest {
 						.build());
 		Payload payload = graphQLRequest.getPayload(params);
 		AbstractGraphQLRequest_allGraphQLCasesTest.checkPayload(payload, ""//
-				+ "query{withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[JEDI,EMPIRE]}){id friends{id nameAlias:name amis:friends{id name __typename} appearsIn __typename} name __typename}}", //
+				+ "query{withOneMandatoryParam(character:{name:\"a test name\",appearsIn:[JEDI, EMPIRE]}){id friends{id nameAlias:name amis:friends{id name __typename} appearsIn __typename} name __typename}}", //
 				null, null);
 	}
 

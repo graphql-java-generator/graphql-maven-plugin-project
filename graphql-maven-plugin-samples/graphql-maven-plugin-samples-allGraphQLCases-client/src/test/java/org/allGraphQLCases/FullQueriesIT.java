@@ -1,10 +1,12 @@
 package org.allGraphQLCases;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -153,6 +155,26 @@ class FullQueriesIT {
 		//
 		assertEquals("the value", ret.get(0));
 		assertEquals("the other value", ret.get(1));
+	}
+
+	@Execution(ExecutionMode.CONCURRENT)
+	@Test
+	void test_customScalar_base64()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, UnsupportedEncodingException {
+		// Preparation
+		String str = "This a string with some special characters éàëöô";
+		byte[] bytes = str.getBytes("UTF-8");
+		//
+		GraphQLRequestAllGraphQLCases graphQLRequest = new GraphQLRequestAllGraphQLCases(//
+				"query {testBase64String (input: &input) { }}"//
+		);
+
+		// Go, go, go
+		CTP_MyQueryType_CTS resp = myQuery.exec(graphQLRequest, "input", bytes);
+
+		// Verifications
+		assertNotNull(resp);
+		assertArrayEquals(bytes, resp.getTestBase64String());
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -348,8 +370,7 @@ class FullQueriesIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	void testEscapedStringParameters() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequestAllGraphQLCases request = myQuery
-				.getGraphQLRequest("{withOneMandatoryParamDefaultValue (intParam: ?param)  {}}");
+		GraphQLRequestAllGraphQLCases request;
 
 		// test 1 (with a hardcoded boolean and string parameter that contains stuff to escape)
 		String value = "\\, \"  trailing antislash \\";

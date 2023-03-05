@@ -401,7 +401,8 @@ public class ExecSubscriptionIT {
 		assertNotNull(callback.lastExceptionReceived, "we must have received an exception");
 		assertTrue(callback.lastExceptionReceived.getMessage().contains(
 				"message=Oups, the subscriber asked that the web socket get disconnected before the first notification"));
-		assertTrue(callback.lastExceptionReceived.getMessage().contains("classification=BAD_REQUEST"));
+		assertTrue(callback.lastExceptionReceived.getMessage().contains("classification=ExecutionAborted"),
+				"The error message is: " + callback.lastExceptionReceived.getMessage());
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();

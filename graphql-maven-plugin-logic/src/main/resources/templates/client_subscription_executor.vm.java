@@ -432,7 +432,11 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
 	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the subscription. If there is no bind variable in the
@@ -505,7 +509,11 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
 	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the subscription. If there is no bind variable in the
@@ -583,7 +591,11 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
 	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param parameters
 	 *            The list of values, for the bind variables defined in the subscription. If there is no bind variable in the
@@ -674,7 +686,11 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 	 *            An instance of SubscriptionCallback<${field.type.classSimpleName}>. Its {@link SubscriptionCallback#onMessage(Object)} 
 	 *            will be called for each notification received from this subscription.
 #foreach ($inputParameter in $field.inputParameters)
-	 * @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#if (${inputParameter.description} && ${inputParameter.description.getContent()} != "")
+	* @param ${inputParameter.name} ${inputParameter.description.getContent()}
+#else
+	* @param ${inputParameter.name} Parameter for the ${field.name} field of ${object.name}, as defined in the GraphQL schema
+#end
 #end
 	 * @param paramsAndValues
 	 *            This parameter contains all the name and values for the Bind Variables defined in the objectResponse

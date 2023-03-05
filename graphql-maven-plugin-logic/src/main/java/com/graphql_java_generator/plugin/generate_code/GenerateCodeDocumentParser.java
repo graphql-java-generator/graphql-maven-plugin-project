@@ -541,14 +541,22 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 
 		if (field.getType() instanceof ScalarType || field.getType() instanceof EnumType) {
 			field.getOwningType().addImport(configuration.getPackageName(), GraphQLScalar.class.getName());
-			((FieldImpl) field).addAnnotation("@GraphQLScalar(fieldName = \"" + field.getName()
-					+ "\", graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\", javaClass = "
-					+ field.getType().getClassFullName() + ".class)");
+			((FieldImpl) field).addAnnotation(""//
+					+ "@GraphQLScalar("//
+					+ " fieldName = \"" + field.getName() + "\","//
+					+ " graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\","//
+					+ " javaClass = " + field.getType().getClassFullName() + ".class,"//
+					+ " listDepth = " + field.getFieldTypeAST().getListDepth()//
+					+ ")");
 		} else {
 			field.getOwningType().addImport(configuration.getPackageName(), GraphQLNonScalar.class.getName());
-			((FieldImpl) field).addAnnotation("@GraphQLNonScalar(fieldName = \"" + field.getName()
-					+ "\", graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\", javaClass = "
-					+ field.getType().getClassFullName() + ".class)");
+			((FieldImpl) field).addAnnotation(""//
+					+ "@GraphQLNonScalar("//
+					+ " fieldName = \"" + field.getName() + "\","//
+					+ " graphQLTypeSimpleName = \"" + field.getGraphQLTypeSimpleName() + "\","//
+					+ " javaClass = " + field.getType().getClassFullName() + ".class,"//
+					+ " listDepth = " + field.getFieldTypeAST().getListDepth() //
+					+ ")");
 		}
 	}
 
@@ -892,7 +900,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// First step: if this type is a custom scalar, we define its custom deserializer
 			CustomDeserializer customScalarDeserializer = null;
 			if (t.isCustomScalar()) {
-				customScalarDeserializer = new CustomDeserializer(t.getName(), t.getClassFullName(),
+				customScalarDeserializer = new CustomDeserializer(t, t.getName(), t.getClassFullName(),
 						((CustomScalar) t).getCustomScalarDefinition(), 0, null);
 				customDeserializers.add(customScalarDeserializer);
 			}
@@ -903,7 +911,7 @@ public class GenerateCodeDocumentParser extends DocumentParser {
 			// found in this model for fields of this type
 			CustomDeserializer lowerListLevelCustomDeserializer = customScalarDeserializer;
 			for (int i = 1; i <= maxListLevelPerType.get(t); i += 1) {
-				CustomDeserializer currentListLevelCustomDeserializer = new CustomDeserializer(t.getName(),
+				CustomDeserializer currentListLevelCustomDeserializer = new CustomDeserializer(t, t.getName(),
 						t.getClassFullName(), null, i, lowerListLevelCustomDeserializer);
 				customDeserializers.add(currentListLevelCustomDeserializer);
 				lowerListLevelCustomDeserializer = currentListLevelCustomDeserializer;

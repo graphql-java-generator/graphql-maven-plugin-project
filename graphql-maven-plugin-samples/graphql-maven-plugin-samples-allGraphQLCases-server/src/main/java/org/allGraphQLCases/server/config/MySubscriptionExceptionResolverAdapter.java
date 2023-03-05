@@ -16,6 +16,7 @@ public class MySubscriptionExceptionResolverAdapter extends SubscriptionExceptio
 	@Override
 	protected GraphQLError resolveToSingleError(Throwable exception) {
 		if (exception instanceof GraphQlException) {
+			// As GraphQlException implements the GraphQLError interface, we can directly return it
 			return (GraphQLError) exception;
 		} else {
 			return null;

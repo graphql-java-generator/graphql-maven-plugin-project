@@ -138,7 +138,7 @@ class GraphQLVariablesIT {
 				"name", "a new name", //
 				"appearsIn", Arrays.asList(CEP_Episode_CES.JEDI, CEP_Episode_CES.EMPIRE, CEP_Episode_CES.NEWHOPE), //
 				"uppercaseName", true, //
-				"friends", friendsParam);
+				"friends", Arrays.asList(friendsParam));
 
 		// Verifications
 		assertNotNull(resp);

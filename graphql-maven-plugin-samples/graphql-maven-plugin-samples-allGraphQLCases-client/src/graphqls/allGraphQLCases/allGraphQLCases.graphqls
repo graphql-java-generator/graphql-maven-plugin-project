@@ -9,6 +9,9 @@ scalar DateTime
 
 scalar Long
 
+""" A scalar to test the issue #174 """
+scalar Base64String
+
 directive @IDScalarDirective
 on SCALAR
 
@@ -77,7 +80,7 @@ type MyQueryType {
     ################################################################################
     # error always returns an error!  (used to check the error management)
     """
-    error(errorLabel: String!): Character!
+    error(errorLabel: String!): Character
     
     """ Check for GraphQL identifier that are java keywords """
     aBreak: break
@@ -139,7 +142,8 @@ type MyQueryType {
 		): [EnumWithReservedJavaKeywordAsValues]
 	reservedJavaKeywordAllFieldCases: ReservedJavaKeywordAllFieldCases
     if: String
-    implements: String
+    """ Test for PR 177 (on server side, the returned value is the content of the if input parameter) """
+    implements(if: String!): String
     import: String
     instanceof: String
     int: String
@@ -169,6 +173,9 @@ type MyQueryType {
 	
 	""" test for issue #140 (error for type that implements multiple interfaces) """
     foo140: Foo140
+    
+    """ Test for issue #174: a custom scalar which Java type is an array """
+	testBase64String(input: Base64String!): Base64String    
 }
 
 " A mono line description for AnotherMutationType " 
@@ -240,7 +247,7 @@ interface UnusedInterface {
 }
 
 ##############################################################################################################
-################  ALL GRAPHQL CASES TEST CASES################################################################
+################  ALL GRAPHQL CASES TEST CASES ###############################################################
 ##############################################################################################################
 
 
@@ -248,6 +255,7 @@ input AllFieldCasesInput @testDirective(value:"on Input Type") {
     id: ID! @testDirective(value:"on Input Field")
     name: String!
     forname: String
+    break: String
     age: Long!
     date: Date
     dateTime: DateTime
@@ -291,6 +299,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object\n With a li
     id: ID! @testDirective(value:"on Field")
     name: String!
     forname(uppercase: Boolean @testDirective(value:"on Argument"), textToAppendToTheForname: String): String
+    break(if: String!): String
     age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
     aFloat: Float
     date: Date

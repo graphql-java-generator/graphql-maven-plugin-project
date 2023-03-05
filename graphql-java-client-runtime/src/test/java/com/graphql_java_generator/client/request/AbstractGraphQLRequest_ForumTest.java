@@ -75,7 +75,7 @@ class AbstractGraphQLRequest_ForumTest {
 		int i = 0;
 		assertEquals("memberName", posts.inputParameters.get(i).name);
 		assertTrue(posts.inputParameters.get(i).value instanceof RawGraphQLString);
-		assertEquals("\"Me!\"", posts.inputParameters.get(i).value.toString());
+		assertEquals("Me!", posts.inputParameters.get(i).value.toString());
 		assertEquals(null, posts.inputParameters.get(i).bindParameterName);
 		i += 1;
 		assertEquals("since", posts.inputParameters.get(i).name);

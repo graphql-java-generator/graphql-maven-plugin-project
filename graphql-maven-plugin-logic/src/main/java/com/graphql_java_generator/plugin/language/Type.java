@@ -177,7 +177,10 @@ public interface Type {
 	 *         syntax. In this cas, this method will return a classname different from the name
 	 */
 	default public String getClassFullName() {
-		return getPackageName() + "." + getClassSimpleName();
+		if (getPackageName() == null)
+			return getClassSimpleName();
+		else
+			return getPackageName() + "." + getClassSimpleName();
 	}
 
 	/**

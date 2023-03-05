@@ -14,13 +14,13 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import com.graphql_java_generator.domain.client.allGraphQLCases.Character;
+import com.graphql_java_generator.domain.client.allGraphQLCases.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Droid;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Episode;
 import com.graphql_java_generator.domain.client.allGraphQLCases.Human;
 import com.graphql_java_generator.domain.client.allGraphQLCases.MyQueryType;
 import com.graphql_java_generator.domain.client.allGraphQLCases._break;
 import com.graphql_java_generator.domain.client.allGraphQLCases._extends;
-import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.Post;
 import com.graphql_java_generator.domain.client.forum.PostInput;
 import com.graphql_java_generator.domain.client.starwars.scalar.ScalarTest;

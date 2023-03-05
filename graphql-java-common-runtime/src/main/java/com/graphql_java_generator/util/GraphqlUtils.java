@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -463,7 +464,6 @@ public class GraphqlUtils {
 			// We have a Map. Its keys MUST be the attributes for the given class (clazz)
 			Map<String, Object> map = (Map<String, Object>) jsonParsedValue;
 			Object t;
-			Field field;
 
 			try {
 				t = clazz.getConstructor().newInstance();
@@ -473,17 +473,23 @@ public class GraphqlUtils {
 			}
 
 			for (String key : map.keySet()) {
-				try {
-					field = clazz.getDeclaredField(key);
-				} catch (NoSuchFieldException | SecurityException e) {
-					throw new RuntimeException(
-							"Error while reading '" + key + "' field for the " + clazz.getName() + " class", e);
+				GraphQLScalar graphQLScalar = null;
+				GraphQLNonScalar graphQLNonScalar = null;
+				Method setter = null;
+
+				for (Field field : clazz.getDeclaredFields()) {
+					graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+					graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+					if ((graphQLScalar != null && graphQLScalar.fieldName().equals(key))
+							|| (graphQLNonScalar != null && graphQLNonScalar.fieldName().equals(key))) {
+						setter = getSetter(clazz, field);
+						break;
+					}
 				}
-
-				Method setter = getSetter(clazz, field);
-
-				GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
-				GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+				if (graphQLScalar == null && graphQLNonScalar == null) {
+					throw new RuntimeException(
+							"Found no GraphQL field of name '" + key + "' in class " + clazz.getName());
+				}
 
 				Object value;
 
@@ -643,16 +649,36 @@ public class GraphqlUtils {
 	 * @return
 	 */
 	public Method getGetter(Class<?> clazz, Field field) {
-		String getterMethodName = "get" + getPascalCase(field.getName());
+		String fieldName;
+		GraphQLScalar graphQLScalar = field.getAnnotation(GraphQLScalar.class);
+		GraphQLNonScalar graphQLNonScalar = field.getAnnotation(GraphQLNonScalar.class);
+
+		if (graphQLScalar != null)
+			fieldName = graphQLScalar.fieldName();
+		else if (graphQLNonScalar != null)
+			fieldName = graphQLNonScalar.fieldName();
+		else
+			fieldName = field.getName();
+
+		String getterMethodName = "get" + getPascalCase(fieldName);
 		try {
 			Method method = null;
 			try {
 				method = clazz.getMethod(getterMethodName);
 			} catch (NoSuchMethodException e) {
 				// For the boolean fields, the getter may be named isProperty. Let's try that:
-				if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
-					getterMethodName = "is" + getPascalCase(field.getName());
+				if (field.getType().equals(boolean.class)
+						|| field.getType().equals(Boolean.class) /* && fieldName.startsWith("is") */) {
+					getterMethodName = "is" + getPascalCase(fieldName);
 					method = clazz.getMethod(getterMethodName);
+					// }
+					// // For the fields conflicting with reserved keywords and generated with an underscore (_), the
+					// getter
+					// // may be named _Property. Let's try that:
+					// else if (field.getName().startsWith("_")) {
+					// String sanitizedField = field.getName().substring(1);
+					// getterMethodName = "get" + getPascalCase(sanitizedField);
+					// method = clazz.getMethod(getterMethodName);
 				} else {
 					throw e;
 				}
@@ -905,9 +931,27 @@ public class GraphqlUtils {
 	 *            The full class name, for instance java.util.Date
 	 * @return The simple class name (in the above sample: Date)
 	 */
-	public String getClassSimpleName(String classFullName) {
+	public String getClassSimpleName(String classFullNameParam) {
+		String classFullName = (classFullNameParam.endsWith("[]"))
+				? classFullNameParam.substring(0, classFullNameParam.length() - 2)
+				: classFullNameParam;
+
 		int lstPointPosition = classFullName.lastIndexOf('.');
-		return classFullName.substring(lstPointPosition + 1);
+		if (lstPointPosition > 0) {
+			return classFullName.substring(lstPointPosition + 1);
+		} else if (isPrimitiveType(classFullName)) {
+			return classFullName;
+		} else {
+			throw new IllegalArgumentException(
+					"The class full name should contain at least one point, or be a primitive type, but '"
+							+ classFullName + "' doesn't");
+		}
+	}
+
+	boolean isPrimitiveType(String type) {
+		final List<String> primitiveTypes = Arrays.asList("boolean", "byte", "short", "int", "long", "char", "float",
+				"double");
+		return primitiveTypes.contains(type);
 	}
 
 	/**
@@ -917,9 +961,23 @@ public class GraphqlUtils {
 	 *            The full class name, for instance java.util.Date
 	 * @return The simple class name (in the above sample: java.util)
 	 */
-	public String getPackageName(String classFullName) {
-		int lstPointPosition = classFullName.lastIndexOf('.');
-		return classFullName.substring(0, lstPointPosition);
+	public String getPackageName(String classFullNameParam) {
+		String classFullName = (classFullNameParam.endsWith("[]"))
+				? classFullNameParam.substring(0, classFullNameParam.length() - 2)
+				: classFullNameParam;
+
+		if (isPrimitiveType(classFullName)) {
+			return null; // No package for primitive types
+		}
+
+		try {
+			Class<?> cls = Class.forName(classFullName);
+			return cls.getPackage().getName();
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(
+					"Could not find the package for the class '" + classFullNameParam + "', due to: " + e.getMessage(),
+					e);
+		}
 	}
 
 	/**

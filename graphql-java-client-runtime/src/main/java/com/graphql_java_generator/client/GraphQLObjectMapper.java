@@ -251,6 +251,11 @@ public class GraphQLObjectMapper {
 		return objectMapper.readValue(msg, subscriptionType);
 	}
 
+	/** @See {@link ObjectMapper#readTree(String)} */
+	public JsonNode readTree(String content) throws JsonMappingException, JsonProcessingException {
+		return objectMapper.readTree(content);
+	}
+
 	/** @See {@link ObjectMapper#treeToValue(TreeNode, Class)} */
 	public <T> T treeToValue(TreeNode value, Class<T> clazz) throws JsonProcessingException {
 		return objectMapper.treeToValue(value, clazz);
