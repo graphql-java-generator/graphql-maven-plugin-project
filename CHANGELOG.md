@@ -9,6 +9,13 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+
+# Not released yet
+
+Both modes:
+* Issue #179: Problem with primitive types as java type for custom scalars
+
+
 # 1.18.10
 
 Dependency upgrade: 
