@@ -80,7 +80,7 @@ type MyQueryType {
     ################################################################################
     # error always returns an error!  (used to check the error management)
     """
-    error(errorLabel: String!): Character!
+    error(errorLabel: String!): Character
     
     """ Check for GraphQL identifier that are java keywords """
     aBreak: break

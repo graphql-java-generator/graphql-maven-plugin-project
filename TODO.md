@@ -5,6 +5,7 @@ Here are the next tasks listed, as a TODO list:
 
 ## TODO list for the 1.x branch
 * Add or correct the URL in the README and in the wiki's home.
+* [Gradle] issue #14 : build is not compatible with the `--configuration-cache` gradle parameter (experimental feature)
 * `DirectiveRegistryInitializer`:
     * separate it from each schema (e.g.: allGraphQlCases client)
     * initialize it only once (not at each creation of a GraphQLRequest)

@@ -214,7 +214,7 @@ public class PartialPreparedRequestsDeprecated implements Queries {
 	 * @throws KeyManagementException
 	 */
 	public static SSLContext getNoCheckSslContext() throws NoSuchAlgorithmException, KeyManagementException {
-		SSLContext sslContext = SSLContext.getInstance("TLSv1");
+		SSLContext sslContext = SSLContext.getInstance("TLS");
 
 		// Very, very bad. Don't do that in production !
 		KeyManager[] keyManagers = null;

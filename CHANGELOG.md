@@ -14,6 +14,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 Both modes:
 * Issue #179: Problem with primitive types as java type for custom scalars
+* The build is now Ok with java 17
 
 
 # 1.18.10

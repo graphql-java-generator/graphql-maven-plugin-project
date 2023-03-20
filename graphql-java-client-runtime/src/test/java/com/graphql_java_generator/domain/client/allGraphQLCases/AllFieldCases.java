@@ -76,7 +76,7 @@ public class AllFieldCases implements WithID {
 
 	@JsonProperty("dates")
 	@JsonDeserialize(using = CustomJacksonDeserializers.ListDate.class)
-	@GraphQLScalar(fieldName = "dates", graphQLTypeSimpleName = "Date", javaClass = Date.class)
+	@GraphQLScalar(fieldName = "dates", graphQLTypeSimpleName = "Date", javaClass = Date.class, listDepth = 1)
 	List<Date> dates;
 
 	@JsonProperty("nbComments")
