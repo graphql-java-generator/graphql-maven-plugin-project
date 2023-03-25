@@ -20,14 +20,11 @@ import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCase
 import org.allGraphQLCases.client2.util.TheSubscriptionTypeExecutorAllGraphQLCases2;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.graphql_java_generator.client.GraphQLReactiveWebSocketHandler;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -36,11 +33,11 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 //"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
 //More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Execution(ExecutionMode.CONCURRENT)
+// //@Execution(ExecutionMode.CONCURRENT)
 public class ExecSubscriptionIT {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(GraphQLReactiveWebSocketHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(ExecSubscriptionIT.class);
 
 	@Autowired
 	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
@@ -77,7 +74,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_multiSubscribersToAList()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		final int NB_THREADS = 10;
@@ -111,6 +108,7 @@ public class ExecSubscriptionIT {
 
 		// Let's check that each thread received a message
 		for (SubscribeToAList sub : subs) {
+			logger.debug("  Thread {}, lastReceivedMessage is {}", sub.clientName, sub.callback.lastReceivedMessage);
 			assertNotNull(sub.callback.lastReceivedMessage,
 					"The " + sub.clientName + " should have received a message");
 		}
@@ -136,13 +134,13 @@ public class ExecSubscriptionIT {
 
 	@Disabled
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_withTwoWebSockets() {
 		fail("not yet implemented");
 	}
 
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_issue53()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -177,7 +175,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToANullableString()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -200,7 +198,7 @@ public class ExecSubscriptionIT {
 
 	/** Tests a subscription that returns a list of Custom Scalars */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToAListOfDates()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -236,7 +234,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_serverComplete()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -270,7 +268,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_clientComplete()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -300,7 +298,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	void test_connectionError() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		Date date = new Calendar.Builder().setDate(2018, 02, 01).build().getTime();
 		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate("test_connectionError");
@@ -318,7 +316,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_subscriptionError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -352,7 +350,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_nextError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -386,7 +384,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_webSocketCloseError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");

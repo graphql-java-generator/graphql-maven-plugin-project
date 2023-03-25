@@ -13,17 +13,10 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.graphql_java_generator" level="trace" additivity="false">
+	<root level="info">
 		<appender-ref ref="File" />
-	</logger>
-	<logger name="org.allGraphQLCases" level="trace" additivity="false">
-		<appender-ref ref="File" />
-	</logger>
-
-	<!-- logger name="com.graphql_java_generator" level="trace" />
-	<logger name="org.allGraphQLCases" level="trace" / -->
-	<root level="warn">
-		<appender-ref ref="Console" />
 	</root>
+	<logger name="com.graphql_java_generator" level="trace" />
+	<logger name="org.allGraphQLCases" level="trace" />
 
 </configuration>

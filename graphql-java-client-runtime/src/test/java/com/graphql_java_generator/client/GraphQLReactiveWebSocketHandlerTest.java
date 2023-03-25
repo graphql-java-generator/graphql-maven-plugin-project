@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.client.GraphQLReactiveWebSocketHandler.MessageType;
+import com.graphql_java_generator.client.GraphQLReactiveWebSocketHandler.RequestData;
+import com.graphql_java_generator.client.GraphQLReactiveWebSocketHandler.WebSocketSessionHandler;
 import com.graphql_java_generator.client.request.AbstractGraphQLRequest;
 import com.graphql_java_generator.domain.client.forum.CustomScalarRegistryInitializer;
 import com.graphql_java_generator.domain.client.forum.GraphQLRequest;
@@ -32,8 +34,7 @@ public class GraphQLReactiveWebSocketHandlerTest {
 		// this unit test
 		AbstractGraphQLRequest graphQLRequest = new GraphQLRequest(
 				"query titi($post: PostInput!, $anIntParam: Int, $aCustomScalar : [ [   Date ! ]] !, $anEnum: MemberType, $aDate: Date!) {boards{topics{id}}}");
-		GraphQLReactiveWebSocketHandler graphQLReactiveWebSocketHandler = new GraphQLReactiveWebSocketHandler(
-				graphQLRequest.getGraphQLObjectMapper());
+		WebSocketSessionHandler graphQLReactiveWebSocketSessionHandler = new WebSocketSessionHandler(null);
 		CustomScalarRegistryInitializer.initCustomScalarRegistry();
 		TopicPostInput topicPostInput = TopicPostInput.builder().withAuthorId("12")
 				.withDate(new GregorianCalendar(2021, 3 - 1, 13).getTime()).withPubliclyAvailable(true)
@@ -55,6 +56,8 @@ public class GraphQLReactiveWebSocketHandlerTest {
 		params.put("anEnum", MemberType.ADMIN);
 		params.put("aDate", aDate);
 
+		RequestData<?, ?> requestData = new RequestData<>(null, graphQLRequest, params, null, null, null);
+
 		// First: check of the payload (the request)
 		Map<String, Object> payload = graphQLRequest.buildRequestAsMap(params);
 		QueryExecutorImpl_allGraphqlCases_Test.checkRequestMap(payload, ""//
@@ -69,6 +72,7 @@ public class GraphQLReactiveWebSocketHandlerTest {
 				+ "\"aCustomScalar\":[[\"2021-04-01\",\"2021-04-02\"],[\"2021-04-03\",\"2021-04-04\"]],\"aDate\":\"2021-10-11\",\"anEnum\":\"ADMIN\",\"anIntParam\":666},"
 				+ "\"query\":\"query titi($post:PostInput!,$anIntParam:Int,$aCustomScalar:[[Date!]]!,$anEnum:MemberType,$aDate:Date!){boards{topics{id __typename} __typename}}\""//
 				+ "},"//
-				+ "\"id\":\"123\"}", graphQLReactiveWebSocketHandler.encode("123", MessageType.ERROR, payload));
+				+ "\"id\":\"123\"}",
+				graphQLReactiveWebSocketSessionHandler.encode("123", MessageType.ERROR, requestData));
 	}
 }

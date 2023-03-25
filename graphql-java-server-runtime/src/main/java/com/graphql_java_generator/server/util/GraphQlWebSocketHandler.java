@@ -52,6 +52,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.SubProtocolCapable;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,6 +84,20 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 	private static final List<String> SUB_PROTOCOL_LIST = Arrays.asList("graphql-transport-ws",
 			"subscriptions-transport-ws");
+
+	/**
+	 * Maximum allowed duration (milliseconds) to send a message for a subscription, when the web socket is busy
+	 * 
+	 * @see ConcurrentWebSocketSessionDecorator#ConcurrentWebSocketSessionDecorator(WebSocketSession, int, int,
+	 *      org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator.OverflowStrategy)
+	 */
+	public static final int SEND_TIME_LIMIT = 1000;
+	/**
+	 * Size of the buffer (number of bytes), where subscription messages are stored, if they can't be stored immediately
+	 * 
+	 * @see ConcurrentWebSocketSessionDecorator
+	 */
+	public static final int BUFFER_SIZE_LIMIT = 10000;
 
 	private final Duration initTimeoutDuration = Duration.ofMillis((long) 30 * 1000); // 30s;
 
@@ -126,11 +141,11 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				log.trace("apollographql/subscriptions-transport-ws is not supported, nor maintained. "
 						+ "Please, use https://github.com/enisdenjo/graphql-ws.");
 			}
-			GraphQlStatus.closeSession(session, GraphQlStatus.INVALID_MESSAGE_STATUS);
+			closeSession(session, GraphQlStatus.INVALID_MESSAGE_STATUS);
 			return;
 		}
 
-		SessionState sessionState = new SessionState(session.getId());
+		SessionState sessionState = new SessionState(session);
 		this.sessionInfoMap.put(session.getId(), sessionState);
 		if (log.isTraceEnabled()) {
 			log.trace("The session " + session.getId() + " has been registered");
@@ -140,7 +155,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			if (sessionState.isConnectionInitNotProcessed()) {
 				log.trace("Timeout ({}s) while waiting for the connection initialization",
 						this.initTimeoutDuration.getSeconds());
-				GraphQlStatus.closeSession(session, GraphQlStatus.INIT_TIMEOUT_STATUS);
+				closeSession(session, GraphQlStatus.INIT_TIMEOUT_STATUS);
 			}
 		})).subscribe();
 
@@ -148,56 +163,56 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+	protected void handleTextMessage(WebSocketSession sessionParam, TextMessage message) throws Exception {
 		Map<String, Object> map = objectMapper.readValue(message.getPayload(), HashMap.class);
 		String id = (String) map.get("id");
 		String type = (String) map.get("type");
 		MessageType messageType = MessageType.resolve(type);
+		SessionState sessionState = getSessionInfo(sessionParam);
+		ConcurrentWebSocketSessionDecorator concurrentSession = sessionState.getConcurrentSession();
+
 		if (messageType == null) {
-			GraphQlStatus.closeSession(session, GraphQlStatus.INVALID_MESSAGE_STATUS);
+			closeSession(concurrentSession, GraphQlStatus.INVALID_MESSAGE_STATUS);
 			return;
 		}
-		SessionState sessionState = getSessionInfo(session);
 		switch (messageType) {
 		case CONNECTION_INIT:
-			log.trace("Received 'connection_init' for web socket {}", session);
+			log.trace("Received 'connection_init' for web socket {}", concurrentSession);
 			if (sessionState.setConnectionInitProcessed()) {
-				GraphQlStatus.closeSession(session, GraphQlStatus.TOO_MANY_INIT_REQUESTS_STATUS);
+				closeSession(concurrentSession, GraphQlStatus.TOO_MANY_INIT_REQUESTS_STATUS);
 				return;
 			}
 			TextMessage outputMessage = encode(null, MessageType.CONNECTION_ACK, null);
-			synchronized (session) {
-				session.sendMessage(outputMessage);
-			}
+			concurrentSession.sendMessage(outputMessage);
 			return;
 		case START: // This message seems to be sent by graphiql instead of SUBSCRIBE :(
 		case SUBSCRIBE:
-			log.trace("Received 'subscribe' for operation id {} on web socket {} ({})", id, session, map);
+			log.trace("Received 'subscribe' for operation id {} on web socket {} ({})", id, concurrentSession, map);
 			Map<String, Object> request = getPayload(map);
 			if (sessionState.isConnectionInitNotProcessed()) {
-				GraphQlStatus.closeSession(session, GraphQlStatus.UNAUTHORIZED_STATUS);
+				closeSession(concurrentSession, GraphQlStatus.UNAUTHORIZED_STATUS);
 				return;
 			}
 			if (id == null) {
-				GraphQlStatus.closeSession(session, GraphQlStatus.INVALID_MESSAGE_STATUS);
+				closeSession(concurrentSession, GraphQlStatus.INVALID_MESSAGE_STATUS);
 				return;
 			}
-			URI uri = session.getUri();
+			URI uri = concurrentSession.getUri();
 			Assert.notNull(uri, "Expected handshake url");
-			HttpHeaders headers = session.getHandshakeHeaders();
-			manageSubscribeMessage(uri, headers, request, id, session);
+			HttpHeaders headers = concurrentSession.getHandshakeHeaders();
+			manageSubscribeMessage(uri, headers, request, id, concurrentSession);
 			return;
 		case COMPLETE:
-			manageCompleteMessage(session, id, sessionState);
+			manageCompleteMessage(concurrentSession, id, sessionState);
 			return;
 		default:
-			GraphQlStatus.closeSession(session, GraphQlStatus.INVALID_MESSAGE_STATUS);
+			closeSession(concurrentSession, GraphQlStatus.INVALID_MESSAGE_STATUS);
 		}
 
 	}
 
 	/**
-	 * Actual Management of the Subscription, in a synchronized method
+	 * Actual Management of the Subscription
 	 * 
 	 * @param uri
 	 *            The called URI
@@ -209,11 +224,11 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 	 *            only mandatory value.
 	 * 
 	 * @param id
-	 * @param session
+	 * @param concurrentSession
 	 * @throws IOException
 	 */
-	private synchronized void manageSubscribeMessage(URI uri, HttpHeaders headers, Map<String, Object> payload,
-			String id, WebSocketSession session) throws IOException {
+	private void manageSubscribeMessage(URI uri, HttpHeaders headers, Map<String, Object> payload, String id,
+			ConcurrentWebSocketSessionDecorator concurrentSession) throws IOException {
 		String query = payload.get("query").toString();
 		Object operationName = payload.get("operationName");
 		@SuppressWarnings("unchecked")
@@ -237,9 +252,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			try {
 				Object errors = executionResult.toSpecification().get("errors");
 				log.trace("Sending 'error' message for operation {}: {}", id, errors);
-				synchronized (session) {
-					session.sendMessage(encode(id, MessageType.ERROR, errors));
-				}
+				concurrentSession.sendMessage(encode(id, MessageType.ERROR, errors));
 			} catch (IOException e) {
 				log.error("Could not send error message for subscription {} due to {}: {}", id,
 						e.getClass().getSimpleName(), e.getMessage());
@@ -256,14 +269,15 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				private Subscription subscription;
 
 				@Override
-				public synchronized void onSubscribe(Subscription s) {
+				public void onSubscribe(Subscription s) {
 					this.subscription = s;
 
 					log.trace(
 							"Executing onSubscribe for subscription of id {} in Web Socket Session {} (the reactive flux subscription is {})",
-							id, session.getId(), s);
+							id, concurrentSession.getId(), s);
 
-					Subscription prev = getSessionInfo(session).getSubscriptions().putIfAbsent(id, subscription);
+					Subscription prev = getSessionInfo(concurrentSession).getSubscriptions().putIfAbsent(id,
+							subscription);
 					if (prev != null) {
 						throw new SubscriptionExistsException();
 					}
@@ -272,30 +286,34 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				}
 
 				@Override
-				public synchronized void onNext(ExecutionResult er) {
-					try {
-						TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.toSpecification());
-						log.trace("Sending new notification for subscription {}, on Web Socket Session {}: {}",
-								uniqueOperationId, session.getId(), msg.getPayload());
+				public void onNext(ExecutionResult er) {
+					TextMessage msg = encode(uniqueOperationId, MessageType.NEXT, er.toSpecification());
+					log.trace("Sending new notification for subscription {}, on Web Socket Session {}: {}",
+							uniqueOperationId, concurrentSession.getId(), msg.getPayload());
 
-						synchronized (session) {
-							session.sendMessage(msg);
+					// It happens that the thread is interrupted when sending this message. So we send the message in
+					// another thread, to avoid that.
+					new Thread() {
+						@Override
+						public void run() {
+							try {
+								concurrentSession.sendMessage(msg);
+								subscription.request(1);
+							} catch (IOException e) {
+								onError(e);
+							}
 						}
-
-						subscription.request(1);
-					} catch (IOException e) {
-						onError(e);
-					}
+					}.start();
 				}
 
 				@Override
-				public synchronized void onError(Throwable t) {
+				public void onError(Throwable t) {
 					log.error("Received onError for Subscription id={}, on web socket {}. The exception is {}", id,
-							session.getId(), t);
+							concurrentSession.getId(), t);
 
 					if (t instanceof SubscriptionExistsException) {
 						CloseStatus status = new CloseStatus(4409, "Subscriber for " + id + " already exists");
-						GraphQlStatus.closeSession(session, status);
+						closeSession(concurrentSession, status);
 					} else {
 						ErrorType errorType = ErrorType.DataFetchingException;
 						String message = t.getMessage();
@@ -304,7 +322,7 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 						List<Map<String, Object>> errors = Arrays.asList(errorMap);
 
 						try {
-							session.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errors));
+							concurrentSession.sendMessage(encode(uniqueOperationId, MessageType.ERROR, errors));
 						} catch (IOException e) {
 							log.error("Could not send error message for subscription {} due to {}: {}", id,
 									e.getClass().getSimpleName(), e.getMessage());
@@ -313,16 +331,17 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 				}
 
 				@Override
-				public synchronized void onComplete() {
-					log.debug("Received onComplete for Subscription id={} on web socket {}", id, session.getId());
+				public void onComplete() {
+					log.debug("Received onComplete for Subscription id={} on web socket {}", id,
+							concurrentSession.getId());
 					try {
-						session.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
+						concurrentSession.sendMessage(encode(uniqueOperationId, MessageType.COMPLETE, null));
 
 						// Let's close this subscription
-						Subscription sub = getSessionInfo(session).getSubscriptions().get(id);
+						Subscription sub = getSessionInfo(concurrentSession).getSubscriptions().get(id);
 						if (sub != null) {
 							log.trace("Removing reactive flux subscription is {}, after onComplete", sub);
-							getSessionInfo(session).getSubscriptions().remove(id);
+							getSessionInfo(concurrentSession).getSubscriptions().remove(id);
 							sub.cancel();
 						}
 					} catch (IOException e) {
@@ -335,41 +354,39 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 			// Case 3: the execution result is a Map (the request is a query or a mutation)
 			// Let's return its result with a unique "Next" message
 			TextMessage msg = encode(id, MessageType.NEXT, executionResult.toSpecification());
-			log.trace("Sending response for query or mutation {}, on Web Socket Session {}: {}", id, session.getId(),
-					msg.getPayload());
+			log.trace("Sending response for query or mutation {}, on Web Socket Session {}: {}", id,
+					concurrentSession.getId(), msg.getPayload());
 
-			synchronized (session) {
-				session.sendMessage(msg);
-			}
+			concurrentSession.sendMessage(msg);
+
 		} else {
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// Case 4: the execution result is of an unexpected data type
 			// Let's return its result in an error message
 			TextMessage msg = encode(id, MessageType.ERROR, executionResult.toSpecification());
-			log.trace("Sending error for query or mutation {}, on Web Socket Session {}: {}", id, session.getId(),
-					msg.getPayload());
+			log.trace("Sending error for query or mutation {}, on Web Socket Session {}: {}", id,
+					concurrentSession.getId(), msg.getPayload());
 
-			synchronized (session) {
-				session.sendMessage(msg);
-			}
+			concurrentSession.sendMessage(msg);
 		}
 	}
 
 	/**
-	 * Manage of the Complete message, in a synchronized method
+	 * Manage of the Complete message
 	 * 
-	 * @param session
+	 * @param concurrentSession
 	 * @param id
 	 * @param sessionState
 	 */
-	private synchronized void manageCompleteMessage(WebSocketSession session, String id, SessionState sessionState) {
-		log.trace("Received 'complete' for operation id {} on web socket {}", id, session);
+	private void manageCompleteMessage(ConcurrentWebSocketSessionDecorator concurrentSession, String id,
+			SessionState sessionState) {
+		log.trace("Received 'complete' for operation id {} on web socket {}", id, concurrentSession);
 		if (id != null) {
 			Subscription subscription = sessionState.getSubscriptions().remove(id);
 			if (subscription != null) {
 				log.trace(
 						"Cancelling subscription for operation id {} on web socket {} (the reactive flux subscription is {})",
-						id, session, subscription);
+						id, concurrentSession, subscription);
 				subscription.cancel();
 			}
 		}
@@ -389,6 +406,20 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 		SessionState info = this.sessionInfoMap.get(session.getId());
 		Assert.notNull(info, "No SessionInfo for " + session);
 		return info;
+	}
+
+	private ConcurrentWebSocketSessionDecorator getConcurrentSession(WebSocketSession session) {
+		return this.sessionInfoMap.get(session.getId()).getConcurrentSession();
+	}
+
+	private void closeSession(WebSocketSession session, CloseStatus status) {
+		try {
+			getConcurrentSession(session).close(status);
+		} catch (IOException ex) {
+			if (log.isDebugEnabled()) {
+				log.debug("Error while closing session with status: " + status, ex);
+			}
+		}
 	}
 
 	private <T> TextMessage encode(@Nullable String id, MessageType messageType, @Nullable Object payload) {
@@ -484,17 +515,6 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 
 		private static final CloseStatus TOO_MANY_INIT_REQUESTS_STATUS = new CloseStatus(4429,
 				"Too many initialisation requests");
-
-		static void closeSession(WebSocketSession session, CloseStatus status) {
-			try {
-				session.close(status);
-			} catch (IOException ex) {
-				if (log.isDebugEnabled()) {
-					log.debug("Error while closing session with status: " + status, ex);
-				}
-			}
-		}
-
 	}
 
 	private static class SessionState {
@@ -502,9 +522,16 @@ public class GraphQlWebSocketHandler extends TextWebSocketHandler implements Sub
 		private boolean connectionInitProcessed;
 		private final Map<String, Subscription> subscriptions = new ConcurrentHashMap<>();
 		private final Scheduler scheduler;
+		private final ConcurrentWebSocketSessionDecorator concurrentSession;
 
-		SessionState(String sessionId) {
-			this.scheduler = Schedulers.newSingle("GraphQL-WsSession-" + sessionId);
+		SessionState(WebSocketSession session) {
+			this.scheduler = Schedulers.newSingle("GraphQL-WsSession-" + session.getId());
+			this.concurrentSession = new ConcurrentWebSocketSessionDecorator(session, SEND_TIME_LIMIT,
+					BUFFER_SIZE_LIMIT);
+		}
+
+		public ConcurrentWebSocketSessionDecorator getConcurrentSession() {
+			return concurrentSession;
 		}
 
 		boolean isConnectionInitNotProcessed() {

@@ -690,6 +690,24 @@ public abstract class AbstractGraphQLRequest {
 	}
 
 	/**
+	 * Returns the json string to be send to the GraphQL server, for execution of this request
+	 * 
+	 * @param parameters
+	 *            The map that contains each parameters (key=parameter name, value=parameter value)
+	 * @return
+	 * @throws GraphQLRequestExecutionException
+	 */
+	public String getJsonRequest(Map<String, Object> parameters) throws GraphQLRequestExecutionException {
+		try {
+			return getGraphQLObjectMapper().writeValueAsString(buildRequestAsMap(parameters));
+		} catch (JsonProcessingException e) {
+			throw new GraphQLRequestExecutionException("Error when executing query <" + //
+					((query != null) ? query : ((mutation != null) ? mutation : subscription))//
+					+ ">: " + e.getMessage(), e);
+		}
+	}
+
+	/**
 	 * Builds the request, and return it as a String
 	 * 
 	 * 

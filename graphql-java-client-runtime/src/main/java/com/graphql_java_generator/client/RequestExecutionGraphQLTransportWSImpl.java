@@ -29,29 +29,17 @@ public class RequestExecutionGraphQLTransportWSImpl extends RequestExecutionSpri
 			OAuthTokenExtractor oAuthTokenExtractor) {
 		super(graphqlEndpoint, graphqlSubscriptionEndpoint, webClient, webSocketClient,
 				serverOAuth2AuthorizedClientExchangeFilterFunction, oAuthTokenExtractor);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public <R extends GraphQLRequestObject> R execute(AbstractGraphQLRequest graphQLRequest,
 			Map<String, Object> parameters, Class<R> dataResponseType) throws GraphQLRequestExecutionException {
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Step 1: check that the parameters are valid
-
 		// This method accepts only queries and mutations
 		if (graphQLRequest.getRequestType().equals(RequestType.subscription))
 			throw new GraphQLRequestExecutionException("This method may not be called for subscriptions");
 
-		Map<String, Object> request = graphQLRequest.buildRequestAsMap(parameters);
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Step 2: Open a Web Socket if we don't have an already opened one
-		initWebSocketConnection(graphQLRequest.getGraphQLObjectMapper());
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Step 3: returns the response
-		return webSocketHandler.executeQueryOrMutation(request, dataResponseType);
+		return webSocketHandler.executeQueryOrMutation(graphQLRequest, parameters, dataResponseType);
 	}
 
 }
