@@ -67,7 +67,8 @@ public class SpringConfig {
 	}
 
 	/**
-	 * This overrides the default one provided by the plugin. It adds the OAuth token generation, thanks to the
+	 * This overrides the default one provided by the plugin, to add OAuth2 capacity to Web Socket connection.<br/>
+	 * This bean is USELESS if you don't use web socket transport, that is in general: if you don't use subscriptions.
 	 * 
 	 * @param graphqlEndpointAllGraphQLCases
 	 *            The endpoint that is protected by OAuth

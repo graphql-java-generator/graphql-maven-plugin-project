@@ -97,15 +97,6 @@
 			<artifactId>graphql-java-server-runtime</artifactId>
 		</dependency>
 
-		<!-- Add of the graphiql interface, to test your GraphQL server -->
-		<!-- It's available at http://localhost:8180/graphiql -->
-		<dependency>
-			<!-- com.graphql-java:graphiql-spring-boot-starter is deprecated. This project has been moved to com.graphql-java-kickstart -->
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphiql-spring-boot-starter</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
 		<!-- Database access dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

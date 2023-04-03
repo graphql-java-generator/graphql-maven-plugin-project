@@ -2,6 +2,13 @@
 server:
   port: 8180
 
+
+# Enabling graphiql (from spring-graphql)
+spring:
+  graphql:
+    graphiql:
+      enabled: true
+
 security:
   enable:
     csrf: false # This should probably not be done in production

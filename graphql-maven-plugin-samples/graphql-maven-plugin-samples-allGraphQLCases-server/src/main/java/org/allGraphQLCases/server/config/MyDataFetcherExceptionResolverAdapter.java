@@ -30,7 +30,7 @@ public class MyDataFetcherExceptionResolverAdapter extends DataFetcherExceptionR
 	@Override
 	protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
 
-		if (!ex.getClass().equals(GraphQlException.class)) {
+		if (!(ex instanceof GraphQlException)) {
 			return null;
 		} else if (ex.getMessage().contains("add an extension")) {
 			Map<String, Object> extensions = new HashMap<>();

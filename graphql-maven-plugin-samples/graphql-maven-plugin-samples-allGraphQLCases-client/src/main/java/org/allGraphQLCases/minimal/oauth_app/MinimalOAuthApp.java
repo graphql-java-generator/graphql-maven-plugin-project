@@ -21,7 +21,6 @@ import com.graphql_java_generator.client.GraphqlClientUtils;
  * 
  * @author etienne-sf
  */
-@SuppressWarnings("deprecation")
 @SpringBootApplication(scanBasePackageClasses = { MinimalOAuthApp.class, GraphqlClientUtils.class,
 		MyQueryTypeExecutorAllGraphQLCases.class })
 public class MinimalOAuthApp implements CommandLineRunner {

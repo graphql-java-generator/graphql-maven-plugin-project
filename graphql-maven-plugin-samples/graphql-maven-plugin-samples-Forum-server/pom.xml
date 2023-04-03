@@ -107,15 +107,6 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
-		<!-- Generates at runtime a GUI to execute GraphQL requests. -->
-		<!-- Very useful for tests, but take care for production ! -->
-		<dependency>
-			<groupId>com.graphql-java-kickstart</groupId>
-			<artifactId>graphiql-spring-boot-starter</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
 	</dependencies>
 
 	<reporting>
