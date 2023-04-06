@@ -170,6 +170,10 @@ class GraphqlUtilsTest {
 		graphqlUtils.addImport(imports, getClass().getPackage().getName(), getClass().getName());
 		assertEquals(0, imports.size(), "Same package: import not added");
 
+		// primitive type
+		graphqlUtils.addImport(imports, getClass().getPackage().getName(), "byte[]");
+		assertEquals(0, imports.size(), "primitive type: import not added");
+
 		// java.lang
 		graphqlUtils.addImport(imports, getClass().getPackage().getName(), java.lang.String.class.getName());
 		assertEquals(0, imports.size(), "java.lang: import not added");

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +18,7 @@ import org.allGraphQLCases.client.CEP_EnumWithReservedJavaKeywordAsValues_CES;
 import org.allGraphQLCases.client.CINP_SubscriptionTestParam_CINS;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client2.util.TheSubscriptionTypeExecutorAllGraphQLCases2;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -109,6 +111,7 @@ public class ExecSubscriptionIT {
 
 		// Let's check that each thread received a message
 		for (SubscribeToAList sub : subs) {
+			logger.debug("  Thread {}, lastReceivedMessage is {}", sub.clientName, sub.callback.lastReceivedMessage);
 			assertNotNull(sub.callback.lastReceivedMessage,
 					"The " + sub.clientName + " should have received a message");
 		}
@@ -130,6 +133,13 @@ public class ExecSubscriptionIT {
 			assertNull(sub.callback.lastReceivedMessage,
 					"The " + sub.clientName + " should not have received a message after having unsubscribed");
 		}
+	}
+
+	@Disabled
+	@Test
+	// @Execution(ExecutionMode.CONCURRENT)
+	public void test_withTwoWebSockets() {
+		fail("not yet implemented");
 	}
 
 	@Test
@@ -315,7 +325,7 @@ public class ExecSubscriptionIT {
 	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	public void test_subscriptionTest_subscriptionError()
+	public void test_subscribeToADate_subscriptionError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_subscriptionError");
@@ -348,7 +358,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	@Execution(ExecutionMode.CONCURRENT)
+	// @Execution(ExecutionMode.CONCURRENT)
 	public void test_subscriptionTest_nextError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -383,7 +393,7 @@ public class ExecSubscriptionIT {
 	 */
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
-	public void test_subscriptionTest_webSocketCloseError()
+	public void test_subscribeToADate_webSocketCloseError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_webSocketCloseError");
@@ -409,13 +419,13 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test // Issue 139
-	void test_subscribeToAnEnumWithReservedJavaKeywordAsValues()
+	void test_subscribeToAEnumWithReservedJavaKeywordAsValues()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
-		logger.info("Starting test_subscribeToAnEnumWithReservedJavaKeywordAsValues");
+		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
 
 		SubscriptionCallbackEnumWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackEnumWithReservedJavaKeywordAsValues(
-				"test_subscribeToAnEnumWithReservedJavaKeywordAsValues");
+				"test_subscribeToAEnumWithReservedJavaKeywordAsValues");
 		SubscriptionClient sub = subscriptionExecutor.enumWithReservedJavaKeywordAsValues("", callback);
 		// Let's wait a max of 20 second, until we receive an exception
 		// (20s will never occur... unless using the debugger to undebug some stuff)
@@ -435,7 +445,7 @@ public class ExecSubscriptionIT {
 	void test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
-		logger.info("Starting test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues");
+		logger.info("Starting test_subscribeToAEnumWithReservedJavaKeywordAsValues");
 
 		SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues callback = new SubscriptionCallbackListOfEnumsWithReservedJavaKeywordAsValues(
 				"test_subscribeToAListOfEnumsWithReservedJavaKeywordAsValues");
@@ -448,7 +458,7 @@ public class ExecSubscriptionIT {
 		assertNull(callback.lastExceptionReceived, "we must have received no exception");
 		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
 		assertEquals(4, callback.lastReceivedMessage.size(),
-				"each received notifiation should contain a list of 3 items");
+				"each received notifiation should contain a list of 4 items");
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._int, callback.lastReceivedMessage.get(0),
 				"First item should be the 'int' value of the enum");
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._interface, callback.lastReceivedMessage.get(1),

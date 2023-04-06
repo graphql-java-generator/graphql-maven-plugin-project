@@ -4,7 +4,9 @@ Here are the next tasks listed, as a TODO list:
 * Document it, then release it
 
 ## TODO list for the 1.x branch
+* Idea #183: replace hard coded fields by maps. This would save memory for objects with lots of field (4000 fields in the identified use case)
 * Add or correct the URL in the README and in the wiki's home.
+* [Gradle] issue #14 : build is not compatible with the `--configuration-cache` gradle parameter (experimental feature)
 * `DirectiveRegistryInitializer`:
     * separate it from each schema (e.g.: allGraphQlCases client)
     * initialize it only once (not at each creation of a GraphQLRequest)

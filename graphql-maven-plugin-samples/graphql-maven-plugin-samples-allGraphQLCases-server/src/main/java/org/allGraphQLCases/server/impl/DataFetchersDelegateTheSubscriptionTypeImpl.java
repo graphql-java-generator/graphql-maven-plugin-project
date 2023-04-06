@@ -41,7 +41,6 @@ import reactor.core.publisher.Flux;
 @Component
 public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchersDelegateTheSubscriptionType {
 
-	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(DataFetchersDelegateTheSubscriptionTypeImpl.class);
 
 	@Autowired
@@ -110,6 +109,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Flux<List<Integer>> subscribeToAList(DataFetchingEnvironment dataFetchingEnvironment) {
+		logger.debug("Executing subscription subscribeToAList()");
 		// The Flux class, from Spring reactive, implements the Publisher interface.
 		// Let's return one list of integer, every 0.1 second
 		return Flux//
@@ -132,6 +132,7 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Flux<Date> issue53(DataFetchingEnvironment dataFetchingEnvironment, Date date) {
+		logger.debug("Executing subscription issue53({})", date);
 		// The Flux class, from Spring reactive, implements the Publisher interface.
 		// Let's returns one item, the date that has been provided as a parameter
 		return Flux//
@@ -145,6 +146,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<String> subscriptionTest(DataFetchingEnvironment dataFetchingEnvironment,
 			SINP_SubscriptionTestParam_SINS param) {
+		logger.debug("Executing subscription subscriptionTest({})", param);
+
 		if (param.getErrorOnSubscription()) {
 			// The client asked that an exception is thrown now
 			throw new GraphQlException("Oups, the subscriber asked for an error during the subscription");
@@ -183,6 +186,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<STP_AllFieldCases_STS> allGraphQLCasesInput(DataFetchingEnvironment dataFetchingEnvironment,
 			SINP_AllFieldCasesInput_SINS input) {
+		logger.debug("Executing subscription allGraphQLCasesInput({})", input);
+
 		STP_AllFieldCases_STS ret = mapper.map(input, STP_AllFieldCases_STS.class);
 
 		List<STP_AllFieldCasesWithoutIdSubtype_STS> list = new ArrayList<>(input.getWithoutIdSubtype().size());
@@ -199,6 +204,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 			String name, Long age, Integer integer, Date date, List<Date> dates, List<List<Double>> matrix,
 			SINP_AllFieldCasesWithoutIdSubtypeInput_SINS onewithoutIdSubtype,
 			List<SINP_AllFieldCasesWithoutIdSubtypeInput_SINS> listwithoutIdSubtype) {
+		logger.debug("Executing subscription allGraphQLCasesParam(id={}, name={}, age={}...)", id, name, age);
+
 		STP_AllFieldCases_STS ret = new STP_AllFieldCases_STS();
 		ret.setId(UUID.fromString(id));
 		ret.setName(name);
@@ -222,6 +229,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Flux<Optional<String>> subscriptionWithNullResponse(DataFetchingEnvironment dataFetchingEnvironment) {
+		logger.debug("Executing subscription subscriptionWithNullResponse()");
+
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.2 second
 				.map((l) -> {
@@ -235,6 +244,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	 */
 	@Override
 	public Flux<Optional<List<Date>>> subscribeToAListOfScalars(DataFetchingEnvironment dataFetchingEnvironment) {
+		logger.debug("Executing subscription subscribeToAListOfScalars()");
+
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> Optional.ofNullable(dataGenerator.generateInstanceList(Date.class, 2)));
@@ -242,6 +253,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Flux<Optional<String>> _if(DataFetchingEnvironment dataFetchingEnvironment) {
+		logger.debug("Executing subscription _if()");
+
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> Optional.ofNullable("a value for _if"));
@@ -249,6 +262,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 
 	@Override
 	public Flux<Optional<String>> _implements(DataFetchingEnvironment dataFetchingEnvironment) {
+		logger.debug("Executing subscription _implements()");
+
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> Optional.ofNullable("a value for _implements"));
@@ -333,6 +348,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnMandatoryListOfEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
+		logger.debug("Executing subscription enumWithReservedJavaKeywordAsValues()");
+
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._boolean, null,
@@ -342,6 +359,8 @@ public class DataFetchersDelegateTheSubscriptionTypeImpl implements DataFetchers
 	@Override
 	public Flux<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnMandatoryListOfMandatoryEnums(
 			DataFetchingEnvironment dataFetchingEnvironment) {
+		logger.debug("Executing subscription listOfEnumWithReservedJavaKeywordAsValues()");
+
 		return Flux//
 				.interval(Duration.ofMillis(100))// A message every 0.1 second
 				.map((l) -> Arrays.asList(//

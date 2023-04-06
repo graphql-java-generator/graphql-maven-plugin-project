@@ -47,6 +47,7 @@ public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 	@Override
 	public void onClose(int statusCode, String reason) {
 		logger.debug("The subscription is closed (for {})", clientName);
+		latchForMessageReception.countDown(); // If the connection is closed, we stop the test
 	}
 
 	@Override

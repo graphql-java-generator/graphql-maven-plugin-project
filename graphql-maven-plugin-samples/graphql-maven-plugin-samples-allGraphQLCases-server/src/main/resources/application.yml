@@ -2,13 +2,6 @@
 server:
   port: 8180
 
-
-# Enabling graphiql (from spring-graphql)
-spring:
-  graphql:
-    graphiql:
-      enabled: true
-
 security:
   enable:
     csrf: false # This should probably not be done in production
@@ -17,9 +10,14 @@ spring:
   graphql:
     # Changing the server path
     path: /my/updated/graphql/path
+
     # Both activating the web socket support and overriding the default path
     websocket:
       path: /my/updated/graphql/path
+
+    # Enabling graphiql (from spring-graphql)
+    graphiql:
+      enabled: true
   jackson:
     serialization:
       INDENT_OUTPUT: true

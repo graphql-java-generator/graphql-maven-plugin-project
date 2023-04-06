@@ -1,17 +1,26 @@
 package com.graphql_java_generator.mavenplugin.samples;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Collections;
 
-import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +36,6 @@ import com.graphql_java_generator.samples.simple.client.Main;
 
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import reactor.netty.http.client.HttpClient;
 
 @TestConfiguration
@@ -35,22 +43,46 @@ import reactor.netty.http.client.HttpClient;
 		QueryTypeExecutor.class }, excludeFilters = { @Filter(type = FilterType.REGEX, pattern = "graphql\\..*") })
 public class SpringTestConfig {
 
+	@Value("${trust.store}")
+	private Resource trustStoreResource;
+
+	@Value("${trust.store.password}")
+	private String trustStorePassword;
+
 	/** Logger for this class */
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
-	 * This sample uses in https, but with a self-signed certificate. So we need to avoid certificate controls. This
-	 * {@link HttpClient} just removes control on the certificate. <BR/>
-	 * This is ok for this integration test. But DON'T DO THAT IN PRODUCTION!
+	 * This sample uses in https, but with a self-signed certificate. So we use the keystore that contains the
+	 * certificate.
 	 * 
 	 * @return
-	 * @throws SSLException
+	 * @throws KeyStoreException
+	 * @throws IOException
+	 * @throws CertificateException
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnrecoverableKeyException
 	 */
 	@Bean
+	HttpClient sslHttpClient() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
+			UnrecoverableKeyException {
+		KeyStore trustStore = KeyStore.getInstance("JKS");
+		try (InputStream inputStream = trustStoreResource.getInputStream()) {
+			trustStore.load(inputStream, trustStorePassword.toCharArray());
+		}
+		TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
+		trustManagerFactory.init(trustStore);
+
+		SslContext sslContext = SslContextBuilder.forClient().trustManager(trustManagerFactory).build();
+
+		return HttpClient.create().secure(t -> t.sslContext(sslContext));
+	}
+
+	@Bean
 	@Primary
-	public WebClient webClient(String graphqlEndpoint) {
+	public WebClient webClient(String graphqlEndpoint, HttpClient sslHttpClient) {
 		return WebClient.builder()//
-				.clientConnector(new ReactorClientHttpConnector(getInsecureHttpClient()))//
+				.clientConnector(new ReactorClientHttpConnector(sslHttpClient))//
 				.baseUrl(graphqlEndpoint)//
 				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 				.defaultUriVariables(Collections.singletonMap("url", graphqlEndpoint)).build();
@@ -58,58 +90,8 @@ public class SpringTestConfig {
 
 	@Bean
 	@Primary
-	GraphQlClient webSocketGraphQlClient(String graphqlEndpoint) {
-		WebSocketClient client = new ReactorNettyWebSocketClient(getInsecureHttpClient());
+	GraphQlClient webSocketGraphQlClient(String graphqlEndpoint, HttpClient sslHttpClient) {
+		WebSocketClient client = new ReactorNettyWebSocketClient(sslHttpClient);
 		return WebSocketGraphQlClient.builder(graphqlEndpoint, client).build();
 	}
-
-	/**
-	 * @return
-	 * @throws SSLException
-	 */
-	private HttpClient getInsecureHttpClient() {
-		try {
-			SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
-					.build();
-			HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
-			return httpClient;
-		} catch (SSLException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-	}
-	//
-	// /**
-	// * This sample uses in https, but with a self-signed certificate. So we need to avoid certificate controls. This
-	// * {@link HttpClient} just removes control on the certificate. <BR/>
-	// * This bean is for subscriptions<BR/>
-	// * This is ok for this integration test. But DON'T DO THAT IN PRODUCTION!
-	// *
-	// * @return
-	// * @throws SSLException
-	// */
-	// @Bean
-	// HttpClient insecureHttpClient() throws SSLException {
-	// int method = 2;
-	//
-	// if (method == 1) {
-	//
-	// // logger.debug("Activating Proxy for the Spring WebClient");
-	// // tcpClient.proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP).host("127.0.0.1").port(3128));
-	//
-	// logger.debug("Activating INSECURE SSL for the Spring WebClient");
-	// SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
-	// .build();
-	// TcpClient tcpClient = TcpClient.create()
-	// .secure(sslProviderBuilder -> sslProviderBuilder.sslContext(sslContext));
-	//
-	// return HttpClient.from(tcpClient);
-	// } else if (method == 2) {
-	// SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE)
-	// .build();
-	// HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
-	// return httpClient;
-	// } else {
-	// throw new RuntimeException("bad value");
-	// }
-	// }
 }

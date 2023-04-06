@@ -31,6 +31,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -49,6 +51,9 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
 public class RequestsAgainstTwoGraphQLServersIT {
+
+	/** Logger for this class */
+	private static Logger logger = LoggerFactory.getLogger(RequestsAgainstTwoGraphQLServersIT.class);
 
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases queryTypeAllGraphQLCases;
@@ -69,6 +74,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_allGraphQLCasesServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Starting test_allGraphQLCasesServer");
+
 		List<CIP_Character_CIS> list = queryTypeAllGraphQLCases.withoutParameters("{appearsIn name }");
 
 		assertNotNull(list);
@@ -81,6 +88,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_forumServer() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+		logger.debug("Starting test_forumServer");
+
 		// return queryType.boards("{id name publiclyAvailable}");
 		List<Board> boards = queryTypeForum.boards("");
 
@@ -103,9 +112,11 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_GraphQLRepository_allGraphQLCases() throws GraphQLRequestExecutionException, InterruptedException {
+		logger.debug("Starting test_GraphQLRepository_allGraphQLCases");
+
 		// Preparation
 		SubscriptionCallbackListInteger callback = new SubscriptionCallbackListInteger(
-				"FullRequestSubscriptionIT.test_SubscribeToAList");
+				"RequestsAgainstTwoGraphQLServersIT.test_GraphQLRepository_allGraphQLCases");
 
 		// Go, go, go
 		SubscriptionClient sub = graphQLRepoAllGraphQLCases.subscribeToAList(callback);
@@ -125,6 +136,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 	@Test
 	@Execution(ExecutionMode.CONCURRENT)
 	void test_GraphQLRepository_forum() throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		logger.debug("Starting test_GraphQLRepository_forum");
+
 		Calendar cal = new Calendar.Builder().set(0, 0).build();
 		cal.clear();
 		cal.set(2009, 12 - 1, 20);// Month is 0-based, so this date is 2009, December the 20th
@@ -218,8 +231,8 @@ public class RequestsAgainstTwoGraphQLServersIT {
 		assertEquals(null, author12bis.getType());
 	}
 
-	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull, String nameStartsWith,
-			int nbFriends, int nbAppearsIn) {
+	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
+			String nameStartsWith, int nbFriends, int nbAppearsIn) {
 
 		if (idShouldBeNull)
 			assertNull(c.getId(), testDecription + " (id)");

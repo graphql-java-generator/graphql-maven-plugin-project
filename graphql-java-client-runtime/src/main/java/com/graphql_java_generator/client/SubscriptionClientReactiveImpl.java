@@ -27,7 +27,7 @@ public class SubscriptionClientReactiveImpl implements SubscriptionClient {
 	 * @param disposable
 	 *            The {@link Disposable} That allows to close the underlying {@link Flux}, that receive the subscription
 	 *            notifications
-	 * @param webSocketHandler
+	 * @param webSocketSessionHandler
 	 *            The connected {@link WebSocketSession}
 	 */
 	public SubscriptionClientReactiveImpl(Disposable disposable) {

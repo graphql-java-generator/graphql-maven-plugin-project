@@ -802,12 +802,12 @@ public class GraphqlUtils {
 		String fullClassname = classname.replace('$', '.');
 
 		int lastDotPos = fullClassname.lastIndexOf('.');
-		String packageName = fullClassname.substring(0, lastDotPos);
+		String packageName = lastDotPos < 0 ? "" : fullClassname.substring(0, lastDotPos);
 		String simpleClassName = fullClassname.substring(lastDotPos + 1);
 
-		// No import for java.lang
+		// No import for primitive types and java.lang
 		// And no import if the class is in the same package.
-		if (!packageName.equals("java.lang") && !targetPackageName.equals(packageName)) {
+		if (!packageName.isEmpty() && !packageName.equals("java.lang") && !targetPackageName.equals(packageName)) {
 			imports.add(packageName + "." + simpleClassName);
 		}
 	}
