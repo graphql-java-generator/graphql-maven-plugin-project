@@ -9,10 +9,11 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
 import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -27,9 +28,7 @@ import com.graphql_java_generator.samples.simple.client.Main;
 
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.TcpClient;
 
 @TestConfiguration
 @ComponentScan(basePackageClasses = { Main.class, SpringTestConfig.class, GraphQLConfiguration.class,
@@ -37,7 +36,7 @@ import reactor.netty.tcp.TcpClient;
 public class SpringTestConfig {
 
 	@Value("${trust.store}")
-	private Resource trustStore;
+	private Resource trustStoreResource;
 
 	@Value("${trust.store.password}")
 	private String trustStorePassword;
@@ -57,15 +56,29 @@ public class SpringTestConfig {
 	 * @throws UnrecoverableKeyException
 	 */
 	@Bean
+	@Qualifier("httpClient")
 	HttpClient sslHttpClient() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
 			UnrecoverableKeyException {
-		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-		try (InputStream inputStream = trustStore.getInputStream()) {
+		// As key store
+		KeyStore keyStore = KeyStore.getInstance("JKS");
+		try (InputStream inputStream = trustStoreResource.getInputStream()) {
 			keyStore.load(inputStream, trustStorePassword.toCharArray());
 		}
 		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
 		keyManagerFactory.init(keyStore, trustStorePassword.toCharArray());
-		SslContext sslContext = SslContextBuilder.forClient().keyManager(keyManagerFactory).build();
+
+		// As trust store
+		KeyStore trustStore = KeyStore.getInstance("JKS");
+		try (InputStream inputStream = trustStoreResource.getInputStream()) {
+			trustStore.load(inputStream, trustStorePassword.toCharArray());
+		}
+		TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
+		trustManagerFactory.init(trustStore);
+
+		SslContext sslContext = SslContextBuilder.forClient()//
+				.keyManager(keyManagerFactory)//
+				.trustManager(trustManagerFactory)//
+				.build();
 
 		return HttpClient.create().secure(t -> t.sslContext(sslContext));
 	}
