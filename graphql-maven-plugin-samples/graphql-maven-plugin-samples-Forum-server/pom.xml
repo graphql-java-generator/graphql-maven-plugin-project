@@ -160,11 +160,4 @@
 		</plugins>
 	</reporting>
 
-
-  <scm>
-    <tag>graphql-maven-plugin-project-1.18.9</tag>
-    <connection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</connection>
-    <developerConnection>scm:git:https://github.com/graphql-java-generator/graphql-maven-plugin-project.git</developerConnection>
-    <url>https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master</url>
-  </scm>
 </project>
